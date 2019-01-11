@@ -1,0 +1,25 @@
+#ignore .vscode directory#
+##########################
+.vscode/
+
+
+#ignore build directory#
+########################
+build/
+
+
+#ignore codeblocks project files#
+#################################
+*.cbp
+
+
+#ignore artefacts from codeblocks project creation#
+###################################################
+*.depend 
+*.layout
+
+
+#ignore artefacts from Visual Studio project creation#
+######################################################
+*.pdb
+*.suo
