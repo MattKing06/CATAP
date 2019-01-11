@@ -17,7 +17,7 @@ if ( Boost_FOUND )
 		#now add the test
 		add_test(NAME ${testName}
 			 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin
-			 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testBin/${testName}
+			 COMMAND ${CMAKE_CURRENT_BUILD_DIR}/testBin/${testName}
 			 )
 	endforeach(testSource)
 	#add_test(MagnetTest ${TEST_FILES})
