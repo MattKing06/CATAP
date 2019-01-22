@@ -6,11 +6,17 @@
 #include "Controller.h"
 #include "LoggingSystem.h"
 #include <string>
-
 BOOST_AUTO_TEST_SUITE(ControllerTestSuite)
+BOOST_AUTO_TEST_CASE(controller_with_no_name_and_no_type)
+{
+	Controller test_controller = Controller();
+	BOOST_CHECK_EQUAL(test_controller.controller_type, "None");
+	BOOST_CHECK_EQUAL(test_controller.controller_name, "None");
+	BOOST_CHECK_EQUAL(test_controller.controller_messenger.isMessagingOn(), false);
+	BOOST_CHECK_EQUAL(test_controller.controller_messenger.isDebugOn(), false);
+}
 
-
-BOOST_AUTO_TEST_CASE (controller_with_name_and_type_test)
+BOOST_AUTO_TEST_CASE(controller_with_name_and_type_test)
 {
 	Controller test_controller = Controller("Magnet", "MAG-CONST-1");
 	BOOST_CHECK_EQUAL(test_controller.controller_type, "Magnet");
