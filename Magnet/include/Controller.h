@@ -15,10 +15,11 @@ public:
     std::string controller_type;
     std::string controller_name;
     LoggingSystem controller_messenger;
+	Controller();
     Controller(std::string controller_type, std::string controller_name, LoggingSystem controller_messenger);
+	Controller(std::string controller_type, std::string controller_name);
+	bool operator ==(const Controller &controller) const;
 };
-
-
 
 
 #endif // CONTROLLER_H_

@@ -27,7 +27,7 @@ set( TEST_FILES
 	MagnetPythonTest.cpp
 	)
 
-add_executable(Magnet ${SOURCE_FILES} ${INCLUDE_FILES})
+add_library(Magnet ${SOURCE_FILES} ${INCLUDE_FILES})
 set_property(TARGET Magnet PROPERTY FOLDER "Magnet")
 TARGET_LINK_LIBRARIES(Magnet LINK_PUBLIC ${Boost_LIBRARIES})
 
