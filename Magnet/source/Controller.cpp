@@ -1,6 +1,6 @@
 #include "Controller.h"
 #include <iostream>
-
+#include <boost/algorithm/algorithm.hpp>
 Controller::Controller(){
 	Controller::controller_type = "None";
 	Controller::controller_name = "None";

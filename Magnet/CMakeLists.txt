@@ -28,8 +28,8 @@ set( TEST_FILES
 	)
 
 add_library(Magnet ${SOURCE_FILES} ${INCLUDE_FILES})
+TARGET_LINK_LIBRARIES(Magnet ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}/Com.lib ${EPICS_LIBRARYDIR}/ca.lib)
 set_property(TARGET Magnet PROPERTY FOLDER "Magnet")
-TARGET_LINK_LIBRARIES(Magnet LINK_PUBLIC ${Boost_LIBRARIES})
 
 include_directories(include)
 add_subdirectory(test)

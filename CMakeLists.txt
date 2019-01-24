@@ -8,6 +8,8 @@ set(BOOST_LIBRARYDIR "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0/stage/l
 
 set(EPICS_DIR "C:/epics/base-3.14.12.5")
 
+set(EPICS_LIBRARYDIR "C:/epics/base-3.14.12.5/lib/win32-x86/")
+
 set(PYTHON_INCLUDE_DIR "C:/Python27/include")
 
 message("found epics directory: ${EPICS_DIR}")
@@ -15,10 +17,6 @@ message("found epics directory: ${EPICS_DIR}")
 include_directories(${EPICS_DIR}/include)
 
 include_directories(${EPICS_DIR}/include/os/WIN32)
-
-link_directories(${EPICS_DIR}/lib/win32-x86/ca.lib)
-
-link_directories(${EPICS_DIR}/lib/win32-x86/Com.lib)
 
 set(Boost_USE_STATIC_LIBS ON)
 
