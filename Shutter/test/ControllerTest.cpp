@@ -4,7 +4,7 @@
 #include <boost/test/parameterized_test.hpp>
 #include <boost/bind.hpp>
 #include "Controller.h"
-#include "LoggingSystem.h"
+
 #include <string>
 BOOST_AUTO_TEST_SUITE(ControllerTestSuite)
 BOOST_AUTO_TEST_CASE(controller_with_no_name_and_no_type)
@@ -18,9 +18,9 @@ BOOST_AUTO_TEST_CASE(controller_with_no_name_and_no_type)
 
 BOOST_AUTO_TEST_CASE(controller_with_name_and_type_test)
 {
-	Controller test_controller = Controller("Magnet", "MAG-CONST-1");
-	BOOST_CHECK_EQUAL(test_controller.controller_type, "Magnet");
-	BOOST_CHECK_EQUAL(test_controller.controller_name, "MAG-CONST-1");
+	Controller test_controller = Controller("Shutter", "SHUT-CONST-1");
+	BOOST_CHECK_EQUAL(test_controller.controller_type, "Shutter");
+	BOOST_CHECK_EQUAL(test_controller.controller_name, "SHUT-CONST-1");
 	BOOST_CHECK_EQUAL(test_controller.controller_messenger.isMessagingOn(), true);
 	BOOST_CHECK_EQUAL(test_controller.controller_messenger.isDebugOn(), true);
 }

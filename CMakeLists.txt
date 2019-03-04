@@ -34,9 +34,9 @@ if(Boost_FOUND)
 
 endif()
 
-add_subdirectory(Magnet)
+add_subdirectory(Shutter)
 
-include_directories(Magnet/include/)
+include_directories(Shutter/include/)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")
 

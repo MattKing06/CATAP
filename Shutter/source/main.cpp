@@ -5,8 +5,8 @@
 int main()
 {
     LoggingSystem logger(true, true);
-    std::string type = "Magnet";
-    std::string name = "MAG-DIP-01";
+    std::string type = "Shutter";
+    std::string name = "SHUT-LAS-01";
 
     Controller new_controller(type, name, logger);
 	std::cout << new_controller.controller_messenger.isDebugOn() << std::endl;
