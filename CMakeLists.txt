@@ -35,7 +35,9 @@ if(Boost_FOUND)
 endif()
 
 add_subdirectory(Shutter)
-
+add_subdirectory(Controller)
+add_subdirectory(LoggingSystem)
+add_subdirectory(ConfigReader)
 include_directories(Shutter/include/)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")

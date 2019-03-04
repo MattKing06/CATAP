@@ -10,6 +10,7 @@ set( INCLUDE_FILES
 set( TEST_FILES
     LoggingSystemTest.cpp
 )
+include_directories(include)
 add_library(LoggingSystem ${SOURCE_FILES} ${INCLUDE_FILES})
 TARGET_LINK_LIBRARIES(LoggingSystem ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}/Com.lib ${EPICS_LIBRARYDIR}/ca.lib)
 set_property(TARGET LoggingSystem PROPERTY FOLDER "LoggingSystem")

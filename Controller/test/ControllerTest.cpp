@@ -4,6 +4,7 @@
 #include <boost/test/parameterized_test.hpp>
 #include <boost/bind.hpp>
 #include "Controller.h"
+#include "LoggingSystem.h"
 
 #include <string>
 BOOST_AUTO_TEST_SUITE(ControllerTestSuite)
