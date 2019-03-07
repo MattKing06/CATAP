@@ -11,10 +11,11 @@ set( TEST_FILES
     ConfigReaderTest.cpp
 )
 include_directories(include)
-
+include_directories(${YAML_PARSER_DIR}/include)
 add_library(ConfigReader ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(ConfigReader PUBLIC ${PROJECT_SOURCE_DIR}/Controller/include)
-TARGET_LINK_LIBRARIES(ConfigReader ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}/Com.lib ${EPICS_LIBRARYDIR}/ca.lib)
+target_include_directories(ConfigReader PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
+TARGET_LINK_LIBRARIES(ConfigReader ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}/Com.lib ${EPICS_LIBRARYDIR}/ca.lib ${YAML_PARSER_LIB_DIR}/libyaml-cppmd.lib)
 set_property(TARGET ConfigReader PROPERTY FOLDER "ConfigReader")
 
 add_subdirectory(test)
