@@ -42,7 +42,8 @@ std::vector<std::string>* ConfigReader::parseYamlFile()
 		}
 		else
 		{
-			throw std::length_error("File contents were of length 0, file must be empty!");
+			
+			throw std::length_error("File contents were of length "+std::to_string(config.size())+", file must be empty!");
 			return NULL;
 		}
 	}

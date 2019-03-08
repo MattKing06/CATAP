@@ -19,7 +19,7 @@ if ( Boost_FOUND )
 		target_include_directories(${testName} PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 		target_link_libraries(${testName} ${Boost_LIBRARIES})
 		target_link_libraries(${testName} Controller)
-                target_link_libraries(${testName} LoggingSytem)
+        target_link_libraries(${testName} LoggingSystem)
 		#move testing binaries to separate folder
 		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/testBin)
 		#now add the test
