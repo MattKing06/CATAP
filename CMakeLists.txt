@@ -8,7 +8,8 @@ set(BOOST_LIBRARYDIR "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0/stage/l
 
 set(EPICS_DIR "C:/epics/base-3.14.12.5")
 
-set(YAML_PARSER_LIB_DIR "C:/yaml-build/Release")
+set(YAML_PARSER_LIB_RELEASE_DIR "C:/yaml-build/Release")
+set(YAML_PARSER_LIB_DEBUG_DIR "C:/yaml-build/Debug")
 set(YAML_PARSER_DIR "C:/yaml")
 set(EPICS_LIBRARYDIR "C:/epics/base-3.14.12.5/lib/win32-x86/")
 

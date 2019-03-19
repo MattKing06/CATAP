@@ -8,8 +8,9 @@
 class ConfigReader
 {
 public:
-	ConfigReader(const std::string file);
+	ConfigReader(const std::string fileDirectory, const std::string filename);
 	std::string yamlFileDestination;
+	std::string yamlFilename;
 	std::vector<std::string> *PVs;
 	std::vector<std::string>* parseYamlFile();
 };
