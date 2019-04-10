@@ -39,6 +39,11 @@ BOOST_AUTO_TEST_CASE(config_reader_parsing_master_lattice_yaml_document)
 	ConfigReader reader("C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles", "CLA-C2V-MAG-HCOR-01.yaml");
 	reader.parseYamlFile();
 }
+BOOST_AUTO_TEST_CASE(config_reader_parsing_another_master_lattice_yaml_document)
+{
+	ConfigReader reader("C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles", "CLA-C2V-MAG-VCOR-01.yaml");
+	reader.parseYamlFile();
+}
 
 //BOOST_AUTO_TEST_CASE(config_reader_parsing_yaml_document)
 //{

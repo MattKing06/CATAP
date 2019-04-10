@@ -16,6 +16,7 @@ std::vector<std::string>* ConfigReader::parseYamlFile()
 {	
 	std::ifstream fileInput;
 	YAML::Node config;
+	YAML::Node configTemplate;
 	try{
 		fileInput = std::ifstream(ConfigReader::yamlFileDestination + "\\" + ConfigReader::yamlFilename);
 		YAML::Parser parser(fileInput);
@@ -31,40 +32,60 @@ std::vector<std::string>* ConfigReader::parseYamlFile()
 		if (config.size() > 0)
 		{
 			std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + "\\" + config["hardware_type"].as<std::string>() + ".yaml";
-			std::ifstream templateFileInput = std::ifstream(hardwareTemplateFilename);
-			YAML::Parser templateParser(templateFileInput);
-			YAML::Node configTemplate = YAML::LoadFile(hardwareTemplateFilename);
-			for (auto templateIter = configTemplate.begin(); templateIter != configTemplate.end(); templateIter++)
+			configTemplate = YAML::LoadFile(hardwareTemplateFilename);
+			for (auto element = configTemplate.begin(); element != configTemplate.end(); element++)
 			{
-				//ConfigReader::PVs->push_back(configIter->first.as<std::string>());
-				if (templateIter->first.IsDefined())
-				{
-					std::string key = templateIter->first.as<std::string>();
-					if (config[key].IsScalar())
+				if (element->first.IsDefined())
+				{ 
+					YAML::Node key = element->first;
+					YAML::Node value = element->second;
+					std::string keyString;
+					std::string valueString;
+					//DEALING WITH FIRST LAYER OF PARAMETERS
+					if (key.Type() == YAML::NodeType::Scalar)
 					{
-						std::string result = config[key].as<std::string>();
-						std::cout << key << std::endl;
+						keyString = key.as<std::string>();
 					}
-					else
+					if (value.Type() == YAML::NodeType::Scalar)
 					{
-						std::cout << templateIter->first.as<std::string>() << std::endl;
-						for (auto objectIter = templateIter->second.begin(); objectIter != templateIter->second.end(); objectIter++)
+						valueString = value.as<std::string>();
+						keyString = key.as<std::string>();
+						std::cout << keyString << " : " << valueString << std::endl;
+					}
+					// DEALING WITH SECOND LAYER OF PARAMETERS [Controls info, PSU (w\ controls info)]
+					if (value.Type() == YAML::NodeType::Map)
+					{
+						std::cout  << keyString << ":" << std::endl;
+						for (auto item : value)
 						{
-							std::cout << "\t" << objectIter->first.as<std::string>() << std::endl;
-							for (auto nestedObjectIter = objectIter->second.begin(); nestedObjectIter != objectIter->second.end(); nestedObjectIter++)
+							key = item.first;
+							value = item.second;
+							if (value.Type() == YAML::NodeType::Scalar)
 							{
-								std::cout << "\t \t" << nestedObjectIter->first.as<std::string>() << std::endl;
+								keyString = key.as<std::string>();
+								valueString = value.as<std::string>();
+								std::cout << "\t" << keyString << ":" << valueString << std::endl;
+							}
+							// DEALING WITH THIRD LAYER OF PARAMETERS [PSU Control info]
+							if (value.Type() == YAML::NodeType::Map)
+							{ 
+								std::cout << "\t" << key.as<std::string>() << ":" << std::endl;
+								for (auto nestedItem : value)
+								{
+									key = nestedItem.first;
+									value = nestedItem.second;
+									keyString = key.as<std::string>();
+									valueString = value.as<std::string>();
+									std::cout << "\t\t" << keyString << ":" << valueString << std::endl;
+								}
 							}
 						}
 					}
-					//return NULL;
 				}
 				else
 				{
-					std::cout << " F A I L U R E " << std::endl;
-					//return NULL;
+					std::cout << " ELEMENT NOT DEFINED " << std::endl;
 				}
-
 			}
 			return NULL;
 		}
