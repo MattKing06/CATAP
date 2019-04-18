@@ -11,8 +11,8 @@ set( TEST_FILES
     ConfigReaderTest.cpp
 )
 include_directories(include)
-include_directories(${YAML_PARSER_DIR}/include)
 add_library(ConfigReader ${SOURCE_FILES} ${INCLUDE_FILES})
+target_include_directories(ConfigReader PUBLIC ${YAML_PARSER_DIR}/include)
 target_include_directories(ConfigReader PUBLIC ${PROJECT_SOURCE_DIR}/Controller/include)
 target_include_directories(ConfigReader PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 TARGET_LINK_LIBRARIES(ConfigReader ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib)

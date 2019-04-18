@@ -41,7 +41,7 @@ add_subdirectory(Magnet)
 add_subdirectory(Controller)
 add_subdirectory(LoggingSystem)
 add_subdirectory(ConfigReader)
-include_directories(Magnet/include/)
+add_subdirectory(Hardware)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")
 
