@@ -10,7 +10,7 @@ if ( Boost_FOUND )
 		get_filename_component(testName ${testSource} NAME_WE)
 		if (NOT TARGET Controller )
 			# if Shutter library hasn't been built yet, build it
-			add_library(Controller ../source/main.cpp)
+			add_library(Controller)
 		endif()
 		#Add a compile target
 		add_executable(${testName} ${testSource})

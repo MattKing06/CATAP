@@ -10,7 +10,12 @@ BOOST_AUTO_TEST_SUITE(HardwareTestSuite)
 
 BOOST_AUTO_TEST_CASE(dummy_hardware_test)
 {
-	BOOST_ASSERT(true && true); 
+	Hardware *component = new Hardware();
+	std::cout << component->machineArea << std::endl;
+	for (auto pv : component->pvStructs)
+	{
+		std::cout << pv.fullPVName << ":" << pv.pvRecord << std::endl;
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -4,7 +4,7 @@ project(hardware_toy)
 
 set(BOOST_ROOT "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0")
 
-set(BOOST_LIBRARYDIR "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0/stage/lib")
+set(BOOST_LIBRARYDIR "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0/stage/")
 
 set(EPICS_DIR "C:/epics/base-3.14.12.5")
 
@@ -15,13 +15,16 @@ set(EPICS_LIBRARYDIR "C:/epics/base-3.14.12.5/lib/win32-x86/")
 
 set(PYTHON_INCLUDE_DIR "C:/Python27/include")
 
+set_property(GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug;RelWithDebInfo")
+set_property(GLOBAL PROPERTY RELEASE_CONFIGURATIONS "Release;MinSizeRel")
+
 message("found epics directory: ${EPICS_DIR}")
 
 include_directories(${EPICS_DIR}/include)
 
 include_directories(${EPICS_DIR}/include/os/WIN32)
 
-set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_STATIC_LIBS ON)
 
 find_package(Boost 1.63 COMPONENTS unit_test_framework REQUIRED)
 
@@ -35,7 +38,7 @@ if(Boost_FOUND)
 
     include_directories(${PYTHON_INCLUDE_DIRS})
 
-endif()
+endif(Boost_FOUND)
 
 add_subdirectory(Magnet)
 add_subdirectory(Controller)

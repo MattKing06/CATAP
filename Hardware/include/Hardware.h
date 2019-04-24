@@ -2,7 +2,7 @@
 #define HARDWARE_H_
 
 #include <string>
-#include <tuple>
+#include <map>
 #include <vector>
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
@@ -24,14 +24,16 @@ struct pvStruct
 
 class Hardware
 {
+public:
 	// vector of PV structs 
-	// string fullname (PV ROOT)
 	// string hardware type
 	// vector of strings for aliases relating to enums
-	LoggingSystem logger;
+	LoggingSystem *logger;
 	std::string machineArea;
+	std::string hardwareType;
 	std::vector<pvStruct> pvStructs;
-	std::vector< std::tuple<std::string, std::string> > specificHardwareParameters;
+	std::multimap<std::string, std::string> specificHardwareParameters;
+	Hardware();
 };
 
 #endif //HARDWARE_H_

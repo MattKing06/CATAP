@@ -11,13 +11,11 @@ ConfigReader::ConfigReader(const std::string hardwareComponentName){
 	yamlFilename = hardwareComponentName + ".yaml";
 	//create a string-vector pointer to empty string-vector
 	// so we aren't writing to inaccessbile memory
-	typedef std::vector< std::tuple<std::string, std::string> > pvAndRecordVector;
-	PVs = pvAndRecordVector();
 	// have array of PVs as max size for now (that's what 0U is doing)
 	// maybe use a different data structure or a resizing method later.
 }
 
-std::vector <std::tuple<std::string, std::string>> ConfigReader::parseYamlFile()
+std::multimap<std::string, std::string> ConfigReader::parseYamlFile()
 {	
 	std::ifstream fileInput;
 	YAML::Node config;
@@ -43,17 +41,22 @@ std::vector <std::tuple<std::string, std::string>> ConfigReader::parseYamlFile()
 			auto hardwareProperties = config["properties"];
 			if (controls_information["PV"].as<bool>())
 			{
-				std::cout << config["name"] << std::endl;
 				std::vector<std::string> controls_records;
 				boost::split(controls_records, controls_information["records"].as<std::string>(), [](char c){return c == ','; });
 				for (auto record : controls_records)
 				{
 					boost::trim_left(record);
-					std::tuple<std::string, std::string> pvAndRecordPair = std::make_tuple(config["properties"]["name"].as<std::string>(), record);
-					PVs.push_back(pvAndRecordPair);
+					// add record to PV along with COUNT, MASK, CHID, and CHTYPE which could be retrieved from EPICS.
+					//CHID;
+					//COUNT;
+					//MASK;
+					//CHTYPE;
+					// end of pv struct construction.
+					std::pair<std::string, std::string> pvAndRecordPair = std::make_pair(config["properties"]["name"].as<std::string>(), record);
+					PVs.insert(pvAndRecordPair);
 				}
 			}
-			std::vector<std::tuple <std::string, std::string> > hardwarePropertyAndValueVector;
+			std::multimap<std::string, std::string> hardwarePropertyAndValueVector;
 			if (hardwareProperties.IsDefined())
 			{
 				for (auto properties : hardwareProperties)
@@ -68,8 +71,7 @@ std::vector <std::tuple<std::string, std::string>> ConfigReader::parseYamlFile()
 					{
 						value = "UNDEFINED";
 					}
-						std::cout << properties.first.as<std::string>() << ":" << properties.second.as<std::string>() << std::endl;
-						hardwarePropertyAndValueVector.push_back(std::make_tuple(key, value));
+					hardwarePropertyAndValueVector.insert(std::make_pair(key, value));
 				}
 			}
 			else
@@ -78,61 +80,11 @@ std::vector <std::tuple<std::string, std::string>> ConfigReader::parseYamlFile()
 			}
 			for (auto prop : hardwarePropertyAndValueVector)
 			{
-				PVs.push_back(prop);
-			}
-			for (auto item : PVs)
-			{
-				std::cout << std::get<0>(item) << ":" << std::get<1>(item) << std::endl;
-			}
-			//for (auto element = configTemplate.begin(); element != configTemplate.end(); element++)
-			//{
-			//	if (element->first.IsDefined())
-			//	{ 
-			//		YAML::Node key = element->first;
-			//		YAML::Node value = element->second;
-			//		std::string keyString;
-			//		std::string valueString;
-			//		//DEALING WITH FIRST LAYER OF PARAMETERS
-			//		if (key.Type() == YAML::NodeType::Scalar)
-			//		{
-			//			keyString = key.as<std::string>();
-			//		}
-			//		if (value.Type() == YAML::NodeType::Scalar && config[key].IsDefined())
-			//		{
-			//			valueString = config[key].as<std::string>();
-			//			keyString = key.as<std::string>();
-			//			auto keyValuePair = std::make_pair(keyString, valueString);
-			//			PVs.insert(keyValuePair);
-			//		}
-			//		// DEALING WITH SECOND LAYER OF PARAMETERS [Controls info, PSU (w\ controls info)]
-			//		else if (value.Type() == YAML::NodeType::Map)
-			//		{
-			//			for (auto item : value)
-			//			{
-			//				key = item.first;
-			//				value = item.second;
-			//				std::cout << key << ":" << config[key] << std::endl;
-			//				if (config[key].IsDefined())
-			//				{
-			//					std::cout << "MADE IT" << std::endl;
-			//					keyString = key.as<std::string>();
-			//					valueString = config[key].as<std::string>();
-			//					auto keyValuePair = std::make_pair(keyString, valueString);
-			//					PVs.insert(keyValuePair);
-			//				}
-			//			}
-			//		}
-			//	}
-			//else
-			//{
-			//	std::cout << " ELEMENT NOT DEFINED " << std::endl;
-			//}
-		//}
-			//for (auto pv : PVs){
-			//	std::cout << pv.first << ":" << pv.second << std::endl;
+				PVs.insert(prop);
+			}			{
 
-			//}
-			return PVs;
+				return PVs;
+			}
 		}
 		else
 		{

@@ -7,7 +7,7 @@ if ( Boost_FOUND )
 		get_filename_component(testName ${testSource} NAME_WE)
 		if (NOT TARGET LoggingSystem )
 			# if LoggingSystem library hasn't been built yet, build it
-			add_library(LoggingSystem ../source/main.cpp)
+			add_library(LoggingSystem)
 		endif()
 		#Add a compile target
 		add_executable(${testName} ${testSource})
