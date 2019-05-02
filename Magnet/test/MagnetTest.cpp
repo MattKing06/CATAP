@@ -10,12 +10,12 @@
 
 BOOST_AUTO_TEST_SUITE(MagnetTestSuite)
 
-BOOST_AUTO_TEST_CASE(magnet_with_fullname_test)
+BOOST_AUTO_TEST_CASE(creating_empty_magnet_test)
 {
-	Magnet *mag = new Magnet("CLA-C2V-MAG-HCOR-01");
-	std::cout << "MAGNET NAME:" << mag->fullPVName << std::endl;
-	BOOST_CHECK_EQUAL(mag->fullPVName, "CLA-C2V-MAG-HCOR-01");
-	for (auto record : mag->pvStructs)
+	Magnet *mag = new Magnet();
+	std::cout << "MAGNET NAME:" << mag->getFullPVName() << std::endl;
+	//BOOST_CHECK_EQUAL(mag->getFullPVName().c_str(), "CLA-C2V-MAG-HCOR-01");
+	for (auto record : mag->getPVStructs())
 	{
 		std::cout << record.fullPVName << ":" << record.pvRecord << std::endl;
 	}

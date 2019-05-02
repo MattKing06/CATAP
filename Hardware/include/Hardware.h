@@ -28,12 +28,18 @@ public:
 	// vector of PV structs 
 	// string hardware type
 	// vector of strings for aliases relating to enums
+	Hardware();
+	Hardware(std::multimap<std::string, std::string> paramMap);
+	std::string getMachineArea();
+	std::string getHardwareType();
+	std::vector<pvStruct> getPVStructs();
+	std::multimap<std::string, std::string> getSpecificHardwareParameters();
+protected:
 	LoggingSystem *logger;
 	std::string machineArea;
 	std::string hardwareType;
 	std::vector<pvStruct> pvStructs;
 	std::multimap<std::string, std::string> specificHardwareParameters;
-	Hardware();
 };
 
 #endif //HARDWARE_H_

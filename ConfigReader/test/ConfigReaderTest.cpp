@@ -36,8 +36,9 @@ BOOST_AUTO_TEST_SUITE(ConfigReaderTestSuite)
 
 BOOST_AUTO_TEST_CASE(config_reader_parsing_master_lattice_yaml_document)
 {
-	ConfigReader reader("CLA-C2V-MAG-HCOR-01");
-	reader.parseYamlFile();
+	ConfigReader reader;
+	//reader.parseYamlDirectory();
+	//reader.parseYamlFile();
 }
 
 //BOOST_AUTO_TEST_CASE(config_reader_parsing_yaml_document)

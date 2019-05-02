@@ -8,11 +8,13 @@
 
 BOOST_AUTO_TEST_SUITE(HardwareTestSuite)
 
-BOOST_AUTO_TEST_CASE(dummy_hardware_test)
+BOOST_AUTO_TEST_CASE(empty_hardware_test)
 {
 	Hardware *component = new Hardware();
-	std::cout << component->machineArea << std::endl;
-	for (auto pv : component->pvStructs)
+	BOOST_CHECK_EQUAL(component->getHardwareType(), "UNKNOWN");
+	BOOST_CHECK_EQUAL(component->getMachineArea(), "UNKNOWN");
+	BOOST_CHECK_EQUAL(component->getSpecificHardwareParameters().empty(), true);
+	for (auto pv : component->getPVStructs())
 	{
 		std::cout << pv.fullPVName << ":" << pv.pvRecord << std::endl;
 	}

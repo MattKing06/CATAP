@@ -15,11 +15,29 @@ ConfigReader::ConfigReader(const std::string hardwareComponentName){
 	// maybe use a different data structure or a resizing method later.
 }
 
+ConfigReader::ConfigReader()
+{
+	//since we have not specified a hardware component
+	// we assume that we want to load all hardware yaml files.
+	// So we set up the directory of the master lattice files, and nothing else.
+	yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+	yamlFilename = "";
+}
+/*
+std::multimap<std::string, std::string> ConfigReader::parseYamlDirectory()
+{
+	std::multim
+}
+*/
 std::multimap<std::string, std::string> ConfigReader::parseYamlFile()
 {	
 	std::ifstream fileInput;
 	YAML::Node config;
 	YAML::Node configTemplate;
+	//before we start, config reader is usually a member to the Hardware classes
+	// and only gets initialized once, we need to reset PVs when parsing
+	// otherwise we just keep adding values to the multimap.
+	PVs.clear();
 	try{
 		fileInput = std::ifstream(ConfigReader::yamlFileDestination + "\\" + ConfigReader::yamlFilename);
 		YAML::Parser parser(fileInput);

@@ -1,7 +1,6 @@
 message( "Processing Hardware Unit Tests")
 enable_testing()
 if ( Boost_FOUND )
-	set(Boost_USE_STATIC_LIBS OFF)
 	foreach(testSource ${TEST_FILES})
 		#Extract filename without extension
 		get_filename_component(testName ${testSource} NAME_WE)
