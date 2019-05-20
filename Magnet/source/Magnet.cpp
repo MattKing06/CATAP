@@ -12,10 +12,10 @@
 
 Magnet::Magnet()
 {
-	magnetParametersAndValuesMap = std::multimap<std::string, std::string>();
+	magnetParametersAndValuesMap = std::map<std::string, std::string>();
 }
 
-Magnet::Magnet(std::multimap<std::string, std::string> &paramsMap) : Hardware(paramsMap)
+Magnet::Magnet(std::map<std::string, std::string> &paramsMap) : Hardware(paramsMap)
 {
 	//assuming known name
 	fullPVName = paramsMap.find("name")->second;
@@ -32,6 +32,7 @@ Magnet::Magnet(std::multimap<std::string, std::string> &paramsMap) : Hardware(pa
 	degaussTolerance = std::stof(paramsMap.find("degauss_tolerance")->second);
 	fullPSUName = paramsMap.find("PSU")->second;
 	measurementDataLocation = paramsMap.find("measurement_data_location")->second;
+	epicsInterface = new EPICSMagnetInterface();
 	//_CrtDumpMemoryLeaks();
 }
 
@@ -90,4 +91,16 @@ std::string Magnet::getFullPSUName()
 std::string Magnet::getMeasurementDataLocation()
 {
 	return this->measurementDataLocation;
+}
+double Magnet::getCurrent()
+{
+	for (auto &pv = pvStructs.begin(); pv != pvStructs.end(); pv++)
+	{
+		if (pv->pvRecord == "READI")
+		{
+			double current = epicsInterface->getCurrent(pv->CHID);
+			return current;
+		}
+	}
+	return -1.0;
 }

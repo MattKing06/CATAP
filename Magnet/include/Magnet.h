@@ -2,16 +2,20 @@
 #define MAGNET_H_
 #include "LoggingSystem.h"
 #include "Hardware.h"
+#include "EPICSMagnetInterface.h"
 
 class Magnet : public Hardware
 {
 	public:
 		Magnet();
 		~Magnet();
+
+		EPICSMagnetInterface* epicsInterface;
+
 		//should need a magnet name (full PV root, or alias can be given)
-		Magnet(Hardware hardware);
+		//Magnet(Hardware hardware); // this should be possible, but isn't useful right now.
 		Magnet(std::string knownNameOfMagnet);
-		Magnet(std::multimap<std::string, std::string> &magnetParametersAndValuesMap);
+		Magnet(std::map<std::string, std::string> &magnetParametersAndValuesMap);
 		std::string getFullPVName();
 		std::vector<std::string> getAliases();
 		std::string getManufacturer();
@@ -25,9 +29,12 @@ class Magnet : public Hardware
 		double getMagneticLength();
 		std::string getFullPSUName();
 		std::string getMeasurementDataLocation();
-		std::multimap<std::string, std::string> magnetParametersAndValuesMap;
+		std::map<std::string, std::string> magnetParametersAndValuesMap;
+		bool setCurrent(double value){ this->current = value; return true; }
+		double getCurrent();
+
 	protected:
-		//what else do a magnet need?
+		//what else does a magnet need?
 		std::string fullPVName;
 		std::vector<std::string> aliases;
 		std::string manufacturer;
@@ -41,8 +48,9 @@ class Magnet : public Hardware
 		double magneticLength;
 		std::string fullPSUName;
 		std::string measurementDataLocation;
+		double current;
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
-		//(iherited) std::string hardwareType;
+		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;
 
 };

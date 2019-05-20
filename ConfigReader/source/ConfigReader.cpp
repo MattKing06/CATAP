@@ -29,7 +29,7 @@ std::multimap<std::string, std::string> ConfigReader::parseYamlDirectory()
 	std::multim
 }
 */
-std::multimap<std::string, std::string> ConfigReader::parseYamlFile()
+std::map<std::string, std::string> ConfigReader::parseYamlFile()
 {	
 	std::ifstream fileInput;
 	YAML::Node config;
@@ -59,22 +59,18 @@ std::multimap<std::string, std::string> ConfigReader::parseYamlFile()
 			auto hardwareProperties = config["properties"];
 			if (controls_information["PV"].as<bool>())
 			{
-				std::vector<std::string> controls_records;
-				boost::split(controls_records, controls_information["records"].as<std::string>(), [](char c){return c == ','; });
-				for (auto record : controls_records)
-				{
-					boost::trim_left(record);
-					// add record to PV along with COUNT, MASK, CHID, and CHTYPE which could be retrieved from EPICS.
-					//CHID;
-					//COUNT;
-					//MASK;
-					//CHTYPE;
-					// end of pv struct construction.
-					std::pair<std::string, std::string> pvAndRecordPair = std::make_pair(config["properties"]["name"].as<std::string>(), record);
-					PVs.insert(pvAndRecordPair);
-				}
+				std::string control_records = controls_information["records"].as<std::string>();
+				boost::trim_left(control_records);
+				// add record to PV along with COUNT, MASK, CHID, and CHTYPE which could be retrieved from EPICS.
+				//CHID;
+				//COUNT;
+				//MASK;
+				//CHTYPE;
+				// end of pv struct construction.
+				std::pair<std::string, std::string> pvAndRecordPair = std::make_pair(config["properties"]["name"].as<std::string>(), control_records);
+				PVs.insert(pvAndRecordPair);
 			}
-			std::multimap<std::string, std::string> hardwarePropertyAndValueVector;
+			std::map<std::string, std::string> hardwarePropertyAndValueVector;
 			if (hardwareProperties.IsDefined())
 			{
 				for (auto properties : hardwareProperties)

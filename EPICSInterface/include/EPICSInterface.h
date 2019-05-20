@@ -15,6 +15,10 @@ class EPICSInterface
 
 		double get_CA_PEND_IO_TIMEOUT() const;
 		void set_CA_PEND_IO_TIMEOUT(double value);
+		chid retrieveCHID(std::string &pv);
+		chtype retrieveCHTYPE(chid &channelID);
+		unsigned long retrieveCOUNT(chid &channelID);
+
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;

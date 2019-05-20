@@ -3,18 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(hardware_toy)
 cmake_policy(SET CMP0074 NEW)
 
-if(WIN32)
-	set(Boost_USE_STATIC_LIBS ON)
-endif(WIN32)
-
-set(PY_VERSION 3)
-
-set(BOOST_ROOT "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0/")
-
+set(PY_VERSION 3.6)
 set(EPICS_DIR "C:/epics/base-3.14.12.5")
-
-set(BOOST_LIBRARYDIR "C:/boost/boost_1_63_0_with_test_built/boost_1_63_0/stage/lib")
-
 set(YAML_PARSER_LIB_RELEASE_DIR "C:/yaml-build/Release")
 set(YAML_PARSER_LIB_DEBUG_DIR "C:/yaml-build/Debug")
 set(YAML_PARSER_DIR "C:/yaml")
@@ -22,26 +12,28 @@ set(EPICS_LIBRARYDIR "C:/epics/base-3.14.12.5/lib/win32-x86/")
 set_property(GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_CONFIGURATIONS "Release;MinSizeRel")
 
-message("found epics directory: ${EPICS_DIR}")
-
-include_directories(${EPICS_DIR}/include)
-
-include_directories(${EPICS_DIR}/include/os/WIN32)
+#EPICS RELATED VARS
+#include_directories(${EPICS_DIR}/include)
+#include_directories(${EPICS_DIR}/include/os/WIN32)
 
 find_package(PythonLibs ${PY_VERSION} REQUIRED)
-
-find_package(Boost 1.63 COMPONENTS unit_test_framework filesystem python REQUIRED)
-
+find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework filesystem python3)
+message(STATUS "Boost python version: " ${Boost_PYTHON_VERSION_TAG})
 message("Finding Boost...")
 
 if(Boost_FOUND)
-
     message("Found Boost")
-
-    include_directories(${Boost_INCLUDE_DIRS})
-    include_directories(${PYTHON_INCLUDE_DIRS})
-	add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
-
+    #include_directories(${Boost_INCLUDE_DIRS})
+    #include_directories(${Python_INCLUDE_DIRS})
+    add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+    if(WIN32)
+      message(STATUS "WIN32 BUILD: TRUE")
+      set(Boost_USE_STATIC_LIBS On)
+      set(Boost_USE_SHARED_LIBS Off)
+      set(Boost_USE_MULTITHREAD On)
+      set(Boost_USE_STATIC_RUNTIME Off)
+    endif(WIN32)
+    add_definitions(-DBOOST_ALL_DYN_LINK)
 endif(Boost_FOUND)
 
 add_subdirectory(Magnet)
@@ -49,7 +41,8 @@ add_subdirectory(HardwareFactory)
 add_subdirectory(LoggingSystem)
 add_subdirectory(ConfigReader)
 add_subdirectory(Hardware)
+add_subdirectory(PythonInterface)
+add_subdirectory(EPICSInterface)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")
-
 message("Using CMake version: ${CMAKE_VERSION}")

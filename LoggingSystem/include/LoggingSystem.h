@@ -1,6 +1,7 @@
 #ifndef LOGGING_SYSTEM_H_
 #define LOGGING_SYSTEM_H_
 #include <string>
+#include <boost\python.hpp>
 class LoggingSystem
 {
 public:
@@ -12,8 +13,9 @@ public:
     void messagesOff();
     bool isMessagingOn();
     bool isDebugOn();
-    void printDebugMessage(std::string &debugMessage);
-    void printMessage(std::string &message);
+    void printDebugMessage(const std::string &debugMessage);
+	void testPrint();
+    void printMessage(const std::string &message);
 private:
     std::string getCurrentDateAndTimeString();
     bool debugOn;

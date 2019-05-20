@@ -5,6 +5,7 @@
 
 #include "LoggingSystem.h"
 #include "Hardware.h"
+#include "MagnetFactory.h"
 #include "ConfigReader.h"
 #include "Magnet.h"
 
@@ -17,17 +18,19 @@ class HardwareFactory
     *   - Needs to invoke LoggingSystem object without having it as an inherited member.
     *
     */
-	LoggingSystem messenger;
-	ConfigReader reader;
-	//std::vector<Hardware*> hardwareVector;
-	std::vector<Magnet*> magnetVector;
 public:
 	HardwareFactory();
 	HardwareFactory(std::string hardwareType, std::string version);
 	bool setup(std::string hardwareType, std::string version);
+	MagnetFactory* getMagnetFactory();
 	Magnet* getMagnet(std::string fullMagnetName);
 	std::vector<Magnet*> getAllMagnets();
 	bool operator ==(const HardwareFactory &HardwareFactory) const;
+	LoggingSystem messenger;
+	ConfigReader reader;
+	//std::vector<Hardware*> hardwareVector;
+	std::vector<Hardware*> hardwareVector;
+	MagnetFactory* magnetFactory;
 };
 
 

@@ -40,7 +40,7 @@ void LoggingSystem::messagesOn(){
 void LoggingSystem::messagesOff(){
     messageOn = false;
 }
-void LoggingSystem::printDebugMessage(std::string &debugMessage){
+void LoggingSystem::printDebugMessage(const std::string &debugMessage){
     if (debugOn){
         //get the current date and time in string format
         std::string currentDateAndTime = LoggingSystem::getCurrentDateAndTimeString();
@@ -52,7 +52,7 @@ void LoggingSystem::printDebugMessage(std::string &debugMessage){
         std::cout << "Debug messages have been turned off" << std::endl;
     }
 }
-void LoggingSystem::printMessage(std::string &message){
+void LoggingSystem::printMessage(const std::string &message){
     if(messageOn){
         //get the current date and time in string format
         std::string currentDateAndTime = LoggingSystem::getCurrentDateAndTimeString();
@@ -64,7 +64,10 @@ void LoggingSystem::printMessage(std::string &message){
         std::cout << "Messages have been turned off" << std::endl;
     }
 }
-
+void LoggingSystem::testPrint()
+{
+	std::cout << "HELLO< TEST >" << std::endl;
+}
 std::string LoggingSystem::getCurrentDateAndTimeString(){
     time_t     now = time(0);
     struct tm  tstruct;

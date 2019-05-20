@@ -1,4 +1,4 @@
-message( "Processing source files...")
+message( "Processing ConfigReader source files...")
 set( SOURCE_FILES
     source/ConfigReader.cpp 
 )
@@ -10,13 +10,16 @@ set( INCLUDE_FILES
 set( TEST_FILES
     ConfigReaderTest.cpp
 )
+find_package(Boost 1.63)
 cmake_policy(SET CMP0022 NEW)
-include_directories(include)
-add_library(ConfigReader ${SOURCE_FILES} ${INCLUDE_FILES})
+add_library(ConfigReader STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
+target_include_directories(ConfigReader PUBLIC include)
+target_include_directories(ConfigReader PUBLIC ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR})
 target_include_directories(ConfigReader PUBLIC ${YAML_PARSER_DIR}/include)
-target_include_directories(ConfigReader PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
-TARGET_LINK_LIBRARIES(ConfigReader debug ${YAML_PARSER_LIB_DEBUG_DIR}/libyaml-cppmdd.lib ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}/Com.lib ${EPICS_LIBRARYDIR}/ca.lib)
-TARGET_LINK_LIBRARIES(ConfigReader general ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}/Com.lib ${EPICS_LIBRARYDIR}/ca.lib)
+target_include_directories(ConfigReader PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
+TARGET_LINK_LIBRARIES(ConfigReader PUBLIC debug ${YAML_PARSER_LIB_DEBUG_DIR}/libyaml-cppmdd.lib) 
+TARGET_LINK_LIBRARIES(ConfigReader PUBLIC ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(ConfigReader PUBLIC general ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib)
 set_property(TARGET ConfigReader PROPERTY FOLDER "ConfigReader")
 
 add_subdirectory(test)

@@ -1,13 +1,14 @@
 #include "Hardware.h"
+#include <boost\algorithm\string.hpp>
 
 Hardware::Hardware()
 {
 	machineArea = "UNKNOWN";
 	hardwareType = "UNKNOWN";
-	specificHardwareParameters = std::multimap<std::string, std::string>();
+	specificHardwareParameters = std::map<std::string, std::string>();
 }
 
-Hardware::Hardware(std::multimap<std::string, std::string> specificValueMap)
+Hardware::Hardware(std::map<std::string, std::string> specificValueMap)
 {
 	logger = new LoggingSystem(true, true);
 	//std::string YAMLConfigDirectory = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
@@ -21,14 +22,16 @@ Hardware::Hardware(std::multimap<std::string, std::string> specificValueMap)
 	
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-	auto pvRecords = specificHardwareParameters.equal_range(currentHardwareName);
+	std::string pvRecordsStr = specificHardwareParameters.find(currentHardwareName)->second;
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+	std::vector<std::string> pvRecordVec;
+	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
 	logger->printDebugMessage(std::string("Constructing PV information for " + currentHardwareName));
-	for (auto record = pvRecords.first; record != pvRecords.second; record++)
+	for (auto record : pvRecordVec)
 	{
 		pvStruct pv;
-		pv.fullPVName = record->first.data();
-		pv.pvRecord = record->second.data();
+		pv.fullPVName = currentHardwareName;
+		pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
 		pvStructs.push_back(pv);
 	}
@@ -42,11 +45,32 @@ std::string Hardware::getHardwareType()
 {
 	return this->hardwareType;
 }
-std::vector<pvStruct> Hardware::getPVStructs()
+std::vector<pvStruct>* Hardware::getPVStructs()
 {
-	return this->pvStructs;
+	return &this->pvStructs;
 }
-std::multimap<std::string, std::string> Hardware::getSpecificHardwareParameters()
+std::map<std::string, std::string> Hardware::getSpecificHardwareParameters()
 {
 	return this->specificHardwareParameters;
+}
+
+bool Hardware::operator==(Hardware rhs)
+{
+	auto LHSPVStructs = this->getPVStructs();
+	auto RHSPVStructs = rhs.getPVStructs();
+	if (LHSPVStructs->size() != RHSPVStructs->size())
+	{
+		return false;
+	}
+	else
+	{
+		for (size_t i = 0; i < LHSPVStructs->size(); i++)
+		{
+			if (LHSPVStructs->at(i).fullPVName != RHSPVStructs->at(i).fullPVName)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }
