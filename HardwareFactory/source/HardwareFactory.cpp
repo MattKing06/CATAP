@@ -29,7 +29,7 @@ std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std:
 	return filenames;
 }
 HardwareFactory::HardwareFactory(){
-	messenger = LoggingSystem(true, true);
+	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage(std::string("Hardware Factory Constructed"));
 	magnetFactory = new MagnetFactory();
 }

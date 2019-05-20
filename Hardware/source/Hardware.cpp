@@ -10,7 +10,7 @@ Hardware::Hardware()
 
 Hardware::Hardware(std::map<std::string, std::string> specificValueMap)
 {
-	logger = new LoggingSystem(true, true);
+	logger = new LoggingSystem(false, false);
 	//std::string YAMLConfigDirectory = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
 	std::string currentHardwareName = specificValueMap.find("name")->second.data();
 	logger->printDebugMessage(std::string("Constructing Hardware" + currentHardwareName));

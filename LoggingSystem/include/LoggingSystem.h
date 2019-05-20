@@ -14,7 +14,6 @@ public:
     bool isMessagingOn();
     bool isDebugOn();
     void printDebugMessage(const std::string &debugMessage);
-	void testPrint();
     void printMessage(const std::string &message);
 private:
     std::string getCurrentDateAndTimeString();

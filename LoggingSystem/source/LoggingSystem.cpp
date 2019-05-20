@@ -47,10 +47,6 @@ void LoggingSystem::printDebugMessage(const std::string &debugMessage){
         //print the debug message with timestamped value
         std::cout << "DEBUG LOG (" << currentDateAndTime << "): " << debugMessage << std::endl;
     }
-    else
-    {
-        std::cout << "Debug messages have been turned off" << std::endl;
-    }
 }
 void LoggingSystem::printMessage(const std::string &message){
     if(messageOn){
@@ -59,14 +55,6 @@ void LoggingSystem::printMessage(const std::string &message){
         //print the debug message with timestamped value
         std::cout << "MESSAGE LOG (" << currentDateAndTime << "): " << message << std::endl;
     }
-    else
-    {
-        std::cout << "Messages have been turned off" << std::endl;
-    }
-}
-void LoggingSystem::testPrint()
-{
-	std::cout << "HELLO< TEST >" << std::endl;
 }
 std::string LoggingSystem::getCurrentDateAndTimeString(){
     time_t     now = time(0);

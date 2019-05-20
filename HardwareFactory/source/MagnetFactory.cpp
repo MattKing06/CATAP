@@ -39,7 +39,7 @@ std::vector<std::string> findYAMLFilesInDirectory(std::string version)
 // MEMBER FUNCTIONS //
 MagnetFactory::MagnetFactory()
 {
-	messenger = LoggingSystem(true, true);
+	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
 
@@ -68,7 +68,7 @@ bool MagnetFactory::setup(std::string version)
 			{	
 				int status;
 				pv->CHID = mag->epicsInterface->retrieveCHID(pv->fullPVName + ":" + pv->pvRecord);
-				status = ca_pend_io(5.0);
+				status = ca_pend_io(1.0);
 				SEVCHK(status, "ca_pend_io failed");
 				//pv->COUNT = mag->epicsInterface->retrieveCOUNT(pv->CHID);
 				//pv->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv->CHID);

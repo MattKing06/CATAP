@@ -18,7 +18,7 @@ EPICSInterface::EPICSInterface()
 	//shouldStartEpics and shouldStartVirtualMachine are true by default
 	int status;
 	//setup logging system for EPICSInterface: DebugOn(true), MessagingOn(true)
-	EPICSInterface::messaging = LoggingSystem(true, true);
+	EPICSInterface::messaging = LoggingSystem(false, false);
 	status = ca_context_create(ca_disable_preemptive_callback);
 	if (status != ECA_NORMAL)
 	{
@@ -34,7 +34,7 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messaging = LoggingSystem(true, true);
+	EPICSInterface::messaging = LoggingSystem(false, false);
 }
 
 EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, LoggingSystem& messager)
@@ -65,7 +65,6 @@ chid EPICSInterface::retrieveCHID(std::string &pv)
 }
 chtype EPICSInterface::retrieveCHTYPE(chid &channelID)
 {
-	int status;
 	chtype channelType;
 	channelType = ca_field_type(channelID);
 	return channelType;
@@ -73,7 +72,6 @@ chtype EPICSInterface::retrieveCHTYPE(chid &channelID)
 
 unsigned long EPICSInterface::retrieveCOUNT(chid &channelID)
 {
-	int status;
 	unsigned long count;
 	count = ca_element_count(channelID);
 	return count;
