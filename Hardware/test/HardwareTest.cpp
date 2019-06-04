@@ -14,9 +14,10 @@ BOOST_AUTO_TEST_CASE(empty_hardware_test)
 	BOOST_CHECK_EQUAL(component->getHardwareType(), "UNKNOWN");
 	BOOST_CHECK_EQUAL(component->getMachineArea(), "UNKNOWN");
 	BOOST_CHECK_EQUAL(component->getSpecificHardwareParameters().empty(), true);
-	for (auto pv : component->getPVStructs())
+	auto pvStructVector = component->getPVStructs();	
+	for (auto pv = pvStructVector->begin(); pv != pvStructVector->end(); pvStructVector++)
 	{
-		std::cout << pv.fullPVName << ":" << pv.pvRecord << std::endl;
+		std::cout << pv->fullPVName << ":" << pv->pvRecord << std::endl;
 	}
 }
 

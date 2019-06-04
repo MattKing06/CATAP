@@ -1,0 +1,12 @@
+before_script:
+  - which gcc
+  - which g++
+  - which python3
+
+cmake_build:  
+  script:
+    - cmake .
+
+make_build:
+  script:
+    - make .

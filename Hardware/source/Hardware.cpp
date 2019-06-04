@@ -1,5 +1,5 @@
 #include "Hardware.h"
-#include <boost\algorithm\string.hpp>
+#include <boost/algorithm/string.hpp>
 
 Hardware::Hardware()
 {

@@ -11,9 +11,9 @@
 #define PYTHON_INTERFACE_API __declspec(dllimport)
 #endif 
 
-#include <boost\python.hpp>
-#include <boost\python\suite\indexing\map_indexing_suite.hpp>
-#include <boost\python\suite\indexing\vector_indexing_suite.hpp>
+#include <boost/python.hpp>
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include "LoggingSystem.h"
 #include "Hardware.h"
 #include "HardwareFactory.h"

@@ -51,7 +51,7 @@ chid EPICSInterface::retrieveCHID(std::string &pv)
 		int status;
 		chid CHID;
 		char *pvCstr = new char[pv.size() +1];
-		strcpy_s(pvCstr,pv.size()+1,pv.c_str());
+		strcpy(pvCstr,pv.c_str());
 		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
 		SEVCHK(status, "could not create channel");
 		messaging.printDebugMessage(pvCstr);

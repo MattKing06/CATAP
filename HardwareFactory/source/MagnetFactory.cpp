@@ -67,7 +67,8 @@ bool MagnetFactory::setup(std::string version)
 			for (auto pv = magPVStructs->begin(); pv != magPVStructs->end(); pv++)
 			{	
 				int status;
-				pv->CHID = mag->epicsInterface->retrieveCHID(pv->fullPVName + ":" + pv->pvRecord);
+				std::string pvAndRecordName = pv->fullPVName + ":" + pv->pvRecord;
+				pv->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
 				status = ca_pend_io(1.0);
 				SEVCHK(status, "ca_pend_io failed");
 				//pv->COUNT = mag->epicsInterface->retrieveCOUNT(pv->CHID);

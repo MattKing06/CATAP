@@ -60,7 +60,7 @@ std::string LoggingSystem::getCurrentDateAndTimeString(){
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[TIME_DATE_BUFFER_SIZE];
-    localtime_s(&tstruct, &now);
+    localtime_r(&now, &tstruct);
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
     // for more information about date/time format
     strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M",&tstruct);
