@@ -1,9 +1,21 @@
+stages:
+- cmake
+- make
+
 before_script:
   - which gcc
   - which g++
   - which python3
 
-cmake_build:  
+cmake_build:
+  stage: cmake
   script:
     - cmake .
-    - make .
+  cache:
+    key: build-path
+    paths:
+    - catapillar/
+
+make_build:
+  stage: make
+  script: make .
