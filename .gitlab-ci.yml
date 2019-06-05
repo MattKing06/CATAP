@@ -19,3 +19,5 @@ cmake_build:
 make_build:
   stage: make
   script: make .
+  cache:
+    key: build_path
