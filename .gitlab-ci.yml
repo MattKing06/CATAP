@@ -11,10 +11,15 @@ cmake_build:
   stage: cmake
   script:
   - cmake .
-  - make .
-  - echo 'Jobs Finished'
+  - echo 'CMake Finished'
   artifacts: 
     paths:
-      - LoggingSystem/
+      - build/
+make_build:
+  stage: make
+  dependencies:
+    - cmake_build
+  script:
+    - make .
     
 
