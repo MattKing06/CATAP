@@ -11,14 +11,9 @@ cmake_build:
   stage: cmake
   script:
   - cmake .
+  - make .
   cache:
     key: build-path
     paths:
     - catapillar/
 
-make_build:
-  stage: make
-  script:
-  - make .
-  cache:
-    key: build_path
