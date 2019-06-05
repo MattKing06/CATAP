@@ -13,8 +13,6 @@ cmake_build:
   - cmake .
   - make .
   - echo 'Jobs Finished'
-  cache:
-    key: build-path
-    paths:
-    - catapillar/
+  artifacts: build/
+    
 
