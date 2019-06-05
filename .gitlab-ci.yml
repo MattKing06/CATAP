@@ -11,7 +11,7 @@ cmake_build:
   stage: cmake
   script:
   - cmake .
-  - make .
+  - make install .
   cache:
     key: build-path
     paths:
