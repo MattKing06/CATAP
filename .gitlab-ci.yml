@@ -6,7 +6,4 @@ before_script:
 cmake_build:  
   script:
     - cmake .
-
-make_build:
-  script:
     - make .
