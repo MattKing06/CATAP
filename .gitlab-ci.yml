@@ -15,6 +15,6 @@ cmake_build:
   - echo 'Jobs Finished'
   artifacts: 
     paths:
-      - catapillar/
+      - LoggingSystem/
     
 
