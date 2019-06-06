@@ -18,7 +18,7 @@ cmake_build:
   - make
   - echo 'Make Finished'
   cache:
-    key: build-cache
+    key: "build-cache"
     paths:
       - build
 test_build:
