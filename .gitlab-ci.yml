@@ -29,6 +29,6 @@ test_build:
     - cmake_build
   script:
     - cd LoggingSystem/test/testBin
-    - ./LoggingSystem
+    - ./LoggingSystemTest
     
 
