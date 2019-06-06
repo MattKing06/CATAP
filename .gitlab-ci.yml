@@ -2,6 +2,12 @@ stages:
 - cmake
 - test
 
+
+cache:
+  key: ${CI_JOB_ID} 
+  paths:
+    - build
+
 before_script:
   - which gcc
   - which g++
@@ -17,10 +23,6 @@ cmake_build:
   - ls
   - make
   - echo 'Make Finished'
-  cache:
-    key: "build-cache"
-    paths:
-      - build
 test_build:
   stage: test
   dependencies:
