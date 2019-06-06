@@ -14,7 +14,8 @@ cmake_build:
   - cd build
   - cmake ../.
   - echo 'CMake Finished'
-  - make .
+  - ls
+  - make
   - echo 'Make Finished'
   cache:
     key: build-cache
