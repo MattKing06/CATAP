@@ -18,8 +18,8 @@ target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/in
 target_include_directories(Hardware PUBLIC ${Boost_INCLUDE_DIR})
 #EPICS RELATED VARS
 target_include_directories(Hardware PUBLIC ${EPICS_DIR}/include)
-target_include_directories(Hardware PUBLIC ${EPICS_DIR}/include/os/WIN32)
-TARGET_LINK_LIBRARIES(Hardware PUBLIC ${EPICS_LIBRARYDIR}Com.lib ${EPICS_LIBRARYDIR}ca.lib ${Boost_LIBRARIES} ConfigReader LoggingSystem)
+target_include_directories(Hardware PUBLIC ${EPICS_OS_INCLUDES})
+TARGET_LINK_LIBRARIES(Hardware PUBLIC ${EPICS_COM_LIB} ${EPICS_CA_LIB} ConfigReader LoggingSystem)
 set_property(TARGET Hardware PROPERTY FOLDER "Hardware")
 include_directories(include)
 add_subdirectory(test)

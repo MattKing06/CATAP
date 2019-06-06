@@ -1,0 +1,24 @@
+stages:
+- cmake
+
+before_script:
+  - which gcc
+  - which g++
+  - which python3
+
+cmake_build:
+  stage: cmake
+  script:
+  - mkdir build
+  - cd build
+  - cmake ../.
+  - echo 'CMake Finished'
+  - ls
+  - make
+  - echo 'Make Finished'
+  - cd testBin
+  - echo 'Running Tests..'
+  - ./ConfigReaderTest
+
+    
+

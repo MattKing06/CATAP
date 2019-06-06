@@ -3,8 +3,8 @@
 #include <iostream>
 #include <map>
 #include <utility>
-#include "boost\algorithm\string.hpp"
-#include "yaml-cpp\exceptions.h"
+#include "boost/algorithm/string.hpp"
+#include "yaml-cpp/exceptions.h"
 
 ConfigReader::ConfigReader(const std::string hardwareComponentName){
 	yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";

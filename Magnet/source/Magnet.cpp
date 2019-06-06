@@ -1,12 +1,11 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <iostream>
-#include <crtdbg.h>
 #include "Magnet.h"
 #include <map>
 #include <vector>
 #include "ConfigReader.h"
-#include "boost\algorithm\string\split.hpp"
+#include "boost/algorithm/string/split.hpp"
 
 
 
@@ -94,7 +93,7 @@ std::string Magnet::getMeasurementDataLocation()
 }
 double Magnet::getCurrent()
 {
-	for (auto &pv = pvStructs.begin(); pv != pvStructs.end(); pv++)
+	for (auto pv = pvStructs.begin(); pv != pvStructs.end(); pv++)
 	{
 		if (pv->pvRecord == "READI")
 		{

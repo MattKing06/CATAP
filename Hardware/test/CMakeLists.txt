@@ -1,5 +1,6 @@
 message( "Processing Hardware Unit Tests")
 enable_testing()
+find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 if ( Boost_FOUND )
 	foreach(testSource ${TEST_FILES})
 		#Extract filename without extension
@@ -12,16 +13,13 @@ if ( Boost_FOUND )
 		target_link_libraries(${testName} PUBLIC ${Boost_LIBRARIES})
 		target_link_libraries(${testName} PUBLIC Hardware)
 		#move testing binaries to separate folder
-		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testBin)
+		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 		set_property(TARGET ${testName} PROPERTY FOLDER "UnitTests")
 		message(${CMAKE_CURRENT_BINARY_DIR})
 		#now add the test
 		add_test(NAME ${testName}
-			 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testBin
-			 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/testBin/${testName}
+			 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/testBin
+			 COMMAND ${CMAKE_BINARY_DIR}/testBin/${testName}
 			 )
 	endforeach(testSource)
-	#add_test(HardwareTest ${TEST_FILES})
-	#set_property( TARGET HardwareTest PROPERTY FOLDER "UnitTests" )
-	#target_include_directories(HardwareTest PRIVATE ${BOOST_INCLUDE_DIRS} )
 endif()
