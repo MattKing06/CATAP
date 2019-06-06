@@ -4,7 +4,7 @@ stages:
 
 
 cache:
-  key: ${CI_JOB_ID} 
+  key: $CI_JOB_ID 
   paths:
     - build
 
