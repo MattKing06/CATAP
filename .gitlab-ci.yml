@@ -1,6 +1,6 @@
 stages:
-- cmake
-- make
+- cmake_build
+- test_build
 
 before_script:
   - which gcc
@@ -11,15 +11,24 @@ cmake_build:
   stage: cmake
   script:
   - cmake .
+  - make .
   - echo 'CMake Finished'
-  artifacts: 
+  cache:
+    key: build-cache
     paths:
-      - build/
-make_build:
+      - LoggingSystem/test/testBin/
+      - ConfigReader/test/testBin/
+      - Hardware/test/testBin/
+      - HardwareFactory/test/testBin/
+      - Magnet/test/testBin/
+      - EPICSInterace/test/testBin/
+      - PythonInterface/test/testBin/
+test_build:
   stage: make
   dependencies:
     - cmake_build
   script:
-    - make .
+    - cd LoggingSystem/test/testBin
+    - ./LoggingSystem
     
 
