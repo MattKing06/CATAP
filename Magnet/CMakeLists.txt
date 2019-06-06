@@ -17,6 +17,6 @@ target_include_directories(Magnet PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/inc
 target_include_directories(Magnet PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
 target_include_directories(Magnet PUBLIC ${PROJECT_SOURCE_DIR}/EPICSInterface/include)
 target_include_directories(Magnet PUBLIC include)
-TARGET_LINK_LIBRARIES(Magnet PUBLIC ${Boost_LIBRARIES} ${EPICS_LIBRARYDIR}libCom.so ${EPICS_LIBRARYDIR}libca.so Hardware EPICSInterface)
+TARGET_LINK_LIBRARIES(Magnet PUBLIC ${Boost_LIBRARIES} ${EPICS_COM_LIB} ${EPICS_CA_LIB} Hardware EPICSInterface)
 set_property(TARGET Magnet PROPERTY FOLDER "Magnet")
 add_subdirectory(test)

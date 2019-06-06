@@ -21,7 +21,4 @@ if ( Boost_FOUND )
 			 COMMAND ${CMAKE_BINARY_DIR}/testBin/${testName}
 			 )
 	endforeach(testSource)
-	#add_test(HardwareTest ${TEST_FILES})
-	#set_property( TARGET HardwareTest PROPERTY FOLDER "UnitTests" )
-	#target_include_directories(HardwareTest PRIVATE ${BOOST_INCLUDE_DIRS} )
 endif()
