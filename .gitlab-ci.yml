@@ -10,25 +10,22 @@ before_script:
 cmake_build:
   stage: cmake
   script:
-  - cmake .
-  - make .
+  - mkdir build
+  - cd build
+  - cmake ../.
   - echo 'CMake Finished'
+  - make .
+  - echo 'Make Finished'
   cache:
     key: build-cache
     paths:
-      - LoggingSystem/test/testBin/
-      - ConfigReader/test/testBin/
-      - Hardware/test/testBin/
-      - HardwareFactory/test/testBin/
-      - Magnet/test/testBin/
-      - EPICSInterace/test/testBin/
-      - PythonInterface/test/testBin/
+      - build
 test_build:
   stage: test
   dependencies:
     - cmake_build
   script:
-    - cd LoggingSystem/test/testBin
-    - ./LoggingSystemTest
+    - cd build/testBin
+    - ls
     
 
