@@ -12,10 +12,10 @@ if ( Boost_FOUND )
 	target_link_libraries(${testName} PRIVATE ${Boost_LIBRARIES})
 	target_link_libraries(${testName} PRIVATE Magnet)
 	#move testing binaries to separate folder
-	set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testBin)
+	set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 	#now add the test
 	add_test(NAME ${testName}
-		 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testBin
-		 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/testBin/${testName}
+		 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/testBin
+		 COMMAND ${CMAKE_BINARY_DIR}/testBin/${testName}
 		 )
 endif()

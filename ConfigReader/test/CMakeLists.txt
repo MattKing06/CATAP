@@ -10,11 +10,11 @@ if ( Boost_FOUND )
 		target_include_directories(${testName} PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/ConfigReader/include)
 		target_link_libraries(${testName} PRIVATE ConfigReader ${Boost_LIBRARIES})
 		#move testing binaries to separate folder
-		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testBin)
+		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 		set_property(TARGET ${testName} PROPERTY FOLDER "UnitTests")
 		#now add the test
 		add_test(NAME ${testName}
-			 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testBin
-			 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/testBin/${testName}
+			 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/testBin
+			 COMMAND ${CMAKE_BINARY_DIR}/testBin/${testName}
 			 )
 endif()
