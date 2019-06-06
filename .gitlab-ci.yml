@@ -1,6 +1,6 @@
 stages:
-- cmake_build
-- test_build
+- cmake
+- test
 
 before_script:
   - which gcc
@@ -24,7 +24,7 @@ cmake_build:
       - EPICSInterace/test/testBin/
       - PythonInterface/test/testBin/
 test_build:
-  stage: make
+  stage: test
   dependencies:
     - cmake_build
   script:
