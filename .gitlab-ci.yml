@@ -2,12 +2,6 @@ stages:
 - cmake
 - test
 
-
-cache:
-  key: $CI_JOB_ID 
-  paths:
-    - build
-
 before_script:
   - which gcc
   - which g++
@@ -15,6 +9,10 @@ before_script:
 
 cmake_build:
   stage: cmake
+  cache:
+    key: $CI_COMMIT_REF_NAME 
+    paths:
+      - build
   script:
   - mkdir build
   - cd build
