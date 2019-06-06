@@ -14,7 +14,7 @@ set( TEST_FILES
         EPICSMagnetInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
-add_library(EPICSInterface SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
+add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(EPICSInterface PUBLIC ${EPICS_DIR}/include ${EPICS_OS_INCLUDES})
 target_include_directories(EPICSInterface PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(EPICSInterface PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)

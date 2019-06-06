@@ -2,7 +2,6 @@
 #include <iostream>
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/python.hpp>
 
 const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
 std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std::string version)

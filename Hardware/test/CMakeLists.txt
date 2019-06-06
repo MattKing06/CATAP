@@ -1,5 +1,6 @@
 message( "Processing Hardware Unit Tests")
 enable_testing()
+find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 if ( Boost_FOUND )
 	foreach(testSource ${TEST_FILES})
 		#Extract filename without extension

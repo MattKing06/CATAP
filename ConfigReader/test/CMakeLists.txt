@@ -7,8 +7,16 @@ if ( Boost_FOUND )
 		#Add a compile target
 		add_executable(${testName} ConfigReaderTest.cpp)
 		#link to Boost libs AND whatever else
-		target_include_directories(${testName} PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/ConfigReader/include)
-		target_link_libraries(${testName} PRIVATE ConfigReader ${Boost_LIBRARIES})
+		target_include_directories(${testName} PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/ConfigReader/include ${CMAKE_SOURCE_DIR}/LoggingSystem/include ${YAML_PARSER_DIR}/include)
+		if(WIN32)
+		  TARGET_LINK_LIBRARIES(${testName} PUBLIC debug ${YAML_PARSER_LIB_DEBUG_DIR}/libyaml-cppmdd.lib)
+		  TARGET_LINK_LIBRARIES(${testName} PUBLIC optimized ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib)
+		  TARGET_LINK_LIBRARIES(${testName} PUBLIC ${Boost_LIBRARIES} ${PYTHON_LIBRARIES} ConfigReader LoggingSystem)
+		endif(WIN32)
+		if(UNIX)
+		  TARGET_LINK_LIBRARIES(${testName} PUBLIC general ${YAML_PARSER_LIB_DIR}/libyaml-cpp.so)
+		  TARGET_LINK_LIBRARIES(${testName} PUBLIC ${Boost_LIBRARIES} ${PYTHON_LIBRARIES} ConfigReader LoggingSystem)
+		endif(UNIX)
 		#move testing binaries to separate folder
 		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 		set_property(TARGET ${testName} PROPERTY FOLDER "UnitTests")

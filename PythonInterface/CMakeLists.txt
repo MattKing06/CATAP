@@ -11,7 +11,7 @@ set( TEST_FILES
     PythonInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
-add_library(PythonInterface SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
+add_library(PythonInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 #set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
 target_include_directories(PythonInterface PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(PythonInterface PUBLIC ${PYTHON_INCLUDE_DIR})

@@ -1,7 +1,6 @@
 #ifndef LOGGING_SYSTEM_H_
 #define LOGGING_SYSTEM_H_
 #include <string>
-#include <boost/python.hpp>
 class LoggingSystem
 {
 public:
