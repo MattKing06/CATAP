@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-
+#comment for testing purposes.
 project(hardware_toy)
 cmake_policy(SET CMP0074 NEW)
 set(CXX_STANDARD 17)
