@@ -18,6 +18,7 @@ cmake_build:
   - echo 'Make Finished'
   - cd testBin
   - echo 'Running Tests..'
+  - ls ~/MasterLattice
   - ./ConfigReaderTest
   - ./HardwareFactoryTest
 
