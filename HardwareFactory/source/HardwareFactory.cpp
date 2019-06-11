@@ -4,7 +4,7 @@
 #include <boost/filesystem.hpp>
 
 #if defined(__unix__) ||  defined(_unix)
-  const std::string MASTER_LATTICE_FILE_LOCATION = "~/MasterLattice";
+  const std::string MASTER_LATTICE_FILE_LOCATION = getenv("HOME");//"~/MasterLattice";
   const std::string SEPARATOR = "/";
 #endif
 #ifdef _WIN32
@@ -13,7 +13,7 @@
 #endif
 std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std::string version)
 {
-	boost::filesystem::path directory(MASTER_LATTICE_FILE_LOCATION+SEPARATOR+hardwareType); // + '//' + hardwareType + '//' + version);
+	boost::filesystem::path directory(MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareType); // + '//' + hardwareType + '//' + version);
 	std::vector<std::string> filenames;
 	for (auto i = boost::filesystem::directory_iterator(directory); i != boost::filesystem::directory_iterator(); i++)
 	{

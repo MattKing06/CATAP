@@ -7,7 +7,7 @@
 #endif
 
 #if defined(__unix__) ||  defined(_unix)
-  const std::string MASTER_LATTICE_FILE_LOCATION = "~/MasterLattice";
+  const std::string MASTER_LATTICE_FILE_LOCATION = getenv("HOME");//"~/MasterLattice";
   const std::string SEPARATOR = "/";
 #endif
 #ifdef _WIN32
