@@ -19,6 +19,7 @@ cmake_build:
   - cd testBin
   - echo 'Running Tests..'
   - ./ConfigReaderTest
+  - ./HardwareFactoryTest
 
     
 

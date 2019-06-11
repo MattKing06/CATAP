@@ -7,7 +7,12 @@
 #include "yaml-cpp/exceptions.h"
 
 ConfigReader::ConfigReader(const std::string hardwareComponentName){
-	yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+	#if defined(__unix__) ||  defined(_unix)
+	  yamlFileDestination = "~/MasterLattice";
+	#endif
+	#ifdef _WIN32
+	  yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+	#endif
 	yamlFilename = hardwareComponentName + ".yaml";
 	//create a string-vector pointer to empty string-vector
 	// so we aren't writing to inaccessbile memory
@@ -20,7 +25,12 @@ ConfigReader::ConfigReader()
 	//since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
-	yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+	#if defined(__unix__) ||  defined(_unix)
+		yamlFileDestination = ~/ MasterLattice;
+	#endif
+	#ifdef _WIN32
+		yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+	#endif
 	yamlFilename = "";
 }
 /*
@@ -34,25 +44,32 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	std::ifstream fileInput;
 	YAML::Node config;
 	YAML::Node configTemplate;
+	std::string separator;
+	#ifdef _WIN32
+	  separator = "\\";
+	#endif
+	#if defined(_unix_) || defined(_unix)
+	  separator = "/";
+	#endif
 	//before we start, config reader is usually a member to the Hardware classes
 	// and only gets initialized once, we need to reset PVs when parsing
 	// otherwise we just keep adding values to the multimap.
 	PVs.clear();
 	try{
-		fileInput = std::ifstream(ConfigReader::yamlFileDestination + "\\" + ConfigReader::yamlFilename);
+		fileInput = std::ifstream(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
 		YAML::Parser parser(fileInput);
-		config = YAML::LoadFile(ConfigReader::yamlFileDestination + "\\" + ConfigReader::yamlFilename);
+		config = YAML::LoadFile(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
 	}
 	catch (YAML::BadFile BadFileException)
 	{
-		std::cout << "I could not find the file (" << ConfigReader::yamlFileDestination + "\\" + ConfigReader::yamlFilename << ") you were looking for..." << "\n";
+		std::cout << "I could not find the file (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << ") you were looking for..." << "\n";
 		return PVs;
 	}
 	try
 	{
 		if (config.size() > 0)
 		{
-			std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + "\\" + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
+			std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + separator + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 			configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 			// dealing with controls_information specifically
 			auto controls_information = config["controls_information"];
@@ -109,12 +126,12 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	}
 	catch (std::length_error EmptyFileException)
 	{
-		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
+		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
 		return PVs;
 	}
 	catch (YAML::ParserException EmptyFileException)
 	{
-		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
+		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
 		return PVs;
 	}
 	catch (YAML::BadConversion ConvervsionException)
