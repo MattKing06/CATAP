@@ -26,7 +26,7 @@ ConfigReader::ConfigReader()
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
 	#if defined(__unix__) ||  defined(_unix)
-		yamlFileDestination = ~/ MasterLattice;
+		yamlFileDestination = "~/MasterLattice";
 	#endif
 	#ifdef _WIN32
 		yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
