@@ -8,7 +8,8 @@
 
 ConfigReader::ConfigReader(const std::string hardwareComponentName){
 	#if defined(__unix__) ||  defined(_unix)
-	  yamlFileDestination = getenv("HOME")+"/MasterLattice";//"~/MasterLattice";
+	  const std::string HOME =  getenv("HOME");
+	  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";
 	#endif
 	#ifdef _WIN32
 	  yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
@@ -26,8 +27,9 @@ ConfigReader::ConfigReader()
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
 	#if defined(__unix__) ||  defined(_unix)
-	  yamlFileDestination = getenv("HOME")+"/MasterLattice";//"~/MasterLattice";
-	#endif
+	  const std::string HOME =  getenv("HOME");
+	  const std::string MASTER_LATTICE_FILE_LOCATION = HOME + "/MasterLattice";
+    #endif
 	#ifdef _WIN32
 		yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
 	#endif
