@@ -5,7 +5,16 @@
 #ifndef __CINT__
 #include <cadef.h>
 #endif
-const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\Magnet";
+
+#if defined(__unix__) ||  defined(_unix)
+  const std::string HOME =  getenv("HOME");
+  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";//"~/MasterLattice";
+  const std::string SEPARATOR = "/";
+#endif
+#ifdef _WIN32
+  const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+  const std::string SEPARATOR = "\\";
+#endif
 // NON-MEMBER HELPER FUNCTIONS //
 std::vector<std::string> findYAMLFilesInDirectory(std::string version)
 {
