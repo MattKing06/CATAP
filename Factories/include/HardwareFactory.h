@@ -1,13 +1,6 @@
 #ifndef HARDWARE_FACTORY_H_
 #define HARDWARE_FACTORY_H_
-
-#include <map>
-
-#include "LoggingSystem.h"
-#include "Hardware.h"
 #include "MagnetFactory.h"
-#include "ConfigReader.h"
-#include "Magnet.h"
 
 class HardwareFactory
 {

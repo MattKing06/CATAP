@@ -6,7 +6,9 @@
 #include <iostream>
 
 BOOST_AUTO_TEST_SUITE(LoggingSystemTestSuite)
-
+#ifndef TIME_DATE_BUFFER_SIZE
+#define TIME_DATE_BUFFER_SIZE 80
+#endif // TIME_DATE_BUFFER_SIZE
 struct cout_redirect
 {
 	cout_redirect(std::streambuf * new_buffer)
@@ -20,6 +22,24 @@ struct cout_redirect
 private:
 	std::streambuf* old;
 };
+
+std::string getCurrentDateAndTimeString(){
+	time_t     now = time(0);
+	struct tm  tstruct;
+	char       buf[TIME_DATE_BUFFER_SIZE];
+#ifdef _WIN32
+	localtime_s(&tstruct, &now);
+#endif //WIN32
+
+#if defined(__unix__) ||  defined(_unix)
+	localtime_r(&now, &tstruct);
+#endif //UNIX
+
+	// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+	// for more information about date/time format
+	strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M", &tstruct);
+	return buf;
+}
 
 BOOST_AUTO_TEST_CASE(cout_messages_divert_to_boost_test_tools_stream_test)
 {
@@ -42,8 +62,8 @@ BOOST_AUTO_TEST_CASE(logging_system_with_no_message_and_no_debug_print_message_t
 		cout_redirect guard(output.rdbuf());
 		test_logging_system.printMessage(std::string("Hello"));
 	}
-	std::string predicted_message_output_from_logging_system = "Messages have been turned off\n";
-	BOOST_CHECK(!output.is_empty(false));
+	std::string predicted_message_output_from_logging_system = "";
+	BOOST_CHECK(output.is_empty(true));
 	BOOST_CHECK(output.is_equal(predicted_message_output_from_logging_system));
 	//output.flush();
 }

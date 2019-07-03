@@ -97,8 +97,8 @@ double Magnet::getCurrent()
 	{
 		if (pv->pvRecord == "READI")
 		{
-			double current = epicsInterface->getCurrent(pv->CHID);
-			return current;
+			//epicsInterface->updateValue(event_handler_args());
+			//return epicsInterface->latestCurrentFromEPICS;
 		}
 	}
 	return -1.0;

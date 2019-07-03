@@ -55,11 +55,12 @@ if(Boost_FOUND)
 endif(Boost_FOUND)
 
 add_subdirectory(Magnet)
-add_subdirectory(HardwareFactory)
+add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)
 add_subdirectory(ConfigReader)
 add_subdirectory(Hardware)
 add_subdirectory(PythonInterface)
+add_subdirectory(PV)
 add_subdirectory(EPICSInterface)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")

@@ -12,7 +12,7 @@
   const std::string SEPARATOR = "/";
 #endif
 #ifdef _WIN32
-  const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+  const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\Magnet";
   const std::string SEPARATOR = "\\";
 #endif
 // NON-MEMBER HELPER FUNCTIONS //
@@ -80,13 +80,18 @@ bool MagnetFactory::setup(std::string version)
 				pv->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
 				status = ca_pend_io(1.0);
 				SEVCHK(status, "ca_pend_io failed");
-				//pv->COUNT = mag->epicsInterface->retrieveCOUNT(pv->CHID);
-				//pv->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv->CHID);
+				pv->COUNT = mag->epicsInterface->retrieveCOUNT(pv->CHID);
+				pv->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv->CHID);
+				if (pv->pvRecord == "READI")
+				{
+					pv->updateFunction = &EPICSMagnetInterface::updateValue;
+				}
 				// not sure how to set the mask from EPICS yet.
 				//pv->MASK;
 				messenger.printDebugMessage("read" + std::to_string(ca_read_access(pv->CHID)) +
 											"write" + std::to_string(ca_write_access(pv->CHID)) +
 											"state" + std::to_string(ca_state(pv->CHID)) + "\n");
+				mag->epicsInterface->createSubscription(*pv);
 			}
 			magnetVec.push_back(mag);
 		}

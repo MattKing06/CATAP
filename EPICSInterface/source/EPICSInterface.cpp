@@ -1,7 +1,6 @@
 #include "EPICSInterface.h"
 #include <exception>
 #include <iostream>
-#include <string>
 #include <cstring>
 
 #define MY_SEVCHK(status)		\
@@ -42,6 +41,12 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, Logg
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
 	EPICSInterface::messaging = messager;
+}
+
+void EPICSInterface::createSubscription(pvStruct pv)
+{
+	ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
+						   pv.updateFunction, (void*)&pv, 0);
 }
 
 chid EPICSInterface::retrieveCHID(std::string &pv)

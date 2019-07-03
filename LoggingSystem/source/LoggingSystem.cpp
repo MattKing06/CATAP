@@ -5,7 +5,6 @@
 * Date Created: 21/11/2018                                                    *
 * Author: Matt King                                                           *
 *******************************************************************************/
-
 #include "LoggingSystem.h"
 #include <vector>
 #include <iostream>

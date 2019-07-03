@@ -1,10 +1,12 @@
 #ifndef EPICS_INTERFACE_H
 #define EPICS_INTERFACE_H
-#endif
 #include "LoggingSystem.h"
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
+#endif
+#ifndef PV_H_
+#include "PV.h"
 #endif
 class EPICSInterface
 {
@@ -18,7 +20,7 @@ class EPICSInterface
 		chid retrieveCHID(std::string &pv);
 		chtype retrieveCHTYPE(chid &channelID);
 		unsigned long retrieveCOUNT(chid &channelID);
-
+		void createSubscription(pvStruct pv);
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;
@@ -38,8 +40,9 @@ class EPICSInterface
 		template<typename T> T getDBR(const event_handler_args& args)
 		{
 			T dbr_holder;
-			dbr_holder = args.dbr;
+			dbr_holder = *(T*)(args.dbr);
 			return dbr_holder;
 		}
 	#endif
 };
+#endif
