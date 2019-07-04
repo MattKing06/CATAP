@@ -17,6 +17,6 @@ target_include_directories(Magnet PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/inc
 target_include_directories(Magnet PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
 target_include_directories(Magnet PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
 target_include_directories(Magnet PUBLIC include)
-TARGET_LINK_LIBRARIES(Magnet PUBLIC Hardware PV)
+TARGET_LINK_LIBRARIES(Magnet PUBLIC Hardware PV EPICSInterface)
 set_property(TARGET Magnet PROPERTY FOLDER "Magnet")
 add_subdirectory(test)

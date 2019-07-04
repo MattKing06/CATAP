@@ -43,10 +43,27 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, Logg
 	EPICSInterface::messaging = messager;
 }
 
-void EPICSInterface::createSubscription(pvStruct pv)
+void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
-	ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
-						   pv.updateFunction, (void*)&pv, 0);
+	std::cout << "HARDWARE TYPE: " << hardware.getHardwareType();
+	std::vector<pvStruct> *pvList = hardware.getPVStructs();
+	if (pvName == "READI")
+	{
+		for (auto pv = pvList->begin(); pv != pvList->end(); pv++)
+		{
+			if (pv->pvRecord == pvName)
+			{
+				if (pv->updateFunction == NULL)
+				{
+					std::cout << "UPDATE FUNCTION FOR " << pv->pvRecord << " IS NULL" << std::endl;
+				}
+				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,
+					pv->updateFunction, (void*)&hardware, 0);
+				MY_SEVCHK(status);
+			}
+
+		}
+	}
 }
 
 chid EPICSInterface::retrieveCHID(std::string &pv)

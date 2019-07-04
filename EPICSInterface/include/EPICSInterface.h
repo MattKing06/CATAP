@@ -2,12 +2,16 @@
 #define EPICS_INTERFACE_H
 #include "LoggingSystem.h"
 // EPICS include
+#ifndef HARDWARE_H_
+#include "Hardware.h"
+#endif //HARDWARE_H_
 #ifndef __CINT__
 #include <cadef.h>
 #endif
 #ifndef PV_H_
 #include "PV.h"
 #endif
+class PV;
 class EPICSInterface
 {
 	public:
@@ -20,7 +24,7 @@ class EPICSInterface
 		chid retrieveCHID(std::string &pv);
 		chtype retrieveCHTYPE(chid &channelID);
 		unsigned long retrieveCOUNT(chid &channelID);
-		void createSubscription(pvStruct pv);
+		void createSubscription(Hardware &hardware, std::string pvName);
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;

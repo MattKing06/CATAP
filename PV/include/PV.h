@@ -15,7 +15,7 @@ typedef struct pvStruct
 	unsigned long COUNT;
 	unsigned long MASK;
 	chtype CHTYPE;
-	static void(*updateFunction)(const struct event_handler_args args);
+	static void(*updateFunction)(struct event_handler_args args);
 }pvStruct;
 extern bool operator==(const pvStruct& lhs, const pvStruct& rhs);
 extern bool operator !=(const pvStruct& lhs, const pvStruct& rhs);

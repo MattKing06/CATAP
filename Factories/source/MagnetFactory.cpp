@@ -84,14 +84,25 @@ bool MagnetFactory::setup(std::string version)
 				pv->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv->CHID);
 				if (pv->pvRecord == "READI")
 				{
-					pv->updateFunction = &EPICSMagnetInterface::updateValue;
+					pv->updateFunction = &EPICSMagnetInterface::updateCurrent;
 				}
 				// not sure how to set the mask from EPICS yet.
-				//pv->MASK;
+				pv->MASK = DBE_VALUE;
 				messenger.printDebugMessage("read" + std::to_string(ca_read_access(pv->CHID)) +
 											"write" + std::to_string(ca_write_access(pv->CHID)) +
 											"state" + std::to_string(ca_state(pv->CHID)) + "\n");
-				mag->epicsInterface->createSubscription(*pv);
+				std::cout << "read" + std::to_string(ca_read_access(pv->CHID)) +
+					"write" + std::to_string(ca_write_access(pv->CHID)) +
+					"state" + std::to_string(ca_state(pv->CHID)) + "\n" << std::endl;
+				mag->epicsInterface->createSubscription(*(mag),pv->pvRecord);
+				if (mag->epicsInterface->owner == NULL)
+				{
+					mag->epicsInterface->owner = &(*(mag));
+				}
+				else
+				{
+					std::cout << "EPICS INTERFACE HAS AN OWNER: " << mag->getFullPVName() << std::endl;
+				}
 			}
 			magnetVec.push_back(mag);
 		}
@@ -148,11 +159,13 @@ double MagnetFactory::getCurrent(std::string name)
 	{
 		if (magnet->getFullPVName() == name)
 		{
-			double current = magnet->getCurrent();
-			return current;
+			std::cout << "Magnet Name: " << magnet->getFullPVName() << std::endl;
+			std::cout << "EPICSMagnet Name: " << magnet->epicsInterface->owner->getFullPVName() << std::endl;
+			double latestCurrent = magnet->epicsInterface->owner->current;
+			return magnet->epicsInterface->owner->current;
 		}
 	}
-	return std::numeric_limits<double>::min();
+	return 0.0;
 }
 std::vector<double> MagnetFactory::getCurrents(std::vector<std::string> names)
 {

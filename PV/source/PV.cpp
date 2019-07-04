@@ -11,7 +11,7 @@
 */
 
 struct pvStruct *PVStruct;
-void (*pvStruct::updateFunction)(event_handler_args args)= NULL;
+void (*pvStruct::updateFunction)(struct event_handler_args args)= NULL;
 
 bool operator==(const pvStruct& lhs, const pvStruct& rhs)
 {
