@@ -1,7 +1,6 @@
 #include "EPICSInterface.h"
 #include <exception>
 #include <iostream>
-#include <string>
 #include <cstring>
 
 #define MY_SEVCHK(status)		\
@@ -42,6 +41,29 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, Logg
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
 	EPICSInterface::messaging = messager;
+}
+
+void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
+{
+	std::cout << "HARDWARE TYPE: " << hardware.getHardwareType();
+	std::vector<pvStruct> *pvList = hardware.getPVStructs();
+	if (pvName == "READI")
+	{
+		for (auto pv = pvList->begin(); pv != pvList->end(); pv++)
+		{
+			if (pv->pvRecord == pvName)
+			{
+				if (pv->updateFunction == NULL)
+				{
+					std::cout << "UPDATE FUNCTION FOR " << pv->pvRecord << " IS NULL" << std::endl;
+				}
+				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,
+					pv->updateFunction, (void*)&hardware, 0);
+				MY_SEVCHK(status);
+			}
+
+		}
+	}
 }
 
 chid EPICSInterface::retrieveCHID(std::string &pv)

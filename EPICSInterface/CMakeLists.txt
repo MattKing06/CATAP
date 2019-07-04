@@ -11,14 +11,17 @@ set( INCLUDE_FILES
 
 set( TEST_FILES
 	EPICSInterfaceTest.cpp
-        EPICSMagnetInterfaceTest.cpp
+    EPICSMagnetInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(EPICSInterface PUBLIC ${EPICS_DIR}/include ${EPICS_OS_INCLUDES})
 target_include_directories(EPICSInterface PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(EPICSInterface PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
+target_include_directories(EPICSInterface PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
+target_include_directories(EPICSInterface PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
+target_include_directories(EPICSInterface PUBLIC ${PROJECT_SOURCE_DIR}/Magnet/include)
 target_include_directories(EPICSInterface PUBLIC include)
-TARGET_LINK_LIBRARIES(EPICSInterface PUBLIC ${Boost_LIBRARIES} ${EPICS_COM_LIB} ${EPICS_CA_LIB} LoggingSystem)
-set_property(TARGET EPICSInterface PROPERTY FOLDER "Magnet")
+TARGET_LINK_LIBRARIES(EPICSInterface PUBLIC ${Boost_LIBRARIES} ${EPICS_COM_LIB} ${EPICS_CA_LIB} PV LoggingSystem Magnet)
+set_property(TARGET EPICSInterface PROPERTY FOLDER "EPICSInterface")
 add_subdirectory(test)

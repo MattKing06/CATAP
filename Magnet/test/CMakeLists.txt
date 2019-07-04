@@ -10,7 +10,7 @@ if ( Boost_FOUND )
 	#link to Boost libs AND whatever else
 	target_include_directories(${testName} PRIVATE ${Boost_INCLUDE_DIRS})
 	target_link_libraries(${testName} PRIVATE ${Boost_LIBRARIES})
-	target_link_libraries(${testName} PRIVATE Magnet)
+	target_link_libraries(${testName} PRIVATE EPICSInterface Magnet PV)
 	#move testing binaries to separate folder
 	set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 	#now add the test

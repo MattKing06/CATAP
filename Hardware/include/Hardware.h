@@ -1,27 +1,13 @@
 #ifndef HARDWARE_H_
 #define HARDWARE_H_
-
-#include <string>
 #include <map>
 #include <vector>
+#include <iostream>
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
-
-//epics
-#ifndef __CINT__
-#include <cadef.h>
+#ifndef PV_H_
+#include "PV.h"
 #endif
-
-struct pvStruct
-{
-	chid CHID;
-	std::string fullPVName;
-	std::string pvRecord;
-	unsigned long COUNT;
-	unsigned long MASK;
-	chtype CHTYPE;
-};
-
 class Hardware
 {
 public:
@@ -42,5 +28,4 @@ public:
 	std::vector<pvStruct> pvStructs;
 	std::map<std::string, std::string> specificHardwareParameters;
 };
-
 #endif //HARDWARE_H_

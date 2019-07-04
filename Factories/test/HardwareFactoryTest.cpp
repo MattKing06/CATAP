@@ -2,7 +2,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include "HardwareFactory.h"
-#include "Magnet.h"
+//#include "Magnet.h"
 #include <string>
 #include <vector>
 
@@ -17,5 +17,6 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_magnets)
 	status = magFactory->setup("nominal");
 	BOOST_CHECK(status);
 	double current = magFactory->getCurrent("CLA-C2V-MAG-HCOR-01");
+	BOOST_CHECK_EQUAL(current, -0.00190269);
 }
 

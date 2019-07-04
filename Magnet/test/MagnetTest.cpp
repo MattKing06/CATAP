@@ -14,12 +14,13 @@ BOOST_AUTO_TEST_CASE(creating_empty_magnet_test)
 {
 	Magnet *mag = new Magnet();
 	std::cout << "MAGNET NAME:" << mag->getFullPVName() << std::endl;
-	//BOOST_CHECK_EQUAL(mag->getFullPVName().c_str(), "CLA-C2V-MAG-HCOR-01");
-	auto pvStructVector = mag->getPVStructs();
-	for (auto record = pvStructVector->begin(); record != pvStructVector->end(); record++)
-	{
-		std::cout << record->fullPVName << ":" << record->pvRecord << std::endl;
-	}
+	BOOST_CHECK_EQUAL(mag->getFullPVName().c_str(), "");
+	auto pvStructVector = *(mag->getPVStructs());
+	auto expectedPVStructVector = std::vector<pvStruct>();
+	BOOST_CHECK_EQUAL_COLLECTIONS(pvStructVector.begin(),
+								  pvStructVector.end(),
+								  expectedPVStructVector.begin(),
+								  expectedPVStructVector.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -93,13 +93,5 @@ std::string Magnet::getMeasurementDataLocation()
 }
 double Magnet::getCurrent()
 {
-	for (auto pv = pvStructs.begin(); pv != pvStructs.end(); pv++)
-	{
-		if (pv->pvRecord == "READI")
-		{
-			double current = epicsInterface->getCurrent(pv->CHID);
-			return current;
-		}
-	}
-	return -1.0;
+	return this->current;
 }

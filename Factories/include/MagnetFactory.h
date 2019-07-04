@@ -3,6 +3,7 @@
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
+#pragma once
 #include "Magnet.h"
 #include <vector>
 #include <map>
