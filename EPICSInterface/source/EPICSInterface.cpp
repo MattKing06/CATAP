@@ -14,9 +14,7 @@
 
 EPICSInterface::EPICSInterface()
 {
-	//shouldStartEpics and shouldStartVirtualMachine are true by default
 	int status;
-	//setup logging system for EPICSInterface: DebugOn(true), MessagingOn(true)
 	EPICSInterface::messaging = LoggingSystem(false, false);
 	status = ca_context_create(ca_disable_preemptive_callback);
 	if (status != ECA_NORMAL)
@@ -47,22 +45,24 @@ void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
 	std::cout << "HARDWARE TYPE: " << hardware.getHardwareType();
 	std::vector<pvStruct> *pvList = hardware.getPVStructs();
-	if (pvName == "READI")
+	pvStruct pv;
+	if (pvName == "READI")//since READI is the only PV with a proper updateFunction, 
+						 // we skip over any with NULL updateFunctions for now.
 	{
-		for (auto pv = pvList->begin(); pv != pvList->end(); pv++)
+		for (auto currentPV = pvList->begin(); currentPV != pvList->end(); currentPV++)
 		{
-			if (pv->pvRecord == pvName)
+			if (currentPV->pvRecord == pvName)
 			{
-				if (pv->updateFunction == NULL)
-				{
-					std::cout << "UPDATE FUNCTION FOR " << pv->pvRecord << " IS NULL" << std::endl;
-				}
-				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,
-					pv->updateFunction, (void*)&hardware, 0);
-				MY_SEVCHK(status);
+				pv = *(currentPV);
 			}
-
 		}
+		if (pv.updateFunction == NULL)
+		{
+			std::cout << "UPDATE FUNCTION FOR " << pv.pvRecord << " IS NULL" << std::endl;
+		}
+		int status = ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
+			pv.updateFunction, (void*)&hardware, 0);
+		MY_SEVCHK(status);
 	}
 }
 

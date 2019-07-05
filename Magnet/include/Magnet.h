@@ -38,7 +38,6 @@ class Magnet : public Hardware
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
 		bool setCurrent(double value){ this->current = value; return true; }
 		double getCurrent();
-		double current;
 
 	protected:
 		//what else does a magnet need?
@@ -55,7 +54,7 @@ class Magnet : public Hardware
 		double magneticLength;
 		std::string fullPSUName;
 		std::string measurementDataLocation;
-
+		double current;
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;

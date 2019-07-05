@@ -159,10 +159,7 @@ double MagnetFactory::getCurrent(std::string name)
 	{
 		if (magnet->getFullPVName() == name)
 		{
-			std::cout << "Magnet Name: " << magnet->getFullPVName() << std::endl;
-			std::cout << "EPICSMagnet Name: " << magnet->epicsInterface->owner->getFullPVName() << std::endl;
-			double latestCurrent = magnet->epicsInterface->owner->current;
-			return magnet->epicsInterface->owner->current;
+			return magnet->getCurrent();
 		}
 	}
 	return 0.0;

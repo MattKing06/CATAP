@@ -14,8 +14,6 @@ class EPICSMagnetInterface : public EPICSInterface
 {
 public:
 	EPICSMagnetInterface();
-	void setCurrent(double value);
-	static void updateValue(struct event_handler_args args);
 	static void updateCurrent(struct event_handler_args args);
 	LoggingSystem messenger;
 	static Magnet* owner;
