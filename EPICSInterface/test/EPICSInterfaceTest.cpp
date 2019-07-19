@@ -15,13 +15,13 @@ BOOST_AUTO_TEST_CASE(epics_interface_test)
 
 BOOST_AUTO_TEST_CASE(fill_hardware_pv_data_with_chids)
 {
-	HardwareFactory *componentFactory = new HardwareFactory();
-	MagnetFactory *magFac = componentFactory->getMagnetFactory();
+	HardwareFactory componentFactory = HardwareFactory();
+	MagnetFactory magFac = componentFactory.getMagnetFactory();
 	//EPICSInterface *ei = new EPICSInterface();
 	bool status;
-	status = magFac->setup("nominal");
+	status = magFac.setup("nominal");
 	BOOST_CHECK(status);
-	double current = magFac->getCurrent("CLA-C2V-MAG-HCOR-01");
+	double current = magFac.getCurrent("CLA-C2V-MAG-HCOR-01");
 	//Magnet* magnet = magFac->getMagnet(std::string("CLA-C2V-MAG-VCOR-01"));
 	//std::vector<pvStruct> *pvStructs = magnet->getPVStructs();
 	//for (auto pv = pvStructs->begin(); pv != pvStructs->end(); pv++)

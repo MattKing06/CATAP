@@ -13,9 +13,10 @@ class HardwareFactory
     */
 public:
 	HardwareFactory();
+	HardwareFactory(bool isVirtual);
 	HardwareFactory(std::string hardwareType, std::string version);
 	bool setup(std::string hardwareType, std::string version);
-	MagnetFactory* getMagnetFactory();
+	MagnetFactory getMagnetFactory();
 	Magnet* getMagnet(std::string fullMagnetName);
 	std::vector<Magnet*> getAllMagnets();
 	bool operator ==(const HardwareFactory &HardwareFactory) const;
@@ -23,7 +24,8 @@ public:
 	ConfigReader reader;
 	//std::vector<Hardware*> hardwareVector;
 	std::vector<Hardware*> hardwareVector;
-	MagnetFactory* magnetFactory;
+	MagnetFactory magnetFactory;
+	bool isVirtual;
 };
 
 

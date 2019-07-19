@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE(creating_empty_magnet_test)
 	Magnet *mag = new Magnet();
 	std::cout << "MAGNET NAME:" << mag->getFullPVName() << std::endl;
 	BOOST_CHECK_EQUAL(mag->getFullPVName().c_str(), "");
-	auto pvStructVector = *(mag->getPVStructs());
+	auto pvStructVector = mag->getPVStructs();
 	auto expectedPVStructVector = std::vector<pvStruct>();
 	BOOST_CHECK_EQUAL_COLLECTIONS(pvStructVector.begin(),
 								  pvStructVector.end(),

@@ -6,16 +6,36 @@
 #include "boost/algorithm/string.hpp"
 #include "yaml-cpp/exceptions.h"
 
-ConfigReader::ConfigReader(const std::string hardwareComponentName){
+const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
+	{ "MAG", "Magnet" },
+	{ "BPM", "Beam Position Monitor" }
+};
+
+
+std::string ConfigReader::getHardwareTypeFromName(std::string fullPVName)
+{
+	for (auto type : this->allowedHardwareTypes)
+	{
+		if (fullPVName.find(type.first) != std::string::npos)
+		{
+			return type.second;
+		}
+	}
+	return "UNDEFINED";
+}
+
+ConfigReader::ConfigReader(const std::string hardwareComponentName, bool isVirtual){
 	#if defined(__unix__) ||  defined(_unix)
 	  const std::string HOME =  getenv("HOME");
 	  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";
 	#endif
 	#ifdef _WIN32
-	  yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
+	  yamlFilename = hardwareComponentName + ".yaml";
+	  hardwareFolder = getHardwareTypeFromName(hardwareComponentName);
+	  yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\" + hardwareFolder;
 	#endif
-	yamlFilename = hardwareComponentName + ".yaml";
-	//create a string-vector pointer to empty string-vector
+    loadVirtualHardware = isVirtual;
+	// create a string-vector pointer to empty string-vector
 	// so we aren't writing to inaccessbile memory
 	// have array of PVs as max size for now (that's what 0U is doing)
 	// maybe use a different data structure or a resizing method later.
@@ -35,12 +55,26 @@ ConfigReader::ConfigReader()
 	#endif
 	yamlFilename = "";
 }
-/*
-std::multimap<std::string, std::string> ConfigReader::parseYamlDirectory()
+
+bool checkForValidTemplate(YAML::Node hardwareTemplate, YAML::Node hardwareComponent)
 {
-	std::multim
+	for (const auto &keyAndValuePair : hardwareTemplate["properties"])
+	{
+		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
+		{
+			return false;
+		}
+	}
+	for (const auto &keyAndValuePair : hardwareTemplate["controls_information"])
+	{
+		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
+		{
+			return false;
+		}
+	}
+	return true;
 }
-*/
+
 std::map<std::string, std::string> ConfigReader::parseYamlFile()
 {	
 	std::ifstream fileInput;
@@ -53,10 +87,10 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	#if defined(_unix_) || defined(_unix)
 	  separator = "/";
 	#endif
-	//before we start, config reader is usually a member to the Hardware classes
+	// before we start, config reader is usually a member to the Hardware classes
 	// and only gets initialized once, we need to reset PVs when parsing
 	// otherwise we just keep adding values to the multimap.
-	PVs.clear();
+	parameters.clear();
 	try{
 		fileInput = std::ifstream(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
 		YAML::Parser parser(fileInput);
@@ -65,7 +99,7 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	catch (YAML::BadFile BadFileException)
 	{
 		std::cout << "I could not find the file (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << ") you were looking for..." << "\n";
-		return PVs;
+		return parameters;
 	}
 	try
 	{
@@ -73,6 +107,10 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 		{
 			std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + separator + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 			configTemplate = YAML::LoadFile(hardwareTemplateFilename);
+			if (!checkForValidTemplate(configTemplate, config))
+			{
+				throw YAML::BadFile();
+			}
 			// dealing with controls_information specifically
 			auto controls_information = config["controls_information"];
 			auto hardwareProperties = config["properties"];
@@ -80,14 +118,16 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 			{
 				std::string control_records = controls_information["records"].as<std::string>();
 				boost::trim_left(control_records);
-				// add record to PV along with COUNT, MASK, CHID, and CHTYPE which could be retrieved from EPICS.
-				//CHID;
-				//COUNT;
-				//MASK;
-				//CHTYPE;
-				// end of pv struct construction.
-				std::pair<std::string, std::string> pvAndRecordPair = std::make_pair(config["properties"]["name"].as<std::string>(), control_records);
-				PVs.insert(pvAndRecordPair);
+				std::pair<std::string, std::string> pvAndRecordPair;
+				if (this->loadVirtualHardware)
+				{
+					pvAndRecordPair = std::make_pair(config["properties"]["virtual_name"].as<std::string>(), control_records);
+				}
+				else
+				{
+					pvAndRecordPair = std::make_pair(config["properties"]["name"].as<std::string>(), control_records);
+				}
+				parameters.insert(pvAndRecordPair);
 			}
 			std::map<std::string, std::string> hardwarePropertyAndValueVector;
 			if (hardwareProperties.IsDefined())
@@ -107,34 +147,34 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 					hardwarePropertyAndValueVector.insert(std::make_pair(key, value));
 				}
 			}
-			else
-			{
-				std::cout << "NOT ENTERING PROPERTIES LOOP, PROPERTIES UNDEFINED" << std::endl;
-			}
 			for (auto prop : hardwarePropertyAndValueVector)
 			{
-				PVs.insert(prop);
-			}			{
-
-				return PVs;
+				parameters.insert(prop);
 			}
+			return parameters;
 		}
 		else
 		{
 			
 			throw std::length_error("File contents were of length " + std::to_string(config.size()) + ", file must be empty!");
-			return PVs;
+			return parameters;
 		}
 	}
 	catch (std::length_error EmptyFileException)
 	{
 		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
-		return PVs;
+		return parameters;
+	}
+	catch (YAML::BadFile BadFileException)
+	{
+		std::cout << "File (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << ") is not compliant with template "
+				  << ConfigReader::yamlFileDestination + separator + ConfigReader::hardwareFolder << ".yaml" << "\n";
+		return parameters;
 	}
 	catch (YAML::ParserException EmptyFileException)
 	{
 		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
-		return PVs;
+		return parameters;
 	}
 	catch (YAML::BadConversion ConvervsionException)
 	{

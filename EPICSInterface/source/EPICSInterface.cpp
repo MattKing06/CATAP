@@ -7,7 +7,8 @@
 {								\
 	if (status != ECA_NORMAL)	\
 	{							\
-		SEVCHK(status, NULL);	\
+		ca_message(status);		\
+		SEVCHK(status, NULL);   \
 		exit(status);			\
 	}							\
 }								\
@@ -16,7 +17,7 @@ EPICSInterface::EPICSInterface()
 {
 	int status;
 	EPICSInterface::messaging = LoggingSystem(false, false);
-	status = ca_context_create(ca_disable_preemptive_callback);
+	status = ca_context_create(ca_enable_preemptive_callback);
 	if (status != ECA_NORMAL)
 	{
 		std::printf("ca_context_create failed: \n%s\n", 
@@ -43,26 +44,21 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, Logg
 
 void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
-	std::cout << "HARDWARE TYPE: " << hardware.getHardwareType();
-	std::vector<pvStruct> *pvList = hardware.getPVStructs();
-	pvStruct pv;
-	if (pvName == "READI")//since READI is the only PV with a proper updateFunction, 
+	std::vector<pvStruct*> pvList = hardware.getPVStructs();
+	pvStruct* pv;
+	if (pvName == "GETSETI")//since READI is the only PV with a proper updateFunction, 
 						 // we skip over any with NULL updateFunctions for now.
 	{
-		for (auto currentPV = pvList->begin(); currentPV != pvList->end(); currentPV++)
+		for (auto currentPV = pvList.begin(); currentPV != pvList.end(); currentPV++)
 		{
-			if (currentPV->pvRecord == pvName)
+			pv = *(currentPV);
+			if (pv->pvRecord == pvName)
 			{
-				pv = *(currentPV);
+				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,
+					pv->updateFunction, (void*)&hardware, &pv->EVID);
+				MY_SEVCHK(status);
 			}
 		}
-		if (pv.updateFunction == NULL)
-		{
-			std::cout << "UPDATE FUNCTION FOR " << pv.pvRecord << " IS NULL" << std::endl;
-		}
-		int status = ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
-			pv.updateFunction, (void*)&hardware, 0);
-		MY_SEVCHK(status);
 	}
 }
 
@@ -75,13 +71,16 @@ chid EPICSInterface::retrieveCHID(std::string &pv)
 		char *pvCstr = new char[pv.size() +1];
 		strcpy(pvCstr,pv.c_str());
 		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
-		SEVCHK(status, "could not create channel");
+		//std::cout << "CHID FROM EPICS INTERFACE: " << CHID << std::endl;
+		MY_SEVCHK(status);
+		status = ca_pend_io(1.0);
 		messaging.printDebugMessage(pvCstr);
 		return CHID;
 	}
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
+		return NULL;
 	}
 
 }

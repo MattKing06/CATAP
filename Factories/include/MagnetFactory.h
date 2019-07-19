@@ -7,10 +7,12 @@
 #include "Magnet.h"
 #include <vector>
 #include <map>
+#include <boost\python.hpp>
 class MagnetFactory
 {
 	public:
 		MagnetFactory();
+		MagnetFactory(bool isVirtual);
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
 		bool setup(std::string version);
@@ -21,6 +23,7 @@ class MagnetFactory
 		std::vector<Magnet*> getAllMagnets();
 		std::vector<Magnet*> magnetVec;
 		bool hasBeenSetup;
+		bool virtualMagnetFactory;
 		// methods for setting properties of magnet via PV name
 		double getCurrent(std::string name);
 		std::vector<double> getCurrents(std::vector<std::string> names);
@@ -34,6 +37,17 @@ class MagnetFactory
 		bool turnOff(std::string name);
 		bool turnOff(std::vector<std::string> names);
 		bool turnOffAllMagnets();
+
+		//THESE METHODS SHOULD BE MOVED TO A UTILITY PACKAGE
+		template< typename typeOfNewVector>
+		std::vector< typeOfNewVector > to_std_vector(const boost::python::object& iterable);
+		template< typename typeOfVectorToConvert >
+		boost::python::list to_py_list(std::vector<typeOfVectorToConvert> vector);
+		template< class key, class value>
+		boost::python::dict to_py_dict(std::map<key, value> map);
+		// python methods
+		boost::python::list getCurrents_Py(boost::python::list magNames);
+		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 
 };
 

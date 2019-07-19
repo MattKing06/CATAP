@@ -35,26 +35,45 @@ std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std:
 	}
 	return filenames;
 }
-HardwareFactory::HardwareFactory(){
+
+HardwareFactory::HardwareFactory() : HardwareFactory(false)
+{
+}
+
+HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage(std::string("Hardware Factory Constructed"));
-	magnetFactory = new MagnetFactory();
+	this->isVirtual = createVirtualHardwareFactory;
+	this->magnetFactory = MagnetFactory(isVirtual);
 }
 bool HardwareFactory::setup(std::string hardwareType, std::string version)
 {
 	bool setup = false;
 	if (hardwareType == "Magnet")
 	{
-		if (!magnetFactory->hasBeenSetup)
+		if (!this->magnetFactory.hasBeenSetup)
 		{
-			setup = magnetFactory->setup(version);
+			setup = this->magnetFactory.setup(version);
 		}
 	}
 	return setup;
 }
-MagnetFactory* HardwareFactory::getMagnetFactory()
+MagnetFactory HardwareFactory::getMagnetFactory()
 {
-	return this->magnetFactory;
+	if (this->magnetFactory.hasBeenSetup)
+	{
+		return this->magnetFactory;
+	}
+	else
+	{
+		bool setup = this->magnetFactory.setup("nominal");
+		if (setup)
+		{
+			return this->magnetFactory;
+		}
+
+	}
+
 }
 bool HardwareFactory::operator==(const HardwareFactory &HardwareFactory) const
 {
