@@ -50,19 +50,21 @@ TO THE VALUES DEFINED BELOW. THEN THE TEST SHOULD WORK!*/
 //}
 BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 {
-	//char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.255";
-	//char* EPICS_CA_SERVER_ENV = "EPICS_CA_SERVER_PORT=6000";
-	//int envStatus = _putenv(EPICS_CA_ADDR_LIST_ENV);
-	//envStatus = _putenv(EPICS_CA_SERVER_ENV);
-	//std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
-	//std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
+	char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.255";
+	char* EPICS_CA_SERVER_ENV = "EPICS_CA_SERVER_PORT=6000";
+	int envStatus = _putenv(EPICS_CA_ADDR_LIST_ENV);
+	envStatus = _putenv(EPICS_CA_SERVER_ENV);
+	std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
+	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
 	HardwareFactory hardwareFactory = HardwareFactory(true);
 	bool status;
 	status = hardwareFactory.setup("Magnet","nominal");
 	MagnetFactory magFactory(hardwareFactory.getMagnetFactory());
 	Magnet* mag = magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
 	BOOST_CHECK(status);
-	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", -3);
+	double currentToSet = rand()/10;
+	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", currentToSet);
+	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01"), currentToSet);
 	std::cout << "CURRENT: " << magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01") << std::endl;
 }
 
