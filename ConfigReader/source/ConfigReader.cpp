@@ -79,18 +79,19 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	std::ifstream fileInput;
 	YAML::Node config;
 	YAML::Node configTemplate;
-	#if defined(_unix_) || defined(_unix)
-		const std::string separator = "/";
-	#endif
-    #ifdef _WIN32
-	  const std::string separator = "\\";
-	#endif
+	std::string separator = "/";
+	//#if defined(_unix_) || defined(_unix)
+	//  separator = "/";
+	//#endif
+ //   #ifdef _WIN32
+	//  separator = "\\";
+	//#endif
+
 	// before we start, config reader is usually a member to the Hardware classes
 	// and only gets initialized once, we need to reset PVs when parsing
 	// otherwise we just keep adding values to the multimap.
 	parameters.clear();
 	try{
-		std::cout << "SEPARATOR FOR UNIX: " << separator << std::endl;
 		fileInput = std::ifstream(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
 		YAML::Parser parser(fileInput);
 		config = YAML::LoadFile(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
