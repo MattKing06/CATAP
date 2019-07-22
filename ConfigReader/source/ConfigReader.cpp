@@ -91,6 +91,7 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	// otherwise we just keep adding values to the multimap.
 	parameters.clear();
 	try{
+		std::cout << "SEPARATOR FOR UNIX: " << separator << std::endl;
 		fileInput = std::ifstream(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
 		YAML::Parser parser(fileInput);
 		config = YAML::LoadFile(ConfigReader::yamlFileDestination + separator + ConfigReader::yamlFilename);
