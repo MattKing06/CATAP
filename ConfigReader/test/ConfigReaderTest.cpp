@@ -59,7 +59,9 @@ BOOST_AUTO_TEST_SUITE(ConfigReaderTestSuite)
 		std::string filename = "CLA-C2V-MAG-HCOR-01";
 		ConfigReader reader(filename,false);
 		std::map<std::string, std::string> parameters = reader.parseYamlFile();
-		BOOST_CHECK(parameters.find("name")->second == filename);
+		std::cout << "map name: " << parameters.find("name")->second << std::endl;
+		std::cout << "filename: " << filename << std::endl;
+		BOOST_CHECK(parameters.find("name")->second.data() == filename);
 	
 	}
 
