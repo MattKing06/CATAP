@@ -44,7 +44,7 @@ Hardware::Hardware(std::map<std::string, std::string> specificValueMap, bool isV
 		pv->fullPVName = currentHardwareName;
 		pv->pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
-		pvStructs.push_back(pv);
+		pvStructs[pv->pvRecord] = pv;
 	}
 	logger.printDebugMessage(std::string("Finished constructing: " + currentHardwareName));
 }
@@ -56,7 +56,7 @@ std::string Hardware::getHardwareType()
 {
 	return this->hardwareType;
 }
-std::vector<pvStruct*> Hardware::getPVStructs()
+std::map<std::string, pvStruct*> Hardware::getPVStructs()
 {
 	return this->pvStructs;
 }
@@ -75,13 +75,17 @@ bool Hardware::operator==(Hardware rhs)
 	}
 	else
 	{
-		for (size_t i = 0; i < LHSPVStructs.size(); i++)
+		// go through entries in the LHS map
+		for (auto &value : LHSPVStructs)
 		{
-			if (LHSPVStructs.at(i)->fullPVName != RHSPVStructs.at(i)->fullPVName)
+			//if our value in LHS != the value found for RHS[key]
+			// we cannot have equal PV structs so we return false
+			if (value.second != RHSPVStructs[value.first])
 			{
 				return false;
 			}
 		}
 	}
+	//otherwise, return true
 	return true;
 }

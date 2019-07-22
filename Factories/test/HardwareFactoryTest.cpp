@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	MagnetFactory magFactory(hardwareFactory.getMagnetFactory());
 	Magnet* mag = magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
 	BOOST_CHECK(status);
-	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", -8);
+	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", -3);
 	std::cout << "CURRENT: " << magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01") << std::endl;
 }
 

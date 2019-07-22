@@ -44,14 +44,14 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, Logg
 
 void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
-	std::vector<pvStruct*> pvList = hardware.getPVStructs();
+	std::map<std::string, pvStruct*> pvList = hardware.getPVStructs();
 	pvStruct* pv;
 	if (pvName == "GETSETI")//since READI is the only PV with a proper updateFunction, 
 						 // we skip over any with NULL updateFunctions for now.
 	{
 		for (auto currentPV = pvList.begin(); currentPV != pvList.end(); currentPV++)
 		{
-			pv = *(currentPV);
+			pv = currentPV->second;
 			if (pv->pvRecord == pvName)
 			{
 				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,

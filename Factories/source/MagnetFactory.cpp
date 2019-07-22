@@ -6,6 +6,9 @@
 #include <cadef.h>
 #endif
 
+
+
+
 #define MY_SEVCHK(status)		\
 {								\
 	if (status != ECA_NORMAL)	\
@@ -24,6 +27,9 @@
   const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\Magnet";
   const std::string SEPARATOR = "\\";
 #endif
+
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
+
 // NON-MEMBER HELPER FUNCTIONS //
 std::vector<std::string> findYAMLFilesInDirectory(std::string version)
 {
@@ -90,24 +96,21 @@ bool MagnetFactory::setup(std::string version)
 			// so we will cycle through the PV structs, and set up their values.
 			//
 			// a PVStruct should also probably have an update function ptr as a member??
-			std::vector<pvStruct*> magPVStructs = mag->getPVStructs();
+			std::map<std::string, pvStruct*> magPVStructs = mag->getPVStructs();
 			for (auto &pv : magPVStructs)
 			{
-				std::string pvAndRecordName = pv->fullPVName + ":" + pv->pvRecord;
-				pv->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
-				pv->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv->CHID);
-				pv->COUNT = mag->epicsInterface->retrieveCOUNT(pv->CHID);
-				if (pv->pvRecord == "GETSETI")
-				{
-					pv->updateFunction = mag->epicsInterface->updateCurrent;
-				}
+				std::string pvAndRecordName = pv.second->fullPVName + ":" + pv.first;
+				pv.second->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
+				pv.second->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv.second->CHID);
+				pv.second->COUNT = mag->epicsInterface->retrieveCOUNT(pv.second->CHID);
+				pv.second->updateFunction = findUpdateFunctionForRecord(pv.first, mag);
 				// not sure how to set the mask from EPICS yet.
-				pv->MASK = DBE_VALUE;
+				pv.second->MASK = DBE_VALUE;
 				messenger.debugMessagesOn();
-				messenger.printDebugMessage(pv->pvRecord + ": read" + std::to_string(ca_read_access(pv->CHID)) +
-					"write" + std::to_string(ca_write_access(pv->CHID)) +
-					"state" + std::to_string(ca_state(pv->CHID)) + "\n");
-				mag->epicsInterface->createSubscription(*(mag), pv->pvRecord);
+				messenger.printDebugMessage(pv.second->pvRecord + ": read" + std::to_string(ca_read_access(pv.second->CHID)) +
+					"write" + std::to_string(ca_write_access(pv.second->CHID)) +
+					"state" + std::to_string(ca_state(pv.second->CHID)) + "\n");
+				mag->epicsInterface->createSubscription(*(mag), pv.second->pvRecord);
 			}
 			magnetVec.push_back(mag);
 		}
@@ -115,6 +118,16 @@ bool MagnetFactory::setup(std::string version)
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
+updateFunctionPtr MagnetFactory::findUpdateFunctionForRecord(std::string record, Magnet* mag)
+{
+	if (record == "GETSETI")
+	{
+		return mag->epicsInterface->updateCurrent;
+	}
+	return nullptr;
+}
+
 std::vector<Magnet*> MagnetFactory::getMagnets(std::vector<std::string> magnetNames)
 {
 	std::vector<Magnet*> selectedMagnets;

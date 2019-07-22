@@ -73,6 +73,7 @@ MagnetFactory HardwareFactory::getMagnetFactory()
 		}
 
 	}
+	return NULL;
 
 }
 bool HardwareFactory::operator==(const HardwareFactory &HardwareFactory) const

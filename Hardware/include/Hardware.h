@@ -18,7 +18,7 @@ public:
 	Hardware(std::map<std::string, std::string> paramMap, bool isVirtual);
 	std::string getMachineArea();
 	std::string getHardwareType();
-	std::vector<pvStruct*> getPVStructs();
+	std::map<std::string, pvStruct*> getPVStructs();
 	std::map<std::string, std::string> getSpecificHardwareParameters();
 	bool operator==(Hardware rhs);
 //protected:
@@ -26,7 +26,7 @@ public:
 	std::string machineArea;
 	std::string hardwareType;
 	bool isVirtual;
-	std::vector<pvStruct*> pvStructs;
+	std::map<std::string, pvStruct*> pvStructs;
 	std::map<std::string, std::string> specificHardwareParameters;
 };
 #endif //HARDWARE_H_

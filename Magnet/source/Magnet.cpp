@@ -101,13 +101,13 @@ double Magnet::getCurrent()
 }
 bool Magnet::setEPICSCurrent(double value)
 {
-	std::vector<pvStruct*> pvData = this->getPVStructs();
+	std::map<std::string, pvStruct*> pvData = this->getPVStructs();
 	for (auto &pv : pvData)
 	{
-		if (pv->pvRecord == "SETI")
+		if (pv.second->pvRecord == "SETI")
 		{
-			logger.printDebugMessage("SETTING TO VALUE: " + std::to_string(value) + " for [" + pv->fullPVName + "]");
-			this->epicsInterface->setNewCurrent(value, *(pv));
+			logger.printDebugMessage("SETTING TO VALUE: " + std::to_string(value) + " for [" + pv.second->fullPVName + "]");
+			this->epicsInterface->setNewCurrent(value, *(pv.second));
 		}
 	}
 	// subscription should sense current has changed and call 'updateCurrent' in MagnetEPICSInterface

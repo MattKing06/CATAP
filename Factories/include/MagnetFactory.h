@@ -15,7 +15,9 @@ class MagnetFactory
 		MagnetFactory(bool isVirtual);
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
+		typedef void (*updateFunctionPtr)(struct event_handler_args args);
 		bool setup(std::string version);
+		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet* mag);
 		LoggingSystem messenger;
 		ConfigReader reader;
 		Magnet* getMagnet(std::string fullMagnetName);
@@ -48,7 +50,6 @@ class MagnetFactory
 		// python methods
 		boost::python::list getCurrents_Py(boost::python::list magNames);
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
-
 };
 
 
