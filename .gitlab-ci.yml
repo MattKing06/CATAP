@@ -21,6 +21,8 @@ cmake_build:
   - echo 'Running Tests..'
   - ls ~/MasterLattice
   - ./ConfigReaderTest
+  - export EPICS_CA_ADDR_LIST=192.168.83.264
+  - export EPICS_CA_SERVER_PORT=6000
   - echo $EPICS_CA_ADDR_LIST
   - echo $EPICS_CA_SERVER_PORT
   - ./HardwareFactoryTest
