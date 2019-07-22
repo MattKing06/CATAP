@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 #
 project(hardware_toy)
+if(UNIX)
+  set(EXTRA_OPTIONS "-fPIC")
+endif(UNIX)
 cmake_policy(SET CMP0074 NEW)
 set(CXX_STANDARD 17)
 set(PY_VERSION 3.6)
@@ -30,7 +33,7 @@ endif(UNIX)
 
 set_property(GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_CONFIGURATIONS "Release;MinSizeRel")
-find_package(PythonLibs ${PY_VERSION} REQUIRED python36_d)
+find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63 COMPONENTS unit_test_framework filesystem python)
 message("Finding Boost...")
 
