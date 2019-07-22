@@ -28,7 +28,8 @@ ConfigReader::ConfigReader(const std::string hardwareComponentName, bool isVirtu
 	#if defined(__unix__) ||  defined(_unix)
 	  const std::string HOME =  getenv("HOME");
 	  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";
-	  yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + "/" + hardwareComponentName;
+	  hardwareFolder = getHardwareTypeFromName(hardwareComponentName);
+	  yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + "/" + hardwareFolder;
 	#endif
 	#ifdef _WIN32
 	  yamlFilename = hardwareComponentName + ".yaml";
