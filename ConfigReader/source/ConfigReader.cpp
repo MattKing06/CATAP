@@ -30,6 +30,7 @@ ConfigReader::ConfigReader(const std::string hardwareComponentName, bool isVirtu
 	  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";
 	  hardwareFolder = getHardwareTypeFromName(hardwareComponentName);
 	  yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + "/" + hardwareFolder;
+	  yamlFilename = hardwareComponentName + ".yaml";
 	#endif
 	#ifdef _WIN32
 	  yamlFilename = hardwareComponentName + ".yaml";
@@ -37,15 +38,11 @@ ConfigReader::ConfigReader(const std::string hardwareComponentName, bool isVirtu
 	  yamlFileDestination = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\" + hardwareFolder;
 	#endif
     loadVirtualHardware = isVirtual;
-	// create a string-vector pointer to empty string-vector
-	// so we aren't writing to inaccessbile memory
-	// have array of PVs as max size for now (that's what 0U is doing)
-	// maybe use a different data structure or a resizing method later.
 }
 
 ConfigReader::ConfigReader()
 {
-	//since we have not specified a hardware component
+	// since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
 	#if defined(__unix__) ||  defined(_unix)
