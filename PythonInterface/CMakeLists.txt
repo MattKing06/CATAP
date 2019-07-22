@@ -1,4 +1,5 @@
 message( "Processing Python Interface source files...")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set( SOURCE_FILES
     source/PythonInterface.cpp 
 )
