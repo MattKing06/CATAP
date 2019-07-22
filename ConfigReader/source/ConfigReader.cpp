@@ -80,11 +80,11 @@ std::map<std::string, std::string> ConfigReader::parseYamlFile()
 	YAML::Node config;
 	YAML::Node configTemplate;
 	std::string separator;
-	#ifdef _WIN32
-	  separator = "\\";
-	#endif
 	#if defined(_unix_) || defined(_unix)
-	  separator = "/";
+		separator = "/";
+	#endif
+    #ifdef _WIN32
+	  separator = "\\";
 	#endif
 	// before we start, config reader is usually a member to the Hardware classes
 	// and only gets initialized once, we need to reset PVs when parsing
