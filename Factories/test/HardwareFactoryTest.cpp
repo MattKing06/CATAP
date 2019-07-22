@@ -52,8 +52,8 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 {
 	char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.255";
 	char* EPICS_CA_SERVER_ENV = "EPICS_CA_SERVER_PORT=6000";
-	int envStatus = _putenv(EPICS_CA_ADDR_LIST_ENV);
-	envStatus = _putenv(EPICS_CA_SERVER_ENV);
+	int envStatus = putenv(EPICS_CA_ADDR_LIST_ENV);
+	envStatus = putenv(EPICS_CA_SERVER_ENV);
 	std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
 	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
 	HardwareFactory hardwareFactory = HardwareFactory(true);
