@@ -7,7 +7,7 @@
 #include "Magnet.h"
 #include <vector>
 #include <map>
-#include <boost\python.hpp>
+#include <boost/python.hpp>
 class MagnetFactory
 {
 	public:
