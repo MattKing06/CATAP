@@ -57,15 +57,12 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	//std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
 	//std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
 	HardwareFactory hardwareFactory = HardwareFactory(true);
-	//std::string hardwareType = "MAGNETS"; 
-	//std::string version = "PHYSICAL";
-	//hardwareFactory->setup(hardwareType, version);
 	bool status;
 	status = hardwareFactory.setup("Magnet","nominal");
 	MagnetFactory magFactory(hardwareFactory.getMagnetFactory());
 	Magnet* mag = magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
 	BOOST_CHECK(status);
-	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", -2);
+	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", -8);
 	std::cout << "CURRENT: " << magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01") << std::endl;
 }
 
