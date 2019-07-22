@@ -21,14 +21,14 @@ class MagnetFactory
 		LoggingSystem messenger;
 		ConfigReader reader;
 		Magnet* getMagnet(std::string fullMagnetName);
-		std::vector<Magnet*> getMagnets(std::vector<std::string> magnetNames);
-		std::vector<Magnet*> getAllMagnets();
-		std::vector<Magnet*> magnetVec;
+		std::map<std::string, Magnet*> getMagnets(std::vector<std::string> magnetNames);
+		std::map<std::string, Magnet*> getAllMagnets();
+		std::map<std::string, Magnet*> magnetMap;
 		bool hasBeenSetup;
 		bool virtualMagnetFactory;
 		// methods for setting properties of magnet via PV name
 		double getCurrent(std::string name);
-		std::vector<double> getCurrents(std::vector<std::string> names);
+		std::map<std::string, double> getCurrents(std::vector<std::string> names);
 		std::map<std::string, double> getAllMagnetCurrents();
 		bool setCurrent(std::string name, double value);
 		bool setCurrents(std::vector<std::string> names, double value);
@@ -48,7 +48,7 @@ class MagnetFactory
 		template< class key, class value>
 		boost::python::dict to_py_dict(std::map<key, value> map);
 		// python methods
-		boost::python::list getCurrents_Py(boost::python::list magNames);
+		boost::python::dict getCurrents_Py(boost::python::list magNames);
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 };
 

@@ -99,7 +99,7 @@ bool MagnetFactory::setup(std::string version)
 			std::map<std::string, pvStruct*> magPVStructs = mag->getPVStructs();
 			for (auto &pv : magPVStructs)
 			{
-				std::string pvAndRecordName = pv.second->fullPVName + ":" + pv.first;
+				std::string pvAndRecordName = mag->getFullPVName() + ":" + pv.first;
 				pv.second->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
 				pv.second->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv.second->CHID);
 				pv.second->COUNT = mag->epicsInterface->retrieveCOUNT(pv.second->CHID);
@@ -112,7 +112,7 @@ bool MagnetFactory::setup(std::string version)
 					"state" + std::to_string(ca_state(pv.second->CHID)) + "\n");
 				mag->epicsInterface->createSubscription(*(mag), pv.second->pvRecord);
 			}
-			magnetVec.push_back(mag);
+			magnetMap[mag->getFullPVName()] = mag;
 		}
 	}
 	hasBeenSetup = true;
@@ -128,33 +128,20 @@ updateFunctionPtr MagnetFactory::findUpdateFunctionForRecord(std::string record,
 	return nullptr;
 }
 
-std::vector<Magnet*> MagnetFactory::getMagnets(std::vector<std::string> magnetNames)
+std::map<std::string, Magnet*> MagnetFactory::getMagnets(std::vector<std::string> magnetNames)
 {
-	std::vector<Magnet*> selectedMagnets;
-	for (auto &magnet : magnetVec)
+	std::map<std::string, Magnet*> selectedMagnets;
+	for (auto &magName : magnetNames)
 	{
-		for (auto &name : magnetNames)
-		{
-			if (magnet->getFullPVName() == name)
-			{
-				selectedMagnets.push_back(magnet);
-			}
-		}
+		selectedMagnets[magName] = magnetMap.find(magName)->second;
 	}
 	return selectedMagnets;
 }
 Magnet* MagnetFactory::getMagnet(std::string fullMagnetName)
 {
-	for (auto &magnet : magnetVec)
-	{
-		if (magnet->getFullPVName() == fullMagnetName)
-		{
-			return magnet;
-		}
-	}
-	return NULL;
+	return magnetMap.find(fullMagnetName)->second;
 }
-std::vector<Magnet*> MagnetFactory::getAllMagnets()
+std::map<std::string, Magnet*> MagnetFactory::getAllMagnets()
 {
 	if (!hasBeenSetup)
 	{
@@ -164,7 +151,7 @@ std::vector<Magnet*> MagnetFactory::getAllMagnets()
 	{
 		messenger.printDebugMessage("MAGNETS HAVE ALREADY BEEN CONSTRUCTED.");
 	}
-	return magnetVec;
+	return magnetMap;
 }
 
 double MagnetFactory::getCurrent(std::string name)
@@ -173,27 +160,20 @@ double MagnetFactory::getCurrent(std::string name)
 	{
 		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
 	}
-	for (auto &magnet : magnetVec)
+	else
 	{
-		if (magnet->getFullPVName() == name)
-		{
-			return magnet->getCurrent();
-		}
+		double current = magnetMap.find(name)->second->getCurrent();
+		return current;
 	}
 	return std::numeric_limits<double>::min();;
 }
-std::vector<double> MagnetFactory::getCurrents(std::vector<std::string> names)
+std::map<std::string, double> MagnetFactory::getCurrents(std::vector<std::string> names)
 {
-	std::vector<double> currents;
-	for (auto &magnet : magnetVec)
+	std::map<std::string, double> currents;
+	for (auto name : names)
 	{
-		for (auto name : names)
-		{
-			if (magnet->getFullPVName() == name)
-			{
-				currents.push_back(magnet->getCurrent());
-			}
-		}
+		double current = magnetMap.find(name)->second->getCurrent();
+		currents[name] = current;
 	}
 	return currents;
 }
@@ -220,7 +200,7 @@ boost::python::list MagnetFactory::to_py_list(std::vector<typeOfVectorToConvert>
 }
 template<class key, class value>
 inline
-boost::python::dict to_py_dict(std::map<key, value> map)
+boost::python::dict MagnetFactory::to_py_dict(std::map<key, value> map)
 {
 	typename std::map<key, value>::iterator iter;
 	boost::python::dict newDictionary;
@@ -231,21 +211,21 @@ boost::python::dict to_py_dict(std::map<key, value> map)
 	return newDictionary;
 }
 /*END OF UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSBILE BY EVERYONE]*/
-boost::python::list MagnetFactory::getCurrents_Py(boost::python::list magNames)
+boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
 {
-	std::vector<double> currents;
+	std::map<std::string, double> currents;
 	std::vector<std::string> magNamesVector = to_std_vector<std::string>(magNames);
 	currents = getCurrents(magNamesVector);
-	boost::python::list newPyList = to_py_list(currents);
-	return newPyList;
+	boost::python::dict newPyDict = to_py_dict(currents);
+	return newPyDict;
 }
 std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 {
 	std::map<std::string, double> magnetsAndCurrentsMap;
-	for (auto mag : magnetVec)
+	for (auto mag : magnetMap)
 	{
-		std::pair<std::string, double> nameAndCurrentPair = std::make_pair(mag->getFullPVName(),
-			mag->getCurrent());
+		std::pair<std::string, double> nameAndCurrentPair = std::make_pair(mag.first,
+			mag.second->getCurrent());
 		magnetsAndCurrentsMap.insert(nameAndCurrentPair);
 	}
 	return magnetsAndCurrentsMap;
@@ -253,13 +233,7 @@ std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 
 bool MagnetFactory::setCurrent(std::string name, double value)
 {
-	for (auto &mag : magnetVec)
-	{
-		if (mag->getFullPVName() == name)
-		{
-			mag->setEPICSCurrent(value);
-			return true;
-		}
-	}
-	return false;
+	auto mag = magnetMap.find(name)->second;
+	mag->setEPICSCurrent(value);
+	return true;
 }
