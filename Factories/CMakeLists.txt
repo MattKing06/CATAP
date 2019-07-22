@@ -14,7 +14,7 @@ set( TEST_FILES
     MagnetFactoryTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
-find_package(Boost 1.63 REQUIRED COMPONENTS filesystem python)
+find_package(Boost 1.63 REQUIRED COMPONENTS filesystem python3)
 add_library(Factories STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(Factories PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(Factories PUBLIC ${PYTHON_INCLUDE_DIR})
