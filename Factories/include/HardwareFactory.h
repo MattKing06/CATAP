@@ -23,7 +23,7 @@ public:
 	LoggingSystem messenger;
 	ConfigReader reader;
 	//std::vector<Hardware*> hardwareVector;
-	std::map<std::string, Hardware*> hardwareVector;
+	std::map<std::string, Hardware*> hardwareMap;
 	MagnetFactory magnetFactory;
 	bool isVirtual;
 };
