@@ -10,15 +10,12 @@ BOOST_AUTO_TEST_SUITE(HardwareTestSuite)
 
 BOOST_AUTO_TEST_CASE(empty_hardware_test)
 {
-	Hardware *component = new Hardware();
-	BOOST_CHECK_EQUAL(component->getHardwareType(), "UNKNOWN");
-	BOOST_CHECK_EQUAL(component->getMachineArea(), "UNKNOWN");
-	BOOST_CHECK_EQUAL(component->getSpecificHardwareParameters().empty(), true);
-	auto pvStructVector = component->getPVStructs();	
-	for (auto pv = pvStructVector->begin(); pv != pvStructVector->end(); pvStructVector++)
-	{
-		std::cout << pv->fullPVName << ":" << pv->pvRecord << std::endl;
-	}
+	Hardware component = Hardware();
+	BOOST_CHECK_EQUAL(component.getHardwareType(), "UNKNOWN");
+	BOOST_CHECK_EQUAL(component.getMachineArea(), "UNKNOWN");
+	BOOST_CHECK_EQUAL(component.getSpecificHardwareParameters().empty(), true);
+	auto pvStructMap = component.getPVStructs();	
+	BOOST_CHECK_EQUAL(pvStructMap.empty(), true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

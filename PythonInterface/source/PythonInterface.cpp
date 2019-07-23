@@ -43,39 +43,46 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getHardwareType", &Hardware::getHardwareType);
 		// Magnet Exposure
 	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
-		.add_property("current", &Magnet::getCurrent, &Magnet::setCurrent)
+		.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
 		.add_property("name", &Magnet::getFullPVName)
 		.add_property("manufacturer", &Magnet::getManufacturer)
 		.add_property("serial_number", &Magnet::getSerialNumber)
 		.add_property("magnet_type", &Magnet::getMagnetType)
 		.def("getCurrent", &Magnet::getCurrent)
-		.def("setCurrent", &Magnet::setCurrent);
+		.def("setCurrent", &Magnet::setEPICSCurrent);
 	// Parameter Map Exposure
 	boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
-	// Hardware Vector Exposure
-	boost::python::class_<std::vector<Hardware> >("hardwareVec")
-		.def(boost::python::vector_indexing_suite< std::vector<Hardware> >());
-	//Magnet Vector Exposure
-	boost::python::class_<std::vector<Magnet*> >("magnetVec")
-		.def(boost::python::vector_indexing_suite< std::vector<Magnet*> >());
 	//Magnet Factory Exposure
 	boost::python::class_<MagnetFactory>("MagnetFactory", boost::python::no_init)
+		.def(boost::python::init<bool>())
 		.def("setup", &MagnetFactory::setup)
-		.def_readonly("magnetVector", &MagnetFactory::magnetVec)
+		.add_property("magnetMap", &MagnetFactory::magnetMap)
 		.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getMagnets", &MagnetFactory::getMagnets)
 		.def("getAllMagnets", &MagnetFactory::getAllMagnets)
 		.def("getCurrent", &MagnetFactory::getCurrent)
-		.def("getCurrents", &MagnetFactory::getCurrents)
+		.def("getCurrents", &MagnetFactory::getCurrents_Py)
 		.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents)
-		.def("setMagnetCurrent", &MagnetFactory::setCurrent)
+		.def("setCurrent", &MagnetFactory::setCurrent)
 		.add_property("logger", &MagnetFactory::messenger);
 	// Hardware Factory Exposure
 	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
+		.def(boost::python::init<bool>())
 		.def("setup", &HardwareFactory::setup)
-		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::return_value_policy<boost::python::reference_existing_object>());
+		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
+		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory)
+		.add_property("hardwareMap", &HardwareFactory::hardwareMap);
+
+
+	/*NOT SURE IF THESE NEED TO BE EXPOSED OR NOT*/
+	//// Hardware Vector Exposure
+	//boost::python::class_<std::map<std::string, Hardware*> >("hardwareMap")
+	//	.def(boost::python::map_indexing_suite< std::map<std::string, Hardware*> >());
+	////Magnet Vector Exposure
+	//boost::python::class_<std::map<std::string, Magnet*> >("magnetMap")
+	//	.def(boost::python::map_indexing_suite< std::map<std::string, Magnet*> >());
 
 }

@@ -17,11 +17,11 @@ class Magnet : public Hardware
 		Magnet();
 		~Magnet();
 
-		EPICSMagnetInterface* epicsInterface;
+		EPICSMagnetInterface *epicsInterface;
 		//should need a magnet name (full PV root, or alias can be given)
 		//Magnet(Hardware hardware); // this should be possible, but isn't useful right now.
 		Magnet(std::string knownNameOfMagnet);
-		Magnet(std::map<std::string, std::string> &magnetParametersAndValuesMap);
+		Magnet(std::map<std::string, std::string> &magnetParametersAndValuesMap, bool isVirtual);
 		std::string getFullPVName();
 		std::vector<std::string> getAliases();
 		std::string getManufacturer();
@@ -36,9 +36,11 @@ class Magnet : public Hardware
 		std::string getFullPSUName();
 		std::string getMeasurementDataLocation();
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
-		bool setCurrent(double value){ this->current = value; return true; }
+		bool isVirtual;
+		bool setCurrent(double value);
+		bool setEPICSCurrent(double value);
 		double getCurrent();
-
+		double current;
 	protected:
 		//what else does a magnet need?
 		std::string fullPVName;
@@ -54,7 +56,6 @@ class Magnet : public Hardware
 		double magneticLength;
 		std::string fullPSUName;
 		std::string measurementDataLocation;
-		double current;
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;

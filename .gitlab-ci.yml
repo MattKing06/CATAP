@@ -14,13 +14,13 @@ cmake_build:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
+  - make clean
   - make
   - echo 'Make Finished'
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
   - ./ConfigReaderTest
-  - ./HardwareFactoryTest
 
     
 

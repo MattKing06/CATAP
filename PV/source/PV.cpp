@@ -1,5 +1,6 @@
 #ifndef PV_H_
 #include "PV.h"
+#include <ostream>
 
 /*
 *

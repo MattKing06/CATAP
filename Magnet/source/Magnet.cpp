@@ -14,10 +14,17 @@ Magnet::Magnet()
 	magnetParametersAndValuesMap = std::map<std::string, std::string>();
 }
 
-Magnet::Magnet(std::map<std::string, std::string> &paramsMap) : Hardware(paramsMap)
+Magnet::Magnet(std::map<std::string, std::string> &paramsMap, bool isVirtual) : Hardware(paramsMap, isVirtual)
 {
 	//assuming known name
-	fullPVName = paramsMap.find("name")->second;
+	if (isVirtual)
+	{
+		fullPVName = paramsMap.find("virtual_name")->second;
+	}
+	else
+	{
+		fullPVName = paramsMap.find("name")->second;
+	}
 	manufacturer = paramsMap.find("manufacturer")->second;
 	serialNumber = std::stoi(paramsMap.find("serial_number")->second.data());
 	magType = paramsMap.find("mag_type")->second;
@@ -32,13 +39,10 @@ Magnet::Magnet(std::map<std::string, std::string> &paramsMap) : Hardware(paramsM
 	fullPSUName = paramsMap.find("PSU")->second;
 	measurementDataLocation = paramsMap.find("measurement_data_location")->second;
 	epicsInterface = new EPICSMagnetInterface();
+	this->isVirtual = isVirtual;
 	//_CrtDumpMemoryLeaks();
 }
 
-Magnet::~Magnet()
-{
-	delete this;
-}
 std::string Magnet::getFullPVName()
 {
 	return this->fullPVName;
@@ -94,4 +98,23 @@ std::string Magnet::getMeasurementDataLocation()
 double Magnet::getCurrent()
 {
 	return this->current;
+}
+bool Magnet::setEPICSCurrent(double value)
+{
+	std::map<std::string, pvStruct*> pvData = this->getPVStructs();
+	for (auto &pv : pvData)
+	{
+		if (pv.second->pvRecord == "SETI")
+		{
+			logger.printDebugMessage("SETTING TO VALUE: " + std::to_string(value) + " for [" + pv.second->fullPVName + "]");
+			this->epicsInterface->setNewCurrent(value, *(pv.second));
+		}
+	}
+	// subscription should sense current has changed and call 'updateCurrent' in MagnetEPICSInterface
+	return true;
+}
+bool Magnet::setCurrent(double value)
+{
+	this->current = value;
+	return true;
 }

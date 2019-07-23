@@ -6,6 +6,18 @@
 #include <cadef.h>
 #endif
 
+
+
+
+#define MY_SEVCHK(status)		\
+{								\
+	if (status != ECA_NORMAL)	\
+		{						\
+		SEVCHK(status, NULL);	\
+		exit(status);			\
+		}						\
+}								\
+
 #if defined(__unix__) ||  defined(_unix)
   const std::string HOME =  getenv("HOME");
   const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";//"~/MasterLattice";
@@ -15,6 +27,9 @@
   const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\Magnet";
   const std::string SEPARATOR = "\\";
 #endif
+
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
+
 // NON-MEMBER HELPER FUNCTIONS //
 std::vector<std::string> findYAMLFilesInDirectory(std::string version)
 {
@@ -46,97 +61,87 @@ std::vector<std::string> findYAMLFilesInDirectory(std::string version)
 
 
 // MEMBER FUNCTIONS //
-MagnetFactory::MagnetFactory()
+MagnetFactory::MagnetFactory() : MagnetFactory(false)
 {
-	messenger = LoggingSystem(false, false);
-	hasBeenSetup = false;
-	messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
-
+}
+MagnetFactory::MagnetFactory(bool isVirtual)
+{
+	this->messenger = LoggingSystem(false, false);
+	this->hasBeenSetup = false;
+	this->messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
+	this->virtualMagnetFactory = isVirtual;
+	this->reader = ConfigReader();
 }
 
 
 bool MagnetFactory::setup(std::string version)
 {
 	std::vector<std::string> filenames = findYAMLFilesInDirectory(version);
-	reader = ConfigReader();
-	reader.yamlFileDestination = MASTER_LATTICE_FILE_LOCATION;
 	for (auto file : filenames)
 	{
 		if (file != "Magnet.yaml")
 		{
+			reader.yamlFileDestination = MASTER_LATTICE_FILE_LOCATION;
 			reader.yamlFilename = file;
+			reader.loadVirtualHardware = this->virtualMagnetFactory;
+			if (this->virtualMagnetFactory)
+			{
+				messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
+			}
+
 			std::map<std::string, std::string> paramsAndValuesMap = reader.parseYamlFile();
-			Magnet* mag = new Magnet(paramsAndValuesMap);
+     		Magnet *mag = new Magnet(paramsAndValuesMap, this->virtualMagnetFactory);
 			// epics magnet interface has been initialized in Magnet constructor
 			// but we have a lot of PV information to retrieve from EPICS first
 			// so we will cycle through the PV structs, and set up their values.
 			//
 			// a PVStruct should also probably have an update function ptr as a member??
-			std::vector<pvStruct>* magPVStructs = mag->getPVStructs();
-			for (auto pv = magPVStructs->begin(); pv != magPVStructs->end(); pv++)
-			{	
-				int status;
-				std::string pvAndRecordName = pv->fullPVName + ":" + pv->pvRecord;
-				pv->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
-				status = ca_pend_io(1.0);
-				SEVCHK(status, "ca_pend_io failed");
-				pv->COUNT = mag->epicsInterface->retrieveCOUNT(pv->CHID);
-				pv->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv->CHID);
-				if (pv->pvRecord == "READI")
-				{
-					pv->updateFunction = &EPICSMagnetInterface::updateCurrent;
-				}
+			std::map<std::string, pvStruct*> magPVStructs = mag->getPVStructs();
+			for (auto &pv : magPVStructs)
+			{
+				std::string pvAndRecordName = mag->getFullPVName() + ":" + pv.first;
+				pv.second->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
+				pv.second->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv.second->CHID);
+				pv.second->COUNT = mag->epicsInterface->retrieveCOUNT(pv.second->CHID);
+				pv.second->updateFunction = findUpdateFunctionForRecord(pv.first, mag);
 				// not sure how to set the mask from EPICS yet.
-				pv->MASK = DBE_VALUE;
-				messenger.printDebugMessage("read" + std::to_string(ca_read_access(pv->CHID)) +
-											"write" + std::to_string(ca_write_access(pv->CHID)) +
-											"state" + std::to_string(ca_state(pv->CHID)) + "\n");
-				std::cout << "read" + std::to_string(ca_read_access(pv->CHID)) +
-					"write" + std::to_string(ca_write_access(pv->CHID)) +
-					"state" + std::to_string(ca_state(pv->CHID)) + "\n" << std::endl;
-				mag->epicsInterface->createSubscription(*(mag),pv->pvRecord);
-				if (mag->epicsInterface->owner == NULL)
-				{
-					mag->epicsInterface->owner = &(*(mag));
-				}
-				else
-				{
-					std::cout << "EPICS INTERFACE HAS AN OWNER: " << mag->getFullPVName() << std::endl;
-				}
+				pv.second->MASK = DBE_VALUE;
+				messenger.debugMessagesOn();
+				messenger.printDebugMessage(pv.second->pvRecord + ": read" + std::to_string(ca_read_access(pv.second->CHID)) +
+					"write" + std::to_string(ca_write_access(pv.second->CHID)) +
+					"state" + std::to_string(ca_state(pv.second->CHID)) + "\n");
+				mag->epicsInterface->createSubscription(*(mag), pv.second->pvRecord);
 			}
-			magnetVec.push_back(mag);
+			magnetMap[mag->getFullPVName()] = mag;
 		}
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
-std::vector<Magnet*> MagnetFactory::getMagnets(std::vector<std::string> magnetNames)
+
+updateFunctionPtr MagnetFactory::findUpdateFunctionForRecord(std::string record, Magnet* mag)
 {
-	std::vector<Magnet*> selectedMagnets;
-	for (auto &magnet : magnetVec)
+	if (record == "GETSETI")
 	{
-		for (auto &name : magnetNames)
-		{
-			if (magnet->getFullPVName() == name)
-			{
-				selectedMagnets.push_back(magnet);
-			}
-		}
+		return mag->epicsInterface->updateCurrent;
+	}
+	return nullptr;
+}
+
+std::map<std::string, Magnet*> MagnetFactory::getMagnets(std::vector<std::string> magnetNames)
+{
+	std::map<std::string, Magnet*> selectedMagnets;
+	for (auto &magName : magnetNames)
+	{
+		selectedMagnets[magName] = magnetMap.find(magName)->second;
 	}
 	return selectedMagnets;
 }
 Magnet* MagnetFactory::getMagnet(std::string fullMagnetName)
 {
-	for (auto &magnet : magnetVec)
-	{
-		if (magnet->getFullPVName() == fullMagnetName)
-		{
-			return magnet;
-		}
-	}
-	return NULL;
+	return magnetMap.find(fullMagnetName)->second;
 }
-std::vector<Magnet*> MagnetFactory::getAllMagnets() 
+std::map<std::string, Magnet*> MagnetFactory::getAllMagnets()
 {
 	if (!hasBeenSetup)
 	{
@@ -146,7 +151,7 @@ std::vector<Magnet*> MagnetFactory::getAllMagnets()
 	{
 		messenger.printDebugMessage("MAGNETS HAVE ALREADY BEEN CONSTRUCTED.");
 	}
-	return magnetVec;
+	return magnetMap;
 }
 
 double MagnetFactory::getCurrent(std::string name)
@@ -155,38 +160,72 @@ double MagnetFactory::getCurrent(std::string name)
 	{
 		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
 	}
-	for (auto &magnet : magnetVec)
+	else
 	{
-		if (magnet->getFullPVName() == name)
-		{
-			return magnet->getCurrent();
-		}
+		double current = magnetMap.find(name)->second->getCurrent();
+		return current;
 	}
-	return 0.0;
+	return std::numeric_limits<double>::min();;
 }
-std::vector<double> MagnetFactory::getCurrents(std::vector<std::string> names)
+std::map<std::string, double> MagnetFactory::getCurrents(std::vector<std::string> names)
 {
-	std::vector<double> currents;
-	for (auto magnet : magnetVec)
+	std::map<std::string, double> currents;
+	for (auto name : names)
 	{
-		for (auto name : names)
-		{
-			if (magnet->getFullPVName() == name)
-			{
-				currents.push_back(magnet->getCurrent());
-			}
-		}
+		double current = magnetMap.find(name)->second->getCurrent();
+		currents[name] = current;
 	}
 	return currents;
 }
+/*UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSIBLE BY EVERYONE]*/
+template< typename typeOfNewVector>
+inline
+std::vector<typeOfNewVector> MagnetFactory::to_std_vector(const boost::python::object& iterable)
+{
+	return std::vector<typeOfNewVector>(boost::python::stl_input_iterator<typeOfNewVector>(iterable),
+		boost::python::stl_input_iterator<typeOfNewVector>());
+}
 
+template<class typeOfVectorToConvert>
+inline
+boost::python::list MagnetFactory::to_py_list(std::vector<typeOfVectorToConvert> vector)
+{
+	typename std::vector<typeOfVectorToConvert>::iterator iter;
+	boost::python::list newList;
+	for (iter = vector.begin(); iter != vector.end(); ++iter)
+	{
+		newList.append(*iter);
+	}
+	return newList;
+}
+template<class key, class value>
+inline
+boost::python::dict MagnetFactory::to_py_dict(std::map<key, value> map)
+{
+	typename std::map<key, value>::iterator iter;
+	boost::python::dict newDictionary;
+	for (iter = map.begin(); iter != map.end(); ++iter)
+	{
+		newDictionary[iter->first] = iter->second;
+	}
+	return newDictionary;
+}
+/*END OF UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSBILE BY EVERYONE]*/
+boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
+{
+	std::map<std::string, double> currents;
+	std::vector<std::string> magNamesVector = to_std_vector<std::string>(magNames);
+	currents = getCurrents(magNamesVector);
+	boost::python::dict newPyDict = to_py_dict(currents);
+	return newPyDict;
+}
 std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 {
 	std::map<std::string, double> magnetsAndCurrentsMap;
-	for (auto mag : magnetVec)
+	for (auto mag : magnetMap)
 	{
-		std::pair<std::string, double> nameAndCurrentPair = std::make_pair(mag->getFullPVName(),
-			mag->getCurrent());
+		std::pair<std::string, double> nameAndCurrentPair = std::make_pair(mag.first,
+			mag.second->getCurrent());
 		magnetsAndCurrentsMap.insert(nameAndCurrentPair);
 	}
 	return magnetsAndCurrentsMap;
@@ -194,13 +233,7 @@ std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 
 bool MagnetFactory::setCurrent(std::string name, double value)
 {
-	for (auto mag : magnetVec)
-	{
-		if (mag->getFullPVName() == name)
-		{
-			mag->setCurrent(value);
-			return true;
-		}
-	}
-	return false;
+	auto mag = magnetMap.find(name)->second;
+	mag->setEPICSCurrent(value);
+	return true;
 }

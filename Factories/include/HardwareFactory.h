@@ -13,17 +13,19 @@ class HardwareFactory
     */
 public:
 	HardwareFactory();
+	HardwareFactory(bool isVirtual);
 	HardwareFactory(std::string hardwareType, std::string version);
 	bool setup(std::string hardwareType, std::string version);
-	MagnetFactory* getMagnetFactory();
+	MagnetFactory getMagnetFactory();
 	Magnet* getMagnet(std::string fullMagnetName);
-	std::vector<Magnet*> getAllMagnets();
+	std::map<std::string, Magnet*> getAllMagnets();
 	bool operator ==(const HardwareFactory &HardwareFactory) const;
 	LoggingSystem messenger;
 	ConfigReader reader;
 	//std::vector<Hardware*> hardwareVector;
-	std::vector<Hardware*> hardwareVector;
-	MagnetFactory* magnetFactory;
+	std::map<std::string, Hardware*> hardwareMap;
+	MagnetFactory magnetFactory;
+	bool isVirtual;
 };
 
 
