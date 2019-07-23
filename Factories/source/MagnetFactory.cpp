@@ -27,9 +27,6 @@
   const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\Magnet";
   const std::string SEPARATOR = "\\";
 #endif
-
-typedef void(*updateFunctionPtr)(struct event_handler_args args);
-
 // NON-MEMBER HELPER FUNCTIONS //
 std::vector<std::string> findYAMLFilesInDirectory(std::string version)
 {

@@ -8,6 +8,9 @@
 #include <vector>
 #include <map>
 #include <boost/python.hpp>
+
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
+
 class MagnetFactory
 {
 	public:
@@ -15,7 +18,6 @@ class MagnetFactory
 		MagnetFactory(bool isVirtual);
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
-		typedef void (*updateFunctionPtr)(struct event_handler_args args);
 		bool setup(std::string version);
 		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet* mag);
 		LoggingSystem messenger;
