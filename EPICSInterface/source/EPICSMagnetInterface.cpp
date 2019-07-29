@@ -24,11 +24,11 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 	else if (args.type == DBR_DOUBLE)
 	{
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		std::cout << recastMagnet->getFullPVName() << std::endl;
+		messenger.printMessage(recastMagnet->getFullPVName());
 		recastMagnet->setCurrent(*(double*)(args.dbr));
-		std::cout << "GETSETI VALUE: " << *(double*)(args.dbr) << std::endl;
+		messenger.printMessage("GETSETI VALUE: " + std::to_string(*(double*)(args.dbr)));
 	}
-	std::cout << " CALLED UPDATE CURRENT " << std::endl;
+	messenger.printMessage(" CALLED UPDATE CURRENT ");
 
 }
 

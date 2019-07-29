@@ -15,13 +15,11 @@ class Magnet : public Hardware
 {
 	public:
 		Magnet();
-		~Magnet();
-
-		EPICSMagnetInterface *epicsInterface;
 		//should need a magnet name (full PV root, or alias can be given)
 		//Magnet(Hardware hardware); // this should be possible, but isn't useful right now.
 		Magnet(std::string knownNameOfMagnet);
 		Magnet(std::map<std::string, std::string> &magnetParametersAndValuesMap, bool isVirtual);
+		EPICSMagnetInterface *epicsInterface;
 		std::string getFullPVName();
 		std::vector<std::string> getAliases();
 		std::string getManufacturer();
