@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
-
+#include <chrono>
+#include <thread>
 /*********************************************************/
 /**** TEST WARNING ** TEST WARNING ** TEST WARNING ** ****/
 /*********************************************************/
@@ -66,6 +67,7 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	double currentToSet = rand() % 10 + 1.0;
 	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", currentToSet);
 	magFactory.setCurrent("VM-CLA-C2V-MAG-VCOR-01", currentToSet);
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01"), currentToSet);
 	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-VCOR-01"), currentToSet);
 }

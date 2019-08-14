@@ -22,6 +22,7 @@ EPICSInterface::EPICSInterface()
 		status = ca_context_create(ca_enable_preemptive_callback);
 		MY_SEVCHK(status);
 	}
+
 	thisCaContext = ca_current_context();
 }
 EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine)
@@ -73,7 +74,7 @@ chid EPICSInterface::retrieveCHID(std::string &pv)
 		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
 		//std::cout << "CHID FROM EPICS INTERFACE: " << CHID << std::endl;
 		MY_SEVCHK(status);
-		status = ca_pend_io(1.0);
+		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		messenger.printDebugMessage(pvCstr);
 		return CHID;
 	}

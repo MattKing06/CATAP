@@ -12,6 +12,7 @@
 #include "PV.h"
 #endif
 class PV;
+#define CA_PEND_IO_TIMEOUT 5.0
 class EPICSInterface
 {
 	public:
@@ -25,11 +26,13 @@ class EPICSInterface
 		chtype retrieveCHTYPE(chid &channelID);
 		unsigned long retrieveCOUNT(chid &channelID);
 		void createSubscription(Hardware &hardware, std::string pvName);
+
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;
 		LoggingSystem messenger;
 		unsigned short EPICS_ACTIVATE, EPICS_SEND, EPICS_RESET;
+
 		// some other stuff might be needed here, need to check interface.h from VELA-CLARA Controllers
 
 	#ifndef __CINT__
