@@ -133,7 +133,6 @@ bool MagnetFactory::setup(const std::string &version)
 	populateMagnetMap();
 	for (auto &magnet : magnetMap)
 	{
-		magnet.second.epicsInterface->magnetMapPointer = &magnetMap;
 		std::map<std::string, pvStruct*> magPVStructs = magnet.second.getPVStructs();
 		for (auto &pv : magPVStructs)
 		{
