@@ -10,7 +10,7 @@
 #include <boost/python.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
-
+class Magnet;
 class MagnetFactory
 {
 	public:
@@ -20,13 +20,14 @@ class MagnetFactory
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
 		bool setup(const std::string &version);
-		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet* mag);
+		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet mag);
 		LoggingSystem messenger;
 		ConfigReader reader;
-		Magnet* getMagnet(std::string fullMagnetName);
-		std::map<std::string, Magnet*> getMagnets(std::vector<std::string> magnetNames);
-		std::map<std::string, Magnet*> getAllMagnets();
-		std::map<std::string, Magnet*> magnetMap;
+		Magnet getMagnet(std::string fullMagnetName);
+		std::map<std::string, Magnet> getMagnets(std::vector<std::string> magnetNames);
+		std::map<std::string, Magnet> getAllMagnets();
+		std::map<std::string, Magnet> magnetMap;
+		void populateMagnetMap();
 		bool hasBeenSetup;
 		bool isVirtual;
 		// methods for setting properties of magnet via PV name
