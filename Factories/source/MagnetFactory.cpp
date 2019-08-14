@@ -92,28 +92,28 @@ bool MagnetFactory::setup(std::string version)
 			// storing a proper reference to it in our magnetMap due to scope.
 			// The static keyword is used here to avoid raw pointers, we store a reference to
 			// the magnet in the magnetMap
-     		static Magnet mag(paramsAndValuesMap, this->virtualMagnetFactory);
+     		Magnet* mag = new Magnet(paramsAndValuesMap, this->virtualMagnetFactory);
 			// epics magnet interface has been initialized in Magnet constructor
 			// but we have a lot of PV information to retrieve from EPICS first
 			// so we will cycle through the PV structs, and set up their values.
-			std::map<std::string, pvStruct*> magPVStructs = mag.getPVStructs();
+			std::map<std::string, pvStruct*> magPVStructs = mag->getPVStructs();
 			for (auto &pv : magPVStructs)
 			{
-				std::string pvAndRecordName = mag.getFullPVName() + ":" + pv.first;
-				pv.second->CHID = mag.epicsInterface->retrieveCHID(pvAndRecordName);
-				pv.second->CHTYPE = mag.epicsInterface->retrieveCHTYPE(pv.second->CHID);
-				pv.second->COUNT = mag.epicsInterface->retrieveCOUNT(pv.second->CHID);
-				pv.second->updateFunction = findUpdateFunctionForRecord(pv.first, &mag);
+				std::string pvAndRecordName = mag->getFullPVName() + ":" + pv.first;
+				pv.second->CHID = mag->epicsInterface->retrieveCHID(pvAndRecordName);
+				pv.second->CHTYPE = mag->epicsInterface->retrieveCHTYPE(pv.second->CHID);
+				pv.second->COUNT = mag->epicsInterface->retrieveCOUNT(pv.second->CHID);
+				pv.second->updateFunction = findUpdateFunctionForRecord(pv.first, mag);
 				// not sure how to set the mask from EPICS yet.
 				pv.second->MASK = DBE_VALUE;
 				messenger.debugMessagesOn();
 				messenger.printDebugMessage(pv.second->pvRecord + ": read" + std::to_string(ca_read_access(pv.second->CHID)) +
 					"write" + std::to_string(ca_write_access(pv.second->CHID)) +
 					"state" + std::to_string(ca_state(pv.second->CHID)) + "\n");
-				mag.epicsInterface->createSubscription(mag, pv.second->pvRecord);
+				mag->epicsInterface->createSubscription(*mag, pv.second->pvRecord);
 			}
 			// inserts new key-value per ONLY IF key is unique.
-			magnetMap.emplace(mag.getFullPVName(), &mag);
+			magnetMap.emplace(mag->getFullPVName(), mag);
 		}
 	}
 	hasBeenSetup = true;
@@ -236,5 +236,13 @@ bool MagnetFactory::setCurrent(std::string name, double value)
 {
 	auto mag = magnetMap.find(name)->second;
 	mag->setEPICSCurrent(value);
+	return true;
+}
+bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCurrentsMap)
+{
+	for (const auto& entry : namesAndCurrentsMap)
+	{
+		setCurrent(entry.first, entry.second);
+	}
 	return true;
 }

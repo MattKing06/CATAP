@@ -33,7 +33,7 @@ class MagnetFactory
 		std::map<std::string, double> getCurrents(std::vector<std::string> names);
 		std::map<std::string, double> getAllMagnetCurrents();
 		bool setCurrent(std::string name, double value);
-		bool setCurrents(std::vector<std::string> names, double value);
+		bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCurrentsMap);
 		bool setAllMagnetCurrents(double value);
 		bool turnOn(std::string name);
 		bool turnOn(std::vector<std::string> names);
