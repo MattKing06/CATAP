@@ -20,6 +20,14 @@ EPICSMagnetInterface::~EPICSMagnetInterface()
 	messenger.messagesOn();
 	messenger.printMessage("EPICSMagnetInterface Destructor Called");
 }
+updateFunctionPtr EPICSMagnetInterface::retrieveUpdateFunctionForRecord(const std::string &record)
+{
+	if (record == "GETSETI")
+	{
+		return this->updateCurrent;
+	}
+}
+
 void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 {
 	messenger.messagesOn();
@@ -39,7 +47,7 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 
 }
 
-void EPICSMagnetInterface::setNewCurrent(double value, pvStruct pv)
+const void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv)
 {
 	//we have checked that pvRecord is SETI before reaching here.
 	if (ca_state(pv.CHID) == cs_conn)

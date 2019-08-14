@@ -19,7 +19,7 @@ class MagnetFactory
 		~MagnetFactory();
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
-		bool setup(std::string version);
+		bool setup(const std::string &version);
 		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet* mag);
 		LoggingSystem messenger;
 		ConfigReader reader;
@@ -28,7 +28,7 @@ class MagnetFactory
 		std::map<std::string, Magnet*> getAllMagnets();
 		std::map<std::string, Magnet*> magnetMap;
 		bool hasBeenSetup;
-		bool virtualMagnetFactory;
+		bool isVirtual;
 		// methods for setting properties of magnet via PV name
 		double getCurrent(std::string name);
 		std::map<std::string, double> getCurrents(std::vector<std::string> names);
