@@ -14,6 +14,7 @@
   const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
   const std::string SEPARATOR = "\\";
 #endif
+
 std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std::string version)
 {
 	boost::filesystem::path directory(MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareType); // + '//' + hardwareType + '//' + version);
@@ -49,35 +50,38 @@ HardwareFactory::~HardwareFactory()
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage(std::string("Hardware Factory Constructed"));
-	this->isVirtual = createVirtualHardwareFactory;
-	this->magnetFactory = MagnetFactory(isVirtual);
+	isVirtual = createVirtualHardwareFactory;
+	magnetFactory = MagnetFactory(isVirtual);
 }
 bool HardwareFactory::setup(std::string hardwareType, std::string version)
 {
 	bool setup = false;
 	if (hardwareType == "Magnet")
 	{
-		if (!this->magnetFactory.hasBeenSetup)
+		if (!magnetFactory.hasBeenSetup)
 		{
-			setup = this->magnetFactory.setup(version);
+			setup = magnetFactory.setup(version);
 		}
 	}
 	return setup;
 }
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
-	if (this->magnetFactory.hasBeenSetup)
+	if (!magnetFactory.hasBeenSetup)
 	{
-		return this->magnetFactory;
+		bool setup = magnetFactory.setup("nominal");
+		if (setup)
+		{
+			return magnetFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup MagnetFactory");
+		}
 	}
 	else
 	{
-		bool setup = this->magnetFactory.setup("nominal");
-		if (setup)
-		{
-			return this->magnetFactory;
-		}
-
+		return magnetFactory;
 	}
 
 }
