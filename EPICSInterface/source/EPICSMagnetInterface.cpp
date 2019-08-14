@@ -15,9 +15,14 @@ EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 {
 	this->messenger = LoggingSystem(false, false);
 }
-void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
+EPICSMagnetInterface::~EPICSMagnetInterface()
 {
 	messenger.messagesOn();
+	messenger.printMessage("EPICSMagnetInterface Destructor Called");
+}
+void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
+{
+	messenger.messagesOff();
 	if (args.status != ECA_NORMAL)
 	{
 		std::cerr << "Something went wrong with update function!" << std::endl;
@@ -39,9 +44,10 @@ void EPICSMagnetInterface::setNewCurrent(double value, pvStruct pv)
 	if (ca_state(pv.CHID) == cs_conn)
 	{
 		int status = ca_put(pv.CHTYPE, pv.CHID, &(value));
-		status = ca_flush_io();
 		MY_SEVCHK(status);
-		std::cout << "SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS (STATUS = " + std::to_string(status) + ") " << std::endl;
+		status = ca_pend_io(ECA_TIMEOUT);
+		MY_SEVCHK(status);
+		messenger.printMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS (STATUS = " + std::to_string(status) + ") ");
 	}
 	else
 	{

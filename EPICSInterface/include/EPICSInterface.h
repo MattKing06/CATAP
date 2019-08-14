@@ -18,7 +18,7 @@ class EPICSInterface
 		EPICSInterface();
 		EPICSInterface(bool& shouldStartEpics, bool& shouldStartVirtualMachine);
 		EPICSInterface(bool& shouldStartEpics, bool& shouldStartVirtualMachine, LoggingSystem& messaging);
-
+		~EPICSInterface();
 		double get_CA_PEND_IO_TIMEOUT() const;
 		void set_CA_PEND_IO_TIMEOUT(double value);
 		chid retrieveCHID(std::string &pv);

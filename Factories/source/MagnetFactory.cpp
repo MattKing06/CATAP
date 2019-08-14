@@ -72,6 +72,8 @@ MagnetFactory::MagnetFactory(bool isVirtual)
 
 MagnetFactory::~MagnetFactory()
 {
+	messenger.messagesOn();
+	messenger.printMessage("MagnetFactory Destructor Called");
 	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
 	// The MagnetFactory object is destroyed by python too quickly
 	// I believe this has something to do with python not managing the object
@@ -129,7 +131,6 @@ bool MagnetFactory::setup(std::string version)
 				pv.second->updateFunction = findUpdateFunctionForRecord(pv.first, mag);
 				// not sure how to set the mask from EPICS yet.
 				pv.second->MASK = DBE_VALUE;
-				messenger.debugMessagesOn();
 				messenger.printDebugMessage(pv.second->pvRecord + ": read" + std::to_string(ca_read_access(pv.second->CHID)) +
 					"write" + std::to_string(ca_write_access(pv.second->CHID)) +
 					"state" + std::to_string(ca_state(pv.second->CHID)) + "\n");

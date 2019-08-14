@@ -37,7 +37,11 @@ EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, Logg
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
 	EPICSInterface::messenger = messager;
 }
-
+EPICSInterface::~EPICSInterface()
+{
+	messenger.messagesOn();
+	messenger.printMessage("EPICSInterface Destructor Called");
+}
 void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
 	std::map<std::string, pvStruct*> pvList = hardware.getPVStructs();
