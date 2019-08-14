@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <utility>
+#include <Magnet.h>
 #include "boost/algorithm/string.hpp"
 #include "boost/filesystem.hpp"
 #include "yaml-cpp/exceptions.h"
@@ -118,83 +119,22 @@ const bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplat
 	return true;
 }
 
-std::map<std::string, std::string> ConfigReader::parseNextYamlFile()
-{
-	for (const auto filename : yamlFilenamesAndParsedStatusMap)
-	{
-		// boolean check here for safety, even though we remove all parsed files
-		// anyway, just didn't trust myself..
-		if (!filename.second)
-		{
-			yamlFilename = filename.first;
-			yamlFilenamesAndParsedStatusMap.erase(filename.first);
-			return parseYamlFile();
-		}
-	}
-}
-
 bool ConfigReader::hasMoreFilesToParse()
 {
-	return !yamlFilenamesAndParsedStatusMap.empty();
-}
-
-const std::map<std::string, std::string> ConfigReader::parseYamlFile()
-{
-	std::ifstream fileInput;
-	YAML::Node config;
-	YAML::Node configTemplate;
-	std::map<std::string, std::string> parameters;
-	try
+	for (const auto &file : yamlFilenamesAndParsedStatusMap)
 	{
-		fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-		YAML::Parser parser(fileInput);
-		config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-		if (config.size() > 0)
+		if (file.second)
 		{
-			std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
-			configTemplate = YAML::LoadFile(hardwareTemplateFilename);
-			if (!checkForValidTemplate(configTemplate, config))
-			{
-				throw YAML::BadFile();
-			}
-			auto pvAndRecordPair = extractControlsInformationIntoPair(config);
-			auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
-			parameters.insert(pvAndRecordPair);
-			for (auto prop : hardwareParameterMap)
-			{
-				parameters.insert(prop);
-			}
-			return parameters;
+			continue;
 		}
-		else
+		if (!file.second)
 		{
-
-			throw std::length_error("File contents were of length " + std::to_string(config.size()) + ", file must be empty!");
-			return parameters;
+			return true;
 		}
 	}
-	// POTENTIAL EXCEPTIONS //
-	catch (std::length_error EmptyFileException)
-	{
-		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
-		return parameters;
-	}
-	catch (YAML::BadFile BadFileException)
-	{
-		std::cout << "Could not find file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "), or file is not compliant with template "
-			<< ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::hardwareFolder << ".yaml" << "\n";
-		return parameters;
-	}
-	catch (YAML::ParserException EmptyFileException)
-	{
-		std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
-		return parameters;
-	}
-	catch (YAML::BadConversion ConvervsionException)
-	{
-		std::cout << ConvervsionException.what() << std::endl;
-	}
+	return false;
 }
+
 
 const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode)
 {
