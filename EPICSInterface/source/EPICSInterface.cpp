@@ -16,30 +16,26 @@
 EPICSInterface::EPICSInterface()
 {
 	int status;
-	EPICSInterface::messaging = LoggingSystem(false, false);
-	status = ca_context_create(ca_enable_preemptive_callback);
-	if (status != ECA_NORMAL)
+	messenger = LoggingSystem(false, false);
+	if (!ca_current_context())
 	{
-		std::printf("ca_context_create failed: \n%s\n", 
-			ca_message(status));
-		exit(1);
+		status = ca_context_create(ca_enable_preemptive_callback);
+		MY_SEVCHK(status);
 	}
-	status = ca_task_initialize();
-	SEVCHK(status, "initialize failed");
 	thisCaContext = ca_current_context();
 }
 EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messaging = LoggingSystem(false, false);
+	EPICSInterface::messenger = LoggingSystem(false, false);
 }
 
 EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, LoggingSystem& messager)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messaging = messager;
+	EPICSInterface::messenger = messager;
 }
 
 void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
@@ -74,7 +70,7 @@ chid EPICSInterface::retrieveCHID(std::string &pv)
 		//std::cout << "CHID FROM EPICS INTERFACE: " << CHID << std::endl;
 		MY_SEVCHK(status);
 		status = ca_pend_io(1.0);
-		messaging.printDebugMessage(pvCstr);
+		messenger.printDebugMessage(pvCstr);
 		return CHID;
 	}
 	catch (std::exception &e)

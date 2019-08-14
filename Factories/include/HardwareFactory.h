@@ -1,6 +1,8 @@
 #ifndef HARDWARE_FACTORY_H_
 #define HARDWARE_FACTORY_H_
 #include "MagnetFactory.h"
+#include "boost\shared_ptr.hpp"
+typedef boost::shared_ptr<class MagnetFactory> MagnetFactory_sptr;
 
 class HardwareFactory
 {
@@ -15,8 +17,9 @@ public:
 	HardwareFactory();
 	HardwareFactory(bool isVirtual);
 	HardwareFactory(std::string hardwareType, std::string version);
+	~HardwareFactory();
 	bool setup(std::string hardwareType, std::string version);
-	MagnetFactory getMagnetFactory();
+	MagnetFactory& getMagnetFactory();
 	Magnet* getMagnet(std::string fullMagnetName);
 	std::map<std::string, Magnet*> getAllMagnets();
 	bool operator ==(const HardwareFactory &HardwareFactory) const;

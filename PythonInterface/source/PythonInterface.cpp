@@ -22,6 +22,8 @@
 #include "ConfigReader.h"
 #include <vector>
 #include <map>
+
+
 BOOST_PYTHON_MODULE(CATAP)
 {
 	// Logging System Exposure
@@ -67,14 +69,18 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getCurrents", &MagnetFactory::getCurrents_Py)
 		.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents)
 		.def("setCurrent", &MagnetFactory::setCurrent)
+		.def("setCurrents", &MagnetFactory::setCurrents_Py)
 		.add_property("logger", &MagnetFactory::messenger);
 	// Hardware Factory Exposure
+
+
 	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
 		.def(boost::python::init<bool>())
 		.def("setup", &HardwareFactory::setup)
 		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
-		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory)
+		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap);
+
 
 
 	/*NOT SURE IF THESE NEED TO BE EXPOSED OR NOT*/

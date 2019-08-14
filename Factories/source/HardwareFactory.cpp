@@ -2,6 +2,8 @@
 #include <iostream>
 #include <boost/algorithm/algorithm.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/python/converter/shared_ptr_to_python.hpp>
 
 #if defined(__unix__) ||  defined(_unix)
   const std::string HOME =  getenv("HOME");
@@ -39,7 +41,11 @@ std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std:
 HardwareFactory::HardwareFactory() : HardwareFactory(false)
 {
 }
-
+HardwareFactory::~HardwareFactory()
+{
+	messenger.messagesOn();
+	messenger.printMessage("HardwareFactory Destruction Called");
+}
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage(std::string("Hardware Factory Constructed"));
@@ -58,7 +64,7 @@ bool HardwareFactory::setup(std::string hardwareType, std::string version)
 	}
 	return setup;
 }
-MagnetFactory HardwareFactory::getMagnetFactory()
+MagnetFactory& HardwareFactory::getMagnetFactory()
 {
 	if (this->magnetFactory.hasBeenSetup)
 	{
@@ -73,7 +79,6 @@ MagnetFactory HardwareFactory::getMagnetFactory()
 		}
 
 	}
-	return NULL;
 
 }
 bool HardwareFactory::operator==(const HardwareFactory &HardwareFactory) const

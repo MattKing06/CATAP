@@ -70,6 +70,29 @@ MagnetFactory::MagnetFactory(bool isVirtual)
 	this->reader = ConfigReader();
 }
 
+MagnetFactory::~MagnetFactory()
+{
+	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
+	// The MagnetFactory object is destroyed by python too quickly
+	// I believe this has something to do with python not managing the object
+	//for (auto& magnet : magnetMap)
+	//{
+	//	auto pvStructsList = magnet.second->getPVStructs();
+	//	for (auto& pvStruct : pvStructsList)
+	//	{
+	//		if (pvStruct.second->EVID)
+	//		{
+	//			magnet.second->epicsInterface->destroySubscription(pvStruct.second->EVID);
+	//			ca_flush_io();
+	//			
+	//		}
+	//		if (pvStruct.second->CHID)
+	//		{
+	//			magnet.second->epicsInterface->clearChannel(pvStruct.second->CHID);
+	//		}
+	//	}
+	//}
+}
 
 bool MagnetFactory::setup(std::string version)
 {
@@ -186,7 +209,6 @@ std::vector<typeOfNewVector> MagnetFactory::to_std_vector(const boost::python::o
 	return std::vector<typeOfNewVector>(boost::python::stl_input_iterator<typeOfNewVector>(iterable),
 		boost::python::stl_input_iterator<typeOfNewVector>());
 }
-
 template<class typeOfVectorToConvert>
 inline
 boost::python::list MagnetFactory::to_py_list(std::vector<typeOfVectorToConvert> vector)
@@ -245,4 +267,20 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 		setCurrent(entry.first, entry.second);
 	}
 	return true;
+}
+bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
+{
+	std::map<std::string, double> magnetNamesAndCurrentsToSet;
+	std::vector<std::string> magnetNames = to_std_vector<std::string>(magnetNamesAndCurrents.keys());
+	std::vector<double> currentsToSet = to_std_vector<double>(magnetNamesAndCurrents.values());
+	auto magnetNamesIterator = magnetNames.begin();
+	auto currentsToSetIterator = currentsToSet.begin();
+	while (magnetNamesIterator != magnetNames.end() && currentsToSetIterator != currentsToSet.end())
+	{
+		std::pair<std::string, double> entryToInsert = std::pair<std::string, double>(magnetNamesIterator->data(), *currentsToSetIterator);
+		magnetNamesAndCurrentsToSet.emplace(entryToInsert);
+		magnetNamesIterator++;
+		currentsToSetIterator++;
+	}
+	return setCurrents(magnetNamesAndCurrentsToSet);
 }

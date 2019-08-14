@@ -16,6 +16,7 @@ class MagnetFactory
 	public:
 		MagnetFactory();
 		MagnetFactory(bool isVirtual);
+		~MagnetFactory();
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
 		bool setup(std::string version);

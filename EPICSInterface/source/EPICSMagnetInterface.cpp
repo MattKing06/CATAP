@@ -17,6 +17,7 @@ EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 }
 void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 {
+	messenger.messagesOn();
 	if (args.status != ECA_NORMAL)
 	{
 		std::cerr << "Something went wrong with update function!" << std::endl;

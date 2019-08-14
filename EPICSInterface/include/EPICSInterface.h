@@ -28,7 +28,7 @@ class EPICSInterface
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;
-		LoggingSystem messaging;
+		LoggingSystem messenger;
 		unsigned short EPICS_ACTIVATE, EPICS_SEND, EPICS_RESET;
 		// some other stuff might be needed here, need to check interface.h from VELA-CLARA Controllers
 
