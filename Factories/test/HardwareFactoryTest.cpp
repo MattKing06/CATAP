@@ -60,21 +60,21 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	HardwareFactory hardwareFactory(true);
 	bool status;
 	status = hardwareFactory.setup("Magnet","nominal");
-	MagnetFactory *magFactory = &hardwareFactory.getMagnetFactory();
+	MagnetFactory& magFactory = hardwareFactory.getMagnetFactory();
 	BOOST_CHECK(status);
 	srand(time(NULL));
 	double currentToSet = rand() % 10 + 1.0;
-	magFactory->setCurrent("VM-CLA-C2V-MAG-HCOR-01", currentToSet);
+	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", currentToSet);
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	magFactory->setCurrent("VM-CLA-C2V-MAG-VCOR-01", currentToSet);
+	magFactory.setCurrent("VM-CLA-C2V-MAG-VCOR-01", currentToSet);
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	magFactory->magnetMap;
-	Magnet* HCOR = &magFactory->getMagnet("VM-CLA-C2V-MAG-HCOR-01");
-	Magnet* VCOR = &magFactory->getMagnet("VM-CLA-C2V-MAG-VCOR-01");
+	magFactory.magnetMap;
+	Magnet* HCOR = &magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
+	Magnet* VCOR = &magFactory.getMagnet("VM-CLA-C2V-MAG-VCOR-01");
 	std::cout << "HCOR CURRENT: " << HCOR->getCurrent() << std::endl;
 	std::cout << "VCOR CURRENT: " << VCOR->getCurrent() << std::endl;
-	BOOST_CHECK_EQUAL(magFactory->getCurrent("VM-CLA-C2V-MAG-HCOR-01"), currentToSet);
+	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01"), currentToSet);
 	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	BOOST_CHECK_EQUAL(magFactory->getCurrent("VM-CLA-C2V-MAG-VCOR-01"), currentToSet);
+	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-VCOR-01"), currentToSet);
 }
 
