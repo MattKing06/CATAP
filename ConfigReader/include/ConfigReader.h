@@ -4,9 +4,10 @@
 #include "yaml-cpp/parser.h"
 #include "yaml-cpp/yaml.h"
 #include "LoggingSystem.h"
-#include <map>
 #include <string>
-
+#include <fstream>
+#include <iostream>
+#include <map>
 
 #if defined(__unix__) ||  defined(_unix)
 const std::string HOME = getenv("HOME");

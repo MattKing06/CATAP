@@ -1,7 +1,4 @@
 #include "ConfigReader.h"
-#include <fstream>
-#include <iostream>
-#include <map>
 #include <utility>
 #include <Magnet.h>
 #include "boost/algorithm/string.hpp"
