@@ -5,40 +5,6 @@
 #include <boost/make_shared.hpp>
 #include <boost/python/converter/shared_ptr_to_python.hpp>
 
-#if defined(__unix__) ||  defined(_unix)
-  const std::string HOME =  getenv("HOME");
-  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";
-  const std::string SEPARATOR = "/";
-#endif
-#ifdef _WIN32
-  const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
-  const std::string SEPARATOR = "\\";
-#endif
-
-std::vector<std::string> findYAMLFilesInDirectory(std::string hardwareType, std::string version)
-{
-	boost::filesystem::path directory(MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareType); // + '//' + hardwareType + '//' + version);
-	std::vector<std::string> filenames;
-	for (auto i = boost::filesystem::directory_iterator(directory); i != boost::filesystem::directory_iterator(); i++)
-	{
-		if (!boost::filesystem::is_directory(i->path()))
-		{
-			if (i->path().extension() == ".YAML"
-				|| i->path().extension() == ".YML"
-				|| i->path().extension() == ".yaml"
-				|| i->path().extension() == ".yml")
-			{
-				filenames.push_back(i->path().filename().string());
-			}
-		}
-		else
-		{
-			continue;
-		}
-	}
-	return filenames;
-}
-
 HardwareFactory::HardwareFactory() : HardwareFactory(false)
 {
 }
