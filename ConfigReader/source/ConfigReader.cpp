@@ -8,16 +8,6 @@
 #include "boost/filesystem.hpp"
 #include "yaml-cpp/exceptions.h"
 
-#if defined(__unix__) ||  defined(_unix)
-const std::string HOME = getenv("HOME");
-const std::string MASTER_LATTICE_FILE_LOCATION = HOME + "/MasterLattice";
-const std::string SEPARATOR = "/";
-#endif
-#ifdef _WIN32
-const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\";
-const std::string SEPARATOR = "\\";
-#endif
-
 const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "MAG", "Magnet" },
 	{ "BPM", "Beam Position Monitor" }
