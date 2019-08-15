@@ -6,9 +6,6 @@
 #include <cadef.h>
 #endif
 
-
-
-
 #define MY_SEVCHK(status)		\
 {								\
 	if (status != ECA_NORMAL)	\
@@ -18,56 +15,17 @@
 		}						\
 }								\
 
-#if defined(__unix__) ||  defined(_unix)
-  const std::string HOME =  getenv("HOME");
-  const std::string MASTER_LATTICE_FILE_LOCATION = HOME +"/MasterLattice";//"~/MasterLattice";
-  const std::string SEPARATOR = "/";
-#endif
-#ifdef _WIN32
-  const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\Magnet";
-  const std::string SEPARATOR = "\\";
-#endif
-// NON-MEMBER HELPER FUNCTIONS //
-std::vector<std::string> findYAMLFilesInDirectory(std::string version)
-{
-	boost::filesystem::path directory(MASTER_LATTICE_FILE_LOCATION);//+ '//' + version);
-	std::vector<std::string> filenames;
-	for (auto i = boost::filesystem::directory_iterator(directory); i != boost::filesystem::directory_iterator(); i++)
-	{
-		if (!boost::filesystem::is_directory(i->path()))
-		{
-			if (i->path().extension() == ".YAML"
-				|| i->path().extension() == ".YML"
-				|| i->path().extension() == ".yaml"
-				|| i->path().extension() == ".yml")
-			{
-				filenames.push_back(i->path().filename().string());
-			}
-			else
-			{
-				std::cout << i->path().filename().string() << ": NOT YAML" << std::endl;
-			}
-		}
-		else
-		{
-			continue;
-		}
-	}
-	return filenames;
-}
-
-
 // MEMBER FUNCTIONS //
 MagnetFactory::MagnetFactory() : MagnetFactory(false)
 {
 }
 MagnetFactory::MagnetFactory(bool isVirtual)
 {
-	this->messenger = LoggingSystem(false, false);
-	this->hasBeenSetup = false;
-	this->messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
-	this->isVirtual = isVirtual;
-	this->reader = ConfigReader("Magnet", isVirtual);
+	messenger = LoggingSystem(false, false);
+	hasBeenSetup = false;
+	messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
+	isVirtual = isVirtual;
+	reader = ConfigReader("Magnet", isVirtual);
 }
 MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 	: hasBeenSetup(copyMagnetFactory.hasBeenSetup),
