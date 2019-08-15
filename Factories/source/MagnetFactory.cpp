@@ -69,6 +69,14 @@ MagnetFactory::MagnetFactory(bool isVirtual)
 	this->isVirtual = isVirtual;
 	this->reader = ConfigReader("Magnet", isVirtual);
 }
+MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
+	: hasBeenSetup(copyMagnetFactory.hasBeenSetup),
+	isVirtual(copyMagnetFactory.isVirtual),
+	messenger(copyMagnetFactory.messenger),
+	reader(copyMagnetFactory.reader)
+{
+	magnetMap.insert(copyMagnetFactory.magnetMap.begin(), copyMagnetFactory.magnetMap.end());
+}
 
 MagnetFactory::~MagnetFactory()
 {
