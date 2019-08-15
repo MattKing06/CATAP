@@ -1,5 +1,6 @@
 #include "Hardware.h"
 #include <boost/algorithm/string.hpp>
+#include <vector>
 
 Hardware::Hardware()
 {

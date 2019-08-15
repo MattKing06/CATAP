@@ -1,9 +1,4 @@
 #include "HardwareFactory.h"
-#include <iostream>
-#include <boost/algorithm/algorithm.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/python/converter/shared_ptr_to_python.hpp>
 
 HardwareFactory::HardwareFactory() : HardwareFactory(false)
 {

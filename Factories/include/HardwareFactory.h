@@ -1,7 +1,7 @@
 #ifndef HARDWARE_FACTORY_H_
 #define HARDWARE_FACTORY_H_
 #include "MagnetFactory.h"
-#include "boost\shared_ptr.hpp"
+
 typedef boost::shared_ptr<class MagnetFactory> MagnetFactory_sptr;
 
 class HardwareFactory
