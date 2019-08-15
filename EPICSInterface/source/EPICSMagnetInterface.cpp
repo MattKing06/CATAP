@@ -20,11 +20,11 @@ EPICSMagnetInterface::~EPICSMagnetInterface()
 	messenger.messagesOn();
 	messenger.printMessage("EPICSMagnetInterface Destructor Called");
 }
-updateFunctionPtr EPICSMagnetInterface::retrieveUpdateFunctionForRecord(const std::string &record)
+void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct)
 {
-	if (record == "GETSETI")
+	if (pvStruct.pvRecord == "GETSETI")
 	{
-		return this->updateCurrent;
+		pvStruct.updateFunction = this->updateCurrent;
 	}
 }
 

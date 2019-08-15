@@ -17,7 +17,7 @@ class EPICSMagnetInterface : public EPICSInterface
 public:
 	EPICSMagnetInterface();
 	~EPICSMagnetInterface();
-	updateFunctionPtr retrieveUpdateFunctionForRecord(const std::string &record);
+	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct);
 	static void updateCurrent(const struct event_handler_args args);
 	const void setNewCurrent(const double &value, const pvStruct &pv);
 	template<typename T>
