@@ -45,30 +45,31 @@ EPICSInterface::~EPICSInterface()
 }
 void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
-	std::map<std::string, pvStruct*> pvList = hardware.getPVStructs();
-	pvStruct* pv;
+	std::map<std::string, pvStruct>& pvList = hardware.getPVStructs();
+
 	if (pvName == "GETSETI")//since READI is the only PV with a proper updateFunction, 
 						 // we skip over any with NULL updateFunctions for now.
 	{
 		for (auto currentPV = pvList.begin(); currentPV != pvList.end(); currentPV++)
 		{
-			pv = currentPV->second;
-			if (pv->pvRecord == pvName)
+			pvStruct& pv = currentPV->second;
+			if (pv.pvRecord == pvName)
 			{
-				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,
-					pv->updateFunction, (void*)&hardware, &pv->EVID);
+				int status = ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
+					pv.updateFunction, (void*)&hardware, &pv.EVID);
 				MY_SEVCHK(status);
 			}
 		}
 	}
 }
 
-chid EPICSInterface::retrieveCHID(std::string &pv)
+void EPICSInterface::retrieveCHID(pvStruct &pvStruct)
 {
 	try
 	{
 		int status;
 		chid CHID;
+		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		char *pvCstr = new char[pv.size() +1];
 		strcpy(pvCstr,pv.c_str());
 		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
@@ -76,25 +77,20 @@ chid EPICSInterface::retrieveCHID(std::string &pv)
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		messenger.printDebugMessage(pvCstr);
-		return CHID;
+		pvStruct.CHID = CHID;
 	}
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		return NULL;
 	}
 
 }
-chtype EPICSInterface::retrieveCHTYPE(chid &channelID)
+void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct)
 {
-	chtype channelType;
-	channelType = ca_field_type(channelID);
-	return channelType;
+	pvStruct.CHTYPE = ca_field_type(pvStruct.CHID);
 }
 
-unsigned long EPICSInterface::retrieveCOUNT(chid &channelID)
+void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct)
 {
-	unsigned long count;
-	count = ca_element_count(channelID);
-	return count;
+	pvStruct.COUNT = ca_element_count(pvStruct.CHID);
 }

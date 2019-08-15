@@ -22,9 +22,9 @@ class EPICSInterface
 		~EPICSInterface();
 		double get_CA_PEND_IO_TIMEOUT() const;
 		void set_CA_PEND_IO_TIMEOUT(double value);
-		chid retrieveCHID(std::string &pv);
-		chtype retrieveCHTYPE(chid &channelID);
-		unsigned long retrieveCOUNT(chid &channelID);
+		void retrieveCHID(pvStruct &pvStruct);
+		void retrieveCHTYPE(pvStruct &pvStruct);
+		void retrieveCOUNT(pvStruct &pvStruct);
 		void createSubscription(Hardware &hardware, std::string pvName);
 
 	protected:
