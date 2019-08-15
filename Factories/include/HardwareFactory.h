@@ -2,8 +2,6 @@
 #define HARDWARE_FACTORY_H_
 #include "MagnetFactory.h"
 
-typedef boost::shared_ptr<class MagnetFactory> MagnetFactory_sptr;
-
 class HardwareFactory
 {
     //what does a HardwareFactory need to be a HardwareFactory:
