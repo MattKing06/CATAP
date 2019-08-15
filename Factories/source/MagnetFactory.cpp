@@ -99,21 +99,21 @@ bool MagnetFactory::setup(const std::string &version)
 	populateMagnetMap();
 	for (auto &magnet : magnetMap)
 	{
-		std::map<std::string, pvStruct*> magPVStructs = magnet.second.getPVStructs();
+		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
 		for (auto &pv : magPVStructs)
 		{
 			std::string pvAndRecordName = magnet.second.getFullPVName() + ":" + pv.first;
-			pv.second->CHID = magnet.second.epicsInterface->retrieveCHID(pvAndRecordName);
-			pv.second->CHTYPE = magnet.second.epicsInterface->retrieveCHTYPE(pv.second->CHID);
-			pv.second->COUNT = magnet.second.epicsInterface->retrieveCOUNT(pv.second->CHID);
-			pv.second->updateFunction = magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.first);
+			magnet.second.epicsInterface->retrieveCHID(pv.second);
+			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
+			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
+			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 			// not sure how to set the mask from EPICS yet.
-			pv.second->MASK = DBE_VALUE;
+			pv.second.MASK = DBE_VALUE;
 			messenger.debugMessagesOn();
-			messenger.printDebugMessage(pv.second->pvRecord + ": read" + std::to_string(ca_read_access(pv.second->CHID)) +
-				"write" + std::to_string(ca_write_access(pv.second->CHID)) +
-				"state" + std::to_string(ca_state(pv.second->CHID)) + "\n");
-			magnet.second.epicsInterface->createSubscription(magnet.second, pv.second->pvRecord);
+			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
+				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
+				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
+			magnet.second.epicsInterface->createSubscription(magnet.second, pv.second.pvRecord);
 		}
 	}
 
