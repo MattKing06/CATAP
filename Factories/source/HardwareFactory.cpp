@@ -14,7 +14,7 @@ HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
 }
-bool HardwareFactory::setup(std::string hardwareType, std::string version)
+bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
 	bool setup = false;
 	if (hardwareType == "Magnet")

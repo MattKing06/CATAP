@@ -20,7 +20,7 @@ EPICSMagnetInterface::~EPICSMagnetInterface()
 	messenger.messagesOn();
 	messenger.printMessage("EPICSMagnetInterface Destructor Called");
 }
-void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct)
+void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
 	if (pvStruct.pvRecord == "GETSETI")
 	{
@@ -47,20 +47,25 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 
 }
 
-const void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv)
+void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv) const
 {
 	//we have checked that pvRecord is SETI before reaching here.
-	if (ca_state(pv.CHID) == cs_conn)
+	putValue(pv, value);
+	messenger.printMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS ");
+}
+
+template<typename T>
+void EPICSMagnetInterface::putValue(const pvStruct& pvStruct, const T& value) const
+{
+	if (ca_state(pvStruct.CHID) == cs_conn)
 	{
-		int status = ca_put(pv.CHTYPE, pv.CHID, &(value));
+		int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		MY_SEVCHK(status);
-		messenger.printMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS (STATUS = " + std::to_string(status) + ") ");
 	}
 	else
 	{
 		std::cout << "NOT CONNECTED TO EPICS" << std::endl;
 	}
-	
 }

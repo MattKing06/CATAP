@@ -19,10 +19,11 @@ LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     LoggingSystem::messageOn = messageState;
 }
 // Get methods for debugging and message state
-bool LoggingSystem::isDebugOn(){
+bool LoggingSystem::isDebugOn() const
+{
     return debugOn;
 }
-bool LoggingSystem::isMessagingOn()
+bool LoggingSystem::isMessagingOn() const
 {
     return messageOn;
 }

@@ -17,11 +17,11 @@ class EPICSMagnetInterface : public EPICSInterface
 public:
 	EPICSMagnetInterface();
 	~EPICSMagnetInterface();
-	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct);
+	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
 	static void updateCurrent(const struct event_handler_args args);
-	const void setNewCurrent(const double &value, const pvStruct &pv);
+	void setNewCurrent(const double &value, const pvStruct &pv) const;
 	template<typename T>
-	const void putValue(const chtype &CHTYPE, const chid &CHID, const T &value);
+	void putValue(const pvStruct& pvStruct, const T& value) const;
 	static LoggingSystem messenger;
 };
 

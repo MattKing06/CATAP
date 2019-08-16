@@ -17,15 +17,15 @@ class EPICSInterface
 {
 	public:
 		EPICSInterface();
-		EPICSInterface(bool& shouldStartEpics, bool& shouldStartVirtualMachine);
-		EPICSInterface(bool& shouldStartEpics, bool& shouldStartVirtualMachine, LoggingSystem& messaging);
+		EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine);
+		EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine, LoggingSystem& messaging);
 		~EPICSInterface();
 		double get_CA_PEND_IO_TIMEOUT() const;
 		void set_CA_PEND_IO_TIMEOUT(double value);
-		void retrieveCHID(pvStruct &pvStruct);
-		void retrieveCHTYPE(pvStruct &pvStruct);
-		void retrieveCOUNT(pvStruct &pvStruct);
-		void createSubscription(Hardware &hardware, std::string pvName);
+		void retrieveCHID(pvStruct &pvStruct) const;
+		void retrieveCHTYPE(pvStruct &pvStruct) const;
+		void retrieveCOUNT(pvStruct &pvStruct) const;
+		void createSubscription(Hardware &hardware, pvStruct &pvStruct) const;
 
 	protected:
 		bool shouldStartEpics = true;
