@@ -16,84 +16,81 @@
 EPICSInterface::EPICSInterface()
 {
 	int status;
-	EPICSInterface::messaging = LoggingSystem(false, false);
-	status = ca_context_create(ca_enable_preemptive_callback);
-	if (status != ECA_NORMAL)
+	messenger = LoggingSystem(false, false);
+	if (!ca_current_context())
 	{
-		std::printf("ca_context_create failed: \n%s\n", 
-			ca_message(status));
-		exit(1);
+		status = ca_context_create(ca_enable_preemptive_callback);
+		MY_SEVCHK(status);
 	}
-	status = ca_task_initialize();
-	SEVCHK(status, "initialize failed");
+
 	thisCaContext = ca_current_context();
 }
 EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messaging = LoggingSystem(false, false);
+	EPICSInterface::messenger = LoggingSystem(false, false);
 }
 
 EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, LoggingSystem& messager)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messaging = messager;
+	EPICSInterface::messenger = messager;
 }
-
+EPICSInterface::~EPICSInterface()
+{
+	messenger.messagesOn();
+	messenger.printMessage("EPICSInterface Destructor Called");
+}
 void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
 {
-	std::map<std::string, pvStruct*> pvList = hardware.getPVStructs();
-	pvStruct* pv;
+	std::map<std::string, pvStruct>& pvList = hardware.getPVStructs();
+
 	if (pvName == "GETSETI")//since READI is the only PV with a proper updateFunction, 
 						 // we skip over any with NULL updateFunctions for now.
 	{
 		for (auto currentPV = pvList.begin(); currentPV != pvList.end(); currentPV++)
 		{
-			pv = currentPV->second;
-			if (pv->pvRecord == pvName)
+			pvStruct& pv = currentPV->second;
+			if (pv.pvRecord == pvName)
 			{
-				int status = ca_create_subscription(pv->CHTYPE, pv->COUNT, pv->CHID, pv->MASK,
-					pv->updateFunction, (void*)&hardware, &pv->EVID);
+				int status = ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
+					pv.updateFunction, (void*)&hardware, &pv.EVID);
 				MY_SEVCHK(status);
 			}
 		}
 	}
 }
 
-chid EPICSInterface::retrieveCHID(std::string &pv)
+void EPICSInterface::retrieveCHID(pvStruct &pvStruct)
 {
 	try
 	{
 		int status;
 		chid CHID;
+		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		char *pvCstr = new char[pv.size() +1];
 		strcpy(pvCstr,pv.c_str());
 		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
 		//std::cout << "CHID FROM EPICS INTERFACE: " << CHID << std::endl;
 		MY_SEVCHK(status);
-		status = ca_pend_io(1.0);
-		messaging.printDebugMessage(pvCstr);
-		return CHID;
+		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		messenger.printDebugMessage(pvCstr);
+		pvStruct.CHID = CHID;
 	}
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		return NULL;
 	}
 
 }
-chtype EPICSInterface::retrieveCHTYPE(chid &channelID)
+void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct)
 {
-	chtype channelType;
-	channelType = ca_field_type(channelID);
-	return channelType;
+	pvStruct.CHTYPE = ca_field_type(pvStruct.CHID);
 }
 
-unsigned long EPICSInterface::retrieveCOUNT(chid &channelID)
+void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct)
 {
-	unsigned long count;
-	count = ca_element_count(channelID);
-	return count;
+	pvStruct.COUNT = ca_element_count(pvStruct.CHID);
 }

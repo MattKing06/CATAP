@@ -1,5 +1,6 @@
 #include "Hardware.h"
 #include <boost/algorithm/string.hpp>
+#include <vector>
 
 Hardware::Hardware()
 {
@@ -40,11 +41,11 @@ Hardware::Hardware(std::map<std::string, std::string> specificValueMap, bool isV
 	logger.printDebugMessage(std::string("Constructing PV information for " + currentHardwareName));
 	for (auto record : pvRecordVec)
 	{
-		pvStruct* pv = new pvStruct;
-		pv->fullPVName = currentHardwareName;
-		pv->pvRecord = record;
+		pvStruct pv = pvStruct();
+		pv.fullPVName = currentHardwareName;
+		pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
-		pvStructs[pv->pvRecord] = pv;
+		pvStructs[pv.pvRecord] = pv;
 	}
 	logger.printDebugMessage(std::string("Finished constructing: " + currentHardwareName));
 }
@@ -56,7 +57,7 @@ std::string Hardware::getHardwareType()
 {
 	return this->hardwareType;
 }
-std::map<std::string, pvStruct*> Hardware::getPVStructs()
+std::map<std::string, pvStruct>& Hardware::getPVStructs()
 {
 	return this->pvStructs;
 }

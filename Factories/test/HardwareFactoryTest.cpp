@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
-
+#include <chrono>
+#include <thread>
 /*********************************************************/
 /**** TEST WARNING ** TEST WARNING ** TEST WARNING ** ****/
 /*********************************************************/
@@ -56,16 +57,20 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	envStatus = putenv(EPICS_CA_SERVER_ENV);
 	std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
 	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
-	HardwareFactory hardwareFactory = HardwareFactory(true);
+	HardwareFactory hardwareFactory(true);
 	bool status;
 	status = hardwareFactory.setup("Magnet","nominal");
-	MagnetFactory magFactory(hardwareFactory.getMagnetFactory());
-	Magnet* mag = magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
+	MagnetFactory& magFactory = hardwareFactory.getMagnetFactory();
 	BOOST_CHECK(status);
 	srand(time(NULL));
 	double currentToSet = rand() % 10 + 1.0;
 	magFactory.setCurrent("VM-CLA-C2V-MAG-HCOR-01", currentToSet);
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	magFactory.setCurrent("VM-CLA-C2V-MAG-VCOR-01", currentToSet);
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	magFactory.magnetMap;
 	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01"), currentToSet);
-	std::cout << "CURRENT: " << magFactory.getCurrent("VM-CLA-C2V-MAG-HCOR-01") << std::endl;
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-VCOR-01"), currentToSet);
 }
 

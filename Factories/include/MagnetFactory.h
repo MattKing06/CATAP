@@ -10,30 +10,33 @@
 #include <boost/python.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
-
+class Magnet;
 class MagnetFactory
 {
 	public:
 		MagnetFactory();
 		MagnetFactory(bool isVirtual);
+		MagnetFactory(const MagnetFactory& copyMagnetFactory);
+		~MagnetFactory();
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
-		bool setup(std::string version);
-		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet* mag);
+		bool setup(const std::string &version);
+		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet mag);
 		LoggingSystem messenger;
 		ConfigReader reader;
-		Magnet* getMagnet(std::string fullMagnetName);
-		std::map<std::string, Magnet*> getMagnets(std::vector<std::string> magnetNames);
-		std::map<std::string, Magnet*> getAllMagnets();
-		std::map<std::string, Magnet*> magnetMap;
+		Magnet getMagnet(std::string fullMagnetName);
+		std::map<std::string, Magnet> getMagnets(std::vector<std::string> magnetNames);
+		std::map<std::string, Magnet> getAllMagnets();
+		std::map<std::string, Magnet> magnetMap;
+		void populateMagnetMap();
 		bool hasBeenSetup;
-		bool virtualMagnetFactory;
+		bool isVirtual;
 		// methods for setting properties of magnet via PV name
 		double getCurrent(std::string name);
 		std::map<std::string, double> getCurrents(std::vector<std::string> names);
 		std::map<std::string, double> getAllMagnetCurrents();
 		bool setCurrent(std::string name, double value);
-		bool setCurrents(std::vector<std::string> names, double value);
+		bool setCurrents(const std::map<std::string, double> &namesAndCurrentsMap);
 		bool setAllMagnetCurrents(double value);
 		bool turnOn(std::string name);
 		bool turnOn(std::vector<std::string> names);
