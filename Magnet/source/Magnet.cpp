@@ -43,63 +43,63 @@ Magnet::Magnet(std::map<std::string, std::string> &paramsMap, bool isVirtual) : 
 	//_CrtDumpMemoryLeaks();
 }
 
-std::string Magnet::getFullPVName()
+std::string Magnet::getFullPVName() const
 {
 	return this->fullPVName;
 }
-std::vector<std::string> Magnet::getAliases()
+std::vector<std::string> Magnet::getAliases() const
 {
 	return this->aliases;
 }
-std::string Magnet::getManufacturer()
+std::string Magnet::getManufacturer() const
 {
 	return this->manufacturer;
 }
-int Magnet::getSerialNumber()
+int Magnet::getSerialNumber() const
 {
 	return this->serialNumber;
 }
-std::string Magnet::getMagnetType()
+std::string Magnet::getMagnetType() const
 {
 	return this->magType;
 }
-std::string Magnet::getMagnetRevType()
+std::string Magnet::getMagnetRevType() const
 {
 	return this->magRevType;
 }
-double Magnet::getRITolerance()
+double Magnet::getRITolerance() const
 {
 	return this->RI_tolerance;
 }
-int Magnet::getNumberOfDegaussSteps()
+int Magnet::getNumberOfDegaussSteps() const
 {
 	return this->numberOfDegaussSteps;
 }
-std::vector<double> Magnet::getDegaussValues()
+std::vector<double> Magnet::getDegaussValues() const
 {
 	return this->degaussValues;
 }
-double Magnet::getDegaussTolerance()
+double Magnet::getDegaussTolerance() const
 {
 	return this->degaussTolerance;
 }
-double Magnet::getMagneticLength()
+double Magnet::getMagneticLength() const
 {
 	return this->magneticLength;
 }
-std::string Magnet::getFullPSUName()
+std::string Magnet::getFullPSUName() const
 {
 	return this->fullPSUName;
 }
-std::string Magnet::getMeasurementDataLocation()
+std::string Magnet::getMeasurementDataLocation() const
 {
 	return this->measurementDataLocation;
 }
-double Magnet::getCurrent()
+double Magnet::getCurrent() const
 {
 	return this->current;
 }
-bool Magnet::setEPICSCurrent(double value)
+bool Magnet::setEPICSCurrent(const double &value)
 {
 	std::map<std::string, pvStruct>& pvData = getPVStructs();
 	for (auto &pv : pvData)
@@ -113,7 +113,7 @@ bool Magnet::setEPICSCurrent(double value)
 	// subscription should sense current has changed and call 'updateCurrent' in MagnetEPICSInterface
 	return true;
 }
-bool Magnet::setCurrent(double value)
+bool Magnet::setCurrent(const double &value)
 {
 	this->current = value;
 	return true;
