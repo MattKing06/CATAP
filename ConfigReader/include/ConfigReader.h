@@ -85,7 +85,7 @@ public:
 				{
 					parameters.insert(prop);
 				}
-				HardwareType& freshHardware = HardwareType(parameters, isVirtual);
+				HardwareType freshHardware = HardwareType(parameters, isVirtual);
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
