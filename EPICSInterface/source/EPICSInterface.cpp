@@ -25,14 +25,14 @@ EPICSInterface::EPICSInterface()
 
 	thisCaContext = ca_current_context();
 }
-EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine)
+EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
 	EPICSInterface::messenger = LoggingSystem(false, false);
 }
 
-EPICSInterface::EPICSInterface(bool& startEpics, bool& startVirtualMachine, LoggingSystem& messager)
+EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messager)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
@@ -43,27 +43,21 @@ EPICSInterface::~EPICSInterface()
 	messenger.messagesOn();
 	messenger.printMessage("EPICSInterface Destructor Called");
 }
-void EPICSInterface::createSubscription(Hardware& hardware, std::string pvName)
+void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
 {
-	std::map<std::string, pvStruct>& pvList = hardware.getPVStructs();
-
-	if (pvName == "GETSETI")//since READI is the only PV with a proper updateFunction, 
+	if (pvStruct.pvRecord == "GETSETI")//since GETSETI is the only PV with a proper updateFunction, 
 						 // we skip over any with NULL updateFunctions for now.
 	{
-		for (auto currentPV = pvList.begin(); currentPV != pvList.end(); currentPV++)
-		{
-			pvStruct& pv = currentPV->second;
-			if (pv.pvRecord == pvName)
-			{
-				int status = ca_create_subscription(pv.CHTYPE, pv.COUNT, pv.CHID, pv.MASK,
-					pv.updateFunction, (void*)&hardware, &pv.EVID);
-				MY_SEVCHK(status);
-			}
-		}
+		int status = ca_create_subscription(pvStruct.CHTYPE, pvStruct.COUNT,
+											pvStruct.CHID, pvStruct.MASK,
+											pvStruct.updateFunction,
+											(void*)&hardware, 
+								            &pvStruct.EVID);
+		MY_SEVCHK(status);
 	}
 }
 
-void EPICSInterface::retrieveCHID(pvStruct &pvStruct)
+void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 {
 	try
 	{
@@ -76,7 +70,6 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct)
 		//std::cout << "CHID FROM EPICS INTERFACE: " << CHID << std::endl;
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-		messenger.printDebugMessage(pvCstr);
 		pvStruct.CHID = CHID;
 	}
 	catch (std::exception &e)
@@ -85,12 +78,12 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct)
 	}
 
 }
-void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct)
+void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 {
 	pvStruct.CHTYPE = ca_field_type(pvStruct.CHID);
 }
 
-void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct)
+void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct) const
 {
 	pvStruct.COUNT = ca_element_count(pvStruct.CHID);
 }
