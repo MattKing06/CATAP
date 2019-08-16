@@ -71,6 +71,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		pvStruct.CHID = CHID;
+		delete pvCstr;
 	}
 	catch (std::exception &e)
 	{
@@ -87,3 +88,4 @@ void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct) const
 {
 	pvStruct.COUNT = ca_element_count(pvStruct.CHID);
 }
+
