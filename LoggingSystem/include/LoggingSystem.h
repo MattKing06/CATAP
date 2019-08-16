@@ -10,8 +10,8 @@ public:
     void debugMessagesOff();
     void messagesOn();
     void messagesOff();
-    bool isMessagingOn();
-    bool isDebugOn();
+    bool isMessagingOn() const;
+    bool isDebugOn() const;
     void printDebugMessage(const std::string &debugMessage);
     void printMessage(const std::string &message);
 private:
