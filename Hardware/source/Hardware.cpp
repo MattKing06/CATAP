@@ -33,7 +33,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	messenger.printDebugMessage(std::string("Constructing PV information for " + hardwareName));
 	for (auto record : pvRecordVec)
 	{
-		pvStruct& pv = pvStruct();
+		pvStruct pv = pvStruct();
 		pv.fullPVName = hardwareName;
 		pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
