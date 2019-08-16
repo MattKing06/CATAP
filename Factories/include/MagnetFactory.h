@@ -24,7 +24,7 @@ class MagnetFactory
 		updateFunctionPtr findUpdateFunctionForRecord(const std::string& record, const Magnet& mag) const;
 		LoggingSystem messenger;
 		ConfigReader reader;
-		Magnet getMagnet(const std::string& fullMagnetName);
+		Magnet& getMagnet(const std::string& fullMagnetName);
 		std::map<std::string, Magnet> getMagnets(std::vector<std::string> magnetNames);
 		std::map<std::string, Magnet> getAllMagnets();
 		std::map<std::string, Magnet> magnetMap;

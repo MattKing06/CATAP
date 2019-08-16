@@ -142,7 +142,8 @@ std::map<std::string, Magnet> MagnetFactory::getMagnets(std::vector<std::string>
 	}
 	return selectedMagnets;
 }
-Magnet MagnetFactory::getMagnet(const std::string& fullMagnetName)
+
+Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
 	return magnetMap.find(fullMagnetName)->second;
 }

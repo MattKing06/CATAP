@@ -4,14 +4,13 @@
 
 Hardware::Hardware()
 {
-	machineArea = "UNKNOWN";
-	hardwareType = "UNKNOWN";
-	specificHardwareParameters = std::map<std::string, std::string>();
+	std::cout << "DEFAULT CONSTRUCTOR CALLED " << std::endl;
 }
 
-Hardware::Hardware(std::map<std::string, std::string> specificValueMap, bool isVirtual=false)
+Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, bool isVirtual = false)
 {
-	logger = LoggingSystem(false, false);
+	std::cout << "NON-DEFAULT CONSTRUCTOR CALLED " << std::endl;
+	messenger = LoggingSystem(false, false);
 	std::string currentHardwareName;
 	//std::string YAMLConfigDirectory = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles";
 	this->isVirtual = isVirtual;
@@ -25,7 +24,7 @@ Hardware::Hardware(std::map<std::string, std::string> specificValueMap, bool isV
 		currentHardwareName = specificValueMap.find("name")->second.data();
 	}
 
-	logger.printDebugMessage(std::string("Constructing Hardware" + currentHardwareName));
+	messenger.printDebugMessage(std::string("Constructing Hardware" + currentHardwareName));
 
 	//ConfigReader configReader(currentHardwareName);
 	specificHardwareParameters = specificValueMap;
@@ -38,17 +37,27 @@ Hardware::Hardware(std::map<std::string, std::string> specificValueMap, bool isV
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 	std::vector<std::string> pvRecordVec;
 	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
-	logger.printDebugMessage(std::string("Constructing PV information for " + currentHardwareName));
+	messenger.printDebugMessage(std::string("Constructing PV information for " + currentHardwareName));
 	for (auto record : pvRecordVec)
 	{
-		pvStruct pv = pvStruct();
+		pvStruct& pv = pvStruct();
 		pv.fullPVName = currentHardwareName;
 		pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
 		pvStructs[pv.pvRecord] = pv;
 	}
-	logger.printDebugMessage(std::string("Finished constructing: " + currentHardwareName));
+	messenger.printDebugMessage(std::string("Finished constructing: " + currentHardwareName));
 }
+
+Hardware::Hardware(const Hardware& copyHardware) :
+messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
+machineArea(copyHardware.machineArea), isVirtual(copyHardware.isVirtual)
+{
+	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
+	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
+	std::cout << "COPY CONSTRUCTOR CALLED " << std::endl;
+}
+
 std::string Hardware::getMachineArea() const
 {
 	return this->machineArea;

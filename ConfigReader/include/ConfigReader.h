@@ -52,7 +52,7 @@ public:
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
-				parseYamlFile<HardwareType>(hardwareMapToFill);
+				parseYamlFile(hardwareMapToFill);
 				yamlFilenamesAndParsedStatusMap[yamlFilename] = true;
 			}
 		}
@@ -85,33 +85,30 @@ public:
 				{
 					parameters.insert(prop);
 				}
-				HardwareType freshHardware = HardwareType(parameters, isVirtual);
-				hardwareMapToFill.emplace(freshHardware.getFullPVName(), HardwareType(parameters, isVirtual));
-				//return parameters;
+				HardwareType& freshHardware = HardwareType(parameters, isVirtual);
+				// fill map via [] operator to construct IN-PLACE
+				// if we use emplace/insert, the default constructor is called for the object
+				// and HardwareType is set up with default constructor, instead of our params.
+				hardwareMapToFill[freshHardware.getFullPVName()] = freshHardware;
 			}
 			else
 			{
-
 				throw std::length_error("File contents were of length " + std::to_string(config.size()) + ", file must be empty!");
-				//return parameters;
 			}
 		}
 		// POTENTIAL EXCEPTIONS //
 		catch (std::length_error EmptyFileException)
 		{
 			std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
-			//return parameters;
 		}
 		catch (YAML::BadFile BadFileException)
 		{
 			std::cout << "Could not find file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "), or file is not compliant with template "
 				<< ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::hardwareFolder << ".yaml" << "\n";
-			//return parameters;
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
 			std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
-			//return parameters;
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{
