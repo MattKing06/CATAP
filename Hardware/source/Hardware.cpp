@@ -4,7 +4,6 @@
 
 Hardware::Hardware()
 {
-	std::cout << "DEFAULT CONSTRUCTOR CALLED " << std::endl;
 }
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, bool isVirtual = false) :

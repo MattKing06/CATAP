@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_SUITE(MagnetTestSuite)
 BOOST_AUTO_TEST_CASE(creating_empty_magnet_test)
 {
 	Magnet mag = Magnet();
-	BOOST_CHECK_EQUAL(mag.getFullPVName().c_str(), "");
+	BOOST_CHECK_EQUAL(mag.getHardwareName().c_str(), "");
 	auto pvStructMap = mag.getPVStructs();
 	BOOST_CHECK_EQUAL(pvStructMap.empty(), true);
 }
