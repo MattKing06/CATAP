@@ -11,7 +11,7 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 };
 
 
-ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), loadVirtualHardware(false), hardwareFolder("")
+ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), isVirtual(false), hardwareFolder("")
 {
 	// since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
@@ -19,7 +19,7 @@ ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION)
 	initialiseFilenameAndParsedStatusMap();
 }
 
-ConfigReader::ConfigReader(const std::string &hardwareType, const bool &isVirtual) : loadVirtualHardware(isVirtual),
+ConfigReader::ConfigReader(const std::string &hardwareType, const bool &isVirtual) : isVirtual(isVirtual),
 hardwareFolder(hardwareType)
 {
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
@@ -41,7 +41,7 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 	}
 }
 
-std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(std::string version)
+std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string &version)
 {
 	boost::filesystem::path directory(yamlFileDestination);//+ '//' + version);
 	std::vector<std::string> filenames;
@@ -73,7 +73,7 @@ std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(std::string vers
 	return filenames;
 }
 
-const std::string ConfigReader::getHardwareTypeFromName(const std::string &fullPVName)
+std::string ConfigReader::getHardwareTypeFromName(const std::string &fullPVName) const
 {
 	for (const auto &hardwareType : this->allowedHardwareTypes)
 	{
@@ -87,7 +87,8 @@ const std::string ConfigReader::getHardwareTypeFromName(const std::string &fullP
 		" Please check the PV name or contact support." };
 }
 
-const bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplate, const YAML::Node &hardwareComponent)
+bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplate,
+										 const YAML::Node &hardwareComponent) const
 {
 	for (const auto &keyAndValuePair : hardwareTemplate["properties"])
 	{
@@ -106,7 +107,7 @@ const bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplat
 	return true;
 }
 
-bool ConfigReader::hasMoreFilesToParse()
+bool ConfigReader::hasMoreFilesToParse() const
 {
 	for (const auto &file : yamlFilenamesAndParsedStatusMap)
 	{
@@ -123,7 +124,7 @@ bool ConfigReader::hasMoreFilesToParse()
 }
 
 
-const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode)
+const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode) const
 {
 	auto hardwareProperties = configInformationNode["properties"];
 
@@ -149,7 +150,7 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 	return hardwarePropertyAndValueVector;
 }
 
-const std::pair<std::string, std::string> ConfigReader::extractControlsInformationIntoPair(const YAML::Node &configInformationNode)
+const std::pair<std::string, std::string> ConfigReader::extractControlsInformationIntoPair(const YAML::Node &configInformationNode) const
 {
 	YAML::Node controlsInformation = configInformationNode["controls_information"];
 	std::map<std::string, std::string> controlsParameterMap;
@@ -158,7 +159,7 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		std::string controlRecords = controlsInformation["records"].as<std::string>();
 		boost::trim_left(controlRecords);
 		std::pair<std::string, std::string> pvAndRecordPair;
-		if (this->loadVirtualHardware)
+		if (this->isVirtual)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
 		}

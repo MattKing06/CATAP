@@ -22,26 +22,26 @@ const std::string SEPARATOR = "\\";
 class ConfigReader
 {
 public:
-	ConfigReader(const std::string &hardwareType, const bool &isVirtual);
-	ConfigReader();
-	const std::string getHardwareTypeFromName(const std::string &fullPVName);
-	const bool checkForValidTemplate(const YAML::Node &hardwareTemplate, const YAML::Node &hardwareComponent);
-	std::vector<std::string> findYAMLFilesInDirectory(std::string version);
-	void initialiseFilenameAndParsedStatusMap();
-	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node &controlsInformationNode);
-	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node &hardwareInformationNode);
 	std::string yamlFileDestination;
 	std::string yamlFilename;
 	std::string hardwareFolder;
-	bool loadVirtualHardware;
+	const bool isVirtual;
 	std::map<std::string, bool> yamlFilenamesAndParsedStatusMap;
 	int numberOfParsesExpected;
-	bool hasMoreFilesToParse();
 	// defining the allowed hardware types and their EPICS abbreviations
 	// these are currently hard-coded, we should get the folder names from
 	// MasterLattice directory to initialize the map
 	const static std::map<std::string, std::string> allowedHardwareTypes;
 
+	ConfigReader(const std::string &hardwareType, const bool &isVirtual);
+	ConfigReader();
+	std::string getHardwareTypeFromName(const std::string &fullPVName) const;
+	bool checkForValidTemplate(const YAML::Node &hardwareTemplate, const YAML::Node &hardwareComponent) const;
+	std::vector<std::string> findYAMLFilesInDirectory(const std::string &version);
+	void initialiseFilenameAndParsedStatusMap();
+	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node &controlsInformationNode) const;
+	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node &hardwareInformationNode) const;
+	bool hasMoreFilesToParse() const;
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
 	{
@@ -59,7 +59,7 @@ public:
 	}
 
 	template<typename HardwareType>
-	void parseYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
+	void parseYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill) const
 	{
 		std::ifstream fileInput;
 		YAML::Node config;
@@ -85,8 +85,8 @@ public:
 				{
 					parameters.insert(prop);
 				}
-				HardwareType freshHardware = HardwareType(parameters, loadVirtualHardware);
-				hardwareMapToFill.emplace(freshHardware.getFullPVName(), HardwareType(parameters, loadVirtualHardware));
+				HardwareType freshHardware = HardwareType(parameters, isVirtual);
+				hardwareMapToFill.emplace(freshHardware.getFullPVName(), HardwareType(parameters, isVirtual));
 				//return parameters;
 			}
 			else
