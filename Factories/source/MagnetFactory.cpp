@@ -124,7 +124,7 @@ bool MagnetFactory::setup(const std::string &version)
 }
 
 
-updateFunctionPtr MagnetFactory::findUpdateFunctionForRecord(std::string record, Magnet mag)
+updateFunctionPtr MagnetFactory::findUpdateFunctionForRecord(const std::string& record, const Magnet& mag) const
 {
 	if (record == "GETSETI")
 	{
@@ -142,7 +142,7 @@ std::map<std::string, Magnet> MagnetFactory::getMagnets(std::vector<std::string>
 	}
 	return selectedMagnets;
 }
-Magnet MagnetFactory::getMagnet(std::string fullMagnetName)
+Magnet MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
 	return magnetMap.find(fullMagnetName)->second;
 }
@@ -159,7 +159,7 @@ std::map<std::string, Magnet> MagnetFactory::getAllMagnets()
 	return magnetMap;
 }
 
-double MagnetFactory::getCurrent(std::string name)
+double MagnetFactory::getCurrent(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
@@ -171,7 +171,7 @@ double MagnetFactory::getCurrent(std::string name)
 	}
 	return std::numeric_limits<double>::min();;
 }
-std::map<std::string, double> MagnetFactory::getCurrents(std::vector<std::string> names)
+std::map<std::string, double> MagnetFactory::getCurrents(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> currents;
 	for (auto name : names)
@@ -234,7 +234,7 @@ std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 	return magnetsAndCurrentsMap;
 }
 
-bool MagnetFactory::setCurrent(std::string name, double value)
+bool MagnetFactory::setCurrent(const std::string& name, const double& value)
 {
 	return magnetMap.at(name).setEPICSCurrent(value);
 }
