@@ -21,10 +21,10 @@ class MagnetFactory
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
 		bool setup(const std::string &version);
-		updateFunctionPtr findUpdateFunctionForRecord(std::string record, Magnet mag);
+		updateFunctionPtr findUpdateFunctionForRecord(const std::string& record, const Magnet& mag) const;
 		LoggingSystem messenger;
 		ConfigReader reader;
-		Magnet getMagnet(std::string fullMagnetName);
+		Magnet getMagnet(const std::string& fullMagnetName);
 		std::map<std::string, Magnet> getMagnets(std::vector<std::string> magnetNames);
 		std::map<std::string, Magnet> getAllMagnets();
 		std::map<std::string, Magnet> magnetMap;
@@ -32,17 +32,17 @@ class MagnetFactory
 		bool hasBeenSetup;
 		bool isVirtual;
 		// methods for setting properties of magnet via PV name
-		double getCurrent(std::string name);
-		std::map<std::string, double> getCurrents(std::vector<std::string> names);
+		double getCurrent(const std::string& name);
+		std::map<std::string, double> getCurrents(const std::vector<std::string>& names);
 		std::map<std::string, double> getAllMagnetCurrents();
-		bool setCurrent(std::string name, double value);
+		bool setCurrent(const std::string& name, const double &value);
 		bool setCurrents(const std::map<std::string, double> &namesAndCurrentsMap);
-		bool setAllMagnetCurrents(double value);
-		bool turnOn(std::string name);
-		bool turnOn(std::vector<std::string> names);
+		bool setAllMagnetCurrents(const double& value);
+		bool turnOn(const std::string& name);
+		bool turnOn(const std::vector<std::string>& names);
 		bool turnOnAllMagnets();
-		bool turnOff(std::string name);
-		bool turnOff(std::vector<std::string> names);
+		bool turnOff(const std::string& name);
+		bool turnOff(const std::vector<std::string>& names);
 		bool turnOffAllMagnets();
 
 		//THESE METHODS SHOULD BE MOVED TO A UTILITY PACKAGE
