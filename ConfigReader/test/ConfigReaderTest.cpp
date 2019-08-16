@@ -29,8 +29,8 @@ BOOST_AUTO_TEST_SUITE(ConfigReaderTestSuite)
 		{
 			reader.parseNextYamlFile(returnedParams);
 		}
-		BOOST_CHECK(returnedParams.at(nameHCOR).getFullPVName() == nameHCOR);
-		BOOST_CHECK(returnedParams.at(nameVCOR).getFullPVName() == nameVCOR);
+		BOOST_CHECK(returnedParams.at(nameHCOR).getHardwareName() == nameHCOR);
+		BOOST_CHECK(returnedParams.at(nameVCOR).getHardwareName() == nameVCOR);
 
 	}
 
