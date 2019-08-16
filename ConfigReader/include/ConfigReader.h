@@ -25,7 +25,7 @@ public:
 	std::string yamlFileDestination;
 	std::string yamlFilename;
 	std::string hardwareFolder;
-	const bool isVirtual;
+	bool isVirtual;
 	std::map<std::string, bool> yamlFilenamesAndParsedStatusMap;
 	int numberOfParsesExpected;
 	// defining the allowed hardware types and their EPICS abbreviations
