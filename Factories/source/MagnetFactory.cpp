@@ -113,7 +113,7 @@ bool MagnetFactory::setup(const std::string &version)
 			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
-			magnet.second.epicsInterface->createSubscription(magnet.second, pv.second.pvRecord);
+			magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 		}
 	}
 
