@@ -20,7 +20,7 @@ public:
 	std::map<std::string, pvStruct>& getPVStructs();
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	bool operator==(Hardware rhs);
-protected:
+// need to sort out private/protected access for these variables
 	LoggingSystem logger;
 	std::string machineArea;
 	std::string hardwareType;

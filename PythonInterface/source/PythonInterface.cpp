@@ -42,7 +42,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def_readonly("hardwareType", &Hardware::hardwareType)
 		.def_readonly("specificHardwareParameters", &Hardware::specificHardwareParameters)
 		.def("getMachineArea", &Hardware::getMachineArea)
-		.def("getHardwareType", &Hardware::getHardwareType);
+		.def("getHardwareType", &Hardware::getHardwareType)
+		.def("getSpecificHardwareParameters", &Hardware::getSpecificHardwareParameters);
 		// Magnet Exposure
 	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
 		.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
