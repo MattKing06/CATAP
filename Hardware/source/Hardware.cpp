@@ -49,11 +49,11 @@ Hardware::Hardware(std::map<std::string, std::string> specificValueMap, bool isV
 	}
 	logger.printDebugMessage(std::string("Finished constructing: " + currentHardwareName));
 }
-std::string Hardware::getMachineArea()
+std::string Hardware::getMachineArea() const
 {
 	return this->machineArea;
 }
-std::string Hardware::getHardwareType()
+std::string Hardware::getHardwareType() const
 {
 	return this->hardwareType;
 }
@@ -61,7 +61,7 @@ std::map<std::string, pvStruct>& Hardware::getPVStructs()
 {
 	return this->pvStructs;
 }
-std::map<std::string, std::string> Hardware::getSpecificHardwareParameters()
+std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() const
 {
 	return this->specificHardwareParameters;
 }
