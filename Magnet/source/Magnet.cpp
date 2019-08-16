@@ -25,16 +25,6 @@ fullPSUName(paramsMap.find("PSU")->second),
 measurementDataLocation(paramsMap.find("measurement_data_location")->second),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 {
-	//assuming known name
-	if (isVirtual)
-	{
-		fullPVName = paramsMap.find("virtual_name")->second;
-	}
-	else
-	{
-		fullPVName = paramsMap.find("name")->second;
-	}
-	;
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
@@ -44,18 +34,12 @@ magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 	//_CrtDumpMemoryLeaks();
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
-fullPVName(copyMagnet.fullPVName),
 manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
 magType(copyMagnet.magType), magRevType(copyMagnet.magRevType), RI_tolerance(copyMagnet.RI_tolerance),
 numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
 fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurementDataLocation),
 epicsInterface(copyMagnet.epicsInterface), magneticLength(copyMagnet.magneticLength)
 {
-}
-
-std::string Magnet::getFullPVName() const
-{
-	return this->fullPVName;
 }
 std::vector<std::string> Magnet::getAliases() const
 {

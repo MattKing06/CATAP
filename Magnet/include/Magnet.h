@@ -42,7 +42,6 @@ class Magnet : public Hardware
 		double current;
 	protected:
 		//what else does a magnet need?
-		std::string fullPVName;
 		std::vector<std::string> aliases;
 		std::string manufacturer;
 		int serialNumber;

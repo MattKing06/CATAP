@@ -17,6 +17,7 @@ public:
 	Hardware(const std::map<std::string, std::string>& paramMap, bool isVirtual);
 	std::string getMachineArea() const;
 	std::string getHardwareType() const;
+	std::string getHardwareName() const;
 	Hardware(const Hardware& copyHardware);
 	std::map<std::string, pvStruct>& getPVStructs();
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;

@@ -39,9 +39,9 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 	{
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		messenger.printMessage(recastMagnet->getFullPVName());
+		messenger.printMessage(recastMagnet->getHardwareName());
 		recastMagnet->setCurrent(*(double*)(args.dbr));
-		messenger.printMessage("GETSETI VALUE FOR " + recastMagnet->getFullPVName() + ": "  + std::to_string(*(double*)(args.dbr)));
+		messenger.printMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": "  + std::to_string(*(double*)(args.dbr)));
 	}
 	messenger.printMessage(" CALLED UPDATE CURRENT ");
 
