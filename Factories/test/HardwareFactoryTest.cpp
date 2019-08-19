@@ -75,3 +75,4 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	BOOST_CHECK_EQUAL(magFactory.getCurrent("VM-CLA-C2V-MAG-VCOR-01"), currentToSet);
 }
 
+

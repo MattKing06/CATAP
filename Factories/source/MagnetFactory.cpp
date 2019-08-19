@@ -45,18 +45,18 @@ MagnetFactory::~MagnetFactory()
 	// I believe this has something to do with python not managing the object
 	//for (auto& magnet : magnetMap)
 	//{
-	//	auto pvStructsList = magnet.second->getPVStructs();
+	//	auto pvStructsList = magnet.second.getPVStructs();
 	//	for (auto& pvStruct : pvStructsList)
 	//	{
-	//		if (pvStruct.second->EVID)
+	//		if (pvStruct.second.EVID)
 	//		{
-	//			magnet.second->epicsInterface->destroySubscription(pvStruct.second->EVID);
+	//			magnet.second.epicsInterface.destroySubscription(pvStruct.second.EVID);
 	//			ca_flush_io();
 	//			
 	//		}
-	//		if (pvStruct.second->CHID)
+	//		if (pvStruct.secondCHID)
 	//		{
-	//			magnet.second->epicsInterface->clearChannel(pvStruct.second->CHID);
+	//			magnet.second.epicsInterface->clearChannel(pvStruct.second->CHID);
 	//		}
 	//	}
 	//}
@@ -123,16 +123,6 @@ bool MagnetFactory::setup(const std::string &version)
 	return hasBeenSetup;
 }
 
-
-updateFunctionPtr MagnetFactory::findUpdateFunctionForRecord(const std::string& record, const Magnet& mag) const
-{
-	if (record == "GETSETI")
-	{
-		return mag.epicsInterface->updateCurrent;
-	}
-	return nullptr;
-}
-
 std::map<std::string, Magnet> MagnetFactory::getMagnets(std::vector<std::string> magnetNames)
 {
 	std::map<std::string, Magnet> selectedMagnets;
@@ -182,6 +172,31 @@ std::map<std::string, double> MagnetFactory::getCurrents(const std::vector<std::
 	}
 	return currents;
 }
+
+double MagnetFactory::getRICurrent(const std::string& name)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
+	}
+	else
+	{
+		return magnetMap.find(name)->second.getRICurrent();
+	}
+	return std::numeric_limits<double>::min();
+}
+
+std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std::string>& names)
+{
+	std::map<std::string, double> RICurrents;
+	for (auto& name : names)
+	{
+		double current = magnetMap.find(name)->second.getRICurrent();
+		RICurrents[name] = current;
+	}
+	return RICurrents;
+}
+
 /*UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSIBLE BY EVERYONE]*/
 template< typename typeOfNewVector>
 inline
@@ -223,6 +238,15 @@ boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
 	boost::python::dict newPyDict = to_py_dict(currents);
 	return newPyDict;
 }
+
+boost::python::dict MagnetFactory::getRICurrents_Py(boost::python::list names)
+{
+	std::map<std::string, double> RICurrents;
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	RICurrents = getRICurrents(namesVector);
+	boost::python::dict newPyDict = to_py_dict(RICurrents);
+	return newPyDict;
+}
 std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 {
 	std::map<std::string, double> magnetsAndCurrentsMap;
@@ -246,6 +270,52 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 		setCurrent(entry.first, entry.second);
 	}
 	return true;
+
+}
+bool MagnetFactory::turnOn(const std::string& name)
+{
+	return magnetMap.at(name).setEPICSPSUState(1);
+}
+bool MagnetFactory::turnOn(const std::vector<std::string>& names)
+{
+	for (auto& name : names)
+	{
+		turnOn(name);
+	}
+	return true;
+}
+bool MagnetFactory::turnOff(const std::string& name)
+{
+	return magnetMap.at(name).setEPICSPSUState(0);
+}
+bool MagnetFactory::turnOff(const std::vector<std::string>& names)
+{
+	for (auto& name : names)
+	{
+		turnOff(name);
+	}
+	return true;
+}
+int MagnetFactory::getPSUState(const std::string& name) const
+{
+	return magnetMap.find(name)->second.getPSUState();
+}
+
+int MagnetFactory::getILKState(const std::string& name) const
+{
+	return magnetMap.find(name)->second.getILKState();
+}
+bool MagnetFactory::turnOn_Py(boost::python::list names)
+{
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	return turnOn(namesVector);
+
+}
+bool MagnetFactory::turnOff_Py(boost::python::list names)
+{
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	return turnOff(namesVector);
+
 }
 bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 {

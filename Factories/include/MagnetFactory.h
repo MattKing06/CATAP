@@ -21,7 +21,6 @@ class MagnetFactory
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
 		bool setup(const std::string &version);
-		updateFunctionPtr findUpdateFunctionForRecord(const std::string& record, const Magnet& mag) const;
 		LoggingSystem messenger;
 		ConfigReader reader;
 		Magnet& getMagnet(const std::string& fullMagnetName);
@@ -35,6 +34,9 @@ class MagnetFactory
 		double getCurrent(const std::string& name);
 		std::map<std::string, double> getCurrents(const std::vector<std::string>& names);
 		std::map<std::string, double> getAllMagnetCurrents();
+		double getRICurrent(const std::string& name);
+		std::map<std::string, double> getRICurrents(const std::vector<std::string>& names);
+		std::map<std::string, double> getAllMagnetRICurrents();
 		bool setCurrent(const std::string& name, const double &value);
 		bool setCurrents(const std::map<std::string, double> &namesAndCurrentsMap);
 		bool setAllMagnetCurrents(const double& value);
@@ -44,7 +46,8 @@ class MagnetFactory
 		bool turnOff(const std::string& name);
 		bool turnOff(const std::vector<std::string>& names);
 		bool turnOffAllMagnets();
-
+		int getPSUState(const std::string& name) const;
+		int getILKState(const std::string& name) const;
 		//THESE METHODS SHOULD BE MOVED TO A UTILITY PACKAGE
 		template< typename typeOfNewVector>
 		std::vector< typeOfNewVector > to_std_vector(const boost::python::object& iterable);
@@ -55,6 +58,9 @@ class MagnetFactory
 		// python methods
 		boost::python::dict getCurrents_Py(boost::python::list magNames);
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
+		boost::python::dict getRICurrents_Py(boost::python::list names);
+		bool turnOn_Py(boost::python::list names);
+		bool turnOff_Py(boost::python::list names);
 };
 
 
