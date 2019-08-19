@@ -102,7 +102,7 @@ bool MagnetFactory::setup(const std::string &version)
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
 		for (auto &pv : magPVStructs)
 		{
-			std::string pvAndRecordName = magnet.second.getFullPVName() + ":" + pv.first;
+			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
@@ -142,7 +142,8 @@ std::map<std::string, Magnet> MagnetFactory::getMagnets(std::vector<std::string>
 	}
 	return selectedMagnets;
 }
-Magnet MagnetFactory::getMagnet(const std::string& fullMagnetName)
+
+Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
 	return magnetMap.find(fullMagnetName)->second;
 }

@@ -10,42 +10,36 @@
 
 
 Magnet::Magnet()
-{
-	magnetParametersAndValuesMap = std::map<std::string, std::string>();
-}
+{}
 
-Magnet::Magnet(std::map<std::string, std::string> &paramsMap, bool isVirtual) : Hardware(paramsMap, isVirtual)
+Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, bool isVirtual) :
+Hardware(paramsMap, isVirtual),
+manufacturer(paramsMap.find("manufacturer")->second),
+serialNumber(std::stoi(paramsMap.find("serial_number")->second.data())),
+magType(paramsMap.find("mag_type")->second),
+magRevType(paramsMap.find("mag_rev_type")->second),
+RI_tolerance(std::stof(paramsMap.find("RI_tolerance")->second)),
+numberOfDegaussSteps(std::stoi(paramsMap.find("number_of_degauss_steps")->second)),
+degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
+fullPSUName(paramsMap.find("PSU")->second),
+measurementDataLocation(paramsMap.find("measurement_data_location")->second),
+magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 {
-	//assuming known name
-	if (isVirtual)
-	{
-		fullPVName = paramsMap.find("virtual_name")->second;
-	}
-	else
-	{
-		fullPVName = paramsMap.find("name")->second;
-	}
-	manufacturer = paramsMap.find("manufacturer")->second;
-	serialNumber = std::stoi(paramsMap.find("serial_number")->second.data());
-	magType = paramsMap.find("mag_type")->second;
-	magRevType = paramsMap.find("mag_rev_type")->second;
-	RI_tolerance = std::stof(paramsMap.find("RI_tolerance")->second);
-	numberOfDegaussSteps = std::stoi(paramsMap.find("number_of_degauss_steps")->second);
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
-	degaussTolerance = std::stof(paramsMap.find("degauss_tolerance")->second);
-	fullPSUName = paramsMap.find("PSU")->second;
-	measurementDataLocation = paramsMap.find("measurement_data_location")->second;
+	//BAD NEW: needs to be changed to shared_ptr/unique_ptr
 	epicsInterface = new EPICSMagnetInterface();
-	this->isVirtual = isVirtual;
 	//_CrtDumpMemoryLeaks();
 }
-
-std::string Magnet::getFullPVName() const
+Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
+manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
+magType(copyMagnet.magType), magRevType(copyMagnet.magRevType), RI_tolerance(copyMagnet.RI_tolerance),
+numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
+fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurementDataLocation),
+epicsInterface(copyMagnet.epicsInterface), magneticLength(copyMagnet.magneticLength)
 {
-	return this->fullPVName;
 }
 std::vector<std::string> Magnet::getAliases() const
 {
@@ -106,7 +100,7 @@ bool Magnet::setEPICSCurrent(const double &value)
 	{
 		if (pv.second.pvRecord == "SETI")
 		{
-			logger.printDebugMessage("SETTING TO VALUE: " + std::to_string(value) + " for [" + pv.second.fullPVName + "]");
+			messenger.printDebugMessage("SETTING TO VALUE: " + std::to_string(value) + " for [" + pv.second.fullPVName + "]");
 			this->epicsInterface->setNewCurrent(value, pv.second);
 		}
 	}
