@@ -45,7 +45,10 @@ EPICSInterface::~EPICSInterface()
 }
 void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
 {
-	if (pvStruct.pvRecord == "GETSETI")//since GETSETI is the only PV with a proper updateFunction, 
+	if (pvStruct.pvRecord == "GETSETI" ||
+		pvStruct.pvRecord == "RPOWER" || 
+		pvStruct.pvRecord == "READI" ||
+		pvStruct.pvRecord == "RILK")//since GETSETI is the only PV with a proper updateFunction, 
 						 // we skip over any with NULL updateFunctions for now.
 	{
 		int status = ca_create_subscription(pvStruct.CHTYPE, pvStruct.COUNT,
@@ -67,7 +70,6 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		char *pvCstr = new char[pv.size() +1];
 		strcpy(pvCstr,pv.c_str());
 		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
-		//std::cout << "CHID FROM EPICS INTERFACE: " << CHID << std::endl;
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		pvStruct.CHID = CHID;

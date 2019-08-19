@@ -41,6 +41,7 @@ fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurem
 epicsInterface(copyMagnet.epicsInterface), magneticLength(copyMagnet.magneticLength)
 {
 }
+
 std::vector<std::string> Magnet::getAliases() const
 {
 	return this->aliases;
@@ -107,6 +108,54 @@ bool Magnet::setEPICSCurrent(const double &value)
 	// subscription should sense current has changed and call 'updateCurrent' in MagnetEPICSInterface
 	return true;
 }
+
+bool Magnet::setPSUState(const int& value)
+{
+	psuState = value;
+	return true;
+}
+
+int Magnet::getPSUState() const
+{
+	return psuState;
+}
+
+bool Magnet::setEPICSPSUState(const int& value)
+{
+	std::map<std::string, pvStruct>& pvData = getPVStructs();
+	for (auto &pv : pvData)
+	{
+		if (pv.second.pvRecord == "SPOWER")
+		{
+			messenger.printDebugMessage("SETTING TO POWER: " + std::to_string(value) + " for [" + pv.second.fullPVName + "]");
+			this->epicsInterface->setNewPSUState(value, pv.second);
+		}
+	}
+	return true;
+}
+
+bool Magnet::setRICurrent(const double& value)
+{
+	RICurrent = value;
+	return true;
+}
+
+double Magnet::getRICurrent() const
+{
+	return RICurrent;
+}
+
+bool Magnet::setILKState(const int& value)
+{
+	ilkState = value;
+	return true;
+}
+
+int Magnet::getILKState() const
+{
+	return ilkState;
+}
+
 bool Magnet::setCurrent(const double &value)
 {
 	this->current = value;

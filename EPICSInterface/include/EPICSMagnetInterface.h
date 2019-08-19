@@ -20,6 +20,10 @@ public:
 	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
 	static void updateCurrent(const struct event_handler_args args);
 	void setNewCurrent(const double &value, const pvStruct &pv) const;
+	static void updatePSUState(const struct event_handler_args args);
+	void setNewPSUState(const int& value, const pvStruct &pv) const;
+	static void updateREADI(const struct event_handler_args args);
+	static void updateRILK(const struct event_handler_args args);
 	template<typename T>
 	void putValue(const pvStruct& pvStruct, const T& value) const;
 	static LoggingSystem messenger;

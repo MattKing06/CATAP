@@ -48,6 +48,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		// Magnet Exposure
 	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
 		.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
+		.add_property("psu_state", &Magnet::getPSUState, &Magnet::setEPICSPSUState)
 		.add_property("name", &Magnet::getHardwareName)
 		.add_property("manufacturer", &Magnet::getManufacturer)
 		.add_property("serial_number", &Magnet::getSerialNumber)
@@ -60,6 +61,8 @@ BOOST_PYTHON_MODULE(CATAP)
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
 	//Magnet Factory Exposure
+	bool(MagnetFactory::*turnOnSingle)(const std::string&) = &MagnetFactory::turnOn;
+	bool(MagnetFactory::*turnOffSingle)(const std::string&) = &MagnetFactory::turnOff;
 	boost::python::class_<MagnetFactory>("MagnetFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
 		.def("setup", &MagnetFactory::setup)
@@ -72,6 +75,10 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents)
 		.def("setCurrent", &MagnetFactory::setCurrent)
 		.def("setCurrents", &MagnetFactory::setCurrents_Py)
+		.def("turnOn", turnOnSingle)
+		.def("turnOn", &MagnetFactory::turnOn_Py)
+		.def("turnOff", turnOffSingle)
+		.def("turnOff", &MagnetFactory::turnOff_Py)
 		.add_property("logger", &MagnetFactory::messenger);
 	// Hardware Factory Exposure
 
