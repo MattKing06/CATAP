@@ -40,6 +40,5 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
 	else
 	{
 		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
-		exit(0);
 	}
 }
