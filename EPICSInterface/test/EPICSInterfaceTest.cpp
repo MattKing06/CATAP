@@ -22,6 +22,5 @@ BOOST_AUTO_TEST_CASE(check_chid_state_from_epics_interface_test)
 	else
 	{
 		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
-		exit(0);
 	}
 }
