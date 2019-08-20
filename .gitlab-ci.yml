@@ -24,6 +24,6 @@ cmake_build:
   - ./LoggingSystemTest
   - ./HardwareTest
   - ./MagnetTest
-
-    
+  - ./EPICSInterfaceTest
+  - ./EPICSMagnetInterfaceTest  
 
