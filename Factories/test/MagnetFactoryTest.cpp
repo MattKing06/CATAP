@@ -8,6 +8,8 @@
 #include <chrono>
 #include <thread>
 
+BOOST_AUTO_TEST_SUITE(MagnetFactoryTestSuite)
+
 BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
@@ -25,7 +27,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 	srand(time(NULL));
 	double currentToSet = rand() % 10 + 1.0;
 	magFac.setCurrent(testMagnetName, currentToSet);
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	BOOST_CHECK_CLOSE(magFac.getRICurrent(testMagnetName), currentToSet, 10);
 }
 
@@ -36,3 +38,5 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 	magFac.setup("nominal");
 	BOOST_CHECK_EQUAL(magFac.getILKState(testMagnetName), 0);
 }
+
+BOOST_AUTO_TEST_SUITE_END();
