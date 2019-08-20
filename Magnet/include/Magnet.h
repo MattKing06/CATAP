@@ -7,10 +7,11 @@
 #ifndef EPICS_MAGNET_INTERFACE_H_
 #include "EPICSMagnetInterface.h"
 #endif //EPICS_MAGNET_INTERFACE_H_
-
+#include <boost/shared_ptr.hpp>
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
 class EPICSMagnetInterface;
+typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
 class Magnet : public Hardware
 {
 	public:
@@ -20,7 +21,7 @@ class Magnet : public Hardware
 		Magnet(std::string knownNameOfMagnet);
 		Magnet(const std::map<std::string, std::string>& magnetParametersAndValuesMap, bool isVirtual);
 		Magnet(const Magnet& copyMagnet);
-		EPICSMagnetInterface *epicsInterface;
+		EPICSMagnetInterface_sptr epicsInterface;
 		std::string getFullPVName() const;
 		std::vector<std::string> getAliases() const;
 		std::string getManufacturer() const;
