@@ -2,13 +2,44 @@
 
 #include <boost/test/unit_test.hpp>
 #include <string>
+#include <EPICSMagnetInterface.h>
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
 #endif
 
+LoggingSystem TEST_LOGGER(true, true);
 
-BOOST_AUTO_TEST_CASE(epics_shutter_interface_test)
+BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
 {
-	BOOST_TEST((true && true));
+	EPICSMagnetInterface epicsInterface = EPICSMagnetInterface();
+	pvStruct setIPV;
+	setIPV.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
+	setIPV.pvRecord = "SETI";
+	epicsInterface.retrieveCHID(setIPV);
+	epicsInterface.retrieveCHTYPE(setIPV);
+	epicsInterface.retrieveCOUNT(setIPV);
+	pvStruct getSetIPV;
+	getSetIPV.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
+	getSetIPV.pvRecord = "GETSETI";
+	epicsInterface.retrieveCHID(getSetIPV);
+	epicsInterface.retrieveCHTYPE(getSetIPV);
+	epicsInterface.retrieveCOUNT(getSetIPV);
+	if (ca_state(setIPV.CHID) == cs_conn)
+	{
+		BOOST_CHECK_EQUAL(ca_read_access(setIPV.CHID), 1);
+		BOOST_CHECK_EQUAL(ca_write_access(setIPV.CHID), 1);
+		srand(time(NULL));
+		double currentToSet = rand() % 10 + 1.0;
+		epicsInterface.putValue(setIPV, currentToSet);
+		double returnValue;
+		ca_get(getSetIPV.CHTYPE, getSetIPV.CHID, &returnValue);
+		ca_pend_io(CA_PEND_IO_TIMEOUT);
+		BOOST_CHECK_EQUAL(returnValue, currentToSet);
+	}
+	else
+	{
+		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
+		exit(0);
+	}
 }
