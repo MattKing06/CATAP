@@ -13,6 +13,8 @@
 	}							\
 }								\
 
+
+
 EPICSInterface::EPICSInterface()
 {
 	int status;
@@ -67,13 +69,10 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		int status;
 		chid CHID;
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
-		char *pvCstr = new char[pv.size() +1];
-		strcpy(pvCstr,pv.c_str());
-		status = ca_create_channel(pvCstr, NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
+		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		pvStruct.CHID = CHID;
-		delete pvCstr;
 	}
 	catch (std::exception &e)
 	{
