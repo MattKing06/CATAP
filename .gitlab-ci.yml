@@ -21,6 +21,9 @@ cmake_build:
   - echo 'Running Tests..'
   - ls ~/MasterLattice
   - ./ConfigReaderTest
+  - ./LoggingSystemTest
+  - ./HardwareTest
+  - ./MagnetTest
 
     
 
