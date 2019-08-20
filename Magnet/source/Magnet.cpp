@@ -6,8 +6,7 @@
 #include <vector>
 #include "ConfigReader.h"
 #include "boost/algorithm/string/split.hpp"
-
-
+#include <boost/make_shared.hpp>
 
 Magnet::Magnet()
 {}
