@@ -26,13 +26,14 @@ target_include_directories(Factories PUBLIC include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
+target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/include)
 TARGET_LINK_LIBRARIES(Factories PUBLIC
 					 ${Boost_LIBRARIES}
 					 ${PYTHON_LIBRARY}
 					 ConfigReader
 					 LoggingSystem
-					 Hardware)
-TARGET_LINK_LIBRARIES(Factories PRIVATE Hardware)
+					 Hardware
+					 Utilities)
 set_property(TARGET Factories PROPERTY FOLDER "Factories")
 
 add_subdirectory(test)

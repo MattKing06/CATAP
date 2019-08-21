@@ -2,6 +2,7 @@
 #include <boost/filesystem.hpp>
 #include <map>
 #include <iostream>
+#include <PythonTypeConversions.h>
 #ifndef __CINT__
 #include <cadef.h>
 #endif
@@ -196,40 +197,6 @@ std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std
 	}
 	return RICurrents;
 }
-
-/*UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSIBLE BY EVERYONE]*/
-template< typename typeOfNewVector>
-inline
-std::vector<typeOfNewVector> MagnetFactory::to_std_vector(const boost::python::object& iterable)
-{
-	return std::vector<typeOfNewVector>(boost::python::stl_input_iterator<typeOfNewVector>(iterable),
-		boost::python::stl_input_iterator<typeOfNewVector>());
-}
-template<class typeOfVectorToConvert>
-inline
-boost::python::list MagnetFactory::to_py_list(std::vector<typeOfVectorToConvert> vector)
-{
-	typename std::vector<typeOfVectorToConvert>::iterator iter;
-	boost::python::list newList;
-	for (iter = vector.begin(); iter != vector.end(); ++iter)
-	{
-		newList.append(*iter);
-	}
-	return newList;
-}
-template<class key, class value>
-inline
-boost::python::dict MagnetFactory::to_py_dict(std::map<key, value> map)
-{
-	typename std::map<key, value>::iterator iter;
-	boost::python::dict newDictionary;
-	for (iter = map.begin(); iter != map.end(); ++iter)
-	{
-		newDictionary[iter->first] = iter->second;
-	}
-	return newDictionary;
-}
-/*END OF UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSBILE BY EVERYONE]*/
 boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
 {
 	std::map<std::string, double> currents;

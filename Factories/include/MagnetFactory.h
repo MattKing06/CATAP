@@ -48,14 +48,6 @@ class MagnetFactory
 		bool turnOffAllMagnets();
 		int getPSUState(const std::string& name) const;
 		int getILKState(const std::string& name) const;
-		//THESE METHODS SHOULD BE MOVED TO A UTILITY PACKAGE
-		template< typename typeOfNewVector>
-		std::vector< typeOfNewVector > to_std_vector(const boost::python::object& iterable);
-		template< typename typeOfVectorToConvert >
-		boost::python::list to_py_list(std::vector<typeOfVectorToConvert> vector);
-		template< class key, class value>
-		boost::python::dict to_py_dict(std::map<key, value> map);
-		// python methods
 		boost::python::dict getCurrents_Py(boost::python::list magNames);
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);

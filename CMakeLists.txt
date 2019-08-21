@@ -60,6 +60,7 @@ add_subdirectory(Hardware)
 add_subdirectory(PythonInterface)
 add_subdirectory(PV)
 add_subdirectory(EPICSInterface)
+add_subdirectory(Utilities)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")
 message("Using CMake version: ${CMAKE_VERSION}")
