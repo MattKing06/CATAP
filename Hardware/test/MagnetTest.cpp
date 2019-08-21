@@ -18,4 +18,11 @@ BOOST_AUTO_TEST_CASE(creating_empty_magnet_test)
 	BOOST_CHECK_EQUAL(pvStructMap.empty(), true);
 }
 
+BOOST_AUTO_TEST_CASE(setting_empty_magnet_psu_state_test)
+{
+	Magnet mag = Magnet();
+	mag.setPSUState(STATE::OFF);
+	BOOST_CHECK_EQUAL(mag.getPSUState(), STATE::OFF);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

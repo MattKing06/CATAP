@@ -2,6 +2,7 @@
 #include <boost/filesystem.hpp>
 #include <map>
 #include <iostream>
+#include <PythonTypeConversions.h>
 #ifndef __CINT__
 #include <cadef.h>
 #endif
@@ -43,23 +44,21 @@ MagnetFactory::~MagnetFactory()
 	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
 	// The MagnetFactory object is destroyed by python too quickly
 	// I believe this has something to do with python not managing the object
-	//for (auto& magnet : magnetMap)
-	//{
-	//	auto pvStructsList = magnet.second.getPVStructs();
-	//	for (auto& pvStruct : pvStructsList)
-	//	{
-	//		if (pvStruct.second.EVID)
-	//		{
-	//			magnet.second.epicsInterface.destroySubscription(pvStruct.second.EVID);
-	//			ca_flush_io();
-	//			
-	//		}
-	//		if (pvStruct.secondCHID)
-	//		{
-	//			magnet.second.epicsInterface->clearChannel(pvStruct.second->CHID);
-	//		}
-	//	}
-	//}
+	for (auto& magnet : magnetMap)
+	{
+		auto pvStructsList = magnet.second.getPVStructs();
+		for (auto& pvStruct : pvStructsList)
+		{
+			if (pvStruct.second.monitor)
+			{
+				magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+				ca_flush_io();
+			}
+			magnet.second.epicsInterface->removeChannel(pvStruct.second);
+			ca_pend_io(CA_PEND_IO_TIMEOUT);
+		}
+	}
+	messenger.printDebugMessage("[MF] CONNECTONS AFTER: " + ca_get_ioc_connection_count());
 }
 
 void MagnetFactory::populateMagnetMap()
@@ -71,6 +70,17 @@ void MagnetFactory::populateMagnetMap()
 	while (reader.hasMoreFilesToParse())
 	{
 		reader.parseNextYamlFile(magnetMap);
+	}
+}
+
+void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+{
+	if (pvStruct.pvRecord == "GETSETI" ||
+		pvStruct.pvRecord == "RPOWER" ||
+		pvStruct.pvRecord == "READI" ||
+		pvStruct.pvRecord == "RILK")
+	{
+		pvStruct.monitor = true;
 	}
 }
 
@@ -107,13 +117,17 @@ bool MagnetFactory::setup(const std::string &version)
 			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+			retrieveMonitorStatus(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
 			messenger.debugMessagesOn();
 			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
-			magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+			if (pv.second.monitor)
+			{
+				magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+			}
 		}
 	}
 
@@ -196,40 +210,6 @@ std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std
 	}
 	return RICurrents;
 }
-
-/*UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSIBLE BY EVERYONE]*/
-template< typename typeOfNewVector>
-inline
-std::vector<typeOfNewVector> MagnetFactory::to_std_vector(const boost::python::object& iterable)
-{
-	return std::vector<typeOfNewVector>(boost::python::stl_input_iterator<typeOfNewVector>(iterable),
-		boost::python::stl_input_iterator<typeOfNewVector>());
-}
-template<class typeOfVectorToConvert>
-inline
-boost::python::list MagnetFactory::to_py_list(std::vector<typeOfVectorToConvert> vector)
-{
-	typename std::vector<typeOfVectorToConvert>::iterator iter;
-	boost::python::list newList;
-	for (iter = vector.begin(); iter != vector.end(); ++iter)
-	{
-		newList.append(*iter);
-	}
-	return newList;
-}
-template<class key, class value>
-inline
-boost::python::dict MagnetFactory::to_py_dict(std::map<key, value> map)
-{
-	typename std::map<key, value>::iterator iter;
-	boost::python::dict newDictionary;
-	for (iter = map.begin(); iter != map.end(); ++iter)
-	{
-		newDictionary[iter->first] = iter->second;
-	}
-	return newDictionary;
-}
-/*END OF UTILITY FUNCTIONS [NEED TO BE MOVED SOMEWHERE ACCESSBILE BY EVERYONE]*/
 boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
 {
 	std::map<std::string, double> currents;
@@ -274,7 +254,7 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 }
 bool MagnetFactory::turnOn(const std::string& name)
 {
-	return magnetMap.at(name).setEPICSPSUState(1);
+	return magnetMap.at(name).setEPICSPSUState(STATE::ON);
 }
 bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 {
@@ -286,7 +266,7 @@ bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 }
 bool MagnetFactory::turnOff(const std::string& name)
 {
-	return magnetMap.at(name).setEPICSPSUState(0);
+	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
 }
 bool MagnetFactory::turnOff(const std::vector<std::string>& names)
 {

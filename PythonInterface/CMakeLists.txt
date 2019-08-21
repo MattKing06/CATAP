@@ -25,11 +25,11 @@ target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/ConfigRe
 target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
 target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/Factories/include)
-target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/Magnet/include)
 TARGET_LINK_LIBRARIES(PythonInterface PUBLIC
 					 ${Boost_LIBRARIES}
 					 ${PYTHON_LIBRARY}
-					 Factories)
+					 Factories
+					 Hardware)
 set_property(TARGET PythonInterface PROPERTY FOLDER "PythonInterface")
 
 add_subdirectory(test)

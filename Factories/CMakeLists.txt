@@ -25,14 +25,15 @@ target_include_directories(Factories PUBLIC ${PYTHON_INCLUDE_DIR})
 target_include_directories(Factories PUBLIC include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
-target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/Magnet/include)
+target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
+target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/include)
 TARGET_LINK_LIBRARIES(Factories PUBLIC
 					 ${Boost_LIBRARIES}
 					 ${PYTHON_LIBRARY}
 					 ConfigReader
 					 LoggingSystem
-					 Magnet)
-TARGET_LINK_LIBRARIES(Factories PRIVATE Magnet)
+					 Hardware
+					 Utilities)
 set_property(TARGET Factories PROPERTY FOLDER "Factories")
 
 add_subdirectory(test)
