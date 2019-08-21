@@ -1,7 +1,7 @@
 #ifndef PYTHON_TYPE_CONVERSIONS_H_
 #define PYTHON_TYPE_CONVERSIONS_H_
 
-#include <boost\python.hpp>
+#include <boost/python.hpp>
 #include <vector>
 #include <map>
 template< typename typeOfNewVector>
