@@ -106,18 +106,18 @@ bool Magnet::setEPICSCurrent(const double &value)
 	return true;
 }
 
-bool Magnet::setPSUState(const int& value)
+bool Magnet::setPSUState(const STATE& value)
 {
 	psuState = value;
 	return true;
 }
 
-int Magnet::getPSUState() const
+STATE Magnet::getPSUState() const
 {
 	return psuState;
 }
 
-bool Magnet::setEPICSPSUState(const int& value)
+bool Magnet::setEPICSPSUState(const STATE& value)
 {
 	std::map<std::string, pvStruct>& pvData = getPVStructs();
 	for (auto &pv : pvData)

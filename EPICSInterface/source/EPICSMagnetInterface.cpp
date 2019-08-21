@@ -73,7 +73,8 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 		messenger.printMessage(recastMagnet->getHardwareName());
-		recastMagnet->setPSUState(*(int*)(args.dbr));
+		int value = *(int*)(args.dbr);
+		recastMagnet->setPSUState((STATE)(value));
 		messenger.printMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(int*)(args.dbr)));
 	}
 }
@@ -130,9 +131,9 @@ void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv
 	messenger.printMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS ");
 }
 
-void EPICSMagnetInterface::setNewPSUState(const int& value, const pvStruct& pv) const
+void EPICSMagnetInterface::setNewPSUState(const STATE& value, const pvStruct& pv) const
 {
-	putValue(pv, value);
+	putValue(pv, static_cast<int>(value));
 	messenger.printMessage("SENT POWER " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS");
 }
 

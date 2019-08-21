@@ -254,7 +254,7 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 }
 bool MagnetFactory::turnOn(const std::string& name)
 {
-	return magnetMap.at(name).setEPICSPSUState(1);
+	return magnetMap.at(name).setEPICSPSUState(STATE::ON);
 }
 bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 {
@@ -266,7 +266,7 @@ bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 }
 bool MagnetFactory::turnOff(const std::string& name)
 {
-	return magnetMap.at(name).setEPICSPSUState(0);
+	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
 }
 bool MagnetFactory::turnOff(const std::vector<std::string>& names)
 {

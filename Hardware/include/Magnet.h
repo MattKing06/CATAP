@@ -39,16 +39,16 @@ class Magnet : public Hardware
 		bool isVirtual;
 		bool setCurrent(const double &value);
 		bool setEPICSCurrent(const double &value);
-		bool setPSUState(const int& value);
-		bool setEPICSPSUState(const int& value);
+		bool setPSUState(const STATE& value);
+		bool setEPICSPSUState(const STATE& value);
 		bool setRICurrent(const double &value);
 		bool setILKState(const int& value);
 		int getILKState() const;
 		double getRICurrent() const;
 		double getCurrent() const;
-		int getPSUState() const;
+		STATE getPSUState() const;
 		double current;
-		int psuState;
+		STATE psuState;
 		double RICurrent;
 		int ilkState;
 	protected:

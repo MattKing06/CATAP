@@ -22,6 +22,7 @@ target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/i
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/EPICSInterface/include)
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
+target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/include)
 target_include_directories(Hardware PUBLIC include)
 target_include_directories(Hardware PUBLIC ${Boost_INCLUDE_DIR})
 #EPICS RELATED VARS

@@ -7,6 +7,7 @@
 #ifndef PV_H_
 #include "PV.h"
 #endif
+#include <GlobalStateEnums.h>
 class Hardware
 {
 public:
