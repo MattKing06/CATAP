@@ -31,7 +31,7 @@ class EPICSInterface
 		void removeSubscription(pvStruct& pv);
 		void removeChannel(pvStruct& pv);
 		void detachFromContext();
-		static double getEPICSTime(const epicsTimeStamp& stamp);
+		static std::string getEPICSTime(const epicsTimeStamp& stamp);
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;

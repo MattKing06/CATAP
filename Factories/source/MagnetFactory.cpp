@@ -113,11 +113,11 @@ bool MagnetFactory::setup(const std::string &version)
 		for (auto &pv : magPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
+			retrieveMonitorStatus(pv.second);
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
-			retrieveMonitorStatus(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
 			messenger.debugMessagesOn();

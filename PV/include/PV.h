@@ -17,6 +17,7 @@ typedef struct pvStruct
 	unsigned long COUNT;
 	unsigned long MASK;
 	chtype CHTYPE;
+	chtype MonitorCHTYPE;
 	static void(*updateFunction)(const struct event_handler_args args);
 	evid EVID;
 	epicsTimeStamp time;
