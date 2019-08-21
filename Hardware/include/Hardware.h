@@ -31,4 +31,5 @@ public:
 	std::map<std::string, pvStruct> pvStructs;
 	std::map<std::string, std::string> specificHardwareParameters;
 };
+
 #endif //HARDWARE_H_

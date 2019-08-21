@@ -85,13 +85,24 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 	{
 		std::cerr << "Something whent wrong with update function" << std::endl;
 	}
+	else if (args.type == DBR_TIME_DOUBLE)
+	{
+		MY_SEVCHK(args.status);
+		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
+		const struct dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
+		recastMagnet->pvStructs.at(recastMagnet->getHardwareName() + ":READI").time = pTD->stamp;
+		messenger.printMessage(recastMagnet->getHardwareName());
+		recastMagnet->setRICurrent(pTD->value);
+		messenger.printMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(pTD->value));
+		std::cout << getEPICSTime(recastMagnet->pvStructs.at(recastMagnet->getHardwareName() + ":READI").time) << std::endl;
+	}
 	else if (args.type == DBR_DOUBLE)
 	{
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 		messenger.printMessage(recastMagnet->getHardwareName());
-		recastMagnet->setRICurrent(*(double*)(args.dbr));
-		messenger.printMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
+		recastMagnet->setRICurrent(*(double*)args.dbr);
+		messenger.printMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)args.dbr));
 	}
 }
 

@@ -53,7 +53,6 @@ if(Boost_FOUND)
     endif(UNIX)
 endif(Boost_FOUND)
 
-add_subdirectory(Magnet)
 add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)
 add_subdirectory(ConfigReader)

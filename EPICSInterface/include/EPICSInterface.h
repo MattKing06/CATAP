@@ -7,10 +7,12 @@
 #endif //HARDWARE_H_
 #ifndef __CINT__
 #include <cadef.h>
+#include <epicsTime.h>
 #endif
 #ifndef PV_H_
 #include "PV.h"
 #endif
+
 class PV;
 #define CA_PEND_IO_TIMEOUT 5.0
 class EPICSInterface
@@ -26,7 +28,7 @@ class EPICSInterface
 		void retrieveCHTYPE(pvStruct &pvStruct) const;
 		void retrieveCOUNT(pvStruct &pvStruct) const;
 		void createSubscription(Hardware &hardware, pvStruct &pvStruct) const;
-
+		static double getEPICSTime(const epicsTimeStamp& stamp);
 	protected:
 		bool shouldStartEpics = true;
 		bool shouldStartVirtualMachine = true;
@@ -44,7 +46,7 @@ class EPICSInterface
 			const std::string& objectName
 			// map_ilck_pvstruct& ILockPVStructs,
 			);
-		template<typename T> T getDBR(const event_handler_args& args)
+		template<typename T> T getDBR(const event_handler_args args)
 		{
 			T dbr_holder;
 			dbr_holder = *(T*)(args.dbr);

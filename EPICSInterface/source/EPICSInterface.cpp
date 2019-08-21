@@ -90,3 +90,7 @@ void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct) const
 	pvStruct.COUNT = ca_element_count(pvStruct.CHID);
 }
 
+double EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
+{
+	return ((double)stamp.nsec * 10e-9) + stamp.secPastEpoch;
+}

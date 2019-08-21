@@ -4,6 +4,7 @@
 //epics
 #ifndef __CINT__
 #include <cadef.h>
+#include <epicsTime.h>
 #endif
 //#define PV_NAMESPACE_ACTIVE
 
@@ -18,6 +19,7 @@ typedef struct pvStruct
 	chtype CHTYPE;
 	static void(*updateFunction)(const struct event_handler_args args);
 	evid EVID;
+	epicsTimeStamp time;
 }pvStruct;
 extern bool operator==(const pvStruct& lhs, const pvStruct& rhs);
 extern bool operator !=(const pvStruct& lhs, const pvStruct& rhs);
