@@ -26,6 +26,7 @@ EPICSInterface::EPICSInterface()
 	}
 
 	thisCaContext = ca_current_context();
+	std::cout << "[EI] CONNECTONS BEFORE: " << ca_get_ioc_connection_count() << std::endl;
 }
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine)
 {
@@ -44,22 +45,34 @@ EPICSInterface::~EPICSInterface()
 {
 	messenger.messagesOn();
 	messenger.printMessage("EPICSInterface Destructor Called");
+	messenger.printDebugMessage("[EI] CONNECTONS AFTER: " + ca_get_ioc_connection_count());
 }
+
+void EPICSInterface::removeSubscription(pvStruct& pvStruct)
+{
+	int status = ca_clear_subscription(pvStruct.EVID);
+	MY_SEVCHK(status);
+}
+
+void EPICSInterface::removeChannel(pvStruct& pvStruct)
+{
+	int status = ca_clear_channel(pvStruct.CHID);
+	MY_SEVCHK(status);
+}
+
+void EPICSInterface::detachFromContext()
+{
+	ca_detach_context();
+}
+
 void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
 {
-	if (pvStruct.pvRecord == "GETSETI" ||
-		pvStruct.pvRecord == "RPOWER" || 
-		pvStruct.pvRecord == "READI" ||
-		pvStruct.pvRecord == "RILK")//since GETSETI is the only PV with a proper updateFunction, 
-						 // we skip over any with NULL updateFunctions for now.
-	{
-		int status = ca_create_subscription(pvStruct.CHTYPE, pvStruct.COUNT,
-											pvStruct.CHID, pvStruct.MASK,
-											pvStruct.updateFunction,
-											(void*)&hardware, 
-								            &pvStruct.EVID);
-		MY_SEVCHK(status);
-	}
+	int status = ca_create_subscription(pvStruct.CHTYPE, pvStruct.COUNT,
+										pvStruct.CHID, pvStruct.MASK,
+										pvStruct.updateFunction,
+										(void*)&hardware, 
+										&pvStruct.EVID);
+	MY_SEVCHK(status);
 }
 
 void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const

@@ -28,6 +28,9 @@ class EPICSInterface
 		void retrieveCHTYPE(pvStruct &pvStruct) const;
 		void retrieveCOUNT(pvStruct &pvStruct) const;
 		void createSubscription(Hardware &hardware, pvStruct &pvStruct) const;
+		void removeSubscription(pvStruct& pv);
+		void removeChannel(pvStruct& pv);
+		void detachFromContext();
 		static double getEPICSTime(const epicsTimeStamp& stamp);
 	protected:
 		bool shouldStartEpics = true;

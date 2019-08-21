@@ -44,23 +44,21 @@ MagnetFactory::~MagnetFactory()
 	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
 	// The MagnetFactory object is destroyed by python too quickly
 	// I believe this has something to do with python not managing the object
-	//for (auto& magnet : magnetMap)
-	//{
-	//	auto pvStructsList = magnet.second.getPVStructs();
-	//	for (auto& pvStruct : pvStructsList)
-	//	{
-	//		if (pvStruct.second.EVID)
-	//		{
-	//			magnet.second.epicsInterface.destroySubscription(pvStruct.second.EVID);
-	//			ca_flush_io();
-	//			
-	//		}
-	//		if (pvStruct.secondCHID)
-	//		{
-	//			magnet.second.epicsInterface->clearChannel(pvStruct.second->CHID);
-	//		}
-	//	}
-	//}
+	for (auto& magnet : magnetMap)
+	{
+		auto pvStructsList = magnet.second.getPVStructs();
+		for (auto& pvStruct : pvStructsList)
+		{
+			if (pvStruct.second.monitor)
+			{
+				magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+				ca_flush_io();
+			}
+			magnet.second.epicsInterface->removeChannel(pvStruct.second);
+			ca_pend_io(CA_PEND_IO_TIMEOUT);
+		}
+	}
+	messenger.printDebugMessage("[MF] CONNECTONS AFTER: " + ca_get_ioc_connection_count());
 }
 
 void MagnetFactory::populateMagnetMap()
@@ -72,6 +70,17 @@ void MagnetFactory::populateMagnetMap()
 	while (reader.hasMoreFilesToParse())
 	{
 		reader.parseNextYamlFile(magnetMap);
+	}
+}
+
+void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+{
+	if (pvStruct.pvRecord == "GETSETI" ||
+		pvStruct.pvRecord == "RPOWER" ||
+		pvStruct.pvRecord == "READI" ||
+		pvStruct.pvRecord == "RILK")
+	{
+		pvStruct.monitor = true;
 	}
 }
 
@@ -108,13 +117,17 @@ bool MagnetFactory::setup(const std::string &version)
 			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+			retrieveMonitorStatus(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
 			messenger.debugMessagesOn();
 			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
-			magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+			if (pv.second.monitor)
+			{
+				magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+			}
 		}
 	}
 

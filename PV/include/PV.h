@@ -20,6 +20,7 @@ typedef struct pvStruct
 	static void(*updateFunction)(const struct event_handler_args args);
 	evid EVID;
 	epicsTimeStamp time;
+	bool monitor;
 }pvStruct;
 extern bool operator==(const pvStruct& lhs, const pvStruct& rhs);
 extern bool operator !=(const pvStruct& lhs, const pvStruct& rhs);

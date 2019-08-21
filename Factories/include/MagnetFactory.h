@@ -28,6 +28,7 @@ class MagnetFactory
 		std::map<std::string, Magnet> getAllMagnets();
 		std::map<std::string, Magnet> magnetMap;
 		void populateMagnetMap();
+		void retrieveMonitorStatus(pvStruct& pvStruct);
 		bool hasBeenSetup;
 		bool isVirtual;
 		// methods for setting properties of magnet via PV name
