@@ -46,7 +46,9 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		std::cerr << "Something went wrong with update function!" << std::endl;
+		messenger.messagesOn();
+		messenger.printMessage("Something went wrong with update function!");
+		messenger.messagesOff();
 	}
 	else if (args.type == DBR_DOUBLE)
 	{
