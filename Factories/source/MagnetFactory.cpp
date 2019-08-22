@@ -24,7 +24,7 @@ MagnetFactory::MagnetFactory(bool isVirtual)
 {
 	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
-	messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
+	messenger.printDebugMessage("Magnet Factory Constructed");
 	isVirtual = isVirtual;
 	reader = ConfigReader("Magnet", isVirtual);
 }
@@ -39,8 +39,8 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 
 MagnetFactory::~MagnetFactory()
 {
-	messenger.messagesOn();
-	messenger.printMessage("MagnetFactory Destructor Called");
+	messenger.debugMessagesOff();
+	messenger.printDebugMessage("MagnetFactory Destructor Called");
 	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
 	// The MagnetFactory object is destroyed by python too quickly
 	// I believe this has something to do with python not managing the object
@@ -58,7 +58,6 @@ MagnetFactory::~MagnetFactory()
 			ca_pend_io(CA_PEND_IO_TIMEOUT);
 		}
 	}
-	messenger.printDebugMessage("[MF] CONNECTONS AFTER: " + ca_get_ioc_connection_count());
 }
 
 void MagnetFactory::populateMagnetMap()
