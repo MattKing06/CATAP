@@ -14,6 +14,8 @@ public:
     bool isDebugOn() const;
     void printDebugMessage(const std::string &debugMessage);
     void printMessage(const std::string &message);
+	void printMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& message);
+	void printDebugMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& debugMessage);
 private:
     std::string getCurrentDateAndTimeString();
     bool debugOn;
