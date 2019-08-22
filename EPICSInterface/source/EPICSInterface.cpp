@@ -24,9 +24,7 @@ EPICSInterface::EPICSInterface()
 		status = ca_context_create(ca_enable_preemptive_callback);
 		MY_SEVCHK(status);
 	}
-
 	thisCaContext = ca_current_context();
-	std::cout << "[EI] CONNECTONS BEFORE: " << ca_get_ioc_connection_count() << std::endl;
 }
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine)
 {
@@ -43,8 +41,8 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 }
 EPICSInterface::~EPICSInterface()
 {
-	messenger.messagesOn();
-	messenger.printMessage("EPICSInterface Destructor Called");
+	messenger.debugMessagesOff();
+	messenger.printDebugMessage("EPICSInterface Destructor Called");
 }
 
 void EPICSInterface::removeSubscription(pvStruct& pvStruct)
@@ -99,6 +97,10 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		if (ca_field_type(pvStruct.CHID) == DBR_DOUBLE)
 		{
 			pvStruct.MonitorCHTYPE = DBR_TIME_DOUBLE;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_ENUM)
+		{
+			pvStruct.MonitorCHTYPE = DBR_TIME_ENUM;
 		}
 		else
 		{
