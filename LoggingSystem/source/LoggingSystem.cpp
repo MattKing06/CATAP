@@ -56,6 +56,20 @@ void LoggingSystem::printMessage(const std::string &message){
         std::cout << "MESSAGE LOG (" << currentDateAndTime << "): " << message << std::endl;
     }
 }
+void LoggingSystem::printMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& message)
+{
+	if (messageOn)
+	{
+		std::cout << "MESSAGE LOG (" << epicsTimeString << "): " << message << std::endl;
+	}
+}
+void LoggingSystem::printDebugMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& debugMessage)
+{
+	if (debugOn)
+	{
+		std::cout << "MESSAGE LOG (" << epicsTimeString << "): " << debugMessage << std::endl;
+	}
+}
 std::string LoggingSystem::getCurrentDateAndTimeString(){
     time_t     now = time(0);
     struct tm  tstruct;
@@ -70,6 +84,6 @@ std::string LoggingSystem::getCurrentDateAndTimeString(){
 
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
     // for more information about date/time format
-    strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M",&tstruct);
+    strftime(buf, sizeof(buf), "%a %b %d %Y %H:%M:%S",&tstruct);
     return buf;
 }

@@ -16,6 +16,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 	MagnetFactory magFac = MagnetFactory(true);
 	magFac.setup("nominal");
 	magFac.turnOn(testMagnetName);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	BOOST_CHECK_EQUAL(magFac.getPSUState(testMagnetName), 1);
 }
 

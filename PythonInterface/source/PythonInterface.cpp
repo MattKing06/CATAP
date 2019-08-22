@@ -14,6 +14,7 @@
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/enum.hpp>
 #include "LoggingSystem.h"
 #include "Hardware.h"
 #include "HardwareFactory.h"
@@ -36,6 +37,11 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("debugMessagesOff", &LoggingSystem::debugMessagesOff)
 		.def("printDebugMessage", &LoggingSystem::printDebugMessage)
 		.def("printMessage", &LoggingSystem::printMessage);
+	//Global State Enum exposure
+	boost::python::enum_<STATE>("STATE")
+		.value("ON", STATE::ON)
+		.value("OFF", STATE::OFF)
+		.value("ERROR", STATE::ERROR);
 	// Hardware Exposure
 	boost::python::class_<Hardware>("Hardware", boost::python::no_init)
 		.def_readonly("machineArea", &Hardware::machineArea)
@@ -49,12 +55,14 @@ BOOST_PYTHON_MODULE(CATAP)
 	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
 		.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
 		.add_property("psu_state", &Magnet::getPSUState, &Magnet::setEPICSPSUState)
+		.add_property("ri_current", &Magnet::RICurrent)
 		.add_property("name", &Magnet::getHardwareName)
 		.add_property("manufacturer", &Magnet::getManufacturer)
 		.add_property("serial_number", &Magnet::getSerialNumber)
 		.add_property("magnet_type", &Magnet::getMagnetType)
 		.def("getCurrent", &Magnet::getCurrent)
-		.def("setCurrent", &Magnet::setEPICSCurrent);
+		.def("setCurrent", &Magnet::setEPICSCurrent)
+		.def("getRICurrent", &Magnet::getRICurrent);
 	// Parameter Map Exposure
 	boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
@@ -75,6 +83,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents)
 		.def("setCurrent", &MagnetFactory::setCurrent)
 		.def("setCurrents", &MagnetFactory::setCurrents_Py)
+		.def("getRICurrent", &MagnetFactory::getRICurrent)
+		.def("getRICurrents", &MagnetFactory::getRICurrents_Py)
 		.def("turnOn", turnOnSingle)
 		.def("turnOn", &MagnetFactory::turnOn_Py)
 		.def("turnOff", turnOffSingle)

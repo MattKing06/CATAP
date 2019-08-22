@@ -17,8 +17,8 @@ EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 }
 EPICSMagnetInterface::~EPICSMagnetInterface()
 {
-	messenger.messagesOn();
-	messenger.printMessage("EPICSMagnetInterface Destructor Called");
+	messenger.debugMessagesOff();
+	messenger.printDebugMessage("EPICSMagnetInterface Destructor Called");
 }
 void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
@@ -43,27 +43,39 @@ void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) c
 
 void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 {
-	messenger.messagesOn();
+	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		std::cerr << "Something went wrong with update function!" << std::endl;
+		messenger.messagesOn();
+		messenger.printMessage("Something went wrong with update function!");
+		messenger.messagesOff();
 	}
 	else if (args.type == DBR_DOUBLE)
 	{
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		messenger.printMessage(recastMagnet->getHardwareName());
 		recastMagnet->setCurrent(*(double*)(args.dbr));
-		messenger.printMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
+		messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
-	messenger.printMessage(" CALLED UPDATE CURRENT ");
+	else if (args.type == DBR_TIME_DOUBLE)
+	{
+		MY_SEVCHK(args.status);
+		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
+		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
+		recastMagnet->pvStructs.at("GETSETI").time = pTD->stamp;
+		recastMagnet->setCurrent(pTD->value);
+		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("GETSETI").time),
+			"GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+			+ std::to_string(pTD->value));
+	}
+	messenger.printDebugMessage(" CALLED UPDATE CURRENT ");
 
 
 }
 
 void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 {
-	messenger.messagesOn();
+	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
 		std::cerr << "Something whent wrong with update function" << std::endl;
@@ -72,44 +84,57 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 	{
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		messenger.printMessage(recastMagnet->getHardwareName());
 		int value = *(int*)(args.dbr);
 		recastMagnet->setPSUState((STATE)(value));
-		messenger.printMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(int*)(args.dbr)));
+		messenger.printDebugMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(int*)(args.dbr)));
+	}
+	else if (args.type == DBR_TIME_ENUM)
+	{
+		messenger.printDebugMessage(" DBR TIME ENUM ");
+		MY_SEVCHK(args.status);
+		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
+		const struct dbr_time_enum* pTD = (const struct dbr_time_enum*)(args.dbr);
+		recastMagnet->pvStructs.at("RPOWER").time = pTD->stamp;
+		recastMagnet->setPSUState((STATE)pTD->value);
+		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("RPOWER").time),
+			"RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+			+ std::to_string(pTD->value));
 	}
 }
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 {
-	messenger.messagesOn();
+	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
 		std::cerr << "Something whent wrong with update function" << std::endl;
 	}
 	else if (args.type == DBR_TIME_DOUBLE)
 	{
+		messenger.printDebugMessage(" DBR TIME DOUBLE ");
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		const struct dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
-		recastMagnet->pvStructs.at(recastMagnet->getHardwareName() + ":READI").time = pTD->stamp;
-		messenger.printMessage(recastMagnet->getHardwareName());
+		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
+		recastMagnet->pvStructs.at("READI").time = pTD->stamp;
 		recastMagnet->setRICurrent(pTD->value);
-		messenger.printMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(pTD->value));
-		std::cout << getEPICSTime(recastMagnet->pvStructs.at(recastMagnet->getHardwareName() + ":READI").time) << std::endl;
+		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("READI").time),
+															"READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+															+ std::to_string(pTD->value));
 	}
 	else if (args.type == DBR_DOUBLE)
 	{
+		messenger.printDebugMessage(" DBR DOUBLE ");
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		messenger.printMessage(recastMagnet->getHardwareName());
 		recastMagnet->setRICurrent(*(double*)args.dbr);
-		messenger.printMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)args.dbr));
+		messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)args.dbr));
 	}
+	messenger.printDebugMessage(" CALLED UPDATE READI ");
 }
 
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 {
-	messenger.messagesOn();
+	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
 		std::cerr << "Something whent wrong with update function" << std::endl;
@@ -118,9 +143,20 @@ void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 	{
 		MY_SEVCHK(args.status);
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-		messenger.printMessage(recastMagnet->getHardwareName());
 		recastMagnet->setILKState(*(int*)(args.dbr));
-		messenger.printMessage("RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(int*)(args.dbr)));
+		messenger.printDebugMessage("RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": " + std::to_string(*(int*)(args.dbr)));
+	}
+	else if (args.type == DBR_TIME_ENUM)
+	{
+		messenger.printDebugMessage(" DBR TIME ENUM ");
+		MY_SEVCHK(args.status);
+		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
+		const struct dbr_time_enum* pTD = (const struct dbr_time_enum*)(args.dbr);
+		recastMagnet->pvStructs.at("RILK").time = pTD->stamp;
+		recastMagnet->setILKState(pTD->value);
+		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("RILK").time),
+			"RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+			+ std::to_string(pTD->value));
 	}
 }
 
@@ -128,13 +164,13 @@ void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv
 {
 	//we have checked that pvRecord is SETI before reaching here.
 	putValue(pv, value);
-	messenger.printMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS ");
+	messenger.printDebugMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS ");
 }
 
 void EPICSMagnetInterface::setNewPSUState(const STATE& value, const pvStruct& pv) const
 {
 	putValue(pv, static_cast<int>(value));
-	messenger.printMessage("SENT POWER " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS");
+	messenger.printDebugMessage("SENT POWER " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS");
 }
 
 template<typename T>
@@ -149,6 +185,8 @@ void EPICSMagnetInterface::putValue(const pvStruct& pvStruct, const T& value) co
 	}
 	else
 	{
-		std::cout << "NOT CONNECTED TO EPICS" << std::endl;
+		messenger.messagesOn();
+		messenger.printMessage("NOT CONNECTED TO EPICS");
+		messenger.messagesOff();
 	}
 }

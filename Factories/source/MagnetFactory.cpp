@@ -24,7 +24,7 @@ MagnetFactory::MagnetFactory(bool isVirtual)
 {
 	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
-	messenger.printDebugMessage(std::string("Magnet Factory Constructed"));
+	messenger.printDebugMessage("Magnet Factory Constructed");
 	isVirtual = isVirtual;
 	reader = ConfigReader("Magnet", isVirtual);
 }
@@ -39,8 +39,8 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 
 MagnetFactory::~MagnetFactory()
 {
-	messenger.messagesOn();
-	messenger.printMessage("MagnetFactory Destructor Called");
+	messenger.debugMessagesOff();
+	messenger.printDebugMessage("MagnetFactory Destructor Called");
 	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
 	// The MagnetFactory object is destroyed by python too quickly
 	// I believe this has something to do with python not managing the object
@@ -58,7 +58,6 @@ MagnetFactory::~MagnetFactory()
 			ca_pend_io(CA_PEND_IO_TIMEOUT);
 		}
 	}
-	messenger.printDebugMessage("[MF] CONNECTONS AFTER: " + ca_get_ioc_connection_count());
 }
 
 void MagnetFactory::populateMagnetMap()
@@ -92,7 +91,7 @@ bool MagnetFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.debugMessagesOn();
+		messenger.debugMessagesOff();
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
 		//if the new magnet we build is not static, we cannot be sure we are
@@ -113,14 +112,13 @@ bool MagnetFactory::setup(const std::string &version)
 		for (auto &pv : magPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
+			retrieveMonitorStatus(pv.second);
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
-			retrieveMonitorStatus(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
-			messenger.debugMessagesOn();
 			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
