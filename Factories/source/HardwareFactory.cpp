@@ -5,8 +5,8 @@ HardwareFactory::HardwareFactory() : HardwareFactory(false)
 }
 HardwareFactory::~HardwareFactory()
 {
-	messenger.messagesOn();
-	messenger.printMessage("HardwareFactory Destruction Called");
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	messenger = LoggingSystem(false, false);
@@ -37,6 +37,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 		}
 		else
 		{
+			messenger.messagesOn();
 			messenger.printMessage("Unable to setup MagnetFactory");
 		}
 	}

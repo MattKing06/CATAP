@@ -91,7 +91,7 @@ bool MagnetFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.debugMessagesOn();
+		messenger.debugMessagesOff();
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
 		//if the new magnet we build is not static, we cannot be sure we are
@@ -119,7 +119,6 @@ bool MagnetFactory::setup(const std::string &version)
 			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
-			messenger.debugMessagesOn();
 			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
