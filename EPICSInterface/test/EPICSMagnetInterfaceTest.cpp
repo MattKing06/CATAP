@@ -42,3 +42,24 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
 		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
+
+BOOST_AUTO_TEST_CASE(epics_magnet_interface_monitor_channel_type_test)
+{
+	EPICSMagnetInterface epicsInterface = EPICSMagnetInterface();
+	pvStruct getSetIPV;
+	getSetIPV.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
+	getSetIPV.pvRecord = "GETSETI";
+	getSetIPV.monitor = true;
+	epicsInterface.retrieveCHID(getSetIPV);
+	epicsInterface.retrieveCHTYPE(getSetIPV);
+	epicsInterface.retrieveCOUNT(getSetIPV);
+	BOOST_CHECK_EQUAL(getSetIPV.MonitorCHTYPE, DBR_TIME_DOUBLE);
+	pvStruct getRPowerPV;
+	getRPowerPV.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
+	getRPowerPV.pvRecord = "RPOWER";
+	getRPowerPV.monitor = true;
+	epicsInterface.retrieveCHID(getRPowerPV);
+	epicsInterface.retrieveCHTYPE(getRPowerPV);
+	epicsInterface.retrieveCOUNT(getRPowerPV);
+	BOOST_CHECK_EQUAL(getRPowerPV.MonitorCHTYPE, DBR_TIME_ENUM);
+}
