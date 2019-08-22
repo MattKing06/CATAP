@@ -45,7 +45,6 @@ EPICSInterface::~EPICSInterface()
 {
 	messenger.messagesOn();
 	messenger.printMessage("EPICSInterface Destructor Called");
-	messenger.printDebugMessage("[EI] CONNECTONS AFTER: " + ca_get_ioc_connection_count());
 }
 
 void EPICSInterface::removeSubscription(pvStruct& pvStruct)
