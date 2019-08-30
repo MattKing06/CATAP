@@ -30,6 +30,8 @@ TARGET_LINK_LIBRARIES(PythonInterface PUBLIC
 					 ${PYTHON_LIBRARY}
 					 Factories
 					 Hardware)
+set_target_properties(PythonInterface PROPERTIES OUTPUT_NAME "CATAP")
+set_target_properties(PythonInterface PROPERTIES SUFFIX ".pyd")
 set_property(TARGET PythonInterface PROPERTY FOLDER "PythonInterface")
 
 add_subdirectory(test)
