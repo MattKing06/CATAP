@@ -16,7 +16,6 @@
 		}						\
 }								\
 
-// MEMBER FUNCTIONS //
 MagnetFactory::MagnetFactory() : MagnetFactory(false)
 {
 }
@@ -41,9 +40,6 @@ MagnetFactory::~MagnetFactory()
 {
 	messenger.debugMessagesOff();
 	messenger.printDebugMessage("MagnetFactory Destructor Called");
-	/*CLEAN UP CODE FOR MAGNET FACTORY DOES NOT WORK IN PYTHON YET*/
-	// The MagnetFactory object is destroyed by python too quickly
-	// I believe this has something to do with python not managing the object
 	for (auto& magnet : magnetMap)
 	{
 		auto pvStructsList = magnet.second.getPVStructs();
@@ -94,17 +90,9 @@ bool MagnetFactory::setup(const std::string &version)
 		messenger.debugMessagesOff();
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
-		//if the new magnet we build is not static, we cannot be sure we are
-		// storing a proper reference to it in our magnetMap due to scope.
-		// The static keyword is used here to avoid raw pointers, we store a reference to
-		// the magnet in the magnetMap
-
-		//mag is retains its value even when we try to set it to a different constructor..
-		// when we try to store a VCOR magnet, it still has the HCOR parameter values attached
-		//Magnet mag = magnetMap.
-		//// epics magnet interface has been initialized in Magnet constructor
-		//// but we have a lot of PV information to retrieve from EPICS first
-		//// so we will cycle through the PV structs, and set up their values.
+	//// epics magnet interface has been initialized in Magnet constructor
+	//// but we have a lot of PV information to retrieve from EPICS first
+	//// so we will cycle through the PV structs, and set up their values.
 	populateMagnetMap();
 	for (auto &magnet : magnetMap)
 	{
@@ -128,9 +116,6 @@ bool MagnetFactory::setup(const std::string &version)
 			}
 		}
 	}
-
-		//// inserts new key-value per ONLY IF key is unique.
-		//magnetMap.emplace(mag->getFullPVName(), mag);
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
