@@ -28,7 +28,6 @@ magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 	std::vector<std::string> degaussValuesStrVec;
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
-	//BAD NEW: needs to be changed to shared_ptr/unique_ptr
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
