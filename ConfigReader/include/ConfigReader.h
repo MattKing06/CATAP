@@ -15,7 +15,7 @@ const std::string MASTER_LATTICE_FILE_LOCATION = HOME + "/MasterLattice";
 const std::string SEPARATOR = "/";
 #endif
 #ifdef _WIN32
-const std::string MASTER_LATTICE_FILE_LOCATION = "C:\\Users\\ujo48515\\Documents\\YAMLParserTestFiles\\";
+const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\apclara1\\ControlRoomApps\\Controllers\\bin\\CATAP 2.0 Tools and Libraries\\MasterLatticeYAMLFiles";
 const std::string SEPARATOR = "\\";
 #endif
 
