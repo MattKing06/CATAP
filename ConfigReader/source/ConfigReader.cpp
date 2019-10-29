@@ -1,6 +1,6 @@
 #include "ConfigReader.h"
 #include <utility>
-#include <Magnet.h>
+#include <vector>
 #include "boost/algorithm/string.hpp"
 #include "boost/filesystem.hpp"
 #include "yaml-cpp/exceptions.h"
