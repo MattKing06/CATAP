@@ -5,7 +5,6 @@
 #include <boost/bind.hpp>
 #include "boost/filesystem.hpp"
 #include "ConfigReader.h"
-#include "Hardware.h"
 #include "Magnet.h"
 #include <vector>
 
