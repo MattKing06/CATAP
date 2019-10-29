@@ -3,7 +3,6 @@
 #include <map>
 #include <iostream>
 #include "LoggingSystem.h"
-#include "ConfigReader.h"
 #ifndef PV_H_
 #include "PV.h"
 #endif
