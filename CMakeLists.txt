@@ -30,7 +30,7 @@ endif(UNIX)
 set_property(GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_CONFIGURATIONS "Release;MinSizeRel")
 find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63.0 COMPONENTS unit_test_framework filesystem python)
+find_package(Boost 1.63.0)
 message("Finding Boost...")
 
 if(Boost_FOUND)
