@@ -24,7 +24,5 @@
 	    }																	  \
 
 DEFINE_ENUM_WITH_STRING_CONVERSIONS(STATE, (OFF)
-										   (ON)
-										   (ERROR))
-
+										   (ON))
 #endif //GLOBAL_STATE_ENUMS_H_
