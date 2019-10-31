@@ -19,18 +19,17 @@ IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(Hardware PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 target_include_directories(Hardware PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
-target_include_directories(Hardware PRIVATE ${PROJECT_SOURCE_DIR}/EPICSInterface/include)
-target_include_directories(Hardware PRIVATE ${PROJECT_SOURCE_DIR}/PV/include)
-target_include_directories(Hardware PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include)
-target_include_directories(Hardware PUBLIC include)
-target_include_directories(Hardware PUBLIC ${Boost_INCLUDE_DIR})
-TARGET_LINK_LIBRARIES(Hardware PUBLIC 
-							     ${Boost_LIBRARIES}
-							   INTERFACE
-							     EPICSInterface
-							   PRIVATE
-							   	 Utilities
-								 LoggingSystem
-								 PV)
+target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/EPICSInterface/include)
+target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
+target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/include)
+target_include_directories(Hardware PRIVATE include)
+target_include_directories(Hardware PRIVATE ${Boost_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(Hardware
+					  PUBLIC
+					    PV
+					  PRIVATE
+			     	    ${Boost_LIBRARIES}
+		    			EPICSInterface
+						LoggingSystem)
 set_property(TARGET Hardware PROPERTY FOLDER "Hardware")
 add_subdirectory(test)

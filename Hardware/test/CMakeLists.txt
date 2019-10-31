@@ -9,7 +9,7 @@ if ( Boost_FOUND )
 		add_executable(${testName} ${testSource})
 		cmake_policy(SET CMP0023 NEW)
 		#link to Boost libs AND whatever else
-		target_include_directories(${testName} PUBLIC ${Boost_INCLUDE_DIRS})
+		target_include_directories(${testName} PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/Hardware/include ${CMAKE_SOURCE_DIR}/LoggingSystem/include)
 		target_link_libraries(${testName} PUBLIC ${Boost_LIBRARIES})
 		target_link_libraries(${testName} PUBLIC Hardware)
 		#move testing binaries to separate folder
