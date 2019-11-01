@@ -3,7 +3,8 @@
 
 #include "yaml-cpp/parser.h"
 #include "yaml-cpp/yaml.h"
-#include "LoggingSystem.h"
+#include <LoggingSystem.h>
+#include <Magnet.h>
 #include <string>
 #include <fstream>
 #include <iostream>

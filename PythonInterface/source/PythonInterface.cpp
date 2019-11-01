@@ -40,8 +40,7 @@ BOOST_PYTHON_MODULE(CATAP)
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
 		.value("ON", STATE::ON)
-		.value("OFF", STATE::OFF)
-		.value("ERROR", STATE::ERROR);
+		.value("OFF", STATE::OFF);
 	// Hardware Exposure
 	boost::python::class_<Hardware>("Hardware", boost::python::no_init)
 		.def_readonly("machineArea", &Hardware::machineArea)

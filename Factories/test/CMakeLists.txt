@@ -10,13 +10,14 @@ if ( Boost_FOUND )
 		add_executable(${testName} ${testFile})
 		cmake_policy(SET CMP0023 NEW)
 		#link to Boost libs AND whatever else
-		target_include_directories(${testName} PUBLIC ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR}
+		target_include_directories(${testName} PRIVATE ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR}
 													  ${PROJECT_SOURCE_DIR}/Factories/include ${PROJECT_SOURCE_DIR}/EPICSInterface/include
 													  ${PROJECT_SOURCE_DIR}/PV/include ${PROJECT_SOURCE_DIR}/Hardware/include 
-													  ${PROJECT_SOURCE_DIR}/Utilities/include)
-		TARGET_LINK_LIBRARIES(${testName} PUBLIC ${Boost_LIBRARIES} ${PYTHON_LIBRARIES}
-												 ${EPICS_COM_LIB} ${EPICS_CA_LIB} Hardware
-												 Factories PV Utilities)
+													  ${PROJECT_SOURCE_DIR}/Utilities/include ${PROJECT_SOURCE_DIR}/ConfigReader/include)
+		TARGET_LINK_LIBRARIES(${testName} PRIVATE ${Boost_LIBRARIES}
+										         Hardware
+												 Factories PV
+												 ConfigReader)
 		#move testing binaries to separate folder
 		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 		set_property(TARGET ${testName} PROPERTY FOLDER "UnitTests")

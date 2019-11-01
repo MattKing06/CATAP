@@ -2,10 +2,9 @@
 #define HARDWARE_H_
 #include <map>
 #include <iostream>
-#include "LoggingSystem.h"
-#include "ConfigReader.h"
+#include <LoggingSystem.h>
 #ifndef PV_H_
-#include "PV.h"
+#include <PV.h>
 #endif
 #include <GlobalStateEnums.h>
 class Hardware

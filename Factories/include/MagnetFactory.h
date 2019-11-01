@@ -7,7 +7,8 @@
 #include "Magnet.h"
 #include <vector>
 #include <map>
-#include <boost/python.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;

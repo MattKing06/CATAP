@@ -1,8 +1,8 @@
 #define BOOST_TEST_MODULE EPICSInterfaceTest
 
 #include <boost/test/unit_test.hpp>
-#include "HardwareFactory.h"
-#include "Magnet.h"
+#include <LoggingSystem.h>
+#include <EPICSInterface.h>
 #include <string>
 #include <vector>
 

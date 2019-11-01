@@ -20,16 +20,18 @@ ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 #set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
 target_include_directories(PythonInterface PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(PythonInterface PUBLIC ${PYTHON_INCLUDE_DIR})
-target_include_directories(PythonInterface PUBLIC include)
+target_include_directories(PythonInterface PRIVATE include)
 target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
-target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
-target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/Hardware/include)
-target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/Factories/include)
+target_include_directories(PythonInterface PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
+target_include_directories(PythonInterface PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
+target_include_directories(PythonInterface PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
 TARGET_LINK_LIBRARIES(PythonInterface PUBLIC
 					 ${Boost_LIBRARIES}
 					 ${PYTHON_LIBRARY}
+					 PRIVATE
 					 Factories
-					 Hardware)
+					 Hardware
+					 ConfigReader)
 set_target_properties(PythonInterface PROPERTIES OUTPUT_NAME "CATAP")
 set_target_properties(PythonInterface PROPERTIES SUFFIX ".pyd")
 set_property(TARGET PythonInterface PROPERTY FOLDER "PythonInterface")

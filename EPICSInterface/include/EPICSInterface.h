@@ -1,10 +1,8 @@
 #ifndef EPICS_INTERFACE_H
 #define EPICS_INTERFACE_H
-#include "LoggingSystem.h"
+#include <LoggingSystem.h>
+#include <Hardware.h>
 // EPICS include
-#ifndef HARDWARE_H_
-#include "Hardware.h"
-#endif //HARDWARE_H_
 #ifndef __CINT__
 #include <cadef.h>
 #include <epicsTime.h>

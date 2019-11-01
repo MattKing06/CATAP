@@ -14,9 +14,10 @@ find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 add_library(Utilities ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIR})
-target_include_directories(Utilities PUBLIC ${PYTHON_INCLUDE_DIR})
+target_include_directories(Utilities PRIVATE ${PYTHON_INCLUDE_DIR})
 target_include_directories(Utilities PUBLIC include)
-TARGET_LINK_LIBRARIES(Utilities PUBLIC
+TARGET_LINK_LIBRARIES(Utilities
+					 PRIVATE
 					 ${Boost_LIBRARIES}
 					 ${PYTHON_LIBRARY}
 					 )

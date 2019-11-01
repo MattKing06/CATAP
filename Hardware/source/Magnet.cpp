@@ -4,7 +4,6 @@
 #include "Magnet.h"
 #include <map>
 #include <vector>
-#include "ConfigReader.h"
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 

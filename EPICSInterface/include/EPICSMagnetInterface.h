@@ -7,6 +7,7 @@
 #include "EPICSInterface.h"
 #endif 
 #include <iostream>
+#include <GlobalStateEnums.h>
 // forward declaration of Magnet class
 // tells compiler that we will use this class.
 class Magnet;

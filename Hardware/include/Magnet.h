@@ -8,6 +8,7 @@
 #include "EPICSMagnetInterface.h"
 #endif //EPICS_MAGNET_INTERFACE_H_
 #include <boost/shared_ptr.hpp>
+#include <vector>
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
 class EPICSMagnetInterface;
