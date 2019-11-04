@@ -2,16 +2,19 @@ message( "Processing EPICS Interface source files...")
 set( SOURCE_FILES
     source/EPICSInterface.cpp
     source/EPICSMagnetInterface.cpp
+    source/EPICSBPMInterface.cpp
 )
 
 set( INCLUDE_FILES
     include/EPICSInterface.h
     include/EPICSMagnetInterface.h 
+    include/EPICSBPMInterface.h 
 )
 
 set( TEST_FILES
-	EPICSInterfaceTest.cpp
+    EPICSInterfaceTest.cpp
     EPICSMagnetInterfaceTest.cpp
+    EPICSBPMInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

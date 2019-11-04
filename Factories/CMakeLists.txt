@@ -2,16 +2,19 @@ message( "Processing Hardware Factory source files...")
 set( SOURCE_FILES
     source/HardwareFactory.cpp
     source/MagnetFactory.cpp
+    source/BPMFactory.cpp
 )
 
 set( INCLUDE_FILES
     include/HardwareFactory.h 
     include/MagnetFactory.h
+    include/BPMFactory.h
 )
 
 set( TEST_FILES
     HardwareFactoryTest.cpp
     MagnetFactoryTest.cpp
+    BPMFactoryTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 find_package(Boost 1.63 REQUIRED COMPONENTS filesystem python3)
