@@ -33,7 +33,6 @@ class BPMFactory
 		bool hasBeenSetup;
 		bool isVirtual;
 		// methods for setting properties of bpm via PV name
-		double getCurrent(const std::string& name);
 		std::map<std::string, double> getX(const std::vector<std::string>& names);
 		std::map<std::string, double> getXFromPV(const std::vector<std::string>& names);
 		std::map<std::string, double> getY(const std::vector<std::string>& names);
