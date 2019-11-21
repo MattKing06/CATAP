@@ -3,18 +3,6 @@
 #include <iostream>
 #include <cstring>
 
-#define MY_SEVCHK(status)		\
-{								\
-	if (status != ECA_NORMAL)	\
-	{							\
-		ca_message(status);		\
-		SEVCHK(status, NULL);   \
-		exit(status);			\
-	}							\
-}								\
-
-
-
 EPICSInterface::EPICSInterface()
 {
 	int status;
