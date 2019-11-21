@@ -210,14 +210,20 @@ boost::python::dict MagnetFactory::getRICurrents_Py(boost::python::list names)
 	boost::python::dict newPyDict = to_py_dict(RICurrents);
 	return newPyDict;
 }
+
+boost::python::dict MagnetFactory::getAllMagnetCurrents_Py()
+{
+	std::map<std::string, double> allCurrents = getAllMagnetCurrents();
+	boost::python::dict allCurrentsPyDict = to_py_dict(allCurrents);
+	return allCurrentsPyDict;
+}
 std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
 {
 	std::map<std::string, double> magnetsAndCurrentsMap;
-	for (auto mag : magnetMap)
+	for (const auto &mag : magnetMap)
 	{
-		std::pair<std::string, double> nameAndCurrentPair = std::make_pair(mag.first,
-			mag.second.getCurrent());
-		magnetsAndCurrentsMap.insert(nameAndCurrentPair);
+		double current = mag.second.getCurrent();
+		magnetsAndCurrentsMap[mag.first] = current;
 	}
 	return magnetsAndCurrentsMap;
 }

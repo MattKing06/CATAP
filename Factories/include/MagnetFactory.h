@@ -50,6 +50,7 @@ class MagnetFactory
 		bool turnOffAllMagnets();
 		int getPSUState(const std::string& name) const;
 		int getILKState(const std::string& name) const;
+		boost::python::dict getAllMagnetCurrents_Py();
 		boost::python::dict getCurrents_Py(boost::python::list magNames);
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
