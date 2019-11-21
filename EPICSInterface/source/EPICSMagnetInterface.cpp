@@ -1,14 +1,5 @@
 #include "EPICSMagnetInterface.h"
 
-#define MY_SEVCHK(status)		\
-{								\
-	if (status != ECA_NORMAL)	\
-		{						\
-		SEVCHK(status, NULL);	\
-		exit(status);			\
-		}						\
-}								\
-
 LoggingSystem EPICSMagnetInterface::messenger;
 
 EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
@@ -171,22 +162,4 @@ void EPICSMagnetInterface::setNewPSUState(const STATE& value, const pvStruct& pv
 {
 	putValue(pv, static_cast<int>(value));
 	messenger.printDebugMessage("SENT POWER " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS");
-}
-
-template<typename T>
-void EPICSMagnetInterface::putValue(const pvStruct& pvStruct, const T& value) const
-{
-	if (ca_state(pvStruct.CHID) == cs_conn)
-	{
-		int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
-		MY_SEVCHK(status);
-		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-		MY_SEVCHK(status);
-	}
-	else
-	{
-		messenger.messagesOn();
-		messenger.printMessage("NOT CONNECTED TO EPICS");
-		messenger.messagesOff();
-	}
 }
