@@ -35,8 +35,6 @@ public:
 	void setSA2(const long& value, const pvStruct& pv);
 	void setSD1(const long& value, const pvStruct& pv);
 	void setSD2(const long& value, const pvStruct& pv);
-	template<typename T>
-	void putValue(const pvStruct& pvStruct, const T& value) const;
 	static LoggingSystem messenger;
 };
 

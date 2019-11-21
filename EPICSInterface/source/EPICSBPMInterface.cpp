@@ -1,14 +1,5 @@
 #include "EPICSBPMInterface.h"
 
-#define MY_SEVCHK(status)		\
-{								\
-	if (status != ECA_NORMAL)	\
-		{						\
-		SEVCHK(status, NULL);	\
-		exit(status);			\
-		}						\
-}								\
-
 LoggingSystem EPICSBPMInterface::messenger;
 
 EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
@@ -375,22 +366,4 @@ void EPICSBPMInterface::setSD1(const long& value, const pvStruct& pv)
 void EPICSBPMInterface::setSD2(const long& value, const pvStruct& pv)
 {
 	putValue(pv, value);
-}
-
-template<typename T>
-void EPICSBPMInterface::putValue(const pvStruct& pvStruct, const T& value) const
-{
-	if (ca_state(pvStruct.CHID) == cs_conn)
-	{
-		int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
-		MY_SEVCHK(status);
-		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-		MY_SEVCHK(status);
-	}
-	else
-	{
-		messenger.messagesOn();
-		messenger.printMessage("NOT CONNECTED TO EPICS");
-		messenger.messagesOff();
-	}
 }

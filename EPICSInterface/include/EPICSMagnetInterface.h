@@ -25,8 +25,6 @@ public:
 	void setNewPSUState(const STATE& value, const pvStruct &pv) const;
 	static void updateREADI(const struct event_handler_args args);
 	static void updateRILK(const struct event_handler_args args);
-	template<typename T>
-	void putValue(const pvStruct& pvStruct, const T& value) const;
 	static LoggingSystem messenger;
 };
 
