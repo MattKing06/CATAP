@@ -20,7 +20,10 @@ public:
 	template <typename T>
 	void printMessage(T t)
 	{
-		std::cout << t << std::endl;
+		if (messageOn)
+		{
+			std::cout << t << std::endl;
+		}
 	}
 
 	template<typename T, typename... Args>
@@ -36,7 +39,11 @@ public:
 	template <typename T>
 	void printDebugMessage(T t)
 	{
-		std::cout << t << std::endl;
+		if (debugOn)
+		{
+			std::cout << t << std::endl;
+		}
+
 	}
 
 	template<typename T, typename... Args>
