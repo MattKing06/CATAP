@@ -34,9 +34,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("messagesOn", &LoggingSystem::messagesOn)
 		.def("messagesOff", &LoggingSystem::messagesOff)
 		.def("debugMessagesOn", &LoggingSystem::debugMessagesOn)
-		.def("debugMessagesOff", &LoggingSystem::debugMessagesOff)
-		.def("printDebugMessage", &LoggingSystem::printDebugMessage)
-		.def("printMessage", &LoggingSystem::printMessage);
+		.def("debugMessagesOff", &LoggingSystem::debugMessagesOff);
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
 		.value("ON", STATE::ON)
