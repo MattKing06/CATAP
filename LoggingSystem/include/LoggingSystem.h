@@ -1,6 +1,8 @@
 #ifndef LOGGING_SYSTEM_H_
 #define LOGGING_SYSTEM_H_
 #include <string>
+#include <iostream>
+#include <initializer_list>
 class LoggingSystem
 {
 public:
@@ -12,10 +14,41 @@ public:
     void messagesOff();
     bool isMessagingOn() const;
     bool isDebugOn() const;
-    void printDebugMessage(const std::string &debugMessage);
-    void printMessage(const std::string &message);
 	void printMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& message);
 	void printDebugMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& debugMessage);
+
+	template <typename T>
+	void printMessage(T t)
+	{
+		std::cout << t << std::endl;
+	}
+
+	template<typename T, typename... Args>
+	void printMessage(T t, Args... args) // recursive variadic function
+	{
+		if (messageOn)
+		{
+			std::cout << t;
+			printMessage(args...);
+		}
+	}
+
+	template <typename T>
+	void printDebugMessage(T t)
+	{
+		std::cout << t << std::endl;
+	}
+
+	template<typename T, typename... Args>
+	void printDebugMessage(T t, Args... args) // recursive variadic function
+	{
+		if (debugOn)
+		{
+			std::cout << t;
+			printMessage(args...);
+		}
+	}
+
 private:
     std::string getCurrentDateAndTimeString();
     bool debugOn;

@@ -40,22 +40,7 @@ void LoggingSystem::messagesOn(){
 void LoggingSystem::messagesOff(){
     messageOn = false;
 }
-void LoggingSystem::printDebugMessage(const std::string &debugMessage){
-    if (debugOn){
-        //get the current date and time in string format
-        std::string currentDateAndTime = LoggingSystem::getCurrentDateAndTimeString();
-        //print the debug message with timestamped value
-        std::cout << "DEBUG LOG (" << currentDateAndTime << "): " << debugMessage << std::endl;
-    }
-}
-void LoggingSystem::printMessage(const std::string &message){
-    if(messageOn){
-        //get the current date and time in string format
-        std::string currentDateAndTime = LoggingSystem::getCurrentDateAndTimeString();
-        //print the debug message with timestamped value
-        std::cout << "MESSAGE LOG (" << currentDateAndTime << "): " << message << std::endl;
-    }
-}
+
 void LoggingSystem::printMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& message)
 {
 	if (messageOn)
