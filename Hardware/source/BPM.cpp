@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <numeric>
+#include <math.h>
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
