@@ -52,6 +52,7 @@ class BPMFactory
 		double getQ(const std::string& name);
 		double getResolution(const std::string& name);
 		double getPosition(const std::string& name);
+		bool reCalAttenuation(const std::string& name, const double& charge);
 		std::pair<double, double> getXYPosition(const std::string& name);
 		bool setSA1(const std::string& name, const long& value);
 		bool setSA2(const std::string& name, const long& value);

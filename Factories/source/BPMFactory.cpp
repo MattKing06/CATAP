@@ -144,6 +144,7 @@ BPM& BPMFactory::getBPM(const std::string& fullBPMName)
 {
 	return bpmMap.find(fullBPMName)->second;
 }
+
 std::map<std::string, BPM> BPMFactory::getAllBPMs()
 {
 	if (!hasBeenSetup)
@@ -315,6 +316,58 @@ long BPMFactory::getSD2(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
+bool BPMFactory::setSA1(const std::string& name, const long& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.setSA1(value);
+	}
+	return false;
+}
+
+bool BPMFactory::setSA2(const std::string& name, const long& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.setSA2(value);
+	}
+	return false;
+}
+
+bool BPMFactory::setSD1(const std::string& name, const long& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.setSD1(value);
+	}
+	return false;
+}
+
+bool BPMFactory::setSD2(const std::string& name, const long& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.setSD2(value);
+	}
+	return false;
+}
+
 long BPMFactory::getRA1(const std::string& name)
 {
 	if (!hasBeenSetup)
@@ -365,6 +418,19 @@ long BPMFactory::getRD2(const std::string& name)
 		return bpmMap.find(name)->second.getRD2();
 	}
 	return std::numeric_limits<long>::min();;
+}
+
+bool BPMFactory::reCalAttenuation(const std::string& name, const double& charge)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.reCalAttenuation(charge);
+	}
+	return false;
 }
 
 std::map<std::string, double> BPMFactory::getX(const std::vector<std::string>& names)
