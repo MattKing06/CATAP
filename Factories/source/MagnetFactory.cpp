@@ -7,15 +7,6 @@
 #include <cadef.h>
 #endif
 
-#define MY_SEVCHK(status)		\
-{								\
-	if (status != ECA_NORMAL)	\
-		{						\
-		SEVCHK(status, NULL);	\
-		exit(status);			\
-		}						\
-}								\
-
 MagnetFactory::MagnetFactory() : MagnetFactory(false)
 {
 }
@@ -87,7 +78,7 @@ bool MagnetFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.debugMessagesOff();
+		messenger.debugMessagesOn();
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in Magnet constructor
@@ -157,7 +148,7 @@ double MagnetFactory::getCurrent(const std::string& name)
 	{
 		return magnetMap.find(name)->second.getCurrent();
 	}
-	return std::numeric_limits<double>::min();;
+	return std::numeric_limits<double>::min();
 }
 std::map<std::string, double> MagnetFactory::getCurrents(const std::vector<std::string>& names)
 {

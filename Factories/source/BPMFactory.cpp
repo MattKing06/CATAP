@@ -167,7 +167,7 @@ double BPMFactory::getX(const std::string& name)
 	{
 		return bpmMap.find(name)->second.getX();
 	}
-	return std::numeric_limits<double>::min();;
+	return std::numeric_limits<double>::min();
 }
 
 double BPMFactory::getXFromPV(const std::string& name)
