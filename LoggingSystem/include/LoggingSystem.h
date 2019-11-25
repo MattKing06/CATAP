@@ -3,6 +3,15 @@
 #include <string>
 #include <iostream>
 #include <initializer_list>
+#ifdef _WIN32
+// Windows.h defines macros min and max so numeric_limits::max fails.
+// defining NOMINMAX removes the min max macros from Windows.h
+#define NOMINMAX
+#include <Windows.h>
+#define WINDOWS 1
+#elif defined(_unix) || defined(__unix__)
+#define WINDOWS 0
+#endif
 class LoggingSystem
 {
 public:
@@ -20,28 +29,59 @@ public:
 	template <typename T>
 	void printMessage(T t)
 	{
-		if (messageOn)
+		if (WINDOWS)
 		{
-			std::cout << t << std::endl;
+			if (messageOn)
+			{
+				std::cout << t << std::endl;
+			}
+		}
+		else
+		{
+			if (messageOn)
+			{
+				std::cout << t << std::endl;
+			}
 		}
 	}
 
 	template<typename T, typename... Args>
 	void printMessage(T t, Args... args) // recursive variadic function
 	{
-		if (messageOn)
+		if (WINDOWS)
 		{
-			std::cout << t;
-			printMessage(args...);
+			if (messageOn)
+			{
+				std::cout << t;
+				printMessage(args...);
+			}
+		}
+		else
+		{
+			if (messageOn)
+			{
+				std::cout << t;
+				printMessage(args...);
+			}
 		}
 	}
 
 	template <typename T>
 	void printDebugMessage(T t)
 	{
-		if (debugOn)
+		if (WINDOWS)
 		{
-			std::cout << t << std::endl;
+			if (debugOn)
+			{
+				std::cout << t << std::endl;
+			}
+		}
+		else
+		{
+			if (debugOn)
+			{
+				std::cout << t << std::endl;
+			}
 		}
 
 	}
@@ -49,10 +89,25 @@ public:
 	template<typename T, typename... Args>
 	void printDebugMessage(T t, Args... args) // recursive variadic function
 	{
-		if (debugOn)
+		if (WINDOWS)
 		{
-			std::cout << t;
-			printMessage(args...);
+			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			const int previousConsoleColours = GetConsoleTextAttribute(hConsole);
+			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			if (debugOn)
+			{
+				std::cout << t;
+				printDebugMessage(args...);
+			}
+			SetConsoleTextAttribute(hConsole, previousConsoleColours);
+		}
+		else
+		{
+			if (debugOn)
+			{
+				std::cout << t;
+				printDebugMessage(args...);
+			}
 		}
 	}
 
@@ -60,7 +115,14 @@ private:
     std::string getCurrentDateAndTimeString();
     bool debugOn;
     bool messageOn;
+#ifdef _WIN32
+	WORD GetConsoleTextAttribute(HANDLE hCon)
+	{
+		CONSOLE_SCREEN_BUFFER_INFO console_info;
+		GetConsoleScreenBufferInfo(hCon, &console_info);
+		return console_info.wAttributes;
+	}
 };
-
+#endif
 
 #endif // LOGGING_SYSTEM_H_
