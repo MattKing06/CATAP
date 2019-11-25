@@ -41,7 +41,7 @@ public:
 			printMessage(args...);
 		}
 	}
-#elif define(_unix) || define(__unix__)
+#elif defined(_unix) || defined(__unix__)
 	template<typename T, typename... Args>
 	void printMessage(T t, Args... args) // recursive variadic function
 	{
@@ -77,7 +77,7 @@ public:
 		}
 		SetConsoleTextAttribute(hConsole, previousConsoleColours);
 	}
-#elif defined(_unix) || (__unix__)
+#elif defined(_unix) || defined(__unix__)
 	template<typename T, typename... Args>
 	void printDebugMessage(T t, Args... args)
 	{
