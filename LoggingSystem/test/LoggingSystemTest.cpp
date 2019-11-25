@@ -84,5 +84,21 @@ BOOST_AUTO_TEST_CASE(logging_system_with_message_and_no_debug_print_message_test
 	output.flush();
 }
 
+BOOST_AUTO_TEST_CASE(logging_system_with_no_message_and_debug_print_message_test)
+{
+	LoggingSystem test_logging_system = LoggingSystem(true, false);
+	//Since LoggingSystem prints messages to std::cout (generally the command line),
+	//we must redirect the text in cout buffer to the output_test_stream so that 
+	//boost has access to the messages printed to command line.
+	boost::test_tools::output_test_stream output;
+	{
+		cout_redirect guard(output.rdbuf());
+		test_logging_system.printDebugMessage("HELLO", "WORLD", 1, "2", 3.6);
+	}
+	std::string predicted_message_output_from_logging_system = "HELLOWORLD123.6\n";
+	BOOST_CHECK(output.is_equal(predicted_message_output_from_logging_system));
+	output.flush();
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
