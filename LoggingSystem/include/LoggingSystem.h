@@ -100,7 +100,6 @@ private:
 		GetConsoleScreenBufferInfo(hCon, &console_info);
 		return console_info.wAttributes;
 	}
-};
 #endif
-
+};
 #endif // LOGGING_SYSTEM_H_
