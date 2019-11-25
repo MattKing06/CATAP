@@ -8,9 +8,6 @@
 // defining NOMINMAX removes the min max macros from Windows.h
 #define NOMINMAX
 #include <Windows.h>
-#define WINDOWS 1
-#elif defined(_unix) || defined(__unix__)
-#define WINDOWS 0
 #endif
 class LoggingSystem
 {
@@ -29,87 +26,68 @@ public:
 	template <typename T>
 	void printMessage(T t)
 	{
-		if (WINDOWS)
+		if (messageOn)
 		{
-			if (messageOn)
-			{
-				std::cout << t << std::endl;
-			}
-		}
-		else
-		{
-			if (messageOn)
-			{
-				std::cout << t << std::endl;
-			}
+			std::cout << t << std::endl;
 		}
 	}
-
+#ifdef _WIN32
 	template<typename T, typename... Args>
 	void printMessage(T t, Args... args) // recursive variadic function
 	{
-		if (WINDOWS)
+		if (messageOn)
 		{
-			if (messageOn)
-			{
-				std::cout << t;
-				printMessage(args...);
-			}
-		}
-		else
-		{
-			if (messageOn)
-			{
-				std::cout << t;
-				printMessage(args...);
-			}
+			std::cout << t;
+			printMessage(args...);
 		}
 	}
+#elif define(_unix) || define(__unix__)
+	template<typename T, typename... Args>
+	void printMessage(T t, Args... args) // recursive variadic function
+	{
+		if (messageOn)
+		{
+			std::cout << t;
+			printMessage(args...);
+		}
+	}
+
+#endif
 
 	template <typename T>
 	void printDebugMessage(T t)
 	{
-		if (WINDOWS)
+		if (debugOn)
 		{
-			if (debugOn)
-			{
-				std::cout << t << std::endl;
-			}
-		}
-		else
-		{
-			if (debugOn)
-			{
-				std::cout << t << std::endl;
-			}
+			std::cout << t << std::endl;
 		}
 
 	}
-
+#ifdef _WIN32
 	template<typename T, typename... Args>
 	void printDebugMessage(T t, Args... args) // recursive variadic function
 	{
-		if (WINDOWS)
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		const int previousConsoleColours = GetConsoleTextAttribute(hConsole);
+		SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		if (debugOn)
 		{
-			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-			const int previousConsoleColours = GetConsoleTextAttribute(hConsole);
-			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-			if (debugOn)
-			{
-				std::cout << t;
-				printDebugMessage(args...);
-			}
-			SetConsoleTextAttribute(hConsole, previousConsoleColours);
+			std::cout << t;
+			printDebugMessage(args...);
 		}
-		else
+		SetConsoleTextAttribute(hConsole, previousConsoleColours);
+	}
+#elif defined(_unix) || (__unix__)
+	template<typename T, typename... Args>
+	void printDebugMessage(T t, Args... args)
+	{
+		if (debugOn)
 		{
-			if (debugOn)
-			{
-				std::cout << t;
-				printDebugMessage(args...);
-			}
+			std::cout << t;
+			printDebugMessage(args...);
 		}
 	}
+#endif
 
 private:
     std::string getCurrentDateAndTimeString();
