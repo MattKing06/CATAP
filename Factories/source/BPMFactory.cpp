@@ -117,6 +117,7 @@ bool BPMFactory::setup(const std::string &version)
 			bpm.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
+			messenger.debugMessagesOn();
 			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");

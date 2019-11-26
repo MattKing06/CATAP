@@ -41,7 +41,9 @@ BOOST_AUTO_TEST_CASE(bpm_set_and_check_data_test)
 		it = rand() % 10 + 1.0;
 	}
 	bpm.setData(dataToSet);
-	BOOST_CHECK_EQUAL_COLLECTIONS(bpm.getData().begin(), bpm.getData().end(), dataToSet.begin(), dataToSet.end());
+	std::vector< double > get = bpm.getData();
+	std::vector< double > set = dataToSet;
+	BOOST_CHECK_EQUAL_COLLECTIONS(get.begin(), get.end(), set.begin(), set.end());
 }
 
 BOOST_AUTO_TEST_CASE(bpm_set_and_check_data_vector_test)

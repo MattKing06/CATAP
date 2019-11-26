@@ -30,6 +30,8 @@ position(std::stod(paramsMap.find("position")->second))
 	ypvshots = 0;
 	datashots = 0;
 	qshots = 0;
+	ra1 = 0;
+	ra2 = 0;
 	monitoringxpv = false;
 	monitoringypv = false;
 	monitoringdata = false;
@@ -442,7 +444,6 @@ bool BPM::setQ(const std::vector< double >& rawData)
 {
 	double v1, v2, q1, q2;
 	double u11, u12, u13, u14, u21, u22, u23, u24;
-	long ra1, ra2;
 	u11 = rawData[1];
 	u12 = rawData[2];
 	u13 = rawData[3];
