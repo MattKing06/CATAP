@@ -79,7 +79,8 @@ BOOST_AUTO_TEST_CASE(logging_system_with_message_and_no_debug_print_message_test
 		cout_redirect guard(output.rdbuf());
 		test_logging_system.printMessage("HELLO", "WORLD", 1, "2", 3.6);
 	}
-	std::string predicted_message_output_from_logging_system = "HELLOWORLD123.6\n";
+	test_logging_system.printMessage("HELLO", "WORLD", 1, "2", 3.6);
+	std::string predicted_message_output_from_logging_system = test_logging_system.getCurrentDateAndTimeString() + "HELLOWORLD123.6\n";
 	BOOST_CHECK(output.is_equal(predicted_message_output_from_logging_system));
 	output.flush();
 }
@@ -95,10 +96,34 @@ BOOST_AUTO_TEST_CASE(logging_system_with_no_message_and_debug_print_message_test
 		cout_redirect guard(output.rdbuf());
 		test_logging_system.printDebugMessage("HELLO", "WORLD", 1, "2", 3.6);
 	}
-	std::string predicted_message_output_from_logging_system = "HELLOWORLD123.6\n";
+	std::string predicted_message_output_from_logging_system = test_logging_system.getCurrentDateAndTimeString() + "HELLOWORLD123.6\n";
 	BOOST_CHECK(output.is_equal(predicted_message_output_from_logging_system));
 	output.flush();
 }
+
+BOOST_AUTO_TEST_CASE(logging_system_with_message_print_single_string_twice_test)
+{
+	LoggingSystem test_logging_system = LoggingSystem(false, true);
+	boost::test_tools::output_test_stream second_output;
+	{
+		cout_redirect guard(second_output.rdbuf());
+		test_logging_system.printMessage("HELLO_WORLD");
+	}
+	test_logging_system.printMessage("HELLO", "_", "WORLD");
+	std::string predicted_message_output_from_logging_system = test_logging_system.getCurrentDateAndTimeString() + "HELLO_WORLD\n";
+	BOOST_CHECK(second_output.is_equal(predicted_message_output_from_logging_system));
+	second_output.flush();
+	boost::test_tools::output_test_stream output;
+	{
+		cout_redirect guard(output.rdbuf());
+		test_logging_system.printMessage("HELLO_WORLD");
+	}
+	test_logging_system.printMessage("HELLO_WORLD");
+	predicted_message_output_from_logging_system = test_logging_system.getCurrentDateAndTimeString() + "HELLO_WORLD\n";
+	BOOST_CHECK(output.is_equal(predicted_message_output_from_logging_system));
+	output.flush();
+}
+
 
 
 BOOST_AUTO_TEST_SUITE_END()
