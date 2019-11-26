@@ -15,10 +15,24 @@ BPM::BPM()
 
 BPM::BPM(const std::map<std::string, std::string> &paramsMap, bool isVirtual) :
 Hardware(paramsMap, isVirtual),
-bpmType(paramsMap.find("bpm_type")->second)
+bpmType(paramsMap.find("bpm_type")->second),
+name(paramsMap.find("name")->second),
+att1cal(std::stol(paramsMap.find("att1cal")->second)),
+att2cal(std::stol(paramsMap.find("att2cal")->second)),
+v1cal(std::stod(paramsMap.find("v1cal")->second)),
+v2cal(std::stod(paramsMap.find("v2cal")->second)),
+qcal(std::stod(paramsMap.find("qcal")->second)),
+mn(std::stod(paramsMap.find("mn")->second)),
+position(std::stod(paramsMap.find("position")->second))
 {
 	bufferSize = 10;
-	name = paramsMap.find("name")->second;
+	xpvshots = 0;
+	ypvshots = 0;
+	datashots = 0;
+	qshots = 0;
+	monitoringxpv = false;
+	monitoringypv = false;
+	monitoringdata = false;
 	epicsInterface = boost::make_shared<EPICSBPMInterface>(EPICSBPMInterface());
 	xBuffer.resize(bufferSize);
 	xPVBuffer.resize(bufferSize);
@@ -38,17 +52,18 @@ bpmType(paramsMap.find("bpm_type")->second)
 	c2Buffer.resize(bufferSize);
 	p1Buffer.resize(bufferSize);
 	p2Buffer.resize(bufferSize);
-	att1Cal = std::stol(paramsMap.find("att1cal")->second);
-	att2Cal = std::stol(paramsMap.find("att2cal")->second);
-	v1Cal = std::stod(paramsMap.find("v1cal")->second);
-	v2Cal = std::stod(paramsMap.find("v2cal")->second);
-	qCal = std::stod(paramsMap.find("qcal")->second);
-	mn = std::stod(paramsMap.find("mn")->second);
-	position = std::stod(paramsMap.find("position")->second);
 }
 BPM::BPM(const BPM& copyBPM) : 
 Hardware(copyBPM),
 bpmType(copyBPM.bpmType),
+name(copyBPM.name),
+att1cal(copyBPM.att1cal),
+att2cal(copyBPM.att2cal),
+v1cal(copyBPM.v1cal),
+v2cal(copyBPM.v2cal),
+qcal(copyBPM.qcal),
+mn(copyBPM.mn),
+position(copyBPM.position),
 epicsInterface(copyBPM.epicsInterface)
 {
 }
@@ -60,6 +75,11 @@ std::vector<std::string> BPM::getAliases() const
 std::string BPM::getBPMType() const
 {
 	return this->bpmType;
+}
+
+std::string BPM::getBPMName() const
+{
+	return this->name;
 }
 
 //STATE BPM::getBPMState() const
@@ -92,6 +112,47 @@ double BPM::getQ() const
 	return this->q;
 }
 
+std::vector< double > BPM::getData() const
+{
+	return this->data;
+}
+
+std::vector< double > BPM::getXPVVector() const
+{
+	//if (monitoringxpv)
+	//{
+	//	messenger.printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//}
+	return this->xVector;
+}
+
+std::vector< double > BPM::getYPVVector() const
+{
+	//if (monitoringypv)
+	//{
+	//	messenger.printDebugMessage("WARNING: STILL MONITORING Y PV -- VECTOR NOT FULL");
+	//}
+	return this->yVector;
+}
+
+std::vector< std::vector< double > > BPM::getDataVector() const
+{
+	//if (monitoringdata)
+	//{
+	//	messenger.printDebugMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//}
+	return this->dataVector;
+}
+
+std::vector< double > BPM::getQVector() const
+{
+	//if (monitoringdata)
+	//{
+	//	messenger.printMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//}
+	return this->qVector;
+}
+
 double BPM::getResolution() const
 {
 	return this->resolution;
@@ -102,37 +163,64 @@ double BPM::getPosition() const
 	return this->position;
 }
 
+bool BPM::isXPVBufferFull() const
+{
+	if (xpvshots >= bufferSize)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool BPM::isYPVBufferFull() const
+{
+	if (ypvshots >= bufferSize)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool BPM::isDataBufferFull() const
+{
+	if (datashots >= bufferSize)
+	{
+		return true;
+	}
+	return false;
+}
+
 size_t BPM::getBufferSize() const
 {
 	return this->bufferSize;
 }
 
-boost::circular_buffer< double > BPM::getBPMXBuffer() const
+boost::circular_buffer< double > BPM::getXBuffer() const
 {
 	return this->xBuffer;
 }
 
-boost::circular_buffer< double > BPM::getBPMXPVBuffer() const
+boost::circular_buffer< double > BPM::getXPVBuffer() const
 {
 	return this->xPVBuffer;
 }
 
-boost::circular_buffer< double > BPM::getBPMYBuffer() const
+boost::circular_buffer< double > BPM::getYBuffer() const
 {
 	return this->yBuffer;
 }
 
-boost::circular_buffer< double > BPM::getBPMYPVBuffer() const
+boost::circular_buffer< double > BPM::getYPVBuffer() const
 {
 	return this->yPVBuffer;
 }
 
-boost::circular_buffer< double > BPM::getBPMQBuffer() const
+boost::circular_buffer< double > BPM::getQBuffer() const
 {
 	return this->qBuffer;
 }
 
-boost::circular_buffer< std::vector< double > > BPM::getBPMRawDataBuffer() const
+boost::circular_buffer< std::vector< double > > BPM::getDataBuffer() const
 {
 	return this->dataBuffer;
 }
@@ -181,6 +269,18 @@ bool BPM::setXPV(const double& value)
 {
 	xPV = value;
 	xPVBuffer.push_back(value);
+	++xpvshots;
+	if (monitoringxpv)
+	{
+		if (xpvshots < xPVVector.size())
+		{
+			xPVVector.push_back(value);
+		}
+		else
+		{
+			monitoringxpv = false;
+		}
+	}
 	return true;
 }
 
@@ -188,7 +288,43 @@ bool BPM::setYPV(const double& value)
 {
 	yPV = value;
 	xPVBuffer.push_back(value);
+	++ypvshots;
+	if (monitoringypv)
+	{
+		if (ypvshots < yPVVector.size())
+		{
+			yPVVector.push_back(value);
+		}
+		else
+		{
+			monitoringypv = false;
+		}
+	}
 	return true;
+}
+
+bool BPM::isMonitoringXPV() const
+{
+	return monitoringxpv;
+}
+
+bool BPM::isMonitoringYPV() const
+{
+	return monitoringypv;
+}
+
+bool BPM::isMonitoringData() const
+{
+	return monitoringdata;
+}
+
+bool BPM::isMonitoring() const
+{
+	if (monitoringxpv || monitoringypv || monitoringdata)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool BPM::setRA1(const long& value)
@@ -284,13 +420,26 @@ bool BPM::setData(const std::vector< double >& value)
 	p1Buffer.push_back(p1);
 	p2Buffer.push_back(p2);
 	setResolution();
+	setQ(value);
+	qBuffer.push_back(q);
+	++datashots;
+	if (monitoringdata)
+	{
+		if (datashots < dataVector.size())
+		{
+			dataVector.push_back(value);
+			qVector.push_back(q);
+		}
+		else
+		{
+			monitoringdata = false;
+		}
+	}
 	return true;
 }
 
 bool BPM::setQ(const std::vector< double >& rawData)
 {
-	double q;
-
 	double v1, v2, q1, q2;
 	double u11, u12, u13, u14, u21, u22, u23, u24;
 	long ra1, ra2;
@@ -305,8 +454,8 @@ bool BPM::setQ(const std::vector< double >& rawData)
 
 	v1 = (std::abs(u11 - u14) + std::abs(u12 - u14)) / 2;
 	v2 = (std::abs(u21 - u24) + std::abs(u22 - u24)) / 2;
-	q1 = (qCal * (v1 / v1Cal)) * (pow(10, -((att1Cal - ra1) / 20)));
-	q2 = (qCal * (v2 / v2Cal)) * (pow(10, -((att2Cal - ra2) / 20)));
+	q1 = (qcal * (v1 / v1cal)) * (pow(10, -((att1cal - ra1) / 20)));
+	q2 = (qcal * (v2 / v2cal)) * (pow(10, -((att2cal - ra2) / 20)));
 	q = ((q1 + q2) / 2);
 
 	return true;
@@ -386,13 +535,13 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 
 bool BPM::reCalAttenuation(const double& charge)
 {
-	double qqC = charge / qCal;
+	double qqC = charge / qcal;
 
 	long currAtt1 = ra1;
 	long currAtt2 = ra2;
 
-	long newAtt1 = (20 * log10(qqC)) + att1Cal;
-	long newAtt2 = (20 * log10(qqC)) + att2Cal;
+	long newAtt1 = (20 * log10(qqC)) + att1cal;
+	long newAtt2 = (20 * log10(qqC)) + att2cal;
 
 	if (0 <= newAtt1 && newAtt1 <= 20)
 	{
@@ -425,8 +574,31 @@ bool BPM::reCalAttenuation(const double& charge)
 	return true;
 }
 
+void BPM::monitorForNShots(const size_t& value)
+{
+	setVectorSize(value);
+	monitoringxpv = true;
+	monitoringypv = true;
+	monitoringdata = true;
+}
+
+void BPM::setVectorSize(const size_t& value)
+{
+	clearBuffers();
+	vectorSize = value;
+	xPVVector.resize(vectorSize);
+	yPVVector.resize(vectorSize);
+	qVector.resize(vectorSize);
+	dataVector.resize(vectorSize);
+	for (auto&& it2 : dataVector)
+	{
+		it2.resize(9);
+	}
+}
+
 void BPM::setBufferSize(const size_t& value)
 {
+	clearBuffers();
 	bufferSize = value;
 	xBuffer.resize(bufferSize);
 	xPVBuffer.resize(bufferSize);
@@ -450,6 +622,9 @@ void BPM::setBufferSize(const size_t& value)
 
 void BPM::clearBuffers()
 {
+	xpvshots = 0;
+	ypvshots = 0;
+	datashots = 0;
 	xBuffer.clear();
 	xPVBuffer.clear();
 	yBuffer.clear();
