@@ -27,18 +27,16 @@
 
 BOOST_PYTHON_MODULE(CATAP)
 {
-	// Logging System Exposure
-	boost::python::class_<LoggingSystem>("LoggingSystem", boost::python::init<bool, bool>())
-		.def("isDebugOn", &LoggingSystem::isDebugOn)
-		.def("isMessagingOn", &LoggingSystem::isMessagingOn)
-		.def("messagesOn", &LoggingSystem::messagesOn)
-		.def("messagesOff", &LoggingSystem::messagesOff)
-		.def("debugMessagesOn", &LoggingSystem::debugMessagesOn)
-		.def("debugMessagesOff", &LoggingSystem::debugMessagesOff);
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
 		.value("ON", STATE::ON)
 		.value("OFF", STATE::OFF);
+	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
+		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
+		.def("debugMessagesOff", &EPICSInterface::debugMessagesOff)
+		.def("messagesOn", &EPICSInterface::messagesOn)
+		.def("messagesOff", &EPICSInterface::messagesOff);
+	boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
 	// Hardware Exposure
 	boost::python::class_<Hardware>("Hardware", boost::python::no_init)
 		.def_readonly("machineArea", &Hardware::machineArea)
@@ -47,7 +45,11 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getMachineArea", &Hardware::getMachineArea)
 		.def("getHardwareType", &Hardware::getHardwareType)
 		.def("getHardwareName", &Hardware::getHardwareName)
-		.def("getSpecificHardwareParameters", &Hardware::getSpecificHardwareParameters);
+		.def("getSpecificHardwareParameters", &Hardware::getSpecificHardwareParameters)
+		.def("debugMessagesOn", &Hardware::debugMessagesOn)
+		.def("debugMessagesOff", &Hardware::debugMessagesOff)
+		.def("messagesOn", &Hardware::messagesOn)
+		.def("messagesOff", &Hardware::messagesOff);
 		// Magnet Exposure
 	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
 		.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
@@ -57,6 +59,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.add_property("manufacturer", &Magnet::getManufacturer)
 		.add_property("serial_number", &Magnet::getSerialNumber)
 		.add_property("magnet_type", &Magnet::getMagnetType)
+		.add_property("epicsInterface", &Magnet::epicsInterface)
 		.def("getCurrent", &Magnet::getCurrent)
 		.def("setCurrent", &Magnet::setEPICSCurrent)
 		.def("getRICurrent", &Magnet::getRICurrent);
@@ -86,7 +89,10 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("turnOn", &MagnetFactory::turnOn_Py)
 		.def("turnOff", turnOffSingle)
 		.def("turnOff", &MagnetFactory::turnOff_Py)
-		.add_property("logger", &MagnetFactory::messenger);
+		.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
+		.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
+		.def("messagesOn", &MagnetFactory::messagesOn)
+		.def("messagesOff", &MagnetFactory::messagesOff);
 	// Hardware Factory Exposure
 
 
@@ -95,7 +101,11 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("setup", &HardwareFactory::setup)
 		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
 		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
-		.add_property("hardwareMap", &HardwareFactory::hardwareMap);
+		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
+		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
+		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
+		.def("messagesOn", &HardwareFactory::messagesOn)
+		.def("messagesOff", &HardwareFactory::messagesOff);
 
 
 
