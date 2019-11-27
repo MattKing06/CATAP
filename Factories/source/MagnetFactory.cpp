@@ -29,7 +29,6 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 
 MagnetFactory::~MagnetFactory()
 {
-	messenger.debugMessagesOff();
 	messenger.printDebugMessage("MagnetFactory Destructor Called");
 	for (auto& magnet : magnetMap)
 	{
@@ -78,8 +77,7 @@ bool MagnetFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.debugMessagesOn();
-		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
+		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in Magnet constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
@@ -98,9 +96,9 @@ bool MagnetFactory::setup(const std::string &version)
 			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 			// not sure how to set the mask from EPICS yet.
 			pv.second.MASK = DBE_VALUE;
-			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
-				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
-				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
+			messenger.printDebugMessage( pv.second.pvRecord,": read", std::to_string(ca_read_access(pv.second.CHID)),
+				"write", std::to_string(ca_write_access(pv.second.CHID)),
+				"state", std::to_string(ca_state(pv.second.CHID)));
 			if (pv.second.monitor)
 			{
 				magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
@@ -276,6 +274,46 @@ bool MagnetFactory::turnOff_Py(boost::python::list names)
 	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
 	return turnOff(namesVector);
 
+}
+void MagnetFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("MAG-FAC - DEBUG ON");
+	reader.debugMessagesOn();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.debugMessagesOn();
+	}
+}
+void MagnetFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("MAG-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.debugMessagesOff();
+	}
+}
+void MagnetFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("MAG-FAC - MESSAGES ON");
+	reader.messagesOn();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.messagesOn();
+	}
+}
+void MagnetFactory::messagesOff()
+{
+	messenger.printMessage("MAG-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.messagesOff();
+	}
 }
 bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 {
