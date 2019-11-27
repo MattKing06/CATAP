@@ -55,7 +55,7 @@ std::string LoggingSystem::getCurrentDateAndTimeString() const{
 
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
     // for more information about date/time format
-    strftime(buf, sizeof(buf), "<%a %b %d %Y %H:%M:%S>",&tstruct);
+    strftime(buf, sizeof(buf), "<%e-%m-%Y %H:%M:%S> %t",&tstruct);
 	//std::string dateAndTimeString = buf;
 	return buf;
 }
