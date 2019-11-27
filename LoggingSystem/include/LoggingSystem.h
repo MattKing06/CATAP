@@ -2,6 +2,7 @@
 #define LOGGING_SYSTEM_H_
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <initializer_list>
 #ifdef _WIN32
 // Windows.h defines macros min and max so numeric_limits::max fails.
@@ -22,43 +23,41 @@ public:
     bool isMessagingOn() const;
     bool isDebugOn() const;
 	std::string getCurrentDateAndTimeString() const;
-	bool timestampPrinted = false;
+	bool multiString = false;
 
 #ifdef _WIN32
-	template <typename T>
-	void printMessage(T t)
+	template<typename T>
+	void printMessage_oss(std::ostream& os, T t)
 	{
-		if (messageOn)
+		//single-value means no end-line char here..
+		if (multiString)
 		{
-			if (timestampPrinted)
-			{
-				std::cout << t << std::endl;
-				timestampPrinted = false;
-			}
-			else
-			{
-				std::cout << getCurrentDateAndTimeString() << t << std::endl;
-			}
-			std::cout.flush();
+			os << t;
+		}
+		else
+		{
+			os << t << std::endl;
 		}
 	}
 	template<typename T, typename... Args>
-	void printMessage(T t, Args... args) // recursive variadic function
+	void printMessage_oss(std::ostream& os, T t, Args... args)
+	{
+		printMessage_oss(os, t);
+		printMessage_oss(os, args...);
+	}
+	template<typename... Args>
+	void printMessage(Args... args)
 	{
 		if (messageOn)
 		{
-			if (timestampPrinted)
-			{
-				std::cout << t;
-				printMessage(args...);
-			}
-			else
-			{
-				timestampPrinted = true;
-				std::cout << getCurrentDateAndTimeString() << t;
-				printMessage(args...);
-			}
-			timestampPrinted = false;
+			multiString = true;
+			std::ostringstream oss;
+			printMessage_oss(oss, args...);
+			HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
+			std::cout << oss.str() << std::endl;
+			std::cout.flush();
+			multiString = false;
 		}
 	}
 #elif defined(_unix) || defined(__unix__)
@@ -83,51 +82,41 @@ public:
 
 
 #ifdef _WIN32
-	template <typename T>
-	void printDebugMessage(T t)
+	template<typename T>
+	void printDebugMessage_oss(std::ostream& os, T t)
 	{
-		if (debugOn)
+		//single-value means no end-line char here..
+		if (multiString)
 		{
-			if (timestampPrinted)
-			{
-				HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-				std::cout << t << std::endl;
-				SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
-				timestampPrinted = false;
-			}
-			else
-			{
-				HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-				std::cout << getCurrentDateAndTimeString() << t << std::endl;
-				SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
-			}
+			os << t;
+		}
+		else
+		{
+			os << t << std::endl;
 		}
 	}
 	template<typename T, typename... Args>
-	void printDebugMessage(T t, Args... args) // recursive variadic function
+	void printDebugMessage_oss(std::ostream& os, T t, Args... args)
 	{
+		printDebugMessage_oss(os, t);
+		printDebugMessage_oss(os, args...);
+	}
+	template<typename... Args>
+	void printDebugMessage(Args... args)
+	{
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
 		if (debugOn)
 		{
-			if (timestampPrinted)
-			{
-				HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-				std::cout << t;
-				SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
-				printDebugMessage(args...);
-			}
-			else
-			{
-				timestampPrinted = true;
-				HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-				SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-				std::cout << getCurrentDateAndTimeString() << t;
-				SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
-				printDebugMessage(args...);
-			}
-			timestampPrinted = false;
+			std::stringstream oss;
+			multiString = true;
+			printDebugMessage_oss(oss, args...);
+			hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+			SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+			std::cout << oss.str() << std::endl;
+			SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE | FOREGROUND_INTENSITY);
+			std::cout.flush();
+			multiString = false;
 		}
 	}
 #elif defined(_unix) || defined(__unix__)
