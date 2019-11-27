@@ -7,6 +7,7 @@
 #include <PV.h>
 #endif
 #include <GlobalStateEnums.h>
+
 class Hardware
 {
 public:
@@ -21,15 +22,21 @@ public:
 	Hardware(const Hardware& copyHardware);
 	std::map<std::string, pvStruct>& getPVStructs();
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
+	virtual void debugMessagesOn();
+	virtual void debugMessagesOff();
+	virtual void messagesOn();
+	virtual void messagesOff();
 	bool operator==(Hardware rhs);
 // need to sort out private/protected access for these variables
-	LoggingSystem messenger;
 	std::string machineArea;
 	std::string hardwareType;
 	std::string hardwareName;
 	bool isVirtual;
 	std::map<std::string, pvStruct> pvStructs;
 	std::map<std::string, std::string> specificHardwareParameters;
+protected:
+	LoggingSystem messenger;
+
 };
 
 #endif //HARDWARE_H_
