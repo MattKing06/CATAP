@@ -42,6 +42,11 @@ class EPICSInterface
 		void removeChannel(pvStruct& pv);
 		void detachFromContext();
 		static std::string getEPICSTime(const epicsTimeStamp& stamp);
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
+		std::string ownerName;
 
 		#ifndef __CINT__
 			ca_client_context *thisCaContext;

@@ -22,7 +22,6 @@ class MagnetFactory
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string version);
 		bool setup(const std::string &version);
-		LoggingSystem messenger;
 		ConfigReader reader;
 		Magnet& getMagnet(const std::string& fullMagnetName);
 		std::map<std::string, Magnet> getMagnets(std::vector<std::string> magnetNames);
@@ -56,6 +55,12 @@ class MagnetFactory
 		boost::python::dict getRICurrents_Py(boost::python::list names);
 		bool turnOn_Py(boost::python::list names);
 		bool turnOff_Py(boost::python::list names);
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
+private:
+		LoggingSystem messenger;
 };
 
 

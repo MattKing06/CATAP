@@ -93,7 +93,7 @@ void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 		recastBPM->pvStructs.at("X").time = pTD->stamp;
 		recastBPM->setXPV(pTD->value);
 		recastBPM->setXPVBuffer(pTD->value);
-		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastBPM->pvStructs.at("X").time),
+		messenger.printDebugMessage(getEPICSTime(recastBPM->pvStructs.at("X").time),
 			"X PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
 			+ std::to_string(pTD->value));
 	}
@@ -125,7 +125,7 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 		recastBPM->pvStructs.at("Y").time = pTD->stamp;
 		recastBPM->setYPV(pTD->value);
 		recastBPM->setYPVBuffer(pTD->value);
-		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastBPM->pvStructs.at("Y").time),
+		messenger.printDebugMessage(getEPICSTime(recastBPM->pvStructs.at("Y").time),
 			"Y PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
 			+ std::to_string(pTD->value));
 	}

@@ -1,5 +1,6 @@
 #include "Hardware.h"
 #include <boost/algorithm/string.hpp>
+#include <boost/make_shared.hpp>
 #include <vector>
 
 Hardware::Hardware()
@@ -21,7 +22,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	{
 		hardwareName = specificValueMap.find("name")->second.data();
 	}
-	messenger.printDebugMessage(std::string("Constructing Hardware" + hardwareName));
+	messenger.printDebugMessage( "Constructing Hardware ", hardwareName);
 	
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
@@ -29,7 +30,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 	std::vector<std::string> pvRecordVec;
 	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
-	messenger.printDebugMessage(std::string("Constructing PV information for " + hardwareName));
+	messenger.printDebugMessage("Constructing PV information for ", hardwareName);
 	for (auto record : pvRecordVec)
 	{
 		pvStruct pv = pvStruct();
@@ -38,7 +39,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 		//chid, count, mask, chtype are left undefined for now.
 		pvStructs[pv.pvRecord] = pv;
 	}
-	messenger.printDebugMessage(std::string("Finished constructing: " + hardwareName));
+	messenger.printDebugMessage("Finished constructing: ", hardwareName);
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
@@ -68,6 +69,30 @@ std::map<std::string, pvStruct>& Hardware::getPVStructs()
 std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() const
 {
 	return specificHardwareParameters;
+}
+
+void Hardware::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+}
+
+void Hardware::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, "- DEBUG OFF");
+	messenger.debugMessagesOff();
+}
+
+void Hardware::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+}
+
+void Hardware::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
 }
 
 bool Hardware::operator==(Hardware rhs)

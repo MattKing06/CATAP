@@ -49,4 +49,12 @@ BOOST_AUTO_TEST_CASE(magnet_factory_get_all_magnet_currents_test)
 	BOOST_CHECK_NE(allMagCurrents.at(testMagnetName), std::numeric_limits<double>::min());
 }
 
+BOOST_AUTO_TEST_CASE(magnet_factory_logging_system_test)
+{
+	MagnetFactory magFac = MagnetFactory(true);
+	magFac.setup("nominal");
+	magFac.messagesOn();
+	magFac.messagesOff();
+}
+
 BOOST_AUTO_TEST_SUITE_END();
