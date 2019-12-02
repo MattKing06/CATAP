@@ -125,7 +125,7 @@ std::vector< double > BPM::getXPVVector() const
 	//{
 	//	messenger.printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
 	//}
-	return this->xVector;
+	return this->xPVVector;
 }
 
 std::vector< double > BPM::getYPVVector() const
@@ -134,7 +134,7 @@ std::vector< double > BPM::getYPVVector() const
 	//{
 	//	messenger.printDebugMessage("WARNING: STILL MONITORING Y PV -- VECTOR NOT FULL");
 	//}
-	return this->yVector;
+	return this->yPVVector;
 }
 
 std::vector< std::vector< double > > BPM::getDataVector() const
@@ -271,12 +271,12 @@ bool BPM::setXPV(const double& value)
 {
 	xPV = value;
 	xPVBuffer.push_back(value);
-	++xpvshots;
+	xpvshots++;
 	if (monitoringxpv)
 	{
-		if (xpvshots < xPVVector.size())
+		if (xpvshots <= xPVVector.size())
 		{
-			xPVVector.push_back(value);
+			xPVVector[xpvshots-1] = value;
 		}
 		else
 		{
@@ -289,13 +289,13 @@ bool BPM::setXPV(const double& value)
 bool BPM::setYPV(const double& value)
 {
 	yPV = value;
-	xPVBuffer.push_back(value);
+	yPVBuffer.push_back(value);
 	++ypvshots;
 	if (monitoringypv)
 	{
-		if (ypvshots < yPVVector.size())
+		if (ypvshots <= yPVVector.size())
 		{
-			yPVVector.push_back(value);
+			yPVVector[ypvshots-1] = value;
 		}
 		else
 		{
@@ -427,10 +427,10 @@ bool BPM::setData(const std::vector< double >& value)
 	++datashots;
 	if (monitoringdata)
 	{
-		if (datashots < dataVector.size())
+		if (datashots <= dataVector.size())
 		{
-			dataVector.push_back(value);
-			qVector.push_back(q);
+			dataVector[datashots-1] = value;
+			qVector[datashots-1] = q;
 		}
 		else
 		{
@@ -586,6 +586,10 @@ void BPM::monitorForNShots(const size_t& value)
 void BPM::setVectorSize(const size_t& value)
 {
 	clearBuffers();
+	xPVVector.clear();
+	yPVVector.clear();
+	qVector.clear();
+	dataVector.clear();
 	vectorSize = value;
 	xPVVector.resize(vectorSize);
 	yPVVector.resize(vectorSize);

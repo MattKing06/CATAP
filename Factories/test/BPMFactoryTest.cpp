@@ -15,11 +15,11 @@ BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";
 	BPMFactory bpmfac = BPMFactory(true);
 	bpmfac.setup("nominal");
-	//srand(time(NULL));
-	//long sa1ToSet = rand() % 10;
-	//bpmfac.setSA1(testBPMName, sa1ToSet);
-	//std::this_thread::sleep_for(std::chrono::seconds(10));
-	//BOOST_CHECK_EQUAL(bpmfac.getSA1(testBPMName), sa1ToSet);
+	srand(time(NULL));
+	long sa1ToSet = rand() % 10;
+	bpmfac.setSA1(testBPMName, sa1ToSet);
+	std::this_thread::sleep_for(std::chrono::seconds(10));
+	BOOST_CHECK_EQUAL(bpmfac.getSA1(testBPMName), sa1ToSet);
 }
 
 //BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)

@@ -120,10 +120,10 @@ class BPM : public Hardware
 		double p2;
 		double c1;
 		double c2;
-		int xpvshots;
-		int ypvshots;
-		int datashots;
-		int qshots;
+		unsigned int xpvshots;
+		unsigned int ypvshots;
+		unsigned int datashots;
+		unsigned int qshots;
 		std::vector< double > data;
 		size_t bufferSize;
 		size_t vectorSize;

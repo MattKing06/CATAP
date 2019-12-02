@@ -11,6 +11,8 @@
 #include <functional>
 #include "BPM.h"
 #include <vector>
+#include <chrono>
+#include <thread>
 
 BOOST_AUTO_TEST_SUITE(BPMTestSuite)
 
@@ -64,6 +66,26 @@ BOOST_AUTO_TEST_CASE(bpm_set_and_check_data_vector_test)
 	std::vector< double > get = bpm.getData();
 	std::vector< double > set = dataToSet.back();
 	BOOST_CHECK_EQUAL_COLLECTIONS(get.begin(), get.end(), set.begin(), set.end());
+}
+
+BOOST_AUTO_TEST_CASE(bpm_monitor_test)
+{
+	BPM bpm = BPM();
+	size_t numShots = 2;
+	srand(time(NULL));
+	bpm.monitorForNShots(numShots);
+	double xPVToSet1 = rand() % 10 + 1.0;
+	BOOST_CHECK_EQUAL(bpm.isMonitoringXPV(), true);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	bpm.setXPV(xPVToSet1);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	double xPVToSet2 = rand() % 10 + 1.0;
+	bpm.setXPV(xPVToSet2);
+	std::vector< double > xPVVector(2);
+	xPVVector[0] = xPVToSet1;
+	xPVVector[1] = xPVToSet2;
+	std::vector< double > get = bpm.getXPVVector();
+	BOOST_TEST(get == xPVVector, boost::test_tools::per_element());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
