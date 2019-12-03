@@ -8,7 +8,6 @@ EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
 }
 EPICSBPMInterface::~EPICSBPMInterface()
 {
-	messenger.debugMessagesOff();
 	messenger.printDebugMessage("EPICSBPMInterface Destructor Called");
 }
 void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
@@ -70,19 +69,15 @@ void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) cons
 
 void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_DOUBLE)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setXPV(*(double*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_DOUBLE)
 	{
@@ -99,19 +94,15 @@ void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_DOUBLE)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setYPV(*(double*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_DOUBLE)
 	{
@@ -128,12 +119,9 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateData(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_DOUBLE)
 	{
@@ -149,7 +137,6 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 		}
 		recastBPM->setData(rawVectorContainer);
 		//recastBPM->setDataBuffer(*(double*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_DOUBLE)
 	{
@@ -174,19 +161,15 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setRA1(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -201,19 +184,15 @@ void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateRA2(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setRA2(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -228,19 +207,15 @@ void EPICSBPMInterface::updateRA2(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateRD1(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setRD1(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -255,19 +230,15 @@ void EPICSBPMInterface::updateRD1(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateRD2(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setRD2(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -282,19 +253,15 @@ void EPICSBPMInterface::updateRD2(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateSA1(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setSA1(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -309,19 +276,15 @@ void EPICSBPMInterface::updateSA1(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateSA2(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setSA2(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -336,19 +299,15 @@ void EPICSBPMInterface::updateSA2(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateSD1(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setSD1(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -363,19 +322,15 @@ void EPICSBPMInterface::updateSD1(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setSD2(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -390,19 +345,15 @@ void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setAWAK(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{
@@ -418,19 +369,15 @@ void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateRDY(const struct event_handler_args args)
 {
-	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
 	{
-		messenger.messagesOn();
 		messenger.printMessage("Something went wrong with update function!");
-		messenger.messagesOff();
 	}
 	else if (args.type == DBR_LONG)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setRDY(*(long*)(args.dbr));
-		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_LONG)
 	{

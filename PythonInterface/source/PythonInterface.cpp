@@ -209,7 +209,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
 		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
 		.def("messagesOn", &HardwareFactory::messagesOn)
-		.def("messagesOff", &HardwareFactory::messagesOff);
+		.def("messagesOff", &HardwareFactory::messagesOff)
 		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap);
 

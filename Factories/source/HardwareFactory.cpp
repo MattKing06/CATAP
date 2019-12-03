@@ -64,7 +64,6 @@ BPMFactory& HardwareFactory::getBPMFactory()
 		}
 		else
 		{
-			messenger.messagesOn();
 			messenger.printMessage("Unable to setup BPMFactory");
 		}
 	}
