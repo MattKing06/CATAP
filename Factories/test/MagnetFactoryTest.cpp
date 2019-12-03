@@ -14,9 +14,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(true);
-	magFac.setup("nominal");
-	chid CHID = magFac.getMagnet(testMagnetName).getPVStructs().at("RPOWER").CHID;
-	if (ca_state(CHID) == cs_conn)
+	bool status = magFac.setup("nominal");
+	if (status)
 	{
 		magFac.turnOn(testMagnetName);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -33,9 +32,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(true);
-	magFac.setup("nominal");
-	chid CHID = magFac.getMagnet(testMagnetName).getPVStructs().at("SETI").CHID;
-	if (ca_state(CHID) == cs_conn)
+	bool status = magFac.setup("nominal");
+	if (status)
 	{
 		srand(time(NULL));
 		double currentToSet = rand() % 10 + 1.0;
@@ -54,9 +52,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(true);
-	magFac.setup("nominal");
-	chid CHID = magFac.getMagnet(testMagnetName).getPVStructs().at("RILK").CHID;
-	if (ca_state(CHID) == cs_conn)
+	bool status = magFac.setup("nominal");
+	if (status)
 	{
 		BOOST_CHECK_EQUAL(magFac.getILKState(testMagnetName), 0);
 	}
@@ -70,10 +67,9 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 BOOST_AUTO_TEST_CASE(magnet_factory_get_all_magnet_currents_test)
 {
 	MagnetFactory magFac = MagnetFactory(true);
-	magFac.setup("nominal");
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
-	chid CHID = magFac.getMagnet(testMagnetName).getPVStructs().at("RILK").CHID;
-	if (ca_state(CHID) == cs_conn)
+	bool status = magFac.setup("nominal");
+	if (status)
 	{
 		std::map<std::string, double> allMagCurrents = magFac.getAllMagnetCurrents();
 		BOOST_CHECK_NE(allMagCurrents.at(testMagnetName), std::numeric_limits<double>::min());
@@ -88,7 +84,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_get_all_magnet_currents_test)
 BOOST_AUTO_TEST_CASE(magnet_factory_logging_system_test)
 {
 	MagnetFactory magFac = MagnetFactory(true);
-	magFac.setup("nominal");
+	bool status = magFac.setup("nominal");
 	magFac.messagesOn();
 	BOOST_CHECK_EQUAL(magFac.isMessagingOn(), true);
 	BOOST_CHECK_EQUAL(magFac.reader.isMessagingOn(), true);

@@ -91,18 +91,27 @@ bool MagnetFactory::setup(const std::string &version)
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			retrieveMonitorStatus(pv.second);
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
-			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
-			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
-			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
-			// not sure how to set the mask from EPICS yet.
-			pv.second.MASK = DBE_VALUE;
-			messenger.printDebugMessage( pv.second.pvRecord,": read", std::to_string(ca_read_access(pv.second.CHID)),
-				"write", std::to_string(ca_write_access(pv.second.CHID)),
-				"state", std::to_string(ca_state(pv.second.CHID)));
-			if (pv.second.monitor)
+			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
+				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
+				magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+				}
 			}
+			else
+			{
+				messenger.printMessage("CANNOT CONNECT TO EPICS");
+				return false;
+			}
+
 		}
 	}
 	hasBeenSetup = true;
