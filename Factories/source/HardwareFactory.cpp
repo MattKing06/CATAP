@@ -12,6 +12,7 @@ HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	messenger.printDebugMessage( "Hardware Factory Constructed");
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
+	bpmFactory = BPMFactory(isVirtual);
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
@@ -21,6 +22,13 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		if (!magnetFactory.hasBeenSetup)
 		{
 			setup = magnetFactory.setup(version);
+		}
+	}
+	if (hardwareType == "BPM")
+	{
+		if (!bpmFactory.hasBeenSetup)
+		{
+			setup = bpmFactory.setup(version);
 		}
 	}
 	return setup;
@@ -42,6 +50,27 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	else
 	{
 		return magnetFactory;
+	}
+
+}
+BPMFactory& HardwareFactory::getBPMFactory()
+{
+	if (!bpmFactory.hasBeenSetup)
+	{
+		bool setup = bpmFactory.setup("nominal");
+		if (setup)
+		{
+			return bpmFactory;
+		}
+		else
+		{
+			messenger.messagesOn();
+			messenger.printMessage("Unable to setup BPMFactory");
+		}
+	}
+	else
+	{
+		return bpmFactory;
 	}
 
 }

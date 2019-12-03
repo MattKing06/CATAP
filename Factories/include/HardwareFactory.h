@@ -1,6 +1,7 @@
 #ifndef HARDWARE_FACTORY_H_
 #define HARDWARE_FACTORY_H_
 #include "MagnetFactory.h"
+#include "BPMFactory.h"
 
 class HardwareFactory
 {
@@ -18,9 +19,11 @@ public:
 	~HardwareFactory();
 	bool setup(const std::string& hardwareType, const std::string& version);
 	MagnetFactory& getMagnetFactory();
+	BPMFactory& getBPMFactory();
 	bool operator ==(const HardwareFactory &HardwareFactory) const;
 	std::map<std::string, Hardware> hardwareMap;
 	MagnetFactory magnetFactory;
+	BPMFactory bpmFactory;
 	bool isVirtual;
 	void debugMessagesOn();
 	void debugMessagesOff();
