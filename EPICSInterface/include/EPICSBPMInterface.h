@@ -23,6 +23,7 @@ public:
 	static void updatePositions(const struct event_handler_args args);
 	static void updateXPV(const struct event_handler_args args);
 	static void updateYPV(const struct event_handler_args args);
+	static void updateData(const struct event_handler_args args);
 	static void updateSA1(const struct event_handler_args args);
 	static void updateSA2(const struct event_handler_args args);
 	static void updateSD1(const struct event_handler_args args);
@@ -31,6 +32,8 @@ public:
 	static void updateRA2(const struct event_handler_args args);
 	static void updateRD1(const struct event_handler_args args);
 	static void updateRD2(const struct event_handler_args args);
+	static void updateAWAK(const struct event_handler_args args);
+	static void updateRDY(const struct event_handler_args args);
 	void setSA1(const long& value, const pvStruct& pv);
 	void setSA2(const long& value, const pvStruct& pv);
 	void setSD1(const long& value, const pvStruct& pv);

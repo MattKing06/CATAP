@@ -54,18 +54,18 @@ void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) cons
 	{
 		pvStruct.updateFunction = this->updateRD2;
 	}
-	//if (pvStruct.pvRecord == "DATA:B2V.VALA")
-	//{
-	//	pvStruct.updateFunction = this->updateData;
-	//}
-	//if (pvStruct.pvRecord == "AWAK")
-	//{
-	//	pvStruct.updateFunction = this->updateAWAK;
-	//}
-	//if (pvStruct.pvRecord == "RDY")
-	//{
-	//	pvStruct.updateFunction = this->updateRDY;
-	//}
+	if (pvStruct.pvRecord == "DATA:B2V.VALA")
+	{
+		pvStruct.updateFunction = this->updateData;
+	}
+	if (pvStruct.pvRecord == "AWAK")
+	{
+		pvStruct.updateFunction = this->updateAWAK;
+	}
+	if (pvStruct.pvRecord == "RDY")
+	{
+		pvStruct.updateFunction = this->updateRDY;
+	}
 }
 
 void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
@@ -82,7 +82,6 @@ void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setXPV(*(double*)(args.dbr));
-		recastBPM->setXPVBuffer(*(double*)(args.dbr));
 		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_DOUBLE)
@@ -92,7 +91,6 @@ void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
 		recastBPM->pvStructs.at("X").time = pTD->stamp;
 		recastBPM->setXPV(pTD->value);
-		recastBPM->setXPVBuffer(pTD->value);
 		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastBPM->pvStructs.at("X").time),
 			"X PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
 			+ std::to_string(pTD->value));
@@ -114,7 +112,6 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		recastBPM->setYPV(*(double*)(args.dbr));
-		recastBPM->setYPVBuffer(*(double*)(args.dbr));
 		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
 	}
 	else if (args.type == DBR_TIME_DOUBLE)
@@ -124,12 +121,58 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
 		recastBPM->pvStructs.at("Y").time = pTD->stamp;
 		recastBPM->setYPV(pTD->value);
-		recastBPM->setYPVBuffer(pTD->value);
 		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastBPM->pvStructs.at("Y").time),
 			"Y PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
 			+ std::to_string(pTD->value));
 	}
 	messenger.printDebugMessage(" CALLED UPDATE Y ");
+}
+
+void EPICSBPMInterface::updateData(const struct event_handler_args args)
+{
+	messenger.debugMessagesOff();
+	if (args.status != ECA_NORMAL)
+	{
+		messenger.messagesOn();
+		messenger.printMessage("Something went wrong with update function!");
+		messenger.messagesOff();
+	}
+	else if (args.type == DBR_DOUBLE)
+	{
+		MY_SEVCHK(args.status);
+		BPM* recastBPM = static_cast<BPM*>(args.usr);
+		const dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
+		size_t i = 0;
+		std::vector< double > rawVectorContainer(9);
+		for (auto&& it : rawVectorContainer)
+		{
+			it = *(&pTD->value + i);
+			++i;
+		}
+		recastBPM->setData(rawVectorContainer);
+		//recastBPM->setDataBuffer(*(double*)(args.dbr));
+		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
+	}
+	else if (args.type == DBR_TIME_DOUBLE)
+	{
+		MY_SEVCHK(args.status);
+		BPM* recastBPM = static_cast<BPM*>(args.usr);
+		const struct dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
+		size_t i = 0;
+		std::vector< double > rawVectorContainer(9);
+		for (auto&& it : rawVectorContainer)
+		{
+			it = *(&pTD->value + i);
+			++i;
+		}
+		recastBPM->pvStructs.at("DATA").time = pTD->stamp;
+		recastBPM->setData(rawVectorContainer);
+		recastBPM->setQ(rawVectorContainer);
+		//recastBPM->setDataBuffer(pTD->value);
+		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastBPM->pvStructs.at("DATA").time),
+			"DATA PV VALUE FOR: " + recastBPM->getHardwareName());
+	}
+	messenger.printDebugMessage(" CALLED UPDATE DATA ");
 }
 
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
@@ -342,10 +385,66 @@ void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
 		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("RA1").time = pTD->stamp;
+		recastBPM->pvStructs.at("SD2").time = pTD->stamp;
 		recastBPM->setSD2(pTD->value);
 	}
 	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+}
+
+void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
+{
+	messenger.debugMessagesOff();
+	if (args.status != ECA_NORMAL)
+	{
+		messenger.messagesOn();
+		messenger.printMessage("Something went wrong with update function!");
+		messenger.messagesOff();
+	}
+	else if (args.type == DBR_LONG)
+	{
+		MY_SEVCHK(args.status);
+		BPM* recastBPM = static_cast<BPM*>(args.usr);
+		recastBPM->setAWAK(*(long*)(args.dbr));
+		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
+	}
+	else if (args.type == DBR_TIME_LONG)
+	{
+		MY_SEVCHK(args.status);
+		BPM* recastBPM = static_cast<BPM*>(args.usr);
+		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
+		recastBPM->pvStructs.at("AWAK").time = pTD->stamp;
+		recastBPM->setAWAK(pTD->value);
+		recastBPM->setAWAKTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("AWAK").time)));
+	}
+	messenger.printDebugMessage(" CALLED UPDATE AWAK ");
+}
+
+void EPICSBPMInterface::updateRDY(const struct event_handler_args args)
+{
+	messenger.debugMessagesOff();
+	if (args.status != ECA_NORMAL)
+	{
+		messenger.messagesOn();
+		messenger.printMessage("Something went wrong with update function!");
+		messenger.messagesOff();
+	}
+	else if (args.type == DBR_LONG)
+	{
+		MY_SEVCHK(args.status);
+		BPM* recastBPM = static_cast<BPM*>(args.usr);
+		recastBPM->setRDY(*(long*)(args.dbr));
+		//messenger.printDebugMessage("GETSETI VALUE FOR " + recastMagnet->getHardwareName() + ": " + std::to_string(*(double*)(args.dbr)));
+	}
+	else if (args.type == DBR_TIME_LONG)
+	{
+		MY_SEVCHK(args.status);
+		BPM* recastBPM = static_cast<BPM*>(args.usr);
+		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
+		recastBPM->pvStructs.at("RDY").time = pTD->stamp;
+		recastBPM->setRDY(pTD->value);
+		recastBPM->setRDYTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("RDY").time)));
+	}
+	messenger.printDebugMessage(" CALLED UPDATE RDY ");
 }
 
 void EPICSBPMInterface::setSA1(const long& value, const pvStruct& pv)
