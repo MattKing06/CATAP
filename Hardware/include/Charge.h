@@ -17,7 +17,7 @@ typedef boost::shared_ptr<EPICSChargeInterface> EPICSChargeInterface_sptr;
 class Charge : public Hardware
 {
 	public:
-		BPM();
+		Charge();
 		Charge(std::string knownNameOfCharge);
 		Charge(const std::map<std::string, std::string>& chargeParametersAndValuesMap, bool isVirtual);
 		Charge(const Charge& copyCharge);

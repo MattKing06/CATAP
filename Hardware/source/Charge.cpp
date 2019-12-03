@@ -54,7 +54,7 @@ std::string Charge::getName() const
 
 double Charge::getQ() const
 {
-	return this->x;
+	return this->q;
 }
 
 std::vector< double > Charge::getQVector() const
@@ -73,7 +73,7 @@ double Charge::getPosition() const
 
 bool Charge::isQBufferFull() const
 {
-	if (qpvshots >= bufferSize)
+	if (qshots >= bufferSize)
 	{
 		return true;
 	}

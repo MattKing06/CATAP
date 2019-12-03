@@ -120,7 +120,7 @@ bool ChargeFactory::setup(const std::string &version)
 	return hasBeenSetup;
 }
 
-std::map<std::string, Charge> ChargeFactory::getCharges(std::vector<std::string> bpmNames)
+std::map<std::string, Charge> ChargeFactory::getCharges(std::vector<std::string> chargeNames)
 {
 	std::map<std::string, Charge> selectedCharges;
 	for (auto & chargeName : chargeNames)
@@ -143,7 +143,7 @@ std::map<std::string, Charge> ChargeFactory::getAllChargeDiagnostics()
 	}
 	else
 	{
-		messenger.printDebugMessage("BPMS HAVE ALREADY BEEN CONSTRUCTED.");
+		messenger.printDebugMessage("CHARGE DIAGNOSTICS HAVE ALREADY BEEN CONSTRUCTED.");
 	}
 	return chargeMap;
 }
@@ -152,7 +152,7 @@ std::string ChargeFactory::getChargeDiagnosticName(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -173,19 +173,6 @@ void ChargeFactory::monitorForNShots(const std::string& name, const size_t& valu
 	}
 }
 
-double BPMFactory::getX(const std::string& name)
-{
-	if (!hasBeenSetup)
-	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
-	}
-	else
-	{
-		return bpmMap.find(name)->second.getX();
-	}
-	return std::numeric_limits<double>::min();;
-}
-
 double ChargeFactory::getQ(const std::string& name)
 {
 	if (!hasBeenSetup)
@@ -203,7 +190,7 @@ std::vector< double > ChargeFactory::getQVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -213,17 +200,17 @@ std::vector< double > ChargeFactory::getQVector(const std::string& name)
 	return vector2;
 }
 
-boost::circular_buffer< double > ChargeFactory::getQVector(const std::string& name)
+boost::circular_buffer< double > ChargeFactory::getQBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
 		return chargeMap.find(name)->second.getQBuffer();
 	}
-	std::vector<double> vector2(9, std::numeric_limits<double>::min());
+	boost::circular_buffer<double> vector2(9, std::numeric_limits<double>::min());
 	return vector2;
 }
 
@@ -232,7 +219,7 @@ bool ChargeFactory::isMonitoring(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -323,7 +310,7 @@ std::map<std::string, boost::circular_buffer< double > > ChargeFactory::getAllQB
 	std::map<std::string, boost::circular_buffer< double > > chargeAndQMap;
 	for (auto charge : chargeMap)
 	{
-		std::pair<std::string, boost::circular_buffer< double > > nameAndQPair = std::make_pair(charge.first, charge.second.getQVector());
+		std::pair<std::string, boost::circular_buffer< double > > nameAndQPair = std::make_pair(charge.first, charge.second.getQBuffer());
 		chargeAndQMap.insert(nameAndQPair);
 	}
 	return chargeAndQMap;
@@ -339,9 +326,10 @@ boost::python::list ChargeFactory::getQVector_Py(const std::string& chargeName)
 
 boost::python::list ChargeFactory::getQBuffer_Py(const std::string& chargeName)
 {
-	std::vector< double > qvec;
-	qvec = getQBuffer(chargeName);
-	boost::python::list newPyList = to_py_list(qvec);
+	boost::circular_buffer< double > qbuf;
+	qbuf = getQBuffer(chargeName);
+	//std::vector< double > qvec = to_std_vector<double>(qbuf);
+	boost::python::list newPyList = to_py_list(qbuf);
 	return newPyList;
 }
 
@@ -350,7 +338,7 @@ boost::python::dict ChargeFactory::getQs_Py(boost::python::list chargeNames)
 	std::map<std::string, double> qvals;
 	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(chargeNames);
 	qvals = getQs(chargeNamesVector);
-	boost::python::dict newPyDict = to_py_dict(xvals);
+	boost::python::dict newPyDict = to_py_dict(qvals);
 	return newPyDict;
 }
 
@@ -365,7 +353,7 @@ boost::python::dict ChargeFactory::getQVectors_Py(boost::python::list chargeName
 
 boost::python::dict ChargeFactory::getQBuffers_Py(boost::python::list chargeNames)
 {
-	std::map<std::string, std::vector< double > > qvals;
+	std::map<std::string, boost::circular_buffer< double > > qvals;
 	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(chargeNames);
 	qvals = getQBuffers(chargeNamesVector);
 	boost::python::dict newPyDict = to_py_dict(qvals);
@@ -388,7 +376,7 @@ boost::python::dict ChargeFactory::getAllQVector_Py()
 
 boost::python::dict ChargeFactory::getAllQBuffer_Py()
 {
-	std::map<std::string, std::vector< double > > qvals = getAllQBuffer();
+	std::map<std::string, boost::circular_buffer< double > > qvals = getAllQBuffer();
 	boost::python::dict newPyDict = to_py_dict(qvals);
 	return newPyDict;
 }

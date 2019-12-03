@@ -2,6 +2,7 @@
 #define PYTHON_TYPE_CONVERSIONS_H_
 
 #include <boost/python.hpp>
+#include <boost/circular_buffer.hpp>
 #include <vector>
 #include <map>
 template< typename typeOfNewVector>
@@ -18,6 +19,18 @@ boost::python::list to_py_list(std::vector<typeOfVectorToConvert> vector)
 	typename std::vector<typeOfVectorToConvert>::iterator iter;
 	boost::python::list newList;
 	for (iter = vector.begin(); iter != vector.end(); ++iter)
+	{
+		newList.append(*iter);
+	}
+	return newList;
+}
+template<class typeOfVectorToConvert>
+inline
+boost::python::list to_py_list(boost::circular_buffer<typeOfVectorToConvert> buffer)
+{
+	typename boost::circular_buffer<typeOfVectorToConvert>::iterator iter;
+	boost::python::list newList;
+	for (iter = buffer.begin(); iter != buffer.end(); ++iter)
 	{
 		newList.append(*iter);
 	}

@@ -2,16 +2,16 @@
 
 LoggingSystem EPICSChargeInterface::messenger;
 
-EPICSBPMInterface::EPICSChargeInterface() : EPICSInterface()
+EPICSChargeInterface::EPICSChargeInterface() : EPICSInterface()
 {
 	this->messenger = LoggingSystem(false, false);
 }
-EPICSBPMInterface::~EPICSChargeInterface()
+EPICSChargeInterface::~EPICSChargeInterface()
 {
 	messenger.debugMessagesOff();
 	messenger.printDebugMessage("EPICSChargeInterface Destructor Called");
 }
-void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
+void EPICSChargeInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
 	
 	if (pvStruct.pvRecord == "Q")
@@ -20,7 +20,7 @@ void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) cons
 	}
 }
 
-void EPICSBPMInterface::updateQ(const struct event_handler_args args)
+void EPICSChargeInterface::updateQ(const struct event_handler_args args)
 {
 	messenger.debugMessagesOff();
 	if (args.status != ECA_NORMAL)
