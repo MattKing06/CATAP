@@ -30,20 +30,24 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 MagnetFactory::~MagnetFactory()
 {
 	messenger.printDebugMessage("MagnetFactory Destructor Called");
-	for (auto& magnet : magnetMap)
+	if (hasBeenSetup) 
 	{
-		auto pvStructsList = magnet.second.getPVStructs();
-		for (auto& pvStruct : pvStructsList)
+		for (auto& magnet : magnetMap)
 		{
-			if (pvStruct.second.monitor)
+			auto pvStructsList = magnet.second.getPVStructs();
+			for (auto& pvStruct : pvStructsList)
 			{
-				magnet.second.epicsInterface->removeSubscription(pvStruct.second);
-				ca_flush_io();
+				if (pvStruct.second.monitor)
+				{
+					magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+					ca_flush_io();
+				}
+				magnet.second.epicsInterface->removeChannel(pvStruct.second);
+				ca_pend_io(CA_PEND_IO_TIMEOUT);
 			}
-			magnet.second.epicsInterface->removeChannel(pvStruct.second);
-			ca_pend_io(CA_PEND_IO_TIMEOUT);
 		}
 	}
+
 }
 
 void MagnetFactory::populateMagnetMap()
@@ -108,7 +112,7 @@ bool MagnetFactory::setup(const std::string &version)
 			}
 			else
 			{
-				messenger.printMessage("CANNOT CONNECT TO EPICS");
+				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
 				return false;
 			}
 
