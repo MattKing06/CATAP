@@ -95,6 +95,16 @@ void Hardware::messagesOff()
 	messenger.messagesOff();
 }
 
+bool Hardware::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+bool Hardware::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+
 bool Hardware::operator==(Hardware rhs)
 {
 	auto LHSPVStructs = this->getPVStructs();

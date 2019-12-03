@@ -107,3 +107,13 @@ void HardwareFactory::messagesOff()
 	messenger.messagesOff();
 	magnetFactory.messagesOff();
 }
+
+bool HardwareFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+bool HardwareFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}

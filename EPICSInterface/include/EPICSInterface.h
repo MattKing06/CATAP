@@ -46,6 +46,8 @@ class EPICSInterface
 		void debugMessagesOff();
 		void messagesOn();
 		void messagesOff();
+		bool isMessagingOn();
+		bool isDebugOn();
 		std::string ownerName;
 
 		#ifndef __CINT__

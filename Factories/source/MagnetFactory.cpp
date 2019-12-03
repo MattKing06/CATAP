@@ -315,6 +315,14 @@ void MagnetFactory::messagesOff()
 		magnet.second.messagesOff();
 	}
 }
+bool MagnetFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool MagnetFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
 bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 {
 	std::map<std::string, double> magnetNamesAndCurrentsToSet;

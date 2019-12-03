@@ -29,6 +29,8 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 private:
 	LoggingSystem messenger;
 };

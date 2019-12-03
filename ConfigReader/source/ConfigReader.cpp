@@ -148,6 +148,16 @@ void ConfigReader::messagesOff()
 	messenger.messagesOff();
 }
 
+bool ConfigReader::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+bool ConfigReader::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+
 
 const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode) const
 {

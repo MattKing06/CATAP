@@ -132,3 +132,13 @@ void EPICSInterface::messagesOff()
 	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
 	messenger.messagesOff();
 }
+
+bool EPICSInterface::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+bool EPICSInterface::isDebugOn()
+{
+	return messenger.isDebugOn();
+}

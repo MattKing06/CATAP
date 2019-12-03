@@ -47,6 +47,8 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
 	{
