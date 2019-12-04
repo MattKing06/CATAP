@@ -346,7 +346,7 @@ std::map<std::string, boost::circular_buffer< double > > ChargeFactory::getAllQB
 
 void ChargeFactory::monitorForNShots_Py(boost::python::list names, const size_t& value)
 {
-	std::vector<std::string>& chargeNamesVector = to_std_vector<std::string>(names);
+	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(names);
 	monitorMultipleForNShots(chargeNamesVector, value);
 }
 
