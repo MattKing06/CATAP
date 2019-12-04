@@ -2,6 +2,7 @@
 #define EPICS_INTERFACE_H
 #include <LoggingSystem.h>
 #include <Hardware.h>
+#include <functional>
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
@@ -42,7 +43,8 @@ class EPICSInterface
 		void removeChannel(pvStruct& pv);
 		void detachFromContext();
 		static std::string getEPICSTime(const epicsTimeStamp& stamp);
-
+		template<typename returnType, typename setType>
+		static void setValueByFunction(std::function<returnType(setType)> setFunction, setType value) { setFunction(value); }
 		#ifndef __CINT__
 			ca_client_context *thisCaContext;
 			void attachTo_thisCAContext();
@@ -79,3 +81,4 @@ class EPICSInterface
 		// some other stuff might be needed here, need to check interface.h from VELA-CLARA Controllers
 };
 #endif
+

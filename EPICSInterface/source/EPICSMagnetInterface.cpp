@@ -54,7 +54,9 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 		Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
 		recastMagnet->pvStructs.at("GETSETI").time = pTD->stamp;
-		recastMagnet->setCurrent(pTD->value);
+		//recastMagnet->setCurrent(pTD->value);
+		const double value = pTD->value;
+		setValueByFunction<bool, double>(std::bind(&Magnet::setCurrent, recastMagnet, std::placeholders::_1), value);
 		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("GETSETI").time),
 			"GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 			+ std::to_string(pTD->value));

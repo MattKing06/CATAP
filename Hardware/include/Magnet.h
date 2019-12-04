@@ -13,6 +13,7 @@
 // tells compiler that we will use this class.
 class EPICSMagnetInterface;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
+
 class Magnet : public Hardware
 {
 	public:
@@ -38,7 +39,7 @@ class Magnet : public Hardware
 		std::string getMeasurementDataLocation() const;
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
 		bool isVirtual;
-		bool setCurrent(const double &value);
+		bool setCurrent(const double& value);
 		bool setEPICSCurrent(const double &value);
 		bool setPSUState(const STATE& value);
 		bool setEPICSPSUState(const STATE& value);

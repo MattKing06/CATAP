@@ -7,6 +7,8 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 
+//double Magnet::current;
+
 Magnet::Magnet()
 {}
 
@@ -89,6 +91,11 @@ double Magnet::getCurrent() const
 {
 	return this->current;
 }
+bool Magnet::setCurrent(const double& value)
+{
+	current = value;
+	return true;
+}
 bool Magnet::setEPICSCurrent(const double &value)
 {
 	std::map<std::string, pvStruct>& pvData = getPVStructs();
@@ -151,8 +158,3 @@ int Magnet::getILKState() const
 	return ilkState;
 }
 
-bool Magnet::setCurrent(const double &value)
-{
-	this->current = value;
-	return true;
-}

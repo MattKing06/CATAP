@@ -109,3 +109,4 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 	epicsTimeToStrftime(timeString, sizeof(timeString), "%a %b %d %Y %H:%M:%S.%f", &stamp);
 	return timeString;
 }
+
