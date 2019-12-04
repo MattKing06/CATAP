@@ -41,20 +41,24 @@ BPMFactory::~BPMFactory()
 {
 	messenger.debugMessagesOff();
 	messenger.printDebugMessage("BPMFactory Destructor Called");
-	for (auto& bpm : bpmMap)
+	if (hasBeenSetup)
 	{
-		auto pvStructsList = bpm.second.getPVStructs();
-		for (auto& pvStruct : pvStructsList)
+		for (auto& bpm : bpmMap)
 		{
-			if (pvStruct.second.monitor)
+			auto pvStructsList = bpm.second.getPVStructs();
+			for (auto& pvStruct : pvStructsList)
 			{
-				bpm.second.epicsInterface->removeSubscription(pvStruct.second);
-				ca_flush_io();
+				if (pvStruct.second.monitor)
+				{
+					bpm.second.epicsInterface->removeSubscription(pvStruct.second);
+					ca_flush_io();
+				}
+				bpm.second.epicsInterface->removeChannel(pvStruct.second);
+				ca_pend_io(CA_PEND_IO_TIMEOUT);
 			}
-			bpm.second.epicsInterface->removeChannel(pvStruct.second);
-			ca_pend_io(CA_PEND_IO_TIMEOUT);
 		}
 	}
+
 }
 
 void BPMFactory::populateBPMMap()
@@ -112,19 +116,29 @@ bool BPMFactory::setup(const std::string &version)
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			retrieveMonitorStatus(pv.second);
 			bpm.second.epicsInterface->retrieveCHID(pv.second);
-			bpm.second.epicsInterface->retrieveCHTYPE(pv.second);
-			bpm.second.epicsInterface->retrieveCOUNT(pv.second);
-			bpm.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
-			// not sure how to set the mask from EPICS yet.
-			pv.second.MASK = DBE_VALUE;
-			messenger.debugMessagesOn();
-			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
-				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
-				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
-			if (pv.second.monitor)
+			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
+				bpm.second.epicsInterface->retrieveCHTYPE(pv.second);
+				bpm.second.epicsInterface->retrieveCOUNT(pv.second);
+				bpm.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.debugMessagesOn();
+				messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
+					"write" + std::to_string(ca_write_access(pv.second.CHID)) +
+					"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
+				if (pv.second.monitor)
+				{
+					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
+				}
 			}
+			else
+			{
+				messenger.printMessage("CANNOT CONNECT TO EPICS");
+				hasBeenSetup = false;
+				return hasBeenSetup;
+			}
+
 		}
 	}
 	hasBeenSetup = true;
@@ -194,7 +208,7 @@ double BPMFactory::getX(const std::string& name)
 	{
 		return bpmMap.find(name)->second.getX();
 	}
-	return std::numeric_limits<double>::min();;
+	return std::numeric_limits<double>::min();
 }
 
 double BPMFactory::getXFromPV(const std::string& name)
