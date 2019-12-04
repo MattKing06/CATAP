@@ -9,6 +9,7 @@
 #include <map>
 #include <utility>
 #include <boost/python.hpp>
+#include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class BPM;
@@ -50,6 +51,10 @@ public:
 	std::map<std::string, std::vector< double > > getYPVVectors(const std::vector<std::string>& names);
 	std::map<std::string, std::vector< double > > getQVectors(const std::vector<std::string>& names);
 	std::map<std::string, std::vector< std::vector< double > > > getDataVectors(const std::vector<std::string>& names);
+	std::map<std::string, boost::circular_buffer< double > > getXPVBuffers(const std::vector<std::string>& names);
+	std::map<std::string, boost::circular_buffer< double > > getYPVBuffers(const std::vector<std::string>& names);
+	std::map<std::string, boost::circular_buffer< double > > getQBuffers(const std::vector<std::string>& names);
+	std::map<std::string, boost::circular_buffer< std::vector< double > > > getDataBuffers(const std::vector<std::string>& names);
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getXYPositionVectors(const std::vector<std::string>& names);
 	std::map<std::string, double> getResolutions(const std::vector<std::string>& names);
 	std::map<std::string, double> getPositions(const std::vector<std::string>& names);
@@ -67,6 +72,10 @@ public:
 	std::map<std::string, std::vector< double > > getAllYPVVector();
 	std::map<std::string, std::vector< double > > getAllQVector();
 	std::map<std::string, std::vector< std::vector< double > > > getAllDataVector();
+	std::map<std::string, boost::circular_buffer< double > > getAllXPVBuffer();
+	std::map<std::string, boost::circular_buffer< double > > getAllYPVBuffer();
+	std::map<std::string, boost::circular_buffer< double > > getAllQBuffer();
+	std::map<std::string, boost::circular_buffer< std::vector< double > > > getAllDataBuffer();
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getAllXYPositionVectors();
 	std::map<std::string, bool> reCalAllAttenuation(const double& charge);
 	double getX(const std::string& name);
@@ -83,6 +92,10 @@ public:
 	std::vector< double > getYPVVector(const std::string& name);
 	std::vector< double > getQVector(const std::string& name);
 	std::vector< std::vector< double > > getDataVector(const std::string& name);
+	boost::circular_buffer< double > getXPVBuffer(const std::string& name);
+	boost::circular_buffer< double > getYPVBuffer(const std::string& name);
+	boost::circular_buffer< double > getQBuffer(const std::string& name);
+	boost::circular_buffer< std::vector< double > > getDataBuffer(const std::string& name);
 	std::pair<std::vector< double >, std::vector< double > > getXYPositionVector(const std::string& name);
 	bool setSA1(const std::string& name, const long& value);
 	bool setSA2(const std::string& name, const long& value);
@@ -109,10 +122,18 @@ public:
 	boost::python::list getYPVVector_Py(const std::string& name);
 	boost::python::list getQVector_Py(const std::string& name);
 	boost::python::list getDataVector_Py(const std::string& name);
+	boost::python::list getXPVBuffer_Py(const std::string& name);
+	boost::python::list getYPVBuffer_Py(const std::string& name);
+	boost::python::list getQBuffer_Py(const std::string& name);
+	boost::python::list getDataBuffer_Py(const std::string& name);
 	boost::python::dict getXPVVectors_Py(boost::python::list names);
 	boost::python::dict getYPVVectors_Py(boost::python::list names);
 	boost::python::dict getQVectors_Py(boost::python::list names);
 	boost::python::dict getDataVectors_Py(boost::python::list names);
+	boost::python::dict getXPVBuffers_Py(boost::python::list names);
+	boost::python::dict getYPVBuffers_Py(boost::python::list names);
+	boost::python::dict getQBuffers_Py(boost::python::list names);
+	boost::python::dict getDataBuffers_Py(boost::python::list names);
 	boost::python::dict getXYPositionVectors_Py(boost::python::list names);
 	boost::python::dict getResolutions_Py(boost::python::list names);
 	boost::python::dict getPositions_Py(boost::python::list names);
@@ -128,6 +149,10 @@ public:
 	boost::python::dict getAllYPVVector_Py();
 	boost::python::dict getAllQVector_Py();
 	boost::python::dict getAllDataVector_Py();
+	boost::python::dict getAllXPVBuffer_Py();
+	boost::python::dict getAllYPVBuffer_Py();
+	boost::python::dict getAllQBuffer_Py();
+	boost::python::dict getAllDataBuffer_Py();
 	boost::python::dict getAllXYPositionVectors_Py();
 	boost::python::dict getAllResolution_Py();
 	boost::python::dict getAllPosition_Py();

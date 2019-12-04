@@ -120,7 +120,7 @@ bool ChargeFactory::setup(const std::string &version)
 	return hasBeenSetup;
 }
 
-std::map<std::string, Charge> ChargeFactory::getCharges(std::vector<std::string> chargeNames)
+std::map<std::string, Charge> ChargeFactory::getChargeDiagnostics(std::vector<std::string> chargeNames)
 {
 	std::map<std::string, Charge> selectedCharges;
 	for (auto & chargeName : chargeNames)
@@ -173,6 +173,21 @@ void ChargeFactory::monitorForNShots(const std::string& name, const size_t& valu
 	}
 }
 
+void ChargeFactory::monitorMultipleForNShots(const std::vector< std::string >& names, const size_t& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		for (auto&& it : names)
+		{
+			chargeMap.find(it)->second.monitorForNShots(value);
+		}
+	}
+}
+
 double ChargeFactory::getQ(const std::string& name)
 {
 	if (!hasBeenSetup)
@@ -182,6 +197,19 @@ double ChargeFactory::getQ(const std::string& name)
 	else
 	{
 		return chargeMap.find(name)->second.getQ();
+	}
+	return std::numeric_limits<double>::min();;
+}
+
+double ChargeFactory::getPosition(const std::string& name)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		return chargeMap.find(name)->second.getPosition();
 	}
 	return std::numeric_limits<double>::min();;
 }
@@ -316,6 +344,12 @@ std::map<std::string, boost::circular_buffer< double > > ChargeFactory::getAllQB
 	return chargeAndQMap;
 }
 
+void ChargeFactory::monitorForNShots_Py(boost::python::list names, const size_t& value)
+{
+	std::vector<std::string>& chargeNamesVector = to_std_vector<std::string>(names);
+	monitorMultipleForNShots(chargeNamesVector, value);
+}
+
 boost::python::list ChargeFactory::getQVector_Py(const std::string& chargeName)
 {
 	std::vector< double > qvec;
@@ -339,6 +373,15 @@ boost::python::dict ChargeFactory::getQs_Py(boost::python::list chargeNames)
 	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(chargeNames);
 	qvals = getQs(chargeNamesVector);
 	boost::python::dict newPyDict = to_py_dict(qvals);
+	return newPyDict;
+}
+
+boost::python::dict ChargeFactory::getPositions_Py(boost::python::list chargeNames)
+{
+	std::map<std::string, double> positionvals;
+	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(chargeNames);
+	positionvals = getPositions(chargeNamesVector);
+	boost::python::dict newPyDict = to_py_dict(positionvals);
 	return newPyDict;
 }
 

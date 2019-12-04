@@ -1,5 +1,5 @@
-#ifndef BPM_FACTORY_H_
-#define BPM_FACTORY_H_
+#ifndef CHARGE_FACTORY_H_
+#define CHARGE_FACTORY_H_
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
@@ -25,13 +25,14 @@ class ChargeFactory
 		LoggingSystem messenger;
 		ConfigReader reader;
 		Charge& getChargeDiagnostic(const std::string& fullChargeName);
-		std::map<std::string, Charge> getCharges(std::vector<std::string> chargeNames);
+		std::map<std::string, Charge> getChargeDiagnostics(std::vector<std::string> chargeNames);
 		std::map<std::string, Charge> getAllChargeDiagnostics();
 		std::map<std::string, Charge> chargeMap;
 		std::string getChargeDiagnosticName(const std::string& name);
 		void populateChargeMap();
 		void retrieveMonitorStatus(pvStruct& pvStruct);
 		void monitorForNShots(const std::string& name, const size_t& value);
+		void monitorMultipleForNShots(const std::vector< std::string >& name, const size_t& value);
 		bool hasBeenSetup;
 		bool isVirtual;
 		bool isMonitoringQ(const std::string& name);
@@ -48,6 +49,7 @@ class ChargeFactory
 		double getPosition(const std::string& name);
 		std::vector< double > getQVector(const std::string& name);
 		boost::circular_buffer< double > getQBuffer(const std::string& name);
+		void monitorForNShots_Py(boost::python::list name, const size_t& value);
 		boost::python::dict getQs_Py(boost::python::list names);
 		boost::python::list getQVector_Py(const std::string& name);
 		boost::python::list getQBuffer_Py(const std::string& name);
@@ -61,4 +63,4 @@ class ChargeFactory
 };
 
 
-#endif // BPM_FACTORY_H_
+#endif // CHARGE_FACTORY_H_

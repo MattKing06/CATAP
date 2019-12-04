@@ -18,7 +18,7 @@ set( TEST_FILES
 	MagnetTest.cpp
 	BPMTest.cpp
 	ChargeTest.cpp
-	)
+)
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )

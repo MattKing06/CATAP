@@ -13,6 +13,8 @@ HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
 	messenger.printDebugMessage(std::string("Hardware Factory Constructed"));
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
+	bpmFactory = BPMFactory(isVirtual);
+	chargeFactory = ChargeFactory(isVirtual);
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
@@ -22,6 +24,20 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		if (!magnetFactory.hasBeenSetup)
 		{
 			setup = magnetFactory.setup(version);
+		}
+	}
+	else if (hardwareType == "BPM")
+	{
+		if (!bpmFactory.hasBeenSetup)
+		{
+			setup = bpmFactory.setup(version);
+		}
+	}
+	if (hardwareType == "Charge")
+	{
+		if (!chargeFactory.hasBeenSetup)
+		{
+			setup = chargeFactory.setup(version);
 		}
 	}
 	return setup;
@@ -44,6 +60,48 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	else
 	{
 		return magnetFactory;
+	}
+
+}
+BPMFactory& HardwareFactory::getBPMFactory()
+{
+	if (!bpmFactory.hasBeenSetup)
+	{
+		bool setup = bpmFactory.setup("nominal");
+		if (setup)
+		{
+			return bpmFactory;
+		}
+		else
+		{
+			messenger.messagesOn();
+			messenger.printMessage("Unable to setup BPMFactory");
+		}
+	}
+	else
+	{
+		return bpmFactory;
+	}
+
+}
+ChargeFactory& HardwareFactory::getChargeFactory()
+{
+	if (!chargeFactory.hasBeenSetup)
+	{
+		bool setup = chargeFactory.setup("nominal");
+		if (setup)
+		{
+			return chargeFactory;
+		}
+		else
+		{
+			messenger.messagesOn();
+			messenger.printMessage("Unable to setup ChargeFactory");
+		}
+	}
+	else
+	{
+		return chargeFactory;
 	}
 
 }
