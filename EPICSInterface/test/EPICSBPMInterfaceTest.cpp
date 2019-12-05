@@ -10,39 +10,39 @@
 
 LoggingSystem TEST_LOGGER(true, true);
 
-//BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
-//{
-//	EPICSMagnetInterface epicsInterface = EPICSMagnetInterface();
-//	pvStruct setIPV;
-//	setIPV.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
-//	setIPV.pvRecord = "SETI";
-//	epicsInterface.retrieveCHID(setIPV);
-//	epicsInterface.retrieveCHTYPE(setIPV);
-//	epicsInterface.retrieveCOUNT(setIPV);
-//	pvStruct getSetIPV;
-//	getSetIPV.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
-//	getSetIPV.pvRecord = "GETSETI";
-//	epicsInterface.retrieveCHID(getSetIPV);
-//	epicsInterface.retrieveCHTYPE(getSetIPV);
-//	epicsInterface.retrieveCOUNT(getSetIPV);
-//	if (ca_state(setIPV.CHID) == cs_conn)
-//	{
-//		BOOST_CHECK_EQUAL(ca_read_access(setIPV.CHID), 1);
-//		BOOST_CHECK_EQUAL(ca_write_access(setIPV.CHID), 1);
-//		srand(time(NULL));
-//		double currentToSet = rand() % 10 + 1.0;
-//		epicsInterface.putValue(setIPV, currentToSet);
-//		double returnValue;
-//		ca_get(getSetIPV.CHTYPE, getSetIPV.CHID, &returnValue);
-//		ca_pend_io(CA_PEND_IO_TIMEOUT);
-//		BOOST_CHECK_EQUAL(returnValue, currentToSet);
-//	}
-//	else
-//	{
-//		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
-//	}
-//}
-//
+BOOST_AUTO_TEST_CASE(epics_bpm_interface_put_and_get_value_test)
+{
+	EPICSBPMInterface epicsInterface = EPICSBPMInterface();
+	pvStruct setSA1PV;
+	setSA1PV.fullPVName = "VM-CLA-S02-DIA-BPM-01";
+	setSA1PV.pvRecord = "SA1";
+	epicsInterface.retrieveCHID(setSA1PV);
+	epicsInterface.retrieveCHTYPE(setSA1PV);
+	epicsInterface.retrieveCOUNT(setSA1PV);
+	pvStruct getRA1PV;
+	getRA1PV.fullPVName = "VM-CLA-S02-DIA-BPM-01";
+	getRA1PV.pvRecord = "RA1";
+	epicsInterface.retrieveCHID(getRA1PV);
+	epicsInterface.retrieveCHTYPE(getRA1PV);
+	epicsInterface.retrieveCOUNT(getRA1PV);
+	if (ca_state(setSA1PV.CHID) == cs_conn)
+	{
+		BOOST_CHECK_EQUAL(ca_read_access(setSA1PV.CHID), 1);
+		BOOST_CHECK_EQUAL(ca_write_access(setSA1PV.CHID), 1);
+		srand(time(NULL));
+		long sa1ToSet = rand() % 10;
+		epicsInterface.putValue(setSA1PV, sa1ToSet);
+		long returnValue;
+		ca_get(getRA1PV.CHTYPE, getRA1PV.CHID, &returnValue);
+		ca_pend_io(CA_PEND_IO_TIMEOUT);
+		BOOST_CHECK_EQUAL(returnValue, sa1ToSet);
+	}
+	else
+	{
+		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
+	}
+}
+
 //BOOST_AUTO_TEST_CASE(epics_magnet_interface_monitor_channel_type_test)
 //{
 //	EPICSMagnetInterface epicsInterface = EPICSMagnetInterface();

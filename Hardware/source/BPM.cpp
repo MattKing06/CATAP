@@ -13,17 +13,17 @@
 BPM::BPM()
 {}
 
-BPM::BPM(const std::map<std::string, std::string>& paramsMap, bool isVirtual) :
-	Hardware(paramsMap, isVirtual),
-	bpmType(paramsMap.find("bpm_type")->second),
-	name(paramsMap.find("name")->second),
-	att1cal(std::stol(paramsMap.find("att1cal")->second)),
-	att2cal(std::stol(paramsMap.find("att2cal")->second)),
-	v1cal(std::stod(paramsMap.find("v1cal")->second)),
-	v2cal(std::stod(paramsMap.find("v2cal")->second)),
-	qcal(std::stod(paramsMap.find("qcal")->second)),
-	mn(std::stod(paramsMap.find("mn")->second)),
-	position(std::stod(paramsMap.find("position")->second))
+BPM::BPM(const std::map<std::string, std::string> &paramsMap, bool isVirtual) :
+Hardware(paramsMap, isVirtual),
+bpmType(paramsMap.find("bpm_type")->second),
+name(paramsMap.find("name")->second),
+att1cal(std::stol(paramsMap.find("att1cal")->second)),
+att2cal(std::stol(paramsMap.find("att2cal")->second)),
+v1cal(std::stod(paramsMap.find("v1cal")->second)),
+v2cal(std::stod(paramsMap.find("v2cal")->second)),
+qcal(std::stod(paramsMap.find("qcal")->second)),
+mn(std::stod(paramsMap.find("mn")->second)),
+position(std::stod(paramsMap.find("position")->second))
 {
 	bufferSize = 10;
 	xpvshots = 0;
@@ -42,10 +42,10 @@ BPM::BPM(const std::map<std::string, std::string>& paramsMap, bool isVirtual) :
 	yPVBuffer.resize(bufferSize);
 	qBuffer.resize(bufferSize);
 	dataBuffer.resize(bufferSize);
-	for (auto&& it : dataBuffer)
-	{
-		it.resize(9);
-	}
+	for(auto && it: dataBuffer)
+		{
+			it.resize(9);
+		}
 	pu1Buffer.resize(bufferSize);
 	pu2Buffer.resize(bufferSize);
 	pu3Buffer.resize(bufferSize);
@@ -55,18 +55,18 @@ BPM::BPM(const std::map<std::string, std::string>& paramsMap, bool isVirtual) :
 	p1Buffer.resize(bufferSize);
 	p2Buffer.resize(bufferSize);
 }
-BPM::BPM(const BPM& copyBPM) :
-	Hardware(copyBPM),
-	bpmType(copyBPM.bpmType),
-	name(copyBPM.name),
-	att1cal(copyBPM.att1cal),
-	att2cal(copyBPM.att2cal),
-	v1cal(copyBPM.v1cal),
-	v2cal(copyBPM.v2cal),
-	qcal(copyBPM.qcal),
-	mn(copyBPM.mn),
-	position(copyBPM.position),
-	epicsInterface(copyBPM.epicsInterface)
+BPM::BPM(const BPM& copyBPM) : 
+Hardware(copyBPM),
+bpmType(copyBPM.bpmType),
+name(copyBPM.name),
+att1cal(copyBPM.att1cal),
+att2cal(copyBPM.att2cal),
+v1cal(copyBPM.v1cal),
+v2cal(copyBPM.v2cal),
+qcal(copyBPM.qcal),
+mn(copyBPM.mn),
+position(copyBPM.position),
+epicsInterface(copyBPM.epicsInterface)
 {
 }
 std::vector<std::string> BPM::getAliases() const
@@ -276,7 +276,7 @@ bool BPM::setXPV(const double& value)
 	{
 		if (xpvshots <= xPVVector.size())
 		{
-			xPVVector[xpvshots - 1] = value;
+			xPVVector[xpvshots-1] = value;
 		}
 		else
 		{
@@ -295,7 +295,7 @@ bool BPM::setYPV(const double& value)
 	{
 		if (ypvshots <= yPVVector.size())
 		{
-			yPVVector[ypvshots - 1] = value;
+			yPVVector[ypvshots-1] = value;
 		}
 		else
 		{
@@ -429,8 +429,8 @@ bool BPM::setData(const std::vector< double >& value)
 	{
 		if (datashots <= dataVector.size())
 		{
-			dataVector[datashots - 1] = value;
-			qVector[datashots - 1] = q;
+			dataVector[datashots-1] = value;
+			qVector[datashots-1] = q;
 		}
 		else
 		{

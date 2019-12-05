@@ -40,37 +40,8 @@ void LoggingSystem::messagesOn(){
 void LoggingSystem::messagesOff(){
     messageOn = false;
 }
-void LoggingSystem::printDebugMessage(const std::string &debugMessage){
-    if (debugOn){
-        //get the current date and time in string format
-        std::string currentDateAndTime = LoggingSystem::getCurrentDateAndTimeString();
-        //print the debug message with timestamped value
-        std::cout << "DEBUG LOG (" << currentDateAndTime << "): " << debugMessage << std::endl;
-    }
-}
-void LoggingSystem::printMessage(const std::string &message){
-    if(messageOn){
-        //get the current date and time in string format
-        std::string currentDateAndTime = LoggingSystem::getCurrentDateAndTimeString();
-        //print the debug message with timestamped value
-        std::cout << "MESSAGE LOG (" << currentDateAndTime << "): " << message << std::endl;
-    }
-}
-void LoggingSystem::printMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& message)
-{
-	if (messageOn)
-	{
-		std::cout << "MESSAGE LOG (" << epicsTimeString << "): " << message << std::endl;
-	}
-}
-void LoggingSystem::printDebugMessageWithEPICSTimestampString(const std::string& epicsTimeString, const std::string& debugMessage)
-{
-	if (debugOn)
-	{
-		std::cout << "MESSAGE LOG (" << epicsTimeString << "): " << debugMessage << std::endl;
-	}
-}
-std::string LoggingSystem::getCurrentDateAndTimeString(){
+
+std::string LoggingSystem::getCurrentDateAndTimeString() const{
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[TIME_DATE_BUFFER_SIZE];
@@ -84,6 +55,7 @@ std::string LoggingSystem::getCurrentDateAndTimeString(){
 
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
     // for more information about date/time format
-    strftime(buf, sizeof(buf), "%a %b %d %Y %H:%M:%S",&tstruct);
-    return buf;
+    strftime(buf, sizeof(buf), "<%d-%m-%Y %H:%M:%S> %t",&tstruct);
+	//std::string dateAndTimeString = buf;
+	return buf;
 }

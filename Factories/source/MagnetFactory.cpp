@@ -7,15 +7,6 @@
 #include <cadef.h>
 #endif
 
-#define MY_SEVCHK(status)		\
-{								\
-	if (status != ECA_NORMAL)	\
-		{						\
-		SEVCHK(status, NULL);	\
-		exit(status);			\
-		}						\
-}								\
-
 MagnetFactory::MagnetFactory() : MagnetFactory(false)
 {
 }
@@ -38,22 +29,25 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 
 MagnetFactory::~MagnetFactory()
 {
-	messenger.debugMessagesOff();
 	messenger.printDebugMessage("MagnetFactory Destructor Called");
-	for (auto& magnet : magnetMap)
+	if (hasBeenSetup) 
 	{
-		auto pvStructsList = magnet.second.getPVStructs();
-		for (auto& pvStruct : pvStructsList)
+		for (auto& magnet : magnetMap)
 		{
-			if (pvStruct.second.monitor)
+			auto pvStructsList = magnet.second.getPVStructs();
+			for (auto& pvStruct : pvStructsList)
 			{
-				magnet.second.epicsInterface->removeSubscription(pvStruct.second);
-				ca_flush_io();
+				if (pvStruct.second.monitor)
+				{
+					magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+					ca_flush_io();
+				}
+				magnet.second.epicsInterface->removeChannel(pvStruct.second);
+				ca_pend_io(CA_PEND_IO_TIMEOUT);
 			}
-			magnet.second.epicsInterface->removeChannel(pvStruct.second);
-			ca_pend_io(CA_PEND_IO_TIMEOUT);
 		}
 	}
+
 }
 
 void MagnetFactory::populateMagnetMap()
@@ -87,8 +81,7 @@ bool MagnetFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.debugMessagesOff();
-		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
+		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in Magnet constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
@@ -102,18 +95,28 @@ bool MagnetFactory::setup(const std::string &version)
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			retrieveMonitorStatus(pv.second);
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
-			magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
-			magnet.second.epicsInterface->retrieveCOUNT(pv.second);
-			magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
-			// not sure how to set the mask from EPICS yet.
-			pv.second.MASK = DBE_VALUE;
-			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
-				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
-				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
-			if (pv.second.monitor)
+			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
+				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
+				magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+				}
 			}
+			else
+			{
+				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
+				hasBeenSetup = false;
+				return hasBeenSetup;
+			}
+
 		}
 	}
 	hasBeenSetup = true;
@@ -157,7 +160,7 @@ double MagnetFactory::getCurrent(const std::string& name)
 	{
 		return magnetMap.find(name)->second.getCurrent();
 	}
-	return std::numeric_limits<double>::min();;
+	return std::numeric_limits<double>::min();
 }
 std::map<std::string, double> MagnetFactory::getCurrents(const std::vector<std::string>& names)
 {
@@ -285,6 +288,54 @@ bool MagnetFactory::turnOff_Py(boost::python::list names)
 	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
 	return turnOff(namesVector);
 
+}
+void MagnetFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("MAG-FAC - DEBUG ON");
+	reader.debugMessagesOn();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.debugMessagesOn();
+	}
+}
+void MagnetFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("MAG-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.debugMessagesOff();
+	}
+}
+void MagnetFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("MAG-FAC - MESSAGES ON");
+	reader.messagesOn();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.messagesOn();
+	}
+}
+void MagnetFactory::messagesOff()
+{
+	messenger.printMessage("MAG-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& magnet : magnetMap)
+	{
+		magnet.second.messagesOff();
+	}
+}
+bool MagnetFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool MagnetFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
 }
 bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 {
