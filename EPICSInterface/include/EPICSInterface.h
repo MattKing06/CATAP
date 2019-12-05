@@ -68,7 +68,7 @@ class EPICSInterface
 		#endif
 			/*IS THIS BETTER THAN SPECIFIC FUNCTIONS????*/
 			template<typename returnType> static returnType returnValueFromArgsAs(const struct event_handler_args args) { return(returnType)(args.dbr); }
-		template<> inline static std::string returnValueFromArgsAs<std::string>(const struct event_handler_args args)
+		template<> static std::string returnValueFromArgsAs<std::string>(const struct event_handler_args args)
 		{
 			if (args.status != ECA_NORMAL)
 			{
