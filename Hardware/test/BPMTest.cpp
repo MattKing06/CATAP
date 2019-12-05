@@ -4,13 +4,10 @@
 #include <boost/test/parameterized_test.hpp>
 #include <boost/bind.hpp>
 #include <string>
-#include <random>
 #include <iostream>
-#include <algorithm>
-#include <iterator>
-#include <functional>
 #include "BPM.h"
 #include <vector>
+#include <stdlib.h>
 #include <chrono>
 #include <thread>
 

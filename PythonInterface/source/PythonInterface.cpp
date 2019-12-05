@@ -29,7 +29,7 @@
 #include <map>
 
 
-	BOOST_PYTHON_MODULE(CATAP)
+BOOST_PYTHON_MODULE(CATAP)
 {
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
@@ -173,7 +173,10 @@
 		.def("turnOn", &MagnetFactory::turnOn_Py)
 		.def("turnOff", turnOffSingle)
 		.def("turnOff", &MagnetFactory::turnOff_Py)
-		.add_property("logger", &MagnetFactory::messenger);
+		.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
+		.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
+		.def("messagesOn", &MagnetFactory::messagesOn)
+		.def("messagesOff", &MagnetFactory::messagesOff);
 		//BPM Factory Exposure
 		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
@@ -270,7 +273,7 @@
 		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer)
 		.add_property("logger", &ChargeFactory::messenger);
 		// Hardware Factory Exposure
-		boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
+	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
 		.def(boost::python::init<bool>())
 		.def("setup", &HardwareFactory::setup)
 		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
@@ -283,7 +286,7 @@
 		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
 		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
 		.def("messagesOn", &HardwareFactory::messagesOn)
-		.def("messagesOff", &HardwareFactory::messagesOff)
+		.def("messagesOff", &HardwareFactory::messagesOff);
 
 
 
