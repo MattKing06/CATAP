@@ -110,3 +110,10 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 	return timeString;
 }
 
+void EPICSInterface::setPVTimeStampFromArgs(pvStruct& pv, const event_handler_args args)
+{
+	const struct dbr_time_double* time = (const struct dbr_time_double*)(args.dbr);
+	pv.time = time->stamp;
+}
+
+
