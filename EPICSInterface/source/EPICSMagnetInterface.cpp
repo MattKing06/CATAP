@@ -36,10 +36,9 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 {
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("GETSETI"), args);
-	double value = returnValueFromArgsAs<double>(args);
+	double value = returnValueFromArgsAsDouble(args);
 	recastMagnet->setCurrent(value);
-	messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("GETSETI").time),
-														"GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 }
 
@@ -47,10 +46,9 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 {
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RPOWER"), args);
-	STATE value = returnValueFromArgsAs<STATE>(args);
+	STATE value = returnValueFromArgsAsState(args);
 	recastMagnet->setPSUState(value);
-	messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("RPOWER").time),
-														"RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 }
 
@@ -59,10 +57,9 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
-	double value = returnValueFromArgsAs<double>(args);
+	double value = returnValueFromArgsAsDouble(args);
 	recastMagnet->setRICurrent(value);
-	messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("READI").time),
-														"READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 
 }
@@ -72,11 +69,10 @@ void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RILK"), args);
-	STATE value = returnValueFromArgsAs<STATE>(args);
+	STATE value = returnValueFromArgsAsState(args);
 	recastMagnet->setILKState(value);
-	messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastMagnet->pvStructs.at("RILK").time),
-		"RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-		+ std::to_string(value));
+	messenger.printDebugMessage("RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+								+ std::to_string(value));
 }
 
 void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv) const
