@@ -13,8 +13,8 @@ LoggingSystem testLogger(true, true);
 BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 {
 	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";
-	//BPMFactory bpmfac = BPMFactory(true);
-	//bool status = bpmfac.setup("nominal");
+	BPMFactory bpmfac = BPMFactory(true);
+	bool status = bpmfac.setup("nominal");
 	//if (status)
 	//{
 	//	srand(time(NULL));
