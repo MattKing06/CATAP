@@ -4,11 +4,10 @@ LoggingSystem EPICSMagnetInterface::messenger;
 
 EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 {
-	this->messenger = LoggingSystem(false, false);
+	this->messenger = LoggingSystem(true, true);
 }
 EPICSMagnetInterface::~EPICSMagnetInterface()
 {
-	messenger.debugMessagesOff();
 	messenger.printDebugMessage("EPICSMagnetInterface Destructor Called");
 }
 void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
@@ -54,7 +53,6 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 {
-
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
 	double value = returnValueFromArgsAsDouble(args);
@@ -66,7 +64,6 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 {
-
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RILK"), args);
 	STATE value = returnValueFromArgsAsState(args);
@@ -79,11 +76,9 @@ void EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv
 {
 	//we have checked that pvRecord is SETI before reaching here.
 	putValue(pv, value);
-	messenger.printDebugMessage("SENT CURRENT " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS ");
 }
 
 void EPICSMagnetInterface::setNewPSUState(const STATE& value, const pvStruct& pv) const
 {
 	putValue(pv, static_cast<int>(value));
-	messenger.printDebugMessage("SENT POWER " + std::to_string(value) + " FOR " + pv.fullPVName + " TO EPICS");
 }

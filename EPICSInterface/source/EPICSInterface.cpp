@@ -29,7 +29,6 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 }
 EPICSInterface::~EPICSInterface()
 {
-	messenger.debugMessagesOff();
 	messenger.printDebugMessage("EPICSInterface Destructor Called");
 }
 
@@ -105,8 +104,8 @@ void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct) const
 
 std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 {
-	char timeString[36];
-	epicsTimeToStrftime(timeString, sizeof(timeString), "%a %b %d %Y %H:%M:%S.%f", &stamp);
+	char timeString[37];
+	epicsTimeToStrftime(timeString, sizeof(timeString), "[%a %b %d %Y %H:%M:%S.%f]", &stamp);
 	return timeString;
 }
 
@@ -164,5 +163,39 @@ float EPICSInterface::returnValueFromArgsAsFloat(const event_handler_args args)
 	}
 	auto timeObject = (const struct dbr_time_float*)(args.dbr);
 	return float(timeObject->value);
+}
+
+void EPICSInterface::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG ON");
+}
+
+void EPICSInterface::debugMessagesOff()
+{
+	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
+	messenger.debugMessagesOff();
+}
+
+void EPICSInterface::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES ON");
+}
+
+void EPICSInterface::messagesOff()
+{
+	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
+	messenger.messagesOff();
+}
+
+bool EPICSInterface::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+bool EPICSInterface::isDebugOn()
+{
+	return messenger.isDebugOn();
 }
 

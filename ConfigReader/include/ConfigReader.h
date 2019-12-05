@@ -43,6 +43,12 @@ public:
 	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node &controlsInformationNode) const;
 	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node &hardwareInformationNode) const;
 	bool hasMoreFilesToParse() const;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
 	{
@@ -100,21 +106,27 @@ public:
 		// POTENTIAL EXCEPTIONS //
 		catch (std::length_error EmptyFileException)
 		{
-			std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
+			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
+								   SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadFile BadFileException)
 		{
-			std::cout << "Could not find file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "), or file is not compliant with template "
-				<< ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::hardwareFolder << ".yaml" << "\n";
+			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
+								   ConfigReader::yamlFilename, ")  or file is not compliant with template ",
+								   ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
-			std::cout << "Problem with file (" << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << "): " << EmptyFileException.what() << std::endl;
+			messenger.printMessage("Problem with file (" +
+								   ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
+								   "): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{
-			std::cout << ConvervsionException.what() << std::endl;
+			messenger.printMessage(std::string(ConvervsionException.what()));
 		}
 	}
+protected:
+	static LoggingSystem messenger;
 };
 #endif //CONFIG_READER_H_

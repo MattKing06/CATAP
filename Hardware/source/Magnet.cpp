@@ -30,13 +30,14 @@ magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
+	epicsInterface->ownerName = hardwareName;
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
 manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
 magType(copyMagnet.magType), magRevType(copyMagnet.magRevType), RI_tolerance(copyMagnet.RI_tolerance),
 numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
 fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurementDataLocation),
-epicsInterface(copyMagnet.epicsInterface), magneticLength(copyMagnet.magneticLength)
+magneticLength(copyMagnet.magneticLength), epicsInterface(copyMagnet.epicsInterface)
 {
 }
 std::vector<std::string> Magnet::getAliases() const
@@ -93,7 +94,8 @@ double Magnet::getCurrent() const
 }
 bool Magnet::setCurrent(const double& value)
 {
-	current = value;
+	this->current = value;
+	messenger.printDebugMessage(hardwareName, " SETI Value:", value);
 	return true;
 }
 bool Magnet::setEPICSCurrent(const double &value)
@@ -103,7 +105,6 @@ bool Magnet::setEPICSCurrent(const double &value)
 	{
 		if (pv.second.pvRecord == "SETI")
 		{
-			messenger.printDebugMessage("SETTING TO VALUE: " + std::to_string(value) + " for [" + pv.second.fullPVName + "]");
 			this->epicsInterface->setNewCurrent(value, pv.second);
 		}
 	}
@@ -114,6 +115,7 @@ bool Magnet::setEPICSCurrent(const double &value)
 bool Magnet::setPSUState(const STATE& value)
 {
 	psuState = value;
+	messenger.printDebugMessage(hardwareName, " PSU STATE:", value);
 	return true;
 }
 
@@ -122,6 +124,35 @@ STATE Magnet::getPSUState() const
 	return psuState;
 }
 
+void Magnet::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+}
+
+void Magnet::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
+}
+
+void Magnet::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Magnet::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
+}
+
+
 bool Magnet::setEPICSPSUState(const STATE& value)
 {
 	std::map<std::string, pvStruct>& pvData = getPVStructs();
@@ -129,7 +160,6 @@ bool Magnet::setEPICSPSUState(const STATE& value)
 	{
 		if (pv.second.pvRecord == "SPOWER")
 		{
-			messenger.printDebugMessage("SETTING TO POWER: " + std::to_string(value) + " for [" + pv.second.fullPVName + "]");
 			this->epicsInterface->setNewPSUState(value, pv.second);
 		}
 	}
@@ -139,6 +169,7 @@ bool Magnet::setEPICSPSUState(const STATE& value)
 bool Magnet::setRICurrent(const double& value)
 {
 	RICurrent = value;
+	messenger.printDebugMessage(hardwareName, " READI Value:", value);
 	return true;
 }
 
@@ -150,6 +181,7 @@ double Magnet::getRICurrent() const
 bool Magnet::setILKState(const int& value)
 {
 	ilkState = value;
+	messenger.printDebugMessage(hardwareName, " ILK State:", value);
 	return true;
 }
 
@@ -157,4 +189,5 @@ int Magnet::getILKState() const
 {
 	return ilkState;
 }
+
 

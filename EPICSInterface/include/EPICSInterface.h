@@ -28,12 +28,20 @@ class PV;
 #define CA_PEND_IO_TIMEOUT 5.0
 class EPICSInterface
 {
+
 public:
 	EPICSInterface();
 	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine);
 	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine, LoggingSystem& messaging);
 	~EPICSInterface();
 	double get_CA_PEND_IO_TIMEOUT() const;
+	std::string ownerName;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 	void set_CA_PEND_IO_TIMEOUT(double value);
 	void retrieveCHID(pvStruct& pvStruct) const;
 	void retrieveCHTYPE(pvStruct& pvStruct) const;

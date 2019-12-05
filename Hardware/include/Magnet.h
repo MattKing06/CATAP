@@ -24,7 +24,12 @@ class Magnet : public Hardware
 		Magnet(const std::map<std::string, std::string>& magnetParametersAndValuesMap, bool isVirtual);
 		Magnet(const Magnet& copyMagnet);
 		EPICSMagnetInterface_sptr epicsInterface;
-		std::string getFullPVName() const;
+		double current;
+		STATE psuState;
+		double RICurrent;
+		int ilkState;
+		std::map<std::string, std::string> magnetParametersAndValuesMap;
+		bool isVirtual;
 		std::vector<std::string> getAliases() const;
 		std::string getManufacturer() const;
 		int getSerialNumber() const;
@@ -37,9 +42,7 @@ class Magnet : public Hardware
 		double getMagneticLength() const;
 		std::string getFullPSUName() const;
 		std::string getMeasurementDataLocation() const;
-		std::map<std::string, std::string> magnetParametersAndValuesMap;
-		bool isVirtual;
-		bool setCurrent(const double& value);
+		bool setCurrent(const double &value);
 		bool setEPICSCurrent(const double &value);
 		bool setPSUState(const STATE& value);
 		bool setEPICSPSUState(const STATE& value);
@@ -49,10 +52,12 @@ class Magnet : public Hardware
 		double getRICurrent() const;
 		double getCurrent() const;
 		STATE getPSUState() const;
-		double current;
-		STATE psuState;
-		double RICurrent;
-		int ilkState;
+		void debugMessagesOff() override;
+		void debugMessagesOn() override;
+		void messagesOff() override;
+		void messagesOn() override;
+
+
 	protected:
 		//what else does a magnet need?
 		std::vector<std::string> aliases;
@@ -70,6 +75,7 @@ class Magnet : public Hardware
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;
+		//(inherited) LoggingSystem messenger;
 
 };
 
