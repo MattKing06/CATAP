@@ -1,6 +1,6 @@
 /*
 		THIS CLASS IS FOR EXPOSURE TO PYTHON
-		ALL IN ONE PLACE, SO WE DON'T HAVE TO 
+		ALL IN ONE PLACE, SO WE DON'T HAVE TO
 		LINK EVERY CLASS WITH BOOST.PYTHON.
 		HOPEFULLY, IT SHOULD ALL HAPPEN HERE.
 */
@@ -22,12 +22,14 @@
 #include "MagnetFactory.h"
 #include "BPM.h"
 #include "BPMFactory.h"
+#include "Charge.h"
+#include "ChargeFactory.h"
 #include "ConfigReader.h"
 #include <vector>
 #include <map>
 
 
-BOOST_PYTHON_MODULE(CATAP)
+	BOOST_PYTHON_MODULE(CATAP)
 {
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
@@ -72,6 +74,14 @@ BOOST_PYTHON_MODULE(CATAP)
 		.add_property("y", &BPM::getYFromPV)
 		.add_property("data", &BPM::getData)
 		.add_property("q", &BPM::getQ)
+		.add_property("xpvbuffer", &BPM::getXPVBuffer)
+		.add_property("ypvbuffer", &BPM::getYPVBuffer)
+		.add_property("databuffer", &BPM::getDataBuffer)
+		.add_property("qbuffer", &BPM::getQBuffer)
+		.add_property("xpvvector", &BPM::getXPVVector)
+		.add_property("ypvvector", &BPM::getYPVVector)
+		.add_property("datavector", &BPM::getDataVector)
+		.add_property("qvector", &BPM::getQVector)
 		.add_property("xbuffer", &BPM::getXPVBuffer)
 		.add_property("ybuffer", &BPM::getYPVBuffer)
 		.add_property("databuffer", &BPM::getDataBuffer)
@@ -95,6 +105,19 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getYPVBuffer", &BPM::getYPVBuffer)
 		.def("getDataBuffer", &BPM::getDataBuffer)
 		.def("getQBuffer", &BPM::getQBuffer)
+		.def("getXPVVector", &BPM::getXPVVector)
+		.def("getYPVVector", &BPM::getYPVVector)
+		.def("getDataVector", &BPM::getDataVector)
+		.def("getQVector", &BPM::getQVector)
+		.def("monitorForNShots", &BPM::monitorForNShots)
+		.def("isMonitoring", &BPM::isMonitoring)
+		.def("isMonitoringXPV", &BPM::isMonitoringXPV)
+		.def("isMonitoringYPV", &BPM::isMonitoringYPV)
+		.def("isMonitoringData", &BPM::isMonitoringData)
+		.def("reCalAttenuation", &BPM::reCalAttenuation)
+		.def("isXPVBufferFull", &BPM::isXPVBufferFull)
+		.def("isYPVBufferFull", &BPM::isYPVBufferFull)
+		.def("isDataBufferFull", &BPM::isDataBufferFull)
 		.def("getRA1", &BPM::getRA1)
 		.def("getRA2", &BPM::getRA2)
 		.def("getRD1", &BPM::getRD1)
@@ -107,8 +130,22 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("setSA2", &BPM::setSA2)
 		.def("setSD1", &BPM::setSD1)
 		.def("setSD2", &BPM::setSD2);
-	// Parameter Map Exposure
-	boost::python::class_<std::map<std::string, double> >("numericalParamMap")
+		// Charge Exposure
+		boost::python::class_<Charge, boost::python::bases<Hardware>, boost::noncopyable>("Charge", boost::python::no_init)
+		.add_property("name", &Charge::getName)
+		.add_property("charge_type", &Charge::getChargeDiagnosticType)
+		.add_property("q", &Charge::getQ)
+		.add_property("qbuffer", &Charge::getQBuffer)
+		.add_property("qvector", &Charge::getQVector)
+		.add_property("position", &Charge::getPosition)
+		.add_property("buffersize", &Charge::getBufferSize, &Charge::setBufferSize)
+		.def("getQ", &Charge::getQ)
+		.def("getQBuffer", &Charge::getQBuffer)
+		.def("getQVector", &Charge::getQVector)
+		.def("monitorForNShots", &Charge::monitorForNShots)
+		.def("isMonitoring", &Charge::isMonitoring);
+		// Parameter Map Exposure
+		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
 	boost::python::class_<std::map<std::string, std::vector< double > > >("numericalVectorParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::vector< double > > >());
@@ -136,8 +173,9 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("turnOn", &MagnetFactory::turnOn_Py)
 		.def("turnOff", turnOffSingle)
 		.def("turnOff", &MagnetFactory::turnOff_Py)
-	//BPM Factory Exposure
-	boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
+		.add_property("logger", &MagnetFactory::messenger);
+		//BPM Factory Exposure
+		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
 		.def("setup", &BPMFactory::setup)
 		.add_property("bpmMap", &BPMFactory::bpmMap)
@@ -173,6 +211,11 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getXPVVector", &BPMFactory::getXPVVector_Py)
 		.def("getYPVVector", &BPMFactory::getYPVVector_Py)
 		.def("getQVector", &BPMFactory::getQVector_Py)
+		.def("getDataVector", &BPMFactory::getDataVector_Py)
+		.def("getXPVBuffer", &BPMFactory::getXPVBuffer_Py)
+		.def("getYPVBuffer", &BPMFactory::getYPVBuffer_Py)
+		.def("getQBuffer", &BPMFactory::getQBuffer_Py)
+		.def("getDataBuffer", &BPMFactory::getDataBuffer_Py)
 		//.def("getXYPositionVector", &BPMFactory::getXYPositionVector_Py)
 		.def("getResolutions", &BPMFactory::getResolutions_Py)
 		.def("getPositions", &BPMFactory::getPositions_Py)
@@ -180,6 +223,10 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getYPVVectors", &BPMFactory::getYPVVectors_Py)
 		.def("getQVectors", &BPMFactory::getQVectors_Py)
 		.def("getDataVectors", &BPMFactory::getDataVectors_Py)
+		.def("getXPVBuffers", &BPMFactory::getXPVBuffers_Py)
+		.def("getYPVBuffers", &BPMFactory::getYPVBuffers_Py)
+		.def("getQBuffers", &BPMFactory::getQBuffers_Py)
+		.def("getDataBuffers", &BPMFactory::getDataBuffers_Py)
 		.def("getAllX", &BPMFactory::getAllX)
 		.def("getAllXFromPV", &BPMFactory::getAllXFromPV)
 		.def("getAllY", &BPMFactory::getAllY)
@@ -193,21 +240,50 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllYPVVector", &BPMFactory::getAllYPVVector)
 		.def("getAllQVector", &BPMFactory::getAllQVector)
 		.def("getAllDataVector", &BPMFactory::getAllDataVector)
+		.def("getAllXPVBuffer", &BPMFactory::getAllXPVBuffer)
+		.def("getAllYPVBuffer", &BPMFactory::getAllYPVBuffer)
+		.def("getAllQBuffer", &BPMFactory::getAllQBuffer)
+		.def("getAllDataBuffer", &BPMFactory::getAllDataBuffer)
 		.def("getAllXYPositionVectors", &BPMFactory::getAllXYPositionVectors_Py)
 		.add_property("logger", &BPMFactory::messenger);
-	// Hardware Factory Exposure
-	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
+	//Charge Factory Exposure
+	boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
+		.def(boost::python::init<bool>())
+		.def("setup", &ChargeFactory::setup)
+		.add_property("chargeMap", &ChargeFactory::chargeMap)
+		.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
+		.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
+		.def("monitorForNShots", &ChargeFactory::monitorForNShots)
+		.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
+		.def("isMonitoring", &ChargeFactory::isMonitoring)
+		.def("getPosition", &ChargeFactory::getPosition)
+		.def("getQ", &ChargeFactory::getQ)
+		.def("getQVector", &ChargeFactory::getQVector_Py)
+		.def("getQBuffer", &ChargeFactory::getQBuffer_Py)
+		.def("getPositions", &ChargeFactory::getPositions_Py)
+		.def("getQVectors", &ChargeFactory::getQVectors_Py)
+		.def("getQBuffers", &ChargeFactory::getQBuffers_Py)
+		.def("getAllQ", &ChargeFactory::getAllQ)
+		.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
+		.def("getAllQVector", &ChargeFactory::getAllQVector)
+		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer)
+		.add_property("logger", &ChargeFactory::messenger);
+		// Hardware Factory Exposure
+		boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
 		.def(boost::python::init<bool>())
 		.def("setup", &HardwareFactory::setup)
 		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
 		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.add_property("bpmFactory", &HardwareFactory::bpmFactory)
+		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.add_property("chargeFactory", &HardwareFactory::chargeFactory)
+		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
 		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
 		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
 		.def("messagesOn", &HardwareFactory::messagesOn)
 		.def("messagesOff", &HardwareFactory::messagesOff)
-		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
-		.add_property("hardwareMap", &HardwareFactory::hardwareMap);
 
 
 

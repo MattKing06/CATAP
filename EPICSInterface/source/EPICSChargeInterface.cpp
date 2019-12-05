@@ -42,9 +42,7 @@ void EPICSChargeInterface::updateQ(const struct event_handler_args args)
 		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
 		recastCharge->pvStructs.at("Q").time = pTD->stamp;
 		recastCharge->setQ(pTD->value);
-		messenger.printDebugMessageWithEPICSTimestampString(getEPICSTime(recastCharge->pvStructs.at("Q").time),
-			"CHARGE VALUE FOR: " + recastCharge->getHardwareName() + ": "
-			+ std::to_string(pTD->value));
+		messenger.printDebugMessage("CHARGE VALUE FOR: " + recastCharge->getHardwareName() + ": "+ std::to_string(pTD->value));
 	}
 	messenger.printDebugMessage(" CALLED UPDATE Q ");
 }
