@@ -67,7 +67,7 @@ class EPICSInterface
 			}
 		#endif
 			/*IS THIS BETTER THAN SPECIFIC FUNCTIONS????*/
-			template<typename returnType> inline static returnType returnValueFromArgsAs(const struct event_handler_args args) { return(returnType)(args.dbr); }
+			template<typename returnType> static returnType returnValueFromArgsAs(const struct event_handler_args args) { return(returnType)(args.dbr); }
 		template<> inline static std::string returnValueFromArgsAs<std::string>(const struct event_handler_args args)
 		{
 			if (args.status != ECA_NORMAL)
@@ -77,7 +77,7 @@ class EPICSInterface
 			auto timeObject = (const struct dbr_time_string*)(args.dbr);
 			return std::string(timeObject->value);
 		}
-		template<> inline static double returnValueFromArgsAs<double>(const struct event_handler_args args)
+		template<> static double returnValueFromArgsAs<double>(const struct event_handler_args args)
 		{
 			if (args.status != ECA_NORMAL)
 			{
@@ -86,7 +86,7 @@ class EPICSInterface
 			auto timeObject = (const struct dbr_time_double*)(args.dbr);
 			return double(timeObject->value);
 		}
-		template<> inline static STATE returnValueFromArgsAs<STATE>(const struct event_handler_args args)
+		template<> static STATE returnValueFromArgsAs<STATE>(const struct event_handler_args args)
 		{
 			if (args.status != ECA_NORMAL)
 			{
@@ -95,7 +95,7 @@ class EPICSInterface
 			auto timeObject = (const struct dbr_time_enum*)(args.dbr);
 			return STATE(timeObject->value);
 		}
-		template<> inline static long returnValueFromArgsAs<long>(const struct event_handler_args args)
+		template<> static long returnValueFromArgsAs<long>(const struct event_handler_args args)
 		{
 			if (args.status != ECA_NORMAL)
 			{
@@ -104,7 +104,7 @@ class EPICSInterface
 			auto timeObject = (const struct dbr_time_long*)(args.dbr);
 			return long(timeObject->value);
 		}
-		template<> inline static float returnValueFromArgsAs<float>(const struct event_handler_args args)
+		template<> static float returnValueFromArgsAs<float>(const struct event_handler_args args)
 		{
 			if (args.status != ECA_NORMAL)
 			{
