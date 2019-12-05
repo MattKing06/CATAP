@@ -96,23 +96,34 @@ bool ChargeFactory::setup(const std::string &version)
 	for (auto &charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
-		for (auto &pv : chargePVStructs)
+		for (auto& pv : chargePVStructs)
 		{
+
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			retrieveMonitorStatus(pv.second);
 			charge.second.epicsInterface->retrieveCHID(pv.second);
-			charge.second.epicsInterface->retrieveCHTYPE(pv.second);
-			charge.second.epicsInterface->retrieveCOUNT(pv.second);
-			charge.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
-			// not sure how to set the mask from EPICS yet.
-			pv.second.MASK = DBE_VALUE;
-			messenger.debugMessagesOn();
-			messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
-				"write" + std::to_string(ca_write_access(pv.second.CHID)) +
-				"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
-			if (pv.second.monitor)
+			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				charge.second.epicsInterface->createSubscription(charge.second, pv.second);
+				charge.second.epicsInterface->retrieveCHID(pv.second);
+				charge.second.epicsInterface->retrieveCHTYPE(pv.second);
+				charge.second.epicsInterface->retrieveCOUNT(pv.second);
+				charge.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.debugMessagesOn();
+				messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
+					"write" + std::to_string(ca_write_access(pv.second.CHID)) +
+					"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
+				if (pv.second.monitor)
+				{
+					charge.second.epicsInterface->createSubscription(charge.second, pv.second);
+				}
+			}
+			else
+			{
+				messenger.printMessage(charge.first, " CANNOT CONNECT TO EPICS");
+				hasBeenSetup = false;
+				return hasBeenSetup;
 			}
 		}
 	}
