@@ -69,325 +69,135 @@ void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) cons
 
 void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setXPV(*(double*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
-		recastBPM->pvStructs.at("X").time = pTD->stamp;
-		recastBPM->setXPV(pTD->value);
-		messenger.printDebugMessage("X PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
-									+ std::to_string(pTD->value));
-	}
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("X"), args);
+	double value = returnValueFromArgsAsDouble(args);
+	recastBPM->setXPV(value);
+	messenger.printDebugMessage("X PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
+								+ std::to_string(value));
 	messenger.printDebugMessage(" CALLED UPDATE X ");
 }
 
 void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setYPV(*(double*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_double* pTD = (const struct dbr_time_double*)(args.dbr);
-		recastBPM->pvStructs.at("Y").time = pTD->stamp;
-		recastBPM->setYPV(pTD->value);
-		messenger.printDebugMessage("Y PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
-									+ std::to_string(pTD->value));
-	}
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("Y"), args);
+	double value = returnValueFromArgsAsDouble(args);
+	recastBPM->setYPV(value);
+	messenger.printDebugMessage("Y PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
+								+ std::to_string(value));
 	messenger.printDebugMessage(" CALLED UPDATE Y ");
 }
 
 void EPICSBPMInterface::updateData(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	double value = returnValueFromArgsAsDouble(args);
+	size_t i = 0;
+	std::vector< double > rawVectorContainer(9);
+	for (auto&& it : rawVectorContainer)
 	{
-		messenger.printMessage("Something went wrong with update function!");
+		it = *(&value + i);
+		++i;
 	}
-	else if (args.type == DBR_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
-		size_t i = 0;
-		std::vector< double > rawVectorContainer(9);
-		for (auto&& it : rawVectorContainer)
-		{
-			it = *(&pTD->value + i);
-			++i;
-		}
-		recastBPM->setData(rawVectorContainer);
-		//recastBPM->setDataBuffer(*(double*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
-		size_t i = 0;
-		std::vector< double > rawVectorContainer(9);
-		for (auto&& it : rawVectorContainer)
-		{
-			it = *(&pTD->value + i);
-			++i;
-		}
-		recastBPM->pvStructs.at("DATA").time = pTD->stamp;
-		recastBPM->setData(rawVectorContainer);
-		recastBPM->setQ(rawVectorContainer);
-		//recastBPM->setDataBuffer(pTD->value);
-		messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
-	}
+	recastBPM->setData(rawVectorContainer);
+	recastBPM->setQ(rawVectorContainer);
+	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
+	//recastBPM->setDataBuffer(*(double*)(args.dbr));
+
 }
 
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setRA1(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("RA1").time = pTD->stamp;
-		recastBPM->setRA1(pTD->value);
-	}
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RA1"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setRA1(value);
 	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
 }
 
 void EPICSBPMInterface::updateRA2(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setRA2(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("RA2").time = pTD->stamp;
-		recastBPM->setRA2(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RA2"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setRA2(value);
+	messenger.printDebugMessage(" CALLED UPDATE RA2 ");
 }
 
 void EPICSBPMInterface::updateRD1(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setRD1(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("RD1").time = pTD->stamp;
-		recastBPM->setRD1(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RD1"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setRD1(value);
+	messenger.printDebugMessage(" CALLED UPDATE RD1 ");
 }
 
 void EPICSBPMInterface::updateRD2(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setRD2(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("RD2").time = pTD->stamp;
-		recastBPM->setRD2(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RD2"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setRD2(value);
+	messenger.printDebugMessage(" CALLED UPDATE RD2 ");
 }
 
 void EPICSBPMInterface::updateSA1(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setSA1(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("SA1").time = pTD->stamp;
-		recastBPM->setSA1(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SA1"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setSA1(value);
+	messenger.printDebugMessage(" CALLED UPDATE SA1 ");
 }
 
 void EPICSBPMInterface::updateSA2(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setSA2(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("SA2").time = pTD->stamp;
-		recastBPM->setSA2(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SA2"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setSA2(value);
+	messenger.printDebugMessage(" CALLED UPDATE SA2 ");
 }
 
 void EPICSBPMInterface::updateSD1(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setSD1(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("SD1").time = pTD->stamp;
-		recastBPM->setSD1(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SD1"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setSD1(value);
+	messenger.printDebugMessage(" CALLED UPDATE SD1 ");
 }
 
 void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setSD2(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("SD2").time = pTD->stamp;
-		recastBPM->setSD2(pTD->value);
-	}
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SD2"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setSD2(value);
+	messenger.printDebugMessage(" CALLED UPDATE SD2 ");
 }
 
 void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setAWAK(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("AWAK").time = pTD->stamp;
-		recastBPM->setAWAK(pTD->value);
-		recastBPM->setAWAKTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("AWAK").time)));
-	}
+
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("AWAK"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setAWAK(value);
+	recastBPM->setAWAKTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("AWAK").time)));
 	messenger.printDebugMessage(" CALLED UPDATE AWAK ");
 }
 
 void EPICSBPMInterface::updateRDY(const struct event_handler_args args)
 {
-	if (args.status != ECA_NORMAL)
-	{
-		messenger.printMessage("Something went wrong with update function!");
-	}
-	else if (args.type == DBR_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		recastBPM->setRDY(*(long*)(args.dbr));
-	}
-	else if (args.type == DBR_TIME_LONG)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_long* pTD = (const struct dbr_time_long*)(args.dbr);
-		recastBPM->pvStructs.at("RDY").time = pTD->stamp;
-		recastBPM->setRDY(pTD->value);
-		recastBPM->setRDYTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("RDY").time)));
-	}
+	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RDY"), args);
+	long value = returnValueFromArgsAsLong(args);
+	recastBPM->setRDY(value);
+	recastBPM->setRDYTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("RDY").time)));
 	messenger.printDebugMessage(" CALLED UPDATE RDY ");
 }
 
