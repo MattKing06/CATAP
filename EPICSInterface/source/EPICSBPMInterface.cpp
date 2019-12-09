@@ -92,46 +92,13 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 void EPICSBPMInterface::updateData(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	double value = returnValueFromArgsAsDouble(args);
-	size_t i = 0;
-	std::vector< double > rawVectorContainer(9);
-	for (auto&& it : rawVectorContainer)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
-		size_t i = 0;
-		std::vector< double > rawVectorContainer(9);
-		for (auto&& it : rawVectorContainer)
-		{
-			it = *(&pTD->value + i);
-			++i;
-		}
-		recastBPM->setData(rawVectorContainer);
-	}
-	if (args.type == DBR_TIME_DOUBLE)
-	{
-		MY_SEVCHK(args.status);
-		BPM* recastBPM = static_cast<BPM*>(args.usr);
-		const struct dbr_time_double* pTD = (const struct dbr_time_double*) args.dbr;
-		size_t i = 0;
-		std::vector< double > rawVectorContainer(9);
-		for (auto&& it : rawVectorContainer)
-		{
-			it = *(&pTD->value + i);
-			++i;
-		}
-		recastBPM->pvStructs.at("DATA").time = pTD->stamp;
-		recastBPM->setData(rawVectorContainer);
-		recastBPM->setQ(rawVectorContainer);
-		messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
-	}
-	recastBPM->setData(rawVectorContainer);
-	recastBPM->setQ(rawVectorContainer);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("DATA"), args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("Q"), args);
+	std::vector< double > value = returnValueFromArgsAsDoubleVector(args);
+	recastBPM->setData(value);
+	recastBPM->setQ(value);
 	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
-	//recastBPM->setDataBuffer(*(double*)(args.dbr));
-
 }
 
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
