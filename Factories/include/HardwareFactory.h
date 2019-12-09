@@ -2,16 +2,17 @@
 #define HARDWARE_FACTORY_H_
 #include "MagnetFactory.h"
 #include "BPMFactory.h"
+#include "ChargeFactory.h"
 
 class HardwareFactory
 {
-    //what does a HardwareFactory need to be a HardwareFactory:
-    /*
-    *   - A Hardware HardwareFactory Type (ENUM/DEFINES?)
-    *   - A Hardware HardwareFactory Name (string/ENUM?)
-    *   - Needs to invoke LoggingSystem object without having it as an inherited member.
-    *
-    */
+	//what does a HardwareFactory need to be a HardwareFactory:
+	/*
+	*   - A Hardware HardwareFactory Type (ENUM/DEFINES?)
+	*   - A Hardware HardwareFactory Name (string/ENUM?)
+	*   - Needs to invoke LoggingSystem object without having it as an inherited member.
+	*
+	*/
 public:
 	HardwareFactory();
 	HardwareFactory(bool isVirtual);
@@ -20,10 +21,12 @@ public:
 	bool setup(const std::string& hardwareType, const std::string& version);
 	MagnetFactory& getMagnetFactory();
 	BPMFactory& getBPMFactory();
-	bool operator ==(const HardwareFactory &HardwareFactory) const;
+	ChargeFactory& getChargeFactory();
+	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	std::map<std::string, Hardware> hardwareMap;
 	MagnetFactory magnetFactory;
 	BPMFactory bpmFactory;
+	ChargeFactory chargeFactory;
 	bool isVirtual;
 	void debugMessagesOn();
 	void debugMessagesOff();

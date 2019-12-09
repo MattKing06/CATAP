@@ -3,19 +3,22 @@ set( SOURCE_FILES
     source/Hardware.cpp
     source/Magnet.cpp
     source/BPM.cpp
+    source/Charge.cpp
 )
 
 set( INCLUDE_FILES
     include/Hardware.h
     include/Magnet.h
     include/BPM.h
+    include/Charge.h
 )
 
 set( TEST_FILES
 	HardwareTest.cpp
 	MagnetTest.cpp
 	BPMTest.cpp
-	)
+	ChargeTest.cpp
+)
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
