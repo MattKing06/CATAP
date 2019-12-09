@@ -22,11 +22,11 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 	EPICSInterface::messenger = LoggingSystem(false, false);
 }
 
-EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messager)
+EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messenger)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = messager;
+	EPICSInterface::messenger = messenger;
 }
 EPICSInterface::~EPICSInterface()
 {

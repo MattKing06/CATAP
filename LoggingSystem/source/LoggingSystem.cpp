@@ -18,6 +18,12 @@ LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     LoggingSystem::debugOn = debugState;
     LoggingSystem::messageOn = messageState;
 }
+LoggingSystem::LoggingSystem(LoggingSystem& messenger)
+{
+	this->debugOn = messenger.debugOn;
+	this->messageOn = messenger.messageOn;
+	this->cache = messenger.cache;
+}
 // Get methods for debugging and message state
 bool LoggingSystem::isDebugOn() const
 {
@@ -27,7 +33,7 @@ void LoggingSystem::dumpToFile(std::string filename)
 {
 	FILE* outFile;
 	outFile = fopen(filename.c_str(), "w");
-	fprintf(outFile, "%s \n", cache.str().c_str());
+	fprintf(outFile, "%s \n", cache.get()->str().c_str());
 }
 bool LoggingSystem::isMessagingOn() const
 {
