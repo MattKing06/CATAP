@@ -109,6 +109,62 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 	return timeString;
 }
 
+void EPICSInterface::setPVTimeStampFromArgs(pvStruct& pv, const event_handler_args args)
+{
+	const struct dbr_time_double* time = (const struct dbr_time_double*)(args.dbr);
+	pv.time = time->stamp;
+}
+
+std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_string*)(args.dbr);
+	return std::string(timeObject->value);
+}
+
+double EPICSInterface::returnValueFromArgsAsDouble(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_double*)(args.dbr);
+	return double(timeObject->value);
+}
+
+STATE EPICSInterface::returnValueFromArgsAsState(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_enum*)(args.dbr);
+	return STATE(timeObject->value);
+}
+
+long EPICSInterface::returnValueFromArgsAsLong(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_long*)(args.dbr);
+	return long(timeObject->value);
+}
+
+float EPICSInterface::returnValueFromArgsAsFloat(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_float*)(args.dbr);
+	return float(timeObject->value);
+}
+
 void EPICSInterface::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -142,3 +198,4 @@ bool EPICSInterface::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
+

@@ -13,6 +13,7 @@
 // tells compiler that we will use this class.
 class EPICSMagnetInterface;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
+
 class Magnet : public Hardware
 {
 	public:

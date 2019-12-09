@@ -7,6 +7,8 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 
+//double Magnet::current;
+
 Magnet::Magnet()
 {}
 
@@ -89,6 +91,12 @@ std::string Magnet::getMeasurementDataLocation() const
 double Magnet::getCurrent() const
 {
 	return this->current;
+}
+bool Magnet::setCurrent(const double& value)
+{
+	this->current = value;
+	messenger.printDebugMessage(hardwareName, " SETI Value:", value);
+	return true;
 }
 bool Magnet::setEPICSCurrent(const double &value)
 {
@@ -182,9 +190,4 @@ int Magnet::getILKState() const
 	return ilkState;
 }
 
-bool Magnet::setCurrent(const double &value)
-{
-	this->current = value;
-	messenger.printDebugMessage(hardwareName, " SETI Value:", value);
-	return true;
-}
+
