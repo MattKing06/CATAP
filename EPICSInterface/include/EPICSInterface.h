@@ -3,6 +3,7 @@
 #include <LoggingSystem.h>
 #include <Hardware.h>
 #include <functional>
+#include <vector>
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
@@ -62,6 +63,7 @@ public:
 	static STATE returnValueFromArgsAsState(const struct event_handler_args args);
 	static long returnValueFromArgsAsLong(const struct event_handler_args args);
 	static float returnValueFromArgsAsFloat(const struct event_handler_args args);
+	static std::vector<double> returnValueFromArgsAsDoubleVector(const struct event_handler_args args);
 #ifndef __CINT__
 	ca_client_context* thisCaContext;
 	void attachTo_thisCAContext();

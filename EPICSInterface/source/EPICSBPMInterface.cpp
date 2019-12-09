@@ -10,9 +10,9 @@ EPICSBPMInterface::~EPICSBPMInterface()
 {
 	messenger.printDebugMessage("EPICSBPMInterface Destructor Called");
 }
-void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
+void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const
 {
-	
+
 	if (pvStruct.pvRecord == "X")
 	{
 		pvStruct.updateFunction = this->updateXPV;
@@ -92,20 +92,13 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 void EPICSBPMInterface::updateData(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	double value = returnValueFromArgsAsDouble(args);
-	size_t i = 0;
-	std::vector< double > rawVectorContainer(9);
-	for (auto&& it : rawVectorContainer)
-	{
-		it = *(&value + i);
-		++i;
-	}
-	recastBPM->setData(rawVectorContainer);
-	recastBPM->setQ(rawVectorContainer);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("DATA"), args);
+	setPVTimeStampFromArgs(recastBPM->pvStructs.at("Q"), args);
+	std::vector< double > value = returnValueFromArgsAsDoubleVector(args);
+	recastBPM->setData(value);
+	recastBPM->setQ(value);
 	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
-	//recastBPM->setDataBuffer(*(double*)(args.dbr));
-
 }
 
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)

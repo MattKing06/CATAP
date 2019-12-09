@@ -7,12 +7,13 @@ HardwareFactory::~HardwareFactory()
 {
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
-HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory){
+HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
 	messenger = LoggingSystem(false, false);
-	messenger.printDebugMessage( "Hardware Factory Constructed");
+	messenger.printDebugMessage("Hardware Factory Constructed");
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
 	bpmFactory = BPMFactory(isVirtual);
+	chargeFactory = ChargeFactory(isVirtual);
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
@@ -24,11 +25,18 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 			setup = magnetFactory.setup(version);
 		}
 	}
-	if (hardwareType == "BPM")
+	else if (hardwareType == "BPM")
 	{
 		if (!bpmFactory.hasBeenSetup)
 		{
 			setup = bpmFactory.setup(version);
+		}
+	}
+	else if (hardwareType == "Charge")
+	{
+		if (!chargeFactory.hasBeenSetup)
+		{
+			setup = chargeFactory.setup(version);
 		}
 	}
 	return setup;
@@ -73,7 +81,29 @@ BPMFactory& HardwareFactory::getBPMFactory()
 	}
 
 }
-bool HardwareFactory::operator==(const HardwareFactory &HardwareFactory) const
+ChargeFactory& HardwareFactory::getChargeFactory()
+{
+	if (!chargeFactory.hasBeenSetup)
+	{
+		bool setup = chargeFactory.setup("nominal");
+		if (setup)
+		{
+			return chargeFactory;
+		}
+		else
+		{
+			messenger.messagesOn();
+			messenger.printMessage("Unable to setup ChargeFactory");
+		}
+	}
+	else
+	{
+		return chargeFactory;
+	}
+
+}
+
+bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 {
 	/*return(HardwareFactory::HardwareFactory_name.compare(HardwareFactory.HardwareFactory_name)
 		&& HardwareFactory::HardwareFactory_type.compare(HardwareFactory.HardwareFactory_type));*/
@@ -89,7 +119,7 @@ void HardwareFactory::debugMessagesOn()
 
 void HardwareFactory::debugMessagesOff()
 {
-	messenger.printDebugMessage( "HARDWARE-FAC", "DEBUG OFF");
+	messenger.printDebugMessage("HARDWARE-FAC", "DEBUG OFF");
 	messenger.debugMessagesOff();
 	magnetFactory.debugMessagesOff();
 }

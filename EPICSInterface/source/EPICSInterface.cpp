@@ -14,6 +14,7 @@ EPICSInterface::EPICSInterface()
 	}
 	thisCaContext = ca_current_context();
 }
+
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
@@ -163,6 +164,24 @@ float EPICSInterface::returnValueFromArgsAsFloat(const event_handler_args args)
 	}
 	auto timeObject = (const struct dbr_time_float*)(args.dbr);
 	return float(timeObject->value);
+}
+
+std::vector<double> EPICSInterface::returnValueFromArgsAsDoubleVector(const struct event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_double*)(args.dbr);
+	size_t i = 0;
+	auto elementCount = ca_element_count(args.chid);
+	std::vector<double> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
+	{
+		it = *(&timeObject->value + i);
+		++i;
+	}
+	return rawVectorContainer;
 }
 
 void EPICSInterface::debugMessagesOn()
