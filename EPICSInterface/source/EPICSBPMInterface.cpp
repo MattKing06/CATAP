@@ -109,7 +109,7 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 		}
 		recastBPM->setData(rawVectorContainer);
 	}
-	else if (args.type == DBR_TIME_DOUBLE)
+	if (args.type == DBR_TIME_DOUBLE)
 	{
 		MY_SEVCHK(args.status);
 		BPM* recastBPM = static_cast<BPM*>(args.usr);
