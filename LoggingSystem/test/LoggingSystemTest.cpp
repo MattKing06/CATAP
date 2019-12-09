@@ -51,6 +51,19 @@ BOOST_AUTO_TEST_CASE(cout_messages_divert_to_boost_test_tools_stream_test)
 	BOOST_CHECK(output.is_equal("Testing 1 2 3\n"));
 }
 
+BOOST_AUTO_TEST_CASE(dump_to_file_test)
+{
+	LoggingSystem messenger(true, true);
+	for (int i = 0; i < 1e10; i++)
+	{
+		messenger.printDebugMessage("TEST");
+		messenger.printMessage("TEST");
+	}
+
+	messenger.dumpToFile("testing_dump_to_file.txt");
+
+}
+
 //BOOST_AUTO_TEST_CASE(logging_system_with_no_message_and_no_debug_print_message_test)
 //{
 //	LoggingSystem test_logging_system = LoggingSystem(false, false);

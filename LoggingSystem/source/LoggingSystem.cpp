@@ -23,6 +23,12 @@ bool LoggingSystem::isDebugOn() const
 {
     return debugOn;
 }
+void LoggingSystem::dumpToFile(std::string filename)
+{
+	FILE* outFile;
+	outFile = fopen(filename.c_str(), "w");
+	fprintf(outFile, "%s \n", cache.str().c_str());
+}
 bool LoggingSystem::isMessagingOn() const
 {
     return messageOn;

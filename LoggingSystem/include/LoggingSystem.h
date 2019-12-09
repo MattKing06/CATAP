@@ -19,7 +19,9 @@ public:
 	void messagesOff();
 	bool isMessagingOn() const;
 	bool isDebugOn() const;
+	void dumpToFile(std::string filename);
 	std::string getCurrentDateAndTimeString() const;
+	std::ostringstream cache;
 
 	template<typename T>
 	void generateStringStream(std::ostream& os, T t)
@@ -41,6 +43,7 @@ public:
 			std::ostringstream oss;
 			generateStringStream(oss, args...);
 			std::ios::sync_with_stdio(true);
+			cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s \n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
 		}
 	}
@@ -53,6 +56,7 @@ public:
 			std::ostringstream oss;
 			generateStringStream(oss, args...);
 			std::ios::sync_with_stdio(true);
+			cache << getCurrentDateAndTimeString().c_str() <<  DEBUG << " " <<  oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
 	}
