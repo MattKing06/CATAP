@@ -24,7 +24,7 @@
 }								\
 
 
-using namespace LoggingSystem;
+
 class PV;
 #define CA_PEND_IO_TIMEOUT 5.0
 class EPICSInterface
@@ -33,16 +33,16 @@ class EPICSInterface
 public:
 	EPICSInterface();
 	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine);
-	//EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine, LoggingSystem& messaging);
+	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine, LoggingSystem& messaging);
 	~EPICSInterface();
 	double get_CA_PEND_IO_TIMEOUT() const;
 	std::string ownerName;
-	//void debugMessagesOn();
-	//void debugMessagesOff();
-	//void messagesOn();
-	//void messagesOff();
-	//bool isMessagingOn();
-	//bool isDebugOn();
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 	void set_CA_PEND_IO_TIMEOUT(double value);
 	void retrieveCHID(pvStruct& pvStruct) const;
 	void retrieveCHTYPE(pvStruct& pvStruct) const;
@@ -89,7 +89,7 @@ public:
 protected:
 	bool shouldStartEpics = true;
 	bool shouldStartVirtualMachine = true;
-	//LoggingSystem messenger;
+	LoggingSystem messenger;
 	unsigned short EPICS_ACTIVATE, EPICS_SEND, EPICS_RESET;
 
 	// some other stuff might be needed here, need to check interface.h from VELA-CLARA Controllers

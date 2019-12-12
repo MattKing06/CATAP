@@ -1,14 +1,15 @@
 #include "EPICSChargeInterface.h"
 
-//LoggingSystem EPICSChargeInterface::messenger;
+LoggingSystem EPICSChargeInterface::messenger;
 
 EPICSChargeInterface::EPICSChargeInterface() : EPICSInterface()
 {
-	//this->messenger = LoggingSystem(false, false);
+	this->messenger = LoggingSystem(false, false);
 }
 EPICSChargeInterface::~EPICSChargeInterface()
 {
-	printDebugMessage("EPICSChargeInterface Destructor Called");
+	messenger.debugMessagesOff();
+	messenger.printDebugMessage("EPICSChargeInterface Destructor Called");
 }
 void EPICSChargeInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
@@ -24,7 +25,7 @@ void EPICSChargeInterface::updateQ(const struct event_handler_args args)
 	setPVTimeStampFromArgs(recastCharge->pvStructs.at("Q"), args);
 	double value = returnValueFromArgsAsDouble(args);
 	recastCharge->setQ(value);
-	printDebugMessage("Q VALUE FOR: " + recastCharge->getHardwareName() + ": "
+	messenger.printDebugMessage("Q VALUE FOR: " + recastCharge->getHardwareName() + ": "
 		+ std::to_string(value));
-	printDebugMessage(" CALLED UPDATE Q ");
+	messenger.printDebugMessage(" CALLED UPDATE Q ");
 }

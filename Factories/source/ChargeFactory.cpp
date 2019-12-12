@@ -22,16 +22,16 @@ ChargeFactory::ChargeFactory() : ChargeFactory(false)
 }
 ChargeFactory::ChargeFactory(bool isVirtual)
 {
-	//messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
-	printDebugMessage("Charge Factory Constructed");
+	messenger.printDebugMessage("Charge Factory Constructed");
 	isVirtual = isVirtual;
 	reader = ConfigReader("Charge", isVirtual);
 }
 ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 	: hasBeenSetup(copyChargeFactory.hasBeenSetup),
 	isVirtual(copyChargeFactory.isVirtual),
-	//messenger(copyChargeFactory.messenger),
+	messenger(copyChargeFactory.messenger),
 	reader(copyChargeFactory.reader)
 {
 	chargeMap.insert(copyChargeFactory.chargeMap.begin(), copyChargeFactory.chargeMap.end());
@@ -39,7 +39,8 @@ ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 
 ChargeFactory::~ChargeFactory()
 {
-	printDebugMessage("ChargeFactory Destructor Called");
+	messenger.debugMessagesOff();
+	messenger.printDebugMessage("ChargeFactory Destructor Called");
 	for (auto& charge : chargeMap)
 	{
 		auto pvStructsList = charge.second.getPVStructs();
@@ -85,7 +86,8 @@ bool ChargeFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		printDebugMessage(" VIRTUAL SETUP: TRUE");
+		messenger.debugMessagesOff();
+		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in BPM constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
@@ -108,7 +110,8 @@ bool ChargeFactory::setup(const std::string &version)
 				charge.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
+				messenger.debugMessagesOn();
+				messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
 					"write" + std::to_string(ca_write_access(pv.second.CHID)) +
 					"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
 				if (pv.second.monitor)
@@ -118,7 +121,7 @@ bool ChargeFactory::setup(const std::string &version)
 			}
 			else
 			{
-				printMessage(charge.first, " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(charge.first, " CANNOT CONNECT TO EPICS");
 				hasBeenSetup = false;
 				return hasBeenSetup;
 			}
@@ -151,7 +154,7 @@ std::map<std::string, Charge> ChargeFactory::getAllChargeDiagnostics()
 	}
 	else
 	{
-		printDebugMessage("CHARGE DIAGNOSTICS HAVE ALREADY BEEN CONSTRUCTED.");
+		messenger.printDebugMessage("CHARGE DIAGNOSTICS HAVE ALREADY BEEN CONSTRUCTED.");
 	}
 	return chargeMap;
 }
@@ -160,7 +163,7 @@ std::string ChargeFactory::getChargeDiagnosticName(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -173,7 +176,7 @@ void ChargeFactory::monitorForNShots(const std::string& name, const size_t& valu
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -185,7 +188,7 @@ void ChargeFactory::monitorMultipleForNShots(const std::vector< std::string >& n
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -200,7 +203,7 @@ double ChargeFactory::getQ(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -213,7 +216,7 @@ double ChargeFactory::getPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -226,7 +229,7 @@ std::vector< double > ChargeFactory::getQVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -240,7 +243,7 @@ boost::circular_buffer< double > ChargeFactory::getQBuffer(const std::string& na
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -255,7 +258,7 @@ bool ChargeFactory::isMonitoring(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
 	}
 	else
 	{

@@ -1,14 +1,14 @@
 #include "EPICSMagnetInterface.h"
 
-//LoggingSystem EPICSMagnetInterface::messenger;
+LoggingSystem EPICSMagnetInterface::messenger;
 
 EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 {
-	//this->messenger = LoggingSystem(true, true);
+	this->messenger = LoggingSystem(true, true);
 }
 EPICSMagnetInterface::~EPICSMagnetInterface()
 {
-	printDebugMessage("EPICSMagnetInterface Destructor Called");
+	messenger.printDebugMessage("EPICSMagnetInterface Destructor Called");
 }
 void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
@@ -37,7 +37,7 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("GETSETI"), args);
 	double value = returnValueFromArgsAsDouble(args);
 	recastMagnet->setCurrent(value);
-	printDebugMessage("GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 }
 
@@ -47,7 +47,7 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RPOWER"), args);
 	STATE value = returnValueFromArgsAsState(args);
 	recastMagnet->setPSUState(value);
-	printDebugMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 }
 
@@ -57,7 +57,7 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
 	double value = returnValueFromArgsAsDouble(args);
 	recastMagnet->setRICurrent(value);
-	printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 
 }
@@ -68,7 +68,7 @@ void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RILK"), args);
 	STATE value = returnValueFromArgsAsState(args);
 	recastMagnet->setILKState(value);
-	printDebugMessage("RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	messenger.printDebugMessage("RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 								+ std::to_string(value));
 }
 

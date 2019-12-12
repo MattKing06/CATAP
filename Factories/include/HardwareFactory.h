@@ -28,14 +28,14 @@ public:
 	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
 	bool isVirtual;
-	//void debugMessagesOn();
-	//void debugMessagesOff();
-	//void messagesOn();
-	//void messagesOff();
-	//bool isMessagingOn();
-	//bool isDebugOn();
-//private:
-	//LoggingSystem messenger;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
+private:
+	LoggingSystem messenger;
 };
 
 

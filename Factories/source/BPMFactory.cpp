@@ -13,16 +13,16 @@ BPMFactory::BPMFactory() : BPMFactory(false)
 }
 BPMFactory::BPMFactory(bool isVirtual)
 {
-	//messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
-	printDebugMessage("BPM Factory Constructed");
+	messenger.printDebugMessage("BPM Factory Constructed");
 	isVirtual = isVirtual;
 	reader = ConfigReader("BPM", isVirtual);
 }
 BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
 	: hasBeenSetup(copyBPMFactory.hasBeenSetup),
 	isVirtual(copyBPMFactory.isVirtual),
-//	messenger(copyBPMFactory.messenger),
+	messenger(copyBPMFactory.messenger),
 	reader(copyBPMFactory.reader)
 {
 	bpmMap.insert(copyBPMFactory.bpmMap.begin(), copyBPMFactory.bpmMap.end());
@@ -30,7 +30,7 @@ BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
 
 BPMFactory::~BPMFactory()
 {
-	printDebugMessage("BPMFactory Destructor Called");
+	messenger.printDebugMessage("BPMFactory Destructor Called");
 	if (hasBeenSetup)
 	{
 		for (auto& bpm : bpmMap)
@@ -90,7 +90,7 @@ bool BPMFactory::setup(const std::string& version)
 	}
 	if (this->isVirtual)
 	{
-		printDebugMessage("VIRTUAL SETUP: TRUE");
+		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in BPM constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
@@ -111,7 +111,7 @@ bool BPMFactory::setup(const std::string& version)
 				bpm.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
 					"write", std::to_string(ca_write_access(pv.second.CHID)),
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
@@ -121,7 +121,7 @@ bool BPMFactory::setup(const std::string& version)
 			}
 			else
 			{
-				printMessage(bpm.first, " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(bpm.first, " CANNOT CONNECT TO EPICS");
 				hasBeenSetup = false;
 				return hasBeenSetup;
 			}
@@ -154,7 +154,7 @@ std::map<std::string, BPM> BPMFactory::getAllBPMs()
 	}
 	else
 	{
-		printDebugMessage("BPMS HAVE ALREADY BEEN CONSTRUCTED.");
+		messenger.printDebugMessage("BPMS HAVE ALREADY BEEN CONSTRUCTED.");
 	}
 	return bpmMap;
 }
@@ -163,7 +163,7 @@ std::string BPMFactory::getBPMName(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -176,7 +176,7 @@ void BPMFactory::monitorForNShots(const std::string& name, const size_t& value)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -188,7 +188,7 @@ double BPMFactory::getX(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -201,7 +201,7 @@ double BPMFactory::getXFromPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -214,7 +214,7 @@ double BPMFactory::getY(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -227,7 +227,7 @@ double BPMFactory::getYFromPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -240,7 +240,7 @@ std::vector< double > BPMFactory::getData(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -254,7 +254,7 @@ std::pair<double, double> BPMFactory::getXYPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -269,7 +269,7 @@ double BPMFactory::getQ(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -282,7 +282,7 @@ double BPMFactory::getPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -295,7 +295,7 @@ double BPMFactory::getResolution(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -308,7 +308,7 @@ std::vector< double > BPMFactory::getXPVVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -322,7 +322,7 @@ std::vector< double > BPMFactory::getYPVVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -336,7 +336,7 @@ std::vector< double > BPMFactory::getQVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -350,7 +350,7 @@ std::vector< std::vector< double > > BPMFactory::getDataVector(const std::string
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -365,7 +365,7 @@ boost::circular_buffer< double > BPMFactory::getXPVBuffer(const std::string& nam
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -379,7 +379,7 @@ boost::circular_buffer< double > BPMFactory::getYPVBuffer(const std::string& nam
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -393,7 +393,7 @@ boost::circular_buffer< double > BPMFactory::getQBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -407,7 +407,7 @@ boost::circular_buffer< std::vector< double > > BPMFactory::getDataBuffer(const 
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -422,7 +422,7 @@ bool BPMFactory::isMonitoringXPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -435,7 +435,7 @@ bool BPMFactory::isMonitoring(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -448,7 +448,7 @@ bool BPMFactory::isMonitoringYPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -461,7 +461,7 @@ bool BPMFactory::isMonitoringData(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -474,7 +474,7 @@ long BPMFactory::getSA1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -487,7 +487,7 @@ long BPMFactory::getSA2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -500,7 +500,7 @@ long BPMFactory::getSD1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -513,7 +513,7 @@ long BPMFactory::getSD2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -526,7 +526,7 @@ bool BPMFactory::setSA1(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -539,7 +539,7 @@ bool BPMFactory::setSA2(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -552,7 +552,7 @@ bool BPMFactory::setSD1(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -565,7 +565,7 @@ bool BPMFactory::setSD2(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -578,7 +578,7 @@ long BPMFactory::getRA1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -591,7 +591,7 @@ long BPMFactory::getRA2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -604,7 +604,7 @@ long BPMFactory::getRD1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -617,7 +617,7 @@ long BPMFactory::getRD2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -630,7 +630,7 @@ bool BPMFactory::reCalAttenuation(const std::string& name, const double& charge)
 {
 	if (!hasBeenSetup)
 	{
-		printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -1440,56 +1440,56 @@ boost::python::dict BPMFactory::reCalAllAttenuation_Py(const double& charge)
 	return newPyDict;
 }
 
-//void BPMFactory::debugMessagesOn()
-//{
-//	debugMessagesOn();
-//	printDebugMessage("BPM-FAC - DEBUG ON");
-//	reader.debugMessagesOn();
-//	for (auto& bpm : bpmMap)
-//	{
-//		bpm.second.debugMessagesOn();
-//	}
-//}
-//
-//void BPMFactory::debugMessagesOff()
-//{
-//	printDebugMessage("BPM-FAC - DEBUG OFF");
-//	debugMessagesOff();
-//	reader.debugMessagesOff();
-//	for (auto& bpm : bpmMap)
-//	{
-//		bpm.second.debugMessagesOff();
-//	}
-//}
-//
-//void BPMFactory::messagesOn()
-//{
-//	messagesOn();
-//	printMessage("BPM-FAC - MESSAGES ON");
-//	reader.messagesOn();
-//	for (auto& bpm : bpmMap)
-//	{
-//		bpm.second.messagesOn();
-//	}
-//}
-//
-//void BPMFactory::messagesOff()
-//{
-//	printMessage("BPM-FAC - MESSAGES OFF");
-//	messagesOff();
-//	reader.messagesOff();
-//	for (auto& bpm : bpmMap)
-//	{
-//		bpm.second.messagesOff();
-//	}
-//}
-//
-//bool BPMFactory::isDebugOn()
-//{
-//	return isDebugOn();
-//}
-//
-//bool BPMFactory::isMessagingOn()
-//{
-//	return isMessagingOn();
-//}
+void BPMFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("BPM-FAC - DEBUG ON");
+	reader.debugMessagesOn();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.debugMessagesOn();
+	}
+}
+
+void BPMFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("BPM-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.debugMessagesOff();
+	}
+}
+
+void BPMFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("BPM-FAC - MESSAGES ON");
+	reader.messagesOn();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.messagesOn();
+	}
+}
+
+void BPMFactory::messagesOff()
+{
+	messenger.printMessage("BPM-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.messagesOff();
+	}
+}
+
+bool BPMFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+
+bool BPMFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}

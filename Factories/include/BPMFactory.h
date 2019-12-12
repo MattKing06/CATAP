@@ -23,7 +23,7 @@ public:
 	/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 	//BPMFactory(std::string version);
 	bool setup(const std::string& version);
-	//LoggingSystem messenger;
+	LoggingSystem messenger;
 	ConfigReader reader;
 	BPM& getBPM(const std::string& fullBPMName);
 	std::map<std::string, BPM> getBPMs(std::vector<std::string> bpmNames);
@@ -157,12 +157,12 @@ public:
 	boost::python::dict getAllResolution_Py();
 	boost::python::dict getAllPosition_Py();
 	boost::python::dict reCalAllAttenuation_Py(const double& charge);
-	//bool isMessagingOn();
-	//bool isDebugOn();
-	//void messagesOn();
-	//void messagesOff();
-	//void debugMessagesOn();
-	//void debugMessagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
+	void messagesOn();
+	void messagesOff();
+	void debugMessagesOn();
+	void debugMessagesOff();
 };
 
 

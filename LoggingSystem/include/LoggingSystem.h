@@ -1,61 +1,40 @@
 #ifndef LOGGING_SYSTEM_H_
 #define LOGGING_SYSTEM_H_
 #include <string>
-
+#include <iostream>
 #include <sstream>
 #include <initializer_list>
-#include <vector>
-#include <iostream>
-#include <time.h>
-
-#ifndef TIME_DATE_BUFFER_SIZE
-#define TIME_DATE_BUFFER_SIZE 80
-#endif // TIME_DATE_BUFFER_SIZE
 
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
-namespace LoggingSystem
+
+class LoggingSystem
 {
+public:
+	LoggingSystem() { debugOn = false; messageOn = false; }
+	LoggingSystem(bool debugState, bool messageState);
 	static void debugMessagesOn();
 	static void debugMessagesOff();
 	static void messagesOn();
 	static void messagesOff();
 	static bool isMessagingOn();
 	static bool isDebugOn();
-	static std::string getCurrentDateAndTimeString()
-	{
-		time_t     now = time(0);
-		struct tm  tstruct;
-		char       buf[TIME_DATE_BUFFER_SIZE];
-		#ifdef _WIN32
-			localtime_s(&tstruct, &now);
-		#endif //WIN32
-
-		#if defined(__unix__) ||  defined(_unix)
-			localtime_r(&now, &tstruct);
-		#endif //UNIX
-
-		// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-		// for more information about date/time format
-		strftime(buf, sizeof(buf), "<%d-%m-%Y %H:%M:%S> %t", &tstruct);
-		//std::string dateAndTimeString = buf;
-		return buf;
-	}
+	std::string getCurrentDateAndTimeString() const;
 
 	template<typename T>
-	static void generateStringStream(std::ostream& os, T t)
+	void generateStringStream(std::ostream& os, T t)
 	{
 		os << t;
 	}
 	template<typename T, typename... Args>
-	static void generateStringStream(std::ostream& os, T t, Args... args)
+	void generateStringStream(std::ostream& os, T t, Args... args)
 	{
 		generateStringStream(os, t);
 		generateStringStream(os, args...);
 	}
 
 	template<typename... Args>
-	static void printMessage(Args... args)
+	void printMessage(Args... args)
 	{
 		if (messageOn)
 		{
@@ -67,7 +46,7 @@ namespace LoggingSystem
 	}
 
 	template<typename... Args>
-	static void printDebugMessage(Args... args)
+	void printDebugMessage(Args... args)
 	{
 		if (debugOn)
 		{
@@ -79,6 +58,5 @@ namespace LoggingSystem
 	}
 	static bool debugOn;
 	static bool messageOn;
-
-}
+};
 #endif // LOGGING_SYSTEM_H_

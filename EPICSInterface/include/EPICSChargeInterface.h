@@ -21,7 +21,7 @@ public:
 	~EPICSChargeInterface();
 	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
 	static void updateQ(const struct event_handler_args args);
-	//static LoggingSystem messenger;
+	static LoggingSystem messenger;
 };
 
 #endif //EPICS_CHARGE_INTERFACE_H_
