@@ -124,41 +124,6 @@ bool ConfigReader::hasMoreFilesToParse() const
 	return false;
 }
 
-void ConfigReader::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("CONFIG-READER -","DEBUG ON");
-}
-
-void ConfigReader::debugMessagesOff()
-{
-	messenger.printDebugMessage("CONFIG-READER -","DEBUG OFF");
-	messenger.debugMessagesOff();
-}
-
-void ConfigReader::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("CONFIG-READER - MESSAGES ON");
-}
-
-void ConfigReader::messagesOff()
-{
-	messenger.printMessage("CONFIG-READER - MESSAGES OFF");
-	messenger.messagesOff();
-}
-
-bool ConfigReader::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool ConfigReader::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
-
-
 const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode) const
 {
 	auto hardwareProperties = configInformationNode["properties"];

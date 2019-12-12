@@ -92,7 +92,6 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		}
 		else
 		{
-			messenger.messagesOn();
 			messenger.printMessage("Unable to setup ChargeFactory");
 		}
 	}
@@ -108,42 +107,4 @@ bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 	/*return(HardwareFactory::HardwareFactory_name.compare(HardwareFactory.HardwareFactory_name)
 		&& HardwareFactory::HardwareFactory_type.compare(HardwareFactory.HardwareFactory_type));*/
 	return true;
-}
-
-void HardwareFactory::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
-	magnetFactory.debugMessagesOn();
-}
-
-void HardwareFactory::debugMessagesOff()
-{
-	messenger.printDebugMessage("HARDWARE-FAC", "DEBUG OFF");
-	messenger.debugMessagesOff();
-	magnetFactory.debugMessagesOff();
-}
-
-void HardwareFactory::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
-	magnetFactory.messagesOn();
-}
-
-void HardwareFactory::messagesOff()
-{
-	messenger.printMessage("HARDWARE-FAC - MESSAGES OFF");
-	messenger.messagesOff();
-	magnetFactory.messagesOff();
-}
-
-bool HardwareFactory::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool HardwareFactory::isDebugOn()
-{
-	return messenger.isDebugOn();
 }
