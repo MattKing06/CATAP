@@ -6,7 +6,7 @@
 EPICSInterface::EPICSInterface()
 {
 	int status;
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	if (!ca_current_context())
 	{
 		status = ca_context_create(ca_enable_preemptive_callback);
@@ -19,18 +19,18 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = LoggingSystem(false, false);
+	//EPICSInterface::messenger = LoggingSystem(false, false);
 }
 
-EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messager)
-{
-	EPICSInterface::shouldStartEpics = startEpics;
-	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = messager;
-}
+//EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messager)
+//{
+//	EPICSInterface::shouldStartEpics = startEpics;
+//	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
+//	EPICSInterface::messenger = messager;
+//}
 EPICSInterface::~EPICSInterface()
 {
-	messenger.printDebugMessage("EPICSInterface Destructor Called");
+	printDebugMessage("EPICSInterface Destructor Called");
 }
 
 void EPICSInterface::removeSubscription(pvStruct& pvStruct)
@@ -184,37 +184,37 @@ std::vector<double> EPICSInterface::returnValueFromArgsAsDoubleVector(const stru
 	return rawVectorContainer;
 }
 
-void EPICSInterface::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG ON");
-}
-
-void EPICSInterface::debugMessagesOff()
-{
-	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
-	messenger.debugMessagesOff();
-}
-
-void EPICSInterface::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES ON");
-}
-
-void EPICSInterface::messagesOff()
-{
-	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
-	messenger.messagesOff();
-}
-
-bool EPICSInterface::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool EPICSInterface::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
+//void EPICSInterface::debugMessagesOn()
+//{
+//	debugMessagesOn();
+//	printDebugMessage(ownerName, " EPICS Interface - DEBUG ON");
+//}
+//
+//void EPICSInterface::debugMessagesOff()
+//{
+//	printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
+//	debugMessagesOff();
+//}
+//
+//void EPICSInterface::messagesOn()
+//{
+//	messagesOn();
+//	printMessage(ownerName, " EPICS Interface - MESSAGES ON");
+//}
+//
+//void EPICSInterface::messagesOff()
+//{
+//	printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
+//	messagesOff();
+//}
+//
+//bool EPICSInterface::isMessagingOn()
+//{
+//	return isMessagingOn();
+//}
+//
+//bool EPICSInterface::isDebugOn()
+//{
+//	return isDebugOn();
+//}
 

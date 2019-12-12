@@ -62,7 +62,7 @@ class MagnetFactory
 		bool isDebugOn();
 		bool isMessagingOn();
 private:
-		LoggingSystem messenger;
+		//LoggingSystem messenger;
 };
 
 

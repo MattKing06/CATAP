@@ -9,7 +9,7 @@ Hardware::Hardware()
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, bool isVirtual = false) :
 isVirtual(isVirtual),
-messenger(LoggingSystem(false,false)),
+//messenger(LoggingSystem(false,false)),
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
@@ -22,7 +22,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	{
 		hardwareName = specificValueMap.find("name")->second.data();
 	}
-	messenger.printDebugMessage( "Constructing Hardware ", hardwareName);
+	printDebugMessage( "Constructing Hardware ", hardwareName);
 	
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
@@ -30,7 +30,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 	std::vector<std::string> pvRecordVec;
 	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
-	messenger.printDebugMessage("Constructing PV information for ", hardwareName);
+	printDebugMessage("Constructing PV information for ", hardwareName);
 	for (auto record : pvRecordVec)
 	{
 		pvStruct pv = pvStruct();
@@ -39,11 +39,11 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 		//chid, count, mask, chtype are left undefined for now.
 		pvStructs[pv.pvRecord] = pv;
 	}
-	messenger.printDebugMessage("Finished constructing: ", hardwareName);
+	printDebugMessage("Finished constructing: ", hardwareName);
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
-messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
+hardwareType(copyHardware.hardwareType),
 machineArea(copyHardware.machineArea), isVirtual(copyHardware.isVirtual)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
@@ -71,39 +71,39 @@ std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() con
 	return specificHardwareParameters;
 }
 
-void Hardware::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
-}
-
-void Hardware::debugMessagesOff()
-{
-	messenger.printDebugMessage(hardwareName, "- DEBUG OFF");
-	messenger.debugMessagesOff();
-}
-
-void Hardware::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
-}
-
-void Hardware::messagesOff()
-{
-	messenger.printMessage(hardwareName, " - MESSAGES OFF");
-	messenger.messagesOff();
-}
-
-bool Hardware::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool Hardware::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
+//void Hardware::debugMessagesOn()
+//{
+//	debugMessagesOn();
+//	printDebugMessage(hardwareName, " - DEBUG ON");
+//}
+//
+//void Hardware::debugMessagesOff()
+//{
+//	printDebugMessage(hardwareName, "- DEBUG OFF");
+//	debugMessagesOff();
+//}
+//
+//void Hardware::messagesOn()
+//{
+//	messagesOn();
+//	printMessage(hardwareName, " - MESSAGES ON");
+//}
+//
+//void Hardware::messagesOff()
+//{
+//	printMessage(hardwareName, " - MESSAGES OFF");
+//	messagesOff();
+//}
+//
+//bool Hardware::isMessagingOn()
+//{
+//	return isMessagingOn();
+//}
+//
+//bool Hardware::isDebugOn()
+//{
+//	return isDebugOn();
+//}
 
 bool Hardware::operator==(Hardware rhs)
 {

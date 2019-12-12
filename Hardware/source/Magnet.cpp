@@ -95,7 +95,7 @@ double Magnet::getCurrent() const
 bool Magnet::setCurrent(const double& value)
 {
 	this->current = value;
-	messenger.printDebugMessage(hardwareName, " SETI Value:", value);
+	printDebugMessage(hardwareName, " SETI Value:", value);
 	return true;
 }
 bool Magnet::setEPICSCurrent(const double &value)
@@ -115,7 +115,7 @@ bool Magnet::setEPICSCurrent(const double &value)
 bool Magnet::setPSUState(const STATE& value)
 {
 	psuState = value;
-	messenger.printDebugMessage(hardwareName, " PSU STATE:", value);
+	printDebugMessage(hardwareName, " PSU STATE:", value);
 	return true;
 }
 
@@ -124,34 +124,34 @@ STATE Magnet::getPSUState() const
 	return psuState;
 }
 
-void Magnet::debugMessagesOff()
-{
-	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
-	messenger.debugMessagesOff();
-	epicsInterface->debugMessagesOff();
-}
-
-void Magnet::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
-	epicsInterface->debugMessagesOn();
-}
-
-void Magnet::messagesOff()
-{
-	messenger.printMessage(hardwareName, " - MESSAGES OFF");
-	messenger.messagesOff();
-	epicsInterface->messagesOff();
-}
-
-void Magnet::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
-	epicsInterface->messagesOn();
-}
-
+//void Magnet::debugMessagesOff()
+//{
+//	printDebugMessage(hardwareName, " - DEBUG OFF");
+//	debugMessagesOff();
+//	epicsInterface->debugMessagesOff();
+//}
+//
+//void Magnet::debugMessagesOn()
+//{
+//	debugMessagesOn();
+//	printDebugMessage(hardwareName, " - DEBUG ON");
+//	epicsInterface->debugMessagesOn();
+//}
+//
+//void Magnet::messagesOff()
+//{
+//	printMessage(hardwareName, " - MESSAGES OFF");
+//	messagesOff();
+//	epicsInterface->messagesOff();
+//}
+//
+//void Magnet::messagesOn()
+//{
+//	messagesOn();
+//	printMessage(hardwareName, " - MESSAGES ON");
+//	epicsInterface->messagesOn();
+//}
+//
 
 bool Magnet::setEPICSPSUState(const STATE& value)
 {
@@ -169,7 +169,7 @@ bool Magnet::setEPICSPSUState(const STATE& value)
 bool Magnet::setRICurrent(const double& value)
 {
 	RICurrent = value;
-	messenger.printDebugMessage(hardwareName, " READI Value:", value);
+	printDebugMessage(hardwareName, " READI Value:", value);
 	return true;
 }
 
@@ -181,7 +181,7 @@ double Magnet::getRICurrent() const
 bool Magnet::setILKState(const int& value)
 {
 	ilkState = value;
-	messenger.printDebugMessage(hardwareName, " ILK State:", value);
+	printDebugMessage(hardwareName, " ILK State:", value);
 	return true;
 }
 

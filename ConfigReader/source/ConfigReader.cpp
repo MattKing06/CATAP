@@ -10,8 +10,6 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "BPM", "Beam Position Monitor" }
 };
 
-LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
-
 ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), isVirtual(false), hardwareFolder("")
 {
 	// since we have not specified a hardware component
@@ -124,39 +122,39 @@ bool ConfigReader::hasMoreFilesToParse() const
 	return false;
 }
 
-void ConfigReader::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("CONFIG-READER -","DEBUG ON");
-}
+//void ConfigReader::debugMessagesOn()
+//{
+//	debugMessagesOn();
+//	printDebugMessage("CONFIG-READER -","DEBUG ON");
+//}
 
-void ConfigReader::debugMessagesOff()
-{
-	messenger.printDebugMessage("CONFIG-READER -","DEBUG OFF");
-	messenger.debugMessagesOff();
-}
-
-void ConfigReader::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("CONFIG-READER - MESSAGES ON");
-}
-
-void ConfigReader::messagesOff()
-{
-	messenger.printMessage("CONFIG-READER - MESSAGES OFF");
-	messenger.messagesOff();
-}
-
-bool ConfigReader::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool ConfigReader::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
+//void ConfigReader::debugMessagesOff()
+//{
+//	printDebugMessage("CONFIG-READER -","DEBUG OFF");
+//	debugMessagesOff();
+//}
+//
+//void ConfigReader::messagesOn()
+//{
+//	messagesOn();
+//	printMessage("CONFIG-READER - MESSAGES ON");
+//}
+//
+//void ConfigReader::messagesOff()
+//{
+//	printMessage("CONFIG-READER - MESSAGES OFF");
+//	messagesOff();
+//}
+//
+//bool ConfigReader::isMessagingOn()
+//{
+//	return isMessagingOn();
+//}
+//
+//bool ConfigReader::isDebugOn()
+//{
+//	return isDebugOn();
+//}
 
 
 const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode) const

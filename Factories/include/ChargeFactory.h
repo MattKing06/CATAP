@@ -22,7 +22,7 @@ class ChargeFactory
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 		//BPMFactory(std::string version);
 		bool setup(const std::string &version);
-		LoggingSystem messenger;
+		//LoggingSystem messenger;
 		ConfigReader reader;
 		Charge& getChargeDiagnostic(const std::string& fullChargeName);
 		std::map<std::string, Charge> getChargeDiagnostics(std::vector<std::string> chargeNames);

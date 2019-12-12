@@ -5,11 +5,11 @@ HardwareFactory::HardwareFactory() : HardwareFactory(false)
 }
 HardwareFactory::~HardwareFactory()
 {
-	messenger.printDebugMessage("HardwareFactory Destruction Called");
+	printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
-	messenger = LoggingSystem(false, false);
-	messenger.printDebugMessage("Hardware Factory Constructed");
+	//messenger = LoggingSystem(false, false);
+	printDebugMessage("Hardware Factory Constructed");
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
 	bpmFactory = BPMFactory(isVirtual);
@@ -52,7 +52,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup MagnetFactory");
+			printMessage("Unable to setup MagnetFactory");
 		}
 	}
 	else
@@ -72,7 +72,7 @@ BPMFactory& HardwareFactory::getBPMFactory()
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup BPMFactory");
+			printMessage("Unable to setup BPMFactory");
 		}
 	}
 	else
@@ -92,8 +92,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		}
 		else
 		{
-			messenger.messagesOn();
-			messenger.printMessage("Unable to setup ChargeFactory");
+			printMessage("Unable to setup ChargeFactory");
 		}
 	}
 	else
@@ -110,40 +109,40 @@ bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 	return true;
 }
 
-void HardwareFactory::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
-	magnetFactory.debugMessagesOn();
-}
-
-void HardwareFactory::debugMessagesOff()
-{
-	messenger.printDebugMessage("HARDWARE-FAC", "DEBUG OFF");
-	messenger.debugMessagesOff();
-	magnetFactory.debugMessagesOff();
-}
-
-void HardwareFactory::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
-	magnetFactory.messagesOn();
-}
-
-void HardwareFactory::messagesOff()
-{
-	messenger.printMessage("HARDWARE-FAC - MESSAGES OFF");
-	messenger.messagesOff();
-	magnetFactory.messagesOff();
-}
-
-bool HardwareFactory::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool HardwareFactory::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
+//void HardwareFactory::debugMessagesOn()
+//{
+//	debugMessagesOn();
+//	printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
+//	magnetFactory.debugMessagesOn();
+//}
+//
+//void HardwareFactory::debugMessagesOff()
+//{
+//	printDebugMessage("HARDWARE-FAC", "DEBUG OFF");
+//	debugMessagesOff();
+//	magnetFactory.debugMessagesOff();
+//}
+//
+//void HardwareFactory::messagesOn()
+//{
+//	messagesOn();
+//	printMessage("HARDWARE-FAC - MESSAGES ON");
+//	magnetFactory.messagesOn();
+//}
+//
+//void HardwareFactory::messagesOff()
+//{
+//	printMessage("HARDWARE-FAC - MESSAGES OFF");
+//	messagesOff();
+//	magnetFactory.messagesOff();
+//}
+//
+//bool HardwareFactory::isMessagingOn()
+//{
+//	return isMessagingOn();
+//}
+//
+//bool HardwareFactory::isDebugOn()
+//{
+//	return isDebugOn();
+//}

@@ -38,7 +38,7 @@ public:
 	void setSA2(const long& value, const pvStruct& pv);
 	void setSD1(const long& value, const pvStruct& pv);
 	void setSD2(const long& value, const pvStruct& pv);
-	static LoggingSystem messenger;
+	//static LoggingSystem messenger;
 };
 
 #endif //EPICS_BPM_INTERFACE_H_
