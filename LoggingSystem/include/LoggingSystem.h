@@ -13,12 +13,12 @@ class LoggingSystem
 public:
 	LoggingSystem() { debugOn = false; messageOn = false; }
 	LoggingSystem(bool debugState, bool messageState);
-	void debugMessagesOn();
-	void debugMessagesOff();
-	void messagesOn();
-	void messagesOff();
-	bool isMessagingOn() const;
-	bool isDebugOn() const;
+	static void debugMessagesOn();
+	static void debugMessagesOff();
+	static void messagesOn();
+	static void messagesOff();
+	static bool isMessagingOn();
+	static bool isDebugOn();
 	std::string getCurrentDateAndTimeString() const;
 
 	template<typename T>
@@ -56,8 +56,7 @@ public:
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
 	}
-private:
-	bool debugOn;
-	bool messageOn;
+	static bool debugOn;
+	static bool messageOn;
 };
 #endif // LOGGING_SYSTEM_H_

@@ -4,7 +4,7 @@ LoggingSystem EPICSMagnetInterface::messenger;
 
 EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 {
-	this->messenger = LoggingSystem(true, true);
+	this->messenger = LoggingSystem(false, false);
 }
 EPICSMagnetInterface::~EPICSMagnetInterface()
 {

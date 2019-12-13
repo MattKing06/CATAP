@@ -14,31 +14,38 @@
 #define TIME_DATE_BUFFER_SIZE 80
 #endif // TIME_DATE_BUFFER_SIZE
 
+bool LoggingSystem::debugOn = false;
+bool LoggingSystem::messageOn = false;
+
 LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     LoggingSystem::debugOn = debugState;
     LoggingSystem::messageOn = messageState;
 }
 // Get methods for debugging and message state
-bool LoggingSystem::isDebugOn() const
+bool LoggingSystem::isDebugOn()
 {
     return debugOn;
 }
-bool LoggingSystem::isMessagingOn() const
+bool LoggingSystem::isMessagingOn()
 {
     return messageOn;
 }
 // On and Off functions for debugging and messages
 void LoggingSystem::debugMessagesOn(){
     debugOn = true;
+	fprintf(stdout, "%s \n", "CATAP: DEBUG ON");
 }
 void LoggingSystem::debugMessagesOff(){
     debugOn = false;
+	fprintf(stdout, "%s \n", "CATAP: DEBUG OFF");
 }
 void LoggingSystem::messagesOn(){
     messageOn = true;
+	fprintf(stdout, "%s \n", "CATAP: MESSAGES ON");
 }
 void LoggingSystem::messagesOff(){
     messageOn = false;
+	fprintf(stdout, "%s \n", "CATAP: MESSAGES OFF");
 }
 
 std::string LoggingSystem::getCurrentDateAndTimeString() const{

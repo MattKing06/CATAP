@@ -52,10 +52,6 @@ class Magnet : public Hardware
 		double getRICurrent() const;
 		double getCurrent() const;
 		STATE getPSUState() const;
-		void debugMessagesOff() override;
-		void debugMessagesOn() override;
-		void messagesOff() override;
-		void messagesOn() override;
 
 
 	protected:

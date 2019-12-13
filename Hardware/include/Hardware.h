@@ -22,12 +22,6 @@ public:
 	Hardware(const Hardware& copyHardware);
 	std::map<std::string, pvStruct>& getPVStructs();
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
-	virtual void debugMessagesOn();
-	virtual void debugMessagesOff();
-	virtual void messagesOn();
-	virtual void messagesOff();
-	bool isMessagingOn();
-	bool isDebugOn();
 	bool operator==(Hardware rhs);
 // need to sort out private/protected access for these variables
 	std::string machineArea;

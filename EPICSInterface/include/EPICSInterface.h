@@ -37,12 +37,12 @@ public:
 	~EPICSInterface();
 	double get_CA_PEND_IO_TIMEOUT() const;
 	std::string ownerName;
-	void debugMessagesOn();
-	void debugMessagesOff();
-	void messagesOn();
-	void messagesOff();
-	bool isMessagingOn();
-	bool isDebugOn();
+	//void debugMessagesOn();
+	//void debugMessagesOff();
+	//void messagesOn();
+	//void messagesOff();
+	//bool isMessagingOn();
+	//bool isDebugOn();
 	void set_CA_PEND_IO_TIMEOUT(double value);
 	void retrieveCHID(pvStruct& pvStruct) const;
 	void retrieveCHTYPE(pvStruct& pvStruct) const;
