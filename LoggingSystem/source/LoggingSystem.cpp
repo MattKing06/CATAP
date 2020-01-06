@@ -14,20 +14,10 @@
 #define TIME_DATE_BUFFER_SIZE 80
 #endif // TIME_DATE_BUFFER_SIZE
 
-bool LoggingSystem::debugOn = false;
-bool LoggingSystem::messageOn = false;
+bool LoggingSystem::debugOn = true;
+bool LoggingSystem::messageOn = true;
 std::ostringstream LoggingSystem::cache;
 
-LoggingSystem::LoggingSystem(bool debugState, bool messageState){
-    LoggingSystem::debugOn = debugState;
-    LoggingSystem::messageOn = messageState;
-}
-LoggingSystem::LoggingSystem(const LoggingSystem& messenger)
-{
-	debugOn = messenger.debugOn;
-	messageOn = messenger.messageOn;
-	cache << messenger.cache.rdbuf();
-}
 // Get methods for debugging and message state
 bool LoggingSystem::isDebugOn()
 {
@@ -62,7 +52,7 @@ void LoggingSystem::messagesOff(){
 	fprintf(stdout, "%s \n", "CATAP: MESSAGES OFF");
 }
 
-std::string LoggingSystem::getCurrentDateAndTimeString() const{
+std::string LoggingSystem::getCurrentDateAndTimeString(){
     time_t     now = time(0);
     struct tm  tstruct;
     char       buf[TIME_DATE_BUFFER_SIZE];

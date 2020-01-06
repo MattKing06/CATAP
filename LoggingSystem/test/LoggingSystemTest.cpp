@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(dump_to_file_test)
 		messenger.printMessage("TEST");
 	}
 
-	messenger.dumpToFile("testing_dump_to_file.txt");
+	LoggingSystem::dumpToFile("testing_dump_to_file.txt");
 
 }
 

@@ -10,9 +10,6 @@
 class LoggingSystem
 {
 public:
-	LoggingSystem() { debugOn = false; messageOn = false; }
-	LoggingSystem(bool debugState, bool messageState);
-	LoggingSystem(const LoggingSystem& messenger);
 	static void debugMessagesOn();
 	static void debugMessagesOff();
 	static void messagesOn();
@@ -20,23 +17,23 @@ public:
 	static bool isMessagingOn();
 	static bool isDebugOn();
 	static void dumpToFile(std::string filename);
-	std::string getCurrentDateAndTimeString() const;
+	static std::string getCurrentDateAndTimeString();
 	static std::ostringstream cache;
 
 	template<typename T>
-	void generateStringStream(std::ostream& os, T t)
+	static void generateStringStream(std::ostream& os, T t)
 	{
 		os << t;
 	}
 	template<typename T, typename... Args>
-	void generateStringStream(std::ostream& os, T t, Args... args)
+	static void generateStringStream(std::ostream& os, T t, Args... args)
 	{
 		generateStringStream(os, t);
 		generateStringStream(os, args...);
 	}
 
 	template<typename... Args>
-	void printMessage(Args... args)
+	static void printMessage(Args... args)
 	{
 		if (messageOn)
 		{
@@ -49,7 +46,7 @@ public:
 	}
 
 	template<typename... Args>
-	void printDebugMessage(Args... args)
+	static void printDebugMessage(Args... args)
 	{
 		if (debugOn)
 		{
