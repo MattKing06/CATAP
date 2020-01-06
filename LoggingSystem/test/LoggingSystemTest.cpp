@@ -53,11 +53,10 @@ BOOST_AUTO_TEST_CASE(cout_messages_divert_to_boost_test_tools_stream_test)
 
 BOOST_AUTO_TEST_CASE(dump_to_file_test)
 {
-	LoggingSystem messenger(true, true);
 	for (int i = 0; i < 20; i++)
 	{
-		messenger.printDebugMessage("TEST");
-		messenger.printMessage("TEST");
+		LoggingSystem::printDebugMessage("TEST");
+		LoggingSystem::printMessage("TEST");
 	}
 
 	LoggingSystem::dumpToFile("testing_dump_to_file.txt");

@@ -4,60 +4,74 @@
 #include <iostream>
 #include <sstream>
 #include <initializer_list>
+#include <vector>
+#include <iostream>
+#include <time.h>
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
-
-class LoggingSystem
+#ifndef TIME_DATE_BUFFER_SIZE
+#define TIME_DATE_BUFFER_SIZE 80
+#endif // TIME_DATE_BUFFER_SIZE
+namespace LoggingSystem
 {
-public:
-	static void debugMessagesOn();
-	static void debugMessagesOff();
-	static void messagesOn();
-	static void messagesOff();
-	static bool isMessagingOn();
-	static bool isDebugOn();
-	static void dumpToFile(std::string filename);
-	static std::string getCurrentDateAndTimeString();
-	static std::ostringstream cache;
-
+	namespace Switches
+	{
+		// not to be used outside of LoggingSystem, use debug/messages On/Off functions
+		extern bool debugOn;
+		extern bool messageOn;
+	}
+	namespace Storage
+	{
+		// not to be used outside of LoggingSystem,
+		// cache is written to using printMessage/printDebug
+		// and used by dumpToFile.
+		extern std::ostringstream cache;
+	}
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
+	void dumpToFile(std::string filename);
+	std::string getCurrentDateAndTimeString();
 	template<typename T>
-	static void generateStringStream(std::ostream& os, T t)
+	void generateStringStream(std::ostream& os, T t)
 	{
 		os << t;
 	}
 	template<typename T, typename... Args>
-	static void generateStringStream(std::ostream& os, T t, Args... args)
+	void generateStringStream(std::ostream& os, T t, Args... args)
 	{
 		generateStringStream(os, t);
 		generateStringStream(os, args...);
 	}
 
 	template<typename... Args>
-	static void printMessage(Args... args)
+	void printMessage(Args... args)
 	{
-		if (messageOn)
+		if (Switches::messageOn)
 		{
 			std::ostringstream oss;
 			generateStringStream(oss, args...);
 			std::ios::sync_with_stdio(true);
-			cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
-			fprintf(stdout, "%s %s %s \n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
+			Storage::cache << getCurrentDateAndTimeString().c_str() << MESSAGE << " " << oss.str().c_str() << std::endl;
+			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
 		}
 	}
 
 	template<typename... Args>
-	static void printDebugMessage(Args... args)
+	void printDebugMessage(Args... args)
 	{
-		if (debugOn)
+		if (Switches::debugOn)
 		{
 			std::ostringstream oss;
 			generateStringStream(oss, args...);
 			std::ios::sync_with_stdio(true);
-			cache << getCurrentDateAndTimeString().c_str() <<  DEBUG << " " <<  oss.str().c_str() << std::endl;
+			Storage::cache << getCurrentDateAndTimeString().c_str() <<  DEBUG << " " <<  oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
 	}
-	static bool debugOn;
-	static bool messageOn;
+
 };
 #endif // LOGGING_SYSTEM_H_
