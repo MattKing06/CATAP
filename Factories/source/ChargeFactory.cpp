@@ -39,7 +39,6 @@ ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 
 ChargeFactory::~ChargeFactory()
 {
-	messenger.debugMessagesOff();
 	messenger.printDebugMessage("ChargeFactory Destructor Called");
 	for (auto& charge : chargeMap)
 	{
@@ -86,7 +85,6 @@ bool ChargeFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.debugMessagesOff();
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in BPM constructor

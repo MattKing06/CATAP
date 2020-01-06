@@ -71,40 +71,6 @@ std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() con
 	return specificHardwareParameters;
 }
 
-void Hardware::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
-}
-
-void Hardware::debugMessagesOff()
-{
-	messenger.printDebugMessage(hardwareName, "- DEBUG OFF");
-	messenger.debugMessagesOff();
-}
-
-void Hardware::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
-}
-
-void Hardware::messagesOff()
-{
-	messenger.printMessage(hardwareName, " - MESSAGES OFF");
-	messenger.messagesOff();
-}
-
-bool Hardware::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool Hardware::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
-
 bool Hardware::operator==(Hardware rhs)
 {
 	auto LHSPVStructs = this->getPVStructs();

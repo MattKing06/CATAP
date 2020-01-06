@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)
 {
 	HardwareFactory hardwareFactory(true);
 	hardwareFactory.setup("Magnet", "nominal");
-	hardwareFactory.debugMessagesOn();
+	LoggingSystem::debugMessagesOn();
 }
 
 

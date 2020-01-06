@@ -183,38 +183,3 @@ std::vector<double> EPICSInterface::returnValueFromArgsAsDoubleVector(const stru
 	}
 	return rawVectorContainer;
 }
-
-void EPICSInterface::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG ON");
-}
-
-void EPICSInterface::debugMessagesOff()
-{
-	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
-	messenger.debugMessagesOff();
-}
-
-void EPICSInterface::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES ON");
-}
-
-void EPICSInterface::messagesOff()
-{
-	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
-	messenger.messagesOff();
-}
-
-bool EPICSInterface::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-bool EPICSInterface::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
-

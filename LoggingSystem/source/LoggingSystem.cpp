@@ -14,18 +14,22 @@
 #define TIME_DATE_BUFFER_SIZE 80
 #endif // TIME_DATE_BUFFER_SIZE
 
+bool LoggingSystem::debugOn = false;
+bool LoggingSystem::messageOn = false;
+std::ostringstream LoggingSystem::cache;
+
 LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     LoggingSystem::debugOn = debugState;
     LoggingSystem::messageOn = messageState;
 }
-LoggingSystem::LoggingSystem(LoggingSystem& messenger)
+LoggingSystem::LoggingSystem(const LoggingSystem& messenger)
 {
-	this->debugOn = messenger.debugOn;
-	this->messageOn = messenger.messageOn;
-	this->cache = messenger.cache;
+	debugOn = messenger.debugOn;
+	messageOn = messenger.messageOn;
+	cache << messenger.cache.rdbuf();
 }
 // Get methods for debugging and message state
-bool LoggingSystem::isDebugOn() const
+bool LoggingSystem::isDebugOn()
 {
     return debugOn;
 }
@@ -33,24 +37,29 @@ void LoggingSystem::dumpToFile(std::string filename)
 {
 	FILE* outFile;
 	outFile = fopen(filename.c_str(), "w");
-	fprintf(outFile, "%s \n", cache.get()->str().c_str());
+	std::cout << "CACHE: " << cache.str() << std::endl;
+	fprintf(outFile, "%s \n", cache.str().c_str());
 }
-bool LoggingSystem::isMessagingOn() const
+bool LoggingSystem::isMessagingOn()
 {
     return messageOn;
 }
 // On and Off functions for debugging and messages
 void LoggingSystem::debugMessagesOn(){
     debugOn = true;
+	fprintf(stdout, "%s \n", "CATAP: DEBUG ON");
 }
 void LoggingSystem::debugMessagesOff(){
     debugOn = false;
+	fprintf(stdout, "%s \n", "CATAP: DEBUG OFF");
 }
 void LoggingSystem::messagesOn(){
     messageOn = true;
+	fprintf(stdout, "%s \n", "CATAP: MESSAGES ON");
 }
 void LoggingSystem::messagesOff(){
     messageOn = false;
+	fprintf(stdout, "%s \n", "CATAP: MESSAGES OFF");
 }
 
 std::string LoggingSystem::getCurrentDateAndTimeString() const{

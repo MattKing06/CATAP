@@ -35,12 +35,12 @@ BOOST_PYTHON_MODULE(CATAP)
 	boost::python::enum_<STATE>("STATE")
 		.value("ON", STATE::ON)
 		.value("OFF", STATE::OFF);
-	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
-		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
-		.def("debugMessagesOff", &EPICSInterface::debugMessagesOff)
-		.def("messagesOn", &EPICSInterface::messagesOn)
-		.def("messagesOff", &EPICSInterface::messagesOff);
-	boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
+	//boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
+	//	.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
+	//	.def("debugMessagesOff", &EPICSInterface::debugMessagesOff)
+	//	.def("messagesOn", &EPICSInterface::messagesOn)
+	//	.def("messagesOff", &EPICSInterface::messagesOff);
+	//boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
 	// Hardware Exposure
 	boost::python::class_<Hardware>("Hardware", boost::python::no_init)
 		.def_readonly("machineArea", &Hardware::machineArea)
@@ -49,10 +49,10 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getMachineArea", &Hardware::getMachineArea)
 		.def("getHardwareType", &Hardware::getHardwareType)
 		.def("getHardwareName", &Hardware::getHardwareName)
-		.def("debugMessagesOn", &Hardware::debugMessagesOn)
-		.def("debugMessagesOff", &Hardware::debugMessagesOff)
-		.def("messagesOn", &Hardware::messagesOn)
-		.def("messagesOff", &Hardware::messagesOff)
+		//.def("debugMessagesOn", &Hardware::debugMessagesOn)
+		//.def("debugMessagesOff", &Hardware::debugMessagesOff)
+		//.def("messagesOn", &Hardware::messagesOn)
+		//.def("messagesOff", &Hardware::messagesOff)
 		.def("getSpecificHardwareParameters", &Hardware::getSpecificHardwareParameters);
 	// Magnet Exposure
 	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
@@ -172,11 +172,11 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("turnOn", turnOnSingle)
 		.def("turnOn", &MagnetFactory::turnOn_Py)
 		.def("turnOff", turnOffSingle)
-		.def("turnOff", &MagnetFactory::turnOff_Py)
-		.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
-		.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
-		.def("messagesOn", &MagnetFactory::messagesOn)
-		.def("messagesOff", &MagnetFactory::messagesOff);
+		.def("turnOff", &MagnetFactory::turnOff_Py);
+		//.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
+		//.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
+		//.def("messagesOn", &MagnetFactory::messagesOn)
+		//.def("messagesOff", &MagnetFactory::messagesOff);
 		//BPM Factory Exposure
 		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
@@ -282,11 +282,26 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("chargeFactory", &HardwareFactory::chargeFactory)
 		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
-		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
-		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
-		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
-		.def("messagesOn", &HardwareFactory::messagesOn)
-		.def("messagesOff", &HardwareFactory::messagesOff);
+		.add_property("hardwareMap", &HardwareFactory::hardwareMap);
+		//.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
+		//.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
+		//.def("messagesOn", &HardwareFactory::messagesOn)
+		//.def("messagesOff", &HardwareFactory::messagesOff);
+
+	boost::python::object debugMessagesOn_Py = boost::python::make_function(&LoggingSystem::debugMessagesOn);
+	boost::python::def("debugMessagesOn", debugMessagesOn_Py);
+	boost::python::object debugMessagesOff_Py = boost::python::make_function(&LoggingSystem::debugMessagesOff);
+	boost::python::def("debugMessagesOff", debugMessagesOff_Py);
+	boost::python::object messagesOn_Py = boost::python::make_function(&LoggingSystem::messagesOn);
+	boost::python::def("messagesOn", messagesOn_Py);
+	boost::python::object messagesOff_Py = boost::python::make_function(&LoggingSystem::messagesOff);
+	boost::python::def("messagesOff", messagesOff_Py);
+	boost::python::object isMessagingOn_Py = boost::python::make_function(&LoggingSystem::isMessagingOn);
+	boost::python::def("isMessagingOn", isMessagingOn_Py);
+	boost::python::object isDebugOn_Py = boost::python::make_function(&LoggingSystem::isDebugOn);
+	boost::python::def("isDebugOn", isDebugOn_Py);
+	boost::python::object dumpToFile_Py = boost::python::make_function(&LoggingSystem::dumpToFile);
+	boost::python::def("dumpToFile", dumpToFile_Py);
 
 
 

@@ -43,12 +43,6 @@ public:
 	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node &controlsInformationNode) const;
 	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node &hardwareInformationNode) const;
 	bool hasMoreFilesToParse() const;
-	void debugMessagesOn();
-	void debugMessagesOff();
-	void messagesOn();
-	void messagesOff();
-	bool isMessagingOn();
-	bool isDebugOn();
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
 	{

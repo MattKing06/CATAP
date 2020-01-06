@@ -246,6 +246,7 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 }
 bool MagnetFactory::turnOn(const std::string& name)
 {
+	messenger.printDebugMessage("TURNING ", name, " ON");
 	return magnetMap.at(name).setEPICSPSUState(STATE::ON);
 }
 bool MagnetFactory::turnOn(const std::vector<std::string>& names)
@@ -258,6 +259,7 @@ bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 }
 bool MagnetFactory::turnOff(const std::string& name)
 {
+	messenger.printDebugMessage("TURNING ", name, " OFF");
 	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
 }
 bool MagnetFactory::turnOff(const std::vector<std::string>& names)
@@ -289,54 +291,7 @@ bool MagnetFactory::turnOff_Py(boost::python::list names)
 	return turnOff(namesVector);
 
 }
-void MagnetFactory::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("MAG-FAC - DEBUG ON");
-	reader.debugMessagesOn();
-	for (auto& magnet : magnetMap)
-	{
-		magnet.second.debugMessagesOn();
-	}
-}
-void MagnetFactory::debugMessagesOff()
-{
-	messenger.printDebugMessage("MAG-FAC - DEBUG OFF");
-	messenger.debugMessagesOff();
-	reader.debugMessagesOff();
-	for (auto& magnet : magnetMap)
-	{
-		magnet.second.debugMessagesOff();
-	}
-}
-void MagnetFactory::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("MAG-FAC - MESSAGES ON");
-	reader.messagesOn();
-	for (auto& magnet : magnetMap)
-	{
-		magnet.second.messagesOn();
-	}
-}
-void MagnetFactory::messagesOff()
-{
-	messenger.printMessage("MAG-FAC - MESSAGES OFF");
-	messenger.messagesOff();
-	reader.messagesOff();
-	for (auto& magnet : magnetMap)
-	{
-		magnet.second.messagesOff();
-	}
-}
-bool MagnetFactory::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
-bool MagnetFactory::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
+
 bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 {
 	std::map<std::string, double> magnetNamesAndCurrentsToSet;
