@@ -13,8 +13,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(true);
-	LoggingSystem::messagesOn();
-	LoggingSystem::debugMessagesOn();
+	LoggingSystem::messagesOff();
+	LoggingSystem::debugMessagesOff();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
@@ -28,6 +28,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(true);
+	LoggingSystem::messagesOn();
+	LoggingSystem::debugMessagesOn();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{

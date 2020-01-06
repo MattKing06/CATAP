@@ -8,8 +8,6 @@
 #include <cadef.h>
 #endif
 
-LoggingSystem TEST_LOGGER(true, true);
-
 BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
 {
 	EPICSMagnetInterface epicsInterface = EPICSMagnetInterface();
@@ -39,7 +37,7 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
 	}
 	else
 	{
-		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
+		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 
@@ -69,6 +67,6 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_monitor_channel_type_test)
 	}
 	else
 	{
-		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
+		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
 	}
 }

@@ -1,6 +1,6 @@
 #include "EPICSChargeInterface.h"
 
-LoggingSystem EPICSChargeInterface::messenger;
+//LoggingSystem EPICSChargeInterface::messenger;
 
 EPICSChargeInterface::EPICSChargeInterface() : EPICSInterface()
 {

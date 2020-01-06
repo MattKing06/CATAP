@@ -20,11 +20,6 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
 }
 
-EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messenger)
-{
-	EPICSInterface::shouldStartEpics = startEpics;
-	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-}
 EPICSInterface::~EPICSInterface()
 {
 	LoggingSystem::printDebugMessage("EPICSInterface Destructor Called");

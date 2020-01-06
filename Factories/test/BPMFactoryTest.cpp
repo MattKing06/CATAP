@@ -9,12 +9,11 @@
 #include <thread>
 
 BOOST_AUTO_TEST_SUITE(BPMFactoryTestSuite)
-LoggingSystem testLogger(true, true);
 BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 {
 	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";
 	BPMFactory bpmfac = BPMFactory(true);
-	bpmfac.messenger.messagesOn();
+	LoggingSystem::messagesOn();
 	bool status = bpmfac.setup("nominal");
 	if (status)
 	{
@@ -26,7 +25,7 @@ BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 	}
 	else
 	{
-		testLogger.printMessage("CANNOT CONNECT TO EPICS");
+		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 

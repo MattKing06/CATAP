@@ -23,7 +23,7 @@ public:
 	/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
 	//BPMFactory(std::string version);
 	bool setup(const std::string& version);
-	LoggingSystem messenger;
+//	LoggingSystem messenger;
 	ConfigReader reader;
 	BPM& getBPM(const std::string& fullBPMName);
 	std::map<std::string, BPM> getBPMs(std::vector<std::string> bpmNames);

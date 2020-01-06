@@ -8,8 +8,6 @@
 #include <cadef.h>
 #endif
 
-LoggingSystem TEST_LOGGER(true, true);
-
 BOOST_AUTO_TEST_CASE(epics_bpm_interface_put_and_get_value_test)
 {
 	EPICSBPMInterface epicsInterface = EPICSBPMInterface();
@@ -39,6 +37,6 @@ BOOST_AUTO_TEST_CASE(epics_bpm_interface_put_and_get_value_test)
 	}
 	else
 	{
-		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
+		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
 	}
 }

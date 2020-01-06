@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
-LoggingSystem TEST_LOGGER(true, true);
 BOOST_AUTO_TEST_CASE(check_chid_state_from_epics_interface_test)
 {
+	LoggingSystem::messagesOn();
 	EPICSInterface epicsInterface = EPICSInterface();
 	pvStruct pv;
 	pv.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(check_chid_state_from_epics_interface_test)
 	}
 	else
 	{
-		TEST_LOGGER.printMessage("CANNOT CONNECT TO EPICS");
+		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 
@@ -43,5 +43,9 @@ BOOST_AUTO_TEST_CASE(check_put_value_from_epics_interface_test)
 		ca_get(pvToSet.CHTYPE, pvToSet.CHID, &returnedCurrent);
 		ca_pend_io(CA_PEND_IO_TIMEOUT);
 		BOOST_CHECK_CLOSE(currentToSet, returnedCurrent, 1e-10);
+	}
+	else
+	{
+		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
 	}
 }

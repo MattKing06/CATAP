@@ -1,6 +1,6 @@
 #include "EPICSBPMInterface.h"
 
-LoggingSystem EPICSBPMInterface::messenger;
+//LoggingSystem EPICSBPMInterface::messenger;
 
 EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
 {

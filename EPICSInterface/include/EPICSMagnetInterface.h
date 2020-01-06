@@ -25,7 +25,7 @@ public:
 	void setNewPSUState(const STATE& value, const pvStruct &pv) const;
 	static void updateREADI(const struct event_handler_args args);
 	static void updateRILK(const struct event_handler_args args);
-	static LoggingSystem messenger;
+//	static LoggingSystem messenger;
 };
 
 #endif //EPICS_MAGNET_INTERFACE_H_

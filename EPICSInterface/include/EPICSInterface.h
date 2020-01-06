@@ -33,7 +33,6 @@ class EPICSInterface
 public:
 	EPICSInterface();
 	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine);
-	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine, LoggingSystem& messaging);
 	~EPICSInterface();
 	double get_CA_PEND_IO_TIMEOUT() const;
 	std::string ownerName;

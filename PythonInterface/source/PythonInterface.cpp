@@ -178,7 +178,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		//.def("messagesOn", &MagnetFactory::messagesOn)
 		//.def("messagesOff", &MagnetFactory::messagesOff);
 		//BPM Factory Exposure
-		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
+	boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
 		.def("setup", &BPMFactory::setup)
 		.add_property("bpmMap", &BPMFactory::bpmMap)
@@ -247,8 +247,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllYPVBuffer", &BPMFactory::getAllYPVBuffer)
 		.def("getAllQBuffer", &BPMFactory::getAllQBuffer)
 		.def("getAllDataBuffer", &BPMFactory::getAllDataBuffer)
-		.def("getAllXYPositionVectors", &BPMFactory::getAllXYPositionVectors_Py)
-		.add_property("logger", &BPMFactory::messenger);
+		.def("getAllXYPositionVectors", &BPMFactory::getAllXYPositionVectors_Py);
 	//Charge Factory Exposure
 	boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
@@ -270,8 +269,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllQ", &ChargeFactory::getAllQ)
 		.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
 		.def("getAllQVector", &ChargeFactory::getAllQVector)
-		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer)
-		.add_property("logger", &ChargeFactory::messenger);
+		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer);
 		// Hardware Factory Exposure
 	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<>())
 		.def(boost::python::init<bool>())
