@@ -6,7 +6,6 @@
 EPICSInterface::EPICSInterface()
 {
 	int status;
-	messenger = LoggingSystem(false, false);
 	if (!ca_current_context())
 	{
 		status = ca_context_create(ca_enable_preemptive_callback);
@@ -19,18 +18,16 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = LoggingSystem(false, false);
 }
 
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messenger)
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = messenger;
 }
 EPICSInterface::~EPICSInterface()
 {
-	messenger.printDebugMessage("EPICSInterface Destructor Called");
+	LoggingSystem::printDebugMessage("EPICSInterface Destructor Called");
 }
 
 void EPICSInterface::removeSubscription(pvStruct& pvStruct)

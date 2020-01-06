@@ -100,27 +100,25 @@ public:
 		// POTENTIAL EXCEPTIONS //
 		catch (std::length_error EmptyFileException)
 		{
-			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
+			LoggingSystem::printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
 								   SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadFile BadFileException)
 		{
-			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
+			LoggingSystem::printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
 								   ConfigReader::yamlFilename, ")  or file is not compliant with template ",
 								   ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
-			messenger.printMessage("Problem with file (" +
+			LoggingSystem::printMessage("Problem with file (" +
 								   ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
 								   "): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{
-			messenger.printMessage(std::string(ConvervsionException.what()));
+			LoggingSystem::printMessage(std::string(ConvervsionException.what()));
 		}
 	}
-protected:
-	static LoggingSystem messenger;
 };
 #endif //CONFIG_READER_H_

@@ -12,16 +12,14 @@ MagnetFactory::MagnetFactory() : MagnetFactory(false)
 }
 MagnetFactory::MagnetFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
-	messenger.printDebugMessage("Magnet Factory Constructed");
+	LoggingSystem::printDebugMessage("Magnet Factory Constructed");
 	isVirtual = isVirtual;
 	reader = ConfigReader("Magnet", isVirtual);
 }
 MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 	: hasBeenSetup(copyMagnetFactory.hasBeenSetup),
 	isVirtual(copyMagnetFactory.isVirtual),
-	messenger(copyMagnetFactory.messenger),
 	reader(copyMagnetFactory.reader)
 {
 	magnetMap.insert(copyMagnetFactory.magnetMap.begin(), copyMagnetFactory.magnetMap.end());
@@ -29,7 +27,7 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 
 MagnetFactory::~MagnetFactory()
 {
-	messenger.printDebugMessage("MagnetFactory Destructor Called");
+	LoggingSystem::printDebugMessage("MagnetFactory Destructor Called");
 	if (hasBeenSetup) 
 	{
 		for (auto& magnet : magnetMap)
@@ -81,7 +79,7 @@ bool MagnetFactory::setup(const std::string &version)
 	}
 	if (this->isVirtual)
 	{
-		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
+		LoggingSystem::printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in Magnet constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
@@ -102,7 +100,7 @@ bool MagnetFactory::setup(const std::string &version)
 				magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+				LoggingSystem::printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
 					"write", std::to_string(ca_write_access(pv.second.CHID)),
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
@@ -112,7 +110,7 @@ bool MagnetFactory::setup(const std::string &version)
 			}
 			else
 			{
-				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
+				LoggingSystem::printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
 				hasBeenSetup = false;
 				return hasBeenSetup;
 			}
@@ -145,7 +143,7 @@ std::map<std::string, Magnet> MagnetFactory::getAllMagnets()
 	}
 	else
 	{
-		messenger.printDebugMessage("MAGNETS HAVE ALREADY BEEN CONSTRUCTED.");
+		LoggingSystem::printDebugMessage("MAGNETS HAVE ALREADY BEEN CONSTRUCTED.");
 	}
 	return magnetMap;
 }
@@ -154,7 +152,7 @@ double MagnetFactory::getCurrent(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
+		LoggingSystem::printDebugMessage("Please call MagnetFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -177,7 +175,7 @@ double MagnetFactory::getRICurrent(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
+		LoggingSystem::printDebugMessage("Please call MagnetFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -246,7 +244,7 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 }
 bool MagnetFactory::turnOn(const std::string& name)
 {
-	messenger.printDebugMessage("TURNING ", name, " ON");
+	LoggingSystem::printDebugMessage("TURNING ", name, " ON");
 	return magnetMap.at(name).setEPICSPSUState(STATE::ON);
 }
 bool MagnetFactory::turnOn(const std::vector<std::string>& names)
@@ -259,7 +257,7 @@ bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 }
 bool MagnetFactory::turnOff(const std::string& name)
 {
-	messenger.printDebugMessage("TURNING ", name, " OFF");
+	LoggingSystem::printDebugMessage("TURNING ", name, " OFF");
 	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
 }
 bool MagnetFactory::turnOff(const std::vector<std::string>& names)

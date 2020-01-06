@@ -30,8 +30,6 @@ public:
 	bool isVirtual;
 	std::map<std::string, pvStruct> pvStructs;
 	std::map<std::string, std::string> specificHardwareParameters;
-protected:
-	LoggingSystem messenger;
 
 };
 

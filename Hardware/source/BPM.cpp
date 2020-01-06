@@ -123,7 +123,7 @@ std::vector< double > BPM::getXPVVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	messenger.printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
 	//}
 	return this->xPVVector;
 }
@@ -132,7 +132,7 @@ std::vector< double > BPM::getYPVVector() const
 {
 	//if (monitoringypv)
 	//{
-	//	messenger.printDebugMessage("WARNING: STILL MONITORING Y PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING Y PV -- VECTOR NOT FULL");
 	//}
 	return this->yPVVector;
 }
@@ -141,7 +141,7 @@ std::vector< std::vector< double > > BPM::getDataVector() const
 {
 	//if (monitoringdata)
 	//{
-	//	messenger.printDebugMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
 	//}
 	return this->dataVector;
 }
@@ -150,7 +150,7 @@ std::vector< double > BPM::getQVector() const
 {
 	//if (monitoringdata)
 	//{
-	//	messenger.printMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//	LoggingSystem::printMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }

@@ -13,7 +13,7 @@ BPMFactory::BPMFactory() : BPMFactory(false)
 }
 BPMFactory::BPMFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("BPM Factory Constructed");
 	isVirtual = isVirtual;

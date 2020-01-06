@@ -22,7 +22,7 @@ ChargeFactory::ChargeFactory() : ChargeFactory(false)
 }
 ChargeFactory::ChargeFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("Charge Factory Constructed");
 	isVirtual = isVirtual;

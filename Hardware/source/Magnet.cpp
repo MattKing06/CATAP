@@ -95,7 +95,7 @@ double Magnet::getCurrent() const
 bool Magnet::setCurrent(const double& value)
 {
 	this->current = value;
-	messenger.printDebugMessage(hardwareName, " SETI Value:", value);
+	LoggingSystem::printDebugMessage(hardwareName, " SETI Value:", value);
 	return true;
 }
 bool Magnet::setEPICSCurrent(const double &value)
@@ -115,7 +115,7 @@ bool Magnet::setEPICSCurrent(const double &value)
 bool Magnet::setPSUState(const STATE& value)
 {
 	psuState = value;
-	messenger.printDebugMessage(hardwareName, " PSU STATE:", value);
+	LoggingSystem::printDebugMessage(hardwareName, " PSU STATE:", value);
 	return true;
 }
 
@@ -140,7 +140,7 @@ bool Magnet::setEPICSPSUState(const STATE& value)
 bool Magnet::setRICurrent(const double& value)
 {
 	RICurrent = value;
-	messenger.printDebugMessage(hardwareName, " READI Value:", value);
+	LoggingSystem::printDebugMessage(hardwareName, " READI Value:", value);
 	return true;
 }
 
@@ -152,7 +152,7 @@ double Magnet::getRICurrent() const
 bool Magnet::setILKState(const int& value)
 {
 	ilkState = value;
-	messenger.printDebugMessage(hardwareName, " ILK State:", value);
+	LoggingSystem::printDebugMessage(hardwareName, " ILK State:", value);
 	return true;
 }
 

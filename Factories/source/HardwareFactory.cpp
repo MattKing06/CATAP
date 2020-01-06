@@ -5,11 +5,10 @@ HardwareFactory::HardwareFactory() : HardwareFactory(false)
 }
 HardwareFactory::~HardwareFactory()
 {
-	messenger.printDebugMessage("HardwareFactory Destruction Called");
+	LoggingSystem::printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
-	messenger = LoggingSystem(false, false);
-	messenger.printDebugMessage("Hardware Factory Constructed");
+	LoggingSystem::printDebugMessage("Hardware Factory Constructed");
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
 	bpmFactory = BPMFactory(isVirtual);
@@ -52,7 +51,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup MagnetFactory");
+			LoggingSystem::printMessage("Unable to setup MagnetFactory");
 		}
 	}
 	else
@@ -72,7 +71,7 @@ BPMFactory& HardwareFactory::getBPMFactory()
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup BPMFactory");
+			LoggingSystem::printMessage("Unable to setup BPMFactory");
 		}
 	}
 	else
@@ -92,7 +91,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup ChargeFactory");
+			LoggingSystem::printMessage("Unable to setup ChargeFactory");
 		}
 	}
 	else

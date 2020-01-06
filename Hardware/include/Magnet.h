@@ -71,7 +71,6 @@ class Magnet : public Hardware
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;
-		//(inherited) LoggingSystem messenger;
 
 };
 

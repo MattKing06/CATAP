@@ -55,8 +55,6 @@ class MagnetFactory
 		boost::python::dict getRICurrents_Py(boost::python::list names);
 		bool turnOn_Py(boost::python::list names);
 		bool turnOff_Py(boost::python::list names);
-private:
-		LoggingSystem messenger;
 };
 
 
