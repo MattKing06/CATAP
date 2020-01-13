@@ -7,12 +7,15 @@
 #include <cadef.h>
 #endif
 
+#include "GlobalFunctions.h"
+
+
 MagnetFactory::MagnetFactory() : MagnetFactory(false)
 {
 }
 MagnetFactory::MagnetFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(true, true);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("Magnet Factory Constructed");
 	isVirtual = isVirtual;
@@ -24,6 +27,8 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 	messenger(copyMagnetFactory.messenger),
 	reader(copyMagnetFactory.reader)
 {
+	messenger.printDebugMessage("MagnetFactory Copy contructor");
+	
 	magnetMap.insert(copyMagnetFactory.magnetMap.begin(), copyMagnetFactory.magnetMap.end());
 }
 
@@ -196,6 +201,9 @@ std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std
 	}
 	return RICurrents;
 }
+
+
+// This is being moved so that 
 boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
 {
 	std::map<std::string, double> currents;
@@ -244,51 +252,88 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 	return true;
 
 }
-bool MagnetFactory::turnOn(const std::string& name)
+STATE MagnetFactory::turnOn(const std::string& name)
 {
-	return magnetMap.at(name).setEPICSPSUState(STATE::ON);
+	if (GlobalFunctions::entryExists(magnetMap, name))
+	{
+		magnetMap.at(name).setEPICSPSUState(STATE::ON);
+		return STATE::SUCCESS;
+	}
+	return STATE::UNKNOWN_NAME;
 }
-bool MagnetFactory::turnOn(const std::vector<std::string>& names)
+std::map<std::string, STATE> MagnetFactory::turnOn(const std::vector<std::string>& names)
 {
+	std::map<std::string, STATE> return_map;
 	for (auto& name : names)
 	{
-		turnOn(name);
+		return_map[name] = turnOn(name);
 	}
-	return true;
+	return return_map;
 }
-bool MagnetFactory::turnOff(const std::string& name)
+boost::python::dict MagnetFactory::turnOn_Py(const boost::python::list names)
 {
-	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
+	return to_py_dict<std::string, STATE>(turnOn(to_std_vector<std::string>(names)));
 }
-bool MagnetFactory::turnOff(const std::vector<std::string>& names)
+
+STATE MagnetFactory::turnOff(const std::string& name)
 {
+	if (GlobalFunctions::entryExists(magnetMap, name))
+	{
+		magnetMap.at(name).setEPICSPSUState(STATE::OFF);
+		return STATE::SUCCESS;
+	}
+	return STATE::UNKNOWN_NAME;
+}
+std::map<std::string, STATE> MagnetFactory::turnOff(const std::vector<std::string>& names)
+{
+	std::map<std::string, STATE> return_map;
 	for (auto& name : names)
 	{
-		turnOff(name);
+		return_map[name] = turnOff(name);
 	}
-	return true;
+	return return_map;
 }
-int MagnetFactory::getPSUState(const std::string& name) const
+boost::python::dict MagnetFactory::turnOff_Py(const boost::python::list names)
+{
+	return to_py_dict<std::string,STATE>( turnOff(to_std_vector<std::string>(names) ));
+}
+
+
+STATE MagnetFactory::getPSUState(const std::string& name) const
 {
 	return magnetMap.find(name)->second.getPSUState();
+}
+
+std::map<std::string, STATE> MagnetFactory::getAllPSUState() const
+{
+	std::map<std::string, STATE> return_map;
+	for (auto&& magnet : magnetMap)
+	{
+		return_map[magnet.second.getHardwareName()] = magnet.second.getPSUState();
+	}
+	return return_map;
+}
+
+boost::python::dict MagnetFactory::getAllPSUState_Py() const
+{
+	return to_py_dict(getAllPSUState());
 }
 
 int MagnetFactory::getILKState(const std::string& name) const
 {
 	return magnetMap.find(name)->second.getILKState();
 }
-bool MagnetFactory::turnOn_Py(boost::python::list names)
-{
-	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-	return turnOn(namesVector);
-
-}
-bool MagnetFactory::turnOff_Py(boost::python::list names)
-{
-	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-	return turnOff(namesVector);
-
-}
+//bool MagnetFactory::turnOn_Py(boost::python::list names)
+//{
+//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+//	return turnOn(namesVector);
+//}
+//bool MagnetFactory::turnOff_Py(boost::python::list names)
+//{
+//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+//	return turnOff(namesVector);
+//
+//}
 
 bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 {

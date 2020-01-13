@@ -8,10 +8,12 @@ HardwareFactory::~HardwareFactory()
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
-	messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory Constructed");
 	isVirtual = createVirtualHardwareFactory;
+	messenger.printDebugMessage("MagnetFactory being contructed");
 	magnetFactory = MagnetFactory(isVirtual);
+	messenger.printDebugMessage("MagnetFactory contructed");
 	bpmFactory = BPMFactory(isVirtual);
 	chargeFactory = ChargeFactory(isVirtual);
 }

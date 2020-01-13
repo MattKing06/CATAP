@@ -12,7 +12,6 @@ EPICSMagnetInterface::~EPICSMagnetInterface()
 }
 void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
-	
 	if (pvStruct.pvRecord == "GETSETI")
 	{
 		pvStruct.updateFunction = this->updateCurrent;

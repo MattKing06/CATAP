@@ -66,6 +66,8 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 	{
 		int status;
 		chid CHID;
+
+		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names 
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &CHID);
 		MY_SEVCHK(status);

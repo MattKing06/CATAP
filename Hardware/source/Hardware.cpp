@@ -29,7 +29,10 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 	std::vector<std::string> pvRecordVec;
+
+	// split a string by commas
 	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
+
 	messenger.printDebugMessage("Constructing PV information for ", hardwareName);
 	for (auto record : pvRecordVec)
 	{

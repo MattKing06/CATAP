@@ -38,23 +38,33 @@ class MagnetFactory
 		double getRICurrent(const std::string& name);
 		std::map<std::string, double> getRICurrents(const std::vector<std::string>& names);
 		std::map<std::string, double> getAllMagnetRICurrents();
+		
 		bool setCurrent(const std::string& name, const double &value);
 		bool setCurrents(const std::map<std::string, double> &namesAndCurrentsMap);
 		bool setAllMagnetCurrents(const double& value);
-		bool turnOn(const std::string& name);
-		bool turnOn(const std::vector<std::string>& names);
+		
+		STATE turnOn(const std::string& name);
+		std::map<std::string, STATE> turnOn(const std::vector<std::string>& names);
+		boost::python::dict turnOn_Py(const boost::python::list names);
 		bool turnOnAllMagnets();
-		bool turnOff(const std::string& name);
-		bool turnOff(const std::vector<std::string>& names);
+		
+		STATE turnOff(const std::string& name);
+		std::map<std::string, STATE> turnOff(const std::vector<std::string>& names);
+		boost::python::dict turnOff_Py(const boost::python::list names);
 		bool turnOffAllMagnets();
-		int getPSUState(const std::string& name) const;
+		
+		STATE getPSUState(const std::string& name) const;
+		std::map<std::string, STATE> MagnetFactory::getAllPSUState() const;
+		boost::python::dict MagnetFactory::getAllPSUState_Py() const;
+
+
+
 		int getILKState(const std::string& name) const;
 		boost::python::dict getAllMagnetCurrents_Py();
 		boost::python::dict getCurrents_Py(boost::python::list magNames);
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
-		bool turnOn_Py(boost::python::list names);
-		bool turnOff_Py(boost::python::list names);
+
 private:
 		LoggingSystem messenger;
 };

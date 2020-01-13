@@ -35,13 +35,17 @@ class Magnet : public Hardware
 		int getSerialNumber() const;
 		std::string getMagnetType() const;
 		std::string getMagnetRevType() const;
-		double getRITolerance() const;
 		int getNumberOfDegaussSteps() const;
 		std::vector<double> getDegaussValues() const;
 		double getDegaussTolerance() const;
 		double getMagneticLength() const;
 		std::string getFullPSUName() const;
 		std::string getMeasurementDataLocation() const;
+		
+		
+		double getRITolerance() const;
+
+		
 		bool setCurrent(const double &value);
 		bool setEPICSCurrent(const double &value);
 		bool setPSUState(const STATE& value);
@@ -52,6 +56,8 @@ class Magnet : public Hardware
 		double getRICurrent() const;
 		double getCurrent() const;
 		STATE getPSUState() const;
+
+
 
 
 	protected:
