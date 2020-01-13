@@ -54,8 +54,8 @@ class MagnetFactory
 		bool turnOffAllMagnets();
 		
 		STATE getPSUState(const std::string& name) const;
-		std::map<std::string, STATE> MagnetFactory::getAllPSUState() const;
-		boost::python::dict MagnetFactory::getAllPSUState_Py() const;
+		std::map<std::string, STATE> getAllPSUState() const;
+		boost::python::dict getAllPSUState_Py() const;
 
 
 
