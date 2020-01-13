@@ -16,15 +16,29 @@
 
 bool LoggingSystem::debugOn = false;
 bool LoggingSystem::messageOn = false;
+std::ostringstream LoggingSystem::cache;
 
 LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     LoggingSystem::debugOn = debugState;
     LoggingSystem::messageOn = messageState;
 }
+LoggingSystem::LoggingSystem(const LoggingSystem& messenger)
+{
+	debugOn = messenger.debugOn;
+	messageOn = messenger.messageOn;
+	cache << messenger.cache.rdbuf();
+}
 // Get methods for debugging and message state
 bool LoggingSystem::isDebugOn()
 {
     return debugOn;
+}
+void LoggingSystem::dumpToFile(std::string filename)
+{
+	FILE* outFile;
+	outFile = fopen(filename.c_str(), "w");
+	std::cout << "CACHE: " << cache.str() << std::endl;
+	fprintf(outFile, "%s \n", cache.str().c_str());
 }
 bool LoggingSystem::isMessagingOn()
 {

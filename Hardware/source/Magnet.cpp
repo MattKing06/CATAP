@@ -124,35 +124,6 @@ STATE Magnet::getPSUState() const
 	return psuState;
 }
 
-void Magnet::debugMessagesOff()
-{
-	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
-	messenger.debugMessagesOff();
-	epicsInterface->debugMessagesOff();
-}
-
-void Magnet::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
-	epicsInterface->debugMessagesOn();
-}
-
-void Magnet::messagesOff()
-{
-	messenger.printMessage(hardwareName, " - MESSAGES OFF");
-	messenger.messagesOff();
-	epicsInterface->messagesOff();
-}
-
-void Magnet::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
-	epicsInterface->messagesOn();
-}
-
-
 bool Magnet::setEPICSPSUState(const STATE& value)
 {
 	std::map<std::string, pvStruct>& pvData = getPVStructs();
@@ -189,5 +160,34 @@ int Magnet::getILKState() const
 {
 	return ilkState;
 }
+
+void Magnet::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+}
+
+void Magnet::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
+}
+
+void Magnet::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Magnet::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
+}
+
 
 

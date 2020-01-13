@@ -157,12 +157,6 @@ public:
 	boost::python::dict getAllResolution_Py();
 	boost::python::dict getAllPosition_Py();
 	boost::python::dict reCalAllAttenuation_Py(const double& charge);
-	bool isMessagingOn();
-	bool isDebugOn();
-	void messagesOn();
-	void messagesOff();
-	void debugMessagesOn();
-	void debugMessagesOff();
 };
 
 

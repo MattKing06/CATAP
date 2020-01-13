@@ -71,6 +71,30 @@ std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() con
 	return specificHardwareParameters;
 }
 
+bool Hardware::operator==(Hardware rhs)
+{
+	auto LHSPVStructs = this->getPVStructs();
+	auto RHSPVStructs = rhs.getPVStructs();
+	if (LHSPVStructs.size() != RHSPVStructs.size())
+	{
+		return false;
+	}
+	else
+	{
+		// go through entries in the LHS map
+		for (auto &value : LHSPVStructs)
+		{
+			//if our value in LHS != the value found for RHS[key]
+			// we cannot have equal PV structs so we return false
+			if (value.second != RHSPVStructs[value.first])
+			{
+				return false;
+			}
+		}
+	}
+	//otherwise, return true
+	return true;
+}
 void Hardware::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -105,27 +129,3 @@ bool Hardware::isDebugOn()
 	return messenger.isDebugOn();
 }
 
-bool Hardware::operator==(Hardware rhs)
-{
-	auto LHSPVStructs = this->getPVStructs();
-	auto RHSPVStructs = rhs.getPVStructs();
-	if (LHSPVStructs.size() != RHSPVStructs.size())
-	{
-		return false;
-	}
-	else
-	{
-		// go through entries in the LHS map
-		for (auto &value : LHSPVStructs)
-		{
-			//if our value in LHS != the value found for RHS[key]
-			// we cannot have equal PV structs so we return false
-			if (value.second != RHSPVStructs[value.first])
-			{
-				return false;
-			}
-		}
-	}
-	//otherwise, return true
-	return true;
-}

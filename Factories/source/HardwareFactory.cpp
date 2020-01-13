@@ -92,7 +92,6 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		}
 		else
 		{
-			messenger.messagesOn();
 			messenger.printMessage("Unable to setup ChargeFactory");
 		}
 	}
@@ -101,13 +100,6 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		return chargeFactory;
 	}
 
-}
-
-bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
-{
-	/*return(HardwareFactory::HardwareFactory_name.compare(HardwareFactory.HardwareFactory_name)
-		&& HardwareFactory::HardwareFactory_type.compare(HardwareFactory.HardwareFactory_type));*/
-	return true;
 }
 
 void HardwareFactory::debugMessagesOn()
@@ -146,4 +138,12 @@ bool HardwareFactory::isMessagingOn()
 bool HardwareFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
+}
+
+
+bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
+{
+	/*return(HardwareFactory::HardwareFactory_name.compare(HardwareFactory.HardwareFactory_name)
+		&& HardwareFactory::HardwareFactory_type.compare(HardwareFactory.HardwareFactory_type));*/
+	return true;
 }

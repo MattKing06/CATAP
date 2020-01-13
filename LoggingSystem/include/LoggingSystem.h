@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 #include <initializer_list>
-
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
 
@@ -13,13 +12,16 @@ class LoggingSystem
 public:
 	LoggingSystem() { debugOn = false; messageOn = false; }
 	LoggingSystem(bool debugState, bool messageState);
+	LoggingSystem(const LoggingSystem& messenger);
 	static void debugMessagesOn();
 	static void debugMessagesOff();
 	static void messagesOn();
 	static void messagesOff();
 	static bool isMessagingOn();
 	static bool isDebugOn();
+	static void dumpToFile(std::string filename);
 	std::string getCurrentDateAndTimeString() const;
+	static std::ostringstream cache;
 
 	template<typename T>
 	void generateStringStream(std::ostream& os, T t)
@@ -41,6 +43,7 @@ public:
 			std::ostringstream oss;
 			generateStringStream(oss, args...);
 			std::ios::sync_with_stdio(true);
+			cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s \n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
 		}
 	}
@@ -53,6 +56,7 @@ public:
 			std::ostringstream oss;
 			generateStringStream(oss, args...);
 			std::ios::sync_with_stdio(true);
+			cache << getCurrentDateAndTimeString().c_str() <<  DEBUG << " " <<  oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
 	}

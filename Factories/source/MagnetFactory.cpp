@@ -246,6 +246,7 @@ bool MagnetFactory::setCurrents(const std::map<std::string, double> &namesAndCur
 }
 bool MagnetFactory::turnOn(const std::string& name)
 {
+	messenger.printDebugMessage("TURNING ", name, " ON");
 	return magnetMap.at(name).setEPICSPSUState(STATE::ON);
 }
 bool MagnetFactory::turnOn(const std::vector<std::string>& names)
@@ -258,6 +259,7 @@ bool MagnetFactory::turnOn(const std::vector<std::string>& names)
 }
 bool MagnetFactory::turnOff(const std::string& name)
 {
+	messenger.printDebugMessage("TURNING ", name, " OFF");
 	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
 }
 bool MagnetFactory::turnOff(const std::vector<std::string>& names)
@@ -289,6 +291,24 @@ bool MagnetFactory::turnOff_Py(boost::python::list names)
 	return turnOff(namesVector);
 
 }
+
+bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
+{
+	std::map<std::string, double> magnetNamesAndCurrentsToSet;
+	std::vector<std::string> magnetNames = to_std_vector<std::string>(magnetNamesAndCurrents.keys());
+	std::vector<double> currentsToSet = to_std_vector<double>(magnetNamesAndCurrents.values());
+	auto magnetNamesIterator = magnetNames.begin();
+	auto currentsToSetIterator = currentsToSet.begin();
+	while (magnetNamesIterator != magnetNames.end() && currentsToSetIterator != currentsToSet.end())
+	{
+		std::pair<std::string, double> entryToInsert = std::pair<std::string, double>(magnetNamesIterator->data(), *currentsToSetIterator);
+		magnetNamesAndCurrentsToSet.emplace(entryToInsert);
+		magnetNamesIterator++;
+		currentsToSetIterator++;
+	}
+	return setCurrents(magnetNamesAndCurrentsToSet);
+}
+
 void MagnetFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -337,19 +357,4 @@ bool MagnetFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }
-bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
-{
-	std::map<std::string, double> magnetNamesAndCurrentsToSet;
-	std::vector<std::string> magnetNames = to_std_vector<std::string>(magnetNamesAndCurrents.keys());
-	std::vector<double> currentsToSet = to_std_vector<double>(magnetNamesAndCurrents.values());
-	auto magnetNamesIterator = magnetNames.begin();
-	auto currentsToSetIterator = currentsToSet.begin();
-	while (magnetNamesIterator != magnetNames.end() && currentsToSetIterator != currentsToSet.end())
-	{
-		std::pair<std::string, double> entryToInsert = std::pair<std::string, double>(magnetNamesIterator->data(), *currentsToSetIterator);
-		magnetNamesAndCurrentsToSet.emplace(entryToInsert);
-		magnetNamesIterator++;
-		currentsToSetIterator++;
-	}
-	return setCurrents(magnetNamesAndCurrentsToSet);
-}
+
