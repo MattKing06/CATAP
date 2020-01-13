@@ -3,10 +3,12 @@ message("Processing Utilities source files...")
 set(SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
+    source/GlobalFunctions.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
      include/GlobalStateEnums.h
+     include/GlobalFunctions.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
