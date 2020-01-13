@@ -31,7 +31,7 @@
 #include "ConfigReader.h"
 #include <vector>
 #include <map>
-#include "..\include\PythonInterface.h"
+
 
 
 
