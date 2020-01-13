@@ -3,6 +3,8 @@
 		ALL IN ONE PLACE, SO WE DON'T HAVE TO
 		LINK EVERY CLASS WITH BOOST.PYTHON.
 		HOPEFULLY, IT SHOULD ALL HAPPEN HERE.
+
+		// This should include all the different HardwarePythonInterface.cpp files
 */
 
 #ifdef PYTHON_INTERFACE_EXPORTS
@@ -11,15 +13,17 @@
 #define PYTHON_INTERFACE_API __declspec(dllimport)
 #endif 
 
-#include <boost/python.hpp>
+
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/enum.hpp>
 #include "LoggingSystem.h"
 #include "Hardware.h"
 #include "HardwareFactory.h"
-#include "Magnet.h"
-#include "MagnetFactory.h"
+#include "MagnetPythonInterface.h"
+
+//#include "Magnet.h"
+//#include "MagnetFactory.h"
 #include "BPM.h"
 #include "BPMFactory.h"
 #include "Charge.h"
@@ -27,6 +31,8 @@
 #include "ConfigReader.h"
 #include <vector>
 #include <map>
+#include "..\include\PythonInterface.h"
+
 
 
 BOOST_PYTHON_MODULE(CATAP)
@@ -34,7 +40,11 @@ BOOST_PYTHON_MODULE(CATAP)
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
 		.value("ON", STATE::ON)
-		.value("OFF", STATE::OFF);
+		.value("OFF", STATE::OFF)
+		.value("ERROR", STATE::ERROR)
+		.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
+		.value("SUCCESS", STATE::SUCCESS)
+		;
 	//boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
 	//	.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
 	//	.def("debugMessagesOff", &EPICSInterface::debugMessagesOff)
@@ -54,19 +64,26 @@ BOOST_PYTHON_MODULE(CATAP)
 		//.def("messagesOn", &Hardware::messagesOn)
 		//.def("messagesOff", &Hardware::messagesOff)
 		.def("getSpecificHardwareParameters", &Hardware::getSpecificHardwareParameters);
-	// Magnet Exposure
-	boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
-		.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
-		.add_property("psu_state", &Magnet::getPSUState, &Magnet::setEPICSPSUState)
-		.add_property("ri_current", &Magnet::RICurrent)
-		.add_property("name", &Magnet::getHardwareName)
-		.add_property("manufacturer", &Magnet::getManufacturer)
-		.add_property("serial_number", &Magnet::getSerialNumber)
-		.add_property("magnet_type", &Magnet::getMagnetType)
-		.add_property("epicsInterface", &Magnet::epicsInterface)
-		.def("getCurrent", &Magnet::getCurrent)
-		.def("setCurrent", &Magnet::setEPICSCurrent)
-		.def("getRICurrent", &Magnet::getRICurrent);
+
+
+	// expose magnet object and magnetfactoryobejct
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
+
+
+	//// Magnet Exposure
+	//boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
+	//	.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
+	//	.add_property("psu_state", &Magnet::getPSUState, &Magnet::setEPICSPSUState)
+	//	.add_property("ri_current", &Magnet::RICurrent)
+	//	.add_property("name", &Magnet::getHardwareName)
+	//	.add_property("manufacturer", &Magnet::getManufacturer)
+	//	.add_property("serial_number", &Magnet::getSerialNumber)
+	//	.add_property("magnet_type", &Magnet::getMagnetType)
+	//	.add_property("epicsInterface", &Magnet::epicsInterface)
+	//	.def("getCurrent", &Magnet::getCurrent)
+	//	.def("setCurrent", &Magnet::setEPICSCurrent)
+	//	.def("getRICurrent", &Magnet::getRICurrent);
 	// BPM Exposure
 	boost::python::class_<BPM, boost::python::bases<Hardware>, boost::noncopyable>("BPM", boost::python::no_init)
 		.add_property("name", &BPM::getBPMName)
@@ -151,33 +168,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::vector< double > > >());
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
-
-	//Magnet Factory Exposure
-	bool(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::turnOn;
-	bool(MagnetFactory:: * turnOffSingle)(const std::string&) = &MagnetFactory::turnOff;
-	boost::python::class_<MagnetFactory>("MagnetFactory", boost::python::no_init)
-		.def(boost::python::init<bool>())
-		.def("setup", &MagnetFactory::setup)
-		.add_property("magnetMap", &MagnetFactory::magnetMap)
-		.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
-		.def("getMagnets", &MagnetFactory::getMagnets)
-		.def("getAllMagnets", &MagnetFactory::getAllMagnets)
-		.def("getCurrent", &MagnetFactory::getCurrent)
-		.def("getCurrents", &MagnetFactory::getCurrents_Py)
-		.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents_Py)
-		.def("setCurrent", &MagnetFactory::setCurrent)
-		.def("setCurrents", &MagnetFactory::setCurrents_Py)
-		.def("getRICurrent", &MagnetFactory::getRICurrent)
-		.def("getRICurrents", &MagnetFactory::getRICurrents_Py)
-		.def("turnOn", turnOnSingle)
-		.def("turnOn", &MagnetFactory::turnOn_Py)
-		.def("turnOff", turnOffSingle)
-		.def("turnOff", &MagnetFactory::turnOff_Py);
-		//.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
-		//.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
-		//.def("messagesOn", &MagnetFactory::messagesOn)
-		//.def("messagesOff", &MagnetFactory::messagesOff);
-		//BPM Factory Exposure
+	
+	//BPM Factory Exposure
 		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 		.def(boost::python::init<bool>())
 		.def("setup", &BPMFactory::setup)

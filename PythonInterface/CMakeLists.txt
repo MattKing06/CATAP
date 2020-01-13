@@ -1,10 +1,12 @@
 message( "Processing Python Interface source files...")
 set( SOURCE_FILES
     source/PythonInterface.cpp 
+    source/MagnetPythonInterface.cpp 
 )
 
 set( INCLUDE_FILES
     include/PythonInterface.h 
+    include/MagnetPythonInterface.h 
 )
 
 set( TEST_FILES
