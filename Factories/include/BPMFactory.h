@@ -24,6 +24,12 @@ public:
 	//BPMFactory(std::string version);
 	bool setup(const std::string& version);
     LoggingSystem messenger;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isDebugOn();
+	bool isMessagingOn();
 	ConfigReader reader;
 	BPM& getBPM(const std::string& fullBPMName);
 	std::map<std::string, BPM> getBPMs(std::vector<std::string> bpmNames);
