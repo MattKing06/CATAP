@@ -12,17 +12,21 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 
 LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
 
-ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), isVirtual(false), hardwareFolder("")
+ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), 
+mode(STATE::OFFLINE), hardwareFolder("")
 {
+	std::cout << "Constructor ConfigReader() called " << std::endl;
 	// since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
 	initialiseFilenameAndParsedStatusMap();
 }
 
-ConfigReader::ConfigReader(const std::string &hardwareType, const bool &isVirtual) : isVirtual(isVirtual),
+ConfigReader::ConfigReader(const std::string &hardwareType, const STATE& mode) : 
+	mode(mode),
 hardwareFolder(hardwareType)
 {
+	std::cout << "Constructor ConfigReader(const std::string &hardwareType, const STATE& mode) called " << std::endl;
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 	initialiseFilenameAndParsedStatusMap();
 
@@ -37,6 +41,8 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 		if (filename != templateFilename)
 		{
 			yamlFilenamesAndParsedStatusMap.emplace(std::pair<std::string, bool>(filename, false));
+
+			std::cout << "found " << filename << std::endl;
 		}
 
 	}
@@ -121,6 +127,7 @@ bool ConfigReader::hasMoreFilesToParse() const
 			return true;
 		}
 	}
+	std::cout << "hasMoreFilesToParse() has no more files to parse " << std::endl;
 	return false;
 }
 
@@ -159,14 +166,23 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		std::string controlRecords = controlsInformation["records"].as<std::string>();
 		boost::trim_left(controlRecords);
 		std::pair<std::string, std::string> pvAndRecordPair;
-		if (this->isVirtual)
+		
+		// mode tells us if we are physical, virtual or offline 
+		// which tells us what the 
+		if(mode == STATE::VIRTUAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
+			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
-		else
+		else if (mode == STATE::PHYSICAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["name"].as<std::string>(), controlRecords);
+			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
+		//else
+		//{ 
+		//	mode = STATE::OFFLINE;
+		//}
 		return pvAndRecordPair;
 	}
 	else
