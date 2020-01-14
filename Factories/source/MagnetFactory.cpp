@@ -311,7 +311,6 @@ bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
 
 void MagnetFactory::debugMessagesOn()
 {
-	std::cout << " MAGFAC DEBUG ON STATUS : " << messenger.isDebugOn() << std::endl;
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("MAG-FAC - DEBUG ON");
 	reader.debugMessagesOn();

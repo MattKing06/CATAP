@@ -17,12 +17,10 @@ HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
 	bool setup = false;
-	std::cout << "HARDWARE SETUP CALLED " << std::endl;
 	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
 		{
-			std::cout << "MAG FAC SETUP CALLED " << std::endl;
 			setup = magnetFactory.setup(version);
 		}
 	}
