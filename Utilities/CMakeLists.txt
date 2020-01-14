@@ -9,6 +9,9 @@ set( INCLUDE_FILES
      include/PythonTypeConversions.h
      include/GlobalStateEnums.h
      include/GlobalFunctions.h
+     include/GlobalConstants.h
+     include/GlobalConstants.h
+     include/GlobalConstants.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)

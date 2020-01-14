@@ -28,6 +28,10 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(STATE, (OFF)
                                            (ERROR)
                                            (UNKNOWN_NAME)
                                            (SUCCESS)
+                                           (OFFLINE)
+                                           (PHYSICAL)
+                                           (VIRTUAL)
+
 
 )
 

@@ -49,4 +49,17 @@ boost::python::dict to_py_dict(std::map<key, value> map)
 	return newDictionary;
 }
 
+//template<class key, class value>
+//inline
+//boost::python::dict to_py_dict_ref(std::map<key, value> map)
+//{
+//	typename std::map<key, value>::iterator iter;
+//	boost::python::dict newDictionary;
+//	for (iter = map.begin(); iter != map.end(); ++iter)
+//	{
+//		newDictionary[iter->first] = &(iter->second);
+//	}
+//	return newDictionary;
+//}
+
 #endif
