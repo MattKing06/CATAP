@@ -22,7 +22,8 @@ public:
 	void messagesOff();
 	bool isMessagingOn() const;
 	bool isDebugOn() const;
-	void dumpToFile(std::string filename);
+	static std::ostringstream cache;
+	static void dumpToFile(std::string filename);
 	std::string getCurrentDateAndTimeString() const;
 
 	template<typename T>
@@ -40,30 +41,27 @@ public:
 	template<typename... Args>
 	void printMessage(Args... args)
 	{
+		std::ostringstream oss;
+		generateStringStream(oss, args...);
+		std::ios::sync_with_stdio(true);
 		if (messageOn)
 		{
-			std::ostringstream oss;
-			generateStringStream(oss, args...);
-			std::ios::sync_with_stdio(true);
-			cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s \n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
 		}
+		LoggingSystem::cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
 	}
 
 	template<typename... Args>
 	void printDebugMessage(Args... args)
 	{
+		std::ostringstream oss;
+		generateStringStream(oss, args...);
+		std::ios::sync_with_stdio(true);
 		if (debugOn)
 		{
-			std::ostringstream oss;
-			generateStringStream(oss, args...);
-			std::ios::sync_with_stdio(true);
-			cache << getCurrentDateAndTimeString().c_str() <<  DEBUG << " " <<  oss.str().c_str() << std::endl;
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
+		LoggingSystem::cache << getCurrentDateAndTimeString().c_str() << DEBUG << " " << oss.str().c_str() << std::endl;
 	}
-
-private:
-	static std::ostringstream cache;
 };
 #endif // LOGGING_SYSTEM_H_

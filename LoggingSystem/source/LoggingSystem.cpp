@@ -25,14 +25,13 @@ LoggingSystem::LoggingSystem(const LoggingSystem& messenger)
 {
 	debugOn = messenger.debugOn;
 	messageOn = messenger.messageOn;
-	cache << messenger.cache.rdbuf();
 }
 
 void LoggingSystem::dumpToFile(std::string filename)
 {
 	FILE* outFile;
 	outFile = fopen(filename.c_str(), "w");
-	fprintf(outFile, "%s \n", cache.str().c_str());
+	fprintf(outFile, "%s \n", LoggingSystem::cache.str().c_str());
 }
 
 // Get methods for debugging and message state
