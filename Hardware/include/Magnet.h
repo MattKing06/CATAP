@@ -20,16 +20,16 @@ class Magnet : public Hardware
 		Magnet();
 		//should need a magnet name (full PV root, or alias can be given)
 		//Magnet(Hardware hardware); // this should be possible, but isn't useful right now.
-		Magnet(std::string knownNameOfMagnet);
-		Magnet(const std::map<std::string, std::string>& magnetParametersAndValuesMap, bool isVirtual);
+		//Magnet(std::string knownNameOfMagnet);
+		
+		Magnet(const std::map<std::string, std::string>& magnetParametersAndValuesMap, STATE mode);
 		Magnet(const Magnet& copyMagnet);
 		EPICSMagnetInterface_sptr epicsInterface;
-		double current;
-		STATE psuState;
-		double RICurrent;
-		int ilkState;
+		
+
+
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
-		bool isVirtual;
+		
 		std::vector<std::string> getAliases() const;
 		std::string getManufacturer() const;
 		int getSerialNumber() const;
@@ -45,19 +45,31 @@ class Magnet : public Hardware
 		
 		double getRITolerance() const;
 
+		// Set A current
+		void SETI(const double& value);
+		void setEPICSSETI(const double &value);
+		void offlineSETI(const double& value);
 		
-		bool setCurrent(const double &value);
-		bool setEPICSCurrent(const double &value);
+		// called from EPICS to update the GETSETI variable! 
+		void updateGETSETI(const double& value);
+
+
+		
 		bool setPSUState(const STATE& value);
 		bool setEPICSPSUState(const STATE& value);
-		bool setRICurrent(const double &value);
-		bool setILKState(const int& value);
-		int getILKState() const;
-		double getRICurrent() const;
-		double getCurrent() const;
+		
+		
+		void setREADI(const double &value);
+		double getREADI() const;
+
+		
+		bool setILKState(const STATE& value);
+		STATE getILKState() const;
 		STATE getPSUState() const;
 
 
+		double getSETI() const;
+		
 
 
 	protected:
@@ -78,6 +90,18 @@ class Magnet : public Hardware
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;
 		//(inherited) LoggingSystem messenger;
+
+		// variables should be private 
+		double READI;
+		STATE psuState;
+		
+		// WE NEVER MONITOR THIS IT IS JUST USED FO RCAPUT
+		//double SETI;
+		
+		double GETSETI;
+		STATE ilkState; // This should be a state?? 
+		
+		//STATE mode;
 
 };
 

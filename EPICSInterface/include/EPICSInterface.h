@@ -73,6 +73,9 @@ public:
 		const std::string& objectName
 		// map_ilck_pvstruct& ILockPVStructs,
 	);
+	
+	
+	// TODO: what should this function return? and how should that get passed to Python users??? 
 	template<typename T>
 	void putValue(const pvStruct& pvStruct, const T& value) const
 	{
