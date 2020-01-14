@@ -21,14 +21,16 @@ public:
 	//should need a BPM name (full PV root, or alias can be given)
 	//BPM(Hardware hardware); // this should be possible, but isn't useful right now.
 	BPM(std::string knownNameOfBPM);
-	BPM(const std::map<std::string, std::string>& bpmParametersAndValuesMap, bool isVirtual);
+	BPM(const std::map<std::string, std::string>& bpmParametersAndValuesMap, STATE mode);
 	BPM(const BPM& copyBPM);
 	EPICSBPMInterface_sptr epicsInterface;
 	std::string getBPMName() const;
 	std::vector<std::string> getAliases() const;
 	std::string getBPMType() const;
 	std::map<std::string, std::string> bpmParametersAndValuesMap;
-	bool isVirtual;
+	
+	//bool isVirtual;
+	
 	bool monitoringData = false;
 	bool isMonitoring() const;
 	bool isMonitoringData() const;

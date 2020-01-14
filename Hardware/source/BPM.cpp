@@ -13,8 +13,8 @@
 BPM::BPM()
 {}
 
-	BPM::BPM(const std::map<std::string, std::string> & paramsMap, bool isVirtual) :
-	Hardware(paramsMap, isVirtual),
+	BPM::BPM(const std::map<std::string, std::string> & paramsMap, STATE mode) :
+	Hardware(paramsMap, mode),
 	bpmType(paramsMap.find("bpm_type")->second),
 	name(paramsMap.find("name")->second),
 	att1cal(std::stol(paramsMap.find("att1cal")->second)),

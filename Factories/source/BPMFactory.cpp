@@ -8,20 +8,23 @@
 #include <cadef.h>
 #endif
 
-BPMFactory::BPMFactory() : BPMFactory(false)
+BPMFactory::BPMFactory() : BPMFactory(STATE::OFFLINE)
 {
 }
-BPMFactory::BPMFactory(bool isVirtual)
+BPMFactory::BPMFactory(STATE mode):
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("BPM", mode))
 {
 	messenger = LoggingSystem(true, true);
-	hasBeenSetup = false;
+	//hasBeenSetup = false;
 	messenger.printDebugMessage("BPM Factory Constructed");
-	isVirtual = isVirtual;
-	reader = ConfigReader("BPM", isVirtual);
+	//mode = mode;
+	//reader = ConfigReader("BPM", mode);
 }
 BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
 	: hasBeenSetup(copyBPMFactory.hasBeenSetup),
-	isVirtual(copyBPMFactory.isVirtual),
+	mode(copyBPMFactory.mode),
 	messenger(copyBPMFactory.messenger),
 	reader(copyBPMFactory.reader)
 {
@@ -88,7 +91,7 @@ bool BPMFactory::setup(const std::string& version)
 	{
 		return true;
 	}
-	if (this->isVirtual)
+	if (mode == STATE::VIRTUAL)
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}

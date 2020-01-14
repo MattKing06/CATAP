@@ -16,7 +16,7 @@ class ChargeFactory
 {
 	public:
 		ChargeFactory();
-		ChargeFactory(bool isVirtual);
+		ChargeFactory(STATE mode);
 		ChargeFactory(const ChargeFactory& copyChargeFactory);
 		~ChargeFactory();
 		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
@@ -34,7 +34,9 @@ class ChargeFactory
 		void monitorForNShots(const std::string& name, const size_t& value);
 		void monitorMultipleForNShots(const std::vector< std::string >& name, const size_t& value);
 		bool hasBeenSetup;
-		bool isVirtual;
+		
+		STATE mode;
+		
 		bool isMonitoringQ(const std::string& name);
 		bool isMonitoring(const std::string& name);
 		std::map<std::string, double> getQs(const std::vector<std::string>& names);

@@ -13,8 +13,8 @@
 Charge::Charge()
 {}
 
-Charge::Charge(const std::map<std::string, std::string>& paramsMap, bool isVirtual) :
-Hardware(paramsMap, isVirtual),
+Charge::Charge(const std::map<std::string, std::string>& paramsMap, STATE mode) :
+Hardware(paramsMap, mode),
 chargeType(paramsMap.find("charge_type")->second),
 name(paramsMap.find("name")->second),
 position(std::stod(paramsMap.find("position")->second))
