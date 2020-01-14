@@ -287,6 +287,9 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("messagesOff", &HardwareFactory::messagesOff);
 
 
+	boost::python::object dumpToFile_Py = boost::python::make_function(&LoggingSystem::dumpToFile);
+	boost::python::def("dumpToFile", dumpToFile_Py);
+
 
 
 	/*NOT SURE IF THESE NEED TO BE EXPOSED OR NOT*/
