@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_put_and_get_value_test)
 	}
 	else
 	{
-		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 
@@ -67,6 +67,6 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_monitor_channel_type_test)
 	}
 	else
 	{
-		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }

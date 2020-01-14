@@ -8,8 +8,8 @@
 
 BOOST_AUTO_TEST_CASE(check_chid_state_from_epics_interface_test)
 {
-	LoggingSystem::messagesOn();
 	EPICSInterface epicsInterface = EPICSInterface();
+	epicsInterface.messagesOn();
 	pvStruct pv;
 	pv.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
 	pv.pvRecord = "READI";
@@ -21,13 +21,14 @@ BOOST_AUTO_TEST_CASE(check_chid_state_from_epics_interface_test)
 	}
 	else
 	{
-		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 
 BOOST_AUTO_TEST_CASE(check_put_value_from_epics_interface_test)
 {
 	EPICSInterface epicsInterface = EPICSInterface();
+	epicsInterface.messagesOn();
 	pvStruct pvToSet;
 	pvToSet.fullPVName = "VM-CLA-C2V-MAG-VCOR-01";
 	pvToSet.pvRecord = "SETI";
@@ -46,6 +47,6 @@ BOOST_AUTO_TEST_CASE(check_put_value_from_epics_interface_test)
 	}
 	else
 	{
-		LoggingSystem::printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
