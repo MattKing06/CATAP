@@ -22,7 +22,7 @@ ChargeFactory::ChargeFactory() : ChargeFactory(false)
 }
 ChargeFactory::ChargeFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("Charge Factory Constructed");
 	isVirtual = isVirtual;
@@ -31,7 +31,6 @@ ChargeFactory::ChargeFactory(bool isVirtual)
 ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 	: hasBeenSetup(copyChargeFactory.hasBeenSetup),
 	isVirtual(copyChargeFactory.isVirtual),
-	messenger(copyChargeFactory.messenger),
 	reader(copyChargeFactory.reader)
 {
 	chargeMap.insert(copyChargeFactory.chargeMap.begin(), copyChargeFactory.chargeMap.end());

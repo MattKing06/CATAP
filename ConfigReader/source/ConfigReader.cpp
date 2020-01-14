@@ -10,8 +10,6 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "BPM", "Beam Position Monitor" }
 };
 
-LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
-
 ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), isVirtual(false), hardwareFolder("")
 {
 	// since we have not specified a hardware component

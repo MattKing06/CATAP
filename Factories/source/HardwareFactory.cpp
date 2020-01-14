@@ -8,7 +8,6 @@ HardwareFactory::~HardwareFactory()
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
-	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage("Hardware Factory Constructed");
 	isVirtual = createVirtualHardwareFactory;
 	magnetFactory = MagnetFactory(isVirtual);
@@ -18,10 +17,12 @@ HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
 	bool setup = false;
+	std::cout << "HARDWARE SETUP CALLED " << std::endl;
 	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
 		{
+			std::cout << "MAG FAC SETUP CALLED " << std::endl;
 			setup = magnetFactory.setup(version);
 		}
 	}
@@ -55,10 +56,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 			messenger.printMessage("Unable to setup MagnetFactory");
 		}
 	}
-	else
-	{
-		return magnetFactory;
-	}
+	return magnetFactory;
 
 }
 BPMFactory& HardwareFactory::getBPMFactory()
@@ -75,10 +73,7 @@ BPMFactory& HardwareFactory::getBPMFactory()
 			messenger.printMessage("Unable to setup BPMFactory");
 		}
 	}
-	else
-	{
-		return bpmFactory;
-	}
+	return bpmFactory;
 
 }
 ChargeFactory& HardwareFactory::getChargeFactory()
@@ -95,10 +90,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 			messenger.printMessage("Unable to setup ChargeFactory");
 		}
 	}
-	else
-	{
-		return chargeFactory;
-	}
+	return chargeFactory;
 
 }
 
@@ -139,7 +131,6 @@ bool HardwareFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
-
 
 bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 {

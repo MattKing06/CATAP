@@ -52,11 +52,10 @@ class Magnet : public Hardware
 		double getRICurrent() const;
 		double getCurrent() const;
 		STATE getPSUState() const;
-		void debugMessagesOff() override;
-		void debugMessagesOn() override;
-		void messagesOff() override;
-		void messagesOn() override;
-
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
 
 	protected:
 		//what else does a magnet need?
@@ -75,7 +74,6 @@ class Magnet : public Hardware
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;
-		//(inherited) LoggingSystem messenger;
 
 };
 

@@ -61,7 +61,7 @@ std::vector< double > Charge::getQVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	messenger.printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }

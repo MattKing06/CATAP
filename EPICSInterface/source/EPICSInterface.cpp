@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstring>
 
+
 EPICSInterface::EPICSInterface()
 {
 	int status;
@@ -19,15 +20,9 @@ EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualM
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(false, false);
 }
 
-EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine, LoggingSystem& messenger)
-{
-	EPICSInterface::shouldStartEpics = startEpics;
-	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	EPICSInterface::messenger = messenger;
-}
 EPICSInterface::~EPICSInterface()
 {
 	messenger.printDebugMessage("EPICSInterface Destructor Called");

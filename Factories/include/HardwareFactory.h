@@ -34,8 +34,8 @@ public:
 	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
 	bool isVirtual;
-private:
 	LoggingSystem messenger;
+
 };
 
 

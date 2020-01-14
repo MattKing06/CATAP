@@ -29,6 +29,7 @@ public:
 	virtual void messagesOff();
 	bool isMessagingOn();
 	bool isDebugOn();
+
 // need to sort out private/protected access for these variables
 	std::string machineArea;
 	std::string hardwareType;
@@ -36,7 +37,6 @@ public:
 	bool isVirtual;
 	std::map<std::string, pvStruct> pvStructs;
 	std::map<std::string, std::string> specificHardwareParameters;
-protected:
 	LoggingSystem messenger;
 
 };

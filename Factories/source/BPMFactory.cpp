@@ -13,7 +13,7 @@ BPMFactory::BPMFactory() : BPMFactory(false)
 }
 BPMFactory::BPMFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("BPM Factory Constructed");
 	isVirtual = isVirtual;
@@ -22,7 +22,6 @@ BPMFactory::BPMFactory(bool isVirtual)
 BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
 	: hasBeenSetup(copyBPMFactory.hasBeenSetup),
 	isVirtual(copyBPMFactory.isVirtual),
-	messenger(copyBPMFactory.messenger),
 	reader(copyBPMFactory.reader)
 {
 	bpmMap.insert(copyBPMFactory.bpmMap.begin(), copyBPMFactory.bpmMap.end());

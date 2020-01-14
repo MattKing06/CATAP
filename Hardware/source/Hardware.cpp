@@ -9,7 +9,6 @@ Hardware::Hardware()
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, bool isVirtual = false) :
 isVirtual(isVirtual),
-messenger(LoggingSystem(false,false)),
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
@@ -43,7 +42,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
-messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
+hardwareType(copyHardware.hardwareType),
 machineArea(copyHardware.machineArea), isVirtual(copyHardware.isVirtual)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
@@ -95,6 +94,7 @@ bool Hardware::operator==(Hardware rhs)
 	//otherwise, return true
 	return true;
 }
+
 void Hardware::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

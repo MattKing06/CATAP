@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <initializer_list>
+#include <time.h>
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
 
@@ -13,15 +14,16 @@ public:
 	LoggingSystem() { debugOn = false; messageOn = false; }
 	LoggingSystem(bool debugState, bool messageState);
 	LoggingSystem(const LoggingSystem& messenger);
-	static void debugMessagesOn();
-	static void debugMessagesOff();
-	static void messagesOn();
-	static void messagesOff();
-	static bool isMessagingOn();
-	static bool isDebugOn();
-	static void dumpToFile(std::string filename);
+	bool debugOn;
+	bool messageOn;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn() const;
+	bool isDebugOn() const;
+	void dumpToFile(std::string filename);
 	std::string getCurrentDateAndTimeString() const;
-	static std::ostringstream cache;
 
 	template<typename T>
 	void generateStringStream(std::ostream& os, T t)
@@ -60,7 +62,8 @@ public:
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
 	}
-	static bool debugOn;
-	static bool messageOn;
+
+private:
+	static std::ostringstream cache;
 };
 #endif // LOGGING_SYSTEM_H_

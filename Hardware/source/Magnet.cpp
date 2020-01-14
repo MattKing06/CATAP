@@ -31,6 +31,7 @@ magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 	epicsInterface->ownerName = hardwareName;
+	messenger = LoggingSystem(false, false);
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
 manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),

@@ -33,10 +33,10 @@ class EPICSInterface
 public:
 	EPICSInterface();
 	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine);
-	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine, LoggingSystem& messaging);
 	~EPICSInterface();
 	double get_CA_PEND_IO_TIMEOUT() const;
 	std::string ownerName;
+	LoggingSystem messenger;
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -89,7 +89,6 @@ public:
 protected:
 	bool shouldStartEpics = true;
 	bool shouldStartVirtualMachine = true;
-	LoggingSystem messenger;
 	unsigned short EPICS_ACTIVATE, EPICS_SEND, EPICS_RESET;
 
 	// some other stuff might be needed here, need to check interface.h from VELA-CLARA Controllers
