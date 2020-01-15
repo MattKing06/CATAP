@@ -23,6 +23,8 @@ const std::string SEPARATOR = "\\";
 class ConfigReader
 {
 public:
+	ConfigReader(const std::string& hardwareType, const bool& isVirtual);
+	ConfigReader();
 	std::string yamlFileDestination;
 	std::string yamlFilename;
 	std::string hardwareFolder;
@@ -33,9 +35,13 @@ public:
 	// these are currently hard-coded, we should get the folder names from
 	// MasterLattice directory to initialize the map
 	const static std::map<std::string, std::string> allowedHardwareTypes;
-
-	ConfigReader(const std::string &hardwareType, const bool &isVirtual);
-	ConfigReader();
+	LoggingSystem messenger;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 	std::string getHardwareTypeFromName(const std::string &fullPVName) const;
 	bool checkForValidTemplate(const YAML::Node &hardwareTemplate, const YAML::Node &hardwareComponent) const;
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string &version);
@@ -60,7 +66,7 @@ public:
 	}
 
 	template<typename HardwareType>
-	void parseYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill) const
+	void parseYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
 	{
 		std::ifstream fileInput;
 		YAML::Node config;
@@ -120,7 +126,5 @@ public:
 			messenger.printMessage(std::string(ConvervsionException.what()));
 		}
 	}
-protected:
-	static LoggingSystem messenger;
 };
 #endif //CONFIG_READER_H_

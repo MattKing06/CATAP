@@ -13,7 +13,7 @@ BPMFactory::BPMFactory() : BPMFactory(false)
 }
 BPMFactory::BPMFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("BPM Factory Constructed");
 	isVirtual = isVirtual;
@@ -22,7 +22,6 @@ BPMFactory::BPMFactory(bool isVirtual)
 BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
 	: hasBeenSetup(copyBPMFactory.hasBeenSetup),
 	isVirtual(copyBPMFactory.isVirtual),
-	messenger(copyBPMFactory.messenger),
 	reader(copyBPMFactory.reader)
 {
 	bpmMap.insert(copyBPMFactory.bpmMap.begin(), copyBPMFactory.bpmMap.end());
@@ -1438,4 +1437,53 @@ boost::python::dict BPMFactory::reCalAllAttenuation_Py(const double& charge)
 	std::map<std::string, bool> recalvals = reCalAllAttenuation(charge);
 	boost::python::dict newPyDict = to_py_dict(recalvals);
 	return newPyDict;
+}
+
+void BPMFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("BPM-FAC - DEBUG ON");
+	reader.debugMessagesOn();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.debugMessagesOn();
+	}
+}
+void BPMFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("BPM-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.debugMessagesOff();
+	}
+}
+void BPMFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("BPM-FAC - MESSAGES ON");
+	reader.messagesOn();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.messagesOn();
+	}
+}
+void BPMFactory::messagesOff()
+{
+	messenger.printMessage("BPM-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.messagesOff();
+	}
+}
+bool BPMFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool BPMFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
 }

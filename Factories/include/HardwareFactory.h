@@ -23,13 +23,19 @@ public:
 	BPMFactory& getBPMFactory();
 	ChargeFactory& getChargeFactory();
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn();
+	bool isDebugOn();
 	std::map<std::string, Hardware> hardwareMap;
 	MagnetFactory magnetFactory;
 	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
 	bool isVirtual;
-private:
 	LoggingSystem messenger;
+
 };
 
 

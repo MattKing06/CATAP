@@ -27,6 +27,11 @@ class Charge : public Hardware
 		std::string getChargeDiagnosticType() const;
 		std::map<std::string, std::string> chargeParametersAndValuesMap;
 		bool isVirtual;
+		LoggingSystem messenger;
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
 		bool monitoringData = false;
 		bool isMonitoring() const;
 		bool isMonitoringQ() const;

@@ -61,7 +61,7 @@ std::vector< double > Charge::getQVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	messenger.printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }
@@ -153,4 +153,32 @@ void Charge::clearBuffers()
 {
 	qshots = 0;
 	qBuffer.clear();
+}
+
+void Charge::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+}
+
+void Charge::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
+}
+
+void Charge::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Charge::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
 }

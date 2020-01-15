@@ -31,6 +31,7 @@ magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 	epicsInterface->ownerName = hardwareName;
+	messenger = LoggingSystem(false, false);
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
 manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
@@ -160,5 +161,34 @@ int Magnet::getILKState() const
 {
 	return ilkState;
 }
+
+void Magnet::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+}
+
+void Magnet::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
+}
+
+void Magnet::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Magnet::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
+}
+
 
 

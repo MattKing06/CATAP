@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <initializer_list>
-
+#include <time.h>
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
 
@@ -13,12 +13,17 @@ class LoggingSystem
 public:
 	LoggingSystem() { debugOn = false; messageOn = false; }
 	LoggingSystem(bool debugState, bool messageState);
-	static void debugMessagesOn();
-	static void debugMessagesOff();
-	static void messagesOn();
-	static void messagesOff();
-	static bool isMessagingOn();
-	static bool isDebugOn();
+	LoggingSystem(const LoggingSystem& messenger);
+	bool debugOn;
+	bool messageOn;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isMessagingOn() const;
+	bool isDebugOn() const;
+	static std::ostringstream cache;
+	static void dumpToFile(std::string filename);
 	std::string getCurrentDateAndTimeString() const;
 
 	template<typename T>
@@ -36,27 +41,27 @@ public:
 	template<typename... Args>
 	void printMessage(Args... args)
 	{
+		std::ostringstream oss;
+		generateStringStream(oss, args...);
+		std::ios::sync_with_stdio(true);
 		if (messageOn)
 		{
-			std::ostringstream oss;
-			generateStringStream(oss, args...);
-			std::ios::sync_with_stdio(true);
 			fprintf(stdout, "%s %s %s \n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
 		}
+		LoggingSystem::cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
 	}
 
 	template<typename... Args>
 	void printDebugMessage(Args... args)
 	{
+		std::ostringstream oss;
+		generateStringStream(oss, args...);
+		std::ios::sync_with_stdio(true);
 		if (debugOn)
 		{
-			std::ostringstream oss;
-			generateStringStream(oss, args...);
-			std::ios::sync_with_stdio(true);
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
+		LoggingSystem::cache << getCurrentDateAndTimeString().c_str() << DEBUG << " " << oss.str().c_str() << std::endl;
 	}
-	static bool debugOn;
-	static bool messageOn;
 };
 #endif // LOGGING_SYSTEM_H_

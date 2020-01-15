@@ -29,6 +29,11 @@ public:
 	std::string getBPMType() const;
 	std::map<std::string, std::string> bpmParametersAndValuesMap;
 	bool isVirtual;
+	LoggingSystem messenger;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
 	bool monitoringData = false;
 	bool isMonitoring() const;
 	bool isMonitoringData() const;

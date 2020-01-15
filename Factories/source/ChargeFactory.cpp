@@ -22,7 +22,7 @@ ChargeFactory::ChargeFactory() : ChargeFactory(false)
 }
 ChargeFactory::ChargeFactory(bool isVirtual)
 {
-	messenger = LoggingSystem(false, false);
+//	messenger = LoggingSystem(false, false);
 	hasBeenSetup = false;
 	messenger.printDebugMessage("Charge Factory Constructed");
 	isVirtual = isVirtual;
@@ -31,7 +31,6 @@ ChargeFactory::ChargeFactory(bool isVirtual)
 ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 	: hasBeenSetup(copyChargeFactory.hasBeenSetup),
 	isVirtual(copyChargeFactory.isVirtual),
-	messenger(copyChargeFactory.messenger),
 	reader(copyChargeFactory.reader)
 {
 	chargeMap.insert(copyChargeFactory.chargeMap.begin(), copyChargeFactory.chargeMap.end());
@@ -87,7 +86,7 @@ bool ChargeFactory::setup(const std::string &version)
 	{
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
-	//// epics magnet interface has been initialized in BPM constructor
+	//// epics magnet interface has been initialized in charge constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();
@@ -440,3 +439,51 @@ boost::python::dict ChargeFactory::getAllPosition_Py()
 	return newPyDict;
 }
 
+void ChargeFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("CHARGE-FAC - DEBUG ON");
+	reader.debugMessagesOn();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.debugMessagesOn();
+	}
+}
+void ChargeFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("CHARGE-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.debugMessagesOff();
+	}
+}
+void ChargeFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("CHARGE-FAC - MESSAGES ON");
+	reader.messagesOn();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.messagesOn();
+	}
+}
+void ChargeFactory::messagesOff()
+{
+	messenger.printMessage("CHARGE-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.messagesOff();
+	}
+}
+bool ChargeFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool ChargeFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
