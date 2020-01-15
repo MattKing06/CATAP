@@ -1,8 +1,8 @@
 #ifndef GLOBAL_CONSTANTS_H_
 #define GLOBAL_CONSTANTS_H_
 #include <limits>
-##include <map>
-##include <string>
+//#include <map>
+//#]include <string>
 
 namespace GlobalConstants 
 {
