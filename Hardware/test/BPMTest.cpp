@@ -7,7 +7,7 @@
 #include <iostream>
 #include "BPM.h"
 #include <vector>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <chrono>
 #include <thread>
 

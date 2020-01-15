@@ -23,18 +23,22 @@ const std::string SEPARATOR = "\\";
 class ConfigReader
 {
 public:
-	ConfigReader(const std::string& hardwareType, const bool& isVirtual);
+
+	ConfigReader(const std::string& hardwareType, const STATE& mode);
 	ConfigReader();
+
 	std::string yamlFileDestination;
 	std::string yamlFilename;
 	std::string hardwareFolder;
-	bool isVirtual;
+	STATE mode;
 	std::map<std::string, bool> yamlFilenamesAndParsedStatusMap;
 	int numberOfParsesExpected;
 	// defining the allowed hardware types and their EPICS abbreviations
 	// these are currently hard-coded, we should get the folder names from
 	// MasterLattice directory to initialize the map
 	const static std::map<std::string, std::string> allowedHardwareTypes;
+
+
 	LoggingSystem messenger;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -42,6 +46,7 @@ public:
 	void messagesOff();
 	bool isMessagingOn();
 	bool isDebugOn();
+
 	std::string getHardwareTypeFromName(const std::string &fullPVName) const;
 	bool checkForValidTemplate(const YAML::Node &hardwareTemplate, const YAML::Node &hardwareComponent) const;
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string &version);
@@ -49,13 +54,18 @@ public:
 	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node &controlsInformationNode) const;
 	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node &hardwareInformationNode) const;
 	bool hasMoreFilesToParse() const;
+
+
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
 	{
+		std::cout << "parseNextYamlFile() called " << std::endl;
 		for (auto filename : this->yamlFilenamesAndParsedStatusMap)
 		{
 			// boolean check here for safety, even though we remove all parsed files
 			// anyway, just didn't trust myself..
+			
+			std::cout << "parseNextYamlFile() called " << std::endl;
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
@@ -92,11 +102,24 @@ public:
 				{
 					parameters.insert(prop);
 				}
-				HardwareType freshHardware = HardwareType(parameters, isVirtual);
+				HardwareType freshHardware = HardwareType(parameters, mode);
+
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
+				
+				
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
+
+				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = " 
+					<< ENUM_TO_STRING(mode) << std::endl;
+				
+				for (auto&& item : hardwareMapToFill)
+				{
+					std::cout << item.first << std::endl;
+					std::cout << ENUM_TO_STRING(item.second.getMode()) << std::endl;
+
+				}
 			}
 			else
 			{

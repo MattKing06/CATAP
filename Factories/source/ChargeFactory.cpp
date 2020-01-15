@@ -17,20 +17,26 @@
 		}						\
 }								\
 
-ChargeFactory::ChargeFactory() : ChargeFactory(false)
+ChargeFactory::ChargeFactory() : ChargeFactory(STATE::OFFLINE)
 {
 }
-ChargeFactory::ChargeFactory(bool isVirtual)
+
+ChargeFactory::ChargeFactory(STATE mode):
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Charge", mode))
 {
+	messenger = LoggingSystem(false, false);
+	//hasBeenSetup = false;
 //	messenger = LoggingSystem(false, false);
-	hasBeenSetup = false;
 	messenger.printDebugMessage("Charge Factory Constructed");
-	isVirtual = isVirtual;
-	reader = ConfigReader("Charge", isVirtual);
+	//mode = mode;
+	//reader = ConfigReader("Charge", mode);
 }
 ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 	: hasBeenSetup(copyChargeFactory.hasBeenSetup),
-	isVirtual(copyChargeFactory.isVirtual),
+	mode(copyChargeFactory.mode),
+	messenger(copyChargeFactory.messenger),
 	reader(copyChargeFactory.reader)
 {
 	chargeMap.insert(copyChargeFactory.chargeMap.begin(), copyChargeFactory.chargeMap.end());
@@ -82,7 +88,7 @@ bool ChargeFactory::setup(const std::string &version)
 	{
 		return true;
 	}
-	if (this->isVirtual)
+	if (mode == STATE::VIRTUAL)
 	{
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}

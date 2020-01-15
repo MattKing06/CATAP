@@ -19,19 +19,24 @@ class Charge : public Hardware
 	public:
 		Charge();
 		Charge(std::string knownNameOfCharge);
-		Charge(const std::map<std::string, std::string>& chargeParametersAndValuesMap, bool isVirtual);
+		Charge(const std::map<std::string, std::string>& chargeParametersAndValuesMap, STATE mode);
 		Charge(const Charge& copyCharge);
 		EPICSChargeInterface_sptr epicsInterface;
 		std::string getName() const;
 		std::vector<std::string> getAliases() const;
 		std::string getChargeDiagnosticType() const;
 		std::map<std::string, std::string> chargeParametersAndValuesMap;
-		bool isVirtual;
+		
+		// thsi exists in teh hardware base class
+		//STATE mode;
+		
+
 		LoggingSystem messenger;
 		void debugMessagesOn();
 		void debugMessagesOff();
 		void messagesOn();
 		void messagesOff();
+
 		bool monitoringData = false;
 		bool isMonitoring() const;
 		bool isMonitoringQ() const;

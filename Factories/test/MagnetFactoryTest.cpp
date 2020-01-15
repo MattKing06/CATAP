@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_SUITE(MagnetFactoryTestSuite)
 BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
-	MagnetFactory magFac = MagnetFactory(true);
+	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
 	magFac.messagesOn();
 	magFac.debugMessagesOn();
 	bool status = magFac.setup("nominal");
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
-	MagnetFactory magFac = MagnetFactory(true);
+	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
 	magFac.messagesOn();
 	magFac.debugMessagesOn();
 	bool status = magFac.setup("nominal");
@@ -35,16 +35,16 @@ BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 	{
 		srand(time(NULL));
 		double currentToSet = rand() % 10 + 1.0;
-		magFac.setCurrent(testMagnetName, currentToSet);
+		magFac.SETI(testMagnetName, currentToSet);
 		std::this_thread::sleep_for(std::chrono::seconds(10));
-		BOOST_CHECK_EQUAL(magFac.getRICurrent(testMagnetName), currentToSet);
+		BOOST_CHECK_EQUAL(magFac.getREADI(testMagnetName), currentToSet);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
-	MagnetFactory magFac = MagnetFactory(true);
+	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
 	magFac.messagesOn();
 	bool status = magFac.setup("nominal");
 	if (status)
@@ -55,13 +55,13 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 
 BOOST_AUTO_TEST_CASE(magnet_factory_get_all_magnet_currents_test)
 {
-	MagnetFactory magFac = MagnetFactory(true);
+	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	magFac.messagesOn();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
-		std::map<std::string, double> allMagCurrents = magFac.getAllMagnetCurrents();
+		std::map<std::string, double> allMagCurrents = magFac.getAllSETI();
 		BOOST_CHECK_NE(allMagCurrents.at(testMagnetName), std::numeric_limits<double>::min());
 	}
 	magFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");

@@ -12,8 +12,14 @@
 Magnet::Magnet()
 {}
 
-Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, bool isVirtual) :
-Hardware(paramsMap, isVirtual),
+//Magnet::Magnet(std::string knownNameOfMagnet):
+//	Hardware(knownNameOfMagnet)
+//{
+//}
+
+Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
+	Hardware(paramsMap, mode),
+	// Assumes all these find succeed ? 
 manufacturer(paramsMap.find("manufacturer")->second),
 serialNumber(std::stoi(paramsMap.find("serial_number")->second.data())),
 magType(paramsMap.find("mag_type")->second),
@@ -23,7 +29,11 @@ numberOfDegaussSteps(std::stoi(paramsMap.find("number_of_degauss_steps")->second
 degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 fullPSUName(paramsMap.find("PSU")->second),
 measurementDataLocation(paramsMap.find("measurement_data_location")->second),
-magneticLength(std::stof(paramsMap.find("magnetic_length")->second))
+magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+GETSETI(GlobalConstants::double_min),//this needs to be lower limits
+psuState(STATE::ERR),
+READI(GlobalConstants::double_min),
+ilkState(STATE::ERR)
 {
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
@@ -89,29 +99,79 @@ std::string Magnet::getMeasurementDataLocation() const
 {
 	return this->measurementDataLocation;
 }
-double Magnet::getCurrent() const
+
+
+
+double Magnet::getSETI() const
 {
-	return this->current;
+	return GETSETI;
 }
-bool Magnet::setCurrent(const double& value)
+
+
+// THIS IS "SETTING" A SETI, WE NEVER READ SET WE USE GETSETI
+// Python users call this function, then we decide what to do 
+void Magnet::SETI(const double& value)
 {
-	this->current = value;
-	messenger.printDebugMessage(hardwareName, " SETI Value:", value);
-	return true;
-}
-bool Magnet::setEPICSCurrent(const double &value)
-{
-	std::map<std::string, pvStruct>& pvData = getPVStructs();
-	for (auto &pv : pvData)
+	switch (mode)
 	{
-		if (pv.second.pvRecord == "SETI")
-		{
-			this->epicsInterface->setNewCurrent(value, pv.second);
-		}
+		case STATE::PHYSICAL: 	
+			setEPICSSETI(value);
+			break;
+		case STATE::VIRTUAL: 	
+			setEPICSSETI(value);
+			break;
+		default: 
+			offlineSETI(value);
 	}
-	// subscription should sense current has changed and call 'updateCurrent' in MagnetEPICSInterface
-	return true;
 }
+
+void Magnet::offlineSETI(const double& value)
+{
+	setREADI(value);
+	updateGETSETI(value);
+}
+
+
+void Magnet::updateGETSETI(const double& value)
+{
+	//setREADI(value);
+	GETSETI = value;
+}
+void Magnet::setEPICSSETI(const double &value)
+{
+	epicsInterface->setNewCurrent(value, pvStructs.at("SETI"));
+	//
+	//std::map<std::string, pvStruct>& pvData = getPVStructs();
+	//for (auto &pv : pvData)
+	//{
+	//	if (pv.second.pvRecord == "SETI")
+	//	{
+	//		this->epicsInterface->setNewCurrent(value, pv.second);
+	//	}
+	//}
+	//// subscription should sense current has changed and call 'updateCurrent' in MagnetEPICSInterface
+	//return true;
+}
+
+
+void Magnet::setREADI(const double& value)
+{
+	/*
+		This funciton is ONLY ever called to update the READI value (i.e from EPICS) 
+	*/
+	READI = value;
+	messenger.printDebugMessage(hardwareName, " READI Value:", value);
+	//return true;
+}
+
+double Magnet::getREADI() const
+{
+	return READI;
+}
+
+
+
+
 
 bool Magnet::setPSUState(const STATE& value)
 {
@@ -138,26 +198,18 @@ bool Magnet::setEPICSPSUState(const STATE& value)
 	return true;
 }
 
-bool Magnet::setRICurrent(const double& value)
-{
-	RICurrent = value;
-	messenger.printDebugMessage(hardwareName, " READI Value:", value);
-	return true;
-}
 
-double Magnet::getRICurrent() const
-{
-	return RICurrent;
-}
 
-bool Magnet::setILKState(const int& value)
+
+
+
+bool Magnet::setILKState(const STATE& value)
 {
 	ilkState = value;
 	messenger.printDebugMessage(hardwareName, " ILK State:", value);
 	return true;
 }
-
-int Magnet::getILKState() const
+STATE Magnet::getILKState() const
 {
 	return ilkState;
 }

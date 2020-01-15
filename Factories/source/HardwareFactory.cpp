@@ -1,18 +1,27 @@
 #include "HardwareFactory.h"
 
-HardwareFactory::HardwareFactory() : HardwareFactory(false)
+HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
 }
 HardwareFactory::~HardwareFactory()
 {
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
-HardwareFactory::HardwareFactory(bool createVirtualHardwareFactory) {
-	messenger.printDebugMessage("Hardware Factory Constructed");
-	isVirtual = createVirtualHardwareFactory;
-	magnetFactory = MagnetFactory(isVirtual);
-	bpmFactory = BPMFactory(isVirtual);
-	chargeFactory = ChargeFactory(isVirtual);
+HardwareFactory::HardwareFactory(STATE mode):
+	magnetFactory(MagnetFactory(mode)),
+	bpmFactory(BPMFactory(mode)),
+	chargeFactory(ChargeFactory(mode)),
+	mode(mode)
+{
+	messenger = LoggingSystem(true, true);
+	messenger.printDebugMessage("Hardware Factory Constructed, mode = ", ENUM_TO_STRING(mode));
+	//mode = mode;
+	/*messenger.printDebugMessage("MagnetFactory being contructed");
+	magnetFactory = MagnetFactory(mode);
+	messenger.printDebugMessage("MagnetFactory contructed");
+	*/
+	//bpmFactory = BPMFactory(mode);
+	//chargeFactory = ChargeFactory(mode);
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
 {
@@ -42,20 +51,27 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 }
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
+	std::cout << "called getMagnetFactory() " << std::endl;
 	if (!magnetFactory.hasBeenSetup)
 	{
+		std::cout << "!magnetFactory.hasBeenSetup " << std::endl;
 		bool setup = magnetFactory.setup("nominal");
 		if (setup)
 		{
+			std::cout << "magnetFactory setup" << std::endl;
 			return magnetFactory;
 		}
 		else
 		{
+			std::cout << "Unable to setup MagnetFactory" << std::endl;
 			messenger.printMessage("Unable to setup MagnetFactory");
 		}
 	}
-	return magnetFactory;
-
+	else
+	{
+		std::cout << "magnetFactory already setup " << std::endl;
+		return magnetFactory;
+	}
 }
 BPMFactory& HardwareFactory::getBPMFactory()
 {

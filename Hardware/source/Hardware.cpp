@@ -7,20 +7,34 @@ Hardware::Hardware()
 {
 }
 
-Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, bool isVirtual = false) :
-isVirtual(isVirtual),
+//Hardware::Hardware(const std::string& name):
+//hardwareName(name) 
+//{
+//}
+
+Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
+mode(mode),
+messenger(LoggingSystem(true, true)),
+
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
 {
-	if (this->isVirtual)
+	if (mode == STATE::VIRTUAL)
 	{
 		hardwareName = specificValueMap.find("virtual_name")->second.data();
 	}
-	else
+	else if(mode == STATE::PHYSICAL)
 	{
 		hardwareName = specificValueMap.find("name")->second.data();
 	}
+	else 
+	{
+		mode = STATE::OFFLINE;
+		hardwareName = specificValueMap.find("name")->second.data();
+	}
+
+
 	messenger.printDebugMessage( "Constructing Hardware ", hardwareName);
 	
 	// equal_range returns a variable containing start (first) and end (second)
@@ -28,7 +42,10 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 	std::vector<std::string> pvRecordVec;
+
+	// split a string by commas
 	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
+
 	messenger.printDebugMessage("Constructing PV information for ", hardwareName);
 	for (auto record : pvRecordVec)
 	{
@@ -42,9 +59,10 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
-hardwareType(copyHardware.hardwareType),
-machineArea(copyHardware.machineArea), isVirtual(copyHardware.isVirtual)
+messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
+machineArea(copyHardware.machineArea), mode(copyHardware.mode)
 {
+	std::cout << "Hardware copy constructor called " << std::endl;
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
 }
@@ -69,6 +87,11 @@ std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() con
 {
 	return specificHardwareParameters;
 }
+STATE Hardware::getMode() const
+{
+	return mode;
+}
+
 
 bool Hardware::operator==(Hardware rhs)
 {

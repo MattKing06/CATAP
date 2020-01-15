@@ -13,7 +13,6 @@ EPICSMagnetInterface::~EPICSMagnetInterface()
 }
 void EPICSMagnetInterface::retrieveUpdateFunctionForRecord(pvStruct &pvStruct) const
 {
-	
 	if (pvStruct.pvRecord == "GETSETI")
 	{
 		pvStruct.updateFunction = this->updateCurrent;
@@ -37,7 +36,7 @@ void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("GETSETI"), args);
 	double value = returnValueFromArgsAsDouble(args);
-	recastMagnet->setCurrent(value);
+	recastMagnet->offlineSETI(value);
 	messenger.printDebugMessage("GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 }
@@ -57,7 +56,7 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
 	double value = returnValueFromArgsAsDouble(args);
-	recastMagnet->setRICurrent(value);
+	recastMagnet->setREADI(value);
 	messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 														+ std::to_string(value));
 

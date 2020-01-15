@@ -3,6 +3,7 @@
 #include "MagnetFactory.h"
 #include "BPMFactory.h"
 #include "ChargeFactory.h"
+#include "GlobalStateEnums.h"
 
 class HardwareFactory
 {
@@ -15,7 +16,7 @@ class HardwareFactory
 	*/
 public:
 	HardwareFactory();
-	HardwareFactory(bool isVirtual);
+	HardwareFactory(STATE mode);
 	//HardwareFactory(std::string hardwareType, std::string version);
 	~HardwareFactory();
 	bool setup(const std::string& hardwareType, const std::string& version);
@@ -33,8 +34,10 @@ public:
 	MagnetFactory magnetFactory;
 	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
-	bool isVirtual;
+	// virtual physical or offline
+	STATE mode;
 	LoggingSystem messenger;
+private:
 
 };
 

@@ -17,7 +17,7 @@ class BPMFactory
 {
 public:
 	BPMFactory();
-	BPMFactory(bool isVirtual);
+	BPMFactory(STATE mode);
 	BPMFactory(const BPMFactory& copyBPMFactory);
 	~BPMFactory();
 	/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
@@ -40,7 +40,8 @@ public:
 	void retrieveMonitorStatus(pvStruct& pvStruct);
 	void monitorForNShots(const std::string& name, const size_t& value);
 	bool hasBeenSetup;
-	bool isVirtual;
+	//bool isVirtual;
+	STATE mode;
 	bool isMonitoringXPV(const std::string& name);
 	bool isMonitoringYPV(const std::string& name);
 	bool isMonitoringData(const std::string& name);
