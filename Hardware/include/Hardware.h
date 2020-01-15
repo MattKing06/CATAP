@@ -26,7 +26,7 @@ public:
 	std::string getMachineArea() const;
 	std::string getHardwareType() const;
 	std::string getHardwareName() const;
-	STATE Hardware::getMode() const;
+	STATE getMode() const;
 
 	std::map<std::string, pvStruct>& getPVStructs();
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
