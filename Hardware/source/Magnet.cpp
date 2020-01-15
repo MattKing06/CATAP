@@ -31,9 +31,9 @@ fullPSUName(paramsMap.find("PSU")->second),
 measurementDataLocation(paramsMap.find("measurement_data_location")->second),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
 GETSETI(GlobalConstants::double_min),//this needs to be lower limits
-psuState(STATE::ERROR),
+psuState(STATE::ERR),
 READI(GlobalConstants::double_min),
-ilkState(STATE::ERROR)
+ilkState(STATE::ERR)
 {
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
