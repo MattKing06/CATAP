@@ -10,59 +10,73 @@
 #include <iostream>
 #include <time.h>
 
+
 #ifndef TIME_DATE_BUFFER_SIZE
 #define TIME_DATE_BUFFER_SIZE 80
 #endif // TIME_DATE_BUFFER_SIZE
 
-bool LoggingSystem::debugOn = false;
-bool LoggingSystem::messageOn = false;
+std::ostringstream LoggingSystem::cache;
 
 LoggingSystem::LoggingSystem(bool debugState, bool messageState){
-    LoggingSystem::debugOn = debugState;
-    LoggingSystem::messageOn = messageState;
+    debugOn = debugState;
+    messageOn = messageState;
 }
+LoggingSystem::LoggingSystem(const LoggingSystem& messenger)
+{
+	debugOn = messenger.debugOn;
+	messageOn = messenger.messageOn;
+}
+
+void LoggingSystem::dumpToFile(std::string filename)
+{
+	FILE* outFile;
+	outFile = fopen(filename.c_str(), "w");
+	fprintf(outFile, "%s \n", LoggingSystem::cache.str().c_str());
+}
+
 // Get methods for debugging and message state
-bool LoggingSystem::isDebugOn()
+bool LoggingSystem::isDebugOn() const
 {
-    return debugOn;
+	return debugOn;
 }
-bool LoggingSystem::isMessagingOn()
+bool LoggingSystem::isMessagingOn() const
 {
-    return messageOn;
+	return messageOn;
 }
 // On and Off functions for debugging and messages
-void LoggingSystem::debugMessagesOn(){
-    debugOn = true;
-	fprintf(stdout, "%s \n", "CATAP: DEBUG ON");
+void LoggingSystem::debugMessagesOn()
+{
+	debugOn = true;
 }
-void LoggingSystem::debugMessagesOff(){
-    debugOn = false;
-	fprintf(stdout, "%s \n", "CATAP: DEBUG OFF");
+void LoggingSystem::debugMessagesOff() 
+{
+	debugOn = false;
 }
-void LoggingSystem::messagesOn(){
-    messageOn = true;
-	fprintf(stdout, "%s \n", "CATAP: MESSAGES ON");
+void LoggingSystem::messagesOn() 
+{
+	messageOn = true;
 }
-void LoggingSystem::messagesOff(){
-    messageOn = false;
-	fprintf(stdout, "%s \n", "CATAP: MESSAGES OFF");
+void LoggingSystem::messagesOff()
+{
+	messageOn = false;
 }
 
-std::string LoggingSystem::getCurrentDateAndTimeString() const{
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[TIME_DATE_BUFFER_SIZE];
-    #ifdef _WIN32
-	  localtime_s(&tstruct, &now);
-    #endif //WIN32
-	  
-    #if defined(__unix__) ||  defined(_unix)
-	  localtime_r(&now, &tstruct);
-    #endif //UNIX
+std::string LoggingSystem::getCurrentDateAndTimeString() const
+{
+	time_t     now = time(0);
+	struct tm  tstruct;
+	char       buf[TIME_DATE_BUFFER_SIZE];
+	#ifdef _WIN32
+		localtime_s(&tstruct, &now);
+	#endif //WIN32
 
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "<%d-%m-%Y %H:%M:%S> %t",&tstruct);
+	#if defined(__unix__) ||  defined(_unix)
+		localtime_r(&now, &tstruct);
+	#endif //UNIX
+
+	// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+	// for more information about date/time format
+	strftime(buf, sizeof(buf), "<%d-%m-%Y %H:%M:%S> %t", &tstruct);
 	//std::string dateAndTimeString = buf;
 	return buf;
 }

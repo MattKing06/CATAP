@@ -4,8 +4,9 @@ LoggingSystem EPICSMagnetInterface::messenger;
 
 EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
 {
-	this->messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(false, false);
 }
+
 EPICSMagnetInterface::~EPICSMagnetInterface()
 {
 	messenger.printDebugMessage("EPICSMagnetInterface Destructor Called");

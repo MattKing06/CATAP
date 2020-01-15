@@ -88,26 +88,28 @@ class MagnetFactory
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
 
-		
 		std::string getFullName(const std::string& name_to_check) const;
-
-
-
 		// private surely! 
 		std::map<std::string, Magnet> magnetMap;
-
 		// private
 		void populateMagnetMap();
 		void retrieveMonitorStatus(pvStruct& pvStruct);
-
 		// private
 		bool hasBeenSetup;
-		
 		// offlien physical or virtual 
 		STATE mode;
 
-private:
+
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
+		bool isDebugOn();
+		bool isMessagingOn();
+
 		LoggingSystem messenger;
+private:
+
 
 		void updateAliasNameMap(const Magnet& magnet);
 		std::map<std::string, std::string> alias_name_map;

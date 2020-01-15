@@ -30,7 +30,13 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.add_property("epicsInterface", &Magnet::epicsInterface)
 			.def("getSETI", &Magnet::getSETI)
 			.def("SETI", &Magnet::SETI)
-			.def("getREADI", &Magnet::getREADI);
+			.def("getREADI", &Magnet::getREADI)
+			
+			.def("debugMessagesOn", &Magnet::debugMessagesOn)
+			.def("debugMessagesOff", &Magnet::debugMessagesOff)
+			.def("messagesOn", &Magnet::messagesOn)
+			.def("messagesOff", &Magnet::messagesOff)
+			;
 
 	}
 
@@ -78,9 +84,13 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("turnOff", turnOffSingle)
 			.def("turnOff", &MagnetFactory::turnOff_Py)
 
-			.def("getAllPSUState", &MagnetFactory::getAllPSUState_Py);
+			.def("getAllPSUState", &MagnetFactory::getAllPSUState_Py)
 
-		
+			.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
+			.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
+			.def("messagesOn", &MagnetFactory::messagesOn)
+			.def("messagesOff", &MagnetFactory::messagesOff)
+			;
 		//.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
 		//.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
 		//.def("messagesOn", &MagnetFactory::messagesOn)

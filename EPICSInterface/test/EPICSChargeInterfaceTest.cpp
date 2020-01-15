@@ -8,6 +8,5 @@
 #include <cadef.h>
 #endif
 
-LoggingSystem TEST_LOGGER(true, true);
 
 // THERE ARE NO CHARGE PVS IN VM, SO SKIP THIS FOR NOW

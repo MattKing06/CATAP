@@ -30,6 +30,13 @@ class Charge : public Hardware
 		// thsi exists in teh hardware base class
 		//STATE mode;
 		
+
+		LoggingSystem messenger;
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
+
 		bool monitoringData = false;
 		bool isMonitoring() const;
 		bool isMonitoringQ() const;

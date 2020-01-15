@@ -18,6 +18,7 @@ BPMFactory::BPMFactory(STATE mode):
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
+//	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage("BPM Factory Constructed");
 	//mode = mode;
 	//reader = ConfigReader("BPM", mode);
@@ -1441,4 +1442,53 @@ boost::python::dict BPMFactory::reCalAllAttenuation_Py(const double& charge)
 	std::map<std::string, bool> recalvals = reCalAllAttenuation(charge);
 	boost::python::dict newPyDict = to_py_dict(recalvals);
 	return newPyDict;
+}
+
+void BPMFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("BPM-FAC - DEBUG ON");
+	reader.debugMessagesOn();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.debugMessagesOn();
+	}
+}
+void BPMFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("BPM-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.debugMessagesOff();
+	}
+}
+void BPMFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("BPM-FAC - MESSAGES ON");
+	reader.messagesOn();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.messagesOn();
+	}
+}
+void BPMFactory::messagesOff()
+{
+	messenger.printMessage("BPM-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& bpm : bpmMap)
+	{
+		bpm.second.messagesOff();
+	}
+}
+bool BPMFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool BPMFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
 }

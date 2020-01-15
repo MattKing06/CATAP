@@ -4,7 +4,7 @@ LoggingSystem EPICSChargeInterface::messenger;
 
 EPICSChargeInterface::EPICSChargeInterface() : EPICSInterface()
 {
-	this->messenger = LoggingSystem(false, false);
+//	this->messenger = LoggingSystem(false, false);
 }
 EPICSChargeInterface::~EPICSChargeInterface()
 {

@@ -15,6 +15,7 @@ Hardware::Hardware()
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
 messenger(LoggingSystem(true, true)),
+
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
@@ -116,3 +117,38 @@ bool Hardware::operator==(Hardware rhs)
 	//otherwise, return true
 	return true;
 }
+
+void Hardware::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+}
+
+void Hardware::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, "- DEBUG OFF");
+	messenger.debugMessagesOff();
+}
+
+void Hardware::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+}
+
+void Hardware::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+}
+
+bool Hardware::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+bool Hardware::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+

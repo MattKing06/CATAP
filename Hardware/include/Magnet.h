@@ -66,7 +66,10 @@ class Magnet : public Hardware
 		bool setILKState(const STATE& value);
 		STATE getILKState() const;
 		STATE getPSUState() const;
-
+		void debugMessagesOn();
+		void debugMessagesOff();
+		void messagesOn();
+		void messagesOff();
 
 		double getSETI() const;
 		
@@ -89,7 +92,6 @@ class Magnet : public Hardware
 		//(inherited) std::vector<pvStruct> MagnetPVStructs;
 		//(inherited) std::string hardwareType;
 		//(inherited) std::string machineArea;
-		//(inherited) LoggingSystem messenger;
 
 		// variables should be private 
 		double READI;

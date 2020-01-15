@@ -9,14 +9,12 @@
 #include <thread>
 
 BOOST_AUTO_TEST_SUITE(BPMFactoryTestSuite)
-LoggingSystem testLogger(true, true);
 BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 {
 	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";
-
 	// What state should the test work for?? maybe offline, phyiscal and virtual state tests?? 
 	BPMFactory bpmfac = BPMFactory(STATE::VIRTUAL);
-	bpmfac.messenger.messagesOn();
+	bpmfac.messagesOn();
 	bool status = bpmfac.setup("nominal");
 	if (status)
 	{
@@ -28,7 +26,7 @@ BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 	}
 	else
 	{
-		testLogger.printMessage("CANNOT CONNECT TO EPICS");
+		bpmfac.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 

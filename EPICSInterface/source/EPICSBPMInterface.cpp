@@ -4,7 +4,7 @@ LoggingSystem EPICSBPMInterface::messenger;
 
 EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
 {
-	this->messenger = LoggingSystem(false, false);
+//	this->messenger = LoggingSystem(false, false);
 }
 EPICSBPMInterface::~EPICSBPMInterface()
 {
