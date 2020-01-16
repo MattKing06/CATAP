@@ -14,6 +14,7 @@ set( INCLUDE_FILES
 )
 
 set( TEST_FILES
+	EPICSInterfaceTestHelper.cpp
     EPICSInterfaceTest.cpp
     EPICSMagnetInterfaceTest.cpp
     EPICSBPMInterfaceTest.cpp
