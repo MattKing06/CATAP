@@ -27,6 +27,8 @@ class Magnet : public Hardware
 		EPICSMagnetInterface_sptr epicsInterface;
 		
 
+		//test
+
 
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
 		
