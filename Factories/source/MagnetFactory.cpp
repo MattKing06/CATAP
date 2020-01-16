@@ -52,11 +52,17 @@ MagnetFactory::~MagnetFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					magnet.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID)
+					{
+						magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
-				magnet.second.epicsInterface->removeChannel(pvStruct.second);
-				ca_pend_io(CA_PEND_IO_TIMEOUT);
+				if (pvStruct.second.CHID)
+				{
+					magnet.second.epicsInterface->removeChannel(pvStruct.second);
+					ca_pend_io(CA_PEND_IO_TIMEOUT);
+				}
 			}
 		}
 	}
