@@ -123,6 +123,7 @@ bool ConfigReader::hasMoreFilesToParse() const
 		}
 		if (!file.second)
 		{
+			std::cout << "hasMoreFilesToParse() has more files to parse " << std::endl;
 			return true;
 		}
 	}
