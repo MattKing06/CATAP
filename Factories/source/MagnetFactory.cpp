@@ -107,7 +107,11 @@ bool MagnetFactory::setup(const std::string& version)
 	std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
 	std::cout << "populateMagnetMap() fin" << std::endl;;
-
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 
 	for (auto& magnet : magnetMap)
 	{
@@ -145,8 +149,8 @@ bool MagnetFactory::setup(const std::string& version)
 			{
 				std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
 				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 
 		}
