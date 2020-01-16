@@ -18,6 +18,7 @@ mode(STATE::OFFLINE), hardwareFolder("")
 	// since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
+	yamlFilenamesAndParsedStatusMap = std::map<std::string, bool>();
 	initialiseFilenameAndParsedStatusMap();
 }
 
