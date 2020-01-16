@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE MagnetFactoryTest
-
 #include <boost/test/unit_test.hpp>
 #include "MagnetFactory.h"
 #include <string>
@@ -9,6 +7,10 @@
 #include <thread>
 
 BOOST_AUTO_TEST_SUITE(MagnetFactoryTestSuite)
+BOOST_AUTO_TEST_CASE(start_test)
+{
+	BOOST_TEST_MESSAGE("------	RUNNING MAGNET FACTORY TESTS	------");
+}
 BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";

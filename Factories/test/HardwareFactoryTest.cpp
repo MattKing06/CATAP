@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE HardwareFactoryTest
-
 #include <boost/test/unit_test.hpp>
 #include "HardwareFactory.h"
 //#include "Magnet.h"
@@ -49,6 +47,10 @@ TO THE VALUES DEFINED BELOW. THEN THE TEST SHOULD WORK!*/
 //	double current = magFactory->getCurrent("CLA-C2V-MAG-HCOR-01");
 //	BOOST_CHECK_EQUAL(current, -0.00190269);
 //}
+BOOST_AUTO_TEST_CASE(start_test)
+{
+	BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");
+}
 BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 {
 	char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.246";
