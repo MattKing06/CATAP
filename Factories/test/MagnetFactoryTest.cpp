@@ -20,9 +20,16 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
-		magFac.turnOn(testMagnetName);
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		BOOST_CHECK_EQUAL(magFac.getPSUState(testMagnetName), 1);
+		if (ca_state(magFac.getMagnet(testMagnetName).pvStructs.at("SPOWER").CHID) == cs_conn)
+		{
+			magFac.turnOn(testMagnetName);
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+			BOOST_CHECK_EQUAL(magFac.getPSUState(testMagnetName), 1);
+		}
+		else
+		{
+			magFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+		}
 	}
 }
 
@@ -35,11 +42,18 @@ BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
-		srand(time(NULL));
-		double currentToSet = rand() % 10 + 1.0;
-		magFac.SETI(testMagnetName, currentToSet);
-		std::this_thread::sleep_for(std::chrono::seconds(10));
-		BOOST_CHECK_EQUAL(magFac.getREADI(testMagnetName), currentToSet);
+		if (ca_state(magFac.getMagnet(testMagnetName).pvStructs.at("SETI").CHID) == cs_conn)
+		{
+			srand(time(NULL));
+			double currentToSet = rand() % 10 + 1.0;
+			magFac.SETI(testMagnetName, currentToSet);
+			std::this_thread::sleep_for(std::chrono::seconds(10));
+			BOOST_CHECK_EQUAL(magFac.getSETI(testMagnetName), currentToSet);
+		}
+		else
+		{
+			magFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+		}
 	}
 }
 
@@ -51,7 +65,15 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
-		BOOST_CHECK_EQUAL(magFac.getILKState(testMagnetName), 0);
+		if (ca_state(magFac.getMagnet(testMagnetName).pvStructs.at("RILK").CHID) == cs_conn)
+		{
+			BOOST_CHECK_EQUAL(magFac.getILKState(testMagnetName), STATE::ON);
+		}
+		else
+		{
+			magFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+		}
+
 	}
 }
 
@@ -63,8 +85,15 @@ BOOST_AUTO_TEST_CASE(magnet_factory_get_all_magnet_currents_test)
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
-		std::map<std::string, double> allMagCurrents = magFac.getAllSETI();
-		BOOST_CHECK_NE(allMagCurrents.at(testMagnetName), std::numeric_limits<double>::min());
+		if (ca_state(magFac.getMagnet(testMagnetName).pvStructs.at("GETSETI").CHID) == cs_conn)
+		{
+			std::map<std::string, double> allMagCurrents = magFac.getAllSETI();
+			BOOST_CHECK_NE(allMagCurrents.at(testMagnetName), std::numeric_limits<double>::min());
+		}
+		else
+		{
+			magFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+		}
 	}
 	magFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");
 }
