@@ -28,6 +28,7 @@ hardwareFolder(hardwareType)
 {
 	std::cout << "Constructor ConfigReader(const std::string &hardwareType, const STATE& mode) called " << std::endl;
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
+	yamlFilenamesAndParsedStatusMap = std::map<std::string, bool>();
 	initialiseFilenameAndParsedStatusMap();
 
 }
