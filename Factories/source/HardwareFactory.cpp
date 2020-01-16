@@ -7,7 +7,7 @@ HardwareFactory::~HardwareFactory()
 {
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
-HardwareFactory::HardwareFactory(STATE mode):
+HardwareFactory::HardwareFactory(STATE mode) :
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
@@ -32,10 +32,6 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = magnetFactory.setup(version);
 		}
-		else
-		{
-			setup = magnetFactory.hasBeenSetup;
-		}
 	}
 	else if (hardwareType == "BPM")
 	{
@@ -43,20 +39,12 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = bpmFactory.setup(version);
 		}
-		else
-		{
-			setup = bpmFactory.hasBeenSetup;
-		}
 	}
 	else if (hardwareType == "Charge")
 	{
 		if (!chargeFactory.hasBeenSetup)
 		{
 			setup = chargeFactory.setup(version);
-		}
-		else
-		{
-			setup = chargeFactory.hasBeenSetup;
 		}
 	}
 	return setup;
