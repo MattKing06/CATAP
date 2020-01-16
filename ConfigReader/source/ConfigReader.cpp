@@ -117,7 +117,7 @@ bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplate,
 
 bool ConfigReader::hasMoreFilesToParse() const
 {
-	if (yamlFilenamesAndParsedStatusMap.size() == 0)
+	if (yamlFilenamesAndParsedStatusMap.empty())
 	{
 		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
 	}
