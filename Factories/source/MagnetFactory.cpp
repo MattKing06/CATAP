@@ -64,15 +64,15 @@ MagnetFactory::~MagnetFactory()
 
 void MagnetFactory::populateMagnetMap()
 {
-	if (!reader.hasMoreFilesToParse())
-	{
-		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
-	}
 	while (reader.hasMoreFilesToParse())
 	{
 		
 		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(magnetMap);
+	}
+	if (!reader.hasMoreFilesToParse())
+	{
+		messenger.printDebugMessage("Finished Parsing Magnet Config Files.");
 	}
 	std::cout << "populateMagnetMap() fin" << std::endl;
 }
@@ -104,10 +104,7 @@ bool MagnetFactory::setup(const std::string &version)
 	//// but we have a lot of PV information to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	
-	std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
-	std::cout << "populateMagnetMap() fin" << std::endl;;
-
 
 	for (auto &magnet : magnetMap)
 	{
