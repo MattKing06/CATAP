@@ -23,7 +23,7 @@ cmake_build:
   - ls ~/MasterLattice
   - ./ConfigReaderTest
   - ./LoggingSystemTest
-  - ./HardwareTests
-  - ./FactoryTests
-  - ./EPICSInterfaceTests
+  - ./HardwareTests --log_level=message
+  - ./FactoryTests --log_level=message
+  - ./EPICSInterfaceTests --log_level=message
 
