@@ -1,15 +1,15 @@
-#ifndef GLOBAL_FUNCTIONS_H_
-#define GLOBAL_FUNCTIONS_H_
+#ifndef GLOBAL_FUNCTIOnS_H_
+#define GLOBAL_FUNCTIOnS_H_
 
 #include <map>
 #include <string>
 
-namespace GlobalFunctions{
+namespace GlobalFunctiOns{
 
     /*
             We often check if entries exist in maps,
-            use these functions to do it safely
-            be careful to pick the correct one!
+            use these functiOns to do it safely
+            be careful to pick the correct One!
         */
     template<class T>
     bool entryExists(const std::map<std::string, T>& m, const std::string& name)

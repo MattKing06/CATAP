@@ -1,10 +1,10 @@
 /*
 		THIS CLASS IS FOR EXPOSURE TO PYTHON
-		ALL IN ONE PLACE, SO WE DON'T HAVE TO
+		ALL IN OnE PLACE, SO WE DOn'T HAVE TO
 		LINK EVERY CLASS WITH BOOST.PYTHON.
 		HOPEFULLY, IT SHOULD ALL HAPPEN HERE.
 
-		// This should include all the different HardwarePythonInterface.cpp files
+		// This should include all the different HardwarePYTHONInterface.cpp files
 */
 
 #ifdef PYTHON_INTERFACE_EXPORTS
@@ -14,13 +14,13 @@
 #endif 
 
 
-#include <boost/python/suite/indexing/map_indexing_suite.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/enum.hpp>
+#include <boost/PYTHON/suite/indexing/map_indexing_suite.hpp>
+#include <boost/PYTHON/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/PYTHON/enum.hpp>
 #include "LoggingSystem.h"
 #include "Hardware.h"
 #include "HardwareFactory.h"
-#include "MagnetPythonInterface.h"
+#include "MagnetPYTHONInterface.h"
 
 //#include "Magnet.h"
 //#include "MagnetFactory.h"
@@ -39,7 +39,7 @@ BOOST_PYTHON_MODULE(CATAP)
 {
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
-		.value("ON", STATE::ON)
+		.value("On", STATE::ON)
 		.value("OFF", STATE::OFF)
 		.value("ERROR", STATE::ERR)
 		.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
@@ -108,8 +108,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.add_property("ybuffer", &BPM::getYPVBuffer)
 		.add_property("databuffer", &BPM::getDataBuffer)
 		.add_property("qbuffer", &BPM::getQBuffer)
-		.add_property("position", &BPM::getPosition)
-		.add_property("resolution", &BPM::getResolution)
+		.add_property("positiOn", &BPM::getPositiOn)
+		.add_property("resolutiOn", &BPM::getResolutiOn)
 		.add_property("ra1", &BPM::getRA1)
 		.add_property("ra2", &BPM::getRA2)
 		.add_property("rd1", &BPM::getRD1)
@@ -132,11 +132,11 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getDataVector", &BPM::getDataVector)
 		.def("getQVector", &BPM::getQVector)
 		.def("monitorForNShots", &BPM::monitorForNShots)
-		.def("isMonitoring", &BPM::isMonitoring)
-		.def("isMonitoringXPV", &BPM::isMonitoringXPV)
-		.def("isMonitoringYPV", &BPM::isMonitoringYPV)
-		.def("isMonitoringData", &BPM::isMonitoringData)
-		.def("reCalAttenuation", &BPM::reCalAttenuation)
+		.def("ismonitoring", &BPM::ismonitoring)
+		.def("ismonitoringXPV", &BPM::ismonitoringXPV)
+		.def("ismonitoringYPV", &BPM::ismonitoringYPV)
+		.def("ismonitoringData", &BPM::ismonitoringData)
+		.def("reCalAttenuatiOn", &BPM::reCalAttenuatiOn)
 		.def("isXPVBufferFull", &BPM::isXPVBufferFull)
 		.def("isYPVBufferFull", &BPM::isYPVBufferFull)
 		.def("isDataBufferFull", &BPM::isDataBufferFull)
@@ -159,13 +159,13 @@ BOOST_PYTHON_MODULE(CATAP)
 		.add_property("q", &Charge::getQ)
 		.add_property("qbuffer", &Charge::getQBuffer)
 		.add_property("qvector", &Charge::getQVector)
-		.add_property("position", &Charge::getPosition)
+		.add_property("positiOn", &Charge::getPositiOn)
 		.add_property("buffersize", &Charge::getBufferSize, &Charge::setBufferSize)
 		.def("getQ", &Charge::getQ)
 		.def("getQBuffer", &Charge::getQBuffer)
 		.def("getQVector", &Charge::getQVector)
 		.def("monitorForNShots", &Charge::monitorForNShots)
-		.def("isMonitoring", &Charge::isMonitoring);
+		.def("ismonitoring", &Charge::ismonitoring);
 		// Parameter Map Exposure
 		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
@@ -220,19 +220,19 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("setSD1", &BPMFactory::setSD1)
 		.def("setSD2", &BPMFactory::setSD2)
 		.def("monitorForNShots", &BPMFactory::monitorForNShots)
-		.def("isMonitoringXPV", &BPMFactory::isMonitoringXPV)
-		.def("isMonitoringYPV", &BPMFactory::isMonitoringYPV)
-		.def("isMonitoringData", &BPMFactory::isMonitoringData)
-		.def("isMonitoring", &BPMFactory::isMonitoring)
-		.def("getPosition", &BPMFactory::getPosition)
-		.def("getResolution", &BPMFactory::getResolution)
+		.def("ismonitoringXPV", &BPMFactory::ismonitoringXPV)
+		.def("ismonitoringYPV", &BPMFactory::ismonitoringYPV)
+		.def("ismonitoringData", &BPMFactory::ismonitoringData)
+		.def("ismonitoring", &BPMFactory::ismonitoring)
+		.def("getPositiOn", &BPMFactory::getPositiOn)
+		.def("getResolutiOn", &BPMFactory::getResolutiOn)
 		.def("getX", &BPMFactory::getX)
 		.def("getXFromPV", &BPMFactory::getXFromPV)
 		.def("getY", &BPMFactory::getY)
 		.def("getYFromPV", &BPMFactory::getYFromPV)
 		.def("getQ", &BPMFactory::getQ)
 		.def("getData", &BPMFactory::getData_Py)
-		.def("getXYPosition", &BPMFactory::getXYPosition)
+		.def("getXYPositiOn", &BPMFactory::getXYPositiOn)
 		.def("getXPVVector", &BPMFactory::getXPVVector_Py)
 		.def("getYPVVector", &BPMFactory::getYPVVector_Py)
 		.def("getQVector", &BPMFactory::getQVector_Py)
@@ -241,9 +241,9 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getYPVBuffer", &BPMFactory::getYPVBuffer_Py)
 		.def("getQBuffer", &BPMFactory::getQBuffer_Py)
 		.def("getDataBuffer", &BPMFactory::getDataBuffer_Py)
-		//.def("getXYPositionVector", &BPMFactory::getXYPositionVector_Py)
-		.def("getResolutions", &BPMFactory::getResolutions_Py)
-		.def("getPositions", &BPMFactory::getPositions_Py)
+		//.def("getXYPositiOnVector", &BPMFactory::getXYPositiOnVector_Py)
+		.def("getResolutiOns", &BPMFactory::getResolutiOns_Py)
+		.def("getPositiOns", &BPMFactory::getPositiOns_Py)
 		.def("getXPVVectors", &BPMFactory::getXPVVectors_Py)
 		.def("getYPVVectors", &BPMFactory::getYPVVectors_Py)
 		.def("getQVectors", &BPMFactory::getQVectors_Py)
@@ -258,9 +258,9 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllYFromPV", &BPMFactory::getAllYFromPV)
 		.def("getAllQ", &BPMFactory::getAllQ)
 		.def("getAllData", &BPMFactory::getAllData)
-		.def("getAllXYPosition", &BPMFactory::getAllXYPosition_Py)
-		.def("getAllResolution", &BPMFactory::getAllResolution_Py)
-		.def("getAllPosition", &BPMFactory::getAllPosition_Py)
+		.def("getAllXYPositiOn", &BPMFactory::getAllXYPositiOn_Py)
+		.def("getAllResolutiOn", &BPMFactory::getAllResolutiOn_Py)
+		.def("getAllPositiOn", &BPMFactory::getAllPositiOn_Py)
 		.def("getAllXPVVector", &BPMFactory::getAllXPVVector)
 		.def("getAllYPVVector", &BPMFactory::getAllYPVVector)
 		.def("getAllQVector", &BPMFactory::getAllQVector)
@@ -269,7 +269,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllYPVBuffer", &BPMFactory::getAllYPVBuffer)
 		.def("getAllQBuffer", &BPMFactory::getAllQBuffer)
 		.def("getAllDataBuffer", &BPMFactory::getAllDataBuffer)
-		.def("getAllXYPositionVectors", &BPMFactory::getAllXYPositionVectors_Py);
+		.def("getAllXYPositiOnVectors", &BPMFactory::getAllXYPositiOnVectors_Py);
 	//Charge Factory Exposure
 	boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
 		.def(boost::python::init<STATE>())
@@ -280,16 +280,16 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
 		.def("monitorForNShots", &ChargeFactory::monitorForNShots)
 		.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
-		.def("isMonitoring", &ChargeFactory::isMonitoring)
-		.def("getPosition", &ChargeFactory::getPosition)
+		.def("ismonitoring", &ChargeFactory::ismonitoring)
+		.def("getPositiOn", &ChargeFactory::getPositiOn)
 		.def("getQ", &ChargeFactory::getQ)
 		.def("getQVector", &ChargeFactory::getQVector_Py)
 		.def("getQBuffer", &ChargeFactory::getQBuffer_Py)
-		.def("getPositions", &ChargeFactory::getPositions_Py)
+		.def("getPositiOns", &ChargeFactory::getPositiOns_Py)
 		.def("getQVectors", &ChargeFactory::getQVectors_Py)
 		.def("getQBuffers", &ChargeFactory::getQBuffers_Py)
 		.def("getAllQ", &ChargeFactory::getAllQ)
-		.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
+		.def("getAllPositiOn", &ChargeFactory::getAllPositiOn_Py)
 		.def("getAllQVector", &ChargeFactory::getAllQVector)
 		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer);
 		// Hardware Factory Exposure

@@ -17,7 +17,7 @@ Charge::Charge(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 Hardware(paramsMap, mode),
 chargeType(paramsMap.find("charge_type")->second),
 name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second))
+positiOn(std::stod(paramsMap.find("positiOn")->second))
 {
 	bufferSize = 10;
 	qshots = 0;
@@ -28,7 +28,7 @@ Charge::Charge(const Charge& copyCharge) :
 Hardware(copyCharge),
 chargeType(copyCharge.chargeType),
 name(copyCharge.name),
-position(copyCharge.position),
+positiOn(copyCharge.positiOn),
 epicsInterface(copyCharge.epicsInterface)
 {
 }
@@ -61,14 +61,14 @@ std::vector< double > Charge::getQVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING X PV -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }
 
-double Charge::getPosition() const
+double Charge::getPositiOn() const
 {
-	return this->position;
+	return this->positiOn;
 }
 
 bool Charge::isQBufferFull() const
@@ -109,14 +109,14 @@ bool Charge::setQ(const double& value)
 	return true;
 }
 
-bool Charge::isMonitoringQ() const
+bool Charge::ismonitoringQ() const
 {
 	return monitoringq;
 }
 
-bool Charge::isMonitoring() const
+bool Charge::ismonitoring() const
 {
-	return isMonitoringQ();
+	return ismonitoringQ();
 }
 
 bool Charge::checkBuffer(boost::circular_buffer< double >& buf)
@@ -165,7 +165,7 @@ void Charge::debugMessagesOff()
 void Charge::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	messenger.printDebugMessage(hardwareName, " - DEBUG On");
 	epicsInterface->debugMessagesOn();
 }
 
@@ -179,6 +179,6 @@ void Charge::messagesOff()
 void Charge::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	messenger.printMessage(hardwareName, " - MESSAGES On");
 	epicsInterface->messagesOn();
 }

@@ -11,7 +11,7 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
-ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""), 
+ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
 mode(STATE::OFFLINE), hardwareFolder("")
 {
 	std::cout << "Constructor ConfigReader() called " << std::endl;
@@ -21,9 +21,9 @@ mode(STATE::OFFLINE), hardwareFolder("")
 	initialiseFilenameAndParsedStatusMap();
 }
 
-ConfigReader::ConfigReader(const std::string &hardwareType, const STATE& mode) : 
+ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	mode(mode),
-hardwareFolder(hardwareType)
+	hardwareFolder(hardwareType)
 {
 	std::cout << "Constructor ConfigReader(const std::string &hardwareType, const STATE& mode) called " << std::endl;
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
@@ -47,7 +47,7 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 	}
 }
 
-std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string &version)
+std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string& version)
 {
 	boost::filesystem::path directory(yamlFileDestination);//+ '//' + version);
 	std::vector<std::string> filenames;
@@ -79,9 +79,9 @@ std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::strin
 	return filenames;
 }
 
-std::string ConfigReader::getHardwareTypeFromName(const std::string &fullPVName) const
+std::string ConfigReader::getHardwareTypeFromName(const std::string& fullPVName) const
 {
-	for (const auto &hardwareType : this->allowedHardwareTypes)
+	for (const auto& hardwareType : this->allowedHardwareTypes)
 	{
 		if (fullPVName.find(hardwareType.first) != std::string::npos)
 		{
@@ -93,17 +93,17 @@ std::string ConfigReader::getHardwareTypeFromName(const std::string &fullPVName)
 		" Please check the PV name or contact support." };
 }
 
-bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplate,
-										 const YAML::Node &hardwareComponent) const
+bool ConfigReader::checkForValidTemplate(const YAML::Node& hardwareTemplate,
+	const YAML::Node& hardwareComponent) const
 {
-	for (const auto &keyAndValuePair : hardwareTemplate["properties"])
+	for (const auto& keyAndValuePair : hardwareTemplate["properties"])
 	{
 		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
 		{
 			return false;
 		}
 	}
-	for (const auto &keyAndValuePair : hardwareTemplate["controls_information"])
+	for (const auto& keyAndValuePair : hardwareTemplate["controls_information"])
 	{
 		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
 		{
@@ -115,7 +115,7 @@ bool ConfigReader::checkForValidTemplate(const YAML::Node &hardwareTemplate,
 
 bool ConfigReader::hasMoreFilesToParse() const
 {
-	for (const auto &file : yamlFilenamesAndParsedStatusMap)
+	for (const auto& file : yamlFilenamesAndParsedStatusMap)
 	{
 		if (file.second)
 		{
@@ -164,7 +164,7 @@ bool ConfigReader::isDebugOn()
 	return messenger.isDebugOn();
 }
 
-const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node &configInformationNode) const
+const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node& configInformationNode) const
 {
 	auto hardwareProperties = configInformationNode["properties"];
 
@@ -190,7 +190,7 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 	return hardwarePropertyAndValueVector;
 }
 
-const std::pair<std::string, std::string> ConfigReader::extractControlsInformationIntoPair(const YAML::Node &configInformationNode) const
+const std::pair<std::string, std::string> ConfigReader::extractControlsInformationIntoPair(const YAML::Node& configInformationNode) const
 {
 	YAML::Node controlsInformation = configInformationNode["controls_information"];
 	std::map<std::string, std::string> controlsParameterMap;
@@ -199,10 +199,10 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		std::string controlRecords = controlsInformation["records"].as<std::string>();
 		boost::trim_left(controlRecords);
 		std::pair<std::string, std::string> pvAndRecordPair;
-		
+
 		// mode tells us if we are physical, virtual or offline 
 		// which tells us what the 
-		if(mode == STATE::VIRTUAL)
+		if (mode == STATE::VIRTUAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
 			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;

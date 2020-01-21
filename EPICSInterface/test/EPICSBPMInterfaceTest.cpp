@@ -37,6 +37,6 @@ BOOST_AUTO_TEST_CASE(epics_bpm_interface_put_and_get_value_test)
 	}
 	else
 	{
-		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT COnNECT TO EPICS");
 	}
 }

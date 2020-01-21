@@ -4,7 +4,7 @@ find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 if ( Boost_FOUND )
 	foreach(testSource ${TEST_FILES})
 		#Extract filename without extension
-		get_filename_component(testName ${testSource} NAME_WE)
+		get_filename_compOnent(testName ${testSource} NAME_WE)
 		#Add a compile target
 		add_executable(${testName} ${testSource})
 		cmake_policy(SET CMP0023 NEW)

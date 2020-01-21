@@ -1,7 +1,7 @@
-#ifndef PYTHON_TYPE_CONVERSIONS_H_
-#define PYTHON_TYPE_CONVERSIONS_H_
+#ifndef PYTHON_TYPE_COnVERSIONS_H_
+#define PYTHON_TYPE_COnVERSIONS_H_
 
-#include <boost/python.hpp>
+#include <boost/PYTHON.hpp>
 #include <boost/circular_buffer.hpp>
 #include <vector>
 #include <map>
@@ -12,11 +12,11 @@ std::vector<typeOfNewVector> to_std_vector(const boost::python::object& iterable
 	return std::vector<typeOfNewVector>(boost::python::stl_input_iterator<typeOfNewVector>(iterable),
 		boost::python::stl_input_iterator<typeOfNewVector>());
 }
-template<class typeOfVectorToConvert>
+template<class typeOfVectorToCOnvert>
 inline
-boost::python::list to_py_list(std::vector<typeOfVectorToConvert> vector)
+boost::python::list to_py_list(std::vector<typeOfVectorToCOnvert> vector)
 {
-	typename std::vector<typeOfVectorToConvert>::iterator iter;
+	typename std::vector<typeOfVectorToCOnvert>::iterator iter;
 	boost::python::list newList;
 	for (iter = vector.begin(); iter != vector.end(); ++iter)
 	{
@@ -24,11 +24,11 @@ boost::python::list to_py_list(std::vector<typeOfVectorToConvert> vector)
 	}
 	return newList;
 }
-template<class typeOfVectorToConvert>
+template<class typeOfVectorToCOnvert>
 inline
-boost::python::list to_py_list(boost::circular_buffer<typeOfVectorToConvert> buffer)
+boost::python::list to_py_list(boost::circular_buffer<typeOfVectorToCOnvert> buffer)
 {
-	typename boost::circular_buffer<typeOfVectorToConvert>::iterator iter;
+	typename boost::circular_buffer<typeOfVectorToCOnvert>::iterator iter;
 	boost::python::list newList;
 	for (iter = buffer.begin(); iter != buffer.end(); ++iter)
 	{
@@ -41,12 +41,12 @@ inline
 boost::python::dict to_py_dict(std::map<key, value> map)
 {
 	typename std::map<key, value>::iterator iter;
-	boost::python::dict newDictionary;
+	boost::python::dict newDictiOnary;
 	for (iter = map.begin(); iter != map.end(); ++iter)
 	{
-		newDictionary[iter->first] = iter->second;
+		newDictiOnary[iter->first] = iter->second;
 	}
-	return newDictionary;
+	return newDictiOnary;
 }
 
 //template<class key, class value>
@@ -54,12 +54,12 @@ boost::python::dict to_py_dict(std::map<key, value> map)
 //boost::python::dict to_py_dict_ref(std::map<key, value> map)
 //{
 //	typename std::map<key, value>::iterator iter;
-//	boost::python::dict newDictionary;
+//	boost::python::dict newDictiOnary;
 //	for (iter = map.begin(); iter != map.end(); ++iter)
 //	{
-//		newDictionary[iter->first] = &(iter->second);
+//		newDictiOnary[iter->first] = &(iter->second);
 //	}
-//	return newDictionary;
+//	return newDictiOnary;
 //}
 
 #endif

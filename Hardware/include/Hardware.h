@@ -19,7 +19,7 @@ public:
 
 	// for creating "proper" objects that are defeined in a yaml file 
 	Hardware(const std::map<std::string, std::string>& paramMap, STATE mode);
-	// copy-contructor (forced by c++ standard due to passing in "const Hardware&" )
+	// copy-cOntructor (forced by c++ standard due to passing in "const Hardware&" )
 	Hardware(const Hardware& copyHardware);
 
 	
@@ -28,7 +28,10 @@ public:
 	std::string getHardwareName() const;
 	STATE getMode() const;
 
+	// TODO: do we need this? can't an child of these calss just access pvStructs,
+	// adn no other cclass should be able ot get this map??? 
 	std::map<std::string, pvStruct>& getPVStructs();
+
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	bool operator==(Hardware rhs);
 	virtual void debugMessagesOn();

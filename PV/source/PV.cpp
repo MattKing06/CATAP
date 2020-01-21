@@ -5,14 +5,14 @@
 /*
 *
 * WE MUST DEFINE THESE VARIABLES IN THE CPP FILE
-* SO THAT THEY ARE CONTAINED WITHIN THE LINKER
-* DEFINITIONS FOR THE PV.lib FILE. OTHERWISE,
+* SO THAT THEY ARE COnTAINED WITHIN THE LINKER
+* DEFINITIOnS FOR THE PV.lib FILE. OTHERWISE,
 * EPICSInterface/Factories/etc. WILL NOT KNOW WHAT THEY ARE!
 *
 */
 
 struct pvStruct *PVStruct;
-void (*pvStruct::updateFunction)(const struct event_handler_args args)= NULL;
+void (*pvStruct::updateFunctiOn)(const struct event_handler_args args)= NULL;
 
 bool operator==(const pvStruct& lhs, const pvStruct& rhs)
 {

@@ -3,15 +3,15 @@
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
-#pragma once
+#pragma Once
 #include "BPM.h"
 #include <vector>
 #include <map>
 #include <utility>
-#include <boost/python.hpp>
+#include <boost/PYTHON.hpp>
 #include <boost/circular_buffer.hpp>
 
-typedef void(*updateFunctionPtr)(struct event_handler_args args);
+typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
 class BPM;
 class BPMFactory
 {
@@ -20,9 +20,9 @@ public:
 	BPMFactory(STATE mode);
 	BPMFactory(const BPMFactory& copyBPMFactory);
 	~BPMFactory();
-	/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
-	//BPMFactory(std::string version);
-	bool setup(const std::string& version);
+	/*NEED constRUCTOR THAT TAKES VERSION??*/
+	//BPMFactory(std::string VERSION);
+	bool setup(const std::string& VERSION);
     LoggingSystem messenger;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -37,15 +37,15 @@ public:
 	std::map<std::string, BPM> bpmMap;
 	std::string getBPMName(const std::string& name);
 	void populateBPMMap();
-	void retrieveMonitorStatus(pvStruct& pvStruct);
+	void retrievemonitorStatus(pvStruct& pvStruct);
 	void monitorForNShots(const std::string& name, const size_t& value);
 	bool hasBeenSetup;
 	//bool isVirtual;
 	STATE mode;
-	bool isMonitoringXPV(const std::string& name);
-	bool isMonitoringYPV(const std::string& name);
-	bool isMonitoringData(const std::string& name);
-	bool isMonitoring(const std::string& name);
+	bool ismonitoringXPV(const std::string& name);
+	bool ismonitoringYPV(const std::string& name);
+	bool ismonitoringData(const std::string& name);
+	bool ismonitoring(const std::string& name);
 	// methods for setting properties of bpm via PV name
 	std::map<std::string, double> getXs(const std::vector<std::string>& names);
 	std::map<std::string, double> getXsFromPV(const std::vector<std::string>& names);
@@ -53,7 +53,7 @@ public:
 	std::map<std::string, double> getYsFromPV(const std::vector<std::string>& names);
 	std::map<std::string, double> getQs(const std::vector<std::string>& names);
 	std::map<std::string, std::vector< double > > getDatas(const std::vector<std::string>& names);
-	std::map<std::string, std::pair<double, double>> getXYPositions(const std::vector<std::string>& names);
+	std::map<std::string, std::pair<double, double>> getXYPositiOns(const std::vector<std::string>& names);
 	std::map<std::string, std::vector< double > > getXPVVectors(const std::vector<std::string>& names);
 	std::map<std::string, std::vector< double > > getYPVVectors(const std::vector<std::string>& names);
 	std::map<std::string, std::vector< double > > getQVectors(const std::vector<std::string>& names);
@@ -62,19 +62,19 @@ public:
 	std::map<std::string, boost::circular_buffer< double > > getYPVBuffers(const std::vector<std::string>& names);
 	std::map<std::string, boost::circular_buffer< double > > getQBuffers(const std::vector<std::string>& names);
 	std::map<std::string, boost::circular_buffer< std::vector< double > > > getDataBuffers(const std::vector<std::string>& names);
-	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getXYPositionVectors(const std::vector<std::string>& names);
-	std::map<std::string, double> getResolutions(const std::vector<std::string>& names);
-	std::map<std::string, double> getPositions(const std::vector<std::string>& names);
-	std::map<std::string, bool> reCalAttenuations(const std::vector<std::string>& names, const double& charge);
+	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getXYPositiOnVectors(const std::vector<std::string>& names);
+	std::map<std::string, double> getResolutiOns(const std::vector<std::string>& names);
+	std::map<std::string, double> getPositiOns(const std::vector<std::string>& names);
+	std::map<std::string, bool> reCalAttenuatiOns(const std::vector<std::string>& names, const double& charge);
 	std::map<std::string, double> getAllX();
 	std::map<std::string, double> getAllXFromPV();
 	std::map<std::string, double> getAllY();
 	std::map<std::string, double> getAllYFromPV();
 	std::map<std::string, double> getAllQ();
 	std::map<std::string, std::vector< double > > getAllData();
-	std::map<std::string, double> getAllResolution();
-	std::map<std::string, double> getAllPosition();
-	std::map<std::string, std::pair<double, double>> getAllXYPosition();
+	std::map<std::string, double> getAllResolutiOn();
+	std::map<std::string, double> getAllPositiOn();
+	std::map<std::string, std::pair<double, double>> getAllXYPositiOn();
 	std::map<std::string, std::vector< double > > getAllXPVVector();
 	std::map<std::string, std::vector< double > > getAllYPVVector();
 	std::map<std::string, std::vector< double > > getAllQVector();
@@ -83,18 +83,18 @@ public:
 	std::map<std::string, boost::circular_buffer< double > > getAllYPVBuffer();
 	std::map<std::string, boost::circular_buffer< double > > getAllQBuffer();
 	std::map<std::string, boost::circular_buffer< std::vector< double > > > getAllDataBuffer();
-	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getAllXYPositionVectors();
-	std::map<std::string, bool> reCalAllAttenuation(const double& charge);
+	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getAllXYPositiOnVectors();
+	std::map<std::string, bool> reCalAllAttenuatiOn(const double& charge);
 	double getX(const std::string& name);
 	double getXFromPV(const std::string& name);
 	double getY(const std::string& name);
 	double getYFromPV(const std::string& name);
 	double getQ(const std::string& name);
 	std::vector< double > getData(const std::string& name);
-	double getResolution(const std::string& name);
-	double getPosition(const std::string& name);
-	bool reCalAttenuation(const std::string& name, const double& charge);
-	std::pair<double, double> getXYPosition(const std::string& name);
+	double getResolutiOn(const std::string& name);
+	double getPositiOn(const std::string& name);
+	bool reCalAttenuatiOn(const std::string& name, const double& charge);
+	std::pair<double, double> getXYPositiOn(const std::string& name);
 	std::vector< double > getXPVVector(const std::string& name);
 	std::vector< double > getYPVVector(const std::string& name);
 	std::vector< double > getQVector(const std::string& name);
@@ -103,7 +103,7 @@ public:
 	boost::circular_buffer< double > getYPVBuffer(const std::string& name);
 	boost::circular_buffer< double > getQBuffer(const std::string& name);
 	boost::circular_buffer< std::vector< double > > getDataBuffer(const std::string& name);
-	std::pair<std::vector< double >, std::vector< double > > getXYPositionVector(const std::string& name);
+	std::pair<std::vector< double >, std::vector< double > > getXYPositiOnVector(const std::string& name);
 	bool setSA1(const std::string& name, const long& value);
 	bool setSA2(const std::string& name, const long& value);
 	bool setSD1(const std::string& name, const long& value);
@@ -124,7 +124,7 @@ public:
 	boost::python::dict getYsFromPV_Py(boost::python::list names);
 	boost::python::dict getQs_Py(boost::python::list names);
 	boost::python::dict getDatas_Py(boost::python::list names);
-	boost::python::dict getXYPositions_Py(boost::python::list names);
+	boost::python::dict getXYPositiOns_Py(boost::python::list names);
 	boost::python::list getXPVVector_Py(const std::string& name);
 	boost::python::list getYPVVector_Py(const std::string& name);
 	boost::python::list getQVector_Py(const std::string& name);
@@ -141,17 +141,17 @@ public:
 	boost::python::dict getYPVBuffers_Py(boost::python::list names);
 	boost::python::dict getQBuffers_Py(boost::python::list names);
 	boost::python::dict getDataBuffers_Py(boost::python::list names);
-	boost::python::dict getXYPositionVectors_Py(boost::python::list names);
-	boost::python::dict getResolutions_Py(boost::python::list names);
-	boost::python::dict getPositions_Py(boost::python::list names);
-	boost::python::dict reCalAttenuations_Py(boost::python::list names, const double& charge);
+	boost::python::dict getXYPositiOnVectors_Py(boost::python::list names);
+	boost::python::dict getResolutiOns_Py(boost::python::list names);
+	boost::python::dict getPositiOns_Py(boost::python::list names);
+	boost::python::dict reCalAttenuatiOns_Py(boost::python::list names, const double& charge);
 	boost::python::dict getAllX_Py();
 	boost::python::dict getAllXFromPV_Py();
 	boost::python::dict getAllY_Py();
 	boost::python::dict getAllYFromPV_Py();
 	boost::python::dict getAllQ_Py();
 	boost::python::dict getAllData_Py();
-	boost::python::dict getAllXYPosition_Py();
+	boost::python::dict getAllXYPositiOn_Py();
 	boost::python::dict getAllXPVVector_Py();
 	boost::python::dict getAllYPVVector_Py();
 	boost::python::dict getAllQVector_Py();
@@ -160,10 +160,10 @@ public:
 	boost::python::dict getAllYPVBuffer_Py();
 	boost::python::dict getAllQBuffer_Py();
 	boost::python::dict getAllDataBuffer_Py();
-	boost::python::dict getAllXYPositionVectors_Py();
-	boost::python::dict getAllResolution_Py();
-	boost::python::dict getAllPosition_Py();
-	boost::python::dict reCalAllAttenuation_Py(const double& charge);
+	boost::python::dict getAllXYPositiOnVectors_Py();
+	boost::python::dict getAllResolutiOn_Py();
+	boost::python::dict getAllPositiOn_Py();
+	boost::python::dict reCalAllAttenuatiOn_Py(const double& charge);
 };
 
 

@@ -10,14 +10,14 @@
 
 BOOST_AUTO_TEST_SUITE(ConfigReaderTestSuite)
 
-	BOOST_AUTO_TEST_CASE(config_reader_parsing_file_not_found_test)
+	BOOST_AUTO_TEST_CASE(cOnfig_reader_parsing_file_not_found_test)
 	{
 		std::string undefinedHardwareType = "UNDEFINED";
 		std::string undefinedFilename = "UNDEFINED";
 		BOOST_CHECK_THROW(ConfigReader reader(undefinedFilename, STATE::VIRTUAL); , std::runtime_error);
 	}
 
-	BOOST_AUTO_TEST_CASE(config_reader_parsing_master_lattice_yaml_document_test)
+	BOOST_AUTO_TEST_CASE(cOnfig_reader_parsing_master_lattice_yaml_document_test)
 	{
 		std::string hardwareType = "Magnet";
 		std::string nameHCOR = "VM-CLA-C2V-MAG-HCOR-01";

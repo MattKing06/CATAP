@@ -47,24 +47,24 @@ public:
 	bool isMessagingOn();
 	bool isDebugOn();
 
-	std::string getHardwareTypeFromName(const std::string &fullPVName) const;
-	bool checkForValidTemplate(const YAML::Node &hardwareTemplate, const YAML::Node &hardwareComponent) const;
-	std::vector<std::string> findYAMLFilesInDirectory(const std::string &version);
+	std::string getHardwareTypeFromName(const std::string& fullPVName) const;
+	bool checkForValidTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
+	std::vector<std::string> findYAMLFilesInDirectory(const std::string& version);
 	void initialiseFilenameAndParsedStatusMap();
-	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node &controlsInformationNode) const;
-	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node &hardwareInformationNode) const;
+	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node& controlsInformationNode) const;
+	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node& hardwareInformationNode) const;
 	bool hasMoreFilesToParse() const;
 
 
 	template<typename HardwareType>
-	void parseNextYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
+	void parseNextYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
 		std::cout << "parseNextYamlFile() called " << std::endl;
 		for (auto filename : this->yamlFilenamesAndParsedStatusMap)
 		{
 			// boolean check here for safety, even though we remove all parsed files
 			// anyway, just didn't trust myself..
-			
+
 			std::cout << "parseNextYamlFile() called " << std::endl;
 			if (!filename.second)
 			{
@@ -76,7 +76,7 @@ public:
 	}
 
 	template<typename HardwareType>
-	void parseYamlFile(std::map<std::string, HardwareType> &hardwareMapToFill)
+	void parseYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
 		std::ifstream fileInput;
 		YAML::Node config;
@@ -107,13 +107,13 @@ public:
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-				
-				
+
+
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
-				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = " 
+				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
 					<< ENUM_TO_STRING(mode) << std::endl;
-				
+
 				for (auto&& item : hardwareMapToFill)
 				{
 					std::cout << item.first << std::endl;
@@ -130,19 +130,19 @@ public:
 		catch (std::length_error EmptyFileException)
 		{
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
-								   SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
+				SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadFile BadFileException)
 		{
 			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
-								   ConfigReader::yamlFilename, ")  or file is not compliant with template ",
-								   ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
+				ConfigReader::yamlFilename, ")  or file is not compliant with template ",
+				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
 			messenger.printMessage("Problem with file (" +
-								   ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
-								   "): " + std::string(EmptyFileException.what()));
+				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
+				"): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{

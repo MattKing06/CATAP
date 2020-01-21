@@ -9,7 +9,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include <functional>
+#include <functiOnal>
 #include "Charge.h"
 #include <vector>
 #include <chrono>
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(charge_monitor_test)
 	srand(time(NULL));
 	charge.monitorForNShots(numShots);
 	double qToSet1 = rand() % 10 + 1.0;
-	BOOST_CHECK_EQUAL(charge.isMonitoring(), true);
+	BOOST_CHECK_EQUAL(charge.ismonitoring(), true);
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	charge.setQ(qToSet1);
 	std::this_thread::sleep_for(std::chrono::seconds(1));

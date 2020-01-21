@@ -5,7 +5,7 @@ HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 }
 HardwareFactory::~HardwareFactory()
 {
-	messenger.printDebugMessage("HardwareFactory Destruction Called");
+	messenger.printDebugMessage("HardwareFactory DestructiOn Called");
 }
 HardwareFactory::HardwareFactory(STATE mode):
 	magnetFactory(MagnetFactory(mode)),
@@ -14,37 +14,37 @@ HardwareFactory::HardwareFactory(STATE mode):
 	mode(mode)
 {
 	messenger = LoggingSystem(true, true);
-	messenger.printDebugMessage("Hardware Factory Constructed, mode = ", ENUM_TO_STRING(mode));
+	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 	//mode = mode;
-	/*messenger.printDebugMessage("MagnetFactory being contructed");
+	/*messenger.printDebugMessage("MagnetFactory being cOntructed");
 	magnetFactory = MagnetFactory(mode);
-	messenger.printDebugMessage("MagnetFactory contructed");
+	messenger.printDebugMessage("MagnetFactory cOntructed");
 	*/
 	//bpmFactory = BPMFactory(mode);
 	//chargeFactory = ChargeFactory(mode);
 }
-bool HardwareFactory::setup(const std::string& hardwareType, const std::string& version)
+bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
 	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
 		{
-			setup = magnetFactory.setup(version);
+			setup = magnetFactory.setup(VERSION);
 		}
 	}
 	else if (hardwareType == "BPM")
 	{
 		if (!bpmFactory.hasBeenSetup)
 		{
-			setup = bpmFactory.setup(version);
+			setup = bpmFactory.setup(VERSION);
 		}
 	}
 	else if (hardwareType == "Charge")
 	{
 		if (!chargeFactory.hasBeenSetup)
 		{
-			setup = chargeFactory.setup(version);
+			setup = chargeFactory.setup(VERSION);
 		}
 	}
 	return setup;
@@ -111,7 +111,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
+	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG On");
 	magnetFactory.debugMessagesOn();
 }
 
@@ -125,7 +125,7 @@ void HardwareFactory::debugMessagesOff()
 void HardwareFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
+	messenger.printMessage("HARDWARE-FAC - MESSAGES On");
 	magnetFactory.messagesOn();
 }
 

@@ -3,7 +3,7 @@ enable_testing()
 find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework filesystem system)
 if ( Boost_FOUND )
 		#Extract filename without extension
-		get_filename_component(testName ConfigReaderTest.cpp NAME_WE)
+		get_filename_compOnent(testName ConfigReaderTest.cpp NAME_WE)
 		#Add a compile target
 		add_executable(${testName} ConfigReaderTest.cpp)
 		#link to Boost libs AND whatever else

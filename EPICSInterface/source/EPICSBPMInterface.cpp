@@ -10,60 +10,60 @@ EPICSBPMInterface::~EPICSBPMInterface()
 {
 	messenger.printDebugMessage("EPICSBPMInterface Destructor Called");
 }
-void EPICSBPMInterface::retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const
+void EPICSBPMInterface::retrieveUpdateFunctiOnForRecord(pvStruct& pvStruct) const
 {
 
 	if (pvStruct.pvRecord == "X")
 	{
-		pvStruct.updateFunction = this->updateXPV;
+		pvStruct.updateFunctiOn = this->updateXPV;
 	}
 	if (pvStruct.pvRecord == "Y")
 	{
-		pvStruct.updateFunction = this->updateYPV;
+		pvStruct.updateFunctiOn = this->updateYPV;
 	}
 	if (pvStruct.pvRecord == "SA1")
 	{
-		pvStruct.updateFunction = this->updateSA1;
+		pvStruct.updateFunctiOn = this->updateSA1;
 	}
 	if (pvStruct.pvRecord == "SA2")
 	{
-		pvStruct.updateFunction = this->updateSA2;
+		pvStruct.updateFunctiOn = this->updateSA2;
 	}
 	if (pvStruct.pvRecord == "SD1")
 	{
-		pvStruct.updateFunction = this->updateSD1;
+		pvStruct.updateFunctiOn = this->updateSD1;
 	}
 	if (pvStruct.pvRecord == "SD2")
 	{
-		pvStruct.updateFunction = this->updateSD2;
+		pvStruct.updateFunctiOn = this->updateSD2;
 	}
 	if (pvStruct.pvRecord == "RA1")
 	{
-		pvStruct.updateFunction = this->updateRA1;
+		pvStruct.updateFunctiOn = this->updateRA1;
 	}
 	if (pvStruct.pvRecord == "RA2")
 	{
-		pvStruct.updateFunction = this->updateRA2;
+		pvStruct.updateFunctiOn = this->updateRA2;
 	}
 	if (pvStruct.pvRecord == "RD1")
 	{
-		pvStruct.updateFunction = this->updateRD1;
+		pvStruct.updateFunctiOn = this->updateRD1;
 	}
 	if (pvStruct.pvRecord == "RD2")
 	{
-		pvStruct.updateFunction = this->updateRD2;
+		pvStruct.updateFunctiOn = this->updateRD2;
 	}
 	if (pvStruct.pvRecord == "DATA:B2V.VALA")
 	{
-		pvStruct.updateFunction = this->updateData;
+		pvStruct.updateFunctiOn = this->updateData;
 	}
 	if (pvStruct.pvRecord == "AWAK")
 	{
-		pvStruct.updateFunction = this->updateAWAK;
+		pvStruct.updateFunctiOn = this->updateAWAK;
 	}
 	if (pvStruct.pvRecord == "RDY")
 	{
-		pvStruct.updateFunction = this->updateRDY;
+		pvStruct.updateFunctiOn = this->updateRDY;
 	}
 }
 
@@ -105,7 +105,7 @@ void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RA1"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setRA1(value);
 	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
 }
@@ -114,7 +114,7 @@ void EPICSBPMInterface::updateRA2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RA2"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setRA2(value);
 	messenger.printDebugMessage(" CALLED UPDATE RA2 ");
 }
@@ -123,7 +123,7 @@ void EPICSBPMInterface::updateRD1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RD1"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setRD1(value);
 	messenger.printDebugMessage(" CALLED UPDATE RD1 ");
 }
@@ -132,7 +132,7 @@ void EPICSBPMInterface::updateRD2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RD2"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setRD2(value);
 	messenger.printDebugMessage(" CALLED UPDATE RD2 ");
 }
@@ -141,7 +141,7 @@ void EPICSBPMInterface::updateSA1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SA1"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setSA1(value);
 	messenger.printDebugMessage(" CALLED UPDATE SA1 ");
 }
@@ -150,7 +150,7 @@ void EPICSBPMInterface::updateSA2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SA2"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setSA2(value);
 	messenger.printDebugMessage(" CALLED UPDATE SA2 ");
 }
@@ -159,7 +159,7 @@ void EPICSBPMInterface::updateSD1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SD1"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setSD1(value);
 	messenger.printDebugMessage(" CALLED UPDATE SD1 ");
 }
@@ -168,7 +168,7 @@ void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SD2"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setSD2(value);
 	messenger.printDebugMessage(" CALLED UPDATE SD2 ");
 }
@@ -178,7 +178,7 @@ void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("AWAK"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setAWAK(value);
 	recastBPM->setAWAKTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("AWAK").time)));
 	messenger.printDebugMessage(" CALLED UPDATE AWAK ");
@@ -188,7 +188,7 @@ void EPICSBPMInterface::updateRDY(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RDY"), args);
-	long value = returnValueFromArgsAsLong(args);
+	long value = returnValueFromArgsAslong(args);
 	recastBPM->setRDY(value);
 	recastBPM->setRDYTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("RDY").time)));
 	messenger.printDebugMessage(" CALLED UPDATE RDY ");

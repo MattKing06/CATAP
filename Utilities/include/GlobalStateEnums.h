@@ -11,9 +11,9 @@
     /// get strings of the entries with ENUM_TO_STRING                        \
 //
 //#include <boost/preprocessor.hpp>
-//#define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem)    \
+//#define X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE(r, data, elem)    \
 //    case elem : return BOOST_PP_STRINGIZE(elem);
-//#define DEFINE_ENUM_WITH_STRING_CONVERSIONS(name, enumerators)                \
+//#define DEFINE_ENUM_WITH_STRING_COnVERSIONS(name, enumerators)                \
 //    enum name {                                                               \
 //        BOOST_PP_SEQ_ENUM(enumerators)                                        \
 //    };                                                                        \
@@ -22,7 +22,7 @@
 //        switch(v)                                                             \
 //        {                                                                     \
 //            BOOST_PP_SEQ_FOR_EACH(                                            \
-//                X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE,          \
+//                X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE,          \
 //                name,                                                         \
 //                enumerators                                                   \
 //         )                                                                    \
@@ -31,18 +31,19 @@
 //    }                                                                         \
 
 #include <boost/preprocessor.hpp>
-#define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem)  case elem : return BOOST_PP_STRINGIZE(elem);
-#define DEFINE_ENUM_WITH_STRING_CONVERSIONS(name, enumerators) enum name {BOOST_PP_SEQ_ENUM(enumerators)};inline  std::string ENUM_TO_STRING(name v){switch(v){BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE,name,enumerators)default: return "[Unknown " BOOST_PP_STRINGIZE(name) "]";}}
+#define X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE(r, data, elem)  case elem : return BOOST_PP_STRINGIZE(elem);
+#define DEFINE_ENUM_WITH_STRING_COnVERSIONS(name, enumerators) enum name {BOOST_PP_SEQ_ENUM(enumerators)};inline  std::string ENUM_TO_STRING(name v){switch(v){BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE,name,enumerators)default: return "[Unknown " BOOST_PP_STRINGIZE(name) "]";}}
 
-DEFINE_ENUM_WITH_STRING_CONVERSIONS(STATE, (OFF)
+DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
                                            (ON)
-                                           //(ERROR)
+                                           //(ERROR) !!YOU CAN@T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
                                            (UNKNOWN_NAME)
                                            (SUCCESS)
                                            (OFFLINE)
                                            (PHYSICAL)
                                            (VIRTUAL)
                                            (ERR)
+                                           (OK)
 
 
 )

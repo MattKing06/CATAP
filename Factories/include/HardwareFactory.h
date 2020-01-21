@@ -17,9 +17,9 @@ class HardwareFactory
 public:
 	HardwareFactory();
 	HardwareFactory(STATE mode);
-	//HardwareFactory(std::string hardwareType, std::string version);
+	//HardwareFactory(std::string hardwareType, std::string VERSION);
 	~HardwareFactory();
-	bool setup(const std::string& hardwareType, const std::string& version);
+	bool setup(const std::string& hardwareType, const std::string& VERSION);
 	MagnetFactory& getMagnetFactory();
 	BPMFactory& getBPMFactory();
 	ChargeFactory& getChargeFactory();

@@ -35,10 +35,10 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	}
 
 
-	messenger.printDebugMessage( "Constructing Hardware ", hardwareName);
+	messenger.printDebugMessage( "constructing Hardware ", hardwareName);
 	
-	// equal_range returns a variable containing start (first) and end (second)
-	// iterators for items in the multimap corresponding to pv records.
+	// equal_range returns a variable cOntaining start (first) and end (second)
+	// iterators for items in the multimap correspOnding to pv records.
 	std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 	// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 	std::vector<std::string> pvRecordVec;
@@ -46,7 +46,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	// split a string by commas
 	boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c){return c == ','; });
 
-	messenger.printDebugMessage("Constructing PV information for ", hardwareName);
+	messenger.printDebugMessage("constructing PV informatiOn for ", hardwareName);
 	for (auto record : pvRecordVec)
 	{
 		pvStruct pv = pvStruct();
@@ -121,7 +121,7 @@ bool Hardware::operator==(Hardware rhs)
 void Hardware::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	messenger.printDebugMessage(hardwareName, " - DEBUG On");
 }
 
 void Hardware::debugMessagesOff()
@@ -133,7 +133,7 @@ void Hardware::debugMessagesOff()
 void Hardware::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	messenger.printMessage(hardwareName, " - MESSAGES On");
 }
 
 void Hardware::messagesOff()

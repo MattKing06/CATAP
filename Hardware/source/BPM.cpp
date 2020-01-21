@@ -23,7 +23,7 @@ BPM::BPM()
 	v2cal(std::stod(paramsMap.find("v2cal")->second)),
 	qcal(std::stod(paramsMap.find("qcal")->second)),
 	mn(std::stod(paramsMap.find("mn")->second)),
-	position(std::stod(paramsMap.find("position")->second))
+	positiOn(std::stod(paramsMap.find("positiOn")->second))
 {
 	bufferSize = 10;
 	xpvshots = 0;
@@ -65,7 +65,7 @@ v1cal(copyBPM.v1cal),
 v2cal(copyBPM.v2cal),
 qcal(copyBPM.qcal),
 mn(copyBPM.mn),
-position(copyBPM.position),
+positiOn(copyBPM.positiOn),
 epicsInterface(copyBPM.epicsInterface)
 {
 }
@@ -123,7 +123,7 @@ std::vector< double > BPM::getXPVVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING X PV -- VECTOR NOT FULL");
 	//}
 	return this->xPVVector;
 }
@@ -132,7 +132,7 @@ std::vector< double > BPM::getYPVVector() const
 {
 	//if (monitoringypv)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING Y PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING Y PV -- VECTOR NOT FULL");
 	//}
 	return this->yPVVector;
 }
@@ -141,7 +141,7 @@ std::vector< std::vector< double > > BPM::getDataVector() const
 {
 	//if (monitoringdata)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING DATA -- VECTOR NOT FULL");
 	//}
 	return this->dataVector;
 }
@@ -150,19 +150,19 @@ std::vector< double > BPM::getQVector() const
 {
 	//if (monitoringdata)
 	//{
-	//	LoggingSystem::printMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//	LoggingSystem::printMessage("WARNING: STILL monitorING DATA -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }
 
-double BPM::getResolution() const
+double BPM::getResolutiOn() const
 {
-	return this->resolution;
+	return this->resolutiOn;
 }
 
-double BPM::getPosition() const
+double BPM::getPositiOn() const
 {
-	return this->position;
+	return this->positiOn;
 }
 
 bool BPM::isXPVBufferFull() const
@@ -305,22 +305,22 @@ bool BPM::setYPV(const double& value)
 	return true;
 }
 
-bool BPM::isMonitoringXPV() const
+bool BPM::ismonitoringXPV() const
 {
 	return monitoringxpv;
 }
 
-bool BPM::isMonitoringYPV() const
+bool BPM::ismonitoringYPV() const
 {
 	return monitoringypv;
 }
 
-bool BPM::isMonitoringData() const
+bool BPM::ismonitoringData() const
 {
 	return monitoringdata;
 }
 
-bool BPM::isMonitoring() const
+bool BPM::ismonitoring() const
 {
 	if (monitoringxpv || monitoringypv || monitoringdata)
 	{
@@ -421,7 +421,7 @@ bool BPM::setData(const std::vector< double >& value)
 	c2Buffer.push_back(c2);
 	p1Buffer.push_back(p1);
 	p2Buffer.push_back(p2);
-	setResolution();
+	setResolutiOn();
 	setQ(value);
 	qBuffer.push_back(q);
 	++datashots;
@@ -462,7 +462,7 @@ bool BPM::setQ(const std::vector< double >& rawData)
 	return true;
 }
 
-bool BPM::setResolution()
+bool BPM::setResolutiOn()
 {
 	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
 	double rmsVals;
@@ -482,7 +482,7 @@ bool BPM::setResolution()
 	{
 		rmsVals = ((v11 + v12) - (v21 + v22)) / ((v11 + v12) + (v21 + v22));
 	}
-	resolution = rmsVals * sqrt(2) * (0.001 * mn);
+	resolutiOn = rmsVals * sqrt(2) * (0.001 * mn);
 	return true;
 }
 
@@ -499,42 +499,42 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 //{
 //	if (awaktstamp - rdytstamp > 1.0)
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (isnan(xBuffer.back()) || isnan(yBuffer.back()))
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(bpmdo->status);
 //	}
 //	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::NONLINEAR;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::NOnLINEAR;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::GOOD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::GOOD;
 //		statusBuffer.push_back(status);
 //	}
 //	else
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::UNKNOWN;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::UNKNOWN;
 //		statusBuffer.push_back(status);
 //	}
 //}
 
-bool BPM::reCalAttenuation(const double& charge)
+bool BPM::reCalAttenuatiOn(const double& charge)
 {
 	double qqC = charge / qcal;
 
@@ -656,7 +656,7 @@ void BPM::debugMessagesOff()
 void BPM::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	messenger.printDebugMessage(hardwareName, " - DEBUG On");
 	epicsInterface->debugMessagesOn();
 }
 
@@ -670,6 +670,6 @@ void BPM::messagesOff()
 void BPM::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	messenger.printMessage(hardwareName, " - MESSAGES On");
 	epicsInterface->messagesOn();
 }

@@ -9,7 +9,7 @@
 #include <thread>
 
 BOOST_AUTO_TEST_SUITE(MagnetFactoryTestSuite)
-BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
+BOOST_AUTO_TEST_CASE(magnet_factory_turn_On_magnet_test)
 {
 	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
-		magFac.turnOn(testMagnetName);
+		magFac.switchOn(testMagnetName);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		BOOST_CHECK_EQUAL(magFac.getPSUState(testMagnetName), 1);
 	}

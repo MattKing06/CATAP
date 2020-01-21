@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(bpm_monitor_test)
 	srand(time(NULL));
 	bpm.monitorForNShots(numShots);
 	double xPVToSet1 = rand() % 10 + 1.0;
-	BOOST_CHECK_EQUAL(bpm.isMonitoringXPV(), true);
+	BOOST_CHECK_EQUAL(bpm.ismonitoringXPV(), true);
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	bpm.setXPV(xPVToSet1);
 	std::this_thread::sleep_for(std::chrono::seconds(1));

@@ -2,10 +2,10 @@ message( "Processing Factories Unit Tests")
 enable_testing()
 find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 if ( Boost_FOUND )
-	add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+	add_definitiOns(${Boost_LIB_DIAGNOSTIC_DEFINITIOnS})
     foreach(testFile ${TEST_FILES})
 		#Extract filename without extension
-		get_filename_component(testName ${testFile} NAME_WE)
+		get_filename_compOnent(testName ${testFile} NAME_WE)
 		#Add a compile target
 		add_executable(${testName} ${testFile})
 		cmake_policy(SET CMP0023 NEW)
