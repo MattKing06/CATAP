@@ -30,4 +30,6 @@ cmake_build:
   - ./BPMTest
   - ./EPICSBPMInterfaceTest
   - ./BPMFactoryTest
-  - cd ../ && scp ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
+  - cd ../
+  - doxygen Doxyfile.CATAPDocs
+  - scp ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
