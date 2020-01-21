@@ -30,4 +30,4 @@ cmake_build:
   - ./BPMTest
   - ./EPICSBPMInterfaceTest
   - ./BPMFactoryTest
-  - scp ./Documentation/html/* ujo48515@148.79.232.81:/var/www/html/
+  - scp ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
