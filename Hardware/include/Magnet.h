@@ -9,6 +9,10 @@
 #endif //EPICS_MAGNET_INTERFACE_H_
 #include <boost/shared_ptr.hpp>
 #include <vector>
+
+#include <boost/PYTHON/dict.hpp>
+#include <boost/PYTHON/list.hpp>
+
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
 class EPICSMagnetInterface;
@@ -32,52 +36,93 @@ class Magnet : public Hardware
 
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
 		
+		// paramters that can be got, but NOT SET
 		std::vector<std::string> getAliases() const;
+		boost::python::list getAliases_Py() const;
+
 		std::string getManufacturer() const;
 		int getSerialNumber() const;
 		std::string getMagnetType() const;
 		std::string getMagnetRevType() const;
-		int getNumberOfDegaussSteps() const;
-		std::vector<double> getDegaussValues() const;
-		double getDegaussTolerance() const;
 		double getMagneticLength() const;
 		std::string getFullPSUName() const;
 		std::string getMeasurementDataLocation() const;
+
+
+		// paramters that can be get AND set 
+		int getNumberOfDegaussSteps() const;
+		std::vector<double> getDegaussValues() const;
+		boost::python::list getDegaussValues_Py() const;
 		
-		
+		double getDegaussTolerance() const;
 		double getRITolerance() const;
+		
+		int setNumberOfDegaussSteps(const int value);
+		std::vector<double> setDegaussValues(const std::vector<double>& values);
+		boost::python::list setDegaussValues_Py(const boost::python::list& values);
+		
+		double setDegaussTolerance(const double value);
+		double setRITolerance(const double value);
 
-		// Set A current
-		void SETI(const double& value);
-		void setEPICSSETI(const double &value);
-		void offlineSETI(const double& value);
-		
-		// called from EPICS to update the GETSETI variable! 
-		void updateGETSETI(const double& value);
 
-
-		
-		bool setPSUState(const STATE& value);
-		bool setEPICSPSUState(const STATE& value);
-		
-		
-		void setREADI(const double &value);
+		// Dynamic EPICS Value getters
 		double getREADI() const;
-
-		
-		bool setILKState(const STATE& value);
+		double getSETI() const;
 		STATE getILKState() const;
 		STATE getPSUState() const;
+
+
+		// Set A current 
+		void SETI(const double value); // expposed to PYTHON
+		// set Zero current in magnet 
+		void SETIZero(); // expposed to PYTHON
+
+		// set a psue state	
+		bool switchOn()const;
+		bool switchOFF()const;
+		bool setPSUState(const STATE value)const;
+
+
+
 		void debugMessagesOn();
 		void debugMessagesOff();
 		void messagesOn();
 		void messagesOff();
 
-		double getSETI() const;
 		
 
 
+		
+
+		// maybe be more specific and only allwo certina fucnitons / vairables?? 
+		friend class EPICSMagnetInterface;
+		friend class MagnetFactory;
+
 	protected:
+		// called from EPICS to update the GETSETI variable! 
+		void updateGETSETI(const double& value);
+
+		// EPICS calls this funciotn 
+		//void setPSUState(const int& value);
+
+		//bool setEPICSPSUState(const STATE& value);
+
+
+		void setEPICSSETI(const double& value);
+		void setREADI(const double& value);
+		bool setILKState(const STATE& value);
+
+
+		std::pair<epicsTimeStamp, double > READI2;
+		std::pair<epicsTimeStamp, double > GETSETI2;
+		std::pair<epicsTimeStamp, STATE > psuState2;
+		std::pair<epicsTimeStamp, STATE > ilkState2;
+			   		 	  
+	private:
+
+		void offlineSETI(const double& value);
+
+
 		//what else does a magnet need?
 		std::vector<std::string> aliases;
 		std::string manufacturer;
@@ -85,27 +130,22 @@ class Magnet : public Hardware
 		std::string magType;
 		std::string magRevType;
 		double RI_tolerance;
-		int numberOfDegaussSteps;
+
+		int numberOfDegaussSteps; // TODO: thsi should be a size_t or uint
+		
 		std::vector<double> degaussValues;
 		double degaussTolerance;
 		double magneticLength;
 		std::string fullPSUName;
 		std::string measurementDataLocation;
-		//(inherited) std::vector<pvStruct> MagnetPVStructs;
-		//(inherited) std::string hardwareType;
-		//(inherited) std::string machineArea;
 
 		// variables should be private 
 		double READI;
 		STATE psuState;
-		
-		// WE NEVER MONITOR THIS IT IS JUST USED FO RCAPUT
+		// WE NEVER monitor THIS IT IS JUST USED FO RCAPUT
 		//double SETI;
-		
 		double GETSETI;
-		STATE ilkState; // This should be a state?? 
-		
-		//STATE mode;
+		STATE ilkState; 
 
 };
 

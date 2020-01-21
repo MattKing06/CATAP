@@ -9,18 +9,18 @@
 #include <iostream>
 #include <string>
 #include <boost/circular_buffer.hpp>
-// forward declaration of BPM class
+// forward declaratiOn of BPM class
 // tells compiler that we will use this class.
 class BPM;
-typedef void(*updateFunctionPtr)(struct event_handler_args args);
+typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
 
 class EPICSBPMInterface : public EPICSInterface
 {
 public:
 	EPICSBPMInterface();
 	~EPICSBPMInterface();
-	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
-	static void updatePositions(const struct event_handler_args args);
+	void retrieveUpdateFunctiOnForRecord(pvStruct& pvStruct) const;
+	static void updatePositiOns(const struct event_handler_args args);
 	static void updateXPV(const struct event_handler_args args);
 	static void updateYPV(const struct event_handler_args args);
 	static void updateData(const struct event_handler_args args);

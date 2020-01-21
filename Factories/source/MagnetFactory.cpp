@@ -7,14 +7,14 @@
 #include <cadef.h>
 #endif
 
-#include "GlobalFunctions.h"
+#include "GlobalFunctiOns.h"
 #include "GlobalConstants.h"
 
 
 MagnetFactory::MagnetFactory() : 
 	MagnetFactory(STATE::OFFLINE)
 {
-	std::cout << "MagnetFactory DEFAULT CONSTRUCTOR called " << std::endl;
+	std::cout << "MagnetFactory DEFAULT constRUCTOR called " << std::endl;
 }
 
 MagnetFactory::MagnetFactory(STATE mode):
@@ -25,7 +25,7 @@ MagnetFactory::MagnetFactory(STATE mode):
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
-	messenger.printDebugMessage("Magnet Factory Constructed");
+	messenger.printDebugMessage("Magnet Factory constructed");
 	//mode = mode;
 	//reader = ;
 }
@@ -36,7 +36,7 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 	reader(copyMagnetFactory.reader),
 	dummy_magnet(copyMagnetFactory.dummy_magnet)
 {
-	messenger.printDebugMessage("MagnetFactory Copy contructor");
+	messenger.printDebugMessage("MagnetFactory Copy cOntructor");
 	magnetMap.insert(copyMagnetFactory.magnetMap.begin(), copyMagnetFactory.magnetMap.end());
 }
 
@@ -52,7 +52,7 @@ MagnetFactory::~MagnetFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+					magnet.second.epicsInterface->removeSubscriptiOn(pvStruct.second);
 					ca_flush_io();
 				}
 				magnet.second.epicsInterface->removeChannel(pvStruct.second);
@@ -66,7 +66,7 @@ void MagnetFactory::populateMagnetMap()
 {
 	if (!reader.hasMoreFilesToParse())
 	{
-		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
+		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please cOntact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
@@ -77,7 +77,7 @@ void MagnetFactory::populateMagnetMap()
 	std::cout << "populateMagnetMap() fin" << std::endl;
 }
 
-void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+void MagnetFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
 	if (pvStruct.pvRecord == "GETSETI" ||
 		pvStruct.pvRecord == "RPOWER" ||
@@ -88,7 +88,7 @@ void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
-bool MagnetFactory::setup(const std::string &version)
+bool MagnetFactory::setup(const std::string &VERSION)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
 	if (hasBeenSetup)
@@ -101,7 +101,7 @@ bool MagnetFactory::setup(const std::string &version)
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in Magnet constructor
-	//// but we have a lot of PV information to retrieve from EPICS first
+	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	
 	std::cout << "populateMagnetMap()" << std::endl;
@@ -120,7 +120,7 @@ bool MagnetFactory::setup(const std::string &version)
 			std::cout << "pvAndRecordName = " << pvAndRecordName << "." << std::endl;
 
 			// sets the monitor stat in teh pvstruict to true or false 
-			retrieveMonitorStatus(pv.second);
+			retrievemonitorStatus(pv.second);
 			
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
@@ -128,7 +128,7 @@ bool MagnetFactory::setup(const std::string &version)
 				std::cout << "cs_conn, getting some values " << std::endl;
 				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
-				magnet.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				magnet.second.epicsInterface->retrieveUpdateFunctiOnForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
 				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
@@ -136,15 +136,15 @@ bool MagnetFactory::setup(const std::string &version)
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if(pv.second.monitor)
 				{
-					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
+					magnet.second.epicsInterface->createSubscriptiOn(magnet.second, pv.second);
 				}
 				//// update the alias_name_map so we can use fullNames or Aliases 
 				updateAliasNameMap(magnet.second);
 			}
 			else
 			{
-				std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
-				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
+				std::cout << magnet.first << " CANNOT COnNECT TO EPICS" << std::endl;
+				messenger.printMessage(magnet.first, " CANNOT COnNECT TO EPICS");
 				hasBeenSetup = false;
 				return hasBeenSetup;
 			}
@@ -159,12 +159,12 @@ bool MagnetFactory::setup(const std::string &version)
 
 
 
-// GET MAGNET OBJECT  FUNCTIONS
+// GET MAGNET OBJECT  FUNCTIOnS
 //
 Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
 	std::string full_name = getFullName(fullMagnetName);
-	if (GlobalFunctions::entryExists(magnetMap, full_name) )
+	if (GlobalFunctiOns::entryExists(magnetMap, full_name) )
 	{
 		return magnetMap.at(full_name);
 	}
@@ -195,7 +195,7 @@ double MagnetFactory::getSETI(const std::string& name) const
 	//	this->setup("nominal");// nominal does not mean anything yet 
 	//}
 	std::string fullName = getFullName(name);
-	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	if (GlobalFunctiOns::entryExists(magnetMap, fullName))
 	{
 		return magnetMap.at(fullName).getSETI();
 	}
@@ -233,7 +233,7 @@ double MagnetFactory::getREADI(const std::string& name) const
 	//	this->setup("nominal");// nominal does not mean anything yet 
 	//}
 	std::string fullName = getFullName(name);
-	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	if (GlobalFunctiOns::entryExists(magnetMap, fullName))
 	{
 		return magnetMap.at(fullName).getSETI();
 	}
@@ -340,35 +340,35 @@ void MagnetFactory::SETI(const std::map<std::string, double> &namesAndCurrentsMa
 	//return true;
 }
 
-STATE MagnetFactory::turnOn(const std::string& name)
+STATE MagnetFactory::switchOn(const std::string& name)
 {
-	if (GlobalFunctions::entryExists(magnetMap, name))
+	if (GlobalFunctiOns::entryExists(magnetMap, name))
 	{
-		magnetMap.at(name).setEPICSPSUState(STATE::ON);
+		magnetMap.at(name).switchOn();
 		return STATE::SUCCESS;
 	}
 	return STATE::UNKNOWN_NAME;
 }
-std::map<std::string, STATE> MagnetFactory::turnOn(const std::vector<std::string>& names)
+std::map<std::string, STATE> MagnetFactory::switchOn(const std::vector<std::string>& names)
 {
 	std::map<std::string, STATE> return_map;
 	for (auto& name : names)
 	{
-		return_map[name] = turnOn(name);
+		return_map[name] = switchOn(name);
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::turnOn_Py(const boost::python::list names)
+boost::python::dict MagnetFactory::switchOn_Py(const boost::python::list names)
 {
-	//messenger.printDebugMessage("TURNING ", name, " ON");
-	return to_py_dict<std::string, STATE>(turnOn(to_std_vector<std::string>(names)));
+	//messenger.printDebugMessage("TURNING ", name, " On");
+	return to_py_dict<std::string, STATE>(switchOn(to_std_vector<std::string>(names)));
 }
 
-STATE MagnetFactory::turnOff(const std::string& name)
+STATE MagnetFactory::switchOFF(const std::string& name)
 {
-	if (GlobalFunctions::entryExists(magnetMap, name))
+	if (GlobalFunctiOns::entryExists(magnetMap, name))
 	{
-		magnetMap.at(name).setEPICSPSUState(STATE::OFF);
+		magnetMap.at(name).switchOFF();
 		return STATE::SUCCESS;
 	}
 	return STATE::UNKNOWN_NAME;
@@ -378,19 +378,21 @@ STATE MagnetFactory::turnOff(const std::string& name)
 //	messenger.printDebugMessage("TURNING ", name, " OFF");
 //	return magnetMap.at(name).setEPICSPSUState(STATE::OFF);
 //}
-std::map<std::string, STATE> MagnetFactory::turnOff(const std::vector<std::string>& names)
+std::map<std::string, STATE> MagnetFactory::switchOFF(const std::vector<std::string>& names)
 {
 	std::map<std::string, STATE> return_map;
 	for (auto& name : names)
 	{
-		return_map[name] = turnOff(name);
+		return_map[name] = switchOFF(name);
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::turnOff_Py(const boost::python::list names)
+boost::python::dict MagnetFactory::switchOFF_Py(const boost::python::list names)
 {
-	return to_py_dict<std::string,STATE>( turnOff(to_std_vector<std::string>(names) ));
+	return to_py_dict<std::string,STATE>(switchOFF(to_std_vector<std::string>(names) ));
 }
+
+
 
 
 STATE MagnetFactory::getPSUState(const std::string& name) const
@@ -453,7 +455,7 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 {
 	// first add in the magnet full name
 	std::string full_name = magnet.getHardwareName();
-	if (GlobalFunctions::entryExists(alias_name_map, full_name))
+	if (GlobalFunctiOns::entryExists(alias_name_map, full_name))
 	{
 		messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
 	}
@@ -466,7 +468,7 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 	std::vector<std::string> aliases = magnet.getAliases();
 	for(auto&& next_alias : aliases)
 	{
-		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
+		if (GlobalFunctiOns::entryExists(alias_name_map, next_alias))
 		{
 			messenger.printMessage("!!ERROR!! ",magnet.getHardwareName(), " alias = ",next_alias, " already exists");
 		}
@@ -479,7 +481,7 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 
 std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 {
-	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
+	if (GlobalFunctiOns::entryExists(alias_name_map, name_to_check))
 	{
 		return alias_name_map.at(name_to_check);
 	}
@@ -489,7 +491,7 @@ std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 void MagnetFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("MAG-FAC - DEBUG ON");
+	messenger.printDebugMessage("MAG-FAC - DEBUG On");
 	reader.debugMessagesOn();
 	for (auto& magnet : magnetMap)
 	{
@@ -509,7 +511,7 @@ void MagnetFactory::debugMessagesOff()
 void MagnetFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("MAG-FAC - MESSAGES ON");
+	messenger.printMessage("MAG-FAC - MESSAGES On");
 	reader.messagesOn();
 	for (auto& magnet : magnetMap)
 	{

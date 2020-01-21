@@ -7,6 +7,9 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 
+#include "PythonTypeConversions.h"
+#include "GlobalConstants.h"
+
 //double Magnet::current;
 
 Magnet::Magnet()
@@ -55,6 +58,12 @@ std::vector<std::string> Magnet::getAliases() const
 {
 	return this->aliases;
 }
+boost::python::list Magnet::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+
+
 std::string Magnet::getManufacturer() const
 {
 	return this->manufacturer;
@@ -75,18 +84,49 @@ double Magnet::getRITolerance() const
 {
 	return this->RI_tolerance;
 }
+double setRITolerance(const double value);
+
+
 int Magnet::getNumberOfDegaussSteps() const
 {
 	return this->numberOfDegaussSteps;
 }
+
+
 std::vector<double> Magnet::getDegaussValues() const
 {
 	return this->degaussValues;
 }
+boost::python::list Magnet::getDegaussValues_Py() const
+{
+	return to_py_list<double>(getDegaussValues());
+}
+std::vector<double> Magnet::setDegaussValues(const std::vector<double>& values)
+{
+	degaussValues = values;
+	numberOfDegaussSteps = (int)degaussValues.size();
+	return degaussValues;
+}
+boost::python::list Magnet::setDegaussValues_Py(const boost::python::list& values)
+{
+	return to_py_list(setDegaussValues(to_std_vector<double>(values)));
+}
+
+
+
+
+
 double Magnet::getDegaussTolerance() const
 {
 	return this->degaussTolerance;
 }
+double Magnet::setDegaussTolerance(const double value)
+{
+	degaussTolerance = value;
+	return degaussTolerance;
+}
+
+
 double Magnet::getMagneticLength() const
 {
 	return this->magneticLength;
@@ -102,15 +142,20 @@ std::string Magnet::getMeasurementDataLocation() const
 
 
 
+
+
 double Magnet::getSETI() const
 {
 	return GETSETI;
 }
 
 
+
+
+
 // THIS IS "SETTING" A SETI, WE NEVER READ SET WE USE GETSETI
-// Python users call this function, then we decide what to do 
-void Magnet::SETI(const double& value)
+// PYTHON users call this function, then we decide what to do 
+void Magnet::SETI(const double value)
 {
 	switch (mode)
 	{
@@ -124,6 +169,11 @@ void Magnet::SETI(const double& value)
 			offlineSETI(value);
 	}
 }
+void Magnet::SETIZero() // expposed to PYTHON
+{
+	SETI(GlobalConstants::zero_double);
+}
+
 
 void Magnet::offlineSETI(const double& value)
 {
@@ -172,31 +222,50 @@ double Magnet::getREADI() const
 
 
 
-
-bool Magnet::setPSUState(const STATE& value)
+bool Magnet::switchOn()const
 {
-	psuState = value;
-	messenger.printDebugMessage(hardwareName, " PSU STATE:", value);
-	return true;
+	return 	epicsInterface->setNewPSUState(STATE::ON, pvStructs.at("SPOWER"));
 }
-
+bool Magnet::switchOFF()const
+{
+	return 	epicsInterface->setNewPSUState(STATE::OFF, pvStructs.at("SPOWER"));
+}
 STATE Magnet::getPSUState() const
 {
 	return psuState;
 }
-
-bool Magnet::setEPICSPSUState(const STATE& value)
+bool Magnet::setPSUState(const STATE value)const
 {
-	std::map<std::string, pvStruct>& pvData = getPVStructs();
-	for (auto &pv : pvData)
-	{
-		if (pv.second.pvRecord == "SPOWER")
-		{
-			this->epicsInterface->setNewPSUState(value, pv.second);
-		}
-	}
-	return true;
+	return 	epicsInterface->setNewPSUState(value, pvStructs.at("SPOWER"));
 }
+
+
+//void Magnet::setPSUState(const int & value)
+//{
+//	switch( value)
+//	{
+//	case GlobalConstants::zero_int: psuState = STATE:: OFF; break;
+//	case GlobalConstants::one_int: psuState = STATE:: ON; break;
+//	default: psuState = STATE::ERR;
+//	}
+//	messenger.printDebugMessage(hardwareName, " PSU STATE = ", ENUM_TO_STRING(psuState));
+//}
+
+
+
+//bool Magnet::setEPICSPSUState(const STATE value) const
+//{
+//	epicsInterface->setNewPSUState(value, pvStructs.at("SPOWER"))
+//	//std::map<std::string, pvStruct>& pvData = getPVStructs();
+//	//for (auto &pv : pvData)
+//	//{
+//	//	if (pv.second.pvRecord == "SPOWER")
+//	//	{
+//	//		this->epicsInterface->setNewPSUState(value, pv.second);
+//	//	}
+//	//}
+//	return true;
+//}
 
 
 

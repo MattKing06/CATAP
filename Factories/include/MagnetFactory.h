@@ -3,14 +3,14 @@
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
-#pragma once
+#pragma Once
 #include "Magnet.h"
 #include <vector>
 #include <map>
-#include <boost/python/dict.hpp>
-#include <boost/python/list.hpp>
+#include <boost/PYTHON/dict.hpp>
+#include <boost/PYTHON/list.hpp>
 
-typedef void(*updateFunctionPtr)(struct event_handler_args args);
+typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
 class Magnet;
 class MagnetFactory
 {
@@ -19,18 +19,18 @@ class MagnetFactory
 		MagnetFactory(STATE mode);
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
 		~MagnetFactory();
-		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
+		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		
-		//MagnetFactory(std::string version);
-		bool setup(const std::string &version);
+		//MagnetFactory(std::string VERSION);
+		bool setup(const std::string &VERSION);
 		
 		// private
 		ConfigReader reader;
 
 		// Get Magnets Objects referecnes
-		// In the current design YOU CANNOT get a container of magnet object s (or ANY hardware object) 
+		// In the current design YOU CANNOT get a cOntainer of magnet object s (or ANY hardware object) 
 		Magnet& getMagnet(const std::string& fullMagnetName);
-		// !!! FUNCTIONS LIKE THESE CAN'T EXIST !!!!
+		// !!! FUNCTIOnS LIKE THESE CAN'T EXIST !!!!
 		//std::map<std::string, Magnet&> getMagnets(const std::vector<std::string>& magnetNames);
 		//boost::python::dict getAllMagnets_Py();
 
@@ -68,15 +68,15 @@ class MagnetFactory
 		//void SETI_Py(const std::map<std::string, double> &namesAndCurrentsMap);
 		
 		
-		STATE turnOn(const std::string& name);
-		std::map<std::string, STATE> turnOn(const std::vector<std::string>& names);
-		boost::python::dict turnOn_Py(const boost::python::list names);
-		bool turnOnAllMagnets();
+		STATE switchOn(const std::string& name);
+		std::map<std::string, STATE> switchOn(const std::vector<std::string>& names);
+		boost::python::dict switchOn_Py(const boost::python::list names);
+		//bool switchOnAllMagnets();
 		
-		STATE turnOff(const std::string& name);
-		std::map<std::string, STATE> turnOff(const std::vector<std::string>& names);
-		boost::python::dict turnOff_Py(const boost::python::list names);
-		bool turnOffAllMagnets();
+		STATE switchOFF(const std::string& name);
+		std::map<std::string, STATE> switchOFF(const std::vector<std::string>& names);
+		boost::python::dict switchOFF_Py(const boost::python::list names);
+		//bool switchOFFAllMagnets();
 		
 		STATE getPSUState(const std::string& name) const;
 		std::map<std::string, STATE> getAllPSUState() const;
@@ -93,7 +93,7 @@ class MagnetFactory
 		std::map<std::string, Magnet> magnetMap;
 		// private
 		void populateMagnetMap();
-		void retrieveMonitorStatus(pvStruct& pvStruct);
+		void retrievemonitorStatus(pvStruct& pvStruct);
 		// private
 		bool hasBeenSetup;
 		// offlien physical or virtual 
@@ -114,7 +114,7 @@ private:
 		void updateAliasNameMap(const Magnet& magnet);
 		std::map<std::string, std::string> alias_name_map;
 
-		// dummy_magnet is used to return values when users ask for a non-existing magnet's properties 
+		// dummy_magnet is used to return values when users ask for a nOn-existing magnet's properties 
 		Magnet dummy_magnet;
 
 };

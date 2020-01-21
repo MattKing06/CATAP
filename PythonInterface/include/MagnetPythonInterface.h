@@ -4,9 +4,9 @@
 #include "MagnetFactory.h"
 #include "PythonTypeConversions.h"
 
-#include <boost/python.hpp>
+#include <boost/PYTHON.hpp>
 
-//using namespace boost::python;
+//using namespace boost::PYTHON;
 //using namespace boost;
 namespace BOOST_PYTHON_MAGNET_INCLUDE
 {
@@ -20,14 +20,16 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 		// magnet exposure
 		boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
-			.add_property("SETI", &Magnet::getSETI, &Magnet::setEPICSSETI)
-			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setEPICSPSUState)
+			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
+			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
 			.add_property("READI", &Magnet::getREADI)
 			.add_property("name", &Magnet::getHardwareName)
 			.add_property("manufacturer", &Magnet::getManufacturer)
 			.add_property("serial_number", &Magnet::getSerialNumber)
 			.add_property("magnet_type", &Magnet::getMagnetType)
-			.add_property("epicsInterface", &Magnet::epicsInterface)
+			//.add_property("epicsInterface", &Magnet::epicsInterface)
+			.def("switchOFF", &Magnet::switchOFF)
+			.def("switchOn", &Magnet::switchOn)
 			.def("getSETI", &Magnet::getSETI)
 			.def("SETI", &Magnet::SETI)
 			.def("getREADI", &Magnet::getREADI)
@@ -41,17 +43,17 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 	}
 
 	//typedef std::pair<int, int> IntPair;
-	//// This is our previous registration function (as above) using the cleaner typedef.
-	//to_python_converter<IntPair, PairToTupleConverter<int, int> >();
-	//// Registers a converter for a pair of int-pairs.
-	//to_python_converter<std::pair<IntPair, IntPair>, PairToTupleConverter<IntPair, IntPair> >();
+	//// This is our previous registratiOn functiOn (as above) using the cleaner typedef.
+	//to_PYTHON_cOnverter<IntPair, PairToTupleCOnverter<int, int> >();
+	//// Registers a cOnverter for a pair of int-pairs.
+	//to_PYTHON_cOnverter<std::pair<IntPair, IntPair>, PairToTupleCOnverter<IntPair, IntPair> >();
 
 	
 	void expose_magnet_factory_object() {
 
 		//Magnet Factory Exposure
-		STATE(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::turnOn;
-		STATE(MagnetFactory:: * turnOffSingle)(const std::string&) = &MagnetFactory::turnOff;
+		STATE(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::switchOn;
+		STATE(MagnetFactory:: * turnOffSingle)(const std::string&) = &MagnetFactory::switchOFF;
 		
 		void(MagnetFactory:: * SETISingle)(const std::string&, const double&) = &MagnetFactory::SETI;
 		void(MagnetFactory:: * SETIMultiple)(const std::string&, const double&) = &MagnetFactory::SETI;
@@ -80,9 +82,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getRICurrents", &MagnetFactory::getRICurrents_Py)
 			
 			.def("turnOn", turnOnSingle)
-			.def("turnOn", &MagnetFactory::turnOn_Py)
+			.def("turnOn", &MagnetFactory::switchOn_Py)
 			.def("turnOff", turnOffSingle)
-			.def("turnOff", &MagnetFactory::turnOff_Py)
+			.def("turnOff", &MagnetFactory::switchOFF_Py)
 
 			.def("getAllPSUState", &MagnetFactory::getAllPSUState_Py)
 

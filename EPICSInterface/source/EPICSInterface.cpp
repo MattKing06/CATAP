@@ -30,7 +30,7 @@ EPICSInterface::~EPICSInterface()
 	messenger.printDebugMessage("EPICSInterface Destructor Called");
 }
 
-void EPICSInterface::removeSubscription(pvStruct& pvStruct)
+void EPICSInterface::removeSubscriptiOn(pvStruct& pvStruct)
 {
 	int status = ca_clear_subscription(pvStruct.EVID);
 	MY_SEVCHK(status);
@@ -42,16 +42,16 @@ void EPICSInterface::removeChannel(pvStruct& pvStruct)
 	MY_SEVCHK(status);
 }
 
-void EPICSInterface::detachFromContext()
+void EPICSInterface::detachFromCOntext()
 {
 	ca_detach_context();
 }
 
-void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
+void EPICSInterface::createSubscriptiOn(Hardware& hardware, pvStruct& pvStruct) const
 {
-	int status = ca_create_subscription(pvStruct.MonitorCHTYPE, pvStruct.COUNT,
+	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
 										pvStruct.CHID, pvStruct.MASK,
-										pvStruct.updateFunction,
+										pvStruct.updateFunctiOn,
 										(void*)&hardware, 
 										&pvStruct.EVID);
 	MY_SEVCHK(status);
@@ -64,7 +64,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		int status;
 		//chid CHID;
 
-		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names 
+		// This should eb defeind in the hardware objst, so that we can handle nOn-standrd PV names 
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		std::cout << "ca_create_channel status = " << status << std::endl;
@@ -95,15 +95,15 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 	{
 		if (ca_field_type(pvStruct.CHID) == DBR_DOUBLE)
 		{
-			pvStruct.MonitorCHTYPE = DBR_TIME_DOUBLE;
+			pvStruct.monitorCHTYPE = DBR_TIME_DOUBLE;
 		}
 		else if (ca_field_type(pvStruct.CHID) == DBR_ENUM)
 		{
-			pvStruct.MonitorCHTYPE = DBR_TIME_ENUM;
+			pvStruct.monitorCHTYPE = DBR_TIME_ENUM;
 		}
 		else
 		{
-			pvStruct.MonitorCHTYPE = ca_field_type(pvStruct.CHID);
+			pvStruct.monitorCHTYPE = ca_field_type(pvStruct.CHID);
 		}
 	}
 	pvStruct.CHTYPE = ca_field_type(pvStruct.CHID);
@@ -124,7 +124,7 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 void EPICSInterface::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG ON");
+	messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG On");
 }
 
 void EPICSInterface::debugMessagesOff()
@@ -136,7 +136,7 @@ void EPICSInterface::debugMessagesOff()
 void EPICSInterface::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES ON");
+	messenger.printMessage(ownerName, " EPICS Interface - MESSAGES On");
 }
 
 void EPICSInterface::messagesOff()
@@ -162,21 +162,51 @@ void EPICSInterface::setPVTimeStampFromArgs(pvStruct& pv, const event_handler_ar
 	pv.time = time->stamp;
 }
 
+
+void EPICSInterface::updateTimeStampDoublePair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, double>& pairToUpdate)
+{
+	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	pairToUpdate.first  = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, int>& pairToUpdate)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = (int)tv->value;
+}
+
+std::pair<epicsTimeStamp, int> EPICSInterface::getTimeStampIntPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, int> r;
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (int)tv->value;
+	return r;
+}
+
+
 std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrong with the update function!" << std::endl;
+		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_string*)(args.dbr);
 	return std::string(timeObject->value);
 }
 
+
+
+
 double EPICSInterface::returnValueFromArgsAsDouble(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrong with the update function!" << std::endl;
+		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_double*)(args.dbr);
 	return double(timeObject->value);
@@ -186,17 +216,17 @@ STATE EPICSInterface::returnValueFromArgsAsState(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrong with the update function!" << std::endl;
+		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_enum*)(args.dbr);
 	return STATE(timeObject->value);
 }
 
-long EPICSInterface::returnValueFromArgsAsLong(const event_handler_args args)
+long EPICSInterface::returnValueFromArgsAslong(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrong with the update function!" << std::endl;
+		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_long*)(args.dbr);
 	return long(timeObject->value);
@@ -206,7 +236,7 @@ float EPICSInterface::returnValueFromArgsAsFloat(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrong with the update function!" << std::endl;
+		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_float*)(args.dbr);
 	return float(timeObject->value);
@@ -216,16 +246,16 @@ std::vector<double> EPICSInterface::returnValueFromArgsAsDoubleVector(const stru
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrong with the update function!" << std::endl;
+		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_double*)(args.dbr);
 	size_t i = 0;
 	auto elementCount = ca_element_count(args.chid);
-	std::vector<double> rawVectorContainer(elementCount);
-	for (auto&& it : rawVectorContainer)
+	std::vector<double> rawVectorCOntainer(elementCount);
+	for (auto&& it : rawVectorCOntainer)
 	{
 		it = *(&timeObject->value + i);
 		++i;
 	}
-	return rawVectorContainer;
+	return rawVectorCOntainer;
 }
