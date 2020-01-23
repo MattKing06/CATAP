@@ -22,10 +22,14 @@ typedef struct pvStruct
 	unsigned long MASK;
 	chtype CHTYPE;
 	chtype monitorCHTYPE;
-	static void(*updateFunctiOn)(const struct event_handler_args args);
+	static void(*updateFunction)(const struct event_handler_args args);
 	evid EVID;
 	epicsTimeStamp time;
 	bool monitor;
+
+	// pv_enum, pv_enum_str
+	// map of all pv_enum_str
+
 }pvStruct;
 extern bool operator==(const pvStruct& lhs, const pvStruct& rhs);
 extern bool operator !=(const pvStruct& lhs, const pvStruct& rhs);

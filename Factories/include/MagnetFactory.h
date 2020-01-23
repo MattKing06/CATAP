@@ -10,7 +10,7 @@
 #include <boost/PYTHON/dict.hpp>
 #include <boost/PYTHON/list.hpp>
 
-typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
 class MagnetFactory
 {
@@ -93,7 +93,7 @@ class MagnetFactory
 		std::map<std::string, Magnet> magnetMap;
 		// private
 		void populateMagnetMap();
-		void retrievemonitorStatus(pvStruct& pvStruct);
+		void retrieveMonitorStatus(pvStruct& pvStruct);
 		// private
 		bool hasBeenSetup;
 		// offlien physical or virtual 

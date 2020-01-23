@@ -79,18 +79,17 @@ void MagnetFactory::populateMagnetMap()
 	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map");
 }
 
-void MagnetFactory::retrievemonitorStatus(pvStruct& pvStruct)
+void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 {
-	//using namespace GlobalFunctions; does not compile if you do this !! 
-	if (GlobalFunctions::stringIsSubString(pvStruct.pvRecord, "GETSETI") ||
-		GlobalFunctions::stringIsSubString(pvStruct.pvRecord, "RPOWER") ||
-		GlobalFunctions::stringIsSubString(pvStruct.pvRecord, "READI") ||
-		GlobalFunctions::stringIsSubString(pvStruct.pvRecord, "RILK")
-		)
+	if (pvStruct.pvRecord == MagnetRecords::GETSETI ||
+		pvStruct.pvRecord == MagnetRecords::RPOWER ||
+		pvStruct.pvRecord == MagnetRecords::READI ||
+		pvStruct.pvRecord == MagnetRecords::RILK)
 	{
 		pvStruct.monitor = true;
 	}
 }
+
 
 bool MagnetFactory::setup(const std::string &VERSION)
 {
@@ -159,7 +158,7 @@ bool MagnetFactory::setup(const std::string &VERSION)
 			std::cout << "pvAndRecordName = " << pvAndRecordName << "." << std::endl;
 
 			// sets the monitor state in the pvstruict to true or false 
-			retrievemonitorStatus(pv.second);
+			retrieveMonitorStatus(pv.second);
 			
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
@@ -167,7 +166,7 @@ bool MagnetFactory::setup(const std::string &VERSION)
 				std::cout << "cs_conn, getting some values " << std::endl;
 				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
-				magnet.second.epicsInterface->retrieveUpdateFunctiOnForRecord(pv.second);
+				magnet.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
 				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),

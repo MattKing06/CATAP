@@ -110,7 +110,7 @@ bool ChargeFactory::setup(const std::string &VERSION)
 				charge.second.epicsInterface->retrieveCHID(pv.second);
 				charge.second.epicsInterface->retrieveCHTYPE(pv.second);
 				charge.second.epicsInterface->retrieveCOUNT(pv.second);
-				charge.second.epicsInterface->retrieveUpdateFunctiOnForRecord(pv.second);
+				charge.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
 				messenger.debugMessagesOn();

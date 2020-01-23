@@ -17,7 +17,8 @@ if ( Boost_FOUND )
 		TARGET_LINK_LIBRARIES(${testName} PRIVATE ${Boost_LIBRARIES}
 										         Hardware
 												 Factories PV
-												 ConfigReader)
+												 ConfigReader
+												 Utilities)
 		#move testing binaries to separate folder
 		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 		set_property(TARGET ${testName} PROPERTY FOLDER "UnitTests")

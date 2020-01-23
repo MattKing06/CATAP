@@ -12,14 +12,14 @@
 // forward declaratiOn of BPM class
 // tells compiler that we will use this class.
 class BPM;
-typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
 
 class EPICSBPMInterface : public EPICSInterface
 {
 public:
 	EPICSBPMInterface();
 	~EPICSBPMInterface();
-	void retrieveUpdateFunctiOnForRecord(pvStruct& pvStruct) const;
+	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 	static void updatePositiOns(const struct event_handler_args args);
 	static void updateXPV(const struct event_handler_args args);
 	static void updateYPV(const struct event_handler_args args);

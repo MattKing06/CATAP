@@ -9,6 +9,8 @@
 #endif //EPICS_MAGNET_INTERFACE_H_
 #include <boost/shared_ptr.hpp>
 #include <vector>
+#include "MagnetPVRecords.h"
+
 
 #include <boost/PYTHON/dict.hpp>
 #include <boost/PYTHON/list.hpp>
@@ -30,7 +32,7 @@ class Magnet : public Hardware
 		Magnet(const Magnet& copyMagnet);
 		EPICSMagnetInterface_sptr epicsInterface;
 		
-
+		void setPVStructs();
 		//test
 
 

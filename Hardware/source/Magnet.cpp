@@ -38,6 +38,7 @@ psuState(STATE::ERR),
 READI(GlobalConstants::double_min),
 ilkState(STATE::ERR)
 {
+	setPVStructs();
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
@@ -46,43 +47,43 @@ ilkState(STATE::ERR)
 	epicsInterface->ownerName = hardwareName;
 	messenger = LoggingSystem(false, false);
 
-	// fill the PV_RECORD_NAME for pvStructs
-	// Based on pvStructs, we create a different map, pvStructs2 in which the keys are enums NOT strings
-	for (auto&& item : paramsMap)
-	{
-		if(item.first == "RILK") // HARDCODED
-		{
-			// Make a copy of pvstructs, then copy fullPVRecordName from paramsMap
-			pvStructs2[pvs::RILK_pv] = pvStructs[item.first];
-			pvStructs2.at(pvs::RILK_pv).fullPVRecordName = item.second;
-		}
-		else if(item.first == "READI")
-		{
-			pvStructs2[pvs::READI_pv] = pvStructs[item.first];
-			pvStructs2.at(pvs::READI_pv).fullPVRecordName = item.second;
-		}
-		else if(item.first == "GETSETI")
-		{
-			pvStructs2[pvs::GETSETI_pv] = pvStructs[item.first];
-			pvStructs2.at(pvs::GETSETI_pv).fullPVRecordName = item.second;
-		}
-		else if(item.first == "SETI")
-		{
-			pvStructs2[pvs::SETI_pv] = pvStructs[item.first];
-			pvStructs2.at(pvs::SETI_pv).fullPVRecordName = item.second;
-		}
-		else if(item.first == "RPOWER")
-		{
-			pvStructs2[pvs::RPOWER_pv] = pvStructs[item.first]; 
-			pvStructs2.at(pvs::RPOWER_pv).fullPVRecordName = item.second;
-		}
-		else if(item.first == "SPOWER")
-		{
-			pvStructs2[pvs::SPOWER_pv] = pvStructs[item.first];
-			pvStructs2.at(pvs::SPOWER_pv).fullPVRecordName = item.second;
-		}
+	//// fill the PV_RECORD_NAME for pvStructs
+	//// Based on pvStructs, we create a different map, pvStructs2 in which the keys are enums NOT strings
+	//for (auto&& item : paramsMap)
+	//{
+	//	if(item.first == "RILK") // HARDCODED
+	//	{
+	//		// Make a copy of pvstructs, then copy fullPVRecordName from paramsMap
+	//		pvStructs2[pvs::RILK_pv] = pvStructs[item.first];
+	//		pvStructs2.at(pvs::RILK_pv).fullPVRecordName = item.second;
+	//	}
+	//	else if(item.first == "READI")
+	//	{
+	//		pvStructs2[pvs::READI_pv] = pvStructs[item.first];
+	//		pvStructs2.at(pvs::READI_pv).fullPVRecordName = item.second;
+	//	}
+	//	else if(item.first == "GETSETI")
+	//	{
+	//		pvStructs2[pvs::GETSETI_pv] = pvStructs[item.first];
+	//		pvStructs2.at(pvs::GETSETI_pv).fullPVRecordName = item.second;
+	//	}
+	//	else if(item.first == "SETI")
+	//	{
+	//		pvStructs2[pvs::SETI_pv] = pvStructs[item.first];
+	//		pvStructs2.at(pvs::SETI_pv).fullPVRecordName = item.second;
+	//	}
+	//	else if(item.first == "RPOWER")
+	//	{
+	//		pvStructs2[pvs::RPOWER_pv] = pvStructs[item.first]; 
+	//		pvStructs2.at(pvs::RPOWER_pv).fullPVRecordName = item.second;
+	//	}
+	//	else if(item.first == "SPOWER")
+	//	{
+	//		pvStructs2[pvs::SPOWER_pv] = pvStructs[item.first];
+	//		pvStructs2.at(pvs::SPOWER_pv).fullPVRecordName = item.second;
+	//	}
 
-	}
+	//}
 	
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
@@ -101,6 +102,35 @@ boost::python::list Magnet::getAliases_Py() const
 {
 	return to_py_list<std::string>(getAliases());
 }
+
+
+void Magnet::setPVStructs()
+{
+	for (auto record : MagnetRecords::magnetRecordList)
+	{
+		std::string PV = specificHardwareParameters.find(record)->second.data();
+		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+		messenger.printDebugMessage("Constructing PV information for ", record);
+		pvStruct pv = pvStruct();
+		/*This should be put into some general function: generateVirtualPV(PV) or something...
+		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+		  The config reader level if that is the case.
+		  */
+		if (mode == STATE::VIRTUAL)
+		{
+			pv.fullPVName = "VM-" + PV;
+		}
+		else
+		{
+			pv.fullPVName = PV;
+		}
+		pv.pvRecord = record;
+		//chid, count, mask, chtype are left undefined for now.
+		pvStructs[pv.pvRecord] = pv;
+	}
+
+}
+
 
 
 std::string Magnet::getManufacturer() const

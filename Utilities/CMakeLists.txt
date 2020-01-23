@@ -4,6 +4,7 @@ set(SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
     source/GlobalFunctions.cpp
+	source/MagnetPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -12,11 +13,12 @@ set( INCLUDE_FILES
      include/GlobalConstants.h
      include/GlobalConstants.h
      include/GlobalConstants.h
+	 include/MagnetPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
-find_package(PYTHONLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS PYTHON3)
+find_package(PythonLibs ${PY_VERSION})
+find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 add_library(Utilities ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(Utilities PRIVATE ${PYTHON_INCLUDE_DIR})

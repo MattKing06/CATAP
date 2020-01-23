@@ -34,6 +34,10 @@ public:
 	// TODO  for some reaons i think these should be keyed by an enum giving their type 
 	//std::map<int, pvStruct>& getPVStructs2();
 
+
+	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/
+	//virtual void setPVStructs(std::map<std::string, std::string> recordAndPVStructs);
+
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	bool operator==(Hardware rhs);
 	virtual void debugMessagesOn();

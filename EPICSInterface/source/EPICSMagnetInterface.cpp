@@ -11,23 +11,23 @@ EPICSMagnetInterface::~EPICSMagnetInterface()
 {
 	messenger.printDebugMessage("EPICSMagnetInterface Destructor Called");
 }
-void EPICSMagnetInterface::retrieveUpdateFunctiOnForRecord(pvStruct &pvStruct) const
+void EPICSMagnetInterface::retrieveupdateFunctionForRecord(pvStruct &pvStruct) const
 {
-	if (pvStruct.pvRecord == "GETSETI")
+	if (pvStruct.pvRecord == MagnetRecords::GETSETI)
 	{
-		pvStruct.updateFunctiOn = this->updateGETSETI;
+		pvStruct.updateFunction = this->updateGETSETI;
 	}
-	if (pvStruct.pvRecord == "RPOWER")
+	if (pvStruct.pvRecord == MagnetRecords::RPOWER)
 	{
-		pvStruct.updateFunctiOn = this->updatePSUState;
+		pvStruct.updateFunction = this->updatePSUState;
 	}
-	if (pvStruct.pvRecord == "READI")
+	if (pvStruct.pvRecord == MagnetRecords::READI)
 	{
-		pvStruct.updateFunctiOn = this->updateREADI;
+		pvStruct.updateFunction = this->updateREADI;
 	}
-	if (pvStruct.pvRecord == "RILK")
+	if (pvStruct.pvRecord == MagnetRecords::RILK)
 	{
-		pvStruct.updateFunctiOn = this->updateRILK;
+		pvStruct.updateFunction = this->updateRILK;
 	}
 }
 

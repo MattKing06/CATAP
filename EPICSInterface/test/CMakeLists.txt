@@ -17,6 +17,7 @@ if ( Boost_FOUND )
 		target_include_directories(${testName} PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include)
 		target_link_libraries(${testName} PRIVATE ${Boost_LIBRARIES})
 		target_link_libraries(${testName} PRIVATE ${EPICS_COM_LIB} ${EPICS_CA_LIB})
+		target_link_libraries(${testName} PRIVATE Utilities)
 		target_link_libraries(${testName} PRIVATE EPICSInterface)
 		target_link_libraries(${testName} PRIVATE Hardware)
 		#move testing binaries to separate folder

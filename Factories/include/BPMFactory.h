@@ -11,7 +11,7 @@
 #include <boost/PYTHON.hpp>
 #include <boost/circular_buffer.hpp>
 
-typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class BPM;
 class BPMFactory
 {

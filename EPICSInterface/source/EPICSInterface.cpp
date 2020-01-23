@@ -51,7 +51,7 @@ void EPICSInterface::createSubscriptiOn(Hardware& hardware, pvStruct& pvStruct) 
 {
 	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
 										pvStruct.CHID, pvStruct.MASK,
-										pvStruct.updateFunctiOn,
+										pvStruct.updateFunction,
 										(void*)&hardware, 
 										&pvStruct.EVID);
 	MY_SEVCHK(status);
@@ -64,17 +64,30 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		int status;
 		//chid CHID;
 
-		// This should be defined in the hardware objst, so that we can handle nOn-standrd PV names 
+		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
+		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
+		if (pvStruct.fullPVName.find("MAG") != std::string::npos)
+		{
+			pv = pvStruct.fullPVName;
+		}
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		std::cout << "ca_create_channel status = " << status << std::endl;
 		std::cout << "MY_SEVCHK " << std::endl;
 		SEVCHK(status, "ca_create_channel");
 		//MY_SEVCHK(status);
+		std::cout << "MY_SEVCHK fin" << std::endl;
+
 		//std::this_thread::sleep_for(std::chrono::seconds(4));
+
 		SEVCHK(ca_pend_io(5.0), "ca_pend_io");
-		
+
+		//std::cout << "ca_pend_io status = " << status << std::endl;
+		std::cout << "CHID = " << pvStruct.CHID << std::endl;
+
+		//pvStruct.CHID = CHID;
 	}
+
 	catch (std::exception &e)
 	{
 		std::cout << "ERR " << std::endl;

@@ -11,7 +11,7 @@
 // forward declaratiOn of Magnet class
 // tells compiler that we will use this class.
 class Magnet;
-typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
 
 class EPICSMagnetInterface : public EPICSInterface
 {
@@ -19,7 +19,7 @@ public:
 	EPICSMagnetInterface();
 	~EPICSMagnetInterface();
 
-	void retrieveUpdateFunctiOnForRecord(pvStruct& pvStruct) const;
+	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 
 	bool setNewCurrent(const double &value, const pvStruct& pv) const;
 	bool setNewPSUState(const STATE value, const pvStruct& pv) const;

@@ -10,7 +10,7 @@
 #include <utility>
 #include <boost/PYTHON.hpp>
 
-typedef void(*updateFunctiOnPtr)(struct event_handler_args args);
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Charge;
 class ChargeFactory
 {

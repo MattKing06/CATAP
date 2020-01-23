@@ -10,60 +10,60 @@ EPICSBPMInterface::~EPICSBPMInterface()
 {
 	messenger.printDebugMessage("EPICSBPMInterface Destructor Called");
 }
-void EPICSBPMInterface::retrieveUpdateFunctiOnForRecord(pvStruct& pvStruct) const
+void EPICSBPMInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) const
 {
 
 	if (pvStruct.pvRecord == "X")
 	{
-		pvStruct.updateFunctiOn = this->updateXPV;
+		pvStruct.updateFunction = this->updateXPV;
 	}
 	if (pvStruct.pvRecord == "Y")
 	{
-		pvStruct.updateFunctiOn = this->updateYPV;
+		pvStruct.updateFunction = this->updateYPV;
 	}
 	if (pvStruct.pvRecord == "SA1")
 	{
-		pvStruct.updateFunctiOn = this->updateSA1;
+		pvStruct.updateFunction = this->updateSA1;
 	}
 	if (pvStruct.pvRecord == "SA2")
 	{
-		pvStruct.updateFunctiOn = this->updateSA2;
+		pvStruct.updateFunction = this->updateSA2;
 	}
 	if (pvStruct.pvRecord == "SD1")
 	{
-		pvStruct.updateFunctiOn = this->updateSD1;
+		pvStruct.updateFunction = this->updateSD1;
 	}
 	if (pvStruct.pvRecord == "SD2")
 	{
-		pvStruct.updateFunctiOn = this->updateSD2;
+		pvStruct.updateFunction = this->updateSD2;
 	}
 	if (pvStruct.pvRecord == "RA1")
 	{
-		pvStruct.updateFunctiOn = this->updateRA1;
+		pvStruct.updateFunction = this->updateRA1;
 	}
 	if (pvStruct.pvRecord == "RA2")
 	{
-		pvStruct.updateFunctiOn = this->updateRA2;
+		pvStruct.updateFunction = this->updateRA2;
 	}
 	if (pvStruct.pvRecord == "RD1")
 	{
-		pvStruct.updateFunctiOn = this->updateRD1;
+		pvStruct.updateFunction = this->updateRD1;
 	}
 	if (pvStruct.pvRecord == "RD2")
 	{
-		pvStruct.updateFunctiOn = this->updateRD2;
+		pvStruct.updateFunction = this->updateRD2;
 	}
 	if (pvStruct.pvRecord == "DATA:B2V.VALA")
 	{
-		pvStruct.updateFunctiOn = this->updateData;
+		pvStruct.updateFunction = this->updateData;
 	}
 	if (pvStruct.pvRecord == "AWAK")
 	{
-		pvStruct.updateFunctiOn = this->updateAWAK;
+		pvStruct.updateFunction = this->updateAWAK;
 	}
 	if (pvStruct.pvRecord == "RDY")
 	{
-		pvStruct.updateFunctiOn = this->updateRDY;
+		pvStruct.updateFunction = this->updateRDY;
 	}
 }
 

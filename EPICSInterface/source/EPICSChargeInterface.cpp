@@ -11,11 +11,11 @@ EPICSChargeInterface::~EPICSChargeInterface()
 	messenger.debugMessagesOff();
 	messenger.printDebugMessage("EPICSChargeInterface Destructor Called");
 }
-void EPICSChargeInterface::retrieveUpdateFunctiOnForRecord(pvStruct &pvStruct) const
+void EPICSChargeInterface::retrieveupdateFunctionForRecord(pvStruct &pvStruct) const
 {
 	if (pvStruct.pvRecord == "Q")
 	{
-		pvStruct.updateFunctiOn = this->updateQ;
+		pvStruct.updateFunction = this->updateQ;
 	}
 }
 
