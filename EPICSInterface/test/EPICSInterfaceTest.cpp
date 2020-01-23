@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(check_chid_state_from_epics_interface_test)
 	}
 	else
 	{
-		epicsInterface.messenger.printMessage("CANNOT COnNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 
@@ -50,6 +50,6 @@ BOOST_AUTO_TEST_CASE(check_put_value_from_epics_interface_test)
 	}
 	else
 	{
-		epicsInterface.messenger.printMessage("CANNOT COnNECT TO EPICS");
+		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
