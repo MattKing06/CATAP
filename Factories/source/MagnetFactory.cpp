@@ -117,45 +117,6 @@ bool MagnetFactory::setup(const std::string &VERSION)
 
 		for (auto &pv : magnet.second.pvStructs )
 		{
-			// now match up the PV from specificHardwareParameters[new_records] with each pvStruct
-
-			//std::pair<bool, std::string> temp;
-
-			//switch (pv.first)
-			//{
-			//case Magnet::pvs::RILK_pv:
-			//	temp = GlobalFunctions::findSubstringInStringvector(specificHardwareParameters["new_paramters"], ":RILK");
-
-
-			//	break;
-			//case Magnet::pvs::SETI_pv:
-
-			//	break;
-			//case Magnet::pvs::GETSETI_pv:
-
-			//	break;
-			//case Magnet::pvs::READI_pv:
-
-			//	break;
-			//case Magnet::pvs::SPOWER_pv:
-
-			//	break;
-			//case Magnet::pvs::RPOWER_pv:
-
-			//	break;
-
-			//		
-			//}
-
-
-
-
-			
-			
-			
-			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
-
-			std::cout << "pvAndRecordName = " << pvAndRecordName << "." << std::endl;
 
 			// sets the monitor state in the pvstruict to true or false 
 			retrieveMonitorStatus(pv.second);

@@ -45,7 +45,7 @@ ilkState(STATE::ERR)
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 	epicsInterface->ownerName = hardwareName;
-	messenger = LoggingSystem(false, false);
+	messenger = LoggingSystem(true, true);
 
 	//// fill the PV_RECORD_NAME for pvStructs
 	//// Based on pvStructs, we create a different map, pvStructs2 in which the keys are enums NOT strings
@@ -106,27 +106,30 @@ boost::python::list Magnet::getAliases_Py() const
 
 void Magnet::setPVStructs()
 {
-	for (auto record : MagnetRecords::magnetRecordList)
+	for (auto&& record : MagnetRecords::magnetRecordList)
 	{
+		pvStructs[record] = pvStruct();
+		
+		// NO ERROR CHECKIGN!
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		messenger.printDebugMessage("Constructing PV information for ", record);
-		pvStruct pv = pvStruct();
+		//pvStruct pv = pvStruct();
 		/*This should be put into some general function: generateVirtualPV(PV) or something...
 		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
 		  The config reader level if that is the case.
 		  */
 		if (mode == STATE::VIRTUAL)
 		{
-			pv.fullPVName = "VM-" + PV;
+			pvStructs[record].fullPVName = "VM-" + PV;
 		}
 		else
 		{
-			pv.fullPVName = PV;
+			pvStructs[record].fullPVName = PV;
 		}
-		pv.pvRecord = record;
+		//pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
-		pvStructs[pv.pvRecord] = pv;
+		//pvStructs[pv.pvRecord] = pv;
 	}
 
 }
