@@ -11,17 +11,17 @@
 #include "GlobalConstants.h"
 
 
-MagnetFactory::MagnetFactory() : 
+MagnetFactory::MagnetFactory() :
 	MagnetFactory(STATE::OFFLINE)
 {
 	std::cout << "MagnetFactory DEFAULT CONSTRUCTOR called " << std::endl;
 }
 
-MagnetFactory::MagnetFactory(STATE mode):
+MagnetFactory::MagnetFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("Magnet", mode))
-//:dummy_magnet(Magnet("DUMMY_MAGNET"))
+	//:dummy_magnet(Magnet("DUMMY_MAGNET"))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
@@ -43,7 +43,7 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 MagnetFactory::~MagnetFactory()
 {
 	messenger.printDebugMessage("MagnetFactory Destructor Called");
-	if (hasBeenSetup) 
+	if (hasBeenSetup)
 	{
 		for (auto& magnet : magnetMap)
 		{
@@ -52,11 +52,17 @@ MagnetFactory::~MagnetFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					magnet.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID)
+					{
+						magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
-				magnet.second.epicsInterface->removeChannel(pvStruct.second);
-				ca_pend_io(CA_PEND_IO_TIMEOUT);
+				if (pvStruct.second.CHID)
+				{
+					magnet.second.epicsInterface->removeChannel(pvStruct.second);
+					ca_pend_io(CA_PEND_IO_TIMEOUT);
+				}
 			}
 		}
 	}
@@ -70,7 +76,7 @@ void MagnetFactory::populateMagnetMap()
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		
+
 		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(magnetMap);
 	}
@@ -88,7 +94,7 @@ void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
-bool MagnetFactory::setup(const std::string &version)
+bool MagnetFactory::setup(const std::string& version)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
 	if (hasBeenSetup)
@@ -103,17 +109,21 @@ bool MagnetFactory::setup(const std::string &version)
 	//// epics magnet interface has been initialized in Magnet constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
-	
+
 	std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
 	std::cout << "populateMagnetMap() fin" << std::endl;;
-
-
-	for (auto &magnet : magnetMap)
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
-		std::cout << "magnet.first = " <<  magnet.first << std::endl;
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
+
+	for (auto& magnet : magnetMap)
+	{
+		std::cout << "magnet.first = " << magnet.first << std::endl;
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
-		for (auto &pv : magPVStructs)
+		for (auto& pv : magPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 
@@ -121,7 +131,7 @@ bool MagnetFactory::setup(const std::string &version)
 
 			// sets the monitor stat in teh pvstruict to true or false 
 			retrieveMonitorStatus(pv.second);
-			
+
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -134,21 +144,20 @@ bool MagnetFactory::setup(const std::string &version)
 				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
 					"write", std::to_string(ca_write_access(pv.second.CHID)),
 					"state", std::to_string(ca_state(pv.second.CHID)));
-				if(pv.second.monitor)
+				if (pv.second.monitor)
 				{
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 				}
 				//// update the alias_name_map so we can use fullNames or Aliases 
-				updateAliasNameMap(magnet.second);
 			}
 			else
 			{
 				std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
 				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
-
+			updateAliasNameMap(magnet.second);
 		}
 	}
 	hasBeenSetup = true;
@@ -164,7 +173,7 @@ bool MagnetFactory::setup(const std::string &version)
 Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
 	std::string full_name = getFullName(fullMagnetName);
-	if (GlobalFunctions::entryExists(magnetMap, full_name) )
+	if (GlobalFunctions::entryExists(magnetMap, full_name))
 	{
 		return magnetMap.at(full_name);
 	}
@@ -175,7 +184,7 @@ Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 std::vector<std::string> MagnetFactory::getAllMagnetNames()const
 {
 	std::vector<std::string> return_names;
-	for(auto&& item : magnetMap) 
+	for (auto&& item : magnetMap)
 	{
 		return_names.push_back(item.first);
 	}
@@ -331,7 +340,7 @@ void MagnetFactory::SETI(const std::string& name, const double& value)
 	// TODO: check name exits in map
 	magnetMap.at(name).SETI(value);
 }
-void MagnetFactory::SETI(const std::map<std::string, double> &namesAndCurrentsMap)
+void MagnetFactory::SETI(const std::map<std::string, double>& namesAndCurrentsMap)
 {
 	for (const auto& entry : namesAndCurrentsMap)
 	{
@@ -389,7 +398,7 @@ std::map<std::string, STATE> MagnetFactory::turnOff(const std::vector<std::strin
 }
 boost::python::dict MagnetFactory::turnOff_Py(const boost::python::list names)
 {
-	return to_py_dict<std::string,STATE>( turnOff(to_std_vector<std::string>(names) ));
+	return to_py_dict<std::string, STATE>(turnOff(to_std_vector<std::string>(names)));
 }
 
 
@@ -461,14 +470,14 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 	{
 		alias_name_map[full_name] = full_name;
 	}
-	
+
 	// now add in the aliases
 	std::vector<std::string> aliases = magnet.getAliases();
-	for(auto&& next_alias : aliases)
+	for (auto&& next_alias : aliases)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
 		{
-			messenger.printMessage("!!ERROR!! ",magnet.getHardwareName(), " alias = ",next_alias, " already exists");
+			messenger.printMessage("!!ERROR!! ", magnet.getHardwareName(), " alias = ", next_alias, " already exists");
 		}
 		else
 		{

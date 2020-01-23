@@ -5,6 +5,7 @@ before_script:
   - which gcc
   - which g++
   - which python3
+  - echo $PATH
 
 cmake_build:
   stage: cmake
@@ -22,11 +23,7 @@ cmake_build:
   - ls ~/MasterLattice
   - ./ConfigReaderTest
   - ./LoggingSystemTest
-  - ./HardwareTest
-  - ./MagnetTest
-  - ./MagnetFactoryTest
-  - ./EPICSInterfaceTest
-  - ./EPICSMagnetInterfaceTest  
-  - ./BPMTest
-  - ./EPICSBPMInterfaceTest
-  - ./BPMFactoryTest
+  - ./HardwareTests --log_level=message
+  - ./FactoryTests --log_level=message
+  - ./EPICSInterfaceTests --log_level=message
+

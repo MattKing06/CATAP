@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE BPMFactoryTest
-
 #include <boost/test/unit_test.hpp>
 #include "BPMFactory.h"
 #include <string>
@@ -9,6 +7,10 @@
 #include <thread>
 
 BOOST_AUTO_TEST_SUITE(BPMFactoryTestSuite)
+BOOST_AUTO_TEST_CASE(start_test)
+{
+	BOOST_TEST_MESSAGE("------	RUNNING BPM FACTORY TESTS	------");
+}
 BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 {
 	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";

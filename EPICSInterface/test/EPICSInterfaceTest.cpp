@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE EPICSInterfaceTest
-
 #include <boost/test/unit_test.hpp>
 #include <LoggingSystem.h>
 #include <EPICSInterface.h>
@@ -43,7 +41,7 @@ BOOST_AUTO_TEST_CASE(check_put_value_from_epics_interface_test)
 		srand(time(NULL));
 		double currentToSet = rand() % 10 + 1.0;
 		double returnedCurrent;
-		//epicsInterface.putValue(pvToSet, currentToSet);
+		epicsInterface.putValue(pvToSet, currentToSet);
 		ca_get(pvToSet.CHTYPE, pvToSet.CHID, &returnedCurrent);
 		ca_pend_io(CA_PEND_IO_TIMEOUT);
 		BOOST_CHECK_CLOSE(currentToSet, returnedCurrent, 1e-10);
