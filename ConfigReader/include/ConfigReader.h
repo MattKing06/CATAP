@@ -52,9 +52,11 @@ public:
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string& version);
 	void initialiseFilenameAndParsedStatusMap();
 	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node& controlsInformationNode) const;
+
 	const std::map<std::string, std::string> extractHardwareInformationIntoMap(const YAML::Node& hardwareInformationNode) const;
 	bool hasMoreFilesToParse() const;
 
+	const std::pair<std::string, std::map<std::string, std::string>> extractPVRecordMap(const YAML::Node& configInformationNode) const;
 
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
@@ -78,26 +80,46 @@ public:
 	template<typename HardwareType>
 	void parseYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
+		std::cout << "parseYamlFile()" << std::endl;
 		std::ifstream fileInput;
 		YAML::Node config;
 		YAML::Node configTemplate;
 		std::map<std::string, std::string> parameters;
 		try
 		{
+			std::cout << "try" << std::endl;
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			YAML::Parser parser(fileInput);
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			if (config.size() > 0)
 			{
+				std::cout << "try 1" << std::endl;
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 				if (!checkForValidTemplate(configTemplate, config))
 				{
 					throw YAML::BadFile();
 				}
+
+				// TODO i think this is the old method and should be phased out 
+				// THIS HAS TO GO, TO HANDLE ALL POTENTIAL WEIRDNESS WE NEED TO EXPLICITLY DEFINE EACH PV IN A MAP IN THE CONFIG
+				//  PLUS hardware should store them in a pvstructs map KEYED by ENUMS not strings
 				auto pvAndRecordPair = extractControlsInformationIntoPair(config);
-				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
 				parameters.insert(pvAndRecordPair);
+				std::cout << "try 2" << std::endl;
+				std::cout << "calling extractPVRecordMap" << std::endl;
+				std::pair<std::string, std::map<std::string, std::string>> pvRecordMap  = extractPVRecordMap(config);
+				// now we have to loop over each item in map and add it to paramters map, 
+				for (auto&& item : pvRecordMap.second)
+				{
+					std::pair<std::string, std::string>  pv_record_item;
+					pv_record_item.first = item.first;
+					pv_record_item.second = item.second;
+					std::cout << "Adding " << pv_record_item.first << " = " << pv_record_item.second << std::endl;
+					parameters.insert(pv_record_item);
+				}
+
+				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
 				for (auto prop : hardwareParameterMap)
 				{
 					parameters.insert(prop);
@@ -107,8 +129,6 @@ public:
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-
-
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
 				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
@@ -118,34 +138,41 @@ public:
 				{
 					std::cout << item.first << std::endl;
 					std::cout << ENUM_TO_STRING(item.second.getMode()) << std::endl;
-
 				}
 			}
 			else
 			{
+				std::cout << "config.size() > 0 is FALSE" << std::endl;
 				throw std::length_error("File contents were of length " + std::to_string(config.size()) + ", file must be empty!");
 			}
 		}
 		// POTENTIAL EXCEPTIONS //
 		catch (std::length_error EmptyFileException)
 		{
+			std::cout << "EmptyFileException" << std::endl;
+
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
 				SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadFile BadFileException)
 		{
+			std::cout << "BadFileException" << std::endl;
+
 			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
 				ConfigReader::yamlFilename, ")  or file is not compliant with template ",
 				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
+			std::cout << "EmptyFileException" << std::endl;
 			messenger.printMessage("Problem with file (" +
 				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
 				"): " + std::string(EmptyFileException.what()));
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{
+			std::cout << "ConvervsionException" << std::endl;
+
 			messenger.printMessage(std::string(ConvervsionException.what()));
 		}
 	}

@@ -33,6 +33,7 @@ TARGET_LINK_LIBRARIES(PYTHONInterface PUBLIC
 					 PRIVATE
 					 Factories
 					 Hardware
+					 Utilities
 					 ConfigReader)
 set_target_properties(PYTHONInterface PROPERTIES OUTPUT_NAME "CATAP")
 set_target_properties(PYTHONInterface PROPERTIES SUFFIX ".pyd")

@@ -28,9 +28,11 @@ public:
 	std::string getHardwareName() const;
 	STATE getMode() const;
 
-	// TODO: do we need this? can't an child of these calss just access pvStructs,
-	// adn no other cclass should be able ot get this map??? 
+	// TODO: do we need this? can't an child of these class just access pvStructs,
+	// and no other class should be able ot get this map??? 
 	std::map<std::string, pvStruct>& getPVStructs();
+	// TODO  for some reaons i think these should be keyed by an enum giving their type 
+	//std::map<int, pvStruct>& getPVStructs2();
 
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	bool operator==(Hardware rhs);
@@ -49,6 +51,10 @@ public:
 	
 
 	std::map<std::string, pvStruct> pvStructs;
+	
+	// this will be an enum in the dervied class ...
+	std::map<int, pvStruct> pvStructs2;
+
 	std::map<std::string, std::string> specificHardwareParameters;
 	LoggingSystem messenger;
 

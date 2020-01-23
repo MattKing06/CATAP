@@ -14,6 +14,10 @@ typedef struct pvStruct
 	chid CHID;
 	std::string fullPVName;
 	std::string pvRecord;
+	// DJS adding thsi in, so we can hardcode the FULL OPV name into the yaml file
+	// this enables us to handle weird and non-standrd record names
+	// a fullPVRecord would be  'CLA-C2V-MAG-HCOR-01:GETSETI'
+	std::string fullPVRecordName;
 	unsigned long COUNT;
 	unsigned long MASK;
 	chtype CHTYPE;

@@ -58,7 +58,7 @@ void BPMFactory::populateBPMMap()
 {
 	if (!reader.hasMoreFilesToParse())
 	{
-		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please cOntact support");
+		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
@@ -125,7 +125,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 			}
 			else
 			{
-				messenger.printMessage(bpm.first, " CANNOT COnNECT TO EPICS");
+				messenger.printMessage(bpm.first, " CANNOT CONNECT TO EPICS");
 				hasBeenSetup = false;
 				return hasBeenSetup;
 			}

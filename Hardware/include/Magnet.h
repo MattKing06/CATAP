@@ -78,10 +78,9 @@ class Magnet : public Hardware
 		void SETIZero(); // expposed to PYTHON
 
 		// set a psue state	
-		bool switchOn()const;
-		bool switchOFF()const;
-		bool setPSUState(const STATE value)const;
-
+		bool switchOn();
+		bool switchOFF();
+		bool setPSUState(const STATE value);
 
 
 		void debugMessagesOn();
@@ -117,10 +116,21 @@ class Magnet : public Hardware
 		std::pair<epicsTimeStamp, double > GETSETI2;
 		std::pair<epicsTimeStamp, STATE > psuState2;
 		std::pair<epicsTimeStamp, STATE > ilkState2;
-			   		 	  
+			   	
+		enum pvs
+		{
+			RILK_pv,
+			SETI_pv,
+			GETSETI_pv,
+			READI_pv,
+			SPOWER_pv,
+			RPOWER_pv
+		};
+
 	private:
 
 		void offlineSETI(const double& value);
+		bool offlineSetPSUState(const STATE value);
 
 
 		//what else does a magnet need?
@@ -146,6 +156,8 @@ class Magnet : public Hardware
 		//double SETI;
 		double GETSETI;
 		STATE ilkState; 
+
+
 
 };
 

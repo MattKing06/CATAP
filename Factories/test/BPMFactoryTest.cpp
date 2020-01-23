@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 	}
 	else
 	{
-		bpmfac.messenger.printMessage("CANNOT COnNECT TO EPICS");
+		bpmfac.messenger.printMessage("CANNOT CONNECT TO EPICS");
 	}
 }
 

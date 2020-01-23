@@ -45,6 +45,45 @@ ilkState(STATE::ERR)
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 	epicsInterface->ownerName = hardwareName;
 	messenger = LoggingSystem(false, false);
+
+	// fill the PV_RECORD_NAME for pvStructs
+	// Based on pvStructs, we create a different map, pvStructs2 in which the keys are enums NOT strings
+	for (auto&& item : paramsMap)
+	{
+		if(item.first == "RILK") // HARDCODED
+		{
+			// Make a copy of pvstructs, then copy fullPVRecordName from paramsMap
+			pvStructs2[pvs::RILK_pv] = pvStructs[item.first];
+			pvStructs2.at(pvs::RILK_pv).fullPVRecordName = item.second;
+		}
+		else if(item.first == "READI")
+		{
+			pvStructs2[pvs::READI_pv] = pvStructs[item.first];
+			pvStructs2.at(pvs::READI_pv).fullPVRecordName = item.second;
+		}
+		else if(item.first == "GETSETI")
+		{
+			pvStructs2[pvs::GETSETI_pv] = pvStructs[item.first];
+			pvStructs2.at(pvs::GETSETI_pv).fullPVRecordName = item.second;
+		}
+		else if(item.first == "SETI")
+		{
+			pvStructs2[pvs::SETI_pv] = pvStructs[item.first];
+			pvStructs2.at(pvs::SETI_pv).fullPVRecordName = item.second;
+		}
+		else if(item.first == "RPOWER")
+		{
+			pvStructs2[pvs::RPOWER_pv] = pvStructs[item.first]; 
+			pvStructs2.at(pvs::RPOWER_pv).fullPVRecordName = item.second;
+		}
+		else if(item.first == "SPOWER")
+		{
+			pvStructs2[pvs::SPOWER_pv] = pvStructs[item.first];
+			pvStructs2.at(pvs::SPOWER_pv).fullPVRecordName = item.second;
+		}
+
+	}
+	
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
 manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
@@ -157,7 +196,7 @@ double Magnet::getSETI() const
 // PYTHON users call this function, then we decide what to do 
 void Magnet::SETI(const double value)
 {
-	switch (mode)
+	switch(mode)
 	{
 		case STATE::PHYSICAL: 	
 			setEPICSSETI(value);
@@ -207,7 +246,7 @@ void Magnet::setEPICSSETI(const double &value)
 void Magnet::setREADI(const double& value)
 {
 	/*
-		This funciton is ONLY ever called to update the READI value (i.e from EPICS) 
+		This function is ONLY ever called to update the READI value (i.e from EPICS) 
 	*/
 	READI = value;
 	messenger.printDebugMessage(hardwareName, " READI Value:", value);
@@ -221,23 +260,52 @@ double Magnet::getREADI() const
 
 
 
-
-bool Magnet::switchOn()const
-{
-	return 	epicsInterface->setNewPSUState(STATE::ON, pvStructs.at("SPOWER"));
-}
-bool Magnet::switchOFF()const
-{
-	return 	epicsInterface->setNewPSUState(STATE::OFF, pvStructs.at("SPOWER"));
-}
-STATE Magnet::getPSUState() const
+// get PSU STATE
+STATE Magnet::getPSUState()const
 {
 	return psuState;
 }
-bool Magnet::setPSUState(const STATE value)const
+// apply new state, 
+bool Magnet::switchOn()
 {
-	return 	epicsInterface->setNewPSUState(value, pvStructs.at("SPOWER"));
+	return 	setPSUState(STATE::ON);
 }
+bool Magnet::switchOFF()
+{
+	return 	setPSUState(STATE::OFF);
+}
+bool Magnet::setPSUState(const STATE value)
+{
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		return 	epicsInterface->setNewPSUState(value, pvStructs.at("SPOWER"));
+		break;
+	case STATE::VIRTUAL:
+		return 	epicsInterface->setNewPSUState(value, pvStructs.at("SPOWER"));
+		break;
+	case STATE::OFFLINE:
+		return offlineSetPSUState(value);
+	}
+	return false;
+}
+bool Magnet::offlineSetPSUState(const STATE value)
+{
+	epicsTimeGetCurrent(&psuState2.first);
+	switch(value)
+	{
+		case STATE::ON:		
+			psuState2.second = value;		
+			break;
+		case STATE::OFF:	
+			psuState2.second = value;
+			break;
+		default: 
+			psuState2.second = STATE::ERR;
+	}
+	return true;
+}
+
 
 
 //void Magnet::setPSUState(const int & value)

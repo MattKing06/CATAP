@@ -192,6 +192,7 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 
 const std::pair<std::string, std::string> ConfigReader::extractControlsInformationIntoPair(const YAML::Node& configInformationNode) const
 {
+	// TODO I think this may go to be replced with the more verbose and fliexible "pv_record_map"
 	YAML::Node controlsInformation = configInformationNode["controls_information"];
 	std::map<std::string, std::string> controlsParameterMap;
 	if (controlsInformation["PV"].as<bool>())
@@ -224,6 +225,65 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		// Makes sense because we have no control info for this hardware
 		// but should really be handled better maybe??
 		return std::pair<std::string, std::string>();
+	}
+
+}
+
+const std::pair<std::string, std::map<std::string, std::string>> ConfigReader::extractPVRecordMap(const YAML::Node& configInformationNode) const
+{
+	std::cout << "extractNewRecord()" << std::endl;
+	YAML::Node controlsInformation = configInformationNode["controls_information"];
+	std::map<std::string, std::string> controlsParameterMap;
+	if (controlsInformation["PV"].as<bool>())
+	{
+		//// we got into a pickle trying to parse a ist of strings 
+		//if( controlsInformation["new_records"].IsScalar() )
+		//{ 
+		//	std::cout << "new_records is scalar!" << std::endl;
+		//}
+		//if( controlsInformation["new_records"].IsSequence() )
+		//{
+		//	std::cout << "new_records is Sequence!" << std::endl;
+		//}
+		//if(controlsInformation["new_records"].YAML::Node::IsNull())
+		//{
+		//	std::cout << "new_records is NULL!" << std::endl;
+		//}
+		if(controlsInformation["pv_record_map"].YAML::Node::IsMap())
+		{
+			std::cout << "pv_record_map is map!" << std::endl;
+		}
+		//std::cout << controlsInformation["new_records"] << std::endl;
+		
+
+		std::map<std::string, std::string> controlNewRecords = controlsInformation["pv_record_map"].as<std::map<std::string,std::string>>();
+		//boost::trim_left(controlNewRecords);
+
+		std::cout << "new_records size is " << controlNewRecords.size()  << std::endl;
+		for (auto&& item : controlNewRecords)
+		{
+			std::cout << item.first << " = " << item.second << std::endl;
+		}
+		
+		std::pair<std::string, std::map<std::string, std::string>> pvAndRecordPair;
+
+		pvAndRecordPair.first = "pv_record_map";
+		pvAndRecordPair.second = controlNewRecords;
+
+		//for (auto&& item : pvAndRecordPair.second)
+		//{
+		//	std::cout << pvAndRecordPair.first << " , " << item.second << std::endl;
+
+		//}
+
+		return pvAndRecordPair;
+	}
+	else
+	{
+		// not comfortable returning empty pair.
+		// Makes sense because we have no control info for this hardware
+		// but should really be handled better maybe??
+		return std::pair<std::string, std::map<std::string, std::string>>();
 	}
 
 }

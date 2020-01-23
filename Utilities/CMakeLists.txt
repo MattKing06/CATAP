@@ -3,12 +3,12 @@ message("Processing Utilities source files...")
 set(SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
-    source/GlobalFunctiOns.cpp
+    source/GlobalFunctions.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
      include/GlobalStateEnums.h
-     include/GlobalFunctiOns.h
+     include/GlobalFunctions.h
      include/GlobalConstants.h
      include/GlobalConstants.h
      include/GlobalConstants.h

@@ -44,6 +44,8 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
                                            (VIRTUAL)
                                            (ERR)
                                            (OK)
+                                           (GOOD)
+                                           (BAD)
 
 
 )

@@ -65,7 +65,7 @@ void ChargeFactory::populateChargeMap()
 {
 	if (!reader.hasMoreFilesToParse())
 	{
-		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please cOntact support");
+		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
@@ -124,7 +124,7 @@ bool ChargeFactory::setup(const std::string &VERSION)
 			}
 			else
 			{
-				messenger.printMessage(charge.first, " CANNOT COnNECT TO EPICS");
+				messenger.printMessage(charge.first, " CANNOT CONNECT TO EPICS");
 				hasBeenSetup = false;
 				return hasBeenSetup;
 			}
