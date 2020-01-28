@@ -119,7 +119,7 @@ bool ChargeFactory::setup(const std::string &VERSION)
 					"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
 				if (pv.second.monitor)
 				{
-					charge.second.epicsInterface->createSubscriptiOn(charge.second, pv.second);
+					charge.second.epicsInterface->createSubscription(charge.second, pv.second);
 				}
 			}
 			else

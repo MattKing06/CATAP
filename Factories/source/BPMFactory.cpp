@@ -120,7 +120,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
-					bpm.second.epicsInterface->createSubscriptiOn(bpm.second, pv.second);
+					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
 				}
 			}
 			else
