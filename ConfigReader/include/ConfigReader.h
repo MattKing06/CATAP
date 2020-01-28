@@ -86,24 +86,39 @@ public:
 		std::map<std::string, std::string> parameters;
 		try
 		{
+			std::cout << "parseYamlFile try " << std::endl;
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
+			std::cout << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << std::endl;
 			YAML::Parser parser(fileInput);
+			std::cout << "YAML::Parser parser(fileInput); " << std::endl;
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
+			std::cout << "got config " << std::endl;
 			if (config.size() > 0)
 			{
+				std::cout << "config.size() > 0" << std::endl;
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
+
+				std::cout << "configTemplate Loaded;" << std::endl;
+
 				if (!checkForValidTemplate(configTemplate, config))
 				{
+
+					std::cout << "throw YAML::BadFile();" << std::endl;
 					throw YAML::BadFile();
 				}
+				std::cout << "Template is valid" << std::endl;
 				auto pvAndRecordPair = extractControlsInformationIntoPair(config);
+				std::cout << "Got Controls info" << std::endl;
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
+				std::cout << "Got hardwareParameterMap" << std::endl;
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
 				if (typeid(HardwareType) == typeid(Magnet))
 				{
+					std::cout << "HardwareType is Magnet;" << std::endl;
 					auto recordsMap = extractRecordsIntoMap(config);
 					parameters.insert(recordsMap.begin(), recordsMap.end());
+					std::cout << "inserted recordsMap" << std::endl;
 				}
 				/*IF NOT A MAGNET, USE OLD FUNCTIONALITY*/
 				else

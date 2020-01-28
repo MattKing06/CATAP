@@ -11,7 +11,8 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
-ConfigReader::ConfigReader() : yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
+ConfigReader::ConfigReader():
+yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
 mode(STATE::OFFLINE), hardwareFolder("")
 {
 	std::cout << "Constructor ConfigReader() called " << std::endl;
@@ -28,7 +29,6 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	std::cout << "Constructor ConfigReader(const std::string &hardwareType, const STATE& mode) called " << std::endl;
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 	initialiseFilenameAndParsedStatusMap();
-
 }
 
 void ConfigReader::initialiseFilenameAndParsedStatusMap()
@@ -40,15 +40,14 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 		if (filename != templateFilename)
 		{
 			yamlFilenamesAndParsedStatusMap.emplace(std::pair<std::string, bool>(filename, false));
-
 			std::cout << "found " << filename << std::endl;
 		}
-
 	}
 }
 
 std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string& version)
 {
+	std::cout << "Searching for yaml files in: " << yamlFileDestination << std::endl;
 	boost::filesystem::path directory(yamlFileDestination);//+ '//' + version);
 	std::vector<std::string> filenames;
 	for (auto i = boost::filesystem::directory_iterator(directory); i != boost::filesystem::directory_iterator(); i++)
