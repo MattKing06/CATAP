@@ -57,7 +57,7 @@ public:
 	std::map<std::string, pvStruct> pvStructs;
 	
 	// this will be an enum in the dervied class ...
-	std::map<int, pvStruct> pvStructs2;
+	//std::map<int, pvStruct> pvStructs2;
 
 	std::map<std::string, std::string> specificHardwareParameters;
 	LoggingSystem messenger;
