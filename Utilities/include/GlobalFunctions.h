@@ -8,6 +8,10 @@
 #include <utility>
 #include <time.h>
 #include <vector>
+#include <chrono>
+#include <thread>
+#include "GlobalConstants.h"
+
 
 namespace GlobalFunctions{
 
@@ -34,6 +38,48 @@ namespace GlobalFunctions{
     //        ret = true;
     //    return ret;
     //}
+
+	template<typename T = int>
+	bool areSame(const std::vector<T> a, const std::vector<T> b, const T epsilon = 0) 
+	{
+		if (a.size() != b.size())
+			return false;
+		for (auto&& it1 = a.begin(), it2 = b.begin();
+			it1 < a.end() && it2 < b.end();
+			++it1, ++it2)
+		{
+			if (std::abs(it1 - it2) < epsilon)
+			{
+
+			}
+			else
+			{
+				return false;
+			}
+
+		}
+		return true;
+	}
+
+	template<typename T>
+	bool areSame(const T a, const T b, const T epsilon = 0)
+	{
+		if (a == b)
+			return true;
+		else
+			return std::abs(a - b) < epsilon;
+	}
+
+	//template<typename T = int>
+	//bool areSame(const T a, const T b, const T epsilon = 0)
+	//{
+	//	if (a == b)
+	//		return true;
+	//	else
+	//		return std::abs(a - b) < epsilon;
+	//}
+
+
     template<class T, class U>
     bool entryExists(const std::map<U, T>& m, const U& name)
     {
@@ -43,15 +89,6 @@ namespace GlobalFunctions{
             ret = true;
         return ret;
     }
-
-	template<typename T = int>
-	bool areSame(const T a, const T b, const T epsilon = 0)
-	{
-		if (a == b)
-			return true;
-		else
-			return std::abs(a - b) < epsilon;
-	}
 
 	template<typename T = int>
 	bool areNotSame(const  T a, const T b, const T epsilon = 0)
@@ -66,7 +103,7 @@ namespace GlobalFunctions{
 		return std::round(a * p) / p;
 	}
 
-	//time_t timeNow(){ return time(nullptr); }
+	extern time_t timeNow();// { return time(nullptr); }
 
 	//std::string currentDateTime()
 	//{
@@ -86,6 +123,19 @@ namespace GlobalFunctions{
 
 
 	//extern std::pair<bool, std::string> findSubstringInStringvector(const std::vector<std::string>& stringvector, const std::string& substring);
+
+
+	extern void pause_x(std::chrono::milliseconds x);
+	void standard_pause();
+	void pause_2000();
+	void pause_1000();
+	void pause_300() ;
+	void pause_500() ;
+	void pause_50()  ;
+	void pause_2()   ;
+	void pause_1()   ;
+
+
 
 }
 #endif

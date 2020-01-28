@@ -6,15 +6,23 @@
 #include <chrono>
 
 
-EPICSInterface::EPICSInterface()
+EPICSInterface::EPICSInterface() : 
+thisCaContext(nullptr)
 {
 	int status;
 	messenger = LoggingSystem(false, false);
+	/* 
+		This 'enables' callbacks, monitoring, etc
+		thisCaContext is the current (AND ONLY) context,
+		use it to join from new threads with ca_attach_context
+		you NEED to attach to this context if multi-threading
+	*/
 	if (!ca_current_context())
 	{
 		status = ca_context_create(ca_enable_preemptive_callback);
 		MY_SEVCHK(status);
 	}
+
 	thisCaContext = ca_current_context();
 }
 
@@ -47,7 +55,15 @@ void EPICSInterface::detachFromCOntext()
 	ca_detach_context();
 }
 
-void EPICSInterface::createSubscriptiOn(Hardware& hardware, pvStruct& pvStruct) const
+void EPICSInterface::attachTo_thisCaContext()
+{
+	if (thisCaContext)
+	{
+		ca_attach_context(thisCaContext);
+	}
+}
+
+void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
 {
 	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
 										pvStruct.CHID, pvStruct.MASK,
@@ -82,7 +98,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		//MY_SEVCHK(status);
 		//std::cout << "MY_SEVCHK fin" << std::endl;
 		//std::this_thread::sleep_for(std::chrono::seconds(4));
-		//SEVCHK(ca_pend_io(5.0), "ca_pend_io");
+		SEVCHK(ca_pend_io(5.0), "ca_pend_io");
 		//std::cout << "ca_pend_io status = " << status << std::endl;
 		//std::cout << "CHID = " << pvStruct.CHID << std::endl;
 	//pvStruct.CHID = CHID;
@@ -184,13 +200,20 @@ void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& arg
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = (int)tv->value;
 }
-
-std::pair<epicsTimeStamp, int> EPICSInterface::getTimeStampIntPair(const struct event_handler_args& args)
+void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
 {
-	std::pair<epicsTimeStamp, int> r;
-	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
-	r.first = tv->stamp;
-	r.second = (int)tv->value;
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+std::pair<epicsTimeStamp, short> EPICSInterface::getTimeStampShortPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	r.first  = tv->stamp;
+	r.second = tv->value;
 	return r;
 }
 

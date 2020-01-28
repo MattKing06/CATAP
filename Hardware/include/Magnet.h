@@ -10,7 +10,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "MagnetPVRecords.h"
-
+#include "GlobalConstants.h"
 
 #include <boost/PYTHON/dict.hpp>
 #include <boost/PYTHON/list.hpp>
@@ -18,7 +18,25 @@
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
 class EPICSMagnetInterface;
+class Degauss;
+class Magnet;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
+
+#include <thread>
+
+class Degauss
+{   
+	public:
+		// proviude a default constructor
+		Degauss();
+		Magnet* magnet;
+		std::vector<double>  degauss_values;
+		size_t				 current_step;
+		bool                resetToZero;
+		double degaussTolerance;
+		std::thread* degauss_thread;
+		time_t wait_time;
+};
 
 class Magnet : public Hardware
 {
@@ -35,10 +53,13 @@ class Magnet : public Hardware
 		void setPVStructs();
 		//test
 
+		bool degauss(const bool reset_to_zero);
+		//bool degaussToZero();
+
 
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
 		
-		// paramters that can be got, but NOT SET
+		// parameters that can be got, but NOT SET
 		std::vector<std::string> getAliases() const;
 		boost::python::list getAliases_Py() const;
 
@@ -50,8 +71,7 @@ class Magnet : public Hardware
 		std::string getFullPSUName() const;
 		std::string getMeasurementDataLocation() const;
 
-
-		// paramters that can be get AND set 
+		// paramEters that can be get AND set 
 		int getNumberOfDegaussSteps() const;
 		std::vector<double> getDegaussValues() const;
 		boost::python::list getDegaussValues_Py() const;
@@ -66,38 +86,39 @@ class Magnet : public Hardware
 		double setDegaussTolerance(const double value);
 		double setRITolerance(const double value);
 
-
 		// Dynamic EPICS Value getters
 		double getREADI() const;
 		double getSETI() const;
 		STATE getILKState() const;
 		STATE getPSUState() const;
 
-
 		// Set A current 
-		void SETI(const double value); // expposed to PYTHON
+		bool SETI(const double value); // expposed to PYTHON
 		// set Zero current in magnet 
-		void SETIZero(); // expposed to PYTHON
+		bool SETIZero(); // expposed to PYTHON
 
-		// set a psue state	
+		// set a psu state	
 		bool switchOn();
 		bool switchOFF();
 		bool setPSUState(const STATE value);
 
+		// when in OFFLINE mode you can set an ilk state
+		bool offlineSetILKState(const STATE value);
 
 		void debugMessagesOn();
 		void debugMessagesOff();
 		void messagesOn();
 		void messagesOff();
-
-		
-
-
-		
-
-		// maybe be more specific and only allwo certina fucnitons / vairables?? 
+						
+		// maybe be more specific and only allow certain functions / vairables?? 
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;
+
+
+		bool isDegaussing;
+		bool last_degauss_success;
+		size_t current_degauss_step;
+
 
 	protected:
 		// called from EPICS to update the GETSETI variable! 
@@ -107,33 +128,27 @@ class Magnet : public Hardware
 		//void setPSUState(const int& value);
 
 		//bool setEPICSPSUState(const STATE& value);
+		//void setEPICSSETI(const double& value);
+		//void setREADI(const double& value);
+		//bool setILKState(const STATE& value);
 
-
-		void setEPICSSETI(const double& value);
-		void setREADI(const double& value);
-		bool setILKState(const STATE& value);
-
-
-		std::pair<epicsTimeStamp, double > READI2;
-		std::pair<epicsTimeStamp, double > GETSETI2;
-		std::pair<epicsTimeStamp, STATE > psuState2;
-		std::pair<epicsTimeStamp, STATE > ilkState2;
-			   	
-		enum pvs
-		{
-			RILK_pv,
-			SETI_pv,
-			GETSETI_pv,
-			READI_pv,
-			SPOWER_pv,
-			RPOWER_pv
-		};
-
+		std::pair<epicsTimeStamp, double > READI;
+		std::pair<epicsTimeStamp, double > GETSETI;
+		std::pair<epicsTimeStamp, STATE > psuState;
+		std::pair<epicsTimeStamp, STATE > ilkState;
+		
 	private:
 
 		void offlineSETI(const double& value);
 		bool offlineSetPSUState(const STATE value);
 
+
+
+		//  DEGAUSS STUFF
+		static void staticEntryDeGauss(const Degauss& ds);
+		Degauss degausser;
+		std::vector<double> degaussValues;
+		double degaussTolerance;
 
 		//what else does a magnet need?
 		std::vector<std::string> aliases;
@@ -143,21 +158,27 @@ class Magnet : public Hardware
 		std::string magRevType;
 		double RI_tolerance;
 
-		int numberOfDegaussSteps; // TODO: thsi should be a size_t or uint
+		int numberOfDegaussSteps; // TODO: this should be a size_t or uint
 		
-		std::vector<double> degaussValues;
-		double degaussTolerance;
+
+
+		bool isREADIequalValue(const double value, const double tolerance);
+		bool waitForMagnetToSettle(const double values,
+								   const double tolerance,
+								   const time_t waitTime);
+
+
 		double magneticLength;
 		std::string fullPSUName;
 		std::string measurementDataLocation;
 
 		// variables should be private 
-		double READI;
-		STATE psuState;
+		//double READI;
+		//STATE psuState;
 		// WE NEVER monitor THIS IT IS JUST USED FO RCAPUT
 		//double SETI;
-		double GETSETI;
-		STATE ilkState; 
+		//double GETSETI;
+		//STATE ilkState; 
 
 
 

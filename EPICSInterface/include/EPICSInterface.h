@@ -48,7 +48,7 @@ public:
 	void retrieveCHID(pvStruct& pvStruct) const;
 	void retrieveCHTYPE(pvStruct& pvStruct) const;
 	void retrieveCOUNT(pvStruct& pvStruct) const;
-	void createSubscriptiOn(Hardware& hardware, pvStruct& pvStruct) const;
+	void createSubscription(Hardware& hardware, pvStruct& pvStruct) const;
 	void removeSubscriptiOn(pvStruct& pv);
 	void removeChannel(pvStruct& pv);
 	void detachFromCOntext();
@@ -87,15 +87,12 @@ public:
 	);
 	
 	
-	static void updateTimeStampDoublePair(const struct event_handler_args& args, 
-		std::pair<epicsTimeStamp, double>& pairToUpdate);
-
-	static void updateTimeStampIntPair(const struct event_handler_args& args,
-		std::pair<epicsTimeStamp, int>& pairToUpdate);
-
+	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
+	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
+	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);
 	// sometimes you have to return a pair<timestamp,int> and then choose a STAT based On the int
-	static std::pair<epicsTimeStamp, int> getTimeStampIntPair(const struct event_handler_args& args);
-
+	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);
+	// Add in some more for vectors as we need them ... 
 
 
 	// TODO: what should this functiOn return? and how should that get passed to PYTHON users??? 
@@ -110,6 +107,8 @@ public:
 			MY_SEVCHK(status);
 		}
 	}
+
+	// A putvalue that returns something 
 	// TODO: what should this functiOn return? and how should that get passed to PYTHON users??? 
 	template<typename T>
 	static bool putValue2(const pvStruct& pvStruct, const T& value)
@@ -120,6 +119,7 @@ public:
 			MY_SEVCHK(status);
 			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 			MY_SEVCHK(status);
+			return true;
 
 			// we should return true here if the put commadn got sent correctly 
 		}

@@ -90,7 +90,6 @@ void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
-
 bool MagnetFactory::setup(const std::string &VERSION)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
@@ -110,12 +109,16 @@ bool MagnetFactory::setup(const std::string &VERSION)
 
 	for (auto&magnet : magnetMap)
 	{
+		//// update the alias_name_map so we can use fullNames or Aliases 
+		updateAliasNameMap(magnet.second);
+
 		messenger.printDebugMessage("Setup Magnet: ", magnet.first);
 
-		//std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
+		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
+		
 		//std::map<int, pvStruct>& magPVStructs = magnet.second.getPVStructs2();
-
-		for (auto &pv : magnet.second.pvStructs )
+		//for (auto& pv : magnet.second.pvStructs )
+		for (auto& pv : magPVStructs)
 		{
 
 			// sets the monitor state in the pvstruict to true or false 
@@ -135,17 +138,15 @@ bool MagnetFactory::setup(const std::string &VERSION)
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if(pv.second.monitor)
 				{
-					magnet.second.epicsInterface->createSubscriptiOn(magnet.second, pv.second);
+					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 				}
-				//// update the alias_name_map so we can use fullNames or Aliases 
-				updateAliasNameMap(magnet.second);
+
 			}
 			else
 			{
-				std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
-				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				messenger.printMessage(magnet.first,", ", pv.first, " CANNOT CONNECT TO EPICS");
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 
 		}
@@ -474,6 +475,7 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 		else
 		{
 			alias_name_map[next_alias] = full_name;
+			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
 		}
 	}
 }
@@ -486,6 +488,99 @@ std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 	}
 	return dummy_magnet.getHardwareName();
 }
+
+
+//______________________________________________________________________________
+magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const std::string& fileName)
+{
+	std::string pathandfile = getFilePathFromINputs(filePath, fileName);
+
+	message("\n", "**** Attempting to Read ", pathandfile, " ****");
+
+	std::string line, trimmedLine;
+
+	std::ifstream inputFile;
+
+	configVersion = -1;
+
+	inputFile.open(pathandfile, std::ios::in);
+	if (inputFile)
+	{
+		message("File Opened from ", pathandfile);
+		while (std::getline(inputFile, line)) /// Go through, reading file line by line
+		{
+			trimmedLine = trimAllWhiteSpace(trimToDelimiter(line, UTL::END_OF_LINE));
+
+			message(line);
+
+			if (stringIsSubString(line, UTL::VELA_MAGNET_SAVE_FILE_v1))
+			{
+				configVersion = 1;
+				break;
+			}
+			else if (stringIsSubString(line, UTL::DBURT_HEADER_V3))
+			{
+				configVersion = 3;// version 2 got lost around October 2015
+				break;
+			}
+			else if (stringIsSubString(line, UTL::DBURT_HEADER_V4))
+			{
+				configVersion = 4;// version 2 got lost around October 2015
+				break;
+			}
+			else if (stringIsSubString(line, UTL::VERSION))
+			{
+				if (stringIsSubString(trimmedLine, UTL::VERSION))
+					getVersion(trimmedLine);
+			}
+			else if (stringIsSubString(line, UTL::VELA_CLARA_DBURT_ALIAS_V1))
+			{
+				message("stringIsSubString(line, UTL::VELA_CLARA_DBURT_ALIAS_V1)");
+				std::getline(inputFile, line);
+				trimmedLine = trimAllWhiteSpace(trimToDelimiter(line, UTL::END_OF_LINE));
+				std::vector<std::string> keyvalue = getKeyVal(trimmedLine, UTL::EQUALS_SIGN_C);
+
+				message(keyvalue[0]);
+				message(keyvalue[1]);
+				pathandfile = getFilePathFromINputs(trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[0]),
+					trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[1]));
+				message(pathandfile);
+				configVersion = 4;
+			}
+		}
+	}
+	debugMessage("Finished preprocessing file");
+	inputFile.close();
+	magnetStructs::magnetStateStruct magState;
+	switch (configVersion)
+	{
+	case -1:
+		debugMessage("NO DBURT VERSION FOUND EXIT");
+		break;
+
+	case 1:
+		debugMessage("VERSION 1 DBURT FOUND");
+		//magState = readDBURTv1(filePath);
+		break;
+	case 2:
+		//debugMessage("VERSION 2 DBURT FOUND");
+		break;
+	case 3:
+		debugMessage("VERSION 3 DBURT FOUND");
+		//magState = readDBURTv3(filePath);
+		break;
+	case 4:
+		debugMessage("VERSION 4 DBURT FOUND");
+		magState = readDBURTv4(pathandfile);
+		break;
+	default:
+		debugMessage("UNEXPECTED DBURT VERSION, ", configVersion, ", FOUND");
+
+	}
+	return magState;
+}
+
+
 
 void MagnetFactory::debugMessagesOn()
 {

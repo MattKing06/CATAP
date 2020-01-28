@@ -28,11 +28,13 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.add_property("serial_number", &Magnet::getSerialNumber)
 			.add_property("magnet_type", &Magnet::getMagnetType)
 			//.add_property("epicsInterface", &Magnet::epicsInterface)
-			.def("switchOFF", &Magnet::switchOFF)
+			.def("switchOff", &Magnet::switchOFF)
 			.def("switchOn", &Magnet::switchOn)
 			.def("getSETI", &Magnet::getSETI)
 			.def("SETI", &Magnet::SETI)
 			.def("getREADI", &Magnet::getREADI)
+			
+			.def("degauss", &Magnet::degauss)
 			
 			.def("debugMessagesOn", &Magnet::debugMessagesOn)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)

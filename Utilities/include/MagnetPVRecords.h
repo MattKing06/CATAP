@@ -2,6 +2,11 @@
 #define MAGNET_RECORDS
 #include <string>
 #include <vector>
+
+#include "GlobalStateEnums.h"
+#include "GlobalConstants.h"
+
+
 namespace MagnetRecords
 {
 	//enum PVs
@@ -23,4 +28,28 @@ namespace MagnetRecords
 
 	extern std::vector<std::string> magnetRecordList;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
 }
+
+namespace MagnetState
+{
+	struct magnetStateStruct
+	{   // proviude a default constructor
+		magnetStateStruct() :
+			numMags(GlobalConstants::zero_sizet)
+			//, 
+			//machineArea(HWC_ENUM::MACHINE_AREA::UNKNOWN_AREA) 
+		{};
+		size_t numMags;
+		//HWC_ENUM::MACHINE_AREA machineArea;
+		std::vector<std::string> magNames;
+		std::vector<STATE> psuStates;
+		std::vector<double> siValues, riValues;
+//#ifdef BUILD_DLL
+//		boost::python::list magNames_Py;
+//		boost::python::list psuStates_Py;
+//		boost::python::list riValues_Py;
+//		boost::python::list siValues_Py;
+//#endif
+	};
+}
+
 #endif

@@ -12,6 +12,24 @@
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
+
+/// one-stop shop for magnet state
+struct magnetStateStruct
+{   // proviude a default constructor
+	magnetStateStruct():
+		numMags(GlobalConstants::one_sizet) 
+		{};
+	size_t numMags;
+	std::vector<std::string> magNames;
+	std::vector<STATE> psuStates;
+	std::vector<double> siValues, riValues;
+
+	boost::python::list magNames_Py;
+	boost::python::list psuStates_Py;
+	boost::python::list riValues_Py;
+	boost::python::list siValues_Py;
+};
+
 class MagnetFactory
 {
 	public:
@@ -87,6 +105,24 @@ class MagnetFactory
 
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
+
+
+
+		/// apply a state struct to the machine
+		//bool applyMagnetStateStruct(const magnetStructs::magnetStateStruct& ms);
+		/// applyt a DBURT to the machine
+		/*bool applyDBURT(const std::string& fileName);
+		bool applyDBURTCorOnly(const std::string& fileName);
+		bool applyDBURTQuadOnly(const std::string& fileName);
+
+		/// Write a DBURT
+		bool writeDBURT(const magnetStructs::magnetStateStruct& ms, const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
+		bool writeDBURT(const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
+*/
+		magnetStateStruct readDBURT(const std::string& filePath, const std::string& fileName)const;
+
+
+
 
 		std::string getFullName(const std::string& name_to_check) const;
 		// private surely! 
