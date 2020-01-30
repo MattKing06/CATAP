@@ -16,12 +16,10 @@ TARGET_LINK_LIBRARIES(FactoryTests PRIVATE ${Boost_LIBRARIES}
 set_target_properties(FactoryTests PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
 set_property(TARGET FactoryTests PROPERTY FOLDER "UnitTests")
 if ( Boost_FOUND )
-	add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+	add_definitiOns(${Boost_LIB_DIAGNOSTIC_DEFINITIOnS})
     foreach(testFile ${TEST_FILES})
 		#Extract filename without extension
-		get_filename_component(testName ${testFile} NAME_WE)
-		#Add a compile target
-
+		get_filename_compOnent(testName ${testFile} NAME_WE)
 		#now add the test
 		add_test(NAME ${testName}
 			 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/testBin

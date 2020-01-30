@@ -34,3 +34,4 @@ TARGET_LINK_LIBRARIES(ConfigReader PRIVATE Hardware)
 TARGET_LINK_LIBRARIES(ConfigReader PUBLIC ${Boost_LIBRARIES})
 set_property(TARGET ConfigReader PROPERTY FOLDER "ConfigReader")
 add_subdirectory(test)
+

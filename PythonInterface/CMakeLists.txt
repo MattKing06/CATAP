@@ -17,6 +17,7 @@ find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 add_library(PythonInterface SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+  message("COMPILING PYTHON INTERFACE WITH -fPIC")
   SET_TARGET_PROPERTIES(PythonInterface PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 #set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
@@ -33,7 +34,8 @@ TARGET_LINK_LIBRARIES(PythonInterface PUBLIC
 					 PRIVATE
 					 Factories
 					 Hardware
-					 ConfigReader)
+					 ConfigReader
+					 Utilities)
 set_target_properties(PythonInterface PROPERTIES OUTPUT_NAME "CATAP")
 set_target_properties(PythonInterface PROPERTIES SUFFIX ".pyd")
 set_property(TARGET PythonInterface PROPERTY FOLDER "PythonInterface")

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 #include <boost/circular_buffer.hpp>
-// forward declaration of BPM class
+// forward declaratiOn of BPM class
 // tells compiler that we will use this class.
 class Charge;
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
@@ -19,7 +19,7 @@ class EPICSChargeInterface : public EPICSInterface
 public:
 	EPICSChargeInterface();
 	~EPICSChargeInterface();
-	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
+	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 	static void updateQ(const struct event_handler_args args);
 	static LoggingSystem messenger;
 };

@@ -60,8 +60,8 @@ BOOST_AUTO_TEST_CASE(epics_magnet_interface_monitor_channel_type_test)
 
 	if (ca_state(getSetIPV.CHID) == cs_conn && ca_state(getRPowerPV.CHID) == cs_conn)
 	{
-		BOOST_CHECK_EQUAL(getSetIPV.MonitorCHTYPE, DBR_TIME_DOUBLE);
-		BOOST_CHECK_EQUAL(getRPowerPV.MonitorCHTYPE, DBR_TIME_ENUM);
+		BOOST_CHECK_EQUAL(getSetIPV.monitorCHTYPE, DBR_TIME_DOUBLE);
+		BOOST_CHECK_EQUAL(getRPowerPV.monitorCHTYPE, DBR_TIME_ENUM);
 	}
 	else
 	{

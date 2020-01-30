@@ -13,6 +13,7 @@ target_include_directories(EPICSInterfaceTests PRIVATE ${PROJECT_SOURCE_DIR}/Har
 target_include_directories(EPICSInterfaceTests PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include)
 target_link_libraries(EPICSInterfaceTests PRIVATE ${Boost_LIBRARIES})
 target_link_libraries(EPICSInterfaceTests PRIVATE ${EPICS_COM_LIB} ${EPICS_CA_LIB})
+target_link_libraries(EPICSInterfaceTests PRIVATE Utilities)
 target_link_libraries(EPICSInterfaceTests PRIVATE EPICSInterface)
 target_link_libraries(EPICSInterfaceTests PRIVATE Hardware)
 #move testing binaries to separate folder

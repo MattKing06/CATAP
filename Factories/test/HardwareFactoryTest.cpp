@@ -9,8 +9,8 @@
 /*********************************************************/
 /**** TEST WARNING ** TEST WARNING ** TEST WARNING ** ****/
 /*********************************************************/
-/*I DON'T THINK SETTING ENV VARIABLES FROM HERE WORKS WITHOUT
-OWNING AN ADMIN ACCOUNT, THEY ONLY SET ACCOUNT VARIABLES, NOT
+/*I DOn'T THINK SETTING ENV VARIABLES FROM HERE WORKS WITHOUT
+OWNING AN ADMIN ACCOUNT, THEY OnLY SET ACCOUNT VARIABLES, NOT
 SYSTEM-WIDE VARIABLES. TO RUN TEST WE MUST COMMENT OUT THE
 REAL-MACHINE TEST, AND CHANGE OUR IP-ADDRESS AND SERVER PORT
 TO THE VALUES DEFINED BELOW. THEN THE TEST SHOULD WORK!*/
@@ -38,8 +38,8 @@ TO THE VALUES DEFINED BELOW. THEN THE TEST SHOULD WORK!*/
 //	}
 //	HardwareFactory *hardwareFactory = new HardwareFactory();
 //	//std::string hardwareType = "MAGNETS"; 
-//	//std::string version = "PHYSICAL";
-//	//hardwareFactory->setup(hardwareType, version);
+//	//std::string VERSION = "PHYSICAL";
+//	//hardwareFactory->setup(hardwareType, VERSION);
 //	MagnetFactory *magFactory = hardwareFactory->getMagnetFactory();
 //	bool status;
 //	status = magFactory->setup("nominal");

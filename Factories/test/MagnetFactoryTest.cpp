@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 	{
 		if (ca_state(magFac.getMagnet(testMagnetName).pvStructs.at("SPOWER").CHID) == cs_conn)
 		{
-			magFac.turnOn(testMagnetName);
+			magFac.switchOn(testMagnetName);
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 			BOOST_CHECK_EQUAL(magFac.getPSUState(testMagnetName), 1);
 		}
