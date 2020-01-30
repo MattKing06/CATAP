@@ -2,14 +2,14 @@
 
 namespace GlobalFunctions {
 
-	bool stringIsSubString(const std::string& stringToCheck, const std::string& stringToLookFor)
-	{
-		return stringToCheck.find(stringToLookFor) != std::string::npos;
-	}
-	bool stringIsSubString_char(const std::string& stringToCheck, const char * stringToLookFor)
-	{
-		return stringIsSubString(stringToCheck, std::string(stringToLookFor));
-	}
+	//bool stringIsSubString(const std::string& stringToCheck, const std::string& stringToLookFor)
+	//{
+	//	return stringToCheck.find(stringToLookFor) != std::string::npos;
+	//}
+	//bool stringIsSubString_char(const std::string& stringToCheck, const char * stringToLookFor)
+	//{
+	//	return stringIsSubString(stringToCheck, std::string(stringToLookFor));
+	//}
 
 	//std::pair<bool,std::string> findSubstringInStringvector(const std::vector<std::string>& stringvector, const std::string& substring)
 	//{
