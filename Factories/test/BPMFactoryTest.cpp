@@ -20,16 +20,20 @@ BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 	bool status = bpmfac.setup("nominal");
 	if (status)
 	{
-		srand(time(NULL));
-		long sa1ToSet = rand() % 10;
-		bpmfac.setSA1(testBPMName, sa1ToSet);
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		BOOST_CHECK_EQUAL(bpmfac.getSA1(testBPMName), sa1ToSet);
+		if (ca_state(bpmfac.getBPM(testBPMName).pvStructs.at("SA1").CHID) == cs_conn)
+		{
+			srand(time(NULL));
+			long sa1ToSet = rand() % 10;
+			bpmfac.setSA1(testBPMName, sa1ToSet);
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+			BOOST_CHECK_EQUAL(bpmfac.getSA1(testBPMName), sa1ToSet);
+		}
+		else
+		{
+			bpmfac.messenger.printMessage("CANNOT CONNECT TO EPICS");
+		}
 	}
-	else
-	{
-		bpmfac.messenger.printMessage("CANNOT CONNECT TO EPICS");
-	}
+
 }
 
 BOOST_AUTO_TEST_SUITE_END();
