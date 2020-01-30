@@ -20,7 +20,7 @@
 #include "LoggingSystem.h"
 #include "Hardware.h"
 #include "HardwareFactory.h"
-#include "MagnetPYTHONInterface.h"
+#include "MagnetPythonInterface.h"
 
 //#include "Magnet.h"
 //#include "MagnetFactory.h"
