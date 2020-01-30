@@ -7,7 +7,7 @@
 #include <iostream>
 #include <algorithm>
 #include <iterator>
-#include <functiOnal>
+#include <functional>
 #include "Charge.h"
 #include <vector>
 #include <chrono>
