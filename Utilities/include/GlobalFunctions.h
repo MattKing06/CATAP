@@ -119,7 +119,7 @@ namespace GlobalFunctions{
 	//}
 
 	extern bool stringIsSubString(const std::string& stringToCheck, const std::string& stringToLookFor);
-	extern bool stringIsSubString(const std::string& stringToCheck, const char* stringToLookFor);
+	extern bool stringIsSubString_char(const std::string& stringToCheck, const char* stringToLookFor);
 
 
 	//extern std::pair<bool, std::string> findSubstringInStringvector(const std::vector<std::string>& stringvector, const std::string& substring);

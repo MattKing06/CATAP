@@ -6,7 +6,7 @@ namespace GlobalFunctions {
 	{
 		return stringToCheck.find(stringToLookFor) != std::string::npos;
 	}
-	bool stringIsSubString(const std::string& stringToCheck, const char * stringToLookFor)
+	bool stringIsSubString_char(const std::string& stringToCheck, const char * stringToLookFor)
 	{
 		return stringIsSubString(stringToCheck, std::string(stringToLookFor));
 	}
