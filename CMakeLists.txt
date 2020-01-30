@@ -29,7 +29,7 @@ endif(UNIX)
 
 set_property(GLOBAL PROPERTY DEBUG_COnFIGURATIOnS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_COnFIGURATIOnS "Release;MinSizeRel")
-find_package(PYTHONLibs ${PY_VERSION})
+find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63.0)
 message("Finding Boost...")
 

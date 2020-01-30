@@ -1,6 +1,6 @@
-message( "Processing PYTHON Interface Unit Tests")
+message( "Processing Python Interface Unit Tests")
 enable_testing()
-find_package(PYTHONLibs ${PY_VERSION})
+find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63 REQUIRED COMPONENTS PYTHON3)
 if ( Boost_FOUND )
 	add_definitiOns(${Boost_LIB_DIAGNOSTIC_DEFINITIOnS})
