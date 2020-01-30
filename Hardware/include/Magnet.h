@@ -12,8 +12,8 @@
 #include "MagnetPVRecords.h"
 #include "GlobalConstants.h"
 
-#include <boost/PYTHON/dict.hpp>
-#include <boost/PYTHON/list.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
 
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
