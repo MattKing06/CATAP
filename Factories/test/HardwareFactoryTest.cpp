@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE HardwareFactoryTest
-
 #include <boost/test/unit_test.hpp>
 #include "HardwareFactory.h"
 //#include "Magnet.h"
@@ -49,6 +47,10 @@ TO THE VALUES DEFINED BELOW. THEN THE TEST SHOULD WORK!*/
 //	double current = magFactory->getCurrent("CLA-C2V-MAG-HCOR-01");
 //	BOOST_CHECK_EQUAL(current, -0.00190269);
 //}
+BOOST_AUTO_TEST_CASE(start_test)
+{
+	BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");
+}
 BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 {
 	char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.246";
@@ -58,21 +60,12 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
 	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
 	HardwareFactory hardwareFactory(STATE::VIRTUAL);
-	bool status;
-	status = hardwareFactory.setup("Magnet","nominal");
+	//status = hardwareFactory.setup("Magnet", "nominal");
 	MagnetFactory& magFactory = hardwareFactory.getMagnetFactory();
+	BOOST_TEST_MESSAGE("RETRIEVED MAGNET FACTORY");
 	Magnet& HCOR = magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
-	BOOST_CHECK(status);
-	srand(time(NULL));
-	double currentToSet = rand() % 10 + 1.0;
-	magFactory.SETI("VM-CLA-C2V-MAG-HCOR-01", currentToSet);
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	magFactory.SETI("VM-CLA-C2V-MAG-VCOR-01", currentToSet);
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	magFactory.magnetMap;
-	BOOST_CHECK_EQUAL(HCOR.getSETI(), currentToSet);
-	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-	BOOST_CHECK_EQUAL(magFactory.getSETI("VM-CLA-C2V-MAG-VCOR-01"), currentToSet);
+	BOOST_TEST_MESSAGE("RETRIEVED MAGNET " + HCOR.getHardwareName());
+	BOOST_CHECK(HCOR.getHardwareName() == "VM-CLA-C2V-MAG-HCOR-01");
 }
 
 BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)
@@ -81,5 +74,6 @@ BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)
 	hardwareFactory.setup("Magnet", "nominal");
 	hardwareFactory.debugMessagesOn();
 }
+
 
 

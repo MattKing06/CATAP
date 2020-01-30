@@ -1,5 +1,3 @@
-#define BOOST_TEST_MODULE EPICSShutterInterfaceTest
-
 #include <boost/test/unit_test.hpp>
 #include <string>
 #include <EPICSMagnetInterface.h>

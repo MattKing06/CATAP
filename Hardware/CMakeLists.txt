@@ -14,6 +14,7 @@ set( INCLUDE_FILES
 )
 
 set( TEST_FILES
+	HardwareTestHelper.cpp
 	HardwareTest.cpp
 	MagnetTest.cpp
 	BPMTest.cpp

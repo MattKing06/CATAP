@@ -21,17 +21,17 @@
 #include "yaml-cpp/emitter.h"
 
 
-MagnetFactory::MagnetFactory() : 
+MagnetFactory::MagnetFactory() :
 	MagnetFactory(STATE::OFFLINE)
 {
 	std::cout << "MagnetFactory DEFAULT constRUCTOR called " << std::endl;
 }
 
-MagnetFactory::MagnetFactory(STATE mode):
+MagnetFactory::MagnetFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("Magnet", mode))
-//:dummy_magnet(Magnet("DUMMY_MAGNET"))
+	//:dummy_magnet(Magnet("DUMMY_MAGNET"))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
@@ -53,7 +53,7 @@ MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
 MagnetFactory::~MagnetFactory()
 {
 	messenger.printDebugMessage("MagnetFactory Destructor Called");
-	if (hasBeenSetup) 
+	if (hasBeenSetup)
 	{
 		for (auto& magnet : magnetMap)
 		{
@@ -62,11 +62,17 @@ MagnetFactory::~MagnetFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					magnet.second.epicsInterface->removeSubscriptiOn(pvStruct.second);
-					ca_flush_io();
+                    if (pvStruct.second.EVID)
+					{
+						magnet.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
-				magnet.second.epicsInterface->removeChannel(pvStruct.second);
-				ca_pend_io(CA_PEND_IO_TIMEOUT);
+				if (pvStruct.second.CHID)
+				{
+					magnet.second.epicsInterface->removeChannel(pvStruct.second);
+					ca_pend_io(CA_PEND_IO_TIMEOUT);
+				}
 			}
 		}
 	}
@@ -81,7 +87,7 @@ void MagnetFactory::populateMagnetMap()
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		
+
 		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(magnetMap);
 	}
@@ -99,7 +105,7 @@ void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
-bool MagnetFactory::setup(const std::string &VERSION)
+bool MagnetFactory::setup(const std::string& version)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
 	if (hasBeenSetup)
@@ -114,25 +120,28 @@ bool MagnetFactory::setup(const std::string &VERSION)
 	//// epics magnet interface has been initialized in Magnet constructor
 	//// but we have a lot of PV information to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
+
+	std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
-
-	for (auto&magnet : magnetMap)
+	std::cout << "populateMagnetMap() fin" << std::endl;;
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
-		//// update the alias_name_map so we can use fullNames or Aliases 
-		updateAliasNameMap(magnet.second);
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 
-		messenger.printDebugMessage("Setup Magnet: ", magnet.first);
-
+	for (auto& magnet : magnetMap)
+	{
+		std::cout << "magnet.first = " << magnet.first << std::endl;
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
-		
-		//std::map<int, pvStruct>& magPVStructs = magnet.second.getPVStructs2();
-		//for (auto& pv : magnet.second.pvStructs )
+
+		updateAliasNameMap(magnet.second);
 		for (auto& pv : magPVStructs)
 		{
 
-			// sets the monitor state in the pvstruict to true or false 
+			// sets the monitor state in the pvstruict to true or false
 			retrieveMonitorStatus(pv.second);
-			
+
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -145,19 +154,20 @@ bool MagnetFactory::setup(const std::string &VERSION)
 				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
 					"write", std::to_string(ca_write_access(pv.second.CHID)),
 					"state", std::to_string(ca_state(pv.second.CHID)));
-				if(pv.second.monitor)
+				if (pv.second.monitor)
 				{
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 				}
-
+				//// update the alias_name_map so we can use fullNames or Aliases
 			}
 			else
 			{
-				messenger.printMessage(magnet.first,", ", pv.first, " CANNOT CONNECT TO EPICS");
+				std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
+				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
 			}
-
+			updateAliasNameMap(magnet.second);
 		}
 	}
 	hasBeenSetup = true;
@@ -173,7 +183,7 @@ bool MagnetFactory::setup(const std::string &VERSION)
 Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
 	std::string full_name = getFullName(fullMagnetName);
-	if (GlobalFunctions::entryExists(magnetMap, full_name) )
+	if (GlobalFunctions::entryExists(magnetMap, full_name))
 	{
 		return magnetMap.at(full_name);
 	}
@@ -184,7 +194,7 @@ Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 std::vector<std::string> MagnetFactory::getAllMagnetNames()const
 {
 	std::vector<std::string> return_names;
-	for(auto&& item : magnetMap) 
+	for (auto&& item : magnetMap)
 	{
 		return_names.push_back(item.first);
 	}
@@ -196,12 +206,12 @@ boost::python::list MagnetFactory::getAllMagnetNames_Py()const
 }
 
 
-double MagnetFactory::getSETI(const std::string& name)  const 
+double MagnetFactory::getSETI(const std::string& name)  const
 {
 	//if(!hasBeenSetup)
 	//{
 	//	//messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
-	//	this->setup("nominal");// nominal does not mean anything yet 
+	//	this->setup("nominal");// nominal does not mean anything yet
 	//}
 
 	std::string fullName = getFullName(name);
@@ -242,7 +252,7 @@ double MagnetFactory::getREADI(const std::string& name) const
 	//if(!hasBeenSetup)
 	//{
 	//	//messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
-	//	this->setup("nominal");// nominal does not mean anything yet 
+	//	this->setup("nominal");// nominal does not mean anything yet
 	//}
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
@@ -302,7 +312,7 @@ std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std
 }
 
 
-// This is being moved so that 
+// This is being moved so that
 //boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
 //{
 //	std::map<std::string, double> currents;
@@ -343,7 +353,7 @@ void MagnetFactory::SETI(const std::string& name, const double& value)
 	// TODO: check name exits in map
 	magnetMap.at(name).SETI(value);
 }
-void MagnetFactory::SETI(const std::map<std::string, double> &namesAndCurrentsMap)
+void MagnetFactory::SETI(const std::map<std::string, double>& namesAndCurrentsMap)
 {
 	for (const auto& entry : namesAndCurrentsMap)
 	{
@@ -477,14 +487,14 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
 		alias_name_map[full_name] = full_name;
 	}
-	
+
 	// now add in the aliases
 	std::vector<std::string> aliases = magnet.getAliases();
-	for(auto&& next_alias : aliases)
+	for (auto&& next_alias : aliases)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
 		{
-			messenger.printMessage("!!ERROR!! ",magnet.getHardwareName(), " alias = ",next_alias, " already exists");
+			messenger.printMessage("!!ERROR!! ", magnet.getHardwareName(), " alias = ", next_alias, " already exists");
 		}
 		else
 		{
@@ -552,7 +562,7 @@ bool MagnetFactory::writeDBURT(const std::string& filePath, const std::string& f
 
 	messenger.printDebugMessage("writeDBURT is generating DBURT data ");
 
-	
+
 	for(auto i = 0 ; i < ms.magNames.size(); ++i)
 	{
 		magnet_data.clear();
@@ -570,7 +580,7 @@ bool MagnetFactory::writeDBURT(const std::string& filePath, const std::string& f
 	// write a header;
 	fout << "#YAML Magnet Setting Save File VERSION 1" << std::endl;
 	fout << node_to_write;
-	
+
 	return true;
 }
 
@@ -583,7 +593,7 @@ magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const st
 	boost::filesystem::path directory(filePath);
 	boost::filesystem::path file(fileName);
 	boost::filesystem::path full_path = directory / file;
-	
+
 	std::ifstream fileInput;
 	fileInput = std::ifstream(full_path.string());
 	YAML::Parser parser(fileInput);
@@ -601,7 +611,7 @@ magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const st
 
 		for(auto&& it2 : it.second)
 		{
-		
+
 			std::string record = it2.first.as<std::string>();
 			std::cout << record << " = " << it2.second << std::endl;
 			if (MagnetRecords::SETI == record)
@@ -626,8 +636,8 @@ magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const st
 	//boost::trim_left(controlRecords);
 	//std::pair<std::string, std::string> pvAndRecordPair;
 
-	//// mode tells us if we are physical, virtual or offline 
-	//// which tells us what the 
+	//// mode tells us if we are physical, virtual or offline
+	//// which tells us what the
 	//if (mode == STATE::VIRTUAL)
 	//{
 	//	pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);

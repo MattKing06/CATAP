@@ -14,11 +14,13 @@ set( INCLUDE_FILES
 )
 
 set( TEST_FILES
+	FactoryTestHelper.cpp
     HardwareFactoryTest.cpp
     MagnetFactoryTest.cpp
     BPMFactoryTest.cpp
     ChargeFactoryTest.cpp
 )
+
 cmake_policy(SET CMP0022 NEW)
 find_package(Boost 1.63 REQUIRED COMPONENTS filesystem PYTHON3)
 add_library(Factories STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

@@ -13,6 +13,7 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
 ConfigReader::ConfigReader():
 yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
+
 mode(STATE::OFFLINE), hardwareFolder("")
 {
 	std::cout << "Constructor ConfigReader() called " << std::endl;
@@ -170,6 +171,7 @@ const std::map<std::string, std::string> ConfigReader::extractRecordsIntoMap(con
 	return pvRecordMap;
 }
 
+
 const std::map<std::string, std::string> ConfigReader::extractHardwareInformationIntoMap(const YAML::Node& configInformationNode) const
 {
 	auto hardwareProperties = configInformationNode["properties"];
@@ -206,8 +208,8 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		boost::trim_left(controlRecords);
 		std::pair<std::string, std::string> pvAndRecordPair;
 
-		// mode tells us if we are physical, virtual or offline 
-		// which tells us what the 
+		// mode tells us if we are physical, virtual or offline
+		// which tells us what the
 		if (mode == STATE::VIRTUAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
@@ -219,7 +221,7 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		//else
-		//{ 
+		//{
 		//	mode = STATE::OFFLINE;
 		//}
 		return pvAndRecordPair;
@@ -438,8 +440,8 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 //		boost::trim_left(controlRecords);
 //		std::pair<std::string, std::string> pvAndRecordPair;
 //
-//		// mode tells us if we are physical, virtual or offline 
-//		// which tells us what the 
+//		// mode tells us if we are physical, virtual or offline
+//		// which tells us what the
 //		if (mode == STATE::VIRTUAL)
 //		{
 //			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
@@ -451,7 +453,7 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 //			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 //		}
 //		//else
-//		//{ 
+//		//{
 //		//	mode = STATE::OFFLINE;
 //		//}
 //		return pvAndRecordPair;
@@ -473,9 +475,9 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 //	std::map<std::string, std::string> controlsParameterMap;
 //	if (controlsInformation["PV"].as<bool>())
 //	{
-//		//// we got into a pickle trying to parse a ist of strings 
+//		//// we got into a pickle trying to parse a ist of strings
 //		//if( controlsInformation["new_records"].IsScalar() )
-//		//{ 
+//		//{
 //		//	std::cout << "new_records is scalar!" << std::endl;
 //		//}
 //		//if( controlsInformation["new_records"].IsSequence() )
@@ -491,7 +493,7 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 //			std::cout << "pv_record_map is map!" << std::endl;
 //		}
 //		//std::cout << controlsInformation["new_records"] << std::endl;
-//		
+//
 //
 //		std::map<std::string, std::string> controlNewRecords = controlsInformation["pv_record_map"].as<std::map<std::string,std::string>>();
 //		//boost::trim_left(controlNewRecords);
@@ -501,7 +503,7 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 //		{
 //			std::cout << item.first << " = " << item.second << std::endl;
 //		}
-//		
+//
 //		std::pair<std::string, std::map<std::string, std::string>> pvAndRecordPair;
 //
 //		pvAndRecordPair.first = "pv_record_map";

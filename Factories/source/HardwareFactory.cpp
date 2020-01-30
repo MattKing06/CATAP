@@ -7,7 +7,7 @@ HardwareFactory::~HardwareFactory()
 {
 	messenger.printDebugMessage("HardwareFactory DestructiOn Called");
 }
-HardwareFactory::HardwareFactory(STATE mode):
+HardwareFactory::HardwareFactory(STATE mode) :
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
