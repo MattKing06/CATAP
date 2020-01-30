@@ -2,7 +2,7 @@
 #define EPICS_INTERFACE_H
 #include <LoggingSystem.h>
 #include <Hardware.h>
-#include <functiOnal>
+#include <functional>
 #include <vector>
 // EPICS include
 #ifndef __CINT__
