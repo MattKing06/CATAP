@@ -1,7 +1,7 @@
 #ifndef PYTHON_TYPE_COnVERSIONS_H_
 #define PYTHON_TYPE_COnVERSIONS_H_
 
-#include <boost/PYTHON.hpp>
+#include <boost/python.hpp>
 #include <boost/circular_buffer.hpp>
 #include <vector>
 #include <map>

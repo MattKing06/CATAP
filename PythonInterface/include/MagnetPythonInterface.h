@@ -4,7 +4,7 @@
 #include "MagnetFactory.h"
 #include "PythonTypeConversions.h"
 
-#include <boost/PYTHON.hpp>
+#include <boost/python.hpp>
 
 //using namespace boost::PYTHON;
 //using namespace boost;

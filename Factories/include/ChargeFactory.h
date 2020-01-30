@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 #include <utility>
-#include <boost/PYTHON.hpp>
+#include <boost/python.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Charge;
