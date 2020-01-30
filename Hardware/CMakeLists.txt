@@ -39,6 +39,7 @@ TARGET_LINK_LIBRARIES(Hardware
 					  PUBLIC
 					    PV
 					  PRIVATE
+						Utilities
 			     	    ${Boost_LIBRARIES}
 						${PYTHON_LIBRARY}
 		    			EPICSInterface

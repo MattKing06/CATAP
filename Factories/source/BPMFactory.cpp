@@ -44,7 +44,7 @@ BPMFactory::~BPMFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					bpm.second.epicsInterface->removeSubscriptiOn(pvStruct.second);
+					bpm.second.epicsInterface->removeSubscription(pvStruct.second);
 					ca_flush_io();
 				}
 				bpm.second.epicsInterface->removeChannel(pvStruct.second);

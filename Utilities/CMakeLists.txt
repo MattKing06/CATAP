@@ -11,8 +11,6 @@ set( INCLUDE_FILES
      include/GlobalStateEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
-     include/GlobalConstants.h
-     include/GlobalConstants.h
 	 include/MagnetPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)

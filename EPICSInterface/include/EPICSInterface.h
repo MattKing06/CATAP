@@ -49,7 +49,7 @@ public:
 	void retrieveCHTYPE(pvStruct& pvStruct) const;
 	void retrieveCOUNT(pvStruct& pvStruct) const;
 	void createSubscription(Hardware& hardware, pvStruct& pvStruct) const;
-	void removeSubscriptiOn(pvStruct& pv);
+	void removeSubscription(pvStruct& pv);
 	void removeChannel(pvStruct& pv);
 	void detachFromCOntext();
 	static std::string getEPICSTime(const epicsTimeStamp& stamp);

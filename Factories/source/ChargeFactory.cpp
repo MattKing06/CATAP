@@ -52,7 +52,7 @@ ChargeFactory::~ChargeFactory()
 		{
 			if (pvStruct.second.monitor)
 			{
-				charge.second.epicsInterface->removeSubscriptiOn(pvStruct.second);
+				charge.second.epicsInterface->removeSubscription(pvStruct.second);
 				ca_flush_io();
 			}
 			charge.second.epicsInterface->removeChannel(pvStruct.second);

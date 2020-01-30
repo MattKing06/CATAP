@@ -38,7 +38,7 @@ EPICSInterface::~EPICSInterface()
 	messenger.printDebugMessage("EPICSInterface Destructor Called");
 }
 
-void EPICSInterface::removeSubscriptiOn(pvStruct& pvStruct)
+void EPICSInterface::removeSubscription(pvStruct& pvStruct)
 {
 	int status = ca_clear_subscription(pvStruct.EVID);
 	MY_SEVCHK(status);
