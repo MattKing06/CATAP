@@ -14,9 +14,9 @@
 #endif 
 
 
-#include <boost/PYTHON/suite/indexing/map_indexing_suite.hpp>
-#include <boost/PYTHON/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/PYTHON/enum.hpp>
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/enum.hpp>
 #include "LoggingSystem.h"
 #include "Hardware.h"
 #include "HardwareFactory.h"
