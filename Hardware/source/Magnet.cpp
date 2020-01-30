@@ -211,28 +211,30 @@ bool Magnet::degauss(const bool reset_to_zero)
 	}
 	else
 	{
-		std::cout << hardwareName << " is NOT DEGAUSSING!! " << std::endl;
-		if (degausser.degauss_thread)
-		{
-			std::cout << hardwareName << " Kill degauss thread " << std::endl;
-			degausser.degauss_thread->join();
-			delete degausser.degauss_thread;
-			degausser.degauss_thread = nullptr;
-		}
+		#ifdef _WIN32
+			std::cout << hardwareName << " is NOT DEGAUSSING!! " << std::endl;
+			if (degausser.degauss_thread)
+			{
+				std::cout << hardwareName << " Kill degauss thread " << std::endl;
+				degausser.degauss_thread->join();
+				delete degausser.degauss_thread;
+				degausser.degauss_thread = nullptr;
+			}
 
 
-		isDegaussing = true;
-		degausser.degauss_values = degaussValues;
-		degausser.current_step = GlobalConstants::zero_sizet;
-		degausser.resetToZero = reset_to_zero;
-		degausser.degaussTolerance = degaussTolerance;
-		degausser.magnet = this;
+			isDegaussing = true;
+			degausser.degauss_values = degaussValues;
+			degausser.current_step = GlobalConstants::zero_sizet;
+			degausser.resetToZero = reset_to_zero;
+			degausser.degaussTolerance = degaussTolerance;
+			degausser.magnet = this;
 
-		//degausser.wait_time = this; set on constructor for now 
+			//degausser.wait_time = this; set on constructor for now 
 
-		std::cout << hardwareName << " START NEW degauss thread " << std::endl;
-		degausser.degauss_thread = new std::thread(staticEntryDeGauss, std::ref(degausser));
-		return true;
+			std::cout << hardwareName << " START NEW degauss thread " << std::endl;
+			degausser.degauss_thread = new std::thread(staticEntryDeGauss, std::ref(degausser));
+			return true;
+		#endif //WIN32
 	}
 	return false;
 }
