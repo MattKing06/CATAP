@@ -21,6 +21,9 @@ add_library(Utilities ${SOURCE_FILES} ${INCLUDE_FILES})
 target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(Utilities PRIVATE ${PYTHON_INCLUDE_DIR})
 target_include_directories(Utilities PUBLIC include)
+IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+  SET_TARGET_PROPERTIES(PythonInterface PROPERTIES COMPILE_FLAGS "-fPIC")
+ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 TARGET_LINK_LIBRARIES(Utilities
 					 PRIVATE
 					 ${Boost_LIBRARIES}
