@@ -96,12 +96,12 @@ namespace GlobalFunctions{
 		return !areSame(a, b, epsilon);
 	}
 
-	template<typename T = double>
-	double roundToN(const T a, const size_t n)
-	{
-		double p = pow(UTL::TEN_DOUBLE, (double)n);
-		return std::round(a * p) / p;
-	}
+	//template<typename T = double>
+	//double roundToN(const T a, const size_t n)
+	//{
+	//	double p = pow(UTL::TEN_DOUBLE, (double)n);
+	//	return std::round(a * p) / p;
+	//}
 
 	extern time_t timeNow();// { return time(nullptr); }
 
