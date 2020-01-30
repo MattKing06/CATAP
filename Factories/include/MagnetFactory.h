@@ -106,7 +106,7 @@ class MagnetFactory
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
 
-		magnetStateStruct MagnetFactory::getMagnetState() const;
+		magnetStateStruct getMagnetState() const;
 
 
 		/// apply a state struct to the machine
