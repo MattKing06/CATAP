@@ -22,12 +22,12 @@ struct magnetStateStruct
 	size_t numMags;
 	std::vector<std::string> magNames;
 	std::vector<STATE> psuStates;
-	std::vector<double> siValues, riValues;
+	std::vector<double> setiValues, readiValues;
 
 	boost::python::list magNames_Py;
 	boost::python::list psuStates_Py;
-	boost::python::list riValues_Py;
-	boost::python::list siValues_Py;
+	boost::python::list readiValues_Py;
+	boost::python::list setiValues_Py;
 };
 
 class MagnetFactory
@@ -59,7 +59,7 @@ class MagnetFactory
 		// methods for setting properties of magnet via PV name (or alias)
 
 		// getSETI
-		double getSETI(const std::string& name) const;
+		double getSETI(const std::string& name)const;
 		std::map<std::string, double> getSETIs(const std::vector<std::string>& names) const;
 		boost::python::dict getSETIs_Py(const boost::python::list& magNames) const;
 		std::map<std::string, double> getAllSETI() const;
@@ -106,6 +106,7 @@ class MagnetFactory
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
 
+		magnetStateStruct MagnetFactory::getMagnetState() const;
 
 
 		/// apply a state struct to the machine
@@ -119,7 +120,8 @@ class MagnetFactory
 		bool writeDBURT(const magnetStructs::magnetStateStruct& ms, const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
 		bool writeDBURT(const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
 */
-		magnetStateStruct readDBURT(const std::string& filePath, const std::string& fileName)const;
+		magnetStateStruct readDBURT(const std::string& filePath, const std::string& fileName);
+		bool writeDBURT(const std::string& filePath, const std::string& fileName);
 
 
 

@@ -81,8 +81,8 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
 	//double value = returnValueFromArgsAsDouble(args);
 	//recastMagnet->READI2 = returnTSVFromArgsDouble(args);
-	//messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-	//													+ std::to_string(recastMagnet->READI.second));
+	messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+		+ std::to_string(recastMagnet->READI.second));
 }
 
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)

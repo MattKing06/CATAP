@@ -16,6 +16,20 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 	//	return to_py_dict(MagnetFactory::getAllPSUState())
 	//}
 
+	/// one-stop shop for magnet state
+	void expose_magnet_state_struct() {
+ 
+		boost::python::class_<magnetStateStruct>
+			("magnetStateStruct", "magnetStateStruct Doc String")
+			.add_property("numMags", &magnetStateStruct::numMags)
+			.add_property("magNames", &magnetStateStruct::magNames_Py)
+			.add_property("psuStates", &magnetStateStruct::psuStates_Py)
+			.add_property("setiValues", &magnetStateStruct::setiValues_Py)
+			.add_property("readiValues", &magnetStateStruct::readiValues_Py)
+			;
+	};
+
+
 	void expose_magnet_object() {
 
 		// magnet exposure
@@ -50,6 +64,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 	//// Registers a cOnverter for a pair of int-pairs.
 	//to_PYTHON_cOnverter<std::pair<IntPair, IntPair>, PairToTupleCOnverter<IntPair, IntPair> >();
 
+
+
+
 	
 	void expose_magnet_factory_object() {
 
@@ -73,6 +90,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getSETI",    &MagnetFactory::getSETI)
 			.def("getSETIs",    &MagnetFactory::getSETIs_Py)
 			.def("getAllSETI", &MagnetFactory::getAllSETI)
+			
+			.def("readDBURT", &MagnetFactory::readDBURT)
+			.def("writeDBURT", &MagnetFactory::writeDBURT)
 			
 			
 			//.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents_Py)
