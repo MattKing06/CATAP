@@ -40,7 +40,7 @@ if(WIN32)
   TARGET_LINK_LIBRARIES(Factories PUBLIC optimized ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib)
 endif(WIN32)
 if(UNIX)
-  TARGET_LINK_LIBRARIES(ConfigReader PUBLIC general ${YAML_PARSER_LIB_DIR}/libyaml-cpp.so)
+  TARGET_LINK_LIBRARIES(Factories PUBLIC general ${YAML_PARSER_LIB_DIR}/libyaml-cpp.so)
 endif(UNIX)
 TARGET_LINK_LIBRARIES(Factories PUBLIC
 					 ${Boost_LIBRARIES}
