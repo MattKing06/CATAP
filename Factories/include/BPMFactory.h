@@ -38,6 +38,7 @@ public:
 	std::string getBPMName(const std::string& name);
 	void populateBPMMap();
 	void retrievemonitorStatus(pvStruct& pvStruct);
+	void setupChannels();
 	void monitorForNShots(const std::string& name, const size_t& value);
 	bool hasBeenSetup;
 	//bool isVirtual;
