@@ -131,6 +131,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 			}
 		}
 	}
+	EPICSInterface::sendToEPICS();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
