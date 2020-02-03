@@ -105,6 +105,19 @@ void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
+void MagnetFactory::setupChannels()
+{
+	for (auto& magnet : magnetMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			magnet.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
 bool MagnetFactory::setup(const std::string& version)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
@@ -130,26 +143,7 @@ bool MagnetFactory::setup(const std::string& version)
 		return hasBeenSetup;
 	}
 
-	/*
-		THIS WILL SEND OFF ALL PVs FOR ALL MAGNETS
-		DO WE WANT TO SEND TO EPICS PER MAGNET??
-	 */
-	for (auto& magnet : magnetMap)
-	{
-		std::cout << "magnet.first = " << magnet.first << std::endl;
-		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
-
-		// Update alias in map and begin to set up pvs.
-		updateAliasNameMap(magnet.second);
-		for (auto& pv : magPVStructs)
-		{
-
-			// sets the monitor state in the pvstruict to true or false
-			retrieveMonitorStatus(pv.second);
-			magnet.second.epicsInterface->retrieveCHID(pv.second);
-
-		}
-	}
+	setupChannels();
 	EPICSInterface::sendToEPICS();
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
@@ -162,9 +156,11 @@ bool MagnetFactory::setup(const std::string& version)
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
 		for (auto& pv : magPVStructs)
 		{
+			updateAliasNameMap(magnet.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				std::cout << "cs_conn, getting some values " << std::endl;
+				retrieveMonitorStatus(pv.second);
 				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 				magnet.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
