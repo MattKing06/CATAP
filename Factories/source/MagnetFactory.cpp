@@ -121,9 +121,9 @@ bool MagnetFactory::setup(const std::string& version)
 	//// but we have a lot of PV information to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 
-	std::cout << "populateMagnetMap()" << std::endl;
+	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
-	std::cout << "populateMagnetMap() fin" << std::endl;;
+	//std::cout << "populateMagnetMap() fin" << std::endl;;
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
@@ -132,7 +132,7 @@ bool MagnetFactory::setup(const std::string& version)
 
 	for (auto& magnet : magnetMap)
 	{
-		std::cout << "magnet.first = " << magnet.first << std::endl;
+		//std::cout << "magnet.first = " << magnet.first << std::endl;
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
 
 		updateAliasNameMap(magnet.second);
@@ -145,15 +145,15 @@ bool MagnetFactory::setup(const std::string& version)
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				std::cout << "cs_conn, getting some values " << std::endl;
+				//std::cout << "cs_conn, getting some values " << std::endl;
 				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 				magnet.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-					"write", std::to_string(ca_write_access(pv.second.CHID)),
-					"state", std::to_string(ca_state(pv.second.CHID)));
+				//messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+				//	"write", std::to_string(ca_write_access(pv.second.CHID)),
+				//	"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
@@ -162,7 +162,7 @@ bool MagnetFactory::setup(const std::string& version)
 			}
 			else
 			{
-				std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
+				//std::cout << magnet.first << " CANNOT CONNECT TO EPICS" << std::endl;
 				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
@@ -171,14 +171,59 @@ bool MagnetFactory::setup(const std::string& version)
 		}
 	}
 	hasBeenSetup = true;
-	std::cout << "hasBeenSetup = true " << std::endl;
+	//std::cout << "hasBeenSetup = true " << std::endl;
 	return hasBeenSetup;
+}
+
+void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
+{
+	// first add in the magnet full name
+	std::string full_name = magnet.getHardwareName();
+	messenger.printMessage("updateAliasNameMap ", full_name);
+	if (GlobalFunctions::entryExists(alias_name_map, full_name))
+	{
+		messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
+	}
+	else
+	{
+		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
+		alias_name_map[full_name] = full_name;
+	}
+
+	// now add in the aliases
+	std::vector<std::string> aliases = magnet.getAliases();
+
+
+	for (auto&& next_alias : aliases)
+	{
+		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
+		{
+			messenger.printMessage("!!ERROR!! ", magnet.getHardwareName(), " alias = ", next_alias, " already exists");
+		}
+		else
+		{
+			alias_name_map[next_alias] = full_name;
+			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
+		}
+	}
+}
+
+std::string MagnetFactory::getFullName(const std::string& name_to_check) const
+{
+	std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
+	{
+		std::cout << name_to_check << " found " << std::endl;
+		return alias_name_map.at(name_to_check);
+	}
+	std::cout << name_to_check << " NOT found " << std::endl;
+	return dummy_magnet.getHardwareName();
 }
 
 
 
 
-// GET MAGNET OBJECT  FUNCTIOnS
+// GET MAGNET OBJECT  FUNCTIONS
 //
 Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
 {
@@ -206,23 +251,17 @@ boost::python::list MagnetFactory::getAllMagnetNames_Py()const
 }
 
 
+
 double MagnetFactory::getSETI(const std::string& name)  const
 {
-	//if(!hasBeenSetup)
-	//{
-	//	//messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
-	//	this->setup("nominal");// nominal does not mean anything yet
-	//}
-
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
-		std::cout << fullName + " getSETI magnetMap.at(fullName).getSETI() " << std::endl;
 		return magnetMap.at(fullName).getSETI();
 	}
+	std::cout << "!!ERROR!! MagnetFactory::getSETI cannot find magnet with name = " << name << std::endl;
 	return GlobalConstants::double_min;
 }
-
 std::map<std::string, double> MagnetFactory::getSETIs(const std::vector<std::string>& names) const
 {
 	std::map<std::string, double> return_map;
@@ -249,16 +288,12 @@ boost::python::dict MagnetFactory::getAllSETI_Py() const
 
 double MagnetFactory::getREADI(const std::string& name) const
 {
-	//if(!hasBeenSetup)
-	//{
-	//	//messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
-	//	this->setup("nominal");// nominal does not mean anything yet
-	//}
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
-		return magnetMap.at(fullName).getSETI();
+		return magnetMap.at(fullName).getREADI();
 	}
+	std::cout << "!!ERROR!! MagnetFactory::getREADI cannot find magnet with name = " << name << std::endl;
 	return GlobalConstants::double_min;
 }
 std::map<std::string, double> MagnetFactory::getREADIs(const std::vector<std::string>& names) const
@@ -270,7 +305,7 @@ std::map<std::string, double> MagnetFactory::getREADIs(const std::vector<std::st
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getREADIs_Py(const boost::python::list& names) const
+boost::python::dict MagnetFactory::getREADI_Py(const boost::python::list& names) const
 {
 	return to_py_dict<std::string, double>(getREADIs(to_std_vector<std::string>(names)));
 }
@@ -286,67 +321,112 @@ boost::python::dict MagnetFactory::getAllREADI_Py() const
 
 
 
-
-double MagnetFactory::getRICurrent(const std::string& name)
+STATE MagnetFactory::getPSUState(const std::string& name) const
 {
-	if (!hasBeenSetup)
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
-		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
+		return magnetMap.at(fullName).getPSUState();
 	}
-	else
+	std::cout << "!!ERROR!! MagnetFactory::getPSUState cannot find magnet with name = " << name << std::endl;
+	return STATE::UNKNOWN_NAME;
+}
+std::map<std::string, STATE> MagnetFactory::getPSUStates(const std::vector<std::string>& names) const
+{
+	std::map<std::string, STATE> return_map;
+	for (auto&& name : names)
 	{
-		return magnetMap.find(name)->second.getREADI();
+		return_map[name] = getPSUState(name);
 	}
-	return std::numeric_limits<double>::min();
+	return return_map;
+}
+boost::python::dict MagnetFactory::getPSUState_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, STATE>(getPSUStates(to_std_vector<std::string>(names)));
+}
+std::map<std::string, STATE> MagnetFactory::getAllPSUState() const
+{
+	std::map<std::string, STATE> return_map;
+	for (auto&& magnet : magnetMap)
+	{
+		return_map[magnet.first] = magnet.second.getPSUState();
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getAllPSUState_Py() const
+{
+	return to_py_dict(getAllPSUState());
 }
 
-std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std::string>& names)
+
+
+
+STATE MagnetFactory::getILKState(const std::string& name) const
 {
-	std::map<std::string, double> readis;
-	for (auto& name : names)
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
-		double current = magnetMap.find(name)->second.getREADI();
-		readis[name] = current;
+		return magnetMap.at(fullName).getILKState();
 	}
-	return readis;
+	std::cout << "!!ERROR!! MagnetFactory::getILKState cannot find magnet with name = " << name << std::endl;
+	return STATE::UNKNOWN_NAME;
 }
-
-
-// This is being moved so that
-//boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
-//{
-//	std::map<std::string, double> currents;
-//	std::vector<std::string> magNamesVector = to_std_vector<std::string>(magNames);
-//	currents = getCurrents(magNamesVector);
-//	boost::python::dict newPyDict = to_py_dict(currents);
-//	return newPyDict;
-//}
-
-boost::python::dict MagnetFactory::getRICurrents_Py(boost::python::list names)
+std::map<std::string, STATE> MagnetFactory::getILKStates(const std::vector<std::string>& names) const
 {
-	std::map<std::string, double> RICurrents;
-	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-	RICurrents = getRICurrents(namesVector);
-	boost::python::dict newPyDict = to_py_dict(RICurrents);
-	return newPyDict;
+	std::map<std::string, STATE> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getILKState(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getILKState_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, STATE>(getILKStates(to_std_vector<std::string>(names)));
+}
+std::map<std::string, STATE>  MagnetFactory::getAllILKState() const
+{
+	std::map<std::string, STATE> return_map;
+	for (auto&& magnet : magnetMap)
+	{
+		return_map[magnet.first] = magnet.second.getILKState();
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getAllILKState_Py() const
+{
+	return to_py_dict(getAllILKState());
 }
 
-//boost::python::dict MagnetFactory::getAllMagnetCurrents_Py()
-//{
-//	std::map<std::string, double> allCurrents = getAllMagnetCurrents();
-//	boost::python::dict allCurrentsPyDict = to_py_dict(allCurrents);
-//	return allCurrentsPyDict;
-//}
-//std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
-//{
-//	std::map<std::string, double> magnetsAndCurrentsMap;
-//	for (const auto &mag : magnetMap)
-//	{
-//		double current = mag.second.getCurrent();
-//		magnetsAndCurrentsMap[mag.first] = current;
-//	}
-//	return magnetsAndCurrentsMap;
-//}
+
+magnetStateStruct MagnetFactory::getMagnetState()const
+{
+	magnetStateStruct magState;
+	magState.magNames = getAllMagnetNames();
+	magState.numMags = magState.magNames.size();
+	//std::cout << "getMagnetState getttign magnet states" << std::endl;
+	for (auto&& magnet : magState.magNames)
+	{
+		magState.psuStates.push_back(getPSUState(magnet));
+		magState.setiValues.push_back(getSETI(magnet));
+		magState.readiValues.push_back(getREADI(magnet));
+		//std::cout << "magState.magnet " << magnet << std::endl;
+		//std::cout << "magState.psuStates " << ENUM_TO_STRING(magState.psuStates.back()) << std::endl;
+		//std::cout << "magState.setiValues " << magState.setiValues.back() << std::endl;
+		//std::cout << "magState.readiValues " << magState.readiValues.back() << std::endl;
+	}
+	magState.magNames_Py = to_py_list(magState.magNames);
+	magState.psuStates_Py = to_py_list(magState.psuStates);
+	magState.setiValues_Py = to_py_list(magState.setiValues);
+	magState.readiValues_Py = to_py_list(magState.readiValues);
+	return magState;
+}
+
+
+
+
+
+
 
 void MagnetFactory::SETI(const std::string& name, const double& value)
 {
@@ -361,6 +441,8 @@ void MagnetFactory::SETI(const std::map<std::string, double>& namesAndCurrentsMa
 	}
 	//return true;
 }
+
+
 
 STATE MagnetFactory::switchOn(const std::string& name)
 {
@@ -417,135 +499,15 @@ boost::python::dict MagnetFactory::switchOFF_Py(const boost::python::list names)
 
 
 
-STATE MagnetFactory::getPSUState(const std::string& name) const
-{
-	return magnetMap.find(name)->second.getPSUState();
-}
 
-std::map<std::string, STATE> MagnetFactory::getAllPSUState() const
-{
-	std::map<std::string, STATE> return_map;
-	for (auto&& magnet : magnetMap)
-	{
-		return_map[magnet.second.getHardwareName()] = magnet.second.getPSUState();
-	}
-	return return_map;
-}
 
-boost::python::dict MagnetFactory::getAllPSUState_Py() const
-{
-	return to_py_dict(getAllPSUState());
-}
-
-int MagnetFactory::getILKState(const std::string& name) const
-{
-	return magnetMap.find(name)->second.getILKState();
-}
-//bool MagnetFactory::turnOn_Py(boost::python::list names)
-//{
-//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-//	return turnOn(namesVector);
-//}
-//bool MagnetFactory::turnOff_Py(boost::python::list names)
-//{
-//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-//	return turnOff(namesVector);
 //
-//}
-
-bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
-{
-	std::map<std::string, double> magnetNamesAndCurrentsToSet;
-	std::vector<std::string> magnetNames = to_std_vector<std::string>(magnetNamesAndCurrents.keys());
-	std::vector<double> currentsToSet = to_std_vector<double>(magnetNamesAndCurrents.values());
-	auto magnetNamesIterator = magnetNames.begin();
-	auto currentsToSetIterator = currentsToSet.begin();
-	while (magnetNamesIterator != magnetNames.end() && currentsToSetIterator != currentsToSet.end())
-	{
-		std::pair<std::string, double> entryToInsert = std::pair<std::string, double>(magnetNamesIterator->data(), *currentsToSetIterator);
-		magnetNamesAndCurrentsToSet.emplace(entryToInsert);
-		magnetNamesIterator++;
-		currentsToSetIterator++;
-	}
-	SETI(magnetNamesAndCurrentsToSet);
-	return true;
-}
 
 
 
-void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
-{
-	// first add in the magnet full name
-	std::string full_name = magnet.getHardwareName();
-	messenger.printMessage("updateAliasNameMap ", full_name);
-	if (GlobalFunctions::entryExists(alias_name_map, full_name))
-	{
-		messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
-	}
-	else
-	{
-		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
-		alias_name_map[full_name] = full_name;
-	}
-
-	// now add in the aliases
-	std::vector<std::string> aliases = magnet.getAliases();
-	for (auto&& next_alias : aliases)
-	{
-		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
-		{
-			messenger.printMessage("!!ERROR!! ", magnet.getHardwareName(), " alias = ", next_alias, " already exists");
-		}
-		else
-		{
-			alias_name_map[next_alias] = full_name;
-			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
-		}
-	}
-}
-
-std::string MagnetFactory::getFullName(const std::string& name_to_check) const
-{
-	std::cout << "getFullName looking for " << name_to_check << std::endl;
-	if(GlobalFunctions::entryExists(alias_name_map, name_to_check))
-	{
-		std::cout << name_to_check << " found " << std::endl;
-		return alias_name_map.at(name_to_check);
-	}
-	std::cout << name_to_check << " NOT found " << std::endl;
-	return dummy_magnet.getHardwareName();
-}
 
 
-magnetStateStruct MagnetFactory::getMagnetState()const
-{
-	magnetStateStruct magState;
-	magState.magNames = getAllMagnetNames();
 
-
-	magState.numMags = magState.magNames.size();
-
-	std::cout << "getMagnetState getttign magnet states" << std::endl;
-
-	for (auto&& magnet : magState.magNames)
-	{
-		magState.psuStates.push_back(getPSUState(magnet));
-		magState.setiValues.push_back( getSETI(magnet) );
-		magState.readiValues.push_back( getREADI(magnet) );
-
-		std::cout << "magState.magnet " << magnet <<  std::endl;
-		std::cout << "magState.psuStates " << ENUM_TO_STRING(magState.psuStates.back()) <<  std::endl;
-		std::cout << "magState.setiValues " << magState.setiValues.back() <<  std::endl;
-		std::cout << "magState.readiValues " << magState.readiValues.back() <<  std::endl;
-
-
-	}
-	magState.magNames_Py = to_py_list(magState.magNames);
-	magState.psuStates_Py = to_py_list(magState.psuStates);
-	magState.setiValues_Py = to_py_list(magState.setiValues);
-	magState.readiValues_Py = to_py_list(magState.readiValues);
-	return magState;
-}
 
 
 
@@ -583,8 +545,7 @@ bool MagnetFactory::writeDBURT(const std::string& filePath, const std::string& f
 
 	return true;
 }
-
-//______________________________________________________________________________
+//--------------------------------------------------------------------------------------------------
 magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const std::string& fileName)
 {
 	std::cout << "readDBURT()" << std::endl;
@@ -607,8 +568,6 @@ magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const st
 		magState.magNames.push_back(it.first.as<std::string>());
 
 
-
-
 		for(auto&& it2 : it.second)
 		{
 
@@ -616,18 +575,21 @@ magnetStateStruct MagnetFactory::readDBURT(const std::string& filePath, const st
 			std::cout << record << " = " << it2.second << std::endl;
 			if (MagnetRecords::SETI == record)
 			{
-				magState.setiValues.push_back( it2.first.as<double>() );
+				std::cout << record << " is " << MagnetRecords::SETI << std::endl;
+				magState.setiValues.push_back( it2.second.as<double>() );
 			}
 			else if (MagnetRecords::READI == record)
 			{
-				magState.readiValues.push_back(it2.first.as<double>());
+				std::cout << record << " is " << MagnetRecords::READI << std::endl;
+				magState.readiValues.push_back(it2.second.as<double>());
 			}
 			else if (MagnetRecords::RPOWER == record)
 			{
-				magState.readiValues.push_back(static_cast<STATE>(it2.first.as<int>()));
+				std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
+				magState.readiValues.push_back(static_cast<STATE>(it2.second.as<int>()));
 			}
 		}
-		++i;
+		i+=1;
 	}
 
 
@@ -802,3 +764,92 @@ bool MagnetFactory::isMessagingOn()
 	return messenger.isMessagingOn();
 }
 
+
+
+//double MagnetFactory::getRICurrent(const std::string& name)
+//{
+//	if (!hasBeenSetup)
+//	{
+//		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
+//	}
+//	else
+//	{
+//		return magnetMap.find(name)->second.getREADI();
+//	}
+//	return std::numeric_limits<double>::min();
+//}
+
+//std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std::string>& names)
+//{
+//	std::map<std::string, double> readis;
+//	for (auto& name : names)
+//	{
+//		double current = magnetMap.find(name)->second.getREADI();
+//		readis[name] = current;
+//	}
+//	return readis;
+//}
+
+
+// This is being moved so that
+//boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
+//{
+//	std::map<std::string, double> currents;
+//	std::vector<std::string> magNamesVector = to_std_vector<std::string>(magNames);
+//	currents = getCurrents(magNamesVector);
+//	boost::python::dict newPyDict = to_py_dict(currents);
+//	return newPyDict;
+//}
+//boost::python::dict MagnetFactory::getRICurrents_Py(boost::python::list names)
+//{
+//	std::map<std::string, double> RICurrents;
+//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+//	RICurrents = getRICurrents(namesVector);
+//	boost::python::dict newPyDict = to_py_dict(RICurrents);
+//	return newPyDict;
+//}
+//boost::python::dict MagnetFactory::getAllMagnetCurrents_Py()
+//{
+//	std::map<std::string, double> allCurrents = getAllMagnetCurrents();
+//	boost::python::dict allCurrentsPyDict = to_py_dict(allCurrents);
+//	return allCurrentsPyDict;
+//}
+//std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
+//{
+//	std::map<std::string, double> magnetsAndCurrentsMap;
+//	for (const auto &mag : magnetMap)
+//	{
+//		double current = mag.second.getCurrent();
+//		magnetsAndCurrentsMap[mag.first] = current;
+//	}
+//	return magnetsAndCurrentsMap;
+//}
+//bool MagnetFactory::turnOn_Py(boost::python::list names)
+//{
+//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+//	return turnOn(namesVector);
+//}
+//bool MagnetFactory::turnOff_Py(boost::python::list names)
+//{
+//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+//	return turnOff(namesVector);
+//
+//}
+
+//bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
+//{
+//	std::map<std::string, double> magnetNamesAndCurrentsToSet;
+//	std::vector<std::string> magnetNames = to_std_vector<std::string>(magnetNamesAndCurrents.keys());
+//	std::vector<double> currentsToSet = to_std_vector<double>(magnetNamesAndCurrents.values());
+//	auto magnetNamesIterator = magnetNames.begin();
+//	auto currentsToSetIterator = currentsToSet.begin();
+//	while (magnetNamesIterator != magnetNames.end() && currentsToSetIterator != currentsToSet.end())
+//	{
+//		std::pair<std::string, double> entryToInsert = std::pair<std::string, double>(magnetNamesIterator->data(), *currentsToSetIterator);
+//		magnetNamesAndCurrentsToSet.emplace(entryToInsert);
+//		magnetNamesIterator++;
+//		currentsToSetIterator++;
+//	}
+//	SETI(magnetNamesAndCurrentsToSet);
+//	return true;
+//}

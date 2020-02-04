@@ -37,6 +37,7 @@ Magnet::Magnet()
 Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
 	Hardware(paramsMap, mode),
 	// Assumes all these find succeed ? 
+	// these keywords MUST MATCH WHAT IS IN THE YAML FILE!!!
 manufacturer(paramsMap.find("manufacturer")->second),
 serialNumber(std::stoi(paramsMap.find("serial_number")->second.data())),
 magType(paramsMap.find("mag_type")->second),
@@ -47,6 +48,7 @@ degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 fullPSUName(paramsMap.find("PSU")->second),
 measurementDataLocation(paramsMap.find("measurement_data_location")->second),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+
 GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
@@ -61,7 +63,14 @@ isDegaussing(false)
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
-	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
+	for (auto value : degaussValuesStrVec) 
+	{ 
+		degaussValues.push_back(std::stof(value)); 
+	}
+	
+	// convert value for YAML key "name_aliases", to vector of strings and set equal to memebr variable aliases
+	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });
+
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 	epicsInterface->ownerName = hardwareName;
 	messenger = LoggingSystem(true, true);

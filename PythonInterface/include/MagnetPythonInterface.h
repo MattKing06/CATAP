@@ -91,18 +91,28 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getSETIs",    &MagnetFactory::getSETIs_Py)
 			.def("getAllSETI", &MagnetFactory::getAllSETI)
 			
+		
+			.def("getREADI", &MagnetFactory::getREADI)
+			.def("getREAD", &MagnetFactory::getREADI_Py)
+			.def("getAllREADI", &MagnetFactory::getAllREADI_Py)
+			
+			.def("getPSUState", &MagnetFactory::getPSUState)
+			.def("getPSUState", &MagnetFactory::getPSUState_Py)
+			.def("getAllPSUState", &MagnetFactory::getAllPSUState)
+
+			.def("getILKState", &MagnetFactory::getILKState)
+			.def("getILKState", &MagnetFactory::getILKState_Py)
+			.def("getAllILKState", &MagnetFactory::getAllILKState_Py)
+
 			.def("readDBURT", &MagnetFactory::readDBURT)
 			.def("writeDBURT", &MagnetFactory::writeDBURT)
-			
-			
+
+
 			//.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents_Py)
-			
+
 			//.def("SETI", &MagnetFactory::SETI)
 			.def("SETI", SETISingle)
-			
-			.def("getRICurrent", &MagnetFactory::getRICurrent)
-			.def("getRICurrents", &MagnetFactory::getRICurrents_Py)
-			
+
 			.def("turnOn", turnOnSingle)
 			.def("turnOn", &MagnetFactory::switchOn_Py)
 			.def("turnOff", turnOffSingle)

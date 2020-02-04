@@ -61,30 +61,42 @@ class MagnetFactory
 		// getSETI
 		double getSETI(const std::string& name)const;
 		std::map<std::string, double> getSETIs(const std::vector<std::string>& names) const;
-		boost::python::dict getSETIs_Py(const boost::python::list& magNames) const;
+		boost::python::dict getSETIs_Py(const boost::python::list& names) const;
 		std::map<std::string, double> getAllSETI() const;
 		boost::python::dict getAllSETI_Py() const;
 		
 		// getREADI
 		double getREADI(const std::string& name) const;
 		std::map<std::string, double> getREADIs(const std::vector<std::string>& names) const;
-		boost::python::dict getREADIs_Py(const boost::python::list& magNames) const;
+		boost::python::dict getREADI_Py(const boost::python::list& names) const;
 		std::map<std::string, double> getAllREADI() const;
 		boost::python::dict getAllREADI_Py() const;
 		
+
+		// getPSUState
+		STATE getPSUState(const std::string& name) const;
+		std::map<std::string, STATE> getPSUStates(const std::vector<std::string>& namess) const;
+		boost::python::dict getPSUState_Py(const boost::python::list& names) const;
+		std::map<std::string, STATE> getAllPSUState() const;
+		boost::python::dict getAllPSUState_Py() const;
+
+		STATE getILKState(const std::string& name) const;
+		std::map<std::string, STATE> getILKStates(const std::vector<std::string>& names) const;
+		boost::python::dict getILKState_Py(const boost::python::list& names) const;
+		std::map<std::string, STATE>  getAllILKState() const;
+		boost::python::dict getAllILKState_Py() const;
+
+
 		//bool setAllMagnetCurrents(const double& value);
 		//boost::python::dict getAllMagnetCurrents_Py();
-
-
-		double getRICurrent(const std::string& name);
-		std::map<std::string, double> getRICurrents(const std::vector<std::string>& names);
-		std::map<std::string, double> getAllMagnetRICurrents();
+		//double getRICurrent(const std::string& name);
+		//std::map<std::string, double> getRICurrents(const std::vector<std::string>& names);
+		//std::map<std::string, double> getAllMagnetRICurrents();
 		
 		void SETI(const std::string& name, const double &value);
 		
 		void SETI(const std::map<std::string, double> &namesAndCurrentsMap);
 		//void SETI_Py(const std::map<std::string, double> &namesAndCurrentsMap);
-		
 		
 		STATE switchOn(const std::string& name);
 		std::map<std::string, STATE> switchOn(const std::vector<std::string>& names);
@@ -96,18 +108,16 @@ class MagnetFactory
 		boost::python::dict switchOFF_Py(const boost::python::list names);
 		//bool switchOFFAllMagnets();
 		
-		STATE getPSUState(const std::string& name) const;
-		std::map<std::string, STATE> getAllPSUState() const;
-		boost::python::dict getAllPSUState_Py() const;
-		
-		int getILKState(const std::string& name) const;
-
-
-		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
-		boost::python::dict getRICurrents_Py(boost::python::list names);
 
 		magnetStateStruct getMagnetState() const;
 
+
+
+
+
+		//bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
+		//boost::python::dict getRICurrents_Py(boost::python::list names);
+		
 
 		/// apply a state struct to the machine
 		//bool applyMagnetStateStruct(const magnetStructs::magnetStateStruct& ms);

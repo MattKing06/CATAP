@@ -63,6 +63,7 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 	case GlobalConstants::zero_int: recastMagnet->psuState.second = STATE::OFF; break;
 	case GlobalConstants::one_int:  recastMagnet->psuState.second = STATE::ON; break;
 	default:
+		messenger.printDebugMessage("!!WARNING!! RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ",pairToUpdate.second);
 		recastMagnet->psuState.second = STATE::ERR;
 	}
 	//psuState2.second = tv->value;
@@ -81,8 +82,13 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
 	//double value = returnValueFromArgsAsDouble(args);
 	//recastMagnet->READI2 = returnTSVFromArgsDouble(args);
-	messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-		+ std::to_string(recastMagnet->READI.second));
+
+	if(recastMagnet ->hardwareName == "CLA-C2V-MAG-VCOR-01")
+	{ 
+		messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+			+ std::to_string(recastMagnet->READI.second));
+	}
+
 }
 
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
