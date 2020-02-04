@@ -82,6 +82,19 @@ void ChargeFactory::retrievemonitorStatus(pvStruct& pvStruct)
 	}
 }
 
+void ChargeFactory::setupChannels()
+{
+	for (auto& charge : chargeMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = charge.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			charge.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
 bool ChargeFactory::setup(const std::string &VERSION)
 {
 	if (hasBeenSetup)
@@ -96,6 +109,9 @@ bool ChargeFactory::setup(const std::string &VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();
+
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 	for (auto &charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
@@ -103,10 +119,9 @@ bool ChargeFactory::setup(const std::string &VERSION)
 		{
 
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
-			retrievemonitorStatus(pv.second);
-			charge.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				retrievemonitorStatus(pv.second);
 				charge.second.epicsInterface->retrieveCHID(pv.second);
 				charge.second.epicsInterface->retrieveCHTYPE(pv.second);
 				charge.second.epicsInterface->retrieveCOUNT(pv.second);

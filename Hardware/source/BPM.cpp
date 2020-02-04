@@ -23,7 +23,7 @@ BPM::BPM()
 	v2cal(std::stod(paramsMap.find("v2cal")->second)),
 	qcal(std::stod(paramsMap.find("qcal")->second)),
 	mn(std::stod(paramsMap.find("mn")->second)),
-	positiOn(std::stod(paramsMap.find("positiOn")->second))
+	positiOn(std::stod(paramsMap.find("position")->second))
 {
 	bufferSize = 10;
 	xpvshots = 0;

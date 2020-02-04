@@ -86,6 +86,19 @@ void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
 	}
 }
 
+void BPMFactory::setupChannels()
+{
+	for (auto& bpm : bpmMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = bpm.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			bpm.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
 bool BPMFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)
@@ -100,16 +113,18 @@ bool BPMFactory::setup(const std::string& VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateBPMMap();
+
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 	for (auto& bpm : bpmMap)
 	{
 		std::map<std::string, pvStruct>& bpmPVStructs = bpm.second.getPVStructs();
 		for (auto& pv : bpmPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
-			retrievemonitorStatus(pv.second);
-			bpm.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				retrievemonitorStatus(pv.second);
 				bpm.second.epicsInterface->retrieveCHTYPE(pv.second);
 				bpm.second.epicsInterface->retrieveCOUNT(pv.second);
 				bpm.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
@@ -131,6 +146,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 			}
 		}
 	}
+
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }

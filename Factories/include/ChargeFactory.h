@@ -37,6 +37,7 @@ class ChargeFactory
 		std::string getChargeDiagnosticName(const std::string& name);
 		void populateChargeMap();
 		void retrievemonitorStatus(pvStruct& pvStruct);
+		void setupChannels();
 		void monitorForNShots(const std::string& name, const size_t& value);
 		void monitorMultipleForNShots(const std::vector< std::string >& name, const size_t& value);
 		bool hasBeenSetup;

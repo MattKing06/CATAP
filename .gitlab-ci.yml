@@ -24,6 +24,6 @@ cmake_build:
   - ./ConfigReaderTest
   - ./LoggingSystemTest
   - ./HardwareTests --log_level=message
-#  - ./FactoryTests --log_level=message
-#  - ./EPICSInterfaceTests --log_level=message
+  - ./FactoryTests --log_level=message
+  - ./EPICSInterfaceTests --log_level=message
 

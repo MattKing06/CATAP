@@ -105,6 +105,19 @@ void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
+void MagnetFactory::setupChannels()
+{
+	for (auto& magnet : magnetMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			magnet.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
 bool MagnetFactory::setup(const std::string& version)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
@@ -130,22 +143,24 @@ bool MagnetFactory::setup(const std::string& version)
 		return hasBeenSetup;
 	}
 
+	setupChannels();
+	EPICSInterface::sendToEPICS();
+	/*
+		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
+	*/
 	for (auto& magnet : magnetMap)
 	{
-		std::cout << "magnet.first = " << magnet.first << std::endl;
+		/*
+			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
+		*/
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
-
-		updateAliasNameMap(magnet.second);
 		for (auto& pv : magPVStructs)
 		{
-
-			// sets the monitor state in the pvstruict to true or false
-			retrieveMonitorStatus(pv.second);
-
-			magnet.second.epicsInterface->retrieveCHID(pv.second);
+			updateAliasNameMap(magnet.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				std::cout << "cs_conn, getting some values " << std::endl;
+				retrieveMonitorStatus(pv.second);
 				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
 				magnet.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
@@ -167,9 +182,10 @@ bool MagnetFactory::setup(const std::string& version)
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
 			}
-			updateAliasNameMap(magnet.second);
+			//updateAliasNameMap(magnet.second);
 		}
 	}
+
 	hasBeenSetup = true;
 	std::cout << "hasBeenSetup = true " << std::endl;
 	return hasBeenSetup;
