@@ -10,6 +10,13 @@
 
 namespace Caching
 {
+	/*
+	Namespace should only be used by LoggingSystem.
+	Created so we can still have const defined functions
+	that update the cache. When the cache is not a member of 
+	LoggingSystem then this will work fine. Otherwise we cannot
+	define functions that use the cache as const.
+	*/
 	extern std::ostringstream cache;
 }
 class LoggingSystem

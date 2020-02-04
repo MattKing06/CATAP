@@ -1,7 +1,7 @@
 /******************************************************************************
 * Class Name: LoggingSystem                                                   *
 * Purpose: To enable debug messages from hardware cOntrollers to be displayed *
-*          On the command line using std::cout                                *
+*          On the command line using fprintf                                  *
 * Date Created: 21/11/2018                                                    *
 * Author: Matt King                                                           *
 *******************************************************************************/
