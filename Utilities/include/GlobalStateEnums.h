@@ -46,6 +46,8 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
                                            (OK)
                                            (GOOD)
                                            (BAD)
+										   (OPEN)
+										   (CLOSED)
 
 
 )
