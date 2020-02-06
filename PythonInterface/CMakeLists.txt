@@ -1,12 +1,14 @@
 message( "Processing Python Interface source files...")
 set( SOURCE_FILES
     source/PythonInterface.cpp 
-    source/MagnetPythonInterface.cpp 
+    source/MagnetPythonInterface.cpp
+    source/ValvePythonInterface.cpp
 )
 
 set( INCLUDE_FILES
     include/PythonInterface.h 
     include/MagnetPythonInterface.h 
+    include/ValvePythonInterface.h
 )
 
 set( TEST_FILES
