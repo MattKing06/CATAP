@@ -47,15 +47,15 @@ class ChargeFactory
 		bool ismonitoringQ(const std::string& name);
 		bool ismonitoring(const std::string& name);
 		std::map<std::string, double> getQs(const std::vector<std::string>& names);
-		std::map<std::string, double> getPositiOns(const std::vector<std::string>& names);
+		std::map<std::string, double> getPositions(const std::vector<std::string>& names);
 		std::map<std::string, double> getAllQ();
-		std::map<std::string, double> getAllPositiOn();
+		std::map<std::string, double> getAllPosition();
 		std::map<std::string, std::vector< double > > getAllQVector();
 		std::map < std::string, std::vector< double > > getQVectors(const std::vector<std::string> & names);
 		std::map < std::string, boost::circular_buffer< double > > getQBuffers(const std::vector<std::string> & names);
 		std::map < std::string, boost::circular_buffer< double > > getAllQBuffer();
 		double getQ(const std::string& name);
-		double getPositiOn(const std::string& name);
+		double getPosition(const std::string& name);
 		std::vector< double > getQVector(const std::string& name);
 		boost::circular_buffer< double > getQBuffer(const std::string& name);
 		void monitorForNShots_Py(boost::python::list name, const size_t& value);
@@ -63,12 +63,12 @@ class ChargeFactory
 		boost::python::list getQVector_Py(const std::string& name);
 		boost::python::list getQBuffer_Py(const std::string& name);
 		boost::python::dict getQVectors_Py(boost::python::list names);
-		boost::python::dict getPositiOns_Py(boost::python::list names);
+		boost::python::dict getPositions_Py(boost::python::list names);
 		boost::python::dict getQBuffers_Py(boost::python::list names);
 		boost::python::dict getAllQBuffer_Py();
 		boost::python::dict getAllQ_Py();
 		boost::python::dict getAllQVector_Py();
-		boost::python::dict getAllPositiOn_Py();
+		boost::python::dict getAllPosition_Py();
 };
 
 

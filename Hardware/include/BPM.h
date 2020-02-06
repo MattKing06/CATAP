@@ -54,8 +54,8 @@ public:
 	double getX() const;
 	double getY() const;
 	double getQ() const;
-	double getPositiOn() const;
-	double getResolutiOn() const;
+	double getPosition() const;
+	double getResolution() const;
 	double getXFromPV() const;
 	double getYFromPV() const;
 	//beamPositiOnmonitorStructs::BPM_STATUS getBPMStatus() const;
@@ -100,10 +100,10 @@ public:
 	bool setXPV(const double& value);
 	bool setYPV(const double& value);
 	bool setData(const std::vector< double >& value);
-	bool setResolutiOn();
+	bool setResolution();
 	bool checkBuffer(boost::circular_buffer< double >& buf);
 	bool setQ(const std::vector< double >& rawData);
-	bool reCalAttenuatiOn(const double& charge);
+	bool reCalAttenuation(const double& charge);
 	void monitorForNShots(const size_t& value);
 	void setBufferSize(const size_t& value);
 	void setVectorSize(const size_t& value);
@@ -115,7 +115,7 @@ public:
 	double y;
 	double yPV;
 	double q;
-	double resolutiOn;
+	double resolution;
 	double pu1;
 	double pu2;
 	double pu3;
@@ -165,7 +165,7 @@ public:
 	double v2cal;
 	double qcal;
 	double mn;
-	double positiOn;
+	double position;
 	long awak;
 	long rdy;
 	double awaktstamp;

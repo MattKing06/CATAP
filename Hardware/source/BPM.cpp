@@ -23,7 +23,7 @@ BPM::BPM()
 	v2cal(std::stod(paramsMap.find("v2cal")->second)),
 	qcal(std::stod(paramsMap.find("qcal")->second)),
 	mn(std::stod(paramsMap.find("mn")->second)),
-	positiOn(std::stod(paramsMap.find("position")->second))
+	position(std::stod(paramsMap.find("position")->second))
 {
 	bufferSize = 10;
 	xpvshots = 0;
@@ -65,7 +65,7 @@ v1cal(copyBPM.v1cal),
 v2cal(copyBPM.v2cal),
 qcal(copyBPM.qcal),
 mn(copyBPM.mn),
-positiOn(copyBPM.positiOn),
+position(copyBPM.position),
 epicsInterface(copyBPM.epicsInterface)
 {
 }
@@ -155,14 +155,14 @@ std::vector< double > BPM::getQVector() const
 	return this->qVector;
 }
 
-double BPM::getResolutiOn() const
+double BPM::getResolution() const
 {
-	return this->resolutiOn;
+	return this->resolution;
 }
 
-double BPM::getPositiOn() const
+double BPM::getPosition() const
 {
-	return this->positiOn;
+	return this->position;
 }
 
 bool BPM::isXPVBufferFull() const
@@ -421,7 +421,7 @@ bool BPM::setData(const std::vector< double >& value)
 	c2Buffer.push_back(c2);
 	p1Buffer.push_back(p1);
 	p2Buffer.push_back(p2);
-	setResolutiOn();
+	setResolution();
 	setQ(value);
 	qBuffer.push_back(q);
 	++datashots;
@@ -462,10 +462,10 @@ bool BPM::setQ(const std::vector< double >& rawData)
 	return true;
 }
 
-bool BPM::setResolutiOn()
+bool BPM::setResolution()
 {
 	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
-	double rmsVals;
+	double rmsVals, resolution;
 	u11 = std::accumulate(pu1Buffer.begin(), pu1Buffer.end(), 0.0) / pu1Buffer.size();
 	u12 = std::accumulate(pu2Buffer.begin(), pu2Buffer.end(), 0.0) / pu2Buffer.size();
 	u13 = std::accumulate(c1Buffer.begin(), c1Buffer.end(), 0.0) / c1Buffer.size();
@@ -482,7 +482,7 @@ bool BPM::setResolutiOn()
 	{
 		rmsVals = ((v11 + v12) - (v21 + v22)) / ((v11 + v12) + (v21 + v22));
 	}
-	resolutiOn = rmsVals * sqrt(2) * (0.001 * mn);
+	resolution = rmsVals * sqrt(2) * (0.001 * mn);
 	return true;
 }
 
@@ -534,7 +534,7 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 //	}
 //}
 
-bool BPM::reCalAttenuatiOn(const double& charge)
+bool BPM::reCalAttenuation(const double& charge)
 {
 	double qqC = charge / qcal;
 
