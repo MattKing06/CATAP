@@ -11,17 +11,11 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
+	valveFactory(ValveFactory(mode)),
 	mode(mode)
 {
 	messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
-	//mode = mode;
-	/*messenger.printDebugMessage("MagnetFactory being cOntructed");
-	magnetFactory = MagnetFactory(mode);
-	messenger.printDebugMessage("MagnetFactory cOntructed");
-	*/
-	//bpmFactory = BPMFactory(mode);
-	//chargeFactory = ChargeFactory(mode);
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
@@ -45,6 +39,13 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		if (!chargeFactory.hasBeenSetup)
 		{
 			setup = chargeFactory.setup(VERSION);
+		}
+	}
+	else if (hardwareType == "Valve")
+	{
+		if (!valveFactory.hasBeenSetup)
+		{
+			setup = valveFactory.setup(VERSION);
 		}
 	}
 	return setup;
@@ -71,6 +72,26 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	{
 		std::cout << "magnetFactory already setup " << std::endl;
 		return magnetFactory;
+	}
+}
+ValveFactory& HardwareFactory::getValveFactory()
+{
+	if (!valveFactory.hasBeenSetup)
+	{
+		bool setup = valveFactory.setup("nominal");
+		if (setup)
+		{
+			return valveFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ValveFactory");
+		}
+	}
+	else
+	{
+		std::cout << "valveFactory already setup " << std::endl;
+		return valveFactory;
 	}
 }
 BPMFactory& HardwareFactory::getBPMFactory()
@@ -107,6 +128,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 	return chargeFactory;
 
 }
+
 
 void HardwareFactory::debugMessagesOn()
 {
