@@ -21,7 +21,7 @@
 #include "Hardware.h"
 #include "HardwareFactory.h"
 #include "MagnetPythonInterface.h"
-
+#include <ValvePythonInterface.h>
 //#include "Magnet.h"
 //#include "MagnetFactory.h"
 #include "BPM.h"
@@ -50,6 +50,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("GOOD", STATE::GOOD)
 		.value("BAD", STATE::BAD)
 		.value("OK", STATE::OK)
+		.value("OPEN", STATE::OPEN)
+		.value("CLOSED", STATE::CLOSED)
 		;
 	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
 		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
@@ -79,20 +81,10 @@ BOOST_PYTHON_MODULE(CATAP)
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct();
 
+	//expose valve object and valveFactory object
+	BOOST_PYTHON_VALVE_INCLUDE::exposeValveObject();
+	BOOST_PYTHON_VALVE_INCLUDE::exposeValveFactoryObject();
 
-	//// Magnet Exposure
-	//boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
-	//	.add_property("current", &Magnet::getCurrent, &Magnet::setEPICSCurrent)
-	//	.add_property("psu_state", &Magnet::getPSUState, &Magnet::setEPICSPSUState)
-	//	.add_property("ri_current", &Magnet::RICurrent)
-	//	.add_property("name", &Magnet::getHardwareName)
-	//	.add_property("manufacturer", &Magnet::getManufacturer)
-	//	.add_property("serial_number", &Magnet::getSerialNumber)
-	//	.add_property("magnet_type", &Magnet::getMagnetType)
-	//	.add_property("epicsInterface", &Magnet::epicsInterface)
-	//	.def("getCurrent", &Magnet::getCurrent)
-	//	.def("setCurrent", &Magnet::setEPICSCurrent)
-	//	.def("getRICurrent", &Magnet::getRICurrent);
 	// BPM Exposure
 	boost::python::class_<BPM, boost::python::bases<Hardware>, boost::noncopyable>("BPM", boost::python::no_init)
 		.add_property("name", &BPM::getBPMName)
@@ -178,31 +170,6 @@ BOOST_PYTHON_MODULE(CATAP)
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
 
-	////Magnet Factory Exposure
-	//STATE(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::turnOn;
-	//STATE(MagnetFactory:: * turnOffSingle)(const std::string&) = &MagnetFactory::turnOff;
-	//boost::python::class_<MagnetFactory>("MagnetFactory", boost::python::no_init)
-	//	.def(boost::python::init<STATE>())
-	//	.def("setup", &MagnetFactory::setup)
-	//	.add_property("magnetMap", &MagnetFactory::magnetMap)
-	//	.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
-	//	//.def("getMagnets", &MagnetFactory::getMagnets)
-	//	//.def("getAllMagnets", &MagnetFactory::getAllMagnets)
-	//	.def("getCurrent", &MagnetFactory::getCurrent)
-	//	.def("getCurrents", &MagnetFactory::getCurrents_Py)
-	//	.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents_Py)
-	//	.def("setCurrent", &MagnetFactory::setCurrent)
-	//	.def("setCurrents", &MagnetFactory::setCurrents_Py)
-	//	.def("getRICurrent", &MagnetFactory::getRICurrent)
-	//	.def("getRICurrents", &MagnetFactory::getRICurrents_Py)
-	//	.def("turnOn", turnOnSingle)
-	//	.def("turnOn", &MagnetFactory::turnOn_Py)
-	//	.def("turnOff", turnOffSingle)
-	//	.def("turnOff", &MagnetFactory::turnOff_Py)
-	//	.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
-	//	.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
-	//	.def("messagesOn", &MagnetFactory::messagesOn)
-	//	.def("messagesOff", &MagnetFactory::messagesOff);
 		//BPM Factory Exposure
 	boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 		.def(boost::python::init<STATE>())
@@ -306,6 +273,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("chargeFactory", &HardwareFactory::chargeFactory)
 		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.add_property("valveFactory", &HardwareFactory::valveFactory)
+		.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
 		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
 		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
