@@ -87,7 +87,8 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
-		if (pvStruct.fullPVName.find("MAG") != std::string::npos)
+		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
+			pvStruct.fullPVName.find("VALV") != std::string::npos)
 		{
 			pv = pvStruct.fullPVName;
 		}

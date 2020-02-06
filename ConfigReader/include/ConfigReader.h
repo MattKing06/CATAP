@@ -5,6 +5,7 @@
 #include "yaml-cpp/yaml.h"
 #include <LoggingSystem.h>
 #include <Magnet.h>
+#include <Valve.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -108,14 +109,13 @@ public:
 					throw YAML::BadFile();
 				}
 				std::cout << "Template is valid" << std::endl;
-				auto pvAndRecordPair = extractControlsInformationIntoPair(config);
-				std::cout << "Got Controls info" << std::endl;
+
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
 				std::cout << "Got hardwareParameterMap" << std::endl;
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
-				if (typeid(HardwareType) == typeid(Magnet))
+				if (typeid(HardwareType) == typeid(Magnet) || typeid(HardwareType) == typeid(Valve))
 				{
-					std::cout << "HardwareType is Magnet;" << std::endl;
+					std::cout << "HardwareType is Magnet or Valve;" << std::endl;
 					auto recordsMap = extractRecordsIntoMap(config);
 					parameters.insert(recordsMap.begin(), recordsMap.end());
 					std::cout << "inserted recordsMap" << std::endl;
@@ -123,9 +123,10 @@ public:
 				/*IF NOT A MAGNET, USE OLD FUNCTIONALITY*/
 				else
 				{
+					auto pvAndRecordPair = extractControlsInformationIntoPair(config);
+					std::cout << "Got Controls info" << std::endl;
 					parameters.insert(pvAndRecordPair);
 				}
-
 				for (auto prop : hardwareParameterMap)
 				{
 					parameters.insert(prop);

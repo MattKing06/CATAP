@@ -16,7 +16,6 @@ Hardware::Hardware()
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
 messenger(LoggingSystem(true, true)),
-
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
@@ -39,7 +38,7 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 	
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-	if (hardwareType.compare("Magnet") != 0)
+	if (hardwareType.compare("Magnet") != 0 && hardwareType.compare("Valve") != 0)
 	{
 		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
