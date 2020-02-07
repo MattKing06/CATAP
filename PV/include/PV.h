@@ -24,6 +24,7 @@ typedef struct pvStruct
 	evid EVID; //!< Event ID, returned when monitor subscription to PV is setup.
 	epicsTimeStamp time; //!< Last timestamp returned from EPICS
 	bool monitor; //!< Flag to indicate when a PV is able to be monitored
+
 }pvStruct;
 extern bool operator==(const pvStruct& lhs, const pvStruct& rhs);
 extern bool operator !=(const pvStruct& lhs, const pvStruct& rhs);

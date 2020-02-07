@@ -61,7 +61,7 @@ std::vector< double > Charge::getQVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING X PV -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }
@@ -109,14 +109,14 @@ bool Charge::setQ(const double& value)
 	return true;
 }
 
-bool Charge::isMonitoringQ() const
+bool Charge::ismonitoringQ() const
 {
 	return monitoringq;
 }
 
-bool Charge::isMonitoring() const
+bool Charge::ismonitoring() const
 {
-	return isMonitoringQ();
+	return ismonitoringQ();
 }
 
 bool Charge::checkBuffer(boost::circular_buffer< double >& buf)
@@ -165,7 +165,7 @@ void Charge::debugMessagesOff()
 void Charge::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	messenger.printDebugMessage(hardwareName, " - DEBUG On");
 	epicsInterface->debugMessagesOn();
 }
 
@@ -179,6 +179,6 @@ void Charge::messagesOff()
 void Charge::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	messenger.printMessage(hardwareName, " - MESSAGES On");
 	epicsInterface->messagesOn();
 }

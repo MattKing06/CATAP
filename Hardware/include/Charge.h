@@ -10,7 +10,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
-// forward declaration of EPICSBPMInterface class
+// forward declaratiOn of EPICSBPMInterface class
 // tells compiler that we will use this class.
 class EPICSChargeInterface;
 typedef boost::shared_ptr<EPICSChargeInterface> EPICSChargeInterface_sptr;
@@ -38,13 +38,13 @@ class Charge : public Hardware
 		void messagesOff();
 
 		bool monitoringData = false;
-		bool isMonitoring() const;
-		bool isMonitoringQ() const;
+		bool ismonitoring() const;
+		bool ismonitoringQ() const;
 		bool isQBufferFull() const;
 		double getQ() const;
 		double getPosition() const;
-		//beamPositionMonitorStructs::BPM_STATUS getBPMStatus() const;
-		//beamPositionMonitorStructs::bpmDataObject& getBPMDataObject() const;
+		//beamPositiOnmonitorStructs::BPM_STATUS getBPMStatus() const;
+		//beamPositiOnmonitorStructs::bpmDataObject& getBPMDataObject() const;
 		size_t getBufferSize() const;
 		std::vector< double > getQVector() const;
 		std::vector< double > getTimeStamps() const;
@@ -52,7 +52,7 @@ class Charge : public Hardware
 		boost::circular_buffer< double > getQBuffer() const;
 		boost::circular_buffer< double > getTimeStampsBuffer() const;
 		boost::circular_buffer< std::string > getStrTimeStampsBuffer() const;
-		//boost::circular_buffer< beamPositionMonitorStructs::BPM_STATUS > getStatusBuffer() const;
+		//boost::circular_buffer< beamPositiOnmonitorStructs::BPM_STATUS > getStatusBuffer() const;
 		bool setQ(const double& value);
 		bool checkBuffer(boost::circular_buffer< double >& buf);
 		void monitorForNShots(const size_t& value);

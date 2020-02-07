@@ -36,7 +36,7 @@ std::string getCurrentDateAndTimeString(){
 #endif //UNIX
 
 	// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-	// for more information about date/time format
+	// for more informatiOn about date/time format
 	strftime(buf, sizeof(buf), "<%e-%m-%Y %H:%M:%S> %t", &tstruct);
 	return buf;
 }

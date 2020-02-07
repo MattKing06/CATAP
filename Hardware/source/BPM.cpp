@@ -123,7 +123,7 @@ std::vector< double > BPM::getXPVVector() const
 {
 	//if (monitoringxpv)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING X PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING X PV -- VECTOR NOT FULL");
 	//}
 	return this->xPVVector;
 }
@@ -132,7 +132,7 @@ std::vector< double > BPM::getYPVVector() const
 {
 	//if (monitoringypv)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING Y PV -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING Y PV -- VECTOR NOT FULL");
 	//}
 	return this->yPVVector;
 }
@@ -141,7 +141,7 @@ std::vector< std::vector< double > > BPM::getDataVector() const
 {
 	//if (monitoringdata)
 	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING DATA -- VECTOR NOT FULL");
 	//}
 	return this->dataVector;
 }
@@ -150,7 +150,7 @@ std::vector< double > BPM::getQVector() const
 {
 	//if (monitoringdata)
 	//{
-	//	LoggingSystem::printMessage("WARNING: STILL MONITORING DATA -- VECTOR NOT FULL");
+	//	LoggingSystem::printMessage("WARNING: STILL monitorING DATA -- VECTOR NOT FULL");
 	//}
 	return this->qVector;
 }
@@ -305,22 +305,22 @@ bool BPM::setYPV(const double& value)
 	return true;
 }
 
-bool BPM::isMonitoringXPV() const
+bool BPM::ismonitoringXPV() const
 {
 	return monitoringxpv;
 }
 
-bool BPM::isMonitoringYPV() const
+bool BPM::ismonitoringYPV() const
 {
 	return monitoringypv;
 }
 
-bool BPM::isMonitoringData() const
+bool BPM::ismonitoringData() const
 {
 	return monitoringdata;
 }
 
-bool BPM::isMonitoring() const
+bool BPM::ismonitoring() const
 {
 	if (monitoringxpv || monitoringypv || monitoringdata)
 	{
@@ -465,7 +465,7 @@ bool BPM::setQ(const std::vector< double >& rawData)
 bool BPM::setResolution()
 {
 	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
-	double rmsVals;
+	double rmsVals, resolution;
 	u11 = std::accumulate(pu1Buffer.begin(), pu1Buffer.end(), 0.0) / pu1Buffer.size();
 	u12 = std::accumulate(pu2Buffer.begin(), pu2Buffer.end(), 0.0) / pu2Buffer.size();
 	u13 = std::accumulate(c1Buffer.begin(), c1Buffer.end(), 0.0) / c1Buffer.size();
@@ -499,37 +499,37 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 //{
 //	if (awaktstamp - rdytstamp > 1.0)
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (isnan(xBuffer.back()) || isnan(yBuffer.back()))
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::BAD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
 //		statusBuffer.push_back(bpmdo->status);
 //	}
 //	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::NONLINEAR;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::NOnLINEAR;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::GOOD;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::GOOD;
 //		statusBuffer.push_back(status);
 //	}
 //	else
 //	{
-//		status = beamPositionMonitorStructs::BPM_STATUS::UNKNOWN;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::UNKNOWN;
 //		statusBuffer.push_back(status);
 //	}
 //}
@@ -656,7 +656,7 @@ void BPM::debugMessagesOff()
 void BPM::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	messenger.printDebugMessage(hardwareName, " - DEBUG On");
 	epicsInterface->debugMessagesOn();
 }
 
@@ -670,6 +670,6 @@ void BPM::messagesOff()
 void BPM::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	messenger.printMessage(hardwareName, " - MESSAGES On");
 	epicsInterface->messagesOn();
 }

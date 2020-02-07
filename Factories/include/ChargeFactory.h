@@ -3,7 +3,7 @@
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
-#pragma once
+#pragma Once
 #include "Charge.h"
 #include <vector>
 #include <map>
@@ -19,9 +19,9 @@ class ChargeFactory
 		ChargeFactory(STATE mode);
 		ChargeFactory(const ChargeFactory& copyChargeFactory);
 		~ChargeFactory();
-		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
-		//BPMFactory(std::string version);
-		bool setup(const std::string &version);
+		/*NEED constRUCTOR THAT TAKES VERSION??*/
+		//BPMFactory(std::string VERSION);
+		bool setup(const std::string &VERSION);
 		LoggingSystem messenger;
 		void debugMessagesOn();
 		void debugMessagesOff();
@@ -36,15 +36,16 @@ class ChargeFactory
 		std::map<std::string, Charge> chargeMap;
 		std::string getChargeDiagnosticName(const std::string& name);
 		void populateChargeMap();
-		void retrieveMonitorStatus(pvStruct& pvStruct);
+		void retrievemonitorStatus(pvStruct& pvStruct);
+		void setupChannels();
 		void monitorForNShots(const std::string& name, const size_t& value);
 		void monitorMultipleForNShots(const std::vector< std::string >& name, const size_t& value);
 		bool hasBeenSetup;
 		
 		STATE mode;
 		
-		bool isMonitoringQ(const std::string& name);
-		bool isMonitoring(const std::string& name);
+		bool ismonitoringQ(const std::string& name);
+		bool ismonitoring(const std::string& name);
 		std::map<std::string, double> getQs(const std::vector<std::string>& names);
 		std::map<std::string, double> getPositions(const std::vector<std::string>& names);
 		std::map<std::string, double> getAllQ();

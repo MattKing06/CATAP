@@ -1,6 +1,4 @@
-#define BOOST_TEST_MODULE MagnetTest
-
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/parameterized_test.hpp>
 #include <boost/bind.hpp>
 #include <string>
@@ -21,7 +19,7 @@ BOOST_AUTO_TEST_CASE(creating_empty_magnet_test)
 BOOST_AUTO_TEST_CASE(setting_empty_magnet_psu_state_test)
 {
 	Magnet mag = Magnet();
-	mag.setPSUState(STATE::OFF);
+	mag.switchOFF();
 	BOOST_CHECK_EQUAL(mag.getPSUState(), STATE::OFF);
 }
 

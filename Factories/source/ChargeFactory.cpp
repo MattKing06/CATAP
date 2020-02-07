@@ -29,7 +29,7 @@ reader(ConfigReader("Charge", mode))
 	messenger = LoggingSystem(false, false);
 	//hasBeenSetup = false;
 //	messenger = LoggingSystem(false, false);
-	messenger.printDebugMessage("Charge Factory Constructed");
+	messenger.printDebugMessage("Charge Factory constructed");
 	//mode = mode;
 	//reader = ConfigReader("Charge", mode);
 }
@@ -65,7 +65,7 @@ void ChargeFactory::populateChargeMap()
 {
 	if (!reader.hasMoreFilesToParse())
 	{
-		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
+		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
@@ -73,7 +73,7 @@ void ChargeFactory::populateChargeMap()
 	}
 }
 
-void ChargeFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+void ChargeFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
 	if (pvStruct.pvRecord == "Q"
 		)
@@ -82,7 +82,20 @@ void ChargeFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 	}
 }
 
-bool ChargeFactory::setup(const std::string &version)
+void ChargeFactory::setupChannels()
+{
+	for (auto& charge : chargeMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = charge.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			charge.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
+bool ChargeFactory::setup(const std::string &VERSION)
 {
 	if (hasBeenSetup)
 	{
@@ -93,9 +106,12 @@ bool ChargeFactory::setup(const std::string &version)
 		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
 	}
 	//// epics magnet interface has been initialized in charge constructor
-	//// but we have a lot of PV information to retrieve from EPICS first
+	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();
+
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 	for (auto &charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
@@ -103,14 +119,13 @@ bool ChargeFactory::setup(const std::string &version)
 		{
 
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
-			retrieveMonitorStatus(pv.second);
-			charge.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				retrievemonitorStatus(pv.second);
 				charge.second.epicsInterface->retrieveCHID(pv.second);
 				charge.second.epicsInterface->retrieveCHTYPE(pv.second);
 				charge.second.epicsInterface->retrieveCOUNT(pv.second);
-				charge.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				charge.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
 				messenger.debugMessagesOn();
@@ -157,7 +172,7 @@ std::map<std::string, Charge> ChargeFactory::getAllChargeDiagnostics()
 	}
 	else
 	{
-		messenger.printDebugMessage("CHARGE DIAGNOSTICS HAVE ALREADY BEEN CONSTRUCTED.");
+		messenger.printDebugMessage("CHARGE DIAGNOSTICS HAVE ALREADY BEEN constRUCTED.");
 	}
 	return chargeMap;
 }
@@ -257,7 +272,7 @@ boost::circular_buffer< double > ChargeFactory::getQBuffer(const std::string& na
 }
 
 
-bool ChargeFactory::isMonitoring(const std::string& name)
+bool ChargeFactory::ismonitoring(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
@@ -265,7 +280,7 @@ bool ChargeFactory::isMonitoring(const std::string& name)
 	}
 	else
 	{
-		return chargeMap.find(name)->second.isMonitoring();
+		return chargeMap.find(name)->second.ismonitoring();
 	}
 	return false;
 }
@@ -283,13 +298,13 @@ std::map<std::string, double> ChargeFactory::getQs(const std::vector<std::string
 
 std::map<std::string, double> ChargeFactory::getPositions(const std::vector<std::string>& names)
 {
-	std::map<std::string, double> positionmap;
+	std::map<std::string, double> positiOnmap;
 	for (auto name : names)
 	{
-		double position = chargeMap.find(name)->second.getPosition();
-		positionmap[name] = position;
+		double positiOn = chargeMap.find(name)->second.getPosition();
+		positiOnmap[name] = positiOn;
 	}
-	return positionmap;
+	return positiOnmap;
 }
 
 std::map<std::string, std::vector< double > > ChargeFactory::getQVectors(const std::vector<std::string>& names)
@@ -327,13 +342,13 @@ std::map<std::string, double> ChargeFactory::getAllQ()
 
 std::map<std::string, double> ChargeFactory::getAllPosition()
 {
-	std::map<std::string, double> chargeAndPositionMap;
+	std::map<std::string, double> chargeAndPositiOnMap;
 	for (auto charge : chargeMap)
 	{
-		std::pair<std::string, double> nameAndPositionPair = std::make_pair(charge.first, charge.second.getPosition());
-		chargeAndPositionMap.insert(nameAndPositionPair);
+		std::pair<std::string, double> nameAndPositiOnPair = std::make_pair(charge.first, charge.second.getPosition());
+		chargeAndPositiOnMap.insert(nameAndPositiOnPair);
 	}
-	return chargeAndPositionMap;
+	return chargeAndPositiOnMap;
 }
 
 std::map<std::string, std::vector< double > > ChargeFactory::getAllQVector()
@@ -392,10 +407,10 @@ boost::python::dict ChargeFactory::getQs_Py(boost::python::list chargeNames)
 
 boost::python::dict ChargeFactory::getPositions_Py(boost::python::list chargeNames)
 {
-	std::map<std::string, double> positionvals;
+	std::map<std::string, double> positiOnvals;
 	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(chargeNames);
-	positionvals = getPositions(chargeNamesVector);
-	boost::python::dict newPyDict = to_py_dict(positionvals);
+	positiOnvals = getPositions(chargeNamesVector);
+	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
 
@@ -440,15 +455,15 @@ boost::python::dict ChargeFactory::getAllQBuffer_Py()
 
 boost::python::dict ChargeFactory::getAllPosition_Py()
 {
-	std::map<std::string, double> positionvals = getAllPosition();
-	boost::python::dict newPyDict = to_py_dict(positionvals);
+	std::map<std::string, double> positiOnvals = getAllPosition();
+	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
 
 void ChargeFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("CHARGE-FAC - DEBUG ON");
+	messenger.printDebugMessage("CHARGE-FAC - DEBUG On");
 	reader.debugMessagesOn();
 	for (auto& charge : chargeMap)
 	{
@@ -468,7 +483,7 @@ void ChargeFactory::debugMessagesOff()
 void ChargeFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("CHARGE-FAC - MESSAGES ON");
+	messenger.printMessage("CHARGE-FAC - MESSAGES On");
 	reader.messagesOn();
 	for (auto& charge : chargeMap)
 	{

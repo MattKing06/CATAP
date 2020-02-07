@@ -3,7 +3,7 @@
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
-#pragma once
+#pragma Once
 #include "Magnet.h"
 #include <vector>
 #include <map>
@@ -12,6 +12,24 @@
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
+
+/// one-stop shop for magnet state
+struct magnetStateStruct
+{   // proviude a default constructor
+	magnetStateStruct():
+		numMags(GlobalConstants::one_sizet) 
+		{};
+	size_t numMags;
+	std::vector<std::string> magNames;
+	std::vector<STATE> psuStates;
+	std::vector<double> setiValues, readiValues;
+
+	boost::python::list magNames_Py;
+	boost::python::list psuStates_Py;
+	boost::python::list readiValues_Py;
+	boost::python::list setiValues_Py;
+};
+
 class MagnetFactory
 {
 	public:
@@ -19,18 +37,19 @@ class MagnetFactory
 		MagnetFactory(STATE mode);
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
 		~MagnetFactory();
-		/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
+		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		
-		//MagnetFactory(std::string version);
-		bool setup(const std::string &version);
+		//MagnetFactory(std::string VERSION);
+		bool setup(const std::string &VERSION);
+		void setupChannels();
 		
 		// private
 		ConfigReader reader;
 
 		// Get Magnets Objects referecnes
-		// In the current design YOU CANNOT get a container of magnet object s (or ANY hardware object) 
+		// In the current design YOU CANNOT get a cOntainer of magnet object s (or ANY hardware object) 
 		Magnet& getMagnet(const std::string& fullMagnetName);
-		// !!! FUNCTIONS LIKE THESE CAN'T EXIST !!!!
+		// !!! FUNCTIOnS LIKE THESE CAN'T EXIST !!!!
 		//std::map<std::string, Magnet&> getMagnets(const std::vector<std::string>& magnetNames);
 		//boost::python::dict getAllMagnets_Py();
 
@@ -41,7 +60,7 @@ class MagnetFactory
 		// methods for setting properties of magnet via PV name (or alias)
 
 		// getSETI
-		double getSETI(const std::string& name) const;
+		double getSETI(const std::string& name)const;
 		std::map<std::string, double> getSETIs(const std::vector<std::string>& names) const;
 		boost::python::dict getSETIs_Py(const boost::python::list& magNames) const;
 		std::map<std::string, double> getAllSETI() const;
@@ -68,15 +87,15 @@ class MagnetFactory
 		//void SETI_Py(const std::map<std::string, double> &namesAndCurrentsMap);
 		
 		
-		STATE turnOn(const std::string& name);
-		std::map<std::string, STATE> turnOn(const std::vector<std::string>& names);
-		boost::python::dict turnOn_Py(const boost::python::list names);
-		bool turnOnAllMagnets();
+		STATE switchOn(const std::string& name);
+		std::map<std::string, STATE> switchOn(const std::vector<std::string>& names);
+		boost::python::dict switchOn_Py(const boost::python::list names);
+		//bool switchOnAllMagnets();
 		
-		STATE turnOff(const std::string& name);
-		std::map<std::string, STATE> turnOff(const std::vector<std::string>& names);
-		boost::python::dict turnOff_Py(const boost::python::list names);
-		bool turnOffAllMagnets();
+		STATE switchOFF(const std::string& name);
+		std::map<std::string, STATE> switchOFF(const std::vector<std::string>& names);
+		boost::python::dict switchOFF_Py(const boost::python::list names);
+		//bool switchOFFAllMagnets();
 		
 		STATE getPSUState(const std::string& name) const;
 		std::map<std::string, STATE> getAllPSUState() const;
@@ -87,6 +106,26 @@ class MagnetFactory
 
 		bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
 		boost::python::dict getRICurrents_Py(boost::python::list names);
+
+		magnetStateStruct getMagnetState() const;
+
+
+		/// apply a state struct to the machine
+		//bool applyMagnetStateStruct(const magnetStructs::magnetStateStruct& ms);
+		/// applyt a DBURT to the machine
+		/*bool applyDBURT(const std::string& fileName);
+		bool applyDBURTCorOnly(const std::string& fileName);
+		bool applyDBURTQuadOnly(const std::string& fileName);
+
+		/// Write a DBURT
+		bool writeDBURT(const magnetStructs::magnetStateStruct& ms, const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
+		bool writeDBURT(const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
+*/
+		magnetStateStruct readDBURT(const std::string& filePath, const std::string& fileName);
+		bool writeDBURT(const std::string& filePath, const std::string& fileName);
+
+
+
 
 		std::string getFullName(const std::string& name_to_check) const;
 		// private surely! 
@@ -114,7 +153,7 @@ private:
 		void updateAliasNameMap(const Magnet& magnet);
 		std::map<std::string, std::string> alias_name_map;
 
-		// dummy_magnet is used to return values when users ask for a non-existing magnet's properties 
+		// dummy_magnet is used to return values when users ask for a nOn-existing magnet's properties 
 		Magnet dummy_magnet;
 
 };

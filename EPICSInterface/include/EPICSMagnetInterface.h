@@ -8,7 +8,7 @@
 #endif 
 #include <iostream>
 #include <GlobalStateEnums.h>
-// forward declaration of Magnet class
+// forward declaratiOn of Magnet class
 // tells compiler that we will use this class.
 class Magnet;
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
@@ -18,13 +18,20 @@ class EPICSMagnetInterface : public EPICSInterface
 public:
 	EPICSMagnetInterface();
 	~EPICSMagnetInterface();
-	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
-	static void updateCurrent(const struct event_handler_args args);
-	void setNewCurrent(const double &value, const pvStruct &pv) const;
+
+	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
+
+	bool setNewCurrent(const double &value, const pvStruct& pv) const;
+	bool setNewPSUState(const STATE value, const pvStruct& pv) const;
+
+
+	// EPICS calls these functiOns to update a variable
 	static void updatePSUState(const struct event_handler_args args);
-	void setNewPSUState(const STATE& value, const pvStruct &pv) const;
+	static void updateGETSETI(const struct event_handler_args args);
 	static void updateREADI(const struct event_handler_args args);
 	static void updateRILK(const struct event_handler_args args);
+
+
 	static LoggingSystem messenger;
 };
 

@@ -1,10 +1,10 @@
 /*
 		THIS CLASS IS FOR EXPOSURE TO PYTHON
-		ALL IN ONE PLACE, SO WE DON'T HAVE TO
+		ALL IN OnE PLACE, SO WE DOn'T HAVE TO
 		LINK EVERY CLASS WITH BOOST.PYTHON.
 		HOPEFULLY, IT SHOULD ALL HAPPEN HERE.
 
-		// This should include all the different HardwarePythonInterface.cpp files
+		// This should include all the different HardwarePYTHONInterface.cpp files
 */
 
 #ifdef PYTHON_INTERFACE_EXPORTS
@@ -39,7 +39,7 @@ BOOST_PYTHON_MODULE(CATAP)
 {
 	//Global State Enum exposure
 	boost::python::enum_<STATE>("STATE")
-		.value("ON", STATE::ON)
+		.value("On", STATE::ON)
 		.value("OFF", STATE::OFF)
 		.value("ERROR", STATE::ERR)
 		.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
@@ -47,6 +47,9 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("OFFLINE", STATE::OFFLINE)
 		.value("PHYSICAL", STATE::PHYSICAL)
 		.value("VIRTUAL", STATE::VIRTUAL)
+		.value("GOOD", STATE::GOOD)
+		.value("BAD", STATE::BAD)
+		.value("OK", STATE::OK)
 		;
 	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
 		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
@@ -74,6 +77,7 @@ BOOST_PYTHON_MODULE(CATAP)
 	// expose magnet object and magnetfactoryobejct
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct();
 
 
 	//// Magnet Exposure
@@ -132,10 +136,10 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getDataVector", &BPM::getDataVector)
 		.def("getQVector", &BPM::getQVector)
 		.def("monitorForNShots", &BPM::monitorForNShots)
-		.def("isMonitoring", &BPM::isMonitoring)
-		.def("isMonitoringXPV", &BPM::isMonitoringXPV)
-		.def("isMonitoringYPV", &BPM::isMonitoringYPV)
-		.def("isMonitoringData", &BPM::isMonitoringData)
+		.def("ismonitoring", &BPM::ismonitoring)
+		.def("ismonitoringXPV", &BPM::ismonitoringXPV)
+		.def("ismonitoringYPV", &BPM::ismonitoringYPV)
+		.def("ismonitoringData", &BPM::ismonitoringData)
 		.def("reCalAttenuation", &BPM::reCalAttenuation)
 		.def("isXPVBufferFull", &BPM::isXPVBufferFull)
 		.def("isYPVBufferFull", &BPM::isYPVBufferFull)
@@ -165,7 +169,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getQBuffer", &Charge::getQBuffer)
 		.def("getQVector", &Charge::getQVector)
 		.def("monitorForNShots", &Charge::monitorForNShots)
-		.def("isMonitoring", &Charge::isMonitoring);
+		.def("ismonitoring", &Charge::ismonitoring);
 		// Parameter Map Exposure
 		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
@@ -220,10 +224,10 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("setSD1", &BPMFactory::setSD1)
 		.def("setSD2", &BPMFactory::setSD2)
 		.def("monitorForNShots", &BPMFactory::monitorForNShots)
-		.def("isMonitoringXPV", &BPMFactory::isMonitoringXPV)
-		.def("isMonitoringYPV", &BPMFactory::isMonitoringYPV)
-		.def("isMonitoringData", &BPMFactory::isMonitoringData)
-		.def("isMonitoring", &BPMFactory::isMonitoring)
+		.def("ismonitoringXPV", &BPMFactory::ismonitoringXPV)
+		.def("ismonitoringYPV", &BPMFactory::ismonitoringYPV)
+		.def("ismonitoringData", &BPMFactory::ismonitoringData)
+		.def("ismonitoring", &BPMFactory::ismonitoring)
 		.def("getPosition", &BPMFactory::getPosition)
 		.def("getResolution", &BPMFactory::getResolution)
 		.def("getX", &BPMFactory::getX)
@@ -241,7 +245,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getYPVBuffer", &BPMFactory::getYPVBuffer_Py)
 		.def("getQBuffer", &BPMFactory::getQBuffer_Py)
 		.def("getDataBuffer", &BPMFactory::getDataBuffer_Py)
-		//.def("getXYPositionVector", &BPMFactory::getXYPositionVector_Py)
+		//.def("getXYPositiOnVector", &BPMFactory::getXYPositiOnVector_Py)
 		.def("getResolutions", &BPMFactory::getResolutions_Py)
 		.def("getPositions", &BPMFactory::getPositions_Py)
 		.def("getXPVVectors", &BPMFactory::getXPVVectors_Py)
@@ -280,7 +284,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
 		.def("monitorForNShots", &ChargeFactory::monitorForNShots)
 		.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
-		.def("isMonitoring", &ChargeFactory::isMonitoring)
+		.def("ismonitoring", &ChargeFactory::ismonitoring)
 		.def("getPosition", &ChargeFactory::getPosition)
 		.def("getQ", &ChargeFactory::getQ)
 		.def("getQVector", &ChargeFactory::getQVector_Py)

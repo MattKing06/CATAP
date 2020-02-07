@@ -19,7 +19,7 @@ public:
 
 	// for creating "proper" objects that are defeined in a yaml file 
 	Hardware(const std::map<std::string, std::string>& paramMap, STATE mode);
-	// copy-contructor (forced by c++ standard due to passing in "const Hardware&" )
+	// copy-cOntructor (forced by c++ standard due to passing in "const Hardware&" )
 	Hardware(const Hardware& copyHardware);
 
 	
@@ -28,7 +28,16 @@ public:
 	std::string getHardwareName() const;
 	STATE getMode() const;
 
+	// TODO: do we need this? can't an child of these class just access pvStructs,
+	// and no other class should be able ot get this map??? 
 	std::map<std::string, pvStruct>& getPVStructs();
+	// TODO  for some reaons i think these should be keyed by an enum giving their type 
+	//std::map<int, pvStruct>& getPVStructs2();
+
+
+	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/
+	//virtual void setPVStructs(std::map<std::string, std::string> recordAndPVStructs);
+
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	bool operator==(Hardware rhs);
 	virtual void debugMessagesOn();
@@ -46,6 +55,10 @@ public:
 	
 
 	std::map<std::string, pvStruct> pvStructs;
+	
+	// this will be an enum in the dervied class ...
+	//std::map<int, pvStruct> pvStructs2;
+
 	std::map<std::string, std::string> specificHardwareParameters;
 	LoggingSystem messenger;
 

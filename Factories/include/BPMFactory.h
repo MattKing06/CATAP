@@ -20,9 +20,9 @@ public:
 	BPMFactory(STATE mode);
 	BPMFactory(const BPMFactory& copyBPMFactory);
 	~BPMFactory();
-	/*NEED CONSTRUCTOR THAT TAKES VERSION??*/
-	//BPMFactory(std::string version);
-	bool setup(const std::string& version);
+	/*NEED constRUCTOR THAT TAKES VERSION??*/
+	//BPMFactory(std::string VERSION);
+	bool setup(const std::string& VERSION);
     LoggingSystem messenger;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -37,15 +37,16 @@ public:
 	std::map<std::string, BPM> bpmMap;
 	std::string getBPMName(const std::string& name);
 	void populateBPMMap();
-	void retrieveMonitorStatus(pvStruct& pvStruct);
+	void retrievemonitorStatus(pvStruct& pvStruct);
+	void setupChannels();
 	void monitorForNShots(const std::string& name, const size_t& value);
 	bool hasBeenSetup;
 	//bool isVirtual;
 	STATE mode;
-	bool isMonitoringXPV(const std::string& name);
-	bool isMonitoringYPV(const std::string& name);
-	bool isMonitoringData(const std::string& name);
-	bool isMonitoring(const std::string& name);
+	bool ismonitoringXPV(const std::string& name);
+	bool ismonitoringYPV(const std::string& name);
+	bool ismonitoringData(const std::string& name);
+	bool ismonitoring(const std::string& name);
 	// methods for setting properties of bpm via PV name
 	std::map<std::string, double> getXs(const std::vector<std::string>& names);
 	std::map<std::string, double> getXsFromPV(const std::vector<std::string>& names);

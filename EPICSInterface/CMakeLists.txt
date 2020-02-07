@@ -14,6 +14,7 @@ set( INCLUDE_FILES
 )
 
 set( TEST_FILES
+	EPICSInterfaceTestHelper.cpp
     EPICSInterfaceTest.cpp
     EPICSMagnetInterfaceTest.cpp
     EPICSBPMInterfaceTest.cpp
@@ -32,6 +33,6 @@ target_include_directories(EPICSInterface PRIVATE ${Boost_INCLUDE_DIR})
 #Utilities is currently a header-only library so no need to link it, just include it.
 target_include_directories(EPICSInterface PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include)
 target_include_directories(EPICSInterface PUBLIC include)
-TARGET_LINK_LIBRARIES(EPICSInterface PRIVATE ${EPICS_COM_LIB} ${EPICS_CA_LIB} PV LoggingSystem Hardware)
+TARGET_LINK_LIBRARIES(EPICSInterface PRIVATE ${EPICS_COM_LIB} ${EPICS_CA_LIB} PV LoggingSystem Hardware Utilities)
 set_property(TARGET EPICSInterface PROPERTY FOLDER "EPICSInterface")
 add_subdirectory(test)

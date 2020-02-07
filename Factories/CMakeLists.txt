@@ -14,11 +14,13 @@ set( INCLUDE_FILES
 )
 
 set( TEST_FILES
+	FactoryTestHelper.cpp
     HardwareFactoryTest.cpp
     MagnetFactoryTest.cpp
     BPMFactoryTest.cpp
     ChargeFactoryTest.cpp
 )
+
 cmake_policy(SET CMP0022 NEW)
 find_package(Boost 1.63 REQUIRED COMPONENTS filesystem python3)
 add_library(Factories STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
@@ -32,6 +34,14 @@ target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/i
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 target_include_directories(Factories PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
 target_include_directories(Factories PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include)
+target_include_directories(Factories PUBLIC ${YAML_PARSER_DIR}/include)
+if(WIN32)
+  TARGET_LINK_LIBRARIES(Factories PUBLIC debug ${YAML_PARSER_LIB_DEBUG_DIR}/libyaml-cppmdd.lib)
+  TARGET_LINK_LIBRARIES(Factories PUBLIC optimized ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib)
+endif(WIN32)
+if(UNIX)
+  TARGET_LINK_LIBRARIES(Factories PUBLIC general ${YAML_PARSER_LIB_DIR}/libyaml-cpp.so)
+endif(UNIX)
 TARGET_LINK_LIBRARIES(Factories PUBLIC
 					 ${Boost_LIBRARIES}
 					 ${PYTHON_LIBRARY}
