@@ -15,13 +15,16 @@ EPICSValveInterface::~EPICSValveInterface()
 
 void EPICSValveInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) const
 {
-	if (pvStruct.pvRecord == ValveRecords::Sta)
+	if (pvStruct.monitor)
 	{
-		pvStruct.updateFunction = updateValveState;
-	}
-	else
-	{
-		messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
+		if (pvStruct.pvRecord == ValveRecords::Sta)
+		{
+			pvStruct.updateFunction = updateValveState;
+		}
+		else
+		{
+			messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
+		}
 	}
 }
 
@@ -32,6 +35,7 @@ void EPICSValveInterface::updateValveState(const struct event_handler_args args)
 	recastValve->valveState.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
+		std::cout << "UPDATE VALUE: " << pairToUpdate.second << std::endl;
 	case GlobalConstants::zero_int: recastValve->valveState.second = STATE::CLOSED; break;
 	case GlobalConstants::one_int: recastValve->valveState.second = STATE::OPEN; break;
 	default:
@@ -44,12 +48,8 @@ void EPICSValveInterface::updateValveState(const struct event_handler_args args)
 
 bool EPICSValveInterface::setNewValveState(const STATE& state, const pvStruct& pv)
 {
-	int epicsValue = GlobalConstants::zero_int;
-	switch (state) 
-	{
-	case STATE::OPEN : epicsValue = GlobalConstants::one_int; break;
-	case STATE::CLOSED : epicsValue = GlobalConstants::zero_int; break;
-	}
-	
-	return putValue2(pv, epicsValue);
+	putValue<unsigned short>(pv, GlobalConstants::EPICS_ACTIVATE);
+	GlobalConstants::PAUSE_1000;
+	putValue<unsigned short>(pv, GlobalConstants::EPICS_SEND);
+	return true;
 }
