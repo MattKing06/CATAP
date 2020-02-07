@@ -16,4 +16,4 @@ BOOST_AUTO_TEST_CASE(setting_up_valve_factory_and_get_states)
 
 
 
-BOOST_AUTO_TEST_SUITE_END(ValveFactoryTests)
+BOOST_AUTO_TEST_SUITE_END()
