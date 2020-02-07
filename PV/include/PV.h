@@ -19,7 +19,7 @@ typedef struct pvStruct
 	unsigned long COUNT; //!< number of elements contained in the PV record
 	unsigned long MASK; //!< EPICS Mask relates to the kind of PV Value, Alarm, Log, Property
 	chtype CHTYPE; //!< Expected type to set/return from EPICS e.g. DBR_DOUBLE, DBR_TIME_DOUBLE etc.
-	chtype MonitorCHTYPE; //!< Expected type to return from EPICS for monitoring (we force DBR_TIME_XXXX)
+	chtype monitorCHTYPE; //!< Expected type to return from EPICS for monitoring (we force DBR_TIME_XXXX)
 	static void(*updateFunction)(const struct event_handler_args args); //!< Function to call when value for EPICS PV has changed
 	evid EVID; //!< Event ID, returned when monitor subscription to PV is setup.
 	epicsTimeStamp time; //!< Last timestamp returned from EPICS
