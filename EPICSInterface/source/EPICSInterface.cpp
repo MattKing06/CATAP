@@ -87,10 +87,14 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
-		if (pvStruct.fullPVName.find("MAG") != std::string::npos)
+		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
+			pvStruct.fullPVName.find("VALV") != std::string::npos ||
+			pvStruct.fullPVName.find("BPM") != std::string::npos)
 		{
 			pv = pvStruct.fullPVName;
 		}
+
+
 
 		std::cout << "ca_create_channel to  = " << pv << std::endl;
 
@@ -209,6 +213,15 @@ void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& arg
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = (int)tv->value;
 }
+
+void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, long>& pairToUpdate)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
 void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
 {
 	std::pair<epicsTimeStamp, short> r;

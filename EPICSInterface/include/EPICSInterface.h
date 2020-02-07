@@ -90,6 +90,7 @@ public:
 	
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
 	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
+	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
 	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);
 	// sometimes you have to return a pair<timestamp,int> and then choose a STAT based On the int
 	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);

@@ -4,14 +4,12 @@
 #ifndef HARDWARE_H_
 #include "Hardware.h"
 #endif //HARDWARE_H_
-#ifndef EPICS_BPM_INTERFACE_H_
 #include "EPICSBPMInterface.h"
-#endif //EPICS_BPM_INTERFACE_H_
+#include "BPMPVRecords.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
-// forward declaratiOn of EPICSBPMInterface class
-// tells compiler that we will use this class.
+
 class EPICSBPMInterface;
 typedef boost::shared_ptr<EPICSBPMInterface> EPICSBPMInterface_sptr;
 class BPM : public Hardware
@@ -29,6 +27,7 @@ public:
 	std::string getBPMType() const;
 	std::map<std::string, std::string> bpmParametersAndValuesMap;
 	LoggingSystem messenger;
+	void setPVStructs();
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -110,12 +109,12 @@ public:
 	void clearBuffers();
 	std::string getBPMStatusStr() const;
 	STATE getBPMState() const;
-	double x;
-	double xPV;
-	double y;
-	double yPV;
-	double q;
-	double resolution;
+	std::pair<epicsTimeStamp, double> x;
+	std::pair<epicsTimeStamp, double> xPV;
+	std::pair<epicsTimeStamp, double> y;
+	std::pair<epicsTimeStamp, double> yPV;
+	std::pair<epicsTimeStamp, double> q;
+	std::pair<epicsTimeStamp, double> resolution;
 	double pu1;
 	double pu2;
 	double pu3;
@@ -128,7 +127,7 @@ public:
 	unsigned int ypvshots;
 	unsigned int datashots;
 	unsigned int qshots;
-	std::vector< double > data;
+	std::pair<epicsTimeStamp, std::vector< double > > data;
 	size_t bufferSize;
 	size_t vectorSize;
 	boost::circular_buffer< double > xBuffer;
@@ -151,14 +150,14 @@ public:
 	std::vector< double > yPVVector;
 	std::vector< double > qVector;
 	std::vector< std::vector< double > > dataVector;
-	long sa1;
-	long sa2;
-	long sd1;
-	long sd2;
-	long ra1;
-	long ra2;
-	long rd1;
-	long rd2;
+	std::pair< epicsTimeStamp, long > sa1;
+	std::pair< epicsTimeStamp, long > sa2;
+	std::pair< epicsTimeStamp, long > sd1;
+	std::pair< epicsTimeStamp, long > sd2;
+	std::pair< epicsTimeStamp, long > ra1;
+	std::pair< epicsTimeStamp, long > ra2;
+	std::pair< epicsTimeStamp, long > rd1;
+	std::pair< epicsTimeStamp, long > rd2;
 	long att1cal;
 	long att2cal;
 	double v1cal;
@@ -166,8 +165,8 @@ public:
 	double qcal;
 	double mn;
 	double position;
-	long awak;
-	long rdy;
+	std::pair< epicsTimeStamp, long > awak;
+	std::pair< epicsTimeStamp, long > rdy;
 	double awaktstamp;
 	double rdytstamp;
 	bool monitoringxpv;
@@ -175,6 +174,7 @@ public:
 	bool monitoringdata;
 	STATE bpmState;
 	std::string name;
+	friend class EPICSBPMInterface;
 protected:
 	//what else does a bpm need?
 	std::vector<std::string> aliases;

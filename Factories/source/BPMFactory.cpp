@@ -3,13 +3,17 @@
 #include <map>
 #include <iostream>
 #include <utility>
+#include "GlobalFunctions.h"
+#include "GlobalConstants.h"
 #include <PythonTypeConversions.h>
 #ifndef __CINT__
 #include <cadef.h>
 #endif
+#include "yaml-cpp/emitter.h"
 
 BPMFactory::BPMFactory() : BPMFactory(STATE::OFFLINE)
 {
+	std::cout << "BPMFactory DEFAULT constRUCTOR called " << std::endl;
 }
 BPMFactory::BPMFactory(STATE mode):
 	mode(mode),
@@ -29,6 +33,7 @@ BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
 	messenger(copyBPMFactory.messenger),
 	reader(copyBPMFactory.reader)
 {
+	messenger.printDebugMessage("BPMFactory Copy cOntructor");
 	bpmMap.insert(copyBPMFactory.bpmMap.begin(), copyBPMFactory.bpmMap.end());
 }
 
@@ -56,33 +61,41 @@ BPMFactory::~BPMFactory()
 
 void BPMFactory::populateBPMMap()
 {
+	messenger.printDebugMessage("BPMFactory is populating the bpm map");
 	if (!reader.hasMoreFilesToParse())
 	{
 		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
+		messenger.printDebugMessage("BPM Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(bpmMap);
 	}
+	messenger.printDebugMessage("BPMFactory has finished populating the bpm map");
 }
 
 void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == "X" ||
-		pvStruct.pvRecord == "Y" ||
-		pvStruct.pvRecord == "SA1" ||
-		pvStruct.pvRecord == "SA2" ||
-		pvStruct.pvRecord == "SD1" ||
-		pvStruct.pvRecord == "SD2" ||
-		pvStruct.pvRecord == "RA1" ||
-		pvStruct.pvRecord == "RA2" ||
-		pvStruct.pvRecord == "RD1" ||
-		pvStruct.pvRecord == "RD2" ||
-		pvStruct.pvRecord == "DATA:B2V.VALA" ||
-		pvStruct.pvRecord == "AWAK" ||
-		pvStruct.pvRecord == "RDY")
+	if (pvStruct.pvRecord == BPMRecords::X || 
+		pvStruct.pvRecord == BPMRecords::Y || 
+		pvStruct.pvRecord == BPMRecords::SA1 ||
+		pvStruct.pvRecord == BPMRecords::SA2 ||
+		pvStruct.pvRecord == BPMRecords::SD1 ||
+		pvStruct.pvRecord == BPMRecords::SD2 ||
+		pvStruct.pvRecord == BPMRecords::RA1 ||
+		pvStruct.pvRecord == BPMRecords::RA2 ||
+		pvStruct.pvRecord == BPMRecords::RD1 ||
+		pvStruct.pvRecord == BPMRecords::RD2 ||
+		pvStruct.pvRecord == BPMRecords::DATA ||
+		pvStruct.pvRecord == BPMRecords::AWAK ||
+		pvStruct.pvRecord == BPMRecords::RDY
+		)
 	{
 		pvStruct.monitor = true;
+	}
+	else
+	{
+		pvStruct.monitor = false;
 	}
 }
 
@@ -121,6 +134,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 		std::map<std::string, pvStruct>& bpmPVStructs = bpm.second.getPVStructs();
 		for (auto& pv : bpmPVStructs)
 		{
+
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -136,6 +150,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 				if (pv.second.monitor)
 				{
 					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
+					EPICSInterface::sendToEPICS();
 				}
 			}
 			else
