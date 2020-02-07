@@ -30,6 +30,9 @@ namespace GlobalConstants
 	const size_t zero_sizet = 0;
 	const size_t one_sizet = 1;
 
+	const unsigned short EPICS_ACTIVATE = 1;
+	const unsigned short EPICS_SEND = 0;
+	const unsigned short EPICS_RESET = 1;
 
 	const std::chrono::milliseconds STANDARD_PAUSE(2000);
 	const std::chrono::milliseconds PAUSE_1000(1000);
