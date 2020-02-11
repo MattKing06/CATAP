@@ -19,9 +19,9 @@ cmake:
   - echo 'CMake Finished'
   - ls
   cache:
-    key: cmake-cache
+    key: cmake
     paths:
-    - build/
+      - build/*
 
 make:
   stage: make  
@@ -30,9 +30,9 @@ make:
   - make
   - echo 'Make Finished'
   cache:
-     key: make-cache
+     key: make
      paths:
-     - build/
+       - build/*
 
 tests:
   stage: tests
@@ -46,12 +46,12 @@ tests:
   - ./FactoryTests
   - ./EPICSInterfaceTests
   cache:
-    key: make-cache
+    key: make
 
 doxygen: 
   stage: doxygen
   cache:
-    key: make-cache
+    key: make
   script: 
   - cd ../
   - doxygen Doxyfile.CATAPDocs
