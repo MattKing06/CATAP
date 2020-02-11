@@ -14,11 +14,11 @@
 #ifdef min
 #undef min
 #endif
-/*! A namespace for defining constants used throughout CATAP */
+
 namespace GlobalConstants 
 {
-	const double double_min = std::numeric_limits<double>::min(); //!< Minimum possible value for double-type
-	const double double_max = std::numeric_limits<double>::max(); //!< Maximum possible value for double-type
+	const double double_min = std::numeric_limits<double>::min();
+	const double double_max = std::numeric_limits<double>::max();
 
 	const double zero_double = 0.0;
 	const double one_double = 1.0;

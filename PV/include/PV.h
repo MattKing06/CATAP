@@ -7,23 +7,28 @@
 #include <epicsTime.h>
 #endif
 //#define PV_NAMESPACE_ACTIVE
-/*!< pvStruct contains the necessary information needed by EPICS to communicate
-	with a PV. This communcation involves monitoring, getting, and setting values
-	for PVs */
+
 typedef struct pvStruct
 {
 	pvStruct() : EVID(nullptr){};
-	chid CHID; //!< Channel ID, assigned by EPICS for communcation
-	std::string fullPVName; //!< The name of the hardware component e.g. CLA-C2V-MAG-HCOR-01
-	std::string pvRecord; //!< The PV record on the hardware component e.g. SETI, GETSETI, etc.
-	unsigned long COUNT; //!< number of elements contained in the PV record
-	unsigned long MASK; //!< EPICS Mask relates to the kind of PV Value, Alarm, Log, Property
-	chtype CHTYPE; //!< Expected type to set/return from EPICS e.g. DBR_DOUBLE, DBR_TIME_DOUBLE etc.
-	chtype monitorCHTYPE; //!< Expected type to return from EPICS for monitoring (we force DBR_TIME_XXXX)
-	static void(*updateFunction)(const struct event_handler_args args); //!< Function to call when value for EPICS PV has changed
-	evid EVID; //!< Event ID, returned when monitor subscription to PV is setup.
-	epicsTimeStamp time; //!< Last timestamp returned from EPICS
-	bool monitor; //!< Flag to indicate when a PV is able to be monitored
+	chid CHID;
+	std::string fullPVName;
+	std::string pvRecord;
+	// DJS adding thsi in, so we can hardcode the FULL OPV name into the yaml file
+	// this enables us to handle weird and non-standrd record names
+	// a fullPVRecord would be  'CLA-C2V-MAG-HCOR-01:GETSETI'
+	std::string fullPVRecordName;
+	unsigned long COUNT;
+	unsigned long MASK;
+	chtype CHTYPE;
+	chtype monitorCHTYPE;
+	static void(*updateFunction)(const struct event_handler_args args);
+	evid EVID;
+	epicsTimeStamp time;
+	bool monitor;
+
+	// pv_enum, pv_enum_str
+	// map of all pv_enum_str
 
 }pvStruct;
 extern bool operator==(const pvStruct& lhs, const pvStruct& rhs);
