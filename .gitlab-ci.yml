@@ -17,12 +17,20 @@ cmake:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
+  cache:
+    key: cmake-cache
+    paths:
+    - build/
 make:
   stage: make  
   script:
   - make clean
   - make
   - echo 'Make Finished'
+  cache:
+     key: make-cache
+     paths:
+     - build/
 tests:
   stage: tests
   script:  
@@ -34,8 +42,12 @@ tests:
   - ./HardwareTests
   - ./FactoryTests
   - ./EPICSInterfaceTests
+  cache:
+    key: make-cache
 doxygen: 
   stage: doxygen
+  cache:
+    key: make-cache
   script: 
   - cd ../
   - doxygen Doxyfile.CATAPDocs
