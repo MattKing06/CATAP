@@ -12,12 +12,12 @@ before_script:
 
 cmake:
   stage: cmake
-  cache: 
+  cache:
     key: ${CI_COMMIT_SHA}
     paths:
       - build/*
   script:
-  - if exist build then rmdir -r -f build fi
+  - rmdir -r -f build
   - mkdir build
   - cmake ../. build
   - echo 'CMake Finished'
@@ -25,7 +25,7 @@ cmake:
 
 make:
   stage: make
-  cache: 
+  cache:
     key: ${CI_COMMIT_SHA}
     paths:
       - build/*
@@ -37,12 +37,12 @@ make:
 
 tests:
   stage: tests
-  cache: 
+  cache:
     key: ${CI_COMMIT_SHA}
     paths:
       - build/*
   script:
-  - cd build  
+  - cd build
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
@@ -52,9 +52,9 @@ tests:
   - ./FactoryTests
   - ./EPICSInterfaceTests
 
-doxygen: 
+doxygen:
   stage: doxygen
-  cache: 
+  cache:
     key: ${CI_COMMIT_SHA}
     paths:
       - build/*
