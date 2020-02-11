@@ -60,7 +60,7 @@ doxygen:
     paths:
       - build/*
   script:
-  - cd ../.
+  - cd build
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
 
