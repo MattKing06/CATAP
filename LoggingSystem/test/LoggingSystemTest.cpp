@@ -64,6 +64,24 @@ BOOST_AUTO_TEST_CASE(dump_to_file_test)
 
 }
 
+struct constTestHelper
+{
+	constTestHelper(std::string message) : message(message) {}
+	std::string message;
+	void testFunction() const
+	{
+		LoggingSystem messenger = LoggingSystem(true, true);
+		messenger.printDebugMessage(message);
+		messenger.printMessage(message);
+	}
+};
+
+BOOST_AUTO_TEST_CASE(logging_system_print_from_const_function)
+{
+	constTestHelper printer = constTestHelper("testing const function");
+	BOOST_CHECK_NO_THROW(printer.testFunction());
+}
+
 //BOOST_AUTO_TEST_CASE(logging_system_with_no_message_and_no_debug_print_message_test)
 //{
 //	LoggingSystem test_logging_system = LoggingSystem(false, false);
