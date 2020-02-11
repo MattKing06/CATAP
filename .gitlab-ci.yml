@@ -32,6 +32,7 @@ make:
     paths:
       - cache/build/*
   script:
+  - ls -a
   - cd cache/build
   - ls
   - make clean
