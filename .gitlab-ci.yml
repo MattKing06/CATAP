@@ -37,6 +37,8 @@ make:
 
 tests:
   stage: tests
+  cache:
+    key: ${CI_BUILD_REF_NAME}
   script:
   - cd build  
   - cd testBin
@@ -50,6 +52,8 @@ tests:
 
 doxygen: 
   stage: doxygen
+  cache:
+    key: ${CI_BUILD_REF_NAME}
   script: 
   - cd ../
   - doxygen Doxyfile.CATAPDocs
