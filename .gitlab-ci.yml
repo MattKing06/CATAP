@@ -1,13 +1,15 @@
 stages:
 - cmake
-
+- make
+- tests
+- doxygen
 before_script:
   - which gcc
   - which g++
   - which python3
   - echo $PATH
 
-cmake_build:
+cmake:
   stage: cmake
   script:
   - mkdir build
@@ -15,9 +17,15 @@ cmake_build:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
+make:
+  stage: make  
+  script:
   - make clean
   - make
   - echo 'Make Finished'
+tests:
+  stage: tests
+  script:  
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
@@ -26,6 +34,12 @@ cmake_build:
   - ./HardwareTests
   - ./FactoryTests
   - ./EPICSInterfaceTests
+doxygen: 
+  stage: doxygen
+  script: 
   - cd ../
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
+  only:
+  - merge_requests
+
