@@ -12,30 +12,32 @@ before_script:
 
 cmake:
   stage: cmake
+  cache:
+    key: cmake
+    paths:
+      - build/*
   script:
   - mkdir build
   - cd build
   - cmake ../.
   - echo 'CMake Finished'
   - ls
-  cache:
-    key: cmake
-    paths:
-      - build/*
 
 make:
-  stage: make  
+  stage: make
+  cache:
+     key: make
+     paths:
+       - build/*  
   script:
   - make clean
   - make
   - echo 'Make Finished'
-  cache:
-     key: make
-     paths:
-       - build/*
 
 tests:
   stage: tests
+  cache:
+    key: make
   script:  
   - cd testBin
   - echo 'Running Tests..'
@@ -45,8 +47,6 @@ tests:
   - ./HardwareTests
   - ./FactoryTests
   - ./EPICSInterfaceTests
-  cache:
-    key: make
 
 doxygen: 
   stage: doxygen
