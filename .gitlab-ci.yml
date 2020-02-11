@@ -39,6 +39,8 @@ tests:
   stage: tests
   cache:
     key: "$CI_BUILD_REF_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - build/*
   script:
   - cd build  
   - cd testBin
@@ -54,6 +56,8 @@ doxygen:
   stage: doxygen
   cache:
     key: "$CI_BUILD_REF_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - build/*
   script: 
   - cd ../
   - doxygen Doxyfile.CATAPDocs
