@@ -9,6 +9,7 @@ before_script:
   - which g++
   - which python3
   - echo $PATH
+  - ls
 
 cmake:
   stage: cmake
