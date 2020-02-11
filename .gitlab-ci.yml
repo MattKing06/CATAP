@@ -12,10 +12,7 @@ before_script:
 
 cmake:
   stage: cmake
-  cache:
-    key: ${CI_BUILD_REF_NAME}-${CI_COMMIT_REF_SLUG}
-    paths:
-      - build/*
+  cache: {}
   script:
   - mkdir build
   - cd build
@@ -25,10 +22,7 @@ cmake:
 
 make:
   stage: make
-  cache:
-     key: ${CI_BUILD_REF_NAME}-${CI_COMMIT_REF_SLUG}
-     paths:
-       - build/*  
+  cache:{}
   script:
   - cd build/
   - make clean
@@ -37,10 +31,7 @@ make:
 
 tests:
   stage: tests
-  cache:
-    key: ${CI_BUILD_REF_NAME}-${CI_COMMIT_REF_SLUG}
-    paths:
-      - build/*
+  cache: {}
   script:
   - cd build  
   - cd testBin
@@ -54,11 +45,7 @@ tests:
 
 doxygen: 
   stage: doxygen
-  cache:
-    key: ${CI_BUILD_REF_NAME}-${CI_COMMIT_REF_SLUG}
-    paths:
-      - build/*
-  script: 
+  cache:{}
   - cd ../
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
