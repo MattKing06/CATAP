@@ -17,7 +17,6 @@ cmake:
     paths:
       - build/*
   script:
-  - mkdir build
   - cd build
   - cmake ../.
   - echo 'CMake Finished'
@@ -30,7 +29,7 @@ make:
     paths:
       - build/*
   script:
-  - cd build/
+  - cd build
   - make clean
   - make
   - echo 'Make Finished'
