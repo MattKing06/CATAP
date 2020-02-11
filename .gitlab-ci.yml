@@ -25,7 +25,7 @@ cmake:
 make:
   stage: make
   cache: 
-    key: cmake
+    key: make
     paths:
       - build/*
   script:
@@ -37,9 +37,7 @@ make:
 tests:
   stage: tests
   cache: 
-    key: "cmake-$CI_COMMIT_REF_SLUG"
-    paths:
-      - build/*
+    key: make
   script:
   - cd build  
   - cd testBin
@@ -54,9 +52,7 @@ tests:
 doxygen: 
   stage: doxygen
   cache: 
-    key: "cmake-$CI_COMMIT_REF_SLUG"
-    paths:
-      - build/*
+    key: make
   script:
   - cd ../
   - doxygen Doxyfile.CATAPDocs
