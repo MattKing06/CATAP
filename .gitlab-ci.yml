@@ -17,7 +17,8 @@ cmake:
     paths:
       - build/*
   script:
-  - if {exist build} then rd /s /q build else mkdir build fi
+  - if {exist build} then rmdir -r -f build fi
+  - mkdir build
   - cmake ../. build
   - echo 'CMake Finished'
   - ls
