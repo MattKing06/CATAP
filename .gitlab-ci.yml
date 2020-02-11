@@ -3,6 +3,7 @@ stages:
 - make
 - tests
 - doxygen
+
 before_script:
   - which gcc
   - which g++
@@ -21,6 +22,7 @@ cmake:
     key: cmake-cache
     paths:
     - build/
+
 make:
   stage: make  
   script:
@@ -31,6 +33,7 @@ make:
      key: make-cache
      paths:
      - build/
+
 tests:
   stage: tests
   script:  
@@ -44,6 +47,7 @@ tests:
   - ./EPICSInterfaceTests
   cache:
     key: make-cache
+
 doxygen: 
   stage: doxygen
   cache:
