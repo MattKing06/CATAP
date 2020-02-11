@@ -17,8 +17,7 @@ cmake:
     paths:
       - build/*
   script:
-  - cd build
-  - cmake ../.
+  - cmake ../. build
   - echo 'CMake Finished'
   - ls
 
