@@ -62,7 +62,7 @@ doxygen:
   script:
   - cd build
   - cmake ../ .
-  - make
+  - make clean && make
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
   only:
