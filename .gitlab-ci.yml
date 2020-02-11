@@ -17,7 +17,7 @@ cmake:
     paths:
       - build/*
   script:
-  - rmdir -r -f build
+  - rmdir build
   - mkdir build
   - cmake ../. build
   - echo 'CMake Finished'
