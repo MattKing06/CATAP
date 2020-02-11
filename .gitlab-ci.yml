@@ -4,6 +4,9 @@ stages:
 - tests
 - doxygen
 
+variables:
+  cache_dir: "$CI_PROJECT_DIR/cache"
+
 before_script:
   - which gcc
   - which g++
@@ -15,7 +18,7 @@ cmake:
   cache: 
     key: cmake
     paths:
-      - build/*
+      - cache/build/*
   script:
   - cd build
   - cmake ../.
@@ -27,7 +30,7 @@ make:
   cache: 
     key: make
     paths:
-      - build/*
+      - cache/build/*
   script:
   - cd ..
   - ls
