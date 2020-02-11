@@ -1,7 +1,7 @@
 /******************************************************************************
 * Class Name: LoggingSystem                                                   *
 * Purpose: To enable debug messages from hardware cOntrollers to be displayed *
-*          On the command line using std::cout                                *
+*          On the command line using fprintf                                  *
 * Date Created: 21/11/2018                                                    *
 * Author: Matt King                                                           *
 *******************************************************************************/
@@ -14,8 +14,7 @@
 #ifndef TIME_DATE_BUFFER_SIZE
 #define TIME_DATE_BUFFER_SIZE 80
 #endif // TIME_DATE_BUFFER_SIZE
-
-std::ostringstream LoggingSystem::cache;
+std::ostringstream Caching::cache;
 
 LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     debugOn = debugState;
@@ -31,7 +30,7 @@ void LoggingSystem::dumpToFile(std::string filename)
 {
 	FILE* outFile;
 	outFile = fopen(filename.c_str(), "w");
-	fprintf(outFile, "%s \n", LoggingSystem::cache.str().c_str());
+	fprintf(outFile, "%s \n", Caching::cache.str().c_str());
 }
 
 // Get methods for debugging and message state
