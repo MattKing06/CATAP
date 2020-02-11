@@ -60,12 +60,8 @@ doxygen:
     paths:
       - build/*
   script:
-  - cd build
-  - cmake ../ .
-  - make clean && make
+  - cd ../.
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
-  only:
-   - merge_requests
 
 
