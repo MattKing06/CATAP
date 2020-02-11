@@ -4,9 +4,6 @@ stages:
 - tests
 - doxygen
 
-variables:
-  cache_dir: "$CI_PROJECT_DIR/cache"
-
 before_script:
   - which gcc
   - which g++
@@ -16,10 +13,11 @@ before_script:
 cmake:
   stage: cmake
   cache: 
-    key: cmake
+    key: ${CI_COMMIT_SHA}
     paths:
-      - cache/build/*
+      - build/*
   script:
+  - mkdir build
   - cd build
   - cmake ../.
   - echo 'CMake Finished'
@@ -28,13 +26,11 @@ cmake:
 make:
   stage: make
   cache: 
-    key: make
+    key: ${CI_COMMIT_SHA}
     paths:
-      - cache/build/*
+      - build/*
   script:
-  - ls -a
-  - cd cache/build
-  - ls
+  - cd build/
   - make clean
   - make
   - echo 'Make Finished'
@@ -42,9 +38,11 @@ make:
 tests:
   stage: tests
   cache: 
-    key: make
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - build/*
   script:
-  - cd cache/build  
+  - cd build  
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
@@ -57,9 +55,11 @@ tests:
 doxygen: 
   stage: doxygen
   cache: 
-    key: make
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - build/*
   script:
-  - cd cache/build
+  - cd ../
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
   only:
