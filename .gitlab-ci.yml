@@ -29,6 +29,7 @@ make:
     paths:
       - build/*
   script:
+  - cd ..
   - ls
   - make clean
   - make
