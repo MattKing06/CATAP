@@ -1,5 +1,8 @@
 stages:
 - cmake
+- make
+- tests
+- doxygen
 
 before_script:
   - which gcc
@@ -8,17 +11,39 @@ before_script:
   - echo $PATH
   - ls
 
-cmake_build:
+cmake:
   stage: cmake
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - build/*
   script:
   - mkdir build
   - cd build
   - cmake ../.
   - echo 'CMake Finished'
   - ls
+
+make:
+  stage: make
+  cache:
+     key: ${CI_COMMIT_SHORT_SHA}
+     paths:
+       - build/*  
+  script:
+  - cd build/
   - make clean
   - make
   - echo 'Make Finished'
+
+tests:
+  stage: tests
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths: 
+      - build/*
+  script:
+  - cd build  
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
