@@ -13,7 +13,7 @@ before_script:
 cmake:
   stage: cmake
   cache: 
-    key: ${CI_COMMIT_SHA}
+    key: ${CI_JOB_ID}
     paths:
       - build/*
   script:
@@ -26,7 +26,7 @@ cmake:
 make:
   stage: make
   cache: 
-    key: ${CI_COMMIT_SHA}
+    key: ${CI_JOB_ID}
     paths:
       - build/*
   script:
@@ -38,7 +38,7 @@ make:
 tests:
   stage: tests
   cache: 
-    key: ${CI_COMMIT_SHA}
+    key: ${CI_JOB_ID}
     paths:
       - build/*
   script:
@@ -55,7 +55,7 @@ tests:
 doxygen: 
   stage: doxygen
   cache: 
-    key: ${CI_COMMIT_SHA}
+    key: ${CI_JOB_ID}
     paths:
       - build/*
   script:
