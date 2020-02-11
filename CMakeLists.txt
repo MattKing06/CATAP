@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(hardware_toy)
+project(CATAP)
 cmake_policy(SET CMP0074 NEW)
 set(CXX_STANDARD 17)
 set(PY_VERSION 3)
@@ -52,6 +52,15 @@ if(Boost_FOUND)
       add_definitiOns(-DBOOST_ALL_DYN_LINK)
     endif(UNIX)
 endif(Boost_FOUND)
+
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+	message("Found Doxygen")
+	set(DOXYGEN_RECURSIVE YES)
+	set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Documentation)
+	doxygen_add_docs(CATAPDocs
+					 ${CMAKE_CURRENT_SOURCE_DIR})
+endif(DOXYGEN_FOUND)
 
 add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)
