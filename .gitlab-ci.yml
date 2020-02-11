@@ -13,7 +13,7 @@ before_script:
 cmake:
   stage: cmake
   cache: 
-    key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    key: cmake
     paths:
       - build/*
   script:
@@ -26,7 +26,7 @@ cmake:
 make:
   stage: make
   cache: 
-    key: "cmake-$CI_COMMIT_REF_SLUG"
+    key: cmake
     paths:
       - build/*
   script:
