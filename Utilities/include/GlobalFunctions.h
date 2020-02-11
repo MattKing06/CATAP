@@ -13,16 +13,22 @@
 #include "GlobalConstants.h"
 
 
-//!< A namespace for grouping together functions that are used through CATAP
 namespace GlobalFunctions{
 
-    /*!
+    /*
             We often check if entries exist in maps,
-
-            use these functions to do it safely
-            be careful to pick the correct one!
-    */
-
+            use these functiOns to do it safely
+            be careful to pick the correct One!
+        */
+    template<class T>
+    bool entryExists(const std::map<std::string, T>& m, const std::string& name)
+    {
+        bool ret = false;
+        auto it = m.find(name);
+        if (it != m.end())
+            ret = true;
+        return ret;
+    }
     //template<class T>
     //bool entryExists(const std::map<std::string, T>& m, std::string& name)
     //{
@@ -32,13 +38,6 @@ namespace GlobalFunctions{
     //        ret = true;
     //    return ret;
     //}
-
-
-	//! Function to find entry by type U in a map of type <U,T>
-	/*! entryExists takes a map<U,T> and a variable of type U,
-		searches for the netry in the map matching the variable.
-		Returns true if entry is in map, and false if it is not.
-		*/
 
 	template<typename T = int>
 	bool areSame(const std::vector<T> a, const std::vector<T> b, const T epsilon = 0) 
