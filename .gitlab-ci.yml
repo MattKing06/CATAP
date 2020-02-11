@@ -32,7 +32,7 @@ make:
     paths:
       - cache/build/*
   script:
-  - cd ..
+  - cd cache/build
   - ls
   - make clean
   - make
@@ -43,7 +43,7 @@ tests:
   cache: 
     key: make
   script:
-  - cd build  
+  - cd cache/build  
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
@@ -58,7 +58,7 @@ doxygen:
   cache: 
     key: make
   script:
-  - cd ../
+  - cd cache/build
   - doxygen Doxyfile.CATAPDocs
   - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
   only:
