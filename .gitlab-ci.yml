@@ -29,7 +29,7 @@ make:
     paths:
       - build/*
   script:
-  - cd build
+  - ls
   - make clean
   - make
   - echo 'Make Finished'
