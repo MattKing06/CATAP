@@ -30,13 +30,15 @@ make:
      paths:
        - build/*  
   script:
+  - cd build/
   - make clean
   - make
   - echo 'Make Finished'
 
 tests:
   stage: tests
-  script:  
+  script:
+  - cd build  
   - cd testBin
   - echo 'Running Tests..'
   - ls ~/MasterLattice
