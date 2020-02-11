@@ -13,7 +13,7 @@ before_script:
 cmake:
   stage: cmake
   cache:
-    key: cmake
+    key: ${CI_BUILD_REF_NAME}
     paths:
       - build/*
   script:
@@ -26,7 +26,7 @@ cmake:
 make:
   stage: make
   cache:
-     key: make
+     key: ${CI_BUILD_REF_NAME}
      paths:
        - build/*  
   script:
@@ -36,8 +36,6 @@ make:
 
 tests:
   stage: tests
-  cache:
-    key: make
   script:  
   - cd testBin
   - echo 'Running Tests..'
@@ -50,8 +48,6 @@ tests:
 
 doxygen: 
   stage: doxygen
-  cache:
-    key: make
   script: 
   - cd ../
   - doxygen Doxyfile.CATAPDocs
