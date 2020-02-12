@@ -224,7 +224,6 @@ void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& ar
 
 void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
 {
-	std::pair<epicsTimeStamp, short> r;
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = tv->value;

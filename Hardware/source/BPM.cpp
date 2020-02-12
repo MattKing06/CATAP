@@ -25,7 +25,6 @@ mn(std::stod(paramsMap.find("mn")->second)),
 position(std::stod(paramsMap.find("position")->second))
 {
 messenger.printDebugMessage("constructor");
-
 setPVStructs();
 bufferSize = 10;
 xpvshots = 0;
@@ -83,7 +82,7 @@ void BPM::setPVStructs()
 		pvStructs[record].pvRecord = record;
 
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
-		std::string PV = specificHardwareParameters.find(record)->second;// .data();
+		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		messenger.printDebugMessage("Constructing PV information for ", record);
 
@@ -368,6 +367,14 @@ bool BPM::ismonitoring() const
 	return false;
 }
 
+void BPM::offlineSet(const long& value)
+{
+	epicsTimeGetCurrent(&sa1.first);
+	sa1.first = sa1.first;
+	sa1.second = value;
+	sa1.second = value;
+}
+
 bool BPM::setRA1(const long& value)
 {
 	ra1.second = value;
@@ -394,29 +401,69 @@ bool BPM::setRD2(const long& value)
 
 bool BPM::setSA1(const long& value)
 {
-	sa1.second = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSA1(value, pvStructs.at(BPMRecords::SA1));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSA1(value, pvStructs.at(BPMRecords::SA1));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
 bool BPM::setSA2(const long& value)
 {
-	sa2.second = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSA2(value, pvStructs.at(BPMRecords::SA2));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSA2(value, pvStructs.at(BPMRecords::SA2));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
 bool BPM::setSD1(const long& value)
 {
-	sd1.second = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSD1(value, pvStructs.at(BPMRecords::SD1));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSD1(value, pvStructs.at(BPMRecords::SD1));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
 bool BPM::setSD2(const long& value)
 {
-	sd2.second = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSD2(value, pvStructs.at(BPMRecords::SD2));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSD2(value, pvStructs.at(BPMRecords::SD2));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
-bool BPM::setAWAK(const long& value)
+bool BPM::setAWAK(const double& value)
 {
 	awak.second = value;
 	return true;
@@ -428,7 +475,7 @@ bool BPM::setAWAKTStamp(const double& value)
 	return true;
 }
 
-bool BPM::setRDY(const long& value)
+bool BPM::setRDY(const double& value)
 {
 	rdy.second = value;
 	return true;

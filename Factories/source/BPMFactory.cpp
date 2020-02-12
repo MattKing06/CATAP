@@ -149,9 +149,13 @@ bool BPMFactory::setup(const std::string& VERSION)
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
+					/*if (pv.second.pvRecord == BPMRecords::DATA)
+					{
+						pv.second.COUNT = 9;
+					}*/ 
 					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
-					EPICSInterface::sendToEPICS();
 				}
+				EPICSInterface::sendToEPICS();
 			}
 			else
 			{
@@ -161,9 +165,9 @@ bool BPMFactory::setup(const std::string& VERSION)
 			}
 		}
 	}
-
 	hasBeenSetup = true;
 	return hasBeenSetup;
+	std::cout << "end" << std::endl;
 }
 
 std::map<std::string, BPM> BPMFactory::getBPMs(std::vector<std::string> bpmNames)

@@ -4,7 +4,7 @@ LoggingSystem EPICSBPMInterface::messenger;
 
 EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
 {
-//	this->messenger = LoggingSystem(false, false);
+//	this->messenger = LoggingSystem(true, true);
 }
 EPICSBPMInterface::~EPICSBPMInterface()
 {
@@ -94,13 +94,15 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 	recastBPM->setData(recastBPM->data.second);
 	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
-
 }
 
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	updateTimeStampLongPair(args, recastBPM->ra1);
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	std::cout << tv->value << std::endl;
+	//recastBPM->ra1.second = t;
+		//updateTimeStampLongPair(args, recastBPM->ra1);
 	messenger.printDebugMessage("RA1 VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->ra1.second));
 }
@@ -163,9 +165,8 @@ void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 
 void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 {
-
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	updateTimeStampLongPair(args, recastBPM->awak);
+	updateTimeStampDoublePair(args, recastBPM->awak);
 	messenger.printDebugMessage("AWAK VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->awak.second));
 }
@@ -173,27 +174,27 @@ void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 void EPICSBPMInterface::updateRDY(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	updateTimeStampLongPair(args, recastBPM->rdy);
+	updateTimeStampDoublePair(args, recastBPM->rdy);
 	messenger.printDebugMessage("RDY VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->rdy.second));
 }
 
 void EPICSBPMInterface::setSA1(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
 
 void EPICSBPMInterface::setSA2(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
 
 void EPICSBPMInterface::setSD1(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
 
 void EPICSBPMInterface::setSD2(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }

@@ -87,8 +87,11 @@ BPMFactory& HardwareFactory::getBPMFactory()
 			messenger.printMessage("Unable to setup BPMFactory");
 		}
 	}
-	return bpmFactory;
-
+	else
+	{
+		std::cout << "bpmFactory already setup " << std::endl;
+		return bpmFactory;
+	}
 }
 ChargeFactory& HardwareFactory::getChargeFactory()
 {

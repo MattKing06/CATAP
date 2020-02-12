@@ -32,6 +32,7 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+	void offlineSet(const long& value);
 	bool monitoringData = false;
 	bool ismonitoring() const;
 	bool ismonitoringData() const;
@@ -92,9 +93,9 @@ public:
 	bool setRA2(const long& value);
 	bool setRD1(const long& value);
 	bool setRD2(const long& value);
-	bool setAWAK(const long& value);
+	bool setAWAK(const double& value);
 	bool setAWAKTStamp(const double& value);
-	bool setRDY(const long& value);
+	bool setRDY(const double& value);
 	bool setRDYTStamp(const double& value);
 	bool setXPV(const double& value);
 	bool setYPV(const double& value);
@@ -165,8 +166,8 @@ public:
 	double qcal;
 	double mn;
 	double position;
-	std::pair< epicsTimeStamp, long > awak;
-	std::pair< epicsTimeStamp, long > rdy;
+	std::pair< epicsTimeStamp, double > awak;
+	std::pair< epicsTimeStamp, double > rdy;
 	double awaktstamp;
 	double rdytstamp;
 	bool monitoringxpv;
