@@ -42,7 +42,7 @@ class Charge : public Hardware
 		bool ismonitoringQ() const;
 		bool isQBufferFull() const;
 		double getQ() const;
-		double getPositiOn() const;
+		double getPosition() const;
 		//beamPositiOnmonitorStructs::BPM_STATUS getBPMStatus() const;
 		//beamPositiOnmonitorStructs::bpmDataObject& getBPMDataObject() const;
 		size_t getBufferSize() const;
@@ -60,7 +60,7 @@ class Charge : public Hardware
 		void setVectorSize(const size_t& value);
 		void clearBuffers();
 		double q;
-		double positiOn;
+		double position;
 		unsigned int qshots;
 		size_t bufferSize;
 		size_t vectorSize;

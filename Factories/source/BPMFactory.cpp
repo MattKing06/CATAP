@@ -86,6 +86,19 @@ void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
 	}
 }
 
+void BPMFactory::setupChannels()
+{
+	for (auto& bpm : bpmMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = bpm.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			bpm.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
 bool BPMFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)
@@ -100,16 +113,18 @@ bool BPMFactory::setup(const std::string& VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateBPMMap();
+
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 	for (auto& bpm : bpmMap)
 	{
 		std::map<std::string, pvStruct>& bpmPVStructs = bpm.second.getPVStructs();
 		for (auto& pv : bpmPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
-			retrievemonitorStatus(pv.second);
-			bpm.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				retrievemonitorStatus(pv.second);
 				bpm.second.epicsInterface->retrieveCHTYPE(pv.second);
 				bpm.second.epicsInterface->retrieveCOUNT(pv.second);
 				bpm.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
@@ -131,6 +146,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 			}
 		}
 	}
+
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
@@ -254,7 +270,7 @@ std::vector< double > BPMFactory::getData(const std::string& name)
 	return vector2;
 }
 
-std::pair<double, double> BPMFactory::getXYPositiOn(const std::string& name)
+std::pair<double, double> BPMFactory::getXYPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
@@ -282,7 +298,7 @@ double BPMFactory::getQ(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getPositiOn(const std::string& name)
+double BPMFactory::getPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
@@ -290,12 +306,12 @@ double BPMFactory::getPositiOn(const std::string& name)
 	}
 	else
 	{
-		return bpmMap.find(name)->second.getPositiOn();
+		return bpmMap.find(name)->second.getPosition();
 	}
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getResolutiOn(const std::string& name)
+double BPMFactory::getResolution(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
@@ -303,7 +319,7 @@ double BPMFactory::getResolutiOn(const std::string& name)
 	}
 	else
 	{
-		return bpmMap.find(name)->second.getResolutiOn();
+		return bpmMap.find(name)->second.getResolution();
 	}
 	return std::numeric_limits<double>::min();;
 }
@@ -630,7 +646,7 @@ long BPMFactory::getRD2(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-bool BPMFactory::reCalAttenuatiOn(const std::string& name, const double& charge)
+bool BPMFactory::reCalAttenuation(const std::string& name, const double& charge)
 {
 	if (!hasBeenSetup)
 	{
@@ -638,7 +654,7 @@ bool BPMFactory::reCalAttenuatiOn(const std::string& name, const double& charge)
 	}
 	else
 	{
-		return bpmMap.find(name)->second.reCalAttenuatiOn(charge);
+		return bpmMap.find(name)->second.reCalAttenuation(charge);
 	}
 	return false;
 }
@@ -709,7 +725,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getDatas(const std::ve
 	return datamap;
 }
 
-std::map<std::string, std::pair<double, double>> BPMFactory::getXYPositiOns(const std::vector<std::string>& names)
+std::map<std::string, std::pair<double, double>> BPMFactory::getXYPositions(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::pair<double, double>> bpmsAndPositiOnsMap;
 	for (auto name : names)
@@ -723,7 +739,7 @@ std::map<std::string, std::pair<double, double>> BPMFactory::getXYPositiOns(cons
 	return bpmsAndPositiOnsMap;
 }
 
-std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > BPMFactory::getXYPositiOnVectors(const std::vector<std::string>& names)
+std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > BPMFactory::getXYPositionVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > bpmsAndPositiOnsMap;
 	for (auto name : names)
@@ -737,23 +753,23 @@ std::map<std::string, std::pair<std::vector< double >, std::vector< double > > >
 	return bpmsAndPositiOnsMap;
 }
 
-std::map<std::string, double> BPMFactory::getPositiOns(const std::vector<std::string>& names)
+std::map<std::string, double> BPMFactory::getPositions(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> positiOnmap;
 	for (auto name : names)
 	{
-		double positiOn = bpmMap.find(name)->second.getPositiOn();
+		double positiOn = bpmMap.find(name)->second.getPosition();
 		positiOnmap[name] = positiOn;
 	}
 	return positiOnmap;
 }
 
-std::map<std::string, double> BPMFactory::getResolutiOns(const std::vector<std::string>& names)
+std::map<std::string, double> BPMFactory::getResolutions(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> resolutiOnmap;
 	for (auto name : names)
 	{
-		double resolutiOn = bpmMap.find(name)->second.getResolutiOn();
+		double resolutiOn = bpmMap.find(name)->second.getResolution();
 		resolutiOnmap[name] = resolutiOn;
 	}
 	return resolutiOnmap;
@@ -847,12 +863,12 @@ std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFacto
 	return datamap;
 }
 
-std::map<std::string, bool> BPMFactory::reCalAttenuatiOns(const std::vector<std::string>& names, const double& charge)
+std::map<std::string, bool> BPMFactory::reCalAttenuations(const std::vector<std::string>& names, const double& charge)
 {
 	std::map<std::string, bool> recalmap;
 	for (auto name : names)
 	{
-		bool recal = bpmMap.find(name)->second.reCalAttenuatiOn(charge);
+		bool recal = bpmMap.find(name)->second.reCalAttenuation(charge);
 		recalmap[name] = recal;
 	}
 	return recalmap;
@@ -924,7 +940,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getAllData()
 	return bpmsAndDataMap;
 }
 
-std::map<std::string, std::pair<double, double>> BPMFactory::getAllXYPositiOn()
+std::map<std::string, std::pair<double, double>> BPMFactory::getAllXYPosition()
 {
 	std::map<std::string, std::pair<double, double>> bpmsAndPositiOnsMap;
 	for (auto bpm : bpmMap)
@@ -936,34 +952,34 @@ std::map<std::string, std::pair<double, double>> BPMFactory::getAllXYPositiOn()
 	return bpmsAndPositiOnsMap;
 }
 
-std::map<std::string, bool> BPMFactory::reCalAllAttenuatiOn(const double& charge)
+std::map<std::string, bool> BPMFactory::reCalAllAttenuation(const double& charge)
 {
 	std::map<std::string, bool> bpmsAndReCalMap;
 	for (auto bpm : bpmMap)
 	{
-		std::pair<std::string, double> nameAndReCalPair = std::make_pair(bpm.first, bpm.second.reCalAttenuatiOn(charge));
+		std::pair<std::string, double> nameAndReCalPair = std::make_pair(bpm.first, bpm.second.reCalAttenuation(charge));
 		bpmsAndReCalMap.insert(nameAndReCalPair);
 	}
 	return bpmsAndReCalMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllPositiOn()
+std::map<std::string, double> BPMFactory::getAllPosition()
 {
 	std::map<std::string, double> bpmsAndPositiOnMap;
 	for (auto bpm : bpmMap)
 	{
-		std::pair<std::string, double> nameAndPositiOnPair = std::make_pair(bpm.first, bpm.second.getPositiOn());
+		std::pair<std::string, double> nameAndPositiOnPair = std::make_pair(bpm.first, bpm.second.getPosition());
 		bpmsAndPositiOnMap.insert(nameAndPositiOnPair);
 	}
 	return bpmsAndPositiOnMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllResolutiOn()
+std::map<std::string, double> BPMFactory::getAllResolution()
 {
 	std::map<std::string, double> bpmsAndResolutiOnMap;
 	for (auto bpm : bpmMap)
 	{
-		std::pair<std::string, double> nameAndResolutiOnPair = std::make_pair(bpm.first, bpm.second.getResolutiOn());
+		std::pair<std::string, double> nameAndResolutiOnPair = std::make_pair(bpm.first, bpm.second.getResolution());
 		bpmsAndResolutiOnMap.insert(nameAndResolutiOnPair);
 	}
 	return bpmsAndResolutiOnMap;
@@ -1057,7 +1073,7 @@ std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFacto
 	return bpmsAndDataMap;
 }
 
-std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > BPMFactory::getAllXYPositiOnVectors()
+std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > BPMFactory::getAllXYPositionVectors()
 {
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > bpmsAndPositiOnsMap;
 	for (auto bpm : bpmMap)
@@ -1194,11 +1210,11 @@ boost::python::dict BPMFactory::getQs_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXYPositiOns_Py(boost::python::list bpmNames)
+boost::python::dict BPMFactory::getXYPositions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::pair<double, double>> xyvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
-	xyvals = getXYPositiOns(bpmNamesVector);
+	xyvals = getXYPositions(bpmNamesVector);
 	boost::python::dict newPyDict = to_py_dict(xyvals);
 	return newPyDict;
 }
@@ -1275,38 +1291,38 @@ boost::python::dict BPMFactory::getDataBuffers_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXYPositiOnVectors_Py(boost::python::list bpmNames)
+boost::python::dict BPMFactory::getXYPositionVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::pair< std::vector< double >, std::vector< double > > > xyvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
-	xyvals = getXYPositiOnVectors(bpmNamesVector);
+	xyvals = getXYPositionVectors(bpmNamesVector);
 	boost::python::dict newPyDict = to_py_dict(xyvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::reCalAttenuatiOns_Py(boost::python::list bpmNames, const double& charge)
+boost::python::dict BPMFactory::reCalAttenuations_Py(boost::python::list bpmNames, const double& charge)
 {
 	std::map<std::string, bool> recalvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
-	recalvals = reCalAttenuatiOns(bpmNamesVector, charge);
+	recalvals = reCalAttenuations(bpmNamesVector, charge);
 	boost::python::dict newPyDict = to_py_dict(recalvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getResolutiOns_Py(boost::python::list bpmNames)
+boost::python::dict BPMFactory::getResolutions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> resolutiOnvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
-	resolutiOnvals = getResolutiOns(bpmNamesVector);
+	resolutiOnvals = getResolutions(bpmNamesVector);
 	boost::python::dict newPyDict = to_py_dict(resolutiOnvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getPositiOns_Py(boost::python::list bpmNames)
+boost::python::dict BPMFactory::getPositions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> positiOnvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
-	positiOnvals = getResolutiOns(bpmNamesVector);
+	positiOnvals = getResolutions(bpmNamesVector);
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
@@ -1409,37 +1425,37 @@ boost::python::dict BPMFactory::getAllDataBuffer_Py()
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXYPositiOn_Py()
+boost::python::dict BPMFactory::getAllXYPosition_Py()
 {
-	std::map<std::string, std::pair<double, double>> xyvals = getAllXYPositiOn();
+	std::map<std::string, std::pair<double, double>> xyvals = getAllXYPosition();
 	boost::python::dict newPyDict = to_py_dict(xyvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXYPositiOnVectors_Py()
+boost::python::dict BPMFactory::getAllXYPositionVectors_Py()
 {
-	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > xyvals = getAllXYPositiOnVectors();
+	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > xyvals = getAllXYPositionVectors();
 	boost::python::dict newPyDict = to_py_dict(xyvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllResolutiOn_Py()
+boost::python::dict BPMFactory::getAllResolution_Py()
 {
-	std::map<std::string, double> resolutiOnvals = getAllResolutiOn();
+	std::map<std::string, double> resolutiOnvals = getAllResolution();
 	boost::python::dict newPyDict = to_py_dict(resolutiOnvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllPositiOn_Py()
+boost::python::dict BPMFactory::getAllPosition_Py()
 {
-	std::map<std::string, double> positiOnvals = getAllPositiOn();
+	std::map<std::string, double> positiOnvals = getAllPosition();
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::reCalAllAttenuatiOn_Py(const double& charge)
+boost::python::dict BPMFactory::reCalAllAttenuation_Py(const double& charge)
 {
-	std::map<std::string, bool> recalvals = reCalAllAttenuatiOn(charge);
+	std::map<std::string, bool> recalvals = reCalAllAttenuation(charge);
 	boost::python::dict newPyDict = to_py_dict(recalvals);
 	return newPyDict;
 }

@@ -41,6 +41,7 @@ class MagnetFactory
 		
 		//MagnetFactory(std::string VERSION);
 		bool setup(const std::string &VERSION);
+		void setupChannels();
 		
 		// private
 		ConfigReader reader;

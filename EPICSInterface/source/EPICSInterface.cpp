@@ -55,6 +55,11 @@ void EPICSInterface::detachFromCOntext()
 	ca_detach_context();
 }
 
+void EPICSInterface::sendToEPICS()
+{
+	ca_pend_io(CA_PEND_IO_TIMEOUT);
+}
+
 void EPICSInterface::attachTo_thisCaContext()
 {
 	if (thisCaContext)
@@ -98,7 +103,11 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		//MY_SEVCHK(status);
 		//std::cout << "MY_SEVCHK fin" << std::endl;
 		//std::this_thread::sleep_for(std::chrono::seconds(4));
-		SEVCHK(ca_pend_io(5.0), "ca_pend_io");
+		
+		
+		//SEVCHK(ca_pend_io(5.0), "ca_pend_io");
+		
+		
 		//std::cout << "ca_pend_io status = " << status << std::endl;
 		//std::cout << "CHID = " << pvStruct.CHID << std::endl;
 	//pvStruct.CHID = CHID;

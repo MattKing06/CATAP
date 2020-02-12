@@ -52,6 +52,7 @@ public:
 	void removeSubscription(pvStruct& pv);
 	void removeChannel(pvStruct& pv);
 	void detachFromCOntext();
+	static void sendToEPICS();
 	static std::string getEPICSTime(const epicsTimeStamp& stamp);
 	static void setPVTimeStampFromArgs(pvStruct& pv, const struct event_handler_args args);
 	template<typename hardwareType>

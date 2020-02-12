@@ -17,7 +17,7 @@ Charge::Charge(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 Hardware(paramsMap, mode),
 chargeType(paramsMap.find("charge_type")->second),
 name(paramsMap.find("name")->second),
-positiOn(std::stod(paramsMap.find("positiOn")->second))
+position(std::stod(paramsMap.find("position")->second))
 {
 	bufferSize = 10;
 	qshots = 0;
@@ -28,7 +28,7 @@ Charge::Charge(const Charge& copyCharge) :
 Hardware(copyCharge),
 chargeType(copyCharge.chargeType),
 name(copyCharge.name),
-positiOn(copyCharge.positiOn),
+position(copyCharge.position),
 epicsInterface(copyCharge.epicsInterface)
 {
 }
@@ -66,9 +66,9 @@ std::vector< double > Charge::getQVector() const
 	return this->qVector;
 }
 
-double Charge::getPositiOn() const
+double Charge::getPosition() const
 {
-	return this->positiOn;
+	return this->position;
 }
 
 bool Charge::isQBufferFull() const

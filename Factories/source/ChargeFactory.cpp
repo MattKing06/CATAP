@@ -82,6 +82,19 @@ void ChargeFactory::retrievemonitorStatus(pvStruct& pvStruct)
 	}
 }
 
+void ChargeFactory::setupChannels()
+{
+	for (auto& charge : chargeMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = charge.second.getPVStructs();
+
+		for (auto& pv : pvStructs)
+		{
+			charge.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
 bool ChargeFactory::setup(const std::string &VERSION)
 {
 	if (hasBeenSetup)
@@ -96,6 +109,9 @@ bool ChargeFactory::setup(const std::string &VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();
+
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 	for (auto &charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
@@ -103,10 +119,9 @@ bool ChargeFactory::setup(const std::string &VERSION)
 		{
 
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
-			retrievemonitorStatus(pv.second);
-			charge.second.epicsInterface->retrieveCHID(pv.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				retrievemonitorStatus(pv.second);
 				charge.second.epicsInterface->retrieveCHID(pv.second);
 				charge.second.epicsInterface->retrieveCHTYPE(pv.second);
 				charge.second.epicsInterface->retrieveCOUNT(pv.second);
@@ -215,7 +230,7 @@ double ChargeFactory::getQ(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double ChargeFactory::getPositiOn(const std::string& name)
+double ChargeFactory::getPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
@@ -223,7 +238,7 @@ double ChargeFactory::getPositiOn(const std::string& name)
 	}
 	else
 	{
-		return chargeMap.find(name)->second.getPositiOn();
+		return chargeMap.find(name)->second.getPosition();
 	}
 	return std::numeric_limits<double>::min();;
 }
@@ -281,12 +296,12 @@ std::map<std::string, double> ChargeFactory::getQs(const std::vector<std::string
 	return qs;
 }
 
-std::map<std::string, double> ChargeFactory::getPositiOns(const std::vector<std::string>& names)
+std::map<std::string, double> ChargeFactory::getPositions(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> positiOnmap;
 	for (auto name : names)
 	{
-		double positiOn = chargeMap.find(name)->second.getPositiOn();
+		double positiOn = chargeMap.find(name)->second.getPosition();
 		positiOnmap[name] = positiOn;
 	}
 	return positiOnmap;
@@ -325,12 +340,12 @@ std::map<std::string, double> ChargeFactory::getAllQ()
 	return chargeAndQMap;
 }
 
-std::map<std::string, double> ChargeFactory::getAllPositiOn()
+std::map<std::string, double> ChargeFactory::getAllPosition()
 {
 	std::map<std::string, double> chargeAndPositiOnMap;
 	for (auto charge : chargeMap)
 	{
-		std::pair<std::string, double> nameAndPositiOnPair = std::make_pair(charge.first, charge.second.getPositiOn());
+		std::pair<std::string, double> nameAndPositiOnPair = std::make_pair(charge.first, charge.second.getPosition());
 		chargeAndPositiOnMap.insert(nameAndPositiOnPair);
 	}
 	return chargeAndPositiOnMap;
@@ -390,11 +405,11 @@ boost::python::dict ChargeFactory::getQs_Py(boost::python::list chargeNames)
 	return newPyDict;
 }
 
-boost::python::dict ChargeFactory::getPositiOns_Py(boost::python::list chargeNames)
+boost::python::dict ChargeFactory::getPositions_Py(boost::python::list chargeNames)
 {
 	std::map<std::string, double> positiOnvals;
 	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(chargeNames);
-	positiOnvals = getPositiOns(chargeNamesVector);
+	positiOnvals = getPositions(chargeNamesVector);
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
@@ -438,9 +453,9 @@ boost::python::dict ChargeFactory::getAllQBuffer_Py()
 	return newPyDict;
 }
 
-boost::python::dict ChargeFactory::getAllPositiOn_Py()
+boost::python::dict ChargeFactory::getAllPosition_Py()
 {
-	std::map<std::string, double> positiOnvals = getAllPositiOn();
+	std::map<std::string, double> positiOnvals = getAllPosition();
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
