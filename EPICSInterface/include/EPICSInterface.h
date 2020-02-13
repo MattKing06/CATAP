@@ -89,6 +89,7 @@ public:
 	
 	
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
+	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, int size);
 	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
 	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
 	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);

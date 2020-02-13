@@ -177,6 +177,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::vector< double > > >());
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
+	boost::python::class_<std::vector< double > >("stdVectorDouble")
+		.def(boost::python::vector_indexing_suite<std::vector< double > >());
 
 	////Magnet Factory Exposure
 	//STATE(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::turnOn;

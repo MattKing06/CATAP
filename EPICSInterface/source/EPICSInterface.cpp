@@ -136,6 +136,10 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_ENUM;
 		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_LONG)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_LONG;
+		}
 		else
 		{
 			pvStruct.monitorCHTYPE = ca_field_type(pvStruct.CHID);
@@ -202,8 +206,23 @@ void EPICSInterface::updateTimeStampDoublePair(const struct event_handler_args& 
 	std::pair<epicsTimeStamp, double>& pairToUpdate)
 {
 	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
-	pairToUpdate.first  = tv->stamp;
+	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, int size)
+{
+	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<double> vec(9);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
 }
 
 void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& args,

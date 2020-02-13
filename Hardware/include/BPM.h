@@ -116,6 +116,7 @@ public:
 	std::pair<epicsTimeStamp, double> yPV;
 	std::pair<epicsTimeStamp, double> q;
 	std::pair<epicsTimeStamp, double> resolution;
+	std::pair<epicsTimeStamp, std::vector< double > > data;
 	double pu1;
 	double pu2;
 	double pu3;
@@ -128,7 +129,6 @@ public:
 	unsigned int ypvshots;
 	unsigned int datashots;
 	unsigned int qshots;
-	std::pair<epicsTimeStamp, std::vector< double > > data;
 	size_t bufferSize;
 	size_t vectorSize;
 	boost::circular_buffer< double > xBuffer;

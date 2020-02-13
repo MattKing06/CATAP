@@ -4,7 +4,7 @@ LoggingSystem EPICSBPMInterface::messenger;
 
 EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
 {
-//	this->messenger = LoggingSystem(true, true);
+	this->messenger = LoggingSystem(false, false);
 }
 EPICSBPMInterface::~EPICSBPMInterface()
 {
@@ -89,8 +89,9 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 void EPICSBPMInterface::updateData(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
-	recastBPM->data.first = tv->stamp;
+	/*const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	recastBPM->data.first = tv->stamp;*/
+	updateTimeStampDoubleVectorPair(args, recastBPM->data, 9);
 	recastBPM->setData(recastBPM->data.second);
 	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
@@ -99,10 +100,7 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
-	std::cout << tv->value << std::endl;
-	//recastBPM->ra1.second = t;
-		//updateTimeStampLongPair(args, recastBPM->ra1);
+	updateTimeStampLongPair(args, recastBPM->ra1);
 	messenger.printDebugMessage("RA1 VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->ra1.second));
 }
@@ -111,7 +109,7 @@ void EPICSBPMInterface::updateRA2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	updateTimeStampLongPair(args, recastBPM->ra2);
-	messenger.printDebugMessage("RA2 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+	messenger.printMessage("RA2 VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->ra2.second));
 }
 
