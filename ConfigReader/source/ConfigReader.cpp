@@ -13,10 +13,9 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
 ConfigReader::ConfigReader():
 yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
-
 mode(STATE::OFFLINE), hardwareFolder("")
 {
-	std::cout << "Constructor ConfigReader() called " << std::endl;
+	messenger.printDebugMessage("ConfigReader() Constructor called");
 	// since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
@@ -24,10 +23,11 @@ mode(STATE::OFFLINE), hardwareFolder("")
 }
 
 ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
+	messenger(LoggingSystem(true, true)),
 	mode(mode),
 	hardwareFolder(hardwareType)
 {
-	std::cout << "Constructor ConfigReader(const std::string &hardwareType, const STATE& mode) called " << std::endl;
+	messenger.printDebugMessage("ConfigReader(const std::string &hardwareType, const STATE& mode) Constructor called");
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 	initialiseFilenameAndParsedStatusMap();
 }
@@ -36,14 +36,16 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 {
 	std::vector<std::string> filenamesInDirectory = findYAMLFilesInDirectory("");
 	std::string templateFilename = hardwareFolder + ".yaml";
+	std::string all_file_names = "";
 	for (const auto& filename : filenamesInDirectory)
 	{
 		if (filename != templateFilename)
 		{
 			yamlFilenamesAndParsedStatusMap.emplace(std::pair<std::string, bool>(filename, false));
-			std::cout << "found " << filename << std::endl;
+			all_file_names += filename + " ";
 		}
 	}
+	messenger.printDebugMessage("ConfigReader found these files: " + all_file_names);
 }
 
 std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string& version)
@@ -126,7 +128,7 @@ bool ConfigReader::hasMoreFilesToParse() const
 			return true;
 		}
 	}
-	std::cout << "hasMoreFilesToParse() has no more files to parse " << std::endl;
+	messenger.printDebugMessage("hasMoreFilesToParse() has no more files to parse ");
 	return false;
 }
 

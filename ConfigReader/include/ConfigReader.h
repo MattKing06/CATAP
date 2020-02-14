@@ -96,9 +96,20 @@ public:
 			if (config.size() > 0)
 			{
 				std::cout << "config.size() > 0" << std::endl;
-				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
-				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 
+
+
+
+				/******							ISSUE WITH FILE EXTENSIONS							*********/
+				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
+				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
+
+
+
+
+				std::cout << "Loading " << hardwareTemplateFilename << std::endl;
+				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
+				std::cout << "Loaded " << hardwareTemplateFilename << std::endl;
 				std::cout << "configTemplate Loaded;" << std::endl;
 
 				if (!checkForValidTemplate(configTemplate, config))
@@ -107,29 +118,34 @@ public:
 					std::cout << "throw YAML::BadFile();" << std::endl;
 					throw YAML::BadFile();
 				}
-				std::cout << "Template is valid" << std::endl;
+				messenger.printMessage("Template is valid, getting controls info ");
 				auto pvAndRecordPair = extractControlsInformationIntoPair(config);
-				std::cout << "Got Controls info" << std::endl;
+				messenger.printMessage("Got Controls info, extracting Hardware Info ");
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
-				std::cout << "Got hardwareParameterMap" << std::endl;
+				messenger.printMessage("Extracted Hardware Information, processing");
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
 				if (typeid(HardwareType) == typeid(Magnet))
 				{
-					std::cout << "HardwareType is Magnet;" << std::endl;
+		      /**** PROBLEM WITH CONVERTING TYPES IN YAML FILE TO VARIABLES OF MAGNET ****/
+					//messenger.printMessage("ConvervsionException " + std::string(ConvervsionException.what()));
 					auto recordsMap = extractRecordsIntoMap(config);
 					parameters.insert(recordsMap.begin(), recordsMap.end());
-					std::cout << "inserted recordsMap" << std::endl;
+					messenger.printMessage("Inserted Hardware Information into recordsMap");
 				}
 				/*IF NOT A MAGNET, USE OLD FUNCTIONALITY*/
 				else
 				{
 					parameters.insert(pvAndRecordPair);
 				}
-
 				for (auto prop : hardwareParameterMap)
 				{
 					parameters.insert(prop);
+					messenger.printMessage("Inserted recordsMap into hardwareParameterMap");
 				}
+
+
+				messenger.printMessage("Generating Fresh Hardware");
+
 				HardwareType freshHardware = HardwareType(parameters, mode);
 
 				// fill map via [] operator to construct IN-PLACE
@@ -159,23 +175,27 @@ public:
 		{
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
 				SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
+			exit(0);
 		}
 		catch (YAML::BadFile BadFileException)
 		{
 			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
 				ConfigReader::yamlFilename, ")  or file is not compliant with template ",
 				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
+			exit(0);
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
 			messenger.printMessage("Problem with file (" +
 				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
 				"): " + std::string(EmptyFileException.what()));
+			exit(0);
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{
-			messenger.printMessage(std::string(ConvervsionException.what()));
-		}
+			messenger.printMessage("ConvervsionException " + std::string(ConvervsionException.what()));
+			exit(0);
+		} 
 	}
 };
 #endif //CONFIG_READER_H_

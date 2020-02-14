@@ -5,15 +5,16 @@ HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 }
 HardwareFactory::~HardwareFactory()
 {
-	messenger.printDebugMessage("HardwareFactory DestructiOn Called");
+	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(STATE mode) :
+	messenger(LoggingSystem(true, true)),
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
 	mode(mode)
 {
-	messenger = LoggingSystem(true, true);
+	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 	//mode = mode;
 	/*messenger.printDebugMessage("MagnetFactory being cOntructed");

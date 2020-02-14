@@ -28,12 +28,12 @@ MagnetFactory::MagnetFactory() :
 }
 
 MagnetFactory::MagnetFactory(STATE mode) :
+	messenger(LoggingSystem(true, true)),
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("Magnet", mode))
 	//:dummy_magnet(Magnet("DUMMY_MAGNET"))
 {
-	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
 	messenger.printDebugMessage("Magnet Factory constructed");
 	//mode = mode;
@@ -91,7 +91,7 @@ void MagnetFactory::populateMagnetMap()
 		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(magnetMap);
 	}
-	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map");
+	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map, found ", magnetMap.size()," magnets objects" );
 }
 
 void MagnetFactory::retrieveMonitorStatus(pvStruct& pvStruct)
@@ -136,6 +136,7 @@ bool MagnetFactory::setup(const std::string& version)
 
 	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
+
 	//std::cout << "populateMagnetMap() fin" << std::endl;;
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
@@ -145,6 +146,9 @@ bool MagnetFactory::setup(const std::string& version)
 
 	setupChannels();
 	EPICSInterface::sendToEPICS();
+
+	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
+
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
 	*/
@@ -160,7 +164,7 @@ bool MagnetFactory::setup(const std::string& version)
 			updateAliasNameMap(magnet.second);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				std::cout << "cs_conn, getting some values " << std::endl;
+				messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
 				retrieveMonitorStatus(pv.second);
 				magnet.second.epicsInterface->retrieveCHTYPE(pv.second);
 				magnet.second.epicsInterface->retrieveCOUNT(pv.second);
@@ -175,6 +179,7 @@ bool MagnetFactory::setup(const std::string& version)
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 				}
 				//// update the alias_name_map so we can use fullNames or Aliases
+				EPICSInterface::sendToEPICS();
 			}
 			else
 			{

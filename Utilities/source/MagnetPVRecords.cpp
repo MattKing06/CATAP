@@ -17,14 +17,14 @@ namespace MagnetPSUValueToState
 {
 	// add a converter here 
 	std::map<std::string, STATE> magnetPSUStrToSTATE = {
-								("ON", STATE::ON),
-								("OFF", STATE::OFF),
-								("ERR", STATE::ERR)
+								{"ON", STATE::ON},
+								{"OFF", STATE::OFF},
+								{"ERR", STATE::ERR}
 	};
 
 	std::map<int, STATE> magnetPSUIntToSTATE = {
-							(1, STATE::ON),
-							(0, STATE::OFF)
+							{1, STATE::ON},
+							{0, STATE::OFF}
 							};
 
 

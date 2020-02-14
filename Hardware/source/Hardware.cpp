@@ -36,11 +36,11 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 		hardwareName = specificValueMap.find("name")->second.data();
 	}
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
-	
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
 	if (hardwareType.compare("Magnet") != 0)
 	{
+		messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS TRUE");
 		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		std::vector<std::string> pvRecordVec;
@@ -58,8 +58,13 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 			pvStructs[pv.pvRecord] = pv;
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS FALSE");
+	}
 
-	
+	messenger.printDebugMessage(hardwareName, " Hardware Constructor Finished ");
+
 	
 	//
 	//
