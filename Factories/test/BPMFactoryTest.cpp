@@ -14,12 +14,12 @@ BOOST_AUTO_TEST_CASE(start_test)
 BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 {
 	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";
-	char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.246";
+	/*char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.246";
 	char* EPICS_CA_SERVER_ENV = "EPICS_CA_SERVER_PORT=6000";
 	int envStatus = putenv(EPICS_CA_ADDR_LIST_ENV);
 	envStatus = putenv(EPICS_CA_SERVER_ENV);
 	std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
-	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
+	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;*/
 	// What state should the test work for?? maybe offline, phyiscal and virtual state tests?? 
 	BPMFactory bpmfac = BPMFactory(STATE::VIRTUAL);
 	bpmfac.messagesOn();
