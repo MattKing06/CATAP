@@ -210,7 +210,7 @@ void EPICSInterface::updateTimeStampDoublePair(const struct event_handler_args& 
 }
 
 void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,
-	std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, int size)
+	std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size)
 {
 	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
 	pairToUpdate.first = tv->stamp;

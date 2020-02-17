@@ -91,7 +91,7 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	/*const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
 	recastBPM->data.first = tv->stamp;*/
-	updateTimeStampDoubleVectorPair(args, recastBPM->data, 9);
+	updateTimeStampDoubleVectorPair(args, recastBPM->data, args.count);
 	recastBPM->setData(recastBPM->data.second);
 	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
