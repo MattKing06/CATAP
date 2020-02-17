@@ -159,12 +159,12 @@ public:
 	std::pair< epicsTimeStamp, long > ra2;
 	std::pair< epicsTimeStamp, long > rd1;
 	std::pair< epicsTimeStamp, long > rd2;
-	long att1cal;
-	long att2cal;
-	double v1cal;
-	double v2cal;
-	double qcal;
-	double mn;
+	long att1cal = 0;
+	long att2cal = 0;
+	double v1cal = 0.0;
+	double v2cal = 0.0;
+	double qcal = 0.0;
+	double mn = 0;
 	double position;
 	std::pair< epicsTimeStamp, double > awak;
 	std::pair< epicsTimeStamp, double > rdy;

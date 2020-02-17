@@ -74,6 +74,7 @@ void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	updateTimeStampDoublePair(args, recastBPM->xPV);
+	recastBPM->setXPV(recastBPM->xPV.second);
 	messenger.printDebugMessage("XPV VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->xPV.second));
 }
@@ -82,6 +83,7 @@ void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
 	updateTimeStampDoublePair(args, recastBPM->yPV);
+	recastBPM->setYPV(recastBPM->yPV.second);
 	messenger.printDebugMessage("YPV VALUE FOR: " + recastBPM->getHardwareName() + ": "
 		+ std::to_string(recastBPM->yPV.second));
 }

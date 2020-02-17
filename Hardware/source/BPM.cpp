@@ -309,6 +309,10 @@ bool BPM::setXPV(const double& value)
 {
 	xPV.second = value;
 	xPVBuffer.push_back(value);
+	for (auto& it : xPVBuffer)
+	{
+		messenger.printDebugMessage(it);
+	}
 	xpvshots++;
 	if (monitoringxpv)
 	{
@@ -489,7 +493,7 @@ bool BPM::setRDYTStamp(const double& value)
 
 bool BPM::setData(const std::vector< double >& value)
 {
-	/*data.second = value;*/
+	data.second = value;
 	pu1 = value[1];
 	pu2 = value[2];
 	c1 = value[3];
@@ -551,7 +555,6 @@ bool BPM::setQ(const std::vector< double >& rawData)
 bool BPM::setResolution()
 {
 	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
-	double resolution;
 	double rmsVals;
 	u11 = std::accumulate(pu1Buffer.begin(), pu1Buffer.end(), 0.0) / pu1Buffer.size();
 	u12 = std::accumulate(pu2Buffer.begin(), pu2Buffer.end(), 0.0) / pu2Buffer.size();
@@ -568,7 +571,7 @@ bool BPM::setResolution()
 	if (v11 && v12 && v21 && v22 != 0)
 	{
 		rmsVals = ((v11 + v12) - (v21 + v22)) / ((v11 + v12) + (v21 + v22));
-		resolution = rmsVals * sqrt(2) * (0.001 * mn);
+		resolution.second = rmsVals * sqrt(2) * (0.001 * mn);
 	}
 	return true;
 }
