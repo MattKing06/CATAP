@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(bpm_set_and_check_data_test)
 {
 	BPM bpm = BPM();
 	srand(time(NULL));
-	std::vector< double > dataToSet(9);
+	std::vector< double > dataToSet(13);
 	for(auto& it : dataToSet)
 	{
 		it = rand() % 10 + 1.0;
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(bpm_set_and_check_data_vector_test)
 	bpm.setVectorSize(2);
 	for (auto&& it : dataToSet)
 	{
-		it.resize(9);
+		it.resize(13);
 		for (auto&& it2 : it)
 		{
 			it2 = rand() % 10 + 1.0;
