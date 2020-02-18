@@ -4,7 +4,7 @@ LoggingSystem EPICSBPMInterface::messenger;
 
 EPICSBPMInterface::EPICSBPMInterface() : EPICSInterface()
 {
-//	this->messenger = LoggingSystem(false, false);
+	this->messenger = LoggingSystem(false, false);
 }
 EPICSBPMInterface::~EPICSBPMInterface()
 {
@@ -12,91 +12,89 @@ EPICSBPMInterface::~EPICSBPMInterface()
 }
 void EPICSBPMInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) const
 {
-
-	if (pvStruct.pvRecord == "X")
+	if (pvStruct.pvRecord == BPMRecords::X)
 	{
 		pvStruct.updateFunction = this->updateXPV;
 	}
-	if (pvStruct.pvRecord == "Y")
+	else if (pvStruct.pvRecord == BPMRecords::Y)
 	{
 		pvStruct.updateFunction = this->updateYPV;
 	}
-	if (pvStruct.pvRecord == "SA1")
+	else if (pvStruct.pvRecord == BPMRecords::SA1)
 	{
 		pvStruct.updateFunction = this->updateSA1;
 	}
-	if (pvStruct.pvRecord == "SA2")
+	else if (pvStruct.pvRecord == BPMRecords::SA2)
 	{
 		pvStruct.updateFunction = this->updateSA2;
 	}
-	if (pvStruct.pvRecord == "SD1")
+	else if (pvStruct.pvRecord == BPMRecords::SD1)
 	{
 		pvStruct.updateFunction = this->updateSD1;
 	}
-	if (pvStruct.pvRecord == "SD2")
+	else if (pvStruct.pvRecord == BPMRecords::SD2)
 	{
 		pvStruct.updateFunction = this->updateSD2;
 	}
-	if (pvStruct.pvRecord == "RA1")
+	else if (pvStruct.pvRecord == BPMRecords::RA1)
 	{
 		pvStruct.updateFunction = this->updateRA1;
 	}
-	if (pvStruct.pvRecord == "RA2")
+	else if (pvStruct.pvRecord == BPMRecords::RA2)
 	{
 		pvStruct.updateFunction = this->updateRA2;
 	}
-	if (pvStruct.pvRecord == "RD1")
+	else if (pvStruct.pvRecord == BPMRecords::RD1)
 	{
 		pvStruct.updateFunction = this->updateRD1;
 	}
-	if (pvStruct.pvRecord == "RD2")
+	else if (pvStruct.pvRecord == BPMRecords::RD2)
 	{
 		pvStruct.updateFunction = this->updateRD2;
 	}
-	if (pvStruct.pvRecord == "DATA:B2V.VALA")
+	else if (pvStruct.pvRecord == BPMRecords::DATA)
 	{
 		pvStruct.updateFunction = this->updateData;
 	}
-	if (pvStruct.pvRecord == "AWAK")
+	else if (pvStruct.pvRecord == BPMRecords::AWAK)
 	{
 		pvStruct.updateFunction = this->updateAWAK;
 	}
-	if (pvStruct.pvRecord == "RDY")
+	else if (pvStruct.pvRecord == BPMRecords::RDY)
 	{
 		pvStruct.updateFunction = this->updateRDY;
+	}
+	else
+	{
+		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 	}
 }
 
 void EPICSBPMInterface::updateXPV(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("X"), args);
-	double value = returnValueFromArgsAsDouble(args);
-	recastBPM->setXPV(value);
-	messenger.printDebugMessage("X PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
-								+ std::to_string(value));
-	messenger.printDebugMessage(" CALLED UPDATE X ");
+	updateTimeStampDoublePair(args, recastBPM->xPV);
+	recastBPM->setXPV(recastBPM->xPV.second);
+	messenger.printDebugMessage("XPV VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->xPV.second));
 }
 
 void EPICSBPMInterface::updateYPV(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("Y"), args);
-	double value = returnValueFromArgsAsDouble(args);
-	recastBPM->setYPV(value);
-	messenger.printDebugMessage("Y PV VALUE FOR: " + recastBPM->getHardwareName() + ": "
-								+ std::to_string(value));
-	messenger.printDebugMessage(" CALLED UPDATE Y ");
+	updateTimeStampDoublePair(args, recastBPM->yPV);
+	recastBPM->setYPV(recastBPM->yPV.second);
+	messenger.printDebugMessage("YPV VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->yPV.second));
 }
 
 void EPICSBPMInterface::updateData(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("DATA"), args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("Q"), args);
-	std::vector< double > value = returnValueFromArgsAsDoubleVector(args);
-	recastBPM->setData(value);
-	recastBPM->setQ(value);
+	/*const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	recastBPM->data.first = tv->stamp;*/
+	updateTimeStampDoubleVectorPair(args, recastBPM->data, args.count);
+	recastBPM->setData(recastBPM->data.second);
 	messenger.printDebugMessage("DATA PV VALUE FOR: " + recastBPM->getHardwareName());
 	messenger.printDebugMessage(" CALLED UPDATE DATA ");
 }
@@ -104,112 +102,99 @@ void EPICSBPMInterface::updateData(const struct event_handler_args args)
 void EPICSBPMInterface::updateRA1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RA1"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setRA1(value);
-	messenger.printDebugMessage(" CALLED UPDATE RA1 ");
+	updateTimeStampLongPair(args, recastBPM->ra1);
+	messenger.printDebugMessage("RA1 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->ra1.second));
 }
 
 void EPICSBPMInterface::updateRA2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RA2"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setRA2(value);
-	messenger.printDebugMessage(" CALLED UPDATE RA2 ");
+	updateTimeStampLongPair(args, recastBPM->ra2);
+	messenger.printMessage("RA2 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->ra2.second));
 }
 
 void EPICSBPMInterface::updateRD1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RD1"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setRD1(value);
-	messenger.printDebugMessage(" CALLED UPDATE RD1 ");
+	updateTimeStampLongPair(args, recastBPM->rd1);
+	messenger.printDebugMessage("RD1 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->rd1.second));
 }
 
 void EPICSBPMInterface::updateRD2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RD2"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setRD2(value);
-	messenger.printDebugMessage(" CALLED UPDATE RD2 ");
+	updateTimeStampLongPair(args, recastBPM->rd2);
+	messenger.printDebugMessage("RD2 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->rd1.second));
 }
 
 void EPICSBPMInterface::updateSA1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SA1"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setSA1(value);
-	messenger.printDebugMessage(" CALLED UPDATE SA1 ");
+	updateTimeStampLongPair(args, recastBPM->sa1);
+	messenger.printDebugMessage("SA1 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->sa1.second));
 }
 
 void EPICSBPMInterface::updateSA2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SA2"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setSA2(value);
-	messenger.printDebugMessage(" CALLED UPDATE SA2 ");
+	updateTimeStampLongPair(args, recastBPM->sa2);
+	messenger.printDebugMessage("SA2 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->sa2.second));
 }
 
 void EPICSBPMInterface::updateSD1(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SD1"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setSD1(value);
-	messenger.printDebugMessage(" CALLED UPDATE SD1 ");
+	updateTimeStampLongPair(args, recastBPM->sd1);
+	messenger.printDebugMessage("SD1 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->sd1.second));
 }
 
 void EPICSBPMInterface::updateSD2(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("SD2"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setSD2(value);
-	messenger.printDebugMessage(" CALLED UPDATE SD2 ");
+	updateTimeStampLongPair(args, recastBPM->sd2);
+	messenger.printDebugMessage("SD2 VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->sd2.second));
 }
 
 void EPICSBPMInterface::updateAWAK(const struct event_handler_args args)
 {
-
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("AWAK"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setAWAK(value);
-	recastBPM->setAWAKTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("AWAK").time)));
-	messenger.printDebugMessage(" CALLED UPDATE AWAK ");
+	updateTimeStampDoublePair(args, recastBPM->awak);
+	messenger.printDebugMessage("AWAK VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->awak.second));
 }
 
 void EPICSBPMInterface::updateRDY(const struct event_handler_args args)
 {
 	BPM* recastBPM = getHardwareFromArgs<BPM>(args);
-	setPVTimeStampFromArgs(recastBPM->pvStructs.at("RDY"), args);
-	long value = returnValueFromArgsAslong(args);
-	recastBPM->setRDY(value);
-	recastBPM->setRDYTStamp(std::stod(getEPICSTime(recastBPM->pvStructs.at("RDY").time)));
-	messenger.printDebugMessage(" CALLED UPDATE RDY ");
+	updateTimeStampDoublePair(args, recastBPM->rdy);
+	messenger.printDebugMessage("RDY VALUE FOR: " + recastBPM->getHardwareName() + ": "
+		+ std::to_string(recastBPM->rdy.second));
 }
 
 void EPICSBPMInterface::setSA1(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
 
 void EPICSBPMInterface::setSA2(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
 
 void EPICSBPMInterface::setSD1(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
 
 void EPICSBPMInterface::setSD2(const long& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	putValue2(pv, value);
 }
