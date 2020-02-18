@@ -519,7 +519,7 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 //	}
 //	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
 //	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::NOnLINEAR;
+//		status = beamPositiOnmonitorStructs::BPM_STATUS::NONLINEAR;
 //		statusBuffer.push_back(status);
 //	}
 //	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
