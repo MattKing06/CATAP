@@ -169,6 +169,12 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::vector< double > > >());
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
+	boost::python::class_<std::vector< double > >("stdVectorDouble")
+		.def(boost::python::vector_indexing_suite<std::vector< double > >());
+	boost::python::class_<boost::circular_buffer< double > >("circularBufferDouble")
+		.def(boost::python::vector_indexing_suite<boost::circular_buffer< double > >());
+	boost::python::class_<boost::circular_buffer< std::vector< double > > >("circularBufferDoubleVector")
+		.def(boost::python::vector_indexing_suite<boost::circular_buffer< std::vector< double > > >());
 
 		//BPM Factory Exposure
 	boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)

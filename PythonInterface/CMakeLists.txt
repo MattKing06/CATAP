@@ -38,8 +38,13 @@ TARGET_LINK_LIBRARIES(PythonInterface PUBLIC
 					 Hardware
 					 ConfigReader
 					 Utilities)
+if (UNIX)
+  set_target_properties(PythonInterface PROPERTIES PREFIX "")
+endif(UNIX)
 set_target_properties(PythonInterface PROPERTIES OUTPUT_NAME "CATAP")
+if(WIN32)
 set_target_properties(PythonInterface PROPERTIES SUFFIX ".pyd")
+endif(WIN32)
 set_property(TARGET PythonInterface PROPERTY FOLDER "PythonInterface")
 
 add_subdirectory(test)

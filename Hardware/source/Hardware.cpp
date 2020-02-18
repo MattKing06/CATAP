@@ -35,10 +35,11 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 		hardwareName = specificValueMap.find("name")->second.data();
 	}
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
-	
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-	if (hardwareType.compare("Magnet") != 0 && hardwareType.compare("Valve") != 0)
+	if (hardwareType.compare("Magnet") != 0 
+		&& hardwareType.compare("BPM") != 0
+		&& hardwareType.compare("Valve") != 0)
 	{
 		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
@@ -58,8 +59,9 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 		}
 	}
 
-	
-	
+
+
+
 	//
 	//
 	//
@@ -138,8 +140,8 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
-messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
-machineArea(copyHardware.machineArea), mode(copyHardware.mode)
+	messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
+	machineArea(copyHardware.machineArea), mode(copyHardware.mode)
 {
 	std::cout << "Hardware copy constructor called " << std::endl;
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
@@ -187,7 +189,7 @@ bool Hardware::operator==(Hardware rhs)
 	else
 	{
 		// go through entries in the LHS map
-		for (auto &value : LHSPVStructs)
+		for (auto& value : LHSPVStructs)
 		{
 			//if our value in LHS != the value found for RHS[key]
 			// we cannot have equal PV structs so we return false
@@ -234,4 +236,3 @@ bool Hardware::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
-

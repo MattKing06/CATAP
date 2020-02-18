@@ -6,6 +6,7 @@ set(SOURCE_FILES
     source/GlobalFunctions.cpp
     source/MagnetPVRecords.cpp
     source/ValvePVRecords.cpp
+    source/BPMPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -14,6 +15,7 @@ set( INCLUDE_FILES
      include/GlobalConstants.h
      include/MagnetPVRecords.h
      include/ValvePVRecords.h
+     include/BPMPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)

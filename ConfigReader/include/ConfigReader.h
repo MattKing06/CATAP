@@ -6,6 +6,7 @@
 #include <LoggingSystem.h>
 #include <Magnet.h>
 #include <Valve.h>
+#include <BPM.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -114,9 +115,11 @@ public:
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
 				std::cout << "Got hardwareParameterMap" << std::endl;
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
-				if (typeid(HardwareType) == typeid(Magnet) || typeid(HardwareType) == typeid(Valve))
+				if (typeid(HardwareType) == typeid(Magnet) ||
+					typeid(HardwareType) == typeid(BPM) ||
+					typeid(HardwareType) == typeid(Valve))
 				{
-					std::cout << "HardwareType is Magnet or Valve;" << std::endl;
+					std::cout << "HardwareType is Magnet or Valve or BPM;" << std::endl;
 					auto recordsMap = extractRecordsIntoMap(config);
 					parameters.insert(recordsMap.begin(), recordsMap.end());
 					std::cout << "inserted recordsMap" << std::endl;
@@ -138,7 +141,7 @@ public:
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
 
-
+				
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
 				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
