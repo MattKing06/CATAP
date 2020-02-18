@@ -4,14 +4,18 @@ set(SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
     source/GlobalFunctions.cpp
-	source/MagnetPVRecords.cpp
+    source/MagnetPVRecords.cpp
+    source/BPMPVRecords.cpp
+    source/ChargePVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
      include/GlobalStateEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
-	 include/MagnetPVRecords.h
+     include/MagnetPVRecords.h
+     include/BPMPVRecords.h
+     include/ChargePVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
