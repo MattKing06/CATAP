@@ -19,10 +19,14 @@ chargeType(paramsMap.find("charge_type")->second),
 name(paramsMap.find("name")->second),
 position(std::stod(paramsMap.find("position")->second))
 {
+	messenger.printDebugMessage("constructor");
+	setPVStructs();
 	bufferSize = 10;
 	qshots = 0;
 	epicsInterface = boost::make_shared<EPICSChargeInterface>(EPICSChargeInterface());
 	qBuffer.resize(bufferSize);
+	monitoringq= false;
+	epicsInterface->ownerName = hardwareName;
 }
 Charge::Charge(const Charge& copyCharge) :
 Hardware(copyCharge),
@@ -32,6 +36,44 @@ position(copyCharge.position),
 epicsInterface(copyCharge.epicsInterface)
 {
 }
+
+void Charge::setPVStructs()
+{
+	messenger.printDebugMessage("in setPVstructs");
+
+	for (auto&& record : ChargeRecords::chargeRecordList)
+	{
+		messenger.printDebugMessage("in loop");
+		pvStructs[record] = pvStruct();
+		messenger.printDebugMessage(record);
+		pvStructs[record].pvRecord = record;
+
+		// TODO NO ERROR CHECKING! (we assum config file is good??? 
+		std::string PV = specificHardwareParameters.find(record)->second.data();
+		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+		messenger.printDebugMessage("Constructing PV information for ", record);
+
+		/*TODO
+		  This should be put into some general function: generateVirtualPV(PV) or something...
+		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+		  The config reader level if that is the case.
+		  DJS maybe they should, how certian cna we be all virtual PVs will get a VM- prefix???
+		  */
+		if (mode == STATE::VIRTUAL)
+		{
+			pvStructs[record].fullPVName = "VM-" + PV;
+		}
+		else
+		{
+			pvStructs[record].fullPVName = PV;
+		}
+		//pv.pvRecord = record;
+		//chid, count, mask, chtype are left undefined for now.
+		//pvStructs[pv.pvRecord] = pv;
+	}
+
+}
+
 std::vector<std::string> Charge::getAliases() const
 {
 	return this->aliases;
@@ -47,14 +89,9 @@ std::string Charge::getName() const
 	return this->name;
 }
 
-//STATE BPM::getBPMState() const
-//{
-//	return bpmState;
-//}
-
 double Charge::getQ() const
 {
-	return this->q;
+	return this->q.second;
 }
 
 std::vector< double > Charge::getQVector() const
@@ -92,7 +129,8 @@ boost::circular_buffer< double > Charge::getQBuffer() const
 
 bool Charge::setQ(const double& value)
 {
-	q = value;
+	q.second = value;
+	messenger.printMessage(q.second);
 	qBuffer.push_back(value);
 	qshots++;
 	if (monitoringq)

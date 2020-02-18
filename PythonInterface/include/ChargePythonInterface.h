@@ -1,61 +1,31 @@
-#ifndef MAGNET_PYTHON_INTERFACE_H_
-#define MAGNET_PYTHON_INTERFACE_H_
-#include "Magnet.h"
-#include "MagnetFactory.h"
+#ifndef CHARGE_PYTHON_INTERFACE_H_
+#define CHARGE_PYTHON_INTERFACE_H_
+#include "Charge.h"
+#include "ChargeFactory.h"
 #include "PythonTypeConversions.h"
 
 #include <boost/python.hpp>
 
 //using namespace boost::PYTHON;
 //using namespace boost;
-namespace BOOST_PYTHON_MAGNET_INCLUDE
+namespace BOOST_PYTHON_CHARGE_INCLUDE
 {
-	//class MagnetFactory;
-	//boost::python::dict getAllPSUState_Py()
-	//{
-	//	return to_py_dict(MagnetFactory::getAllPSUState())
-	//}
+	void expose_charge_object() {
 
-	/// one-stop shop for magnet state
-	void expose_magnet_state_struct() {
- 
-		boost::python::class_<magnetStateStruct>
-			("magnetStateStruct", "magnetStateStruct Doc String")
-			.add_property("numMags", &magnetStateStruct::numMags)
-			.add_property("magNames", &magnetStateStruct::magNames_Py)
-			.add_property("psuStates", &magnetStateStruct::psuStates_Py)
-			.add_property("setiValues", &magnetStateStruct::setiValues_Py)
-			.add_property("readiValues", &magnetStateStruct::readiValues_Py)
-			;
-	};
-
-
-	void expose_magnet_object() {
-
-		// magnet exposure
-		boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
-			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
-			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
-			.add_property("READI", &Magnet::getREADI)
-			.add_property("name", &Magnet::getHardwareName)
-			.add_property("manufacturer", &Magnet::getManufacturer)
-			.add_property("serial_number", &Magnet::getSerialNumber)
-			.add_property("magnet_type", &Magnet::getMagnetType)
-			//.add_property("epicsInterface", &Magnet::epicsInterface)
-			.def("switchOff", &Magnet::switchOFF)
-			.def("switchOn", &Magnet::switchOn)
-			.def("getSETI", &Magnet::getSETI)
-			.def("SETI", &Magnet::SETI)
-			.def("getREADI", &Magnet::getREADI)
-			
-			.def("degauss", &Magnet::degauss)
-			
-			.def("debugMessagesOn", &Magnet::debugMessagesOn)
-			.def("debugMessagesOff", &Magnet::debugMessagesOff)
-			.def("messagesOn", &Magnet::messagesOn)
-			.def("messagesOff", &Magnet::messagesOff)
-			;
-
+		boost::python::class_<Charge, boost::python::bases<Hardware>, boost::noncopyable>("Charge", boost::python::no_init)
+			.add_property("name", &Charge::getName)
+			.add_property("charge_type", &Charge::getChargeDiagnosticType)
+			.add_property("q", &Charge::getQ)
+			.add_property("qbuffer", &Charge::getQBuffer)
+			.add_property("qvector", &Charge::getQVector)
+			.add_property("position", &Charge::getPosition)
+			.add_property("buffersize", &Charge::getBufferSize, &Charge::setBufferSize)
+			.def("getQ", &Charge::getQ)
+			.def("getQBuffer", &Charge::getQBuffer)
+			.def("getQVector", &Charge::getQVector)
+			.def("monitorForNShots", &Charge::monitorForNShots)
+			.def("ismonitoring", &Charge::ismonitoring)
+			.def("setBufferSize", &Charge::setBufferSize);
 	}
 
 	//typedef std::pair<int, int> IntPair;
@@ -68,58 +38,31 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 
 	
-	void expose_magnet_factory_object() {
+	void expose_charge_factory_object() {
 
-		//Magnet Factory Exposure
-		STATE(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::switchOn;
-		STATE(MagnetFactory:: * turnOffSingle)(const std::string&) = &MagnetFactory::switchOFF;
-		
-		void(MagnetFactory:: * SETISingle)(const std::string&, const double&) = &MagnetFactory::SETI;
-		void(MagnetFactory:: * SETIMultiple)(const std::string&, const double&) = &MagnetFactory::SETI;
-
-		boost::python::class_<MagnetFactory, boost::noncopyable>("MagnetFactory", boost::python::no_init)
+		//charge Factory Exposure
+		boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
-			.def("setup", &MagnetFactory::setup)
-			//.add_property("magnetMap", &MagnetFactory::magnetMap)
-			.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			// NO you can't do this is you can't create a map of Magnet references 
-			//.def("getMagnets", &MagnetFactory::getMagnets_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			
-			.def("getAllMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
-
-			.def("getSETI",    &MagnetFactory::getSETI)
-			.def("getSETIs",    &MagnetFactory::getSETIs_Py)
-			.def("getAllSETI", &MagnetFactory::getAllSETI)
-			
-			.def("readDBURT", &MagnetFactory::readDBURT)
-			.def("writeDBURT", &MagnetFactory::writeDBURT)
-			
-			
-			//.def("getAllMagnetCurrents", &MagnetFactory::getAllMagnetCurrents_Py)
-			
-			//.def("SETI", &MagnetFactory::SETI)
-			.def("SETI", SETISingle)
-			
-			.def("getRICurrent", &MagnetFactory::getRICurrent)
-			.def("getRICurrents", &MagnetFactory::getRICurrents_Py)
-			
-			.def("turnOn", turnOnSingle)
-			.def("turnOn", &MagnetFactory::switchOn_Py)
-			.def("turnOff", turnOffSingle)
-			.def("turnOff", &MagnetFactory::switchOFF_Py)
-
-			.def("getAllPSUState", &MagnetFactory::getAllPSUState_Py)
-
-			.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
-			.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
-			.def("messagesOn", &MagnetFactory::messagesOn)
-			.def("messagesOff", &MagnetFactory::messagesOff)
-			;
-		//.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
-		//.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
-		//.def("messagesOn", &MagnetFactory::messagesOn)
-		//.def("messagesOff", &MagnetFactory::messagesOff);
-	
+			.def("setup", &ChargeFactory::setup)
+			.add_property("chargeMap", &ChargeFactory::chargeMap)
+			.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
+			.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
+			.def("monitorForNShots", &ChargeFactory::monitorForNShots)
+			.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
+			.def("ismonitoring", &ChargeFactory::ismonitoring)
+			.def("getPosition", &ChargeFactory::getPosition)
+			.def("getQ", &ChargeFactory::getQ)
+			.def("getQVector", &ChargeFactory::getQVector_Py)
+			.def("getQBuffer", &ChargeFactory::getQBuffer_Py)
+			.def("getPositions", &ChargeFactory::getPositions_Py)
+			.def("getQVectors", &ChargeFactory::getQVectors_Py)
+			.def("getQBuffers", &ChargeFactory::getQBuffers_Py)
+			.def("getAllQ", &ChargeFactory::getAllQ)
+			.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
+			.def("getAllQVector", &ChargeFactory::getAllQVector)
+			.def("getAllQBuffer", &ChargeFactory::getAllQBuffer)
+			.def("setBufferSize", &ChargeFactory::setBufferSize);
 
 	}
 

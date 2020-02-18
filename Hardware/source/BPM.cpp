@@ -309,10 +309,6 @@ bool BPM::setXPV(const double& value)
 {
 	xPV.second = value;
 	xPVBuffer.push_back(value);
-	for (auto& it : xPVBuffer)
-	{
-		messenger.printDebugMessage(it);
-	}
 	xpvshots++;
 	if (monitoringxpv)
 	{

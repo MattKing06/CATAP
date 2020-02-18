@@ -134,7 +134,6 @@ bool BPMFactory::setup(const std::string& VERSION)
 		std::map<std::string, pvStruct>& bpmPVStructs = bpm.second.getPVStructs();
 		for (auto& pv : bpmPVStructs)
 		{
-
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -149,10 +148,6 @@ bool BPMFactory::setup(const std::string& VERSION)
 					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
-					/*if (pv.second.pvRecord == BPMRecords::DATA)
-					{
-						pv.second.COUNT = 9;
-					}*/ 
 					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
 				}
 				EPICSInterface::sendToEPICS();

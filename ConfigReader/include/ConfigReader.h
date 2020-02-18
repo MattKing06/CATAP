@@ -6,6 +6,7 @@
 #include <LoggingSystem.h>
 #include <Magnet.h>
 #include <BPM.h>
+#include <Charge.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -113,9 +114,9 @@ public:
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
 				std::cout << "Got hardwareParameterMap" << std::endl;
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
-				if (typeid(HardwareType) == typeid(Magnet) || typeid(HardwareType) == typeid(BPM))
+				if (typeid(HardwareType) == typeid(Magnet) || typeid(HardwareType) == typeid(BPM) || typeid(HardwareType) == typeid(Charge))
 				{
-					std::cout << "HardwareType is Magnet or Valve or BPM;" << std::endl;
+					std::cout << "HardwareType is Magnet or Valve or BPM or Charge;" << std::endl;
 					auto recordsMap = extractRecordsIntoMap(config);
 					parameters.insert(recordsMap.begin(), recordsMap.end());
 					std::cout << "inserted recordsMap" << std::endl;

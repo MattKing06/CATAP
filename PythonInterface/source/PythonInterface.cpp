@@ -22,13 +22,10 @@
 #include "HardwareFactory.h"
 #include "MagnetPythonInterface.h"
 #include "BPMPythonInterface.h"
+#include "ChargePythonInterface.h"
 
 //#include "Magnet.h"
 //#include "MagnetFactory.h"
-#include "BPM.h"
-#include "BPMFactory.h"
-#include "Charge.h"
-#include "ChargeFactory.h"
 #include "ConfigReader.h"
 #include <vector>
 #include <map>
@@ -81,6 +78,8 @@ BOOST_PYTHON_MODULE(CATAP)
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct();
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_object();
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_factory_object();
+	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
+	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_factory_object();
 
 
 	//// Magnet Exposure
@@ -98,19 +97,7 @@ BOOST_PYTHON_MODULE(CATAP)
 	//	.def("getRICurrent", &Magnet::getRICurrent);
 	// BPM Exposure
 		// Charge Exposure
-		boost::python::class_<Charge, boost::python::bases<Hardware>, boost::noncopyable>("Charge", boost::python::no_init)
-		.add_property("name", &Charge::getName)
-		.add_property("charge_type", &Charge::getChargeDiagnosticType)
-		.add_property("q", &Charge::getQ)
-		.add_property("qbuffer", &Charge::getQBuffer)
-		.add_property("qvector", &Charge::getQVector)
-		.add_property("position", &Charge::getPosition)
-		.add_property("buffersize", &Charge::getBufferSize, &Charge::setBufferSize)
-		.def("getQ", &Charge::getQ)
-		.def("getQBuffer", &Charge::getQBuffer)
-		.def("getQVector", &Charge::getQVector)
-		.def("monitorForNShots", &Charge::monitorForNShots)
-		.def("ismonitoring", &Charge::ismonitoring);
+
 		// Parameter Map Exposure
 		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
@@ -152,27 +139,6 @@ BOOST_PYTHON_MODULE(CATAP)
 	//	.def("messagesOff", &MagnetFactory::messagesOff);
 		//BPM Factory Exposure
 	//Charge Factory Exposure
-	boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
-		.def(boost::python::init<STATE>())
-		.def("setup", &ChargeFactory::setup)
-		.add_property("chargeMap", &ChargeFactory::chargeMap)
-		.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())
-		.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
-		.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
-		.def("monitorForNShots", &ChargeFactory::monitorForNShots)
-		.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
-		.def("ismonitoring", &ChargeFactory::ismonitoring)
-		.def("getPosition", &ChargeFactory::getPosition)
-		.def("getQ", &ChargeFactory::getQ)
-		.def("getQVector", &ChargeFactory::getQVector_Py)
-		.def("getQBuffer", &ChargeFactory::getQBuffer_Py)
-		.def("getPositions", &ChargeFactory::getPositions_Py)
-		.def("getQVectors", &ChargeFactory::getQVectors_Py)
-		.def("getQBuffers", &ChargeFactory::getQBuffers_Py)
-		.def("getAllQ", &ChargeFactory::getAllQ)
-		.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
-		.def("getAllQVector", &ChargeFactory::getAllQVector)
-		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer);
 		// Hardware Factory Exposure
 	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<STATE>())
 		//.def(boost::python::init<STATE>())
