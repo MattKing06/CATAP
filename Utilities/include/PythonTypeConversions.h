@@ -5,6 +5,9 @@
 #include <boost/circular_buffer.hpp>
 #include <vector>
 #include <map>
+
+/*! @addtogroup utils*/
+/*!@{*/
 template< typename typeOfNewVector>
 inline
 std::vector<typeOfNewVector> to_std_vector(const boost::python::object& iterable)
@@ -61,5 +64,5 @@ boost::python::dict to_py_dict(std::map<key, value> map)
 //	}
 //	return newDictiOnary;
 //}
-
+/*!@}*/
 #endif

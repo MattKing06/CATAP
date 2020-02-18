@@ -20,7 +20,8 @@ const std::string SEPARATOR = "/";
 const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\apclara1.dl.ac.uk\\ControlRoomApps\\Controllers\\bin\\CATAP 2.0 Tools and Libraries\\MasterLatticeYAMLFiles";
 const std::string SEPARATOR = "\\";
 #endif
-
+/*! @defgroup configreader ConfigReader*/
+/**@{*/
 class ConfigReader
 {
 public:
@@ -179,6 +180,7 @@ public:
 		}
 	}
 };
+/**@}*/
 #endif //CONFIG_READER_H_
 
 //#ifndef CONFIG_READER_H_

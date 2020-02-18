@@ -50,7 +50,7 @@ void EPICSInterface::removeChannel(pvStruct& pvStruct)
 	MY_SEVCHK(status);
 }
 
-void EPICSInterface::detachFromCOntext()
+void EPICSInterface::detachFromContext()
 {
 	ca_detach_context();
 }

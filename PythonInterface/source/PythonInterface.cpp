@@ -37,8 +37,13 @@
 
 BOOST_PYTHON_MODULE(CATAP)
 {
+
+	boost::python::docstring_options CATAP_docstring_options;//(true, true, false);
+	CATAP_docstring_options.enable_all();
+	CATAP_docstring_options.disable_cpp_signatures();
+
 	//Global State Enum exposure
-	boost::python::enum_<STATE>("STATE")
+	boost::python::enum_<STATE>("STATE","Global Enums used for displaying States")
 		.value("On", STATE::ON)
 		.value("OFF", STATE::OFF)
 		.value("ERROR", STATE::ERR)
@@ -53,11 +58,6 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("OPEN", STATE::OPEN)
 		.value("CLOSED", STATE::CLOSED)
 		;
-	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
-		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
-		.def("debugMessagesOff", &EPICSInterface::debugMessagesOff)
-		.def("messagesOn", &EPICSInterface::messagesOn)
-		.def("messagesOff", &EPICSInterface::messagesOff);
 
 	//boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
 	// Hardware Exposure
@@ -264,22 +264,21 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getAllQVector", &ChargeFactory::getAllQVector)
 		.def("getAllQBuffer", &ChargeFactory::getAllQBuffer);
 		// Hardware Factory Exposure
-	boost::python::class_<HardwareFactory>("HardwareFactory", boost::python::init<STATE>())
-		//.def(boost::python::init<STATE>())
-		.def("setup", &HardwareFactory::setup)
+	boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"),boost::python::args("mode"))))
+		.def("setup",&HardwareFactory::setup, (boost::python::args("self"),boost::python::arg("hardwareType"),boost::python::args("version")))
 		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
-		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("bpmFactory", &HardwareFactory::bpmFactory)
-		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("chargeFactory", &HardwareFactory::chargeFactory)
-		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("valveFactory", &HardwareFactory::valveFactory)
-		.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
-		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
-		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
-		.def("messagesOn", &HardwareFactory::messagesOn)
-		.def("messagesOff", &HardwareFactory::messagesOff);
+		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
+		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
+		.def("messagesOn", &HardwareFactory::messagesOn, boost::python::arg("self"))
+		.def("messagesOff", &HardwareFactory::messagesOff, boost::python::arg("self"));
 
 
 	boost::python::object dumpToFile_Py = boost::python::make_function(&LoggingSystem::dumpToFile);

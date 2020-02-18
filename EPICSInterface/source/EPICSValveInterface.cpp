@@ -36,10 +36,10 @@ void EPICSValveInterface::updateValveState(const struct event_handler_args args)
 	switch (pairToUpdate.second)
 	{
 		std::cout << "UPDATE VALUE: " << pairToUpdate.second << std::endl;
-	case GlobalConstants::zero_int: recastValve->valveState.second = STATE::CLOSED; break;
-	case GlobalConstants::one_int: recastValve->valveState.second = STATE::OPEN; break;
+	case GlobalConstants::zero_int: recastValve->setValveState(STATE::CLOSED); break;
+	case GlobalConstants::one_int: recastValve->setValveState(STATE::OPEN); break;
 	default:
-		recastValve->valveState.second = STATE::ERR;
+		recastValve->setValveState(STATE::ERR);
 	}
 	messenger.printDebugMessage("VALVE STATE FOR: " + recastValve->getHardwareName() + ": "
 		+ ENUM_TO_STRING(recastValve->valveState.second));

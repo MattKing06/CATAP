@@ -9,6 +9,9 @@
 #include <GlobalStateEnums.h>
 #include "GlobalConstants.h"
 
+/** @defgroup hardware Hardware
+ * @{*/
+
 class Hardware
 {
 public:
@@ -65,5 +68,5 @@ public:
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
 };
-
+/** @}*/
 #endif //HARDWARE_H_

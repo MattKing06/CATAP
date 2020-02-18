@@ -71,8 +71,8 @@ void Valve::setValveState(const STATE& state)
 {
 	switch (state)
 	{
-	case STATE::OPEN: open(); break;
-	case STATE::CLOSED: close(); break;
+	case STATE::OPEN: valveState.second = STATE::OPEN; break;
+	case STATE::CLOSED: valveState.second = STATE::CLOSED; break;
 	default:
 		valveState.second = STATE::ERR;
 	}
