@@ -3,6 +3,7 @@ stages:
 - make
 - tests
 - doxygen
+- sphinx
 
 before_script:
   - which gcc
@@ -66,4 +67,15 @@ doxygen:
   only:
     - master
 
+sphinx:
+  stage: sphinx
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - build/*
+  script:
+  - cd build
+  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
+  only:
+    - master
 
