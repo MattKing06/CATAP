@@ -15,7 +15,7 @@ Hardware::Hardware()
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
-messenger(LoggingSystem(true, true)),
+messenger(LoggingSystem(false, false)),
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
@@ -34,7 +34,6 @@ Hardware::Hardware(const Hardware& copyHardware) :
 	messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
 	machineArea(copyHardware.machineArea), mode(copyHardware.mode)
 {
-	std::cout << "Hardware copy constructor called " << std::endl;
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
 }

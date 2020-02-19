@@ -12,6 +12,7 @@ Welcome to CATAP Python Library documentation!
    HardwareTypes.rst
    Factories.rst
    State.rst
+   ExampleScripts.rst
 
 Indices and tables
 ==================
