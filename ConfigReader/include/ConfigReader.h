@@ -65,13 +65,10 @@ public:
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
-		std::cout << "parseNextYamlFile() called " << std::endl;
 		for (auto filename : this->yamlFilenamesAndParsedStatusMap)
 		{
 			// boolean check here for safety, even though we remove all parsed files
 			// anyway, just didn't trust myself..
-
-			std::cout << "parseNextYamlFile() called " << std::endl;
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
@@ -90,34 +87,22 @@ public:
 		std::map<std::string, std::string> parameters;
 		try
 		{
-			std::cout << "parseYamlFile try " << std::endl;
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-			std::cout << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << std::endl;
 			YAML::Parser parser(fileInput);
-			std::cout << "YAML::Parser parser(fileInput); " << std::endl;
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-			std::cout << "got config " << std::endl;
 			if (config.size() > 0)
 			{
-				std::cout << "config.size() > 0" << std::endl;
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 
-				std::cout << "configTemplate Loaded;" << std::endl;
-
 				if (!checkForValidTemplate(configTemplate, config))
 				{
-
-					std::cout << "throw YAML::BadFile();" << std::endl;
 					throw YAML::BadFile();
 				}
-				std::cout << "Template is valid" << std::endl;
 
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
-				std::cout << "Got hardwareParameterMap" << std::endl;
 				auto recordsMap = extractRecordsIntoMap(config);
 				parameters.insert(recordsMap.begin(), recordsMap.end());
-				std::cout << "inserted recordsMap" << std::endl;
 				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
 				HardwareType freshHardware = HardwareType(parameters, mode);
 
@@ -127,16 +112,6 @@ public:
 
 				
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
-
-				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
-					<< ENUM_TO_STRING(mode) << std::endl;
-
-				for (auto&& item : hardwareMapToFill)
-				{
-					std::cout << item.first << std::endl;
-					std::cout << ENUM_TO_STRING(item.second.getMode()) << std::endl;
-
-				}
 			}
 			else
 			{

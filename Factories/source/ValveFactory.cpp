@@ -117,7 +117,6 @@ bool ValveFactory::setup(const std::string& VERSION)
 			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				std::cout << "cs_conn, getting some values " << std::endl;
 				retrieveMonitorStatus(pv.second);
 				valve.second.epicsInterface->retrieveCHTYPE(pv.second);
 				valve.second.epicsInterface->retrieveCOUNT(pv.second);
@@ -145,10 +144,8 @@ bool ValveFactory::setup(const std::string& VERSION)
 
 void ValveFactory::retrieveMonitorStatus(pvStruct& pvStruct) const
 {
-	std::cout << "RETRIEVE MONITOR FOR: " << pvStruct.fullPVName << std::endl;
 	if (pvStruct.pvRecord == ValveRecords::Sta)
 	{
-		std::cout << "MONITOR: " << pvStruct.fullPVName << std::endl;
 		pvStruct.monitor = true;
 	}
 	else
@@ -226,13 +223,8 @@ boost::python::dict ValveFactory::getAllValveStates_Py() const
 
 void ValveFactory::setValveState(const std::string& name, const STATE& state)
 {
-	//std::string fullName = getFullName(name);
-	for (auto& valve : valveMap)
-	{
-		std::cout << "VALVE MAP: " << valve.first << std::endl;
-	}
-
-	valveMap.at(name).setValveState(state);
+	std::string fullName = getFullName(name);
+	valveMap.at(fullName).setValveState(state);
 }
 
 void ValveFactory::close(const std::string& name)

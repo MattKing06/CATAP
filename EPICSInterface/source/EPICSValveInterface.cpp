@@ -1,16 +1,16 @@
 #include <EPICSValveInterface.h>
 
 
-LoggingSystem EPICSValveInterface::messenger;
+LoggingSystem EPICSValveInterface::static_messenger;
 
 EPICSValveInterface::EPICSValveInterface() : EPICSInterface()
 {
-	messenger = LoggingSystem(true, true);
+	static_messenger = LoggingSystem(false,false);
 }
 
 EPICSValveInterface::~EPICSValveInterface()
 {
-	messenger.printDebugMessage("EPICSValveInterface Destructor Called");
+	static_messenger.printDebugMessage("EPICSValveInterface Destructor Called");
 }
 
 void EPICSValveInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) const
@@ -23,7 +23,7 @@ void EPICSValveInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) co
 		}
 		else
 		{
-			messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
+			static_messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 		}
 	}
 }
@@ -35,13 +35,12 @@ void EPICSValveInterface::updateValveState(const struct event_handler_args args)
 	recastValve->valveState.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
-		std::cout << "UPDATE VALUE: " << pairToUpdate.second << std::endl;
 	case GlobalConstants::zero_int: recastValve->setValveState(STATE::CLOSED); break;
 	case GlobalConstants::one_int: recastValve->setValveState(STATE::OPEN); break;
 	default:
 		recastValve->setValveState(STATE::ERR);
 	}
-	messenger.printDebugMessage("VALVE STATE FOR: " + recastValve->getHardwareName() + ": "
+	static_messenger.printDebugMessage("VALVE STATE FOR: " + recastValve->getHardwareName() + ": "
 		+ ENUM_TO_STRING(recastValve->valveState.second));
 }
 
@@ -52,4 +51,39 @@ bool EPICSValveInterface::setNewValveState(const STATE& state, const pvStruct& p
 	GlobalConstants::PAUSE_1000;
 	putValue<unsigned short>(pv, GlobalConstants::EPICS_SEND);
 	return true;
+}
+
+
+void EPICSValveInterface::debugMessagesOn()
+{
+	this->static_messenger.debugMessagesOn();
+	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG On");
+}
+
+void EPICSValveInterface::debugMessagesOff()
+{
+	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
+	this->static_messenger.debugMessagesOff();
+}
+
+void EPICSValveInterface::messagesOn()
+{
+	this->static_messenger.messagesOn();
+	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES On");
+}
+
+void EPICSValveInterface::messagesOff()
+{
+	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
+	this->static_messenger.messagesOff();
+}
+
+bool EPICSValveInterface::isMessagingOn()
+{
+	return this->static_messenger.isMessagingOn();
+}
+
+bool EPICSValveInterface::isDebugOn()
+{
+	return this->static_messenger.isDebugOn();
 }

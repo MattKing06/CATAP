@@ -37,9 +37,22 @@ public:
 	static void updateValveState(const struct event_handler_args);
 
 	/*! messenger object for EPICSValveInterface messaging. */
-	static LoggingSystem messenger;
+	static LoggingSystem static_messenger;
 
-
+	/*! turns debug messaging on for this EPICSValveInterface instance*/
+	void debugMessagesOn();
+	/*! turns debug messaging off for this EPICSValveInterface instance*/
+	void debugMessagesOff();
+	/*! turns messaging on for this EPICSValveInterface instance*/
+	void messagesOn();
+	/*! turns messaging off for this EPICSValveInterface instance*/
+	void messagesOff();
+	/*! Checks if messaging flag is on
+	* @param[out] bool : returns true if messenger messagesOn flag is true, false otherwise.*/
+	bool isMessagingOn();
+	/*! Checks if debug flag is on
+	* @param[out] bool : returns true if messenger debugOn flag is true, false otherwise.*/
+	bool isDebugOn();
 
 };
 /** \copydoc EPICSInterface*/

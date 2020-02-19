@@ -70,7 +70,6 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	}
 	else
 	{
-		std::cout << "magnetFactory already setup " << std::endl;
 		return magnetFactory;
 	}
 }
@@ -90,7 +89,6 @@ ValveFactory& HardwareFactory::getValveFactory()
 	}
 	else
 	{
-		std::cout << "valveFactory already setup " << std::endl;
 		return valveFactory;
 	}
 }
@@ -110,7 +108,6 @@ BPMFactory& HardwareFactory::getBPMFactory()
 	}
 	else
 	{
-		std::cout << "bpmFactory already setup " << std::endl;
 		return bpmFactory;
 	}
 }
@@ -136,7 +133,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG On");
+	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
 	magnetFactory.debugMessagesOn();
 	bpmFactory.debugMessagesOn();
 	chargeFactory.debugMessagesOn();
@@ -144,20 +141,22 @@ void HardwareFactory::debugMessagesOn()
 
 void HardwareFactory::debugMessagesOff()
 {
-	messenger.printDebugMessage("HARDWARE-FAC", "DEBUG OFF");
+	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG OFF");
 	messenger.debugMessagesOff();
 	magnetFactory.debugMessagesOff();
 	bpmFactory.debugMessagesOff();
 	chargeFactory.debugMessagesOff();
+	valveFactory.debugMessagesOff();
 }
 
 void HardwareFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("HARDWARE-FAC - MESSAGES On");
+	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
 	magnetFactory.messagesOn();
 	bpmFactory.messagesOn();
 	chargeFactory.messagesOn();
+	valveFactory.messagesOn();
 }
 
 void HardwareFactory::messagesOff()
@@ -167,6 +166,7 @@ void HardwareFactory::messagesOff()
 	magnetFactory.messagesOff();
 	bpmFactory.messagesOff();
 	chargeFactory.messagesOff();
+	valveFactory.messagesOff();
 }
 
 bool HardwareFactory::isMessagingOn()
