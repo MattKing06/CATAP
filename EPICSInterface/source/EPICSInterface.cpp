@@ -89,7 +89,9 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
 		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
 			pvStruct.fullPVName.find("VALV") != std::string::npos ||
-			pvStruct.fullPVName.find("BPM") != std::string::npos)
+			pvStruct.fullPVName.find("BPM") != std::string::npos ||
+			pvStruct.fullPVName.find("WCM") != std::string::npos ||
+			pvStruct.fullPVName.find("FCUP") != std::string::npos)
 		{
 			pv = pvStruct.fullPVName;
 		}

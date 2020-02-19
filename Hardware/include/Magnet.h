@@ -64,11 +64,11 @@ class Magnet : public Hardware
 		boost::python::list getAliases_Py() const;
 
 		std::string getManufacturer() const;
-		int getSerialNumber() const;
+		std::string getSerialNumber() const;
 		std::string getMagnetType() const;
-		std::string getMagnetRevType() const;
+		//std::string getMagnetRevType() const;
 		double getMagneticLength() const;
-		std::string getFullPSUName() const;
+		//std::string getFullPSUName() const;
 		std::string getMeasurementDataLocation() const;
 
 		// paramEters that can be get AND set 
@@ -153,9 +153,9 @@ class Magnet : public Hardware
 		//what else does a magnet need?
 		std::vector<std::string> aliases;
 		std::string manufacturer;
-		int serialNumber;
+		std::string serialNumber;
 		std::string magType;
-		std::string magRevType;
+		//std::string magRevType;
 		double RI_tolerance;
 
 		int numberOfDegaussSteps; // TODO: this should be a size_t or uint

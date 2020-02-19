@@ -50,7 +50,8 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
                                            (BAD)
 										   (OPEN)
 										   (CLOSED)
-
+										   (NONLINEAR)
+										   (UNKNOWN)
 
 )
 /*!@}*/

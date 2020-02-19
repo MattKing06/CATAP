@@ -58,6 +58,12 @@ public:
 	double getResolution() const;
 	double getXFromPV() const;
 	double getYFromPV() const;
+	STATE status;
+	boost::circular_buffer< STATE > statusBuffer;
+	std::vector< STATE > statusVector;
+	STATE getStatus() const;
+	boost::circular_buffer< STATE > getStatusBuffer() const;
+	std::vector< STATE > getStatusVector() const;
 	//beamPositiOnmonitorStructs::BPM_STATUS getBPMStatus() const;
 	//beamPositiOnmonitorStructs::bpmDataObject& getBPMDataObject() const;
 	size_t getBufferSize() const;
@@ -108,6 +114,7 @@ public:
 	void setBufferSize(const size_t& value);
 	void setVectorSize(const size_t& value);
 	void clearBuffers();
+	void checkStatus();
 	std::string getBPMStatusStr() const;
 	STATE getBPMState() const;
 	std::pair<epicsTimeStamp, double> x;
@@ -125,10 +132,10 @@ public:
 	double p2;
 	double c1;
 	double c2;
-	unsigned int xpvshots;
-	unsigned int ypvshots;
-	unsigned int datashots;
-	unsigned int qshots;
+	size_t xpvshots = 0;
+	size_t ypvshots = 0;
+	size_t datashots = 0;
+	size_t qshots = 0;
 	size_t bufferSize;
 	size_t vectorSize;
 	boost::circular_buffer< double > xBuffer;
