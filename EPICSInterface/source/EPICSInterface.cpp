@@ -50,7 +50,7 @@ void EPICSInterface::removeChannel(pvStruct& pvStruct)
 	MY_SEVCHK(status);
 }
 
-void EPICSInterface::detachFromCOntext()
+void EPICSInterface::detachFromContext()
 {
 	ca_detach_context();
 }
@@ -95,11 +95,14 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		{
 			pv = pvStruct.fullPVName;
 		}
+		if (pvStruct.fullPVName.find("VALV") != std::string::npos)
+		{
+			pv = pvStruct.fullPVName;
+		}
 
 
 
 		std::cout << "ca_create_channel to  = " << pv << std::endl;
-
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		std::cout << "ca_create_channel status = " << ca_state(pvStruct.CHID) << std::endl;
 		

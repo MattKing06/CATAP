@@ -5,6 +5,7 @@ set(SOURCE_FILES
     source/GlobalStateEnums.cpp
     source/GlobalFunctions.cpp
     source/MagnetPVRecords.cpp
+    source/ValvePVRecords.cpp
     source/BPMPVRecords.cpp
     source/ChargePVRecords.cpp
 )
@@ -14,6 +15,7 @@ set( INCLUDE_FILES
      include/GlobalFunctions.h
      include/GlobalConstants.h
      include/MagnetPVRecords.h
+     include/ValvePVRecords.h
      include/BPMPVRecords.h
      include/ChargePVRecords.h
 )

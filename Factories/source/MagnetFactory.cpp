@@ -174,6 +174,7 @@ bool MagnetFactory::setup(const std::string& version)
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 				}
 				//// update the alias_name_map so we can use fullNames or Aliases
+				EPICSInterface::sendToEPICS();
 			}
 			else
 			{

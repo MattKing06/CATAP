@@ -8,6 +8,9 @@
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
 
+/*! @defgroup logging Logging System
+ *  @brief The core messaging system used throughout CATAP to relay both standard messages and debug messages via stdout and log files.
+ *  @{*/
 namespace Caching
 {
 	/*
@@ -37,18 +40,6 @@ public:
 	static void dumpToFile(std::string filename);
 	std::string getCurrentDateAndTimeString() const;
 
-	template<typename T>
-	void generateStringStream(std::ostream& os, T t) const
-	{
-		os << t;
-	}
-	template<typename T, typename... Args>
-	void generateStringStream(std::ostream& os, T t, Args... args) const
-	{
-		generateStringStream(os, t);
-		generateStringStream(os, args...);
-	}
-
 	template<typename... Args>
 	void printMessage(Args... args) const
 	{
@@ -74,5 +65,19 @@ public:
 		}
 		Caching::cache << getCurrentDateAndTimeString().c_str() << DEBUG << " " << oss.str().c_str() << std::endl;
 	}
+private:
+	template<typename T>
+	void generateStringStream(std::ostream& os, T t) const
+	{
+		os << t;
+	}
+	template<typename T, typename... Args>
+	void generateStringStream(std::ostream& os, T t, Args... args) const
+	{
+		generateStringStream(os, t);
+		generateStringStream(os, args...);
+	}
+
 };
+/**@}*/
 #endif // LOGGING_SYSTEM_H_
