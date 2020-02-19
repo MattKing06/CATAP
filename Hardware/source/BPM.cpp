@@ -591,10 +591,10 @@ bool BPM::setResolution()
 
 bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 {
-		if (buf[buf.size() - 1] == buf[buf.size()])
-		{
-			return true;	
-		}
+	if (buf[buf.size() - 1] == buf[buf.size()])
+	{
+		return true;	
+	}
 	return false;
 }
 
@@ -610,7 +610,7 @@ void BPM::checkStatus()
 		status = STATE::BAD;
 		statusBuffer.push_back(status);
 	}
-	else if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
+	else if (checkBuffer(xPVBuffer) || checkBuffer(yPVBuffer))
 	{
 		status = STATE::BAD;
 		statusBuffer.push_back(status);
@@ -621,7 +621,7 @@ void BPM::checkStatus()
 		statusBuffer.push_back(status);
 	}
 	else if (xpvshots > 0 && ypvshots > 0)
-		if(isnan(xBuffer.back()) || isnan(yBuffer.back()))
+		if(isnan(xPVBuffer.back()) || isnan(yPVBuffer.back()))
 		{
 			status = STATE::BAD;
 			statusBuffer.push_back(status);
