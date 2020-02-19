@@ -75,9 +75,9 @@ BOOST_PYTHON_MODULE(CATAP)
 
 
 	// expose magnet object and magnetfactoryobejct
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct_and_dburt();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
-	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct();
 
 
 	//// Magnet Exposure

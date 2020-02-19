@@ -13,7 +13,8 @@ BOOST_AUTO_TEST_CASE(start_test)
 }
 BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
-	std::string testMagnetName = "VM-CLA-C2V-MAG-HCOR-01";
+	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
+	//std::string testMagnetName = "EBT-INJ-MAG-QUAD-12";
 	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
 	magFac.messagesOn();
 	magFac.debugMessagesOn();

@@ -9,6 +9,8 @@
 #include <map>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <boost/filesystem.hpp>
+
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
@@ -30,6 +32,19 @@ struct magnetStateStruct
 	boost::python::list setiValues_Py;
 };
 
+/// DBURTs are magnet-states plus comment and timestamp 
+struct dburt
+{   // proviude a default constructor
+	dburt() :
+		comment("NO COMMENT"),
+		timestamp("NO TIME")
+	{};
+	std::string comment;
+	std::string timestamp;
+	magnetStateStruct magnetstates;
+	//magnetStateStruct magnetstates_Py;
+};
+
 class MagnetFactory
 {
 	public:
@@ -38,7 +53,6 @@ class MagnetFactory
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
 		~MagnetFactory();
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
-		
 		//MagnetFactory(std::string VERSION);
 		bool setup(const std::string &VERSION);
 		void setupChannels();
@@ -87,62 +101,44 @@ class MagnetFactory
 		std::map<std::string, STATE>  getAllILKState() const;
 		boost::python::dict getAllILKState_Py() const;
 
-
-		//bool setAllMagnetCurrents(const double& value);
-		//boost::python::dict getAllMagnetCurrents_Py();
-		//double getRICurrent(const std::string& name);
-		//std::map<std::string, double> getRICurrents(const std::vector<std::string>& names);
-		//std::map<std::string, double> getAllMagnetRICurrents();
-		
-		void SETI(const std::string& name, const double &value);
-		
-		void SETI(const std::map<std::string, double> &namesAndCurrentsMap);
-		//void SETI_Py(const std::map<std::string, double> &namesAndCurrentsMap);
+	
+		STATE SETI(const std::string& name, const double &value);
+		std::map<std::string, STATE> SETI(const std::map<std::string, double> &namesAndCurrentsMap);
+		boost::python::dict SETI_Py(boost::python::dict& namesAndCurrentsMap);
 		
 		STATE switchOn(const std::string& name);
 		std::map<std::string, STATE> switchOn(const std::vector<std::string>& names);
 		boost::python::dict switchOn_Py(const boost::python::list names);
 		//bool switchOnAllMagnets();
 		
-		STATE switchOFF(const std::string& name);
-		std::map<std::string, STATE> switchOFF(const std::vector<std::string>& names);
-		boost::python::dict switchOFF_Py(const boost::python::list names);
-		//bool switchOFFAllMagnets();
+		STATE switchOff(const std::string& name);
+		std::map<std::string, STATE> switchOff(const std::vector<std::string>& names);
+		boost::python::dict switchOff_Py(const boost::python::list names);
+		//bool switchOffAllMagnets();
 		
 
 		magnetStateStruct getMagnetState() const;
+		std::map<std::string, std::map<std::string, STATE>> applyMagnetState(const magnetStateStruct& ms);
 
-
-
-
-
-		//bool setCurrents_Py(boost::python::dict magNamesAndCurrentValues);
-		//boost::python::dict getRICurrents_Py(boost::python::list names);
-		
-
-		/// apply a state struct to the machine
-		//bool applyMagnetStateStruct(const magnetStructs::magnetStateStruct& ms);
-		/// applyt a DBURT to the machine
-		/*bool applyDBURT(const std::string& fileName);
-		bool applyDBURTCorOnly(const std::string& fileName);
-		bool applyDBURTQuadOnly(const std::string& fileName);
-
+			   
 		/// Write a DBURT
-		bool writeDBURT(const magnetStructs::magnetStateStruct& ms, const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
-		bool writeDBURT(const std::string& fileName = "", const std::string& comments = "", const std::string& keywords = "");
-*/
-		magnetStateStruct readDBURT(const std::string& filePath, const std::string& fileName);
-		bool writeDBURT(const std::string& filePath, const std::string& fileName);
+		bool writeDBURT(const std::string& fileName)const;
+		bool writeDBURT(const std::string& fileName, const std::string& commment)const;
+		bool writeDBURT(const std::string& filePath, const std::string& fileName, const std::string& commment)const;
 
+		// read a dburt from file
+		dburt readDBURT(const std::string& fileName)const;
+		dburt readDBURT(const std::string& filePath, const std::string& fileName)const;
+
+		//bool readAndApplyDburt();
+		//bool applyDBURT(const dburt& dburt_to_apply);
 
 
 
 		std::string getFullName(const std::string& name_to_check) const;
-		// private surely! 
-		std::map<std::string, Magnet> magnetMap;
 		// private
 		void populateMagnetMap();
-		void retrieveMonitorStatus(pvStruct& pvStruct);
+		void setMonitorStatus(pvStruct& pvStruct);
 		// private
 		bool hasBeenSetup;
 		// offlien physical or virtual 
@@ -158,6 +154,13 @@ class MagnetFactory
 
 		LoggingSystem messenger;
 private:
+		// private surely! 
+		std::map<std::string, Magnet> magnetMap;
+
+
+		bool writeDBURTToFile(const boost::filesystem::path& full_path, const dburt& dburt_to_write) const;
+		dburt readDBURTFile(const boost::filesystem::path& full_path) const;
+		std::pair<bool, std::string> isDBURTFileAlias(const boost::filesystem::path& full_path)const;
 
 
 		void updateAliasNameMap(const Magnet& magnet);
