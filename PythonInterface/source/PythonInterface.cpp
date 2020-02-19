@@ -24,7 +24,6 @@
 #include <ValvePythonInterface.h>
 #include <BPMPythonInterface.h>
 #include <ChargePythonInterface.h>
-#include "ConfigReader.h"
 #include <vector>
 #include <map>
 
