@@ -27,8 +27,19 @@ namespace GlobalConstants
 	const int zero_int= 0;
 	const int one_int = 1;
 
+	const unsigned short zero_ushort = 0;
+	const unsigned short one_ushort = 1;
+
+	//const epicsUInt16 zero_epicsUInt16= 0;
+	//const epicsUInt16 one_epicsUInt16 = 1;
+
+
+	
+
+
 	const size_t zero_sizet = 0;
 	const size_t one_sizet = 1;
+	const size_t eighty_sizet = 80;
 
 
 	const std::chrono::milliseconds STANDARD_PAUSE(2000);
@@ -42,6 +53,13 @@ namespace GlobalConstants
 	const time_t TIMET_0 = 0;
 	const time_t TIMET_45 = 45;
 	const time_t TIMET_60 = 60;
+
+	const std::string COMMENT = "COMMENT";
+	const std::string TIMESTAMP = "TIMESTAMP";
+	const std::string HEADER = "HEADER";
+	const std::string FILE_ALIAS = "FILE_ALIAS";
+
+	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
 
 
 }
