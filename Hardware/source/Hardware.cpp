@@ -37,7 +37,7 @@ Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, S
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-	if (hardwareType.compare("Magnet") != 0 && hardwareType.compare("BPM") != 0)
+	if (hardwareType.compare("Magnet") != 0 && hardwareType.compare("BPM") != 0 && hardwareType.compare("Charge") != 0)
 	{
 		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.

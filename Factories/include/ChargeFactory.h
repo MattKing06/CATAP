@@ -3,12 +3,13 @@
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
-#pragma Once
+#pragma once
 #include "Charge.h"
 #include <vector>
 #include <map>
 #include <utility>
 #include <boost/python.hpp>
+#include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Charge;
@@ -38,6 +39,7 @@ class ChargeFactory
 		void populateChargeMap();
 		void retrievemonitorStatus(pvStruct& pvStruct);
 		void setupChannels();
+		void setBufferSize(const size_t& value);
 		void monitorForNShots(const std::string& name, const size_t& value);
 		void monitorMultipleForNShots(const std::vector< std::string >& name, const size_t& value);
 		bool hasBeenSetup;

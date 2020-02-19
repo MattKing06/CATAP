@@ -7,6 +7,7 @@
 #ifndef EPICS_CHARGE_INTERFACE_H_
 #include "EPICSChargeInterface.h"
 #endif //EPICS_CHARGE_INTERFACE_H_
+#include "ChargePVRecords.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
@@ -29,7 +30,7 @@ class Charge : public Hardware
 		
 		// thsi exists in teh hardware base class
 		//STATE mode;
-		
+		void setPVStructs();		
 
 		LoggingSystem messenger;
 		void debugMessagesOn();
@@ -59,7 +60,7 @@ class Charge : public Hardware
 		void setBufferSize(const size_t& value);
 		void setVectorSize(const size_t& value);
 		void clearBuffers();
-		double q;
+		std::pair< epicsTimeStamp, double > q;
 		double position;
 		unsigned int qshots;
 		size_t bufferSize;
