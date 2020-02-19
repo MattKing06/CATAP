@@ -37,6 +37,8 @@ public:
 	~EPICSInterface();
 	double get_CA_PEND_IO_TIMEOUT() const;
 	std::string ownerName;
+	
+	// We also need to create a STATIC messenger in derived epicsinterface claases, 
 	LoggingSystem messenger;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -86,13 +88,12 @@ public:
 		const std::string& objectName
 		// map_ilck_pvstruct& ILockPVStructs,
 	);
-	
-	
+		
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
 	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
-	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);
+	static void updateTimeStampUShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, unsigned short>& pairToUpdate);
 	// sometimes you have to return a pair<timestamp,int> and then choose a STAT based On the int
-	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);
+	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
 	// Add in some more for vectors as we need them ... 
 
 
