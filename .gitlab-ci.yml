@@ -3,6 +3,7 @@ stages:
 - make
 - tests
 - doxygen
+- sphinx
 
 before_script:
   - which gcc
@@ -61,9 +62,20 @@ doxygen:
       - build/*
   script:
   - cd build
-  - doxygen Doxyfile.CATAPDocs
-  - scp -r ./Documentation/html/* ujo48515@172.16.114.88:/var/www/html/
+  - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
+  - scp -r ./Docs/cppdocs/html* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
 
+sphinx:
+  stage: sphinx
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - build/*
+  script:
+  - cd build
+  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
+  only:
+    - master
 

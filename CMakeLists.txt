@@ -55,13 +55,6 @@ endif(Boost_FOUND)
 #search for Doxygen package
 find_package(Doxygen)
 
-if (DOXYGEN_FOUND)
-	message("Found Doxygen")
-	set(DOXYGEN_RECURSIVE YES)
-	set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Documentation)
-	doxygen_add_docs(CATAPDocs
-					 ${CMAKE_CURRENT_SOURCE_DIR})
-endif(DOXYGEN_FOUND)
 
 add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)
@@ -71,6 +64,7 @@ add_subdirectory(PythonInterface)
 add_subdirectory(PV)
 add_subdirectory(EPICSInterface)
 add_subdirectory(Utilities)
+add_subdirectory(Docs)
 
 message(" C++: '${CMAKE_CXX_COMPILER}'")
 message("Using CMake VERSION: ${CMAKE_VERSION}")
