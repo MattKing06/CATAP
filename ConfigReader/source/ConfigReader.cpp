@@ -102,6 +102,7 @@ bool ConfigReader::checkForValidTemplate(const YAML::Node& hardwareTemplate,
 	{
 		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
 		{
+			messenger.printDebugMessage("Error missing property: " + keyAndValuePair.first.as<std::string>());
 			return false;
 		}
 	}
@@ -109,6 +110,7 @@ bool ConfigReader::checkForValidTemplate(const YAML::Node& hardwareTemplate,
 	{
 		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
 		{
+			messenger.printDebugMessage("Error missing controls_information: " + keyAndValuePair.first.as<std::string>());
 			return false;
 		}
 	}
@@ -215,12 +217,12 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		if (mode == STATE::VIRTUAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
-			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
+			//std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		else if (mode == STATE::PHYSICAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["name"].as<std::string>(), controlRecords);
-			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
+			//std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		//else
 		//{

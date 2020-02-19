@@ -61,16 +61,14 @@ public:
 	template<typename HardwareType>
 	void parseNextYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
-		std::cout << "parseNextYamlFile() called " << std::endl;
 		for (auto filename : this->yamlFilenamesAndParsedStatusMap)
 		{
 			// boolean check here for safety, even though we remove all parsed files
 			// anyway, just didn't trust myself..
-
-			std::cout << "parseNextYamlFile() called " << std::endl;
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
+				//messenger.printDebugMessage("parseNextYamlFile is trying to parse ", yamlFilename);
 				parseYamlFile(hardwareMapToFill);
 				yamlFilenamesAndParsedStatusMap[yamlFilename] = true;
 			}
@@ -86,43 +84,31 @@ public:
 		std::map<std::string, std::string> parameters;
 		try
 		{
-			std::cout << "parseYamlFile try " << std::endl;
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-			std::cout << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << std::endl;
+			//std::cout << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << std::endl;
 			YAML::Parser parser(fileInput);
-			std::cout << "YAML::Parser parser(fileInput); " << std::endl;
+			//messenger.printDebugMessage("Calling LoadFile");
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-			std::cout << "got config " << std::endl;
 			if (config.size() > 0)
 			{
-				std::cout << "config.size() > 0" << std::endl;
-
-
-
-
-				/******							ISSUE WITH FILE EXTENSIONS							*********/
+				//messenger.printDebugMessage("LoadFile got config data, getting template");
+				
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
-
-
-
-
-				std::cout << "Loading " << hardwareTemplateFilename << std::endl;
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
-				std::cout << "Loaded " << hardwareTemplateFilename << std::endl;
-				std::cout << "configTemplate Loaded;" << std::endl;
-
+				//messenger.printDebugMessage("LoadFile got template");
 				if (!checkForValidTemplate(configTemplate, config))
 				{
-
-					std::cout << "throw YAML::BadFile();" << std::endl;
-					throw YAML::BadFile();
+					messenger.printDebugMessage("Error template does not match config data filename = ", ConfigReader::yamlFilename);
+					exit(0);
+					// TODO: i'm forcing a quit here without  aproper exception, so as to be clear what the error was
+					//throw YAML::BadFile();
 				}
-				messenger.printMessage("Template is valid, getting controls info ");
+				//messenger.printMessage("Template is valid, getting controls info ");
 				auto pvAndRecordPair = extractControlsInformationIntoPair(config);
-				messenger.printMessage("Got Controls info, extracting Hardware Info ");
+				//messenger.printMessage("Got Controls info, extracting Hardware Info ");
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
-				messenger.printMessage("Extracted Hardware Information, processing");
+				//messenger.printMessage("Extracted Hardware Information, processing");
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
 				if (typeid(HardwareType) == typeid(Magnet))
 				{
@@ -130,7 +116,7 @@ public:
 					//messenger.printMessage("ConvervsionException " + std::string(ConvervsionException.what()));
 					auto recordsMap = extractRecordsIntoMap(config);
 					parameters.insert(recordsMap.begin(), recordsMap.end());
-					messenger.printMessage("Inserted Hardware Information into recordsMap");
+					//messenger.printMessage("Inserted Hardware Information into recordsMap");
 				}
 				/*IF NOT A MAGNET, USE OLD FUNCTIONALITY*/
 				else
@@ -140,30 +126,24 @@ public:
 				for (auto prop : hardwareParameterMap)
 				{
 					parameters.insert(prop);
-					messenger.printMessage("Inserted recordsMap into hardwareParameterMap");
+					//messenger.printMessage("Inserted recordsMap into hardwareParameterMap");
 				}
-
-
-				messenger.printMessage("Generating Fresh Hardware");
-
+				//messenger.printMessage("Generating Fresh Hardware");
 				HardwareType freshHardware = HardwareType(parameters, mode);
 
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-
-
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
-				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
-					<< ENUM_TO_STRING(mode) << std::endl;
+				//std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
+				//	<< ENUM_TO_STRING(mode) << std::endl;
 
-				for (auto&& item : hardwareMapToFill)
-				{
-					std::cout << item.first << std::endl;
-					std::cout << ENUM_TO_STRING(item.second.getMode()) << std::endl;
-
-				}
+				//for (auto&& item : hardwareMapToFill)
+				//{
+				//	std::cout << item.first << std::endl;
+				//	std::cout << ENUM_TO_STRING(item.second.getMode()) << std::endl;
+				//}
 			}
 			else
 			{
@@ -180,7 +160,7 @@ public:
 		catch (YAML::BadFile BadFileException)
 		{
 			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
-				ConfigReader::yamlFilename, ")  or file is not compliant with template ",
+				ConfigReader::yamlFilename, ")  ",
 				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
 			exit(0);
 		}
