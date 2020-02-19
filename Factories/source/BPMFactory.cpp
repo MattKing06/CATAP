@@ -270,6 +270,49 @@ double BPMFactory::getYFromPV(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
+STATE BPMFactory::getStatus(const std::string& name)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.getStatus();
+	}
+	return STATE::UNKNOWN;
+}
+
+boost::circular_buffer< STATE > BPMFactory::getStatusBuffer(const std::string& name)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.getStatusBuffer();
+	}
+	boost::circular_buffer< STATE> statebuffer;
+	statebuffer.push_back(STATE::UNKNOWN);
+	return statebuffer;
+}
+
+std::vector< STATE > BPMFactory::getStatusVector(const std::string& name)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+	}
+	else
+	{
+		return bpmMap.find(name)->second.getStatusVector();
+	}
+	std::vector< STATE> statevector;
+	statevector.push_back(STATE::UNKNOWN);
+	return statevector;
+}
+
 std::vector< double > BPMFactory::getData(const std::string& name)
 {
 	if (!hasBeenSetup)
@@ -728,6 +771,17 @@ std::map<std::string, double> BPMFactory::getQs(const std::vector<std::string>& 
 	return qmap;
 }
 
+std::map<std::string, STATE> BPMFactory::getStatuses(const std::vector<std::string>& names)
+{
+	std::map<std::string, STATE> statusmap;
+	for (auto name : names)
+	{
+		STATE state = bpmMap.find(name)->second.getStatus();
+		statusmap[name] = state;
+	}
+	return statusmap;
+}
+
 std::map<std::string, std::vector< double > > BPMFactory::getDatas(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< double > > datamap;
@@ -822,6 +876,17 @@ std::map<std::string, std::vector< double > > BPMFactory::getQVectors(const std:
 	return qmap;
 }
 
+std::map<std::string, std::vector< STATE > > BPMFactory::getStatusVectors(const std::vector<std::string>& names)
+{
+	std::map<std::string, std::vector< STATE > > statusmap;
+	for (auto name : names)
+	{
+		std::vector< STATE > statepv = bpmMap.find(name)->second.getStatusVector();
+		statusmap[name] = statepv;
+	}
+	return statusmap;
+}
+
 std::map<std::string, std::vector< std::vector< double > > > BPMFactory::getDataVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< std::vector< double > > > datamap;
@@ -864,6 +929,17 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getQBuffers
 		qmap[name] = q;
 	}
 	return qmap;
+}
+
+std::map<std::string, boost::circular_buffer< STATE > > BPMFactory::getStatusBuffers(const std::vector<std::string>& names)
+{
+	std::map<std::string, boost::circular_buffer< STATE > > statusmap;
+	for (auto name : names)
+	{
+		boost::circular_buffer< STATE > state = bpmMap.find(name)->second.getStatusBuffer();
+		statusmap[name] = state;
+	}
+	return statusmap;
 }
 
 std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFactory::getDataBuffers(const std::vector<std::string>& names)
@@ -941,6 +1017,17 @@ std::map<std::string, double> BPMFactory::getAllQ()
 		bpmsAndQMap.insert(nameAndQPair);
 	}
 	return bpmsAndQMap;
+}
+
+std::map<std::string, STATE> BPMFactory::getAllStatus()
+{
+	std::map<std::string, STATE> bpmsAndStatusMap;
+	for (auto bpm : bpmMap)
+	{
+		std::pair<std::string, STATE> nameAndStatusPair = std::make_pair(bpm.first, bpm.second.getStatus());
+		bpmsAndStatusMap.insert(nameAndStatusPair);
+	}
+	return bpmsAndStatusMap;
 }
 
 std::map<std::string, std::vector< double > > BPMFactory::getAllData()
@@ -1032,6 +1119,17 @@ std::map<std::string, std::vector< double > > BPMFactory::getAllQVector()
 	return bpmsAndQMap;
 }
 
+std::map<std::string, std::vector< STATE > > BPMFactory::getAllStatusVector()
+{
+	std::map<std::string, std::vector< STATE > > bpmsAndStatusMap;
+	for (auto bpm : bpmMap)
+	{
+		std::pair<std::string, std::vector< STATE > > nameAndStatusPair = std::make_pair(bpm.first, bpm.second.getStatusVector());
+		bpmsAndStatusMap.insert(nameAndStatusPair);
+	}
+	return bpmsAndStatusMap;
+}
+
 std::map<std::string, std::vector< std::vector< double > > > BPMFactory::getAllDataVector()
 {
 	std::map<std::string, std::vector< std::vector< double > > > bpmsAndDataMap;
@@ -1074,6 +1172,17 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllQBuff
 		bpmsAndQMap.insert(nameAndQPair);
 	}
 	return bpmsAndQMap;
+}
+
+std::map<std::string, boost::circular_buffer< STATE > > BPMFactory::getAllStatusBuffer()
+{
+	std::map<std::string, boost::circular_buffer< STATE > > bpmsAndStatusMap;
+	for (auto bpm : bpmMap)
+	{
+		std::pair<std::string, boost::circular_buffer< STATE > > nameAndStatusPair = std::make_pair(bpm.first, bpm.second.getStatusBuffer());
+		bpmsAndStatusMap.insert(nameAndStatusPair);
+	}
+	return bpmsAndStatusMap;
 }
 
 std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFactory::getAllDataBuffer()
@@ -1131,6 +1240,14 @@ boost::python::list BPMFactory::getQVector_Py(const std::string& bpmName)
 	return newPyList;
 }
 
+boost::python::list BPMFactory::getStatusVector_Py(const std::string& bpmName)
+{
+	std::vector< STATE > statevec;
+	statevec = getStatusVector(bpmName);
+	boost::python::list newPyList = to_py_list(statevec);
+	return newPyList;
+}
+
 boost::python::list BPMFactory::getDataVector_Py(const std::string& bpmName)
 {
 	std::vector< std::vector< double > > data;
@@ -1160,6 +1277,14 @@ boost::python::list BPMFactory::getQBuffer_Py(const std::string& bpmName)
 	boost::circular_buffer< double > qbuf;
 	qbuf = getQBuffer(bpmName);
 	boost::python::list newPyList = to_py_list(qbuf);
+	return newPyList;
+}
+
+boost::python::list BPMFactory::getStatusBuffer_Py(const std::string& bpmName)
+{
+	boost::circular_buffer< STATE > statebuf;
+	statebuf = getStatusBuffer(bpmName);
+	boost::python::list newPyList = to_py_list(statebuf);
 	return newPyList;
 }
 
@@ -1224,6 +1349,15 @@ boost::python::dict BPMFactory::getQs_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
+boost::python::dict BPMFactory::getStatuses_Py(boost::python::list bpmNames)
+{
+	std::map<std::string, STATE> statevals;
+	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
+	statevals = getStatuses(bpmNamesVector);
+	boost::python::dict newPyDict = to_py_dict(statevals);
+	return newPyDict;
+}
+
 boost::python::dict BPMFactory::getXYPositions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::pair<double, double>> xyvals;
@@ -1260,6 +1394,15 @@ boost::python::dict BPMFactory::getQVectors_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
+boost::python::dict BPMFactory::getStatusVectors_Py(boost::python::list bpmNames)
+{
+	std::map<std::string, std::vector< STATE > > statevals;
+	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
+	statevals = getStatusVectors(bpmNamesVector);
+	boost::python::dict newPyDict = to_py_dict(statevals);
+	return newPyDict;
+}
+
 boost::python::dict BPMFactory::getDataVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::vector< std::vector< double > > > datavals;
@@ -1293,6 +1436,15 @@ boost::python::dict BPMFactory::getQBuffers_Py(boost::python::list bpmNames)
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
 	qvals = getQBuffers(bpmNamesVector);
 	boost::python::dict newPyDict = to_py_dict(qvals);
+	return newPyDict;
+}
+
+boost::python::dict BPMFactory::getStatusBuffers_Py(boost::python::list bpmNames)
+{
+	std::map<std::string, boost::circular_buffer< STATE > > statevals;
+	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
+	statevals = getStatusBuffers(bpmNamesVector);
+	boost::python::dict newPyDict = to_py_dict(statevals);
 	return newPyDict;
 }
 
@@ -1376,6 +1528,13 @@ boost::python::dict BPMFactory::getAllQ_Py()
 	return newPyDict;
 }
 
+boost::python::dict BPMFactory::getAllStatus_Py()
+{
+	std::map<std::string, STATE> statevals = getAllStatus();
+	boost::python::dict newPyDict = to_py_dict(statevals);
+	return newPyDict;
+}
+
 boost::python::dict BPMFactory::getAllData_Py()
 {
 	std::map<std::string, std::vector< double > > datavals = getAllData();
@@ -1404,6 +1563,13 @@ boost::python::dict BPMFactory::getAllQVector_Py()
 	return newPyDict;
 }
 
+boost::python::dict BPMFactory::getAllStatusVector_Py()
+{
+	std::map<std::string, std::vector< STATE > > statevals = getAllStatusVector();
+	boost::python::dict newPyDict = to_py_dict(statevals);
+	return newPyDict;
+}
+
 boost::python::dict BPMFactory::getAllDataVector_Py()
 {
 	std::map<std::string, std::vector< std::vector< double > > > datavals = getAllDataVector();
@@ -1429,6 +1595,13 @@ boost::python::dict BPMFactory::getAllQBuffer_Py()
 {
 	std::map<std::string, boost::circular_buffer< double > > qvals = getAllQBuffer();
 	boost::python::dict newPyDict = to_py_dict(qvals);
+	return newPyDict;
+}
+
+boost::python::dict BPMFactory::getAllStatusBuffer_Py()
+{
+	std::map<std::string, boost::circular_buffer< STATE > > statevals = getAllStatusBuffer();
+	boost::python::dict newPyDict = to_py_dict(statevals);
 	return newPyDict;
 }
 

@@ -42,6 +42,7 @@ yBuffer.resize(bufferSize);
 yPVBuffer.resize(bufferSize);
 qBuffer.resize(bufferSize);
 dataBuffer.resize(bufferSize);
+statusBuffer.resize(bufferSize);
 for (auto&& it : dataBuffer)
 {
 	it.resize(9);
@@ -150,6 +151,21 @@ double BPM::getYFromPV() const
 double BPM::getQ() const
 {
 	return this->q.second;
+}
+
+STATE BPM::getStatus() const
+{
+	return status;
+}
+
+boost::circular_buffer< STATE > BPM::getStatusBuffer() const
+{
+	return statusBuffer;
+}
+
+std::vector< STATE > BPM::getStatusVector() const
+{
+	return statusVector;
 }
 
 std::vector< double > BPM::getData() const
@@ -523,6 +539,7 @@ bool BPM::setData(const std::vector< double >& value)
 			monitoringdata = false;
 		}
 	}
+	checkStatus();
 	return true;
 }
 
@@ -581,44 +598,48 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 	return false;
 }
 
-//void BPM::checkStatus()
-//{
-//	if (awaktstamp - rdytstamp > 1.0)
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (isnan(xBuffer.back()) || isnan(yBuffer.back()))
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(bpmdo->status);
-//	}
-//	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::NONLINEAR;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::GOOD;
-//		statusBuffer.push_back(status);
-//	}
-//	else
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::UNKNOWN;
-//		statusBuffer.push_back(status);
-//	}
-//}
+void BPM::checkStatus()
+{
+	/*if (awak.first - rdy.first > 1.0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else */if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (isnan(xBuffer.back()) || isnan(yBuffer.back()))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
+	{
+		status = STATE::NONLINEAR;
+		statusBuffer.push_back(status);
+	}
+	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
+	{
+		status = STATE::GOOD;
+		statusBuffer.push_back(status);
+	}
+	else
+	{
+		status = STATE::UNKNOWN;
+		statusBuffer.push_back(status);
+	}
+	if (ismonitoring())
+	{
+		statusVector.push_back(status);
+	}
+}
 
 bool BPM::reCalAttenuation(const double& charge)
 {
@@ -675,11 +696,13 @@ void BPM::setVectorSize(const size_t& value)
 	xPVVector.clear();
 	yPVVector.clear();
 	qVector.clear();
+	statusVector.clear();
 	dataVector.clear();
 	vectorSize = value;
 	xPVVector.resize(vectorSize);
 	yPVVector.resize(vectorSize);
 	qVector.resize(vectorSize);
+	statusVector.resize(vectorSize);
 	dataVector.resize(vectorSize);
 	for (auto&& it2 : dataVector)
 	{
@@ -696,6 +719,7 @@ void BPM::setBufferSize(const size_t& value)
 	yBuffer.resize(bufferSize);
 	yPVBuffer.resize(bufferSize);
 	qBuffer.resize(bufferSize);
+	statusBuffer.resize(bufferSize);
 	dataBuffer.resize(bufferSize);
 	pu1Buffer.resize(bufferSize);
 	pu2Buffer.resize(bufferSize);
@@ -722,6 +746,7 @@ void BPM::clearBuffers()
 	yPVBuffer.clear();
 	qBuffer.clear();
 	dataBuffer.clear();
+	statusBuffer.clear();
 	pu1Buffer.clear();
 	pu2Buffer.clear();
 	pu3Buffer.clear();

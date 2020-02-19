@@ -48,6 +48,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("GOOD", STATE::GOOD)
 		.value("BAD", STATE::BAD)
 		.value("OK", STATE::OK)
+		.value("NONLINEAR", STATE::NONLINEAR)
+		.value("UNKNOWN", STATE::UNKNOWN)
 		;
 	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
 		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
@@ -111,6 +113,14 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def(boost::python::vector_indexing_suite<boost::circular_buffer< double > >());
 	boost::python::class_<boost::circular_buffer< std::vector< double > > >("circularBufferDoubleVector")
 		.def(boost::python::vector_indexing_suite<boost::circular_buffer< std::vector< double > > >());
+	boost::python::class_<boost::circular_buffer< STATE > >("circularBufferState")
+		.def(boost::python::vector_indexing_suite<boost::circular_buffer< STATE > >());
+	boost::python::class_<std::vector< STATE > >("vectorState")
+		.def(boost::python::vector_indexing_suite<std::vector< STATE > >());
+	boost::python::class_<std::vector< boost::circular_buffer< STATE > > >("vectorcircularBufferState")
+		.def(boost::python::vector_indexing_suite<boost::circular_buffer< STATE > >());
+	boost::python::class_<std::vector< std::vector< STATE > > >("vectorvectorState")
+		.def(boost::python::vector_indexing_suite<std::vector< std::vector< STATE > > >());
 
 	////Magnet Factory Exposure
 	//STATE(MagnetFactory:: * turnOnSingle)(const std::string&) = &MagnetFactory::turnOn;
