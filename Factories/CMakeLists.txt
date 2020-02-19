@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/MagnetFactory.cpp
     source/BPMFactory.cpp
     source/ChargeFactory.cpp
+    source/ScreenFactory.cpp
 )
 
 set( INCLUDE_FILES
@@ -11,14 +12,16 @@ set( INCLUDE_FILES
     include/MagnetFactory.h
     include/BPMFactory.h
     include/ChargeFactory.h
+    include/ScreenFactory.h
 )
 
 set( TEST_FILES
-	FactoryTestHelper.cpp
+    FactoryTestHelper.cpp
     HardwareFactoryTest.cpp
     MagnetFactoryTest.cpp
     BPMFactoryTest.cpp
     ChargeFactoryTest.cpp
+    ScreenFactoryTest.cpp
 )
 
 cmake_policy(SET CMP0022 NEW)

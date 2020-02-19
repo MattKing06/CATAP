@@ -35,21 +35,28 @@
 #define DEFINE_ENUM_WITH_STRING_COnVERSIONS(name, enumerators) enum name {BOOST_PP_SEQ_ENUM(enumerators)};inline  std::string ENUM_TO_STRING(name v){switch(v){BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE,name,enumerators)default: return "[Unknown " BOOST_PP_STRINGIZE(name) "]";}}
 
 DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
-                                           (ON)
-                                           //(ERROR) !!YOU CAN@T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
-                                           (UNKNOWN_NAME)
-                                           (SUCCESS)
-                                           (OFFLINE)
-                                           (PHYSICAL)
-                                           (VIRTUAL)
-                                           (ERR)
-                                           (OK)
-                                           (GOOD)
-                                           (BAD)
-										   (NONLINEAR)
-										   (UNKNOWN)
+(ON)
+//(ERROR) !!YOU CAN@T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
+(UNKNOWN_NAME)
+(SUCCESS)
+(OFFLINE)
+(PHYSICAL)
+(VIRTUAL)
+(ERR)
+(OK)
+(GOOD)
+(BAD)
+(NONLINEAR)
+(UNKNOWN)
+)
 
-
+DEFINE_ENUM_WITH_STRING_COnVERSIONS(TYPE, 
+(VELA_PNEUMATIC)
+(VELA_HV_MOVER)
+(CLARA_HV_MOVER)
+(CLARA_V_MOVER)
+(CLARA_PNEUMATIC)
+(UNKNOWN_SCREEN_TYPE)
 )
 
 #endif //GLOBAL_STATE_ENUMS_H_

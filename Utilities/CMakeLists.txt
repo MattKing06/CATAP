@@ -7,6 +7,7 @@ set(SOURCE_FILES
     source/MagnetPVRecords.cpp
     source/BPMPVRecords.cpp
     source/ChargePVRecords.cpp
+    source/ScreenPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -16,6 +17,7 @@ set( INCLUDE_FILES
      include/MagnetPVRecords.h
      include/BPMPVRecords.h
      include/ChargePVRecords.h
+     include/ScreenPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
