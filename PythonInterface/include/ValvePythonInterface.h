@@ -15,14 +15,14 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 		boost::python::class_<Valve, boost::python::bases<Hardware>, boost::noncopyable>("Valve", boost::python::no_init)
 			.add_property("state", &Valve::getValveState, &Valve::setValveState)
 			.add_property("name", &Valve::getHardwareName)
-			.def("open", &Valve::open)
-			.def("close", &Valve::close)
-			.def("isOpen", &Valve::isOpen)
-			.def("isClosed", &Valve::isClosed)
-			.def("debugMessagesOn", &Valve::debugMessagesOn)
-			.def("debugMessagesOff", &Valve::debugMessagesOff)
-			.def("messagesOn", &Valve::messagesOn)
-			.def("messagesOff", &Valve::messagesOff)
+			.def("open", &Valve::open, boost::python::arg("self"))
+			.def("close", &Valve::close, boost::python::arg("self"))
+			.def("isOpen", &Valve::isOpen, boost::python::arg("self"))
+			.def("isClosed", &Valve::isClosed, boost::python::arg("self"))
+			.def("debugMessagesOn", &Valve::debugMessagesOn, boost::python::arg("self"))
+			.def("debugMessagesOff", &Valve::debugMessagesOff, boost::python::arg("self"))
+			.def("messagesOn", &Valve::messagesOn, boost::python::arg("self"))
+			.def("messagesOff", &Valve::messagesOff, boost::python::arg("self"))
 			;
 	}
 
