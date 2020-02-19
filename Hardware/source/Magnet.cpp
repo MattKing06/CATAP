@@ -35,7 +35,7 @@ Magnet::Magnet()
 //}
 
 Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
-	Hardware(paramsMap, mode),
+
 	// Assumes all these find succeed ? 
 	// these keywords MUST MATCH WHAT IS IN THE YAML FILE!!!
 //manufacturer(paramsMap.find("manufacturer")->second),
@@ -57,9 +57,13 @@ Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) 
 //psuState(STATE::ERR),
 //READI(GlobalConstants::double_min),
 //ilkState(STATE::ERR),
+Hardware(paramsMap, mode),
+epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
+//messenger(LoggingSystem(true, true)),
 isDegaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
+	epicsInterface->ownerName = hardwareName;
 	setPVStructs();
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
@@ -72,9 +76,7 @@ isDegaussing(false)
 	// convert value for YAML key "name_aliases", to vector of strings and set equal to memebr variable aliases
 	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });
 
-	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
-	epicsInterface->ownerName = hardwareName;
-	messenger = LoggingSystem(true, true);
+	//epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 		
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
@@ -105,7 +107,7 @@ void Magnet::setPVStructs()
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-		messenger.printDebugMessage("Constructing PV information for ", record);
+		//messenger.printDebugMessage("Constructing PV information for ", record);
 
 		/*TODO
 		  This should be put into some general function: generateVirtualPV(PV) or something...
@@ -222,10 +224,10 @@ bool Magnet::degauss(const bool reset_to_zero)
 	else
 	{
 		#ifdef _WIN32
-			std::cout << hardwareName << " is NOT DEGAUSSING!! " << std::endl;
+			//std::cout << hardwareName << " is NOT DEGAUSSING!! " << std::endl;
 			if (degausser.degauss_thread)
 			{
-				std::cout << hardwareName << " Kill degauss thread " << std::endl;
+				//std::cout << hardwareName << " Kill degauss thread " << std::endl;
 				degausser.degauss_thread->join();
 				delete degausser.degauss_thread;
 				degausser.degauss_thread = nullptr;
@@ -241,7 +243,7 @@ bool Magnet::degauss(const bool reset_to_zero)
 
 			//degausser.wait_time = this; set on constructor for now 
 
-			std::cout << hardwareName << " START NEW degauss thread " << std::endl;
+			//std::cout << hardwareName << " START NEW degauss thread " << std::endl;
 			degausser.degauss_thread = new std::thread(staticEntryDeGauss, std::ref(degausser));
 			return true;
 		#endif //WIN32
@@ -462,10 +464,10 @@ STATE Magnet::getPSUState()const
 // apply new state, 
 bool Magnet::switchOn()
 {
-	messenger.printDebugMessage("switchOn() " + hardwareName);
+	//messenger.printDebugMessage("switchOn() " + hardwareName);
 	return 	setPSUState(STATE::ON);
 }
-bool Magnet::switchOFF()
+bool Magnet::switchOff()
 {
 	return 	setPSUState(STATE::OFF);
 }
@@ -474,7 +476,7 @@ bool Magnet::setPSUState(const STATE value)
 	switch (mode)
 	{
 	case STATE::PHYSICAL:
-		messenger.printDebugMessage("SWITCH ON " + hardwareName);
+		//messenger.printDebugMessage("SWITCH ON " + hardwareName);
 		return 	epicsInterface->setNewPSUState(value, pvStructs.at(MagnetRecords::SPOWER));
 		break;
 	case STATE::VIRTUAL:
