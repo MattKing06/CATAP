@@ -344,7 +344,7 @@ bool BPM::setYPV(const double& value)
 {
 	yPV.second = value;
 	yPVBuffer.push_back(value);
-	++ypvshots;
+	ypvshots++;
 	if (monitoringypv)
 	{
 		if (ypvshots <= yPVVector.size())
@@ -526,7 +526,7 @@ bool BPM::setData(const std::vector< double >& value)
 	setResolution();
 	setQ(value);
 	qBuffer.push_back(q.second);
-	++datashots;
+	datashots++;
 	if (monitoringdata)
 	{
 		if (datashots <= dataVector.size())
@@ -591,10 +591,10 @@ bool BPM::setResolution()
 
 bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 {
-	if (buf[buf.size() - 1] == buf[buf.size()])
-	{
-		return true;
-	}
+		if (buf[buf.size() - 1] == buf[buf.size()])
+		{
+			return true;	
+		}
 	return false;
 }
 
@@ -604,8 +604,13 @@ void BPM::checkStatus()
 	{
 		status = STATE::BAD;
 		statusBuffer.push_back(status);
+	}*/
+	if (xpvshots == 0 || ypvshots == 0 || datashots == 0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
 	}
-	else */if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
+	else if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
 	{
 		status = STATE::BAD;
 		statusBuffer.push_back(status);
@@ -615,11 +620,12 @@ void BPM::checkStatus()
 		status = STATE::BAD;
 		statusBuffer.push_back(status);
 	}
-	else if (isnan(xBuffer.back()) || isnan(yBuffer.back()))
-	{
-		status = STATE::BAD;
-		statusBuffer.push_back(status);
-	}
+	else if (xpvshots > 0 && ypvshots > 0)
+		if(isnan(xBuffer.back()) || isnan(yBuffer.back()))
+		{
+			status = STATE::BAD;
+			statusBuffer.push_back(status);
+		}
 	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
 	{
 		status = STATE::NONLINEAR;

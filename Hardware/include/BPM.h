@@ -132,10 +132,10 @@ public:
 	double p2;
 	double c1;
 	double c2;
-	unsigned int xpvshots;
-	unsigned int ypvshots;
-	unsigned int datashots;
-	unsigned int qshots;
+	size_t xpvshots = 0;
+	size_t ypvshots = 0;
+	size_t datashots = 0;
+	size_t qshots = 0;
 	size_t bufferSize;
 	size_t vectorSize;
 	boost::circular_buffer< double > xBuffer;
