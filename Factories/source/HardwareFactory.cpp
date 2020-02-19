@@ -52,25 +52,21 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 }
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
-	std::cout << "called getMagnetFactory() " << std::endl;
 	if (!magnetFactory.hasBeenSetup)
 	{
-		std::cout << "!magnetFactory.hasBeenSetup " << std::endl;
 		bool setup = magnetFactory.setup("nominal");
-		if (setup)
+		if(setup)
 		{
-			std::cout << "magnetFactory setup" << std::endl;
 			return magnetFactory;
 		}
 		else
 		{
-			std::cout << "Unable to setup MagnetFactory" << std::endl;
-			messenger.printMessage("Unable to setup MagnetFactory");
+			messenger.printMessage("Unable to setup MagnetFactory, Hopefully you'll never see this");
 		}
 	}
 	else
 	{
-		std::cout << "magnetFactory already setup " << std::endl;
+		messenger.printDebugMessage("getMagnetFactory() called after magnetFactory already setup");
 		return magnetFactory;
 	}
 }
