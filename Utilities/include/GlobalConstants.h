@@ -15,8 +15,9 @@
 #undef min
 #endif
 
-/*! @defgroup utils Utilities*/
-/*! @{/
+/*! @defgroup utils Utilities
+ *  @brief A collection of classes for providing often used functions, constants, and enums throughout CATAP.
+ *  @{*/
 /*!
 	Namespace to define constants that are used throughout CATAP for ease-of-use.
 */

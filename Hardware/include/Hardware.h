@@ -10,7 +10,9 @@
 #include "GlobalConstants.h"
 
 /** @defgroup hardware Hardware
- * @{*/
+ *  @brief A collection of classes that represent hardware components of VELA/CLARA with parameters defined by configuration files.
+ *	@{
+ */
 
 class Hardware
 {

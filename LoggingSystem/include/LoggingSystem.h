@@ -8,8 +8,9 @@
 #define DEBUG "[DEBUG]"
 #define MESSAGE "[MESSAGE]"
 
-/*! @defgroup logging Logging System*/
-/**@{*/
+/*! @defgroup logging Logging System
+ *  @brief The core messaging system used throughout CATAP to relay both standard messages and debug messages via stdout and log files.
+ *  @{*/
 namespace Caching
 {
 	/*

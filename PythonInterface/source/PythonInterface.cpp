@@ -22,8 +22,6 @@
 #include "HardwareFactory.h"
 #include "MagnetPythonInterface.h"
 #include <ValvePythonInterface.h>
-//#include "Magnet.h"
-//#include "MagnetFactory.h"
 #include "BPM.h"
 #include "BPMFactory.h"
 #include "Charge.h"
