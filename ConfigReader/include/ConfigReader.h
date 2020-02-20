@@ -55,7 +55,7 @@ public:
 	const std::map <std::string, std::string> extractRecordsIntoMap(const YAML::Node& configInformationNode) const;
 
 	std::string getHardwareTypeFromName(const std::string& fullPVName) const;
-	std::vector<std::string> checkForValidTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
+	std::vector<std::string> compareFileWithTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string& version);
 	void initialiseFilenameAndParsedStatusMap();
 	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node& controlsInformationNode) const;
@@ -95,7 +95,7 @@ public:
 			{
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
-				std::vector<std::string> missingEntriesFromFile = checkForValidTemplate(configTemplate, config);
+				std::vector<std::string> missingEntriesFromFile = compareFileWithTemplate(configTemplate, config);
 				if (!missingEntriesFromFile.empty())
 				{
 					throw InvalidFileException(ConfigReader::yamlFilename, missingEntriesFromFile);

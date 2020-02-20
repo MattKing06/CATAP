@@ -86,9 +86,10 @@ std::string ConfigReader::getHardwareTypeFromName(const std::string& fullPVName)
 		" Please check the PV name or contact support." };
 }
 
-std::vector<std::string> ConfigReader::checkForValidTemplate(const YAML::Node& hardwareTemplate,
+std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node& hardwareTemplate,
 	const YAML::Node& hardwareComponent) const
 {
+	// this vector will contain any keys from the template that are not present in the config file.
 	std::vector<std::string> missingEntries;
 	for (const auto& keyAndValuePair : hardwareTemplate["properties"])
 	{
