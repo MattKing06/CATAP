@@ -3,7 +3,7 @@
 #include <iostream>
 
 InvalidFileException::InvalidFileException(std::string filename, std::string missingEntry) :
-	exception(filename.c_str()),
+	runtime_error(filename.c_str()),
 	filename(filename),
 	missingEntry(missingEntry),
 	missingEntries(std::vector<std::string>())
@@ -12,7 +12,7 @@ InvalidFileException::InvalidFileException(std::string filename, std::string mis
 }
 
 InvalidFileException::InvalidFileException(std::string filename, std::vector<std::string> missingEntries) :
-	exception(filename.c_str()),
+	runtime_error(filename.c_str()),
 	filename(filename),
 	missingEntries(missingEntries)
 {
