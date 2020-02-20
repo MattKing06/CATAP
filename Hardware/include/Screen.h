@@ -55,8 +55,7 @@ public:
 	STATE getScreenState() const;
 	STATE getScreenSetState() const;
 	TYPE getScreenType() const;
-	std::vector< std::string > getScreenNames() const;
-	std::vector< screenStructs::STATE > getAvailableDevices() const;
+	std::vector< STATE > getAvailableDevices() const;
 	bool isScreenInState(STATE sta) const;
 	bool isYAGIn() const;
 	bool isHElement(STATE e) const;
@@ -75,29 +74,28 @@ public:
 	double get_H_ACTPOS() const;
 	double get_V_ACTPOS() const;
 	/// SETTERS
-	void moveScreenTo(const std::string& name, const screenStructs::SCREEN_STATE& state);
-	void moveScreensTo(const std::vector< const std::string > names, const std::vector< screenStructs::SCREEN_STATE > states);
-	void insertYAG(const std::string& name);
-	void makeReadEqualSet(const std::string& name);
-	void makeReadEqualSetAll();
-	void makeSetEqualRead(const std::string& name);
-	void makeSetEqualReadAll();
-	void moveScreenOut(const std::string& name);
-	void resetPosition(const std::string& name);
-	void jogScreen(const std::string& name, const double jog);
-	void setPosition(const std::string& name, const double setPos);
-	bool setScreenSDEV(const std::string& name, const screenStructs::SCREEN_STATE& state);
-	bool setScreenTrigger(const std::string& name);
-	bool setScreenTrigger(const std::string& name, const screenStructs::SCREEN_STATE& state);
-	bool setEX(const std::string& name);
-	bool setEN(const std::string& name, const screenStructs::DRIVER_DIRECTION direction);
-	STATE bpmState;
+	void moveScreenTo(STATE& state);
+	void insertYAG();
+	void makeReadEqualSet();
+	void makeSetEqualRead();
+	void moveScreenOut();
+	void resetPosition();
+	void jogScreen(const double jog);
+	void setPosition(const double setPos);
+	bool setScreenSDEV(STATE& state);
+	bool setScreenTrigger();
+	bool setScreenTrigger(STATE& state);
+	bool setEX();
+	bool setEN(STATE direction);
+	std::pair< epicsTimeStamp, STATE > state;
+	std::pair< epicsTimeStamp, STATE > setstate;
 	std::string name;
-	friend class EPICSBPMInterface;
+	friend class EPICSScreenInterface;
 protected:
-	//what else does a bpm need?
+	//what else does a screen need?
 	std::vector<std::string> aliases;
-	std::string bpmType;
+	std::string screenType;
+	bool has_camera;
 };
 
-#endif //BPM_H_
+#endif //SCREEN_H_

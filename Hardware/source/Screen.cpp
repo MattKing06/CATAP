@@ -1,7 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <iostream>
-#include <BPM.h>
+#include <Screen.h>
 #include <map>
 #include <vector>
 #include <numeric>
@@ -10,72 +10,35 @@
 #include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
 
-BPM::BPM()
+Screen::Screen()
 {}
-BPM::BPM(const std::map<std::string, std::string> & paramsMap, STATE mode) :
+Screen::Screen(const std::map<std::string, std::string> & paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
-bpmType(paramsMap.find("bpm_type")->second),
+screenType(paramsMap.find("screen_type")->second),
+has_camera(paramsMap.find("has_camera")->second),
 name(paramsMap.find("name")->second),
-att1cal(std::stol(paramsMap.find("att1cal")->second)),
-att2cal(std::stol(paramsMap.find("att2cal")->second)),
-v1cal(std::stod(paramsMap.find("v1cal")->second)),
-v2cal(std::stod(paramsMap.find("v2cal")->second)),
-qcal(std::stod(paramsMap.find("qcal")->second)),
-mn(std::stod(paramsMap.find("mn")->second)),
 position(std::stod(paramsMap.find("position")->second))
 {
 messenger.printDebugMessage("constructor");
 setPVStructs();
-bufferSize = 10;
-xpvshots = 0;
-ypvshots = 0;
-datashots = 0;
-qshots = 0;
-monitoringxpv = false;
-monitoringypv = false;
-monitoringdata = false;
-epicsInterface = boost::make_shared<EPICSBPMInterface>(EPICSBPMInterface());
+epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
 epicsInterface->ownerName = hardwareName;
-xBuffer.resize(bufferSize);
-xPVBuffer.resize(bufferSize);
-yBuffer.resize(bufferSize);
-yPVBuffer.resize(bufferSize);
-qBuffer.resize(bufferSize);
-dataBuffer.resize(bufferSize);
-statusBuffer.resize(bufferSize);
-for (auto&& it : dataBuffer)
-{
-	it.resize(9);
 }
-pu1Buffer.resize(bufferSize);
-pu2Buffer.resize(bufferSize);
-pu3Buffer.resize(bufferSize);
-pu4Buffer.resize(bufferSize);
-c1Buffer.resize(bufferSize);
-c2Buffer.resize(bufferSize);
-p1Buffer.resize(bufferSize);
-p2Buffer.resize(bufferSize);
-}
-BPM::BPM(const BPM & copyBPM) :
-Hardware(copyBPM),
-bpmType(copyBPM.bpmType),
-name(copyBPM.name),
-att1cal(copyBPM.att1cal),
-att2cal(copyBPM.att2cal),
-v1cal(copyBPM.v1cal),
-v2cal(copyBPM.v2cal),
-qcal(copyBPM.qcal),
-mn(copyBPM.mn),
-position(copyBPM.position),
-epicsInterface(copyBPM.epicsInterface)
+Screen::Screen(const Screen & copyScreen) :
+Hardware(copyScreen),
+screenType(copyScreen.screenType),
+name(copyScreen.name),
+has_camera(copyScreen.has_camera),
+position(copyScreen.position),
+epicsInterface(copyScreen.epicsInterface)
 {
 }
 
-void BPM::setPVStructs()
+void Screen::setPVStructs()
 {
 	messenger.printDebugMessage("in setPVstructs");
 
-	for (auto&& record : BPMRecords::bpmRecordList)
+	for (auto&& record : ScreenRecords::bpmRecordList)
 	{
 		messenger.printDebugMessage("in loop");
 		pvStructs[record] = pvStruct();
@@ -108,118 +71,221 @@ void BPM::setPVStructs()
 
 }
 
-std::vector<std::string> BPM::getAliases() const
+std::vector<std::string> Screen::getAliases() const
 {
 	return this->aliases;
 }
 
-std::string BPM::getBPMType() const
+std::string Screen::getScreenType() const
 {
-	return this->bpmType;
+	return this->screenType;
 }
 
-std::string BPM::getBPMName() const
+std::string Screen::getScreenName() const
 {
 	return this->name;
 }
 
-//STATE BPM::getBPMState() const
-//{
-//	return bpmState;
-//}
-
-double BPM::getX() const
-{
-	return this->x.second;
-}
-
-double BPM::getXFromPV() const
-{
-	return this->xPV.second;
-}
-
-double BPM::getY() const
-{
-	return this->y.second;
-}
-
-double BPM::getYFromPV() const
-{
-	return this->yPV.second;
-}
-
-double BPM::getQ() const
-{
-	return this->q.second;
-}
-
-STATE BPM::getStatus() const
-{
-	return status;
-}
-
-boost::circular_buffer< STATE > BPM::getStatusBuffer() const
-{
-	return statusBuffer;
-}
-
-std::vector< STATE > BPM::getStatusVector() const
-{
-	return statusVector;
-}
-
-std::vector< double > BPM::getData() const
-{
-	return this->data.second;
-}
-
-std::vector< double > BPM::getXPVVector() const
-{
-	//if (monitoringxpv)
-	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING X PV -- VECTOR NOT FULL");
-	//}
-	return this->xPVVector;
-}
-
-std::vector< double > BPM::getYPVVector() const
-{
-	//if (monitoringypv)
-	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING Y PV -- VECTOR NOT FULL");
-	//}
-	return this->yPVVector;
-}
-
-std::vector< std::vector< double > > BPM::getDataVector() const
-{
-	//if (monitoringdata)
-	//{
-	//	LoggingSystem::printDebugMessage("WARNING: STILL monitorING DATA -- VECTOR NOT FULL");
-	//}
-	return this->dataVector;
-}
-
-std::vector< double > BPM::getQVector() const
-{
-	//if (monitoringdata)
-	//{
-	//	LoggingSystem::printMessage("WARNING: STILL monitorING DATA -- VECTOR NOT FULL");
-	//}
-	return this->qVector;
-}
-
-double BPM::getResolution() const
-{
-	return this->resolution.second;
-}
-
-double BPM::getPosition() const
+double Screen::getPosition() const
 {
 	return this->position;
 }
 
-bool BPM::isXPVBufferFull() const
+STATE Screen::getScreenState() const
+{
+	return this->state.second;
+}
+
+STATE Screen::getScreenSetState() const
+{
+	return this->setstate.second;
+}
+
+std::string Screen::getScreenType() const
+{
+	return this->screen.second;
+}
+
+bool Screen::isHOut() const
+{
+
+}
+
+bool Screen::isVOut() const
+{
+
+}
+
+bool Screen::isHIn() const
+{
+
+}
+
+bool Screen::isVIn() const
+{
+
+}
+
+bool Screen::is_HandV_OUT() const
+{
+
+}
+
+bool Screen::isScreenIn() const
+{
+
+}
+
+bool Screen::isHMoving() const
+{
+
+}
+
+bool Screen::isVMoving() const
+{
+
+}
+
+bool Screen::isPMoving() const
+{
+
+}
+
+bool Screen::isMoving() const
+{
+
+}
+
+bool Screen::isClearForBeam() const
+{
+
+}
+
+bool Screen::isHOut() const
+{
+
+}
+
+bool Screen::isVOut() const
+{
+
+}
+
+bool Screen::isHIn() const
+{
+
+}
+
+bool Screen::isVIn() const
+{
+
+}
+
+bool Screen::isMover() const
+{
+
+}
+
+bool Screen::isVMover() const
+{
+
+}
+
+bool Screen::isHVMover() const
+{
+
+}
+
+bool Screen::isPneumatic() const
+{
+
+}
+
+bool Screen::isScreenInState(STATE sta) const
+{
+
+}
+
+bool Screen::isYAGIn() const
+{
+
+}
+bool Screen::isHElement(STATE e) const
+{
+
+}
+
+bool Screen::isVElement(STATE e) const
+{
+
+}
+
+bool Screen::isPElement(STATE e) const
+{
+
+}
+
+bool Screen::isHEnabled() const
+{
+
+}
+
+bool Screen::isVEnabled() const
+{
+
+}
+
+double Screen::getACTPOS() const
+{
+
+}
+
+double Screen::getJDiff() const
+{
+
+}
+
+double Screen::getDevicePosition(STATE state) const
+{
+
+}
+
+double Screen::getPosition() const
+{
+
+}
+
+bool Screen::isVELAPneumatic() const
+{
+
+}
+
+bool Screen::isVELAHVMover() const
+{
+
+}
+
+bool Screen::isCLARAHVMover() const
+{
+
+}
+
+bool Screen::isCLARAVMover() const
+{
+
+}
+
+double Screen::get_H_ACTPOS() const
+{
+
+}
+
+double Screen::get_V_ACTPOS() const
+{
+
+}
+
+bool Screen::isXPVBufferFull() const
 {
 	if (xpvshots >= bufferSize)
 	{
@@ -228,7 +294,72 @@ bool BPM::isXPVBufferFull() const
 	return false;
 }
 
-bool BPM::isYPVBufferFull() const
+void Screen::moveScreenTo(STATE& state)
+{
+
+}
+
+void Screen::insertYAG()
+{
+
+}
+
+void Screen::makeReadEqualSet()
+{
+
+}
+
+void Screen::makeSetEqualRead()
+{
+
+}
+
+void Screen::moveScreenOut()
+{
+
+}
+
+void Screen::resetPosition()
+{
+
+}
+
+void Screen::jogScreen(const double jog)
+{
+
+}
+
+void Screen::setPosition(const double setPos)
+{
+
+}
+
+bool Screen::setScreenSDEV(STATE& state)
+{
+
+}
+
+bool Screen::setScreenTrigger()
+{
+
+}
+
+bool Screen::setScreenTrigger(STATE& state)
+{
+
+}
+
+bool Screen::setEX()
+{
+
+}
+
+bool Screen::setEN(STATE direction)
+{
+
+}
+
+bool Screen::isYPVBufferFull() const
 {
 	if (ypvshots >= bufferSize)
 	{
@@ -237,7 +368,7 @@ bool BPM::isYPVBufferFull() const
 	return false;
 }
 
-bool BPM::isDataBufferFull() const
+bool Screen::isDataBufferFull() const
 {
 	if (datashots >= bufferSize)
 	{
@@ -246,82 +377,82 @@ bool BPM::isDataBufferFull() const
 	return false;
 }
 
-size_t BPM::getBufferSize() const
+size_t Screen::getBufferSize() const
 {
 	return this->bufferSize;
 }
 
-boost::circular_buffer< double > BPM::getXBuffer() const
+boost::circular_buffer< double > Screen::getXBuffer() const
 {
 	return this->xBuffer;
 }
 
-boost::circular_buffer< double > BPM::getXPVBuffer() const
+boost::circular_buffer< double > Screen::getXPVBuffer() const
 {
 	return this->xPVBuffer;
 }
 
-boost::circular_buffer< double > BPM::getYBuffer() const
+boost::circular_buffer< double > Screen::getYBuffer() const
 {
 	return this->yBuffer;
 }
 
-boost::circular_buffer< double > BPM::getYPVBuffer() const
+boost::circular_buffer< double > Screen::getYPVBuffer() const
 {
 	return this->yPVBuffer;
 }
 
-boost::circular_buffer< double > BPM::getQBuffer() const
+boost::circular_buffer< double > Screen::getQBuffer() const
 {
 	return this->qBuffer;
 }
 
-boost::circular_buffer< std::vector< double > > BPM::getDataBuffer() const
+boost::circular_buffer< std::vector< double > > Screen::getDataBuffer() const
 {
 	return this->dataBuffer;
 }
 
-long BPM::getSA1() const
+long Screen::getSA1() const
 {
 	return this->sa1.second;
 }
 
-long BPM::getSA2() const
+long Screen::getSA2() const
 {
 	return this->sa2.second;
 }
 
-long BPM::getSD1() const
+long Screen::getSD1() const
 {
 	return this->sd1.second;
 }
 
-long BPM::getSD2() const
+long Screen::getSD2() const
 {
 	return this->sd2.second;
 }
 
-long BPM::getRA1() const
+long Screen::getRA1() const
 {
 	return this->ra1.second;
 }
 
-long BPM::getRA2() const
+long Screen::getRA2() const
 {
 	return this->ra2.second;
 }
 
-long BPM::getRD1() const
+long Screen::getRD1() const
 {
 	return this->rd1.second;
 }
 
-long BPM::getRD2() const
+long Screen::getRD2() const
 {
 	return this->rd2.second;
 }
 
-bool BPM::setXPV(const double& value)
+bool Screen::setXPV(const double& value)
 {
 	xPV.second = value;
 	xPVBuffer.push_back(value);
@@ -340,7 +471,7 @@ bool BPM::setXPV(const double& value)
 	return true;
 }
 
-bool BPM::setYPV(const double& value)
+bool Screen::setYPV(const double& value)
 {
 	yPV.second = value;
 	yPVBuffer.push_back(value);
@@ -359,22 +490,22 @@ bool BPM::setYPV(const double& value)
 	return true;
 }
 
-bool BPM::ismonitoringXPV() const
+bool Screen::ismonitoringXPV() const
 {
 	return monitoringxpv;
 }
 
-bool BPM::ismonitoringYPV() const
+bool Screen::ismonitoringYPV() const
 {
 	return monitoringypv;
 }
 
-bool BPM::ismonitoringData() const
+bool Screen::ismonitoringData() const
 {
 	return monitoringdata;
 }
 
-bool BPM::ismonitoring() const
+bool Screen::ismonitoring() const
 {
 	if (monitoringxpv || monitoringypv || monitoringdata)
 	{
@@ -383,7 +514,7 @@ bool BPM::ismonitoring() const
 	return false;
 }
 
-void BPM::offlineSet(const long& value)
+void Screen::offlineSet(const long& value)
 {
 	epicsTimeGetCurrent(&sa1.first);
 	sa1.first = sa1.first;
@@ -391,39 +522,39 @@ void BPM::offlineSet(const long& value)
 	sa1.second = value;
 }
 
-bool BPM::setRA1(const long& value)
+bool Screen::setRA1(const long& value)
 {
 	ra1.second = value;
 	return true;
 }
 
-bool BPM::setRA2(const long& value)
+bool Screen::setRA2(const long& value)
 {
 	ra2.second = value;
 	return true;
 }
 
-bool BPM::setRD1(const long& value)
+bool Screen::setRD1(const long& value)
 {
 	rd1.second = value;
 	return true;
 }
 
-bool BPM::setRD2(const long& value)
+bool Screen::setRD2(const long& value)
 {
 	rd2.second = value;
 	return true;
 }
 
-bool BPM::setSA1(const long& value)
+bool Screen::setSA1(const long& value)
 {
 	switch (mode)
 	{
 	case STATE::PHYSICAL:
-		epicsInterface->setSA1(value, pvStructs.at(BPMRecords::SA1));
+		epicsInterface->setSA1(value, pvStructs.at(ScreenRecords::SA1));
 		break;
 	case STATE::VIRTUAL:
-		epicsInterface->setSA1(value, pvStructs.at(BPMRecords::SA1));
+		epicsInterface->setSA1(value, pvStructs.at(ScreenRecords::SA1));
 		break;
 	default:
 		offlineSet(value);
@@ -431,15 +562,15 @@ bool BPM::setSA1(const long& value)
 	return true;
 }
 
-bool BPM::setSA2(const long& value)
+bool Screen::setSA2(const long& value)
 {
 	switch (mode)
 	{
 	case STATE::PHYSICAL:
-		epicsInterface->setSA2(value, pvStructs.at(BPMRecords::SA2));
+		epicsInterface->setSA2(value, pvStructs.at(ScreenRecords::SA2));
 		break;
 	case STATE::VIRTUAL:
-		epicsInterface->setSA2(value, pvStructs.at(BPMRecords::SA2));
+		epicsInterface->setSA2(value, pvStructs.at(ScreenRecords::SA2));
 		break;
 	default:
 		offlineSet(value);
@@ -447,15 +578,15 @@ bool BPM::setSA2(const long& value)
 	return true;
 }
 
-bool BPM::setSD1(const long& value)
+bool Screen::setSD1(const long& value)
 {
 	switch (mode)
 	{
 	case STATE::PHYSICAL:
-		epicsInterface->setSD1(value, pvStructs.at(BPMRecords::SD1));
+		epicsInterface->setSD1(value, pvStructs.at(ScreenRecords::SD1));
 		break;
 	case STATE::VIRTUAL:
-		epicsInterface->setSD1(value, pvStructs.at(BPMRecords::SD1));
+		epicsInterface->setSD1(value, pvStructs.at(ScreenRecords::SD1));
 		break;
 	default:
 		offlineSet(value);
@@ -463,15 +594,15 @@ bool BPM::setSD1(const long& value)
 	return true;
 }
 
-bool BPM::setSD2(const long& value)
+bool Screen::setSD2(const long& value)
 {
 	switch (mode)
 	{
 	case STATE::PHYSICAL:
-		epicsInterface->setSD2(value, pvStructs.at(BPMRecords::SD2));
+		epicsInterface->setSD2(value, pvStructs.at(ScreenRecords::SD2));
 		break;
 	case STATE::VIRTUAL:
-		epicsInterface->setSD2(value, pvStructs.at(BPMRecords::SD2));
+		epicsInterface->setSD2(value, pvStructs.at(ScreenRecords::SD2));
 		break;
 	default:
 		offlineSet(value);
@@ -479,31 +610,31 @@ bool BPM::setSD2(const long& value)
 	return true;
 }
 
-bool BPM::setAWAK(const double& value)
+bool Screen::setAWAK(const double& value)
 {
 	awak.second = value;
 	return true;
 }
 
-bool BPM::setAWAKTStamp(const double& value)
+bool Screen::setAWAKTStamp(const double& value)
 {
 	awaktstamp = value;
 	return true;
 }
 
-bool BPM::setRDY(const double& value)
+bool Screen::setRDY(const double& value)
 {
 	rdy.second = value;
 	return true;
 }
 
-bool BPM::setRDYTStamp(const double& value)
+bool Screen::setRDYTStamp(const double& value)
 {
 	rdytstamp = value;
 	return true;
 }
 
-bool BPM::setData(const std::vector< double >& value)
+bool Screen::setData(const std::vector< double >& value)
 {
 	data.second = value;
 	pu1 = value[1];
@@ -543,7 +674,7 @@ bool BPM::setData(const std::vector< double >& value)
 	return true;
 }
 
-bool BPM::setQ(const std::vector< double >& rawData)
+bool Screen::setQ(const std::vector< double >& rawData)
 {
 	double v1, v2, q1, q2;
 	double u11, u12, u13, u14, u21, u22, u23, u24;
@@ -565,7 +696,7 @@ bool BPM::setQ(const std::vector< double >& rawData)
 	return true;
 }
 
-bool BPM::setResolution()
+bool Screen::setResolution()
 {
 	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
 	double rmsVals;
@@ -589,7 +720,7 @@ bool BPM::setResolution()
 	return true;
 }
 
-bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
+bool Screen::checkBuffer(boost::circular_buffer< double >& buf)
 {
 	if (buf[buf.size() - 1] == buf[buf.size()])
 	{
@@ -598,7 +729,7 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 	return false;
 }
 
-void BPM::checkStatus()
+void Screen::checkStatus()
 {
 	/*if (awak.first - rdy.first > 1.0)
 	{
@@ -647,7 +778,7 @@ void BPM::checkStatus()
 	}
 }
 
-bool BPM::reCalAttenuation(const double& charge)
+bool Screen::reCalAttenuation(const double& charge)
 {
 	double qqC = charge / qcal;
 
@@ -688,7 +819,7 @@ bool BPM::reCalAttenuation(const double& charge)
 	return true;
 }
 
-void BPM::monitorForNShots(const size_t& value)
+void Screen::monitorForNShots(const size_t& value)
 {
 	setVectorSize(value);
 	monitoringxpv = true;
@@ -696,7 +827,7 @@ void BPM::monitorForNShots(const size_t& value)
 	monitoringdata = true;
 }
 
-void BPM::setVectorSize(const size_t& value)
+void Screen::setVectorSize(const size_t& value)
 {
 	clearBuffers();
 	xPVVector.clear();
@@ -716,7 +847,7 @@ void BPM::setVectorSize(const size_t& value)
 	}
 }
 
-void BPM::setBufferSize(const size_t& value)
+void Screen::setBufferSize(const size_t& value)
 {
 	clearBuffers();
 	bufferSize = value;
@@ -741,7 +872,7 @@ void BPM::setBufferSize(const size_t& value)
 	}
 }
 
-void BPM::clearBuffers()
+void Screen::clearBuffers()
 {
 	xpvshots = 0;
 	ypvshots = 0;
@@ -763,28 +894,28 @@ void BPM::clearBuffers()
 	p2Buffer.clear();
 }
 
-void BPM::debugMessagesOff()
+void Screen::debugMessagesOff()
 {
 	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
 	messenger.debugMessagesOff();
 	epicsInterface->debugMessagesOff();
 }
 
-void BPM::debugMessagesOn()
+void Screen::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage(hardwareName, " - DEBUG On");
 	epicsInterface->debugMessagesOn();
 }
 
-void BPM::messagesOff()
+void Screen::messagesOff()
 {
 	messenger.printMessage(hardwareName, " - MESSAGES OFF");
 	messenger.messagesOff();
 	epicsInterface->messagesOff();
 }
 
-void BPM::messagesOn()
+void Screen::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage(hardwareName, " - MESSAGES On");

@@ -1,4 +1,4 @@
-#include "BPMFactory.h"
+#include "ScreenFactory.h"
 #include <boost/filesystem.hpp>
 #include <map>
 #include <iostream>
@@ -11,35 +11,35 @@
 #endif
 #include "yaml-cpp/emitter.h"
 
-BPMFactory::BPMFactory() : BPMFactory(STATE::OFFLINE)
+ScreenFactory::ScreenFactory() : ScreenFactory(STATE::OFFLINE)
 {
-	std::cout << "BPMFactory DEFAULT constRUCTOR called " << std::endl;
+	std::cout << "ScreenFactory DEFAULT constRUCTOR called " << std::endl;
 }
-BPMFactory::BPMFactory(STATE mode):
+ScreenFactory::ScreenFactory(STATE mode):
 	mode(mode),
 	hasBeenSetup(false),
-	reader(ConfigReader("BPM", mode))
+	reader(ConfigReader("Screen", mode))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
 //	messenger = LoggingSystem(false, false);
-	messenger.printDebugMessage("BPM Factory constructed");
+	messenger.printDebugMessage("Screen Factory constructed");
 	//mode = mode;
-	//reader = ConfigReader("BPM", mode);
+	//reader = ConfigReader("Screen", mode);
 }
-BPMFactory::BPMFactory(const BPMFactory& copyBPMFactory)
-	: hasBeenSetup(copyBPMFactory.hasBeenSetup),
-	mode(copyBPMFactory.mode),
-	messenger(copyBPMFactory.messenger),
-	reader(copyBPMFactory.reader)
+ScreenFactory::ScreenFactory(const ScreenFactory& copyScreenFactory)
+	: hasBeenSetup(copyScreenFactory.hasBeenSetup),
+	mode(copyScreenFactory.mode),
+	messenger(copyScreenFactory.messenger),
+	reader(copyScreenFactory.reader)
 {
-	messenger.printDebugMessage("BPMFactory Copy cOntructor");
-	bpmMap.insert(copyBPMFactory.bpmMap.begin(), copyBPMFactory.bpmMap.end());
+	messenger.printDebugMessage("ScreenFactory Copy cOntructor");
+	bpmMap.insert(copyScreenFactory.bpmMap.begin(), copyScreenFactory.bpmMap.end());
 }
 
-BPMFactory::~BPMFactory()
+ScreenFactory::~ScreenFactory()
 {
-	messenger.printDebugMessage("BPMFactory Destructor Called");
+	messenger.printDebugMessage("ScreenFactory Destructor Called");
 	if (hasBeenSetup)
 	{
 		for (auto& bpm : bpmMap)
@@ -59,36 +59,36 @@ BPMFactory::~BPMFactory()
 	}
 }
 
-void BPMFactory::populateBPMMap()
+void ScreenFactory::populateScreenMap()
 {
-	messenger.printDebugMessage("BPMFactory is populating the bpm map");
+	messenger.printDebugMessage("ScreenFactory is populating the bpm map");
 	if (!reader.hasMoreFilesToParse())
 	{
 		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		messenger.printDebugMessage("BPM Factory calling parseNextYamlFile");
+		messenger.printDebugMessage("Screen Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(bpmMap);
 	}
-	messenger.printDebugMessage("BPMFactory has finished populating the bpm map");
+	messenger.printDebugMessage("ScreenFactory has finished populating the bpm map");
 }
 
-void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
+void ScreenFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == BPMRecords::X || 
-		pvStruct.pvRecord == BPMRecords::Y || 
-		pvStruct.pvRecord == BPMRecords::SA1 ||
-		pvStruct.pvRecord == BPMRecords::SA2 ||
-		pvStruct.pvRecord == BPMRecords::SD1 ||
-		pvStruct.pvRecord == BPMRecords::SD2 ||
-		pvStruct.pvRecord == BPMRecords::RA1 ||
-		pvStruct.pvRecord == BPMRecords::RA2 ||
-		pvStruct.pvRecord == BPMRecords::RD1 ||
-		pvStruct.pvRecord == BPMRecords::RD2 ||
-		pvStruct.pvRecord == BPMRecords::DATA ||
-		pvStruct.pvRecord == BPMRecords::AWAK ||
-		pvStruct.pvRecord == BPMRecords::RDY
+	if (pvStruct.pvRecord == ScreenRecords::X || 
+		pvStruct.pvRecord == ScreenRecords::Y || 
+		pvStruct.pvRecord == ScreenRecords::SA1 ||
+		pvStruct.pvRecord == ScreenRecords::SA2 ||
+		pvStruct.pvRecord == ScreenRecords::SD1 ||
+		pvStruct.pvRecord == ScreenRecords::SD2 ||
+		pvStruct.pvRecord == ScreenRecords::RA1 ||
+		pvStruct.pvRecord == ScreenRecords::RA2 ||
+		pvStruct.pvRecord == ScreenRecords::RD1 ||
+		pvStruct.pvRecord == ScreenRecords::RD2 ||
+		pvStruct.pvRecord == ScreenRecords::DATA ||
+		pvStruct.pvRecord == ScreenRecords::AWAK ||
+		pvStruct.pvRecord == ScreenRecords::RDY
 		)
 	{
 		pvStruct.monitor = true;
@@ -99,7 +99,7 @@ void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
 	}
 }
 
-void BPMFactory::setupChannels()
+void ScreenFactory::setupChannels()
 {
 	for (auto& bpm : bpmMap)
 	{
@@ -112,7 +112,7 @@ void BPMFactory::setupChannels()
 	}
 }
 
-bool BPMFactory::setup(const std::string& VERSION)
+bool ScreenFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)
 	{
@@ -122,10 +122,10 @@ bool BPMFactory::setup(const std::string& VERSION)
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	//// epics magnet interface has been initialized in BPM constructor
+	//// epics magnet interface has been initialized in Screen constructor
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
-	populateBPMMap();
+	populateScreenMap();
 
 	setupChannels();
 	EPICSInterface::sendToEPICS();
@@ -165,22 +165,22 @@ bool BPMFactory::setup(const std::string& VERSION)
 	std::cout << "end" << std::endl;
 }
 
-std::map<std::string, BPM> BPMFactory::getBPMs(std::vector<std::string> bpmNames)
+std::map<std::string, Screen> ScreenFactory::getScreens(std::vector<std::string> bpmNames)
 {
-	std::map<std::string, BPM> selectedBPMs;
+	std::map<std::string, Screen> selectedScreens;
 	for (auto& bpmName : bpmNames)
 	{
-		selectedBPMs[bpmName] = bpmMap.find(bpmName)->second;
+		selectedScreens[bpmName] = bpmMap.find(bpmName)->second;
 	}
-	return selectedBPMs;
+	return selectedScreens;
 }
 
-BPM& BPMFactory::getBPM(const std::string& fullBPMName)
+Screen& ScreenFactory::getScreen(const std::string& fullScreenName)
 {
-	return bpmMap.find(fullBPMName)->second;
+	return bpmMap.find(fullScreenName)->second;
 }
 
-std::map<std::string, BPM> BPMFactory::getAllBPMs()
+std::map<std::string, Screen> ScreenFactory::getAllScreens()
 {
 	if (!hasBeenSetup)
 	{
@@ -188,29 +188,29 @@ std::map<std::string, BPM> BPMFactory::getAllBPMs()
 	}
 	else
 	{
-		messenger.printDebugMessage("BPMS HAVE ALREADY BEEN constRUCTED.");
+		messenger.printDebugMessage("ScreenS HAVE ALREADY BEEN constRUCTED.");
 	}
 	return bpmMap;
 }
 
-std::string BPMFactory::getBPMName(const std::string& name)
+std::string ScreenFactory::getScreenName(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
-		return bpmMap.find(name)->second.getBPMName();
+		return bpmMap.find(name)->second.getScreenName();
 	}
 	return "0";
 }
 
-void BPMFactory::monitorForNShots(const std::string& name, const size_t& value)
+void ScreenFactory::monitorForNShots(const std::string& name, const size_t& value)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -218,11 +218,11 @@ void BPMFactory::monitorForNShots(const std::string& name, const size_t& value)
 	}
 }
 
-double BPMFactory::getX(const std::string& name)
+double ScreenFactory::getX(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -231,11 +231,11 @@ double BPMFactory::getX(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getXFromPV(const std::string& name)
+double ScreenFactory::getXFromPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -244,11 +244,11 @@ double BPMFactory::getXFromPV(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getY(const std::string& name)
+double ScreenFactory::getY(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -257,11 +257,11 @@ double BPMFactory::getY(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getYFromPV(const std::string& name)
+double ScreenFactory::getYFromPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -270,11 +270,11 @@ double BPMFactory::getYFromPV(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-STATE BPMFactory::getStatus(const std::string& name)
+STATE ScreenFactory::getStatus(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -283,11 +283,11 @@ STATE BPMFactory::getStatus(const std::string& name)
 	return STATE::UNKNOWN;
 }
 
-boost::circular_buffer< STATE > BPMFactory::getStatusBuffer(const std::string& name)
+boost::circular_buffer< STATE > ScreenFactory::getStatusBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -298,11 +298,11 @@ boost::circular_buffer< STATE > BPMFactory::getStatusBuffer(const std::string& n
 	return statebuffer;
 }
 
-std::vector< STATE > BPMFactory::getStatusVector(const std::string& name)
+std::vector< STATE > ScreenFactory::getStatusVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -313,11 +313,11 @@ std::vector< STATE > BPMFactory::getStatusVector(const std::string& name)
 	return statevector;
 }
 
-std::vector< double > BPMFactory::getData(const std::string& name)
+std::vector< double > ScreenFactory::getData(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -327,11 +327,11 @@ std::vector< double > BPMFactory::getData(const std::string& name)
 	return vector2;
 }
 
-std::pair<double, double> BPMFactory::getXYPosition(const std::string& name)
+std::pair<double, double> ScreenFactory::getXYPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -342,11 +342,11 @@ std::pair<double, double> BPMFactory::getXYPosition(const std::string& name)
 	return std::make_pair(std::numeric_limits<double>::min(), std::numeric_limits<double>::min());
 }
 
-double BPMFactory::getQ(const std::string& name)
+double ScreenFactory::getQ(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -355,11 +355,11 @@ double BPMFactory::getQ(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getPosition(const std::string& name)
+double ScreenFactory::getPosition(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -368,11 +368,11 @@ double BPMFactory::getPosition(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-double BPMFactory::getResolution(const std::string& name)
+double ScreenFactory::getResolution(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -381,11 +381,11 @@ double BPMFactory::getResolution(const std::string& name)
 	return std::numeric_limits<double>::min();;
 }
 
-std::vector< double > BPMFactory::getXPVVector(const std::string& name)
+std::vector< double > ScreenFactory::getXPVVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -395,11 +395,11 @@ std::vector< double > BPMFactory::getXPVVector(const std::string& name)
 	return vector2;
 }
 
-std::vector< double > BPMFactory::getYPVVector(const std::string& name)
+std::vector< double > ScreenFactory::getYPVVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -409,11 +409,11 @@ std::vector< double > BPMFactory::getYPVVector(const std::string& name)
 	return vector2;
 }
 
-std::vector< double > BPMFactory::getQVector(const std::string& name)
+std::vector< double > ScreenFactory::getQVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -423,11 +423,11 @@ std::vector< double > BPMFactory::getQVector(const std::string& name)
 	return vector2;
 }
 
-std::vector< std::vector< double > > BPMFactory::getDataVector(const std::string& name)
+std::vector< std::vector< double > > ScreenFactory::getDataVector(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -438,11 +438,11 @@ std::vector< std::vector< double > > BPMFactory::getDataVector(const std::string
 	return vector3;
 }
 
-boost::circular_buffer< double > BPMFactory::getXPVBuffer(const std::string& name)
+boost::circular_buffer< double > ScreenFactory::getXPVBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -452,11 +452,11 @@ boost::circular_buffer< double > BPMFactory::getXPVBuffer(const std::string& nam
 	return vector2;
 }
 
-boost::circular_buffer< double > BPMFactory::getYPVBuffer(const std::string& name)
+boost::circular_buffer< double > ScreenFactory::getYPVBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -466,11 +466,11 @@ boost::circular_buffer< double > BPMFactory::getYPVBuffer(const std::string& nam
 	return vector2;
 }
 
-boost::circular_buffer< double > BPMFactory::getQBuffer(const std::string& name)
+boost::circular_buffer< double > ScreenFactory::getQBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -480,11 +480,11 @@ boost::circular_buffer< double > BPMFactory::getQBuffer(const std::string& name)
 	return vector2;
 }
 
-boost::circular_buffer< std::vector< double > > BPMFactory::getDataBuffer(const std::string& name)
+boost::circular_buffer< std::vector< double > > ScreenFactory::getDataBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -495,11 +495,11 @@ boost::circular_buffer< std::vector< double > > BPMFactory::getDataBuffer(const 
 	return vector3;
 }
 
-bool BPMFactory::ismonitoringXPV(const std::string& name)
+bool ScreenFactory::ismonitoringXPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -508,11 +508,11 @@ bool BPMFactory::ismonitoringXPV(const std::string& name)
 	return false;
 }
 
-bool BPMFactory::ismonitoring(const std::string& name)
+bool ScreenFactory::ismonitoring(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -521,11 +521,11 @@ bool BPMFactory::ismonitoring(const std::string& name)
 	return false;
 }
 
-bool BPMFactory::ismonitoringYPV(const std::string& name)
+bool ScreenFactory::ismonitoringYPV(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -534,11 +534,11 @@ bool BPMFactory::ismonitoringYPV(const std::string& name)
 	return false;
 }
 
-bool BPMFactory::ismonitoringData(const std::string& name)
+bool ScreenFactory::ismonitoringData(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -547,11 +547,11 @@ bool BPMFactory::ismonitoringData(const std::string& name)
 	return false;
 }
 
-long BPMFactory::getSA1(const std::string& name)
+long ScreenFactory::getSA1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -560,11 +560,11 @@ long BPMFactory::getSA1(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-long BPMFactory::getSA2(const std::string& name)
+long ScreenFactory::getSA2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -573,11 +573,11 @@ long BPMFactory::getSA2(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-long BPMFactory::getSD1(const std::string& name)
+long ScreenFactory::getSD1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -586,11 +586,11 @@ long BPMFactory::getSD1(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-long BPMFactory::getSD2(const std::string& name)
+long ScreenFactory::getSD2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -599,11 +599,11 @@ long BPMFactory::getSD2(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-bool BPMFactory::setSA1(const std::string& name, const long& value)
+bool ScreenFactory::setSA1(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -612,11 +612,11 @@ bool BPMFactory::setSA1(const std::string& name, const long& value)
 	return false;
 }
 
-bool BPMFactory::setSA2(const std::string& name, const long& value)
+bool ScreenFactory::setSA2(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -625,11 +625,11 @@ bool BPMFactory::setSA2(const std::string& name, const long& value)
 	return false;
 }
 
-bool BPMFactory::setSD1(const std::string& name, const long& value)
+bool ScreenFactory::setSD1(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -638,11 +638,11 @@ bool BPMFactory::setSD1(const std::string& name, const long& value)
 	return false;
 }
 
-bool BPMFactory::setSD2(const std::string& name, const long& value)
+bool ScreenFactory::setSD2(const std::string& name, const long& value)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -651,11 +651,11 @@ bool BPMFactory::setSD2(const std::string& name, const long& value)
 	return false;
 }
 
-long BPMFactory::getRA1(const std::string& name)
+long ScreenFactory::getRA1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -664,11 +664,11 @@ long BPMFactory::getRA1(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-long BPMFactory::getRA2(const std::string& name)
+long ScreenFactory::getRA2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -677,11 +677,11 @@ long BPMFactory::getRA2(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-long BPMFactory::getRD1(const std::string& name)
+long ScreenFactory::getRD1(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -690,11 +690,11 @@ long BPMFactory::getRD1(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-long BPMFactory::getRD2(const std::string& name)
+long ScreenFactory::getRD2(const std::string& name)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -703,11 +703,11 @@ long BPMFactory::getRD2(const std::string& name)
 	return std::numeric_limits<long>::min();;
 }
 
-bool BPMFactory::reCalAttenuation(const std::string& name, const double& charge)
+bool ScreenFactory::reCalAttenuation(const std::string& name, const double& charge)
 {
 	if (!hasBeenSetup)
 	{
-		messenger.printDebugMessage("Please call BPMFactory.setup(VERSION)");
+		messenger.printDebugMessage("Please call ScreenFactory.setup(VERSION)");
 	}
 	else
 	{
@@ -716,7 +716,7 @@ bool BPMFactory::reCalAttenuation(const std::string& name, const double& charge)
 	return false;
 }
 
-std::map<std::string, double> BPMFactory::getXs(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getXs(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> xpositiOns;
 	for (auto name : names)
@@ -727,7 +727,7 @@ std::map<std::string, double> BPMFactory::getXs(const std::vector<std::string>& 
 	return xpositiOns;
 }
 
-std::map<std::string, double> BPMFactory::getYs(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getYs(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> ypositiOns;
 	for (auto name : names)
@@ -738,7 +738,7 @@ std::map<std::string, double> BPMFactory::getYs(const std::vector<std::string>& 
 	return ypositiOns;
 }
 
-std::map<std::string, double> BPMFactory::getXsFromPV(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getXsFromPV(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> xpositiOns;
 	for (auto name : names)
@@ -749,7 +749,7 @@ std::map<std::string, double> BPMFactory::getXsFromPV(const std::vector<std::str
 	return xpositiOns;
 }
 
-std::map<std::string, double> BPMFactory::getYsFromPV(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getYsFromPV(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> ypositiOns;
 	for (auto name : names)
@@ -760,7 +760,7 @@ std::map<std::string, double> BPMFactory::getYsFromPV(const std::vector<std::str
 	return ypositiOns;
 }
 
-std::map<std::string, double> BPMFactory::getQs(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getQs(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> qmap;
 	for (auto name : names)
@@ -771,7 +771,7 @@ std::map<std::string, double> BPMFactory::getQs(const std::vector<std::string>& 
 	return qmap;
 }
 
-std::map<std::string, STATE> BPMFactory::getStatuses(const std::vector<std::string>& names)
+std::map<std::string, STATE> ScreenFactory::getStatuses(const std::vector<std::string>& names)
 {
 	std::map<std::string, STATE> statusmap;
 	for (auto name : names)
@@ -782,7 +782,7 @@ std::map<std::string, STATE> BPMFactory::getStatuses(const std::vector<std::stri
 	return statusmap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getDatas(const std::vector<std::string>& names)
+std::map<std::string, std::vector< double > > ScreenFactory::getDatas(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< double > > datamap;
 	for (auto name : names)
@@ -793,7 +793,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getDatas(const std::ve
 	return datamap;
 }
 
-std::map<std::string, std::pair<double, double>> BPMFactory::getXYPositions(const std::vector<std::string>& names)
+std::map<std::string, std::pair<double, double>> ScreenFactory::getXYPositions(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::pair<double, double>> bpmsAndPositiOnsMap;
 	for (auto name : names)
@@ -807,7 +807,7 @@ std::map<std::string, std::pair<double, double>> BPMFactory::getXYPositions(cons
 	return bpmsAndPositiOnsMap;
 }
 
-std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > BPMFactory::getXYPositionVectors(const std::vector<std::string>& names)
+std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > ScreenFactory::getXYPositionVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > bpmsAndPositiOnsMap;
 	for (auto name : names)
@@ -821,7 +821,7 @@ std::map<std::string, std::pair<std::vector< double >, std::vector< double > > >
 	return bpmsAndPositiOnsMap;
 }
 
-std::map<std::string, double> BPMFactory::getPositions(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getPositions(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> positiOnmap;
 	for (auto name : names)
@@ -832,7 +832,7 @@ std::map<std::string, double> BPMFactory::getPositions(const std::vector<std::st
 	return positiOnmap;
 }
 
-std::map<std::string, double> BPMFactory::getResolutions(const std::vector<std::string>& names)
+std::map<std::string, double> ScreenFactory::getResolutions(const std::vector<std::string>& names)
 {
 	std::map<std::string, double> resolutiOnmap;
 	for (auto name : names)
@@ -843,7 +843,7 @@ std::map<std::string, double> BPMFactory::getResolutions(const std::vector<std::
 	return resolutiOnmap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getXPVVectors(const std::vector<std::string>& names)
+std::map<std::string, std::vector< double > > ScreenFactory::getXPVVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< double > > xpvmap;
 	for (auto name : names)
@@ -854,7 +854,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getXPVVectors(const st
 	return xpvmap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getYPVVectors(const std::vector<std::string>& names)
+std::map<std::string, std::vector< double > > ScreenFactory::getYPVVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< double > > ypvmap;
 	for (auto name : names)
@@ -865,7 +865,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getYPVVectors(const st
 	return ypvmap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getQVectors(const std::vector<std::string>& names)
+std::map<std::string, std::vector< double > > ScreenFactory::getQVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< double > > qmap;
 	for (auto name : names)
@@ -876,7 +876,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getQVectors(const std:
 	return qmap;
 }
 
-std::map<std::string, std::vector< STATE > > BPMFactory::getStatusVectors(const std::vector<std::string>& names)
+std::map<std::string, std::vector< STATE > > ScreenFactory::getStatusVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< STATE > > statusmap;
 	for (auto name : names)
@@ -887,7 +887,7 @@ std::map<std::string, std::vector< STATE > > BPMFactory::getStatusVectors(const 
 	return statusmap;
 }
 
-std::map<std::string, std::vector< std::vector< double > > > BPMFactory::getDataVectors(const std::vector<std::string>& names)
+std::map<std::string, std::vector< std::vector< double > > > ScreenFactory::getDataVectors(const std::vector<std::string>& names)
 {
 	std::map<std::string, std::vector< std::vector< double > > > datamap;
 	for (auto name : names)
@@ -898,7 +898,7 @@ std::map<std::string, std::vector< std::vector< double > > > BPMFactory::getData
 	return datamap;
 }
 
-std::map<std::string, boost::circular_buffer< double > > BPMFactory::getXPVBuffers(const std::vector<std::string>& names)
+std::map<std::string, boost::circular_buffer< double > > ScreenFactory::getXPVBuffers(const std::vector<std::string>& names)
 {
 	std::map<std::string, boost::circular_buffer< double > > xpvmap;
 	for (auto name : names)
@@ -909,7 +909,7 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getXPVBuffe
 	return xpvmap;
 }
 
-std::map<std::string, boost::circular_buffer< double > > BPMFactory::getYPVBuffers(const std::vector<std::string>& names)
+std::map<std::string, boost::circular_buffer< double > > ScreenFactory::getYPVBuffers(const std::vector<std::string>& names)
 {
 	std::map<std::string, boost::circular_buffer< double > > ypvmap;
 	for (auto name : names)
@@ -920,7 +920,7 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getYPVBuffe
 	return ypvmap;
 }
 
-std::map<std::string, boost::circular_buffer< double > > BPMFactory::getQBuffers(const std::vector<std::string>& names)
+std::map<std::string, boost::circular_buffer< double > > ScreenFactory::getQBuffers(const std::vector<std::string>& names)
 {
 	std::map<std::string, boost::circular_buffer< double > > qmap;
 	for (auto name : names)
@@ -931,7 +931,7 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getQBuffers
 	return qmap;
 }
 
-std::map<std::string, boost::circular_buffer< STATE > > BPMFactory::getStatusBuffers(const std::vector<std::string>& names)
+std::map<std::string, boost::circular_buffer< STATE > > ScreenFactory::getStatusBuffers(const std::vector<std::string>& names)
 {
 	std::map<std::string, boost::circular_buffer< STATE > > statusmap;
 	for (auto name : names)
@@ -942,7 +942,7 @@ std::map<std::string, boost::circular_buffer< STATE > > BPMFactory::getStatusBuf
 	return statusmap;
 }
 
-std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFactory::getDataBuffers(const std::vector<std::string>& names)
+std::map<std::string, boost::circular_buffer< std::vector< double > > > ScreenFactory::getDataBuffers(const std::vector<std::string>& names)
 {
 	std::map<std::string, boost::circular_buffer< std::vector< double > > > datamap;
 	for (auto name : names)
@@ -953,7 +953,7 @@ std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFacto
 	return datamap;
 }
 
-std::map<std::string, bool> BPMFactory::reCalAttenuations(const std::vector<std::string>& names, const double& charge)
+std::map<std::string, bool> ScreenFactory::reCalAttenuations(const std::vector<std::string>& names, const double& charge)
 {
 	std::map<std::string, bool> recalmap;
 	for (auto name : names)
@@ -964,7 +964,7 @@ std::map<std::string, bool> BPMFactory::reCalAttenuations(const std::vector<std:
 	return recalmap;
 }
 
-std::map<std::string, double> BPMFactory::getAllX()
+std::map<std::string, double> ScreenFactory::getAllX()
 {
 	std::map<std::string, double> bpmsAndXMap;
 	for (auto bpm : bpmMap)
@@ -975,7 +975,7 @@ std::map<std::string, double> BPMFactory::getAllX()
 	return bpmsAndXMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllXFromPV()
+std::map<std::string, double> ScreenFactory::getAllXFromPV()
 {
 	std::map<std::string, double> bpmsAndXMap;
 	for (auto bpm : bpmMap)
@@ -986,7 +986,7 @@ std::map<std::string, double> BPMFactory::getAllXFromPV()
 	return bpmsAndXMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllY()
+std::map<std::string, double> ScreenFactory::getAllY()
 {
 	std::map<std::string, double> bpmsAndYMap;
 	for (auto bpm : bpmMap)
@@ -997,7 +997,7 @@ std::map<std::string, double> BPMFactory::getAllY()
 	return bpmsAndYMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllYFromPV()
+std::map<std::string, double> ScreenFactory::getAllYFromPV()
 {
 	std::map<std::string, double> bpmsAndYMap;
 	for (auto bpm : bpmMap)
@@ -1008,7 +1008,7 @@ std::map<std::string, double> BPMFactory::getAllYFromPV()
 	return bpmsAndYMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllQ()
+std::map<std::string, double> ScreenFactory::getAllQ()
 {
 	std::map<std::string, double> bpmsAndQMap;
 	for (auto bpm : bpmMap)
@@ -1019,7 +1019,7 @@ std::map<std::string, double> BPMFactory::getAllQ()
 	return bpmsAndQMap;
 }
 
-std::map<std::string, STATE> BPMFactory::getAllStatus()
+std::map<std::string, STATE> ScreenFactory::getAllStatus()
 {
 	std::map<std::string, STATE> bpmsAndStatusMap;
 	for (auto bpm : bpmMap)
@@ -1030,7 +1030,7 @@ std::map<std::string, STATE> BPMFactory::getAllStatus()
 	return bpmsAndStatusMap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getAllData()
+std::map<std::string, std::vector< double > > ScreenFactory::getAllData()
 {
 	std::map<std::string, std::vector< double > > bpmsAndDataMap;
 	for (auto bpm : bpmMap)
@@ -1041,7 +1041,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getAllData()
 	return bpmsAndDataMap;
 }
 
-std::map<std::string, std::pair<double, double>> BPMFactory::getAllXYPosition()
+std::map<std::string, std::pair<double, double>> ScreenFactory::getAllXYPosition()
 {
 	std::map<std::string, std::pair<double, double>> bpmsAndPositiOnsMap;
 	for (auto bpm : bpmMap)
@@ -1053,7 +1053,7 @@ std::map<std::string, std::pair<double, double>> BPMFactory::getAllXYPosition()
 	return bpmsAndPositiOnsMap;
 }
 
-std::map<std::string, bool> BPMFactory::reCalAllAttenuation(const double& charge)
+std::map<std::string, bool> ScreenFactory::reCalAllAttenuation(const double& charge)
 {
 	std::map<std::string, bool> bpmsAndReCalMap;
 	for (auto bpm : bpmMap)
@@ -1064,7 +1064,7 @@ std::map<std::string, bool> BPMFactory::reCalAllAttenuation(const double& charge
 	return bpmsAndReCalMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllPosition()
+std::map<std::string, double> ScreenFactory::getAllPosition()
 {
 	std::map<std::string, double> bpmsAndPositiOnMap;
 	for (auto bpm : bpmMap)
@@ -1075,7 +1075,7 @@ std::map<std::string, double> BPMFactory::getAllPosition()
 	return bpmsAndPositiOnMap;
 }
 
-std::map<std::string, double> BPMFactory::getAllResolution()
+std::map<std::string, double> ScreenFactory::getAllResolution()
 {
 	std::map<std::string, double> bpmsAndResolutiOnMap;
 	for (auto bpm : bpmMap)
@@ -1086,7 +1086,7 @@ std::map<std::string, double> BPMFactory::getAllResolution()
 	return bpmsAndResolutiOnMap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getAllXPVVector()
+std::map<std::string, std::vector< double > > ScreenFactory::getAllXPVVector()
 {
 	std::map<std::string, std::vector< double > > bpmsAndXPVMap;
 	for (auto bpm : bpmMap)
@@ -1097,7 +1097,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getAllXPVVector()
 	return bpmsAndXPVMap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getAllYPVVector()
+std::map<std::string, std::vector< double > > ScreenFactory::getAllYPVVector()
 {
 	std::map<std::string, std::vector< double > > bpmsAndYPVMap;
 	for (auto bpm : bpmMap)
@@ -1108,7 +1108,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getAllYPVVector()
 	return bpmsAndYPVMap;
 }
 
-std::map<std::string, std::vector< double > > BPMFactory::getAllQVector()
+std::map<std::string, std::vector< double > > ScreenFactory::getAllQVector()
 {
 	std::map<std::string, std::vector< double > > bpmsAndQMap;
 	for (auto bpm : bpmMap)
@@ -1119,7 +1119,7 @@ std::map<std::string, std::vector< double > > BPMFactory::getAllQVector()
 	return bpmsAndQMap;
 }
 
-std::map<std::string, std::vector< STATE > > BPMFactory::getAllStatusVector()
+std::map<std::string, std::vector< STATE > > ScreenFactory::getAllStatusVector()
 {
 	std::map<std::string, std::vector< STATE > > bpmsAndStatusMap;
 	for (auto bpm : bpmMap)
@@ -1130,7 +1130,7 @@ std::map<std::string, std::vector< STATE > > BPMFactory::getAllStatusVector()
 	return bpmsAndStatusMap;
 }
 
-std::map<std::string, std::vector< std::vector< double > > > BPMFactory::getAllDataVector()
+std::map<std::string, std::vector< std::vector< double > > > ScreenFactory::getAllDataVector()
 {
 	std::map<std::string, std::vector< std::vector< double > > > bpmsAndDataMap;
 	for (auto bpm : bpmMap)
@@ -1141,7 +1141,7 @@ std::map<std::string, std::vector< std::vector< double > > > BPMFactory::getAllD
 	return bpmsAndDataMap;
 }
 
-std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllXPVBuffer()
+std::map<std::string, boost::circular_buffer< double > > ScreenFactory::getAllXPVBuffer()
 {
 	std::map<std::string, boost::circular_buffer< double > > bpmsAndXPVMap;
 	for (auto bpm : bpmMap)
@@ -1152,7 +1152,7 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllXPVBu
 	return bpmsAndXPVMap;
 }
 
-std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllYPVBuffer()
+std::map<std::string, boost::circular_buffer< double > > ScreenFactory::getAllYPVBuffer()
 {
 	std::map<std::string, boost::circular_buffer< double > > bpmsAndYPVMap;
 	for (auto bpm : bpmMap)
@@ -1163,7 +1163,7 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllYPVBu
 	return bpmsAndYPVMap;
 }
 
-std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllQBuffer()
+std::map<std::string, boost::circular_buffer< double > > ScreenFactory::getAllQBuffer()
 {
 	std::map<std::string, boost::circular_buffer< double > > bpmsAndQMap;
 	for (auto bpm : bpmMap)
@@ -1174,7 +1174,7 @@ std::map<std::string, boost::circular_buffer< double > > BPMFactory::getAllQBuff
 	return bpmsAndQMap;
 }
 
-std::map<std::string, boost::circular_buffer< STATE > > BPMFactory::getAllStatusBuffer()
+std::map<std::string, boost::circular_buffer< STATE > > ScreenFactory::getAllStatusBuffer()
 {
 	std::map<std::string, boost::circular_buffer< STATE > > bpmsAndStatusMap;
 	for (auto bpm : bpmMap)
@@ -1185,7 +1185,7 @@ std::map<std::string, boost::circular_buffer< STATE > > BPMFactory::getAllStatus
 	return bpmsAndStatusMap;
 }
 
-std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFactory::getAllDataBuffer()
+std::map<std::string, boost::circular_buffer< std::vector< double > > > ScreenFactory::getAllDataBuffer()
 {
 	std::map<std::string, boost::circular_buffer< std::vector< double > > > bpmsAndDataMap;
 	for (auto bpm : bpmMap)
@@ -1196,7 +1196,7 @@ std::map<std::string, boost::circular_buffer< std::vector< double > > > BPMFacto
 	return bpmsAndDataMap;
 }
 
-std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > BPMFactory::getAllXYPositionVectors()
+std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > ScreenFactory::getAllXYPositionVectors()
 {
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > bpmsAndPositiOnsMap;
 	for (auto bpm : bpmMap)
@@ -1208,7 +1208,7 @@ std::map<std::string, std::pair<std::vector< double >, std::vector< double > > >
 	return bpmsAndPositiOnsMap;
 }
 
-boost::python::list BPMFactory::getData_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getData_Py(const std::string& bpmName)
 {
 	std::vector< double > data;
 	data = getData(bpmName);
@@ -1216,7 +1216,7 @@ boost::python::list BPMFactory::getData_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getXPVVector_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getXPVVector_Py(const std::string& bpmName)
 {
 	std::vector< double > xpvvec;
 	xpvvec = getXPVVector(bpmName);
@@ -1224,7 +1224,7 @@ boost::python::list BPMFactory::getXPVVector_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getYPVVector_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getYPVVector_Py(const std::string& bpmName)
 {
 	std::vector< double > ypvvec;
 	ypvvec = getYPVVector(bpmName);
@@ -1232,7 +1232,7 @@ boost::python::list BPMFactory::getYPVVector_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getQVector_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getQVector_Py(const std::string& bpmName)
 {
 	std::vector< double > qvec;
 	qvec = getQVector(bpmName);
@@ -1240,7 +1240,7 @@ boost::python::list BPMFactory::getQVector_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getStatusVector_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getStatusVector_Py(const std::string& bpmName)
 {
 	std::vector< STATE > statevec;
 	statevec = getStatusVector(bpmName);
@@ -1248,7 +1248,7 @@ boost::python::list BPMFactory::getStatusVector_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getDataVector_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getDataVector_Py(const std::string& bpmName)
 {
 	std::vector< std::vector< double > > data;
 	data = getDataVector(bpmName);
@@ -1256,7 +1256,7 @@ boost::python::list BPMFactory::getDataVector_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getXPVBuffer_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getXPVBuffer_Py(const std::string& bpmName)
 {
 	boost::circular_buffer< double > xbuf;
 	xbuf = getXPVBuffer(bpmName);
@@ -1264,7 +1264,7 @@ boost::python::list BPMFactory::getXPVBuffer_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getYPVBuffer_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getYPVBuffer_Py(const std::string& bpmName)
 {
 	boost::circular_buffer< double > ybuf;
 	ybuf = getQBuffer(bpmName);
@@ -1272,7 +1272,7 @@ boost::python::list BPMFactory::getYPVBuffer_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getQBuffer_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getQBuffer_Py(const std::string& bpmName)
 {
 	boost::circular_buffer< double > qbuf;
 	qbuf = getQBuffer(bpmName);
@@ -1280,7 +1280,7 @@ boost::python::list BPMFactory::getQBuffer_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getStatusBuffer_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getStatusBuffer_Py(const std::string& bpmName)
 {
 	boost::circular_buffer< STATE > statebuf;
 	statebuf = getStatusBuffer(bpmName);
@@ -1288,7 +1288,7 @@ boost::python::list BPMFactory::getStatusBuffer_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-boost::python::list BPMFactory::getDataBuffer_Py(const std::string& bpmName)
+boost::python::list ScreenFactory::getDataBuffer_Py(const std::string& bpmName)
 {
 	boost::circular_buffer< std::vector< double > > databuf;
 	databuf = getDataBuffer(bpmName);
@@ -1296,7 +1296,7 @@ boost::python::list BPMFactory::getDataBuffer_Py(const std::string& bpmName)
 	return newPyList;
 }
 
-//boost::python::list BPMFactory::getXYPositiOnVector_Py(const std::string bpmName)
+//boost::python::list ScreenFactory::getXYPositiOnVector_Py(const std::string bpmName)
 //{
 //	std::pair< std::vector< double >, std::vector< double > > data;
 //	data = getXYPositiOnVector(bpmName);
@@ -1304,7 +1304,7 @@ boost::python::list BPMFactory::getDataBuffer_Py(const std::string& bpmName)
 //	return newPyDict;
 //}
 
-boost::python::dict BPMFactory::getXs_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getXs_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> xvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1313,7 +1313,7 @@ boost::python::dict BPMFactory::getXs_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXsFromPV_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getXsFromPV_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> xvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1322,7 +1322,7 @@ boost::python::dict BPMFactory::getXsFromPV_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getYs_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getYs_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> yvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1331,7 +1331,7 @@ boost::python::dict BPMFactory::getYs_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getYsFromPV_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getYsFromPV_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> yvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1340,7 +1340,7 @@ boost::python::dict BPMFactory::getYsFromPV_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getQs_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getQs_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> qvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1349,7 +1349,7 @@ boost::python::dict BPMFactory::getQs_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getStatuses_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getStatuses_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, STATE> statevals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1358,7 +1358,7 @@ boost::python::dict BPMFactory::getStatuses_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXYPositions_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getXYPositions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::pair<double, double>> xyvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1367,7 +1367,7 @@ boost::python::dict BPMFactory::getXYPositions_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXPVVectors_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getXPVVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::vector< double > > xpvvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1376,7 +1376,7 @@ boost::python::dict BPMFactory::getXPVVectors_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getYPVVectors_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getYPVVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::vector< double > > ypvvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1385,7 +1385,7 @@ boost::python::dict BPMFactory::getYPVVectors_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getQVectors_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getQVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::vector< double > > qvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1394,7 +1394,7 @@ boost::python::dict BPMFactory::getQVectors_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getStatusVectors_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getStatusVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::vector< STATE > > statevals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1403,7 +1403,7 @@ boost::python::dict BPMFactory::getStatusVectors_Py(boost::python::list bpmNames
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getDataVectors_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getDataVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::vector< std::vector< double > > > datavals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1412,7 +1412,7 @@ boost::python::dict BPMFactory::getDataVectors_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXPVBuffers_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getXPVBuffers_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, boost::circular_buffer< double > > xpvvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1421,7 +1421,7 @@ boost::python::dict BPMFactory::getXPVBuffers_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getYPVBuffers_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getYPVBuffers_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, boost::circular_buffer< double > > ypvvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1430,7 +1430,7 @@ boost::python::dict BPMFactory::getYPVBuffers_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getQBuffers_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getQBuffers_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, boost::circular_buffer< double > > qvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1439,7 +1439,7 @@ boost::python::dict BPMFactory::getQBuffers_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getStatusBuffers_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getStatusBuffers_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, boost::circular_buffer< STATE > > statevals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1448,7 +1448,7 @@ boost::python::dict BPMFactory::getStatusBuffers_Py(boost::python::list bpmNames
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getDataBuffers_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getDataBuffers_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, boost::circular_buffer< std::vector< double > > > datavals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1457,7 +1457,7 @@ boost::python::dict BPMFactory::getDataBuffers_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getXYPositionVectors_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getXYPositionVectors_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, std::pair< std::vector< double >, std::vector< double > > > xyvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1466,7 +1466,7 @@ boost::python::dict BPMFactory::getXYPositionVectors_Py(boost::python::list bpmN
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::reCalAttenuations_Py(boost::python::list bpmNames, const double& charge)
+boost::python::dict ScreenFactory::reCalAttenuations_Py(boost::python::list bpmNames, const double& charge)
 {
 	std::map<std::string, bool> recalvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1475,7 +1475,7 @@ boost::python::dict BPMFactory::reCalAttenuations_Py(boost::python::list bpmName
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getResolutions_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getResolutions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> resolutiOnvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1484,7 +1484,7 @@ boost::python::dict BPMFactory::getResolutions_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getPositions_Py(boost::python::list bpmNames)
+boost::python::dict ScreenFactory::getPositions_Py(boost::python::list bpmNames)
 {
 	std::map<std::string, double> positiOnvals;
 	std::vector<std::string> bpmNamesVector = to_std_vector<std::string>(bpmNames);
@@ -1493,173 +1493,173 @@ boost::python::dict BPMFactory::getPositions_Py(boost::python::list bpmNames)
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllX_Py()
+boost::python::dict ScreenFactory::getAllX_Py()
 {
 	std::map<std::string, double> xvals = getAllX();
 	boost::python::dict newPyDict = to_py_dict(xvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXFromPV_Py()
+boost::python::dict ScreenFactory::getAllXFromPV_Py()
 {
 	std::map<std::string, double> xvals = getAllXFromPV();
 	boost::python::dict newPyDict = to_py_dict(xvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllY_Py()
+boost::python::dict ScreenFactory::getAllY_Py()
 {
 	std::map<std::string, double> yvals = getAllY();
 	boost::python::dict newPyDict = to_py_dict(yvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllYFromPV_Py()
+boost::python::dict ScreenFactory::getAllYFromPV_Py()
 {
 	std::map<std::string, double> yvals = getAllYFromPV();
 	boost::python::dict newPyDict = to_py_dict(yvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllQ_Py()
+boost::python::dict ScreenFactory::getAllQ_Py()
 {
 	std::map<std::string, double> qvals = getAllQ();
 	boost::python::dict newPyDict = to_py_dict(qvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllStatus_Py()
+boost::python::dict ScreenFactory::getAllStatus_Py()
 {
 	std::map<std::string, STATE> statevals = getAllStatus();
 	boost::python::dict newPyDict = to_py_dict(statevals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllData_Py()
+boost::python::dict ScreenFactory::getAllData_Py()
 {
 	std::map<std::string, std::vector< double > > datavals = getAllData();
 	boost::python::dict newPyDict = to_py_dict(datavals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXPVVector_Py()
+boost::python::dict ScreenFactory::getAllXPVVector_Py()
 {
 	std::map<std::string, std::vector< double > > xvals = getAllXPVVector();
 	boost::python::dict newPyDict = to_py_dict(xvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllYPVVector_Py()
+boost::python::dict ScreenFactory::getAllYPVVector_Py()
 {
 	std::map<std::string, std::vector< double > > yvals = getAllYPVVector();
 	boost::python::dict newPyDict = to_py_dict(yvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllQVector_Py()
+boost::python::dict ScreenFactory::getAllQVector_Py()
 {
 	std::map<std::string, std::vector< double > > qvals = getAllQVector();
 	boost::python::dict newPyDict = to_py_dict(qvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllStatusVector_Py()
+boost::python::dict ScreenFactory::getAllStatusVector_Py()
 {
 	std::map<std::string, std::vector< STATE > > statevals = getAllStatusVector();
 	boost::python::dict newPyDict = to_py_dict(statevals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllDataVector_Py()
+boost::python::dict ScreenFactory::getAllDataVector_Py()
 {
 	std::map<std::string, std::vector< std::vector< double > > > datavals = getAllDataVector();
 	boost::python::dict newPyDict = to_py_dict(datavals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXPVBuffer_Py()
+boost::python::dict ScreenFactory::getAllXPVBuffer_Py()
 {
 	std::map<std::string, boost::circular_buffer< double > > xvals = getAllXPVBuffer();
 	boost::python::dict newPyDict = to_py_dict(xvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllYPVBuffer_Py()
+boost::python::dict ScreenFactory::getAllYPVBuffer_Py()
 {
 	std::map<std::string, boost::circular_buffer< double > > yvals = getAllYPVBuffer();
 	boost::python::dict newPyDict = to_py_dict(yvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllQBuffer_Py()
+boost::python::dict ScreenFactory::getAllQBuffer_Py()
 {
 	std::map<std::string, boost::circular_buffer< double > > qvals = getAllQBuffer();
 	boost::python::dict newPyDict = to_py_dict(qvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllStatusBuffer_Py()
+boost::python::dict ScreenFactory::getAllStatusBuffer_Py()
 {
 	std::map<std::string, boost::circular_buffer< STATE > > statevals = getAllStatusBuffer();
 	boost::python::dict newPyDict = to_py_dict(statevals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllDataBuffer_Py()
+boost::python::dict ScreenFactory::getAllDataBuffer_Py()
 {
 	std::map<std::string, boost::circular_buffer< std::vector< double > > > datavals = getAllDataBuffer();
 	boost::python::dict newPyDict = to_py_dict(datavals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXYPosition_Py()
+boost::python::dict ScreenFactory::getAllXYPosition_Py()
 {
 	std::map<std::string, std::pair<double, double>> xyvals = getAllXYPosition();
 	boost::python::dict newPyDict = to_py_dict(xyvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllXYPositionVectors_Py()
+boost::python::dict ScreenFactory::getAllXYPositionVectors_Py()
 {
 	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > xyvals = getAllXYPositionVectors();
 	boost::python::dict newPyDict = to_py_dict(xyvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllResolution_Py()
+boost::python::dict ScreenFactory::getAllResolution_Py()
 {
 	std::map<std::string, double> resolutiOnvals = getAllResolution();
 	boost::python::dict newPyDict = to_py_dict(resolutiOnvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::getAllPosition_Py()
+boost::python::dict ScreenFactory::getAllPosition_Py()
 {
 	std::map<std::string, double> positiOnvals = getAllPosition();
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
 }
 
-boost::python::dict BPMFactory::reCalAllAttenuation_Py(const double& charge)
+boost::python::dict ScreenFactory::reCalAllAttenuation_Py(const double& charge)
 {
 	std::map<std::string, bool> recalvals = reCalAllAttenuation(charge);
 	boost::python::dict newPyDict = to_py_dict(recalvals);
 	return newPyDict;
 }
 
-void BPMFactory::debugMessagesOn()
+void ScreenFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("BPM-FAC - DEBUG On");
+	messenger.printDebugMessage("Screen-FAC - DEBUG On");
 	reader.debugMessagesOn();
 	for (auto& bpm : bpmMap)
 	{
 		bpm.second.debugMessagesOn();
 	}
 }
-void BPMFactory::debugMessagesOff()
+void ScreenFactory::debugMessagesOff()
 {
-	messenger.printDebugMessage("BPM-FAC - DEBUG OFF");
+	messenger.printDebugMessage("Screen-FAC - DEBUG OFF");
 	messenger.debugMessagesOff();
 	reader.debugMessagesOff();
 	for (auto& bpm : bpmMap)
@@ -1667,19 +1667,19 @@ void BPMFactory::debugMessagesOff()
 		bpm.second.debugMessagesOff();
 	}
 }
-void BPMFactory::messagesOn()
+void ScreenFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("BPM-FAC - MESSAGES On");
+	messenger.printMessage("Screen-FAC - MESSAGES On");
 	reader.messagesOn();
 	for (auto& bpm : bpmMap)
 	{
 		bpm.second.messagesOn();
 	}
 }
-void BPMFactory::messagesOff()
+void ScreenFactory::messagesOff()
 {
-	messenger.printMessage("BPM-FAC - MESSAGES OFF");
+	messenger.printMessage("Screen-FAC - MESSAGES OFF");
 	messenger.messagesOff();
 	reader.messagesOff();
 	for (auto& bpm : bpmMap)
@@ -1687,11 +1687,11 @@ void BPMFactory::messagesOff()
 		bpm.second.messagesOff();
 	}
 }
-bool BPMFactory::isDebugOn()
+bool ScreenFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
-bool BPMFactory::isMessagingOn()
+bool ScreenFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }

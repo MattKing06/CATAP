@@ -1,10 +1,10 @@
-#ifndef BPM_FACTORY_H_
-#define BPM_FACTORY_H_
+#ifndef SCREEN_FACTORY_H_
+#define SCREEN_FACTORY_H_
 
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
 #pragma once
-#include "BPM.h"
+#include "Screen.h"
 #include <vector>
 #include <map>
 #include <utility>
@@ -12,16 +12,16 @@
 #include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
-class BPM;
-class BPMFactory
+class Screen;
+class ScreenFactory
 {
 public:
-	BPMFactory();
-	BPMFactory(STATE mode);
-	BPMFactory(const BPMFactory& copyBPMFactory);
-	~BPMFactory();
+	ScreenFactory();
+	ScreenFactory(STATE mode);
+	ScreenFactory(const ScreenFactory& copyScreenFactory);
+	~ScreenFactory();
 	/*NEED constRUCTOR THAT TAKES VERSION??*/
-	//BPMFactory(std::string VERSION);
+	//ScreenFactory(std::string VERSION);
 	bool setup(const std::string& VERSION);
     LoggingSystem messenger;
 	void debugMessagesOn();
@@ -31,50 +31,80 @@ public:
 	bool isDebugOn();
 	bool isMessagingOn();
 	ConfigReader reader;
-	BPM& getBPM(const std::string& fullBPMName);
-	std::map<std::string, BPM> getBPMs(std::vector<std::string> bpmNames);
-	std::map<std::string, BPM> getAllBPMs();
-	std::map<std::string, BPM> bpmMap;
-	std::string getBPMName(const std::string& name);
-	void populateBPMMap();
+	Screen& getScreen(const std::string& fullScreenName);
+	std::map<std::string, Screen> getScreens(std::vector<std::string> bpmNames);
+	std::map<std::string, Screen> getAllScreens();
+	std::map<std::string, Screen> screenMap;
+	std::string getScreenName(const std::string& name);
+	void populateScreenMap();
 	void retrievemonitorStatus(pvStruct& pvStruct);
 	void setupChannels();
-	void monitorForNShots(const std::string& name, const size_t& value);
 	bool hasBeenSetup;
 	//bool isVirtual;
-	STATE mode;
-	bool ismonitoringXPV(const std::string& name);
-	bool ismonitoringYPV(const std::string& name);
-	bool ismonitoringData(const std::string& name);
-	bool ismonitoring(const std::string& name);
-	// methods for setting properties of bpm via PV name
-	std::map<std::string, double> getXs(const std::vector<std::string>& names);
-	std::map<std::string, double> getXsFromPV(const std::vector<std::string>& names);
-	std::map<std::string, double> getYs(const std::vector<std::string>& names);
-	std::map<std::string, double> getYsFromPV(const std::vector<std::string>& names);
-	std::map<std::string, double> getQs(const std::vector<std::string>& names);
-	std::map<std::string, STATE> getStatuses(const std::vector<std::string>& names);
-	std::map<std::string, std::vector< double > > getDatas(const std::vector<std::string>& names);
-	std::map<std::string, std::pair<double, double>> getXYPositions(const std::vector<std::string>& names);
-	std::map<std::string, std::vector< double > > getXPVVectors(const std::vector<std::string>& names);
-	std::map<std::string, std::vector< double > > getYPVVectors(const std::vector<std::string>& names);
-	std::map<std::string, std::vector< double > > getQVectors(const std::vector<std::string>& names);
-	std::map<std::string, std::vector< STATE > > getStatusVectors(const std::vector<std::string>& names);
-	std::map<std::string, std::vector< std::vector< double > > > getDataVectors(const std::vector<std::string>& names);
-	std::map<std::string, boost::circular_buffer< double > > getXPVBuffers(const std::vector<std::string>& names);
-	std::map<std::string, boost::circular_buffer< double > > getYPVBuffers(const std::vector<std::string>& names);
-	std::map<std::string, boost::circular_buffer< double > > getQBuffers(const std::vector<std::string>& names);
-	std::map<std::string, boost::circular_buffer< STATE > > getStatusBuffers(const std::vector<std::string>& names);
-	std::map<std::string, boost::circular_buffer< std::vector< double > > > getDataBuffers(const std::vector<std::string>& names);
-	std::map<std::string, std::pair<std::vector< double >, std::vector< double > > > getXYPositionVectors(const std::vector<std::string>& names);
-	std::map<std::string, double> getResolutions(const std::vector<std::string>& names);
-	std::map<std::string, double> getPositions(const std::vector<std::string>& names);
-	std::map<std::string, bool> reCalAttenuations(const std::vector<std::string>& names, const double& charge);
-	std::map<std::string, double> getAllX();
-	std::map<std::string, double> getAllXFromPV();
-	std::map<std::string, double> getAllY();
-	std::map<std::string, double> getAllYFromPV();
-	std::map<std::string, double> getAllQ();
+	STATE state;
+	std::string getScreenType();
+	std::map<std::string, std::string> screenParametersAndValuesMap;
+	LoggingSystem messenger;
+	void setPVStructs();
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	void offlineSet(const long& value);
+	bool isHOut(const std::string& name);
+	bool isVOut(const std::string& name);
+	bool isHIn(const std::string& name);
+	bool isVIn(const std::string& name);
+	bool is_HandV_OUT(const std::string& name);
+	bool isScreenIn(const std::string& name);
+	bool isHMoving(const std::string& name);
+	bool isVMoving(const std::string& name);
+	bool isPMoving(const std::string& name);
+	bool isMoving(const std::string& name);
+	bool isClearForBeam(const std::string& name);
+	bool isHOut(const std::string& name);
+	bool isVOut(const std::string& name);
+	bool isHIn(const std::string& name);
+	bool isVIn(const std::string& name);
+	bool isMover(const std::string& name);
+	bool isVMover(const std::string& name);
+	bool isHVMover(const std::string& name);
+	bool isPneumatic(const std::string& name);
+	STATE getScreenState(const std::string& name);
+	STATE getScreenSetState(const std::string& name);
+	TYPE getScreenType(const std::string& name);
+	std::vector< STATE > getAvailableDevices(const std::string& name);
+	bool isScreenInState(const std::string& name, STATE sta);
+	bool isYAGIn(const std::string& name);
+	bool isHElement(const std::string& name, STATE e);
+	bool isVElement(const std::string& name, STATE e);
+	bool isPElement(const std::string& name, STATE e);
+	bool isHEnabled(const std::string& name);
+	bool isVEnabled(const std::string& name);
+	double getACTPOS(const std::string& name);
+	double getJDiff(const std::string& name);
+	double getDevicePosition(const std::string& name, STATE state);
+	double getPosition(const std::string& name);
+	bool isVELAPneumatic(const std::string& name);
+	bool isVELAHVMover(const std::string& name);
+	bool isCLARAHVMover(const std::string& name);
+	bool isCLARAVMover(const std::string& name);
+	double get_H_ACTPOS(const std::string& name);
+	double get_V_ACTPOS(const std::string& name);
+	/// SETTERS
+	void moveScreenTo(const std::string& name, STATE& state);
+	void insertYAG(const std::string& name);
+	void makeReadEqualSet(const std::string& name);
+	void makeSetEqualRead(const std::string& name);
+	void moveScreenOut(const std::string& name);
+	void resetPosition(const std::string& name);
+	void jogScreen(const std::string& name, const double jog);
+	void setPosition(const std::string& name, const double setPos);
+	bool setScreenSDEV(const std::string& name, STATE& state);
+	bool setScreenTrigger(const std::string& name, );
+	bool setScreenTrigger(const std::string& name, STATE& state);
+	bool setEX(const std::string& name);
+	bool setEN(const std::string& name, STATE direction);
 	std::map<std::string, STATE> getAllStatus();
 	std::map<std::string, std::vector< double > > getAllData();
 	std::map<std::string, double> getAllResolution();
@@ -185,4 +215,4 @@ public:
 };
 
 
-#endif // BPM_FACTORY_H_
+#endif // Screen_FACTORY_H_

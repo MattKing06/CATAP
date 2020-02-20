@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/EPICSMagnetInterface.cpp
     source/EPICSBPMInterface.cpp
     source/EPICSChargeInterface.cpp
+    source/EPICSScreenInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -11,14 +12,16 @@ set( INCLUDE_FILES
     include/EPICSMagnetInterface.h 
     include/EPICSBPMInterface.h 
     include/EPICSChargeInterface.h 
+    include/EPICSScreenInterface.h 
 )
 
 set( TEST_FILES
-	EPICSInterfaceTestHelper.cpp
+    EPICSInterfaceTestHelper.cpp
     EPICSInterfaceTest.cpp
     EPICSMagnetInterfaceTest.cpp
     EPICSBPMInterfaceTest.cpp
     EPICSChargeInterfaceTest.cpp
+    EPICSScreenInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
