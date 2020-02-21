@@ -23,6 +23,43 @@ messenger.printDebugMessage("constructor");
 setPVStructs();
 epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
 epicsInterface->ownerName = hardwareName;
+screenStateH.second = STATE::UNKNOWN;
+screenStateV.second = STATE::UNKNOWN;
+screenState.second = STATE::UNKNOWN;
+screenSetStateH.second = STATE::UNKNOWN;
+screenSetStateV.second = STATE::UNKNOWN;
+screenSetState.second = STATE::UNKNOWN;
+actposH.second = GlobalConstants::double_min;
+actposV.second = GlobalConstants::double_min;
+actpos.second = GlobalConstants::double_min;
+tgtposH.second = GlobalConstants::double_min;
+tgtposV.second = GlobalConstants::double_min;
+tgtpos.second = GlobalConstants::double_min;
+devcentH.second = GlobalConstants::double_min;
+devcentV.second = GlobalConstants::double_min;
+devcent.second = GlobalConstants::double_min;
+jdiffH.second = GlobalConstants::double_min;
+jdiffV.second = GlobalConstants::double_min;
+jdiff.second = GlobalConstants::double_min;
+jogH.second = GlobalConstants::double_min;
+jogV.second = GlobalConstants::double_min;
+jog.second = GlobalConstants::double_min;
+enH.second = STATE::UNKNOWN;
+enV.second = STATE::UNKNOWN;
+exH.second = GlobalConstants::zero_int;
+exV.second = GlobalConstants::zero_int;
+triggerH.second = GlobalConstants::zero_int;
+triggerVH.second = GlobalConstants::zero_int;
+trigger.second = GlobalConstants::zero_int;
+readyH.second = GlobalConstants::zero_int;
+readyV.second = GlobalConstants::zero_int;
+ready.second = GlobalConstants::zero_int;
+movingH.second = GlobalConstants::zero_int;
+movingV.second = GlobalConstants::zero_int;
+moving.second = GlobalConstants::zero_int;
+maxposH.second = GlobalConstants::zero_int;
+maxposV.second = GlobalConstants::zero_int;
+maxpos.second = GlobalConstants::zero_int;
 }
 Screen::Screen(const Screen & copyScreen) :
 Hardware(copyScreen),
@@ -76,11 +113,6 @@ std::vector<std::string> Screen::getAliases() const
 	return this->aliases;
 }
 
-std::string Screen::getScreenType() const
-{
-	return this->screenType;
-}
-
 std::string Screen::getScreenName() const
 {
 	return this->name;
@@ -93,831 +125,626 @@ double Screen::getPosition() const
 
 STATE Screen::getScreenState() const
 {
-	return this->state.second;
+	if (isHIn() || isHEnabled())
+	{
+		return this->screenStateH.second;
+	}
+	else if (isVIn() || isVEnabled())
+	{
+		return this->screenStateV.second;
+	}
+	else
+		return this->screenState.second;
 }
 
 STATE Screen::getScreenSetState() const
 {
-	return this->setstate.second;
+	if (isHIn() || isHEnabled())
+	{
+		return this->screenSetStateH.second;
+	}
+	else if (isVIn() || isVEnabled())
+	{
+		return this->screenSetStateV.second;
+	}
+	else
+		return this->screenSetState.second;
 }
 
 std::string Screen::getScreenType() const
 {
-	return this->screen.second;
-}
-
-bool Screen::isHOut() const
-{
-
-}
-
-bool Screen::isVOut() const
-{
-
-}
-
-bool Screen::isHIn() const
-{
-
-}
-
-bool Screen::isVIn() const
-{
-
+	return this->screenType;
 }
 
 bool Screen::is_HandV_OUT() const
 {
-
+	return isHOut() && isVOut();
 }
 
 bool Screen::isScreenIn() const
 {
-
-}
-
-bool Screen::isHMoving() const
-{
-
-}
-
-bool Screen::isVMoving() const
-{
-
-}
-
-bool Screen::isPMoving() const
-{
-
-}
-
-bool Screen::isMoving() const
-{
-
-}
-
-bool Screen::isClearForBeam() const
-{
-
-}
-
-bool Screen::isHOut() const
-{
-
-}
-
-bool Screen::isVOut() const
-{
-
-}
-
-bool Screen::isHIn() const
-{
-
-}
-
-bool Screen::isVIn() const
-{
-
-}
-
-bool Screen::isMover() const
-{
-
-}
-
-bool Screen::isVMover() const
-{
-
-}
-
-bool Screen::isHVMover() const
-{
-
-}
-
-bool Screen::isPneumatic() const
-{
-
-}
-
-bool Screen::isScreenInState(STATE sta) const
-{
-
+	return isYAGIn();
 }
 
 bool Screen::isYAGIn() const
 {
-
-}
-bool Screen::isHElement(STATE e) const
-{
-
-}
-
-bool Screen::isVElement(STATE e) const
-{
-
+	if (isMover())
+	{
+		return screenStateV.second == STATE::VYAG;
+	}
+	else if (isPneumatic())
+	{
+		return screenState.second == STATE::YAG;
+	}
 }
 
-bool Screen::isPElement(STATE e) const
+bool Screen::isHMoving() const
 {
-
+	return movingH.second;
 }
 
-bool Screen::isHEnabled() const
+bool Screen::isVMoving() const
 {
-
+	return movingV.second;
 }
 
-bool Screen::isVEnabled() const
+bool Screen::isPMoving() const
 {
-
+	return moving.second;
 }
 
-double Screen::getACTPOS() const
+bool Screen::isMoving() const
 {
-
+	if (movingH.second || movingV.second || moving.second)
+	{
+		return true;
+	}
+	return false;
 }
 
-double Screen::getJDiff() const
+bool Screen::isClearForBeam() const
 {
-
+	if (!isHIn() || !isVIn() || isRFCageIn())
+	{
+		return true;
+	}
+	return false;
 }
 
-double Screen::getDevicePosition(STATE state) const
+bool Screen::isHOut() const
 {
-
+	return !isHIn();
 }
 
-double Screen::getPosition() const
+bool Screen::isVOut() const
 {
+	return !isVIn();
+}
 
+bool Screen::isHIn() const
+{
+	if (screenStateH.second != ScreenRecords::HRETRACTED)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Screen::isVIn() const
+{
+	if (screenStateV.second != ScreenRecords::VRETRACTED)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Screen::isRFCageIn() const
+{
+	if (screenStateV.second != ScreenRecords::VRF || screenState.second != ScreenRecords::RF)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Screen::isMover() const
+{
+	if (isVMover() || isHVMover())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Screen::isVMover() const
+{
+	if (getScreenType() == TYPE::CLARA_V_MOVER)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Screen::isHVMover() const
+{
+	if (getScreenType() == TYPE::CLARA_HV_MOVER || TYPE::VELA_HV_MOVER)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Screen::isPneumatic() const
+{
+	if (getScreenType() == TYPE::VELA_PNEUMATIC)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool Screen::isVELAPneumatic() const
 {
+	if (getScreenType() == TYPE::VELA_PNEUMATIC)
+	{
+		return true;
+	}
+	return false;
+}
 
+bool Screen::isHVMover() const
+{
+	if (getScreenType() == TYPE::CLARA_HV_MOVER || TYPE::VELA_HV_MOVER)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool Screen::isVELAHVMover() const
 {
-
+	if (getScreenType() == TYPE::VELA_HV_MOVER)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool Screen::isCLARAHVMover() const
 {
-
+	if (getScreenType() == TYPE::CLARA_HV_MOVER)
+	{
+		return true;
+	}
+	return false;
 }
 
 bool Screen::isCLARAVMover() const
 {
+	if (getScreenType() == TYPE::CLARA_V_MOVER)
+	{
+		return true;
+	}
+	return false;
+}
 
+bool Screen::isScreenInState(STATE sta) const
+{
+	if (isHElement(ScreenRecords::screenHElementMap(sta)))
+	{
+		return screenStateH.second == sta;
+	}
+	else if (isVElement(ScreenRecords::screenVElementMap(sta)))
+	{
+		return screenStateV.second == sta;
+	}
+	else if (isHElement(ScreenRecords::screenPElementMap(sta)))
+	{
+		return screenState.second == sta;
+	}
+}
+
+bool Screen::isHElement(STATE state) const
+{
+	return isElement(ScreenRecords::screenHElementMap, state);
+}
+
+bool Screen::isVElement(STATE state) const
+{
+	return isElement(ScreenRecords::screenVElementMap, state);
+}
+
+bool Screen::isPElement(STATE state) const
+{
+	return isElement(ScreenRecords::screenPElementMap, state);
+}
+
+bool Screen::isHEnabled() const
+{
+	return enH.second == 1;
+}
+
+bool Screen::isVEnabled() const
+{
+	return enV.second == 1;
+}
+
+double Screen::getACTPOS() const
+{
+	if (isMover())
+	{
+		if (isHIn() || isHEnabled())
+		{
+			return actposH.second;
+		}
+		else if (isVIn() || isVEnabled())
+		{
+			return actposV.second;
+		}
+		else
+		{
+			return actposV.second;
+		}
+	}
+	else
+	{
+		return actpos.second;
+	}
+}
+
+double Screen::getJDiff() const
+{
+	if (isMover())
+	{
+		if (isHIn() || isHEnabled())
+		{
+			return jdiffH.second;
+		}
+		else if (isVIn() || isVEnabled())
+		{
+			return jdiffV.second;
+		}
+		else
+		{
+			return jdiffV.second;
+		}
+	}
+	else
+	{
+		return jdiff.second;
+	}
+}
+
+double Screen::getPosition() const
+{
+	return position.second;
 }
 
 double Screen::get_H_ACTPOS() const
 {
-
+	if (isHEnabled())
+	{
+		return actposH.second;
+	}
 }
 
 double Screen::get_V_ACTPOS() const
 {
-
-}
-
-bool Screen::isXPVBufferFull() const
-{
-	if (xpvshots >= bufferSize)
+	if (isVEnabled())
 	{
-		return true;
+		return actposV.second;
 	}
-	return false;
-}
-
-void Screen::moveScreenTo(STATE& state)
-{
-
 }
 
 void Screen::insertYAG()
 {
-
+	if(isMover())
+	{
+		moveScreenTo(STATE::VRF);
+	}
+	else
+	{
+		moveScreenTo(STATE::RF);
+	}
 }
 
 void Screen::makeReadEqualSet()
 {
-
+	if (isMover())
+	{
+		if (screenStateV.second != screenSetStateV.second)
+		{
+			moveScreenTo(screenSetStateV.second);
+		}
+		else if (screenStateH.second != screenSetStateH.second)
+		{
+			moveScreenTo(screenSetStateH.second);
+		}
+	}
+	else if (isPneumatic())
+	{
+		if (screenState.second != screenSetState.second)
+		{
+			moveScreenTo(screenSetState.second);
+		}
+	}
 }
 
 void Screen::makeSetEqualRead()
 {
-
+	if (isMover())
+	{
+		if (screenSetStateV.second != screenStateV.second)
+		{
+			moveScreenTo(screenStateV.second);
+		}
+		else if (screenSetStateH.second != screenStateH.second)
+		{
+			moveScreenTo(screenStateH.second);
+		}
+	}
+	else if (isPneumatic())
+	{
+		if (screenSetState.second != screenState.second)
+		{
+			moveScreenTo(screenState.second);
+		}
+	}
 }
 
 void Screen::moveScreenOut()
 {
-
+	moveScreenTo(STATE::VRF);
 }
 
 void Screen::resetPosition()
 {
-
-}
-
-void Screen::jogScreen(const double jog)
-{
-
-}
-
-void Screen::setPosition(const double setPos)
-{
-
+	if (isMover)
+	{
+		if (isHIn() || isHEnabled())
+		{
+			setScreenTrigger(1, TYPE::HORIZONTAL);
+		}
+		else if(isVIn() || isVEnabled())
+		{
+			setScreenTrigger(1, TYPE::VERTICAL);
+		}
+	}
+	else
+	{
+		setScreenTrigger(1, TYPE::PNEUMATIC);
+	}
 }
 
 bool Screen::setScreenSDEV(STATE& state)
 {
-
+	setScreenSetState(state);
 }
 
-bool Screen::setScreenTrigger()
+bool Screen::setScreenTrigger(const int& value, TYPE type)
 {
-
+	setTRIGGER(value, type);
 }
 
-bool Screen::setScreenTrigger(STATE& state)
+bool Screen::moveScreenTo(STATE& state)
 {
-
+	setScreenSetState(state);
 }
 
-bool Screen::setEX()
+bool Screen::setScreenSetState(STATE& state)
 {
-
-}
-
-bool Screen::setEN(STATE direction)
-{
-
-}
-
-bool Screen::isYPVBufferFull() const
-{
-	if (ypvshots >= bufferSize)
+	if (isHElement(state))
 	{
-		return true;
+		setSDEV(findByValue(screenHElementMap, state), TYPE::HORIZONTAL);
 	}
-	return false;
-}
-
-bool Screen::isDataBufferFull() const
-{
-	if (datashots >= bufferSize)
+	else if (isBElement(state))
 	{
-		return true;
+		setSDEV(findByValue(screenVElementMap, state), TYPE::VERTICAL);
 	}
-	return false;
-}
-
-size_t Screen::getBufferSize() const
-{
-	return this->bufferSize;
-}
-
-boost::circular_buffer< double > Screen::getXBuffer() const
-{
-	return this->xBuffer;
-}
-
-boost::circular_buffer< double > Screen::getXPVBuffer() const
-{
-	return this->xPVBuffer;
-}
-
-boost::circular_buffer< double > Screen::getYBuffer() const
-{
-	return this->yBuffer;
-}
-
-boost::circular_buffer< double > Screen::getYPVBuffer() const
-{
-	return this->yPVBuffer;
-}
-
-boost::circular_buffer< double > Screen::getQBuffer() const
-{
-	return this->qBuffer;
-}
-
-boost::circular_buffer< std::vector< double > > Screen::getDataBuffer() const
-{
-	return this->dataBuffer;
-}
-
-long Screen::getSA1() const
-{
-	return this->sa1.second;
-}
-
-long Screen::getSA2() const
-{
-	return this->sa2.second;
-}
-
-long Screen::getSD1() const
-{
-	return this->sd1.second;
-}
-
-long Screen::getSD2() const
-{
-	return this->sd2.second;
-}
-
-long Screen::getRA1() const
-{
-	return this->ra1.second;
-}
-
-long Screen::getRA2() const
-{
-	return this->ra2.second;
-}
-
-long Screen::getRD1() const
-{
-	return this->rd1.second;
-}
-
-long Screen::getRD2() const
-{
-	return this->rd2.second;
-}
-
-bool Screen::setXPV(const double& value)
-{
-	xPV.second = value;
-	xPVBuffer.push_back(value);
-	xpvshots++;
-	if (monitoringxpv)
+	else if (isPElement(state))
 	{
-		if (xpvshots <= xPVVector.size())
+		setSDEV(findByValue(screenPElementMap, state), TYPE::PNEUMATIC);
+	}
+	return true;
+}
+
+bool Screen::setTGTPOS(const double& value, TYPE type)
+{
+	switch (type)
+	{
+	case TYPE::HORIZONTAL:
+		if (isHEnabled())
 		{
-			xPVVector[xpvshots - 1] = value;
+			epicsInterface->setTGTPOS(value, pvStructs.at(ScreenRecords::HTGTPOS));
 		}
 		else
 		{
-			monitoringxpv = false;
+			messenger.printMessage("SCREEN NOT IN HORIZONTAL STATE -- CANNOT SET TGTPOS");
+			return false;
 		}
-	}
-	return true;
-}
-
-bool Screen::setYPV(const double& value)
-{
-	yPV.second = value;
-	yPVBuffer.push_back(value);
-	ypvshots++;
-	if (monitoringypv)
-	{
-		if (ypvshots <= yPVVector.size())
+		break;
+	case TYPE::VERTICAL:
+		if (isHIn())
 		{
-			yPVVector[ypvshots - 1] = value;
+			epicsInterface->setTGTPOS(value, pvStructs.at(ScreenRecords::VTGTPOS));
+			return false
 		}
 		else
 		{
-			monitoringypv = false;
+			messenger.printMessage("SCREEN NOT IN VERTICAL STATE -- CANNOT SET TGTPOS");
 		}
+		break;
 	}
 	return true;
 }
 
-bool Screen::ismonitoringXPV() const
+bool Screen::setJOG(const double& value, TYPE type)
 {
-	return monitoringxpv;
-}
-
-bool Screen::ismonitoringYPV() const
-{
-	return monitoringypv;
-}
-
-bool Screen::ismonitoringData() const
-{
-	return monitoringdata;
-}
-
-bool Screen::ismonitoring() const
-{
-	if (monitoringxpv || monitoringypv || monitoringdata)
+	switch (type)
 	{
-		return true;
-	}
-	return false;
-}
-
-void Screen::offlineSet(const long& value)
-{
-	epicsTimeGetCurrent(&sa1.first);
-	sa1.first = sa1.first;
-	sa1.second = value;
-	sa1.second = value;
-}
-
-bool Screen::setRA1(const long& value)
-{
-	ra1.second = value;
-	return true;
-}
-
-bool Screen::setRA2(const long& value)
-{
-	ra2.second = value;
-	return true;
-}
-
-bool Screen::setRD1(const long& value)
-{
-	rd1.second = value;
-	return true;
-}
-
-bool Screen::setRD2(const long& value)
-{
-	rd2.second = value;
-	return true;
-}
-
-bool Screen::setSA1(const long& value)
-{
-	switch (mode)
-	{
-	case STATE::PHYSICAL:
-		epicsInterface->setSA1(value, pvStructs.at(ScreenRecords::SA1));
-		break;
-	case STATE::VIRTUAL:
-		epicsInterface->setSA1(value, pvStructs.at(ScreenRecords::SA1));
-		break;
-	default:
-		offlineSet(value);
-	}
-	return true;
-}
-
-bool Screen::setSA2(const long& value)
-{
-	switch (mode)
-	{
-	case STATE::PHYSICAL:
-		epicsInterface->setSA2(value, pvStructs.at(ScreenRecords::SA2));
-		break;
-	case STATE::VIRTUAL:
-		epicsInterface->setSA2(value, pvStructs.at(ScreenRecords::SA2));
-		break;
-	default:
-		offlineSet(value);
-	}
-	return true;
-}
-
-bool Screen::setSD1(const long& value)
-{
-	switch (mode)
-	{
-	case STATE::PHYSICAL:
-		epicsInterface->setSD1(value, pvStructs.at(ScreenRecords::SD1));
-		break;
-	case STATE::VIRTUAL:
-		epicsInterface->setSD1(value, pvStructs.at(ScreenRecords::SD1));
-		break;
-	default:
-		offlineSet(value);
-	}
-	return true;
-}
-
-bool Screen::setSD2(const long& value)
-{
-	switch (mode)
-	{
-	case STATE::PHYSICAL:
-		epicsInterface->setSD2(value, pvStructs.at(ScreenRecords::SD2));
-		break;
-	case STATE::VIRTUAL:
-		epicsInterface->setSD2(value, pvStructs.at(ScreenRecords::SD2));
-		break;
-	default:
-		offlineSet(value);
-	}
-	return true;
-}
-
-bool Screen::setAWAK(const double& value)
-{
-	awak.second = value;
-	return true;
-}
-
-bool Screen::setAWAKTStamp(const double& value)
-{
-	awaktstamp = value;
-	return true;
-}
-
-bool Screen::setRDY(const double& value)
-{
-	rdy.second = value;
-	return true;
-}
-
-bool Screen::setRDYTStamp(const double& value)
-{
-	rdytstamp = value;
-	return true;
-}
-
-bool Screen::setData(const std::vector< double >& value)
-{
-	data.second = value;
-	pu1 = value[1];
-	pu2 = value[2];
-	c1 = value[3];
-	p1 = value[4];
-	pu3 = value[5];
-	pu4 = value[6];
-	c2 = value[7];
-	p2 = value[8];
-	dataBuffer.push_back(value);
-	pu1Buffer.push_back(pu1);
-	pu2Buffer.push_back(pu2);
-	pu3Buffer.push_back(pu3);
-	pu4Buffer.push_back(pu4);
-	c1Buffer.push_back(c1);
-	c2Buffer.push_back(c2);
-	p1Buffer.push_back(p1);
-	p2Buffer.push_back(p2);
-	setResolution();
-	setQ(value);
-	qBuffer.push_back(q.second);
-	datashots++;
-	if (monitoringdata)
-	{
-		if (datashots <= dataVector.size())
+	case TYPE::HORIZONTAL:
+		if (isHEnabled())
 		{
-			dataVector[datashots - 1] = value;
-			qVector[datashots - 1] = q.second;
+			epicsInterface->setJOG(value, pvStructs.at(ScreenRecords::HJOG));
 		}
 		else
 		{
-			monitoringdata = false;
+			messenger.printMessage("SCREEN HORIZONTAL DRIVER NOT ENABLED -- CANNOT JOG");
+			return false;
 		}
-	}
-	checkStatus();
-	return true;
-}
-
-bool Screen::setQ(const std::vector< double >& rawData)
-{
-	double v1, v2, q1, q2;
-	double u11, u12, u13, u14, u21, u22, u23, u24;
-	u11 = rawData[1];
-	u12 = rawData[2];
-	u13 = rawData[3];
-	u14 = rawData[4];
-	u21 = rawData[5];
-	u22 = rawData[6];
-	u23 = rawData[7];
-	u24 = rawData[8];
-
-	v1 = (std::abs(u11 - u14) + std::abs(u12 - u14)) / 2;
-	v2 = (std::abs(u21 - u24) + std::abs(u22 - u24)) / 2;
-	q1 = (qcal * (v1 / v1cal)) * (pow(10, -((att1cal - ra1.second) / 20)));
-	q2 = (qcal * (v2 / v2cal)) * (pow(10, -((att2cal - ra2.second) / 20)));
-	q.second = ((q1 + q2) / 2);
-
-	return true;
-}
-
-bool Screen::setResolution()
-{
-	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
-	double rmsVals;
-	u11 = std::accumulate(pu1Buffer.begin(), pu1Buffer.end(), 0.0) / pu1Buffer.size();
-	u12 = std::accumulate(pu2Buffer.begin(), pu2Buffer.end(), 0.0) / pu2Buffer.size();
-	u13 = std::accumulate(c1Buffer.begin(), c1Buffer.end(), 0.0) / c1Buffer.size();
-	u14 = std::accumulate(p1Buffer.begin(), p1Buffer.end(), 0.0) / p1Buffer.size();
-	u21 = std::accumulate(pu3Buffer.begin(), pu3Buffer.end(), 0.0) / pu3Buffer.size();
-	u22 = std::accumulate(pu4Buffer.begin(), pu4Buffer.end(), 0.0) / pu4Buffer.size();
-	u23 = std::accumulate(c2Buffer.begin(), c2Buffer.end(), 0.0) / c2Buffer.size();
-	u24 = std::accumulate(p2Buffer.begin(), p2Buffer.end(), 0.0) / p2Buffer.size();
-	v11 = u11 - u14;
-	v12 = u12 - u14;
-	v21 = u21 - u24;
-	v22 = u22 - u24;
-	if (v11 && v12 && v21 && v22 != 0)
-	{
-		rmsVals = ((v11 + v12) - (v21 + v22)) / ((v11 + v12) + (v21 + v22));
-		resolution.second = rmsVals * sqrt(2) * (0.001 * mn);
-	}
-	return true;
-}
-
-bool Screen::checkBuffer(boost::circular_buffer< double >& buf)
-{
-	if (buf[buf.size() - 1] == buf[buf.size()])
-	{
-		return true;	
-	}
-	return false;
-}
-
-void Screen::checkStatus()
-{
-	/*if (awak.first - rdy.first > 1.0)
-	{
-		status = STATE::BAD;
-		statusBuffer.push_back(status);
-	}*/
-	if (xpvshots == 0 || ypvshots == 0 || datashots == 0)
-	{
-		status = STATE::BAD;
-		statusBuffer.push_back(status);
-	}
-	else if (checkBuffer(xPVBuffer) || checkBuffer(yPVBuffer))
-	{
-		status = STATE::BAD;
-		statusBuffer.push_back(status);
-	}
-	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
-	{
-		status = STATE::BAD;
-		statusBuffer.push_back(status);
-	}
-	else if (xpvshots > 0 && ypvshots > 0)
-		if(isnan(xPVBuffer.back()) || isnan(yPVBuffer.back()))
+		break;
+	case TYPE::VERTICAL:
+		if (isVEnabled())
 		{
-			status = STATE::BAD;
-			statusBuffer.push_back(status);
+			epicsInterface->setJOG(value, pvStructs.at(ScreenRecords::VJOG));
 		}
-	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
-	{
-		status = STATE::NONLINEAR;
-		statusBuffer.push_back(status);
-	}
-	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
-	{
-		status = STATE::GOOD;
-		statusBuffer.push_back(status);
-	}
-	else
-	{
-		status = STATE::UNKNOWN;
-		statusBuffer.push_back(status);
-	}
-	if (ismonitoring())
-	{
-		statusVector.push_back(status);
-	}
-}
-
-bool Screen::reCalAttenuation(const double& charge)
-{
-	double qqC = charge / qcal;
-
-	long currAtt1 = ra1.second;
-	long currAtt2 = ra2.second;
-
-	long newAtt1 = (20 * log10(qqC)) + att1cal;
-	long newAtt2 = (20 * log10(qqC)) + att2cal;
-
-	if (0 <= newAtt1 && newAtt1 <= 20)
-	{
-		setSA1(newAtt1);
-	}
-	else if (charge < 20)
-	{
-		setSA1(0);
-	}
-	else
-	{
-		setSA1(currAtt1);
-	}
-
-
-	if (0 <= newAtt2 && newAtt2 <= 20)
-	{
-		setSA2(newAtt2);
-	}
-	else if (charge < 20)
-	{
-		setSA2(0);
-		//message("New SA2 for ", name, " = ", getRA2());
-	}
-	else
-	{
-		setSA2(currAtt2);
-		//message("Old SA2 for ", name, " = ", getRA2());
+		else
+		{
+			messenger.printMessage("SCREEN VERTICAL DRIVER NOT ENABLED -- CANNOT JOG");
+			return false;
+		}
+		break;
 	}
 	return true;
 }
 
-void Screen::monitorForNShots(const size_t& value)
+bool Screen::setTRIGGER(const int& value, TYPE type)
 {
-	setVectorSize(value);
-	monitoringxpv = true;
-	monitoringypv = true;
-	monitoringdata = true;
-}
-
-void Screen::setVectorSize(const size_t& value)
-{
-	clearBuffers();
-	xPVVector.clear();
-	yPVVector.clear();
-	qVector.clear();
-	statusVector.clear();
-	dataVector.clear();
-	vectorSize = value;
-	xPVVector.resize(vectorSize);
-	yPVVector.resize(vectorSize);
-	qVector.resize(vectorSize);
-	statusVector.resize(vectorSize);
-	dataVector.resize(vectorSize);
-	for (auto&& it2 : dataVector)
+	switch (type)
 	{
-		it2.resize(9);
+	case TYPE::HORIZONTAL:
+		epicsInterface->setTRIGGER(value, pvStructs.at(ScreenRecords::HTRIGGER));
+		break;
+	case TYPE::VERTICAL:
+		epicsInterface->setTRIGGER(value, pvStructs.at(ScreenRecords::VTRIGGER));
+		break;
+	case TYPE::PNEUMATIC:
+		epicsInterface->setTRIGGER(value, pvStructs.at(ScreenRecords::TRIGGER));
+		break;
 	}
+	return true;
 }
 
-void Screen::setBufferSize(const size_t& value)
+bool Screen::setEX(const int& value, TYPE type)
 {
-	clearBuffers();
-	bufferSize = value;
-	xBuffer.resize(bufferSize);
-	xPVBuffer.resize(bufferSize);
-	yBuffer.resize(bufferSize);
-	yPVBuffer.resize(bufferSize);
-	qBuffer.resize(bufferSize);
-	statusBuffer.resize(bufferSize);
-	dataBuffer.resize(bufferSize);
-	pu1Buffer.resize(bufferSize);
-	pu2Buffer.resize(bufferSize);
-	pu3Buffer.resize(bufferSize);
-	pu4Buffer.resize(bufferSize);
-	c1Buffer.resize(bufferSize);
-	c2Buffer.resize(bufferSize);
-	p1Buffer.resize(bufferSize);
-	p2Buffer.resize(bufferSize);
-	for (auto&& it2 : dataBuffer)
+	switch (type)
 	{
-		it2.resize(9);
+	case TYPE::HORIZONTAL:
+		epicsInterface->setEX(value, pvStructs.at(ScreenRecords::HEX));
+		break;
+	case TYPE::VERTICAL:
+		epicsInterface->setEX(value, pvStructs.at(ScreenRecords::VEX));
+		break;
+	case TYPE::PNEUMATIC:
+		epicsInterface->setEX(value, pvStructs.at(ScreenRecords::EX));
+		break;
 	}
+	return true;
 }
 
-void Screen::clearBuffers()
+bool Screen::setEN(const int& value, TYPE type)
 {
-	xpvshots = 0;
-	ypvshots = 0;
-	datashots = 0;
-	xBuffer.clear();
-	xPVBuffer.clear();
-	yBuffer.clear();
-	yPVBuffer.clear();
-	qBuffer.clear();
-	dataBuffer.clear();
-	statusBuffer.clear();
-	pu1Buffer.clear();
-	pu2Buffer.clear();
-	pu3Buffer.clear();
-	pu4Buffer.clear();
-	c1Buffer.clear();
-	c2Buffer.clear();
-	p1Buffer.clear();
-	p2Buffer.clear();
+	switch (type)
+	{
+	case TYPE::HORIZONTAL:
+		epicsInterface->setEN(value, pvStructs.at(ScreenRecords::HEN));
+		break;
+	case TYPE::VERTICAL:
+		epicsInterface->setEN(value, pvStructs.at(ScreenRecords::VEN));
+		break;
+	case TYPE::PNEUMATIC:
+		epicsInterface->setEN(value, pvStructs.at(ScreenRecords::EN));
+		break;
+	}
+	return true;
 }
 
-void Screen::debugMessagesOff()
+bool Screen::setDEVSTATE(int& state, TYPE type)
 {
-	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
-	messenger.debugMessagesOff();
-	epicsInterface->debugMessagesOff();
+	switch (type)
+	{
+	case TYPE::HORIZONTAL:
+		screenStateH.second = ScreenRecords::screenHElementMap.at(state);
+		break;
+	case TYPE::VERTICAL:
+		screenStateV.second = ScreenRecords::screenVElementMap.at(state);
+		break;
+	case TYPE::PNEUMATIC:
+		screenState.second = ScreenRecords::screenPElementMap.at(state);
+		break;
+	}
+	return true;
 }
 
-void Screen::debugMessagesOn()
+bool Screen::setGETDEV(int& state, TYPE type)
 {
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG On");
-	epicsInterface->debugMessagesOn();
+	switch (type)
+	{
+	case TYPE::HORIZONTAL:
+		screenSetStateH.second = ScreenRecords::screenHElementMap.at(state);
+		break;
+	case TYPE::VERTICAL:
+		screenSetStateV.second = ScreenRecords::screenVElementMap.at(state);
+		break;
+	case TYPE::PNEUMATIC:
+		screenSetState.second = ScreenRecords::screenPElementMap.at(state);
+		break;
+	}
+	return true;
 }
 
-void Screen::messagesOff()
+bool Screen::setSDEV(int& state, TYPE type)
 {
-	messenger.printMessage(hardwareName, " - MESSAGES OFF");
-	messenger.messagesOff();
-	epicsInterface->messagesOff();
+	switch (type)
+	{
+	case TYPE::HORIZONTAL:
+		epicsInterface->setSDEV(state, type);
+		screenSetStateH.second = ScreenRecords::screenHElementMap.at(state);
+		break;
+	case TYPE::VERTICAL:
+		epicsInterface->setSDEV(state, type);
+		screenSetStateV.second = ScreenRecords::screenVElementMap.at(state);
+		break;
+	case TYPE::PNEUMATIC:
+		epicsInterface->setSDEV(state, type);
+		screenSetState.second = ScreenRecords::screenPElementMap.at(state);
+		break;
+	}
+	return true;
 }
 
-void Screen::messagesOn()
+int Screen::findByValue(std::map<int, STATE> mapOfElemen, STATE value)
 {
-	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES On");
-	epicsInterface->messagesOn();
+	auto it = mapOfElemen.begin();
+	// Iterate through the map
+	while (it != mapOfElemen.end())
+	{
+		// Check if value of this entry matches with given value
+		if (it->second == value)
+		{
+			return it->first;
+		}
+		// Go to next entry in map
+		it++;
+	}
+	int fail = 0;
+	return fail;
+}
+
+bool Screen::isElement(std::map<int, STATE> mapOfElemen, STATE value)
+{
+	auto it = mapOfElemen.begin();
+	// Iterate through the map
+	while (it != mapOfElemen.end())
+	{
+		// Check if value of this entry matches with given value
+		if (it->second == value)
+		{
+			return true;
+		}
+		// Go to next entry in map
+		it++;
+	}
+	return false
 }

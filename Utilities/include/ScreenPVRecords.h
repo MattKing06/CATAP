@@ -56,28 +56,30 @@ namespace ScreenRecords
 	extern std::string const HPV;
 	extern std::string const VPV;
 
-	extern std::pair< enum, STATE > const HRETRACTED; // = "HRETRACTED";
-	extern std::pair< enum, STATE > const HMAX; // = "HMAX";
-	extern std::pair< enum, STATE > const HSLIT1; // = "HSLIT1";
-	extern std::pair< enum, STATE > const HSLIT2; // = "HSLIT2";
-	extern std::pair< enum, STATE > const HSLIT3; // = "HSLIT3";
-	extern std::pair< enum, STATE > const HAPT1; // = "HAPT1";
-	extern std::pair< enum, STATE > const HAPT2; // = "HAPT2";
-	extern std::pair< enum, STATE > const HAPT3; // = "HAPT3";
-	extern std::pair< enum, STATE > const VRETRACTED; // = "HRETRACTED";
-	extern std::pair< enum, STATE > const VMAX; // = "VMAX";
-	extern std::pair< enum, STATE > const VRF; // = "VRF";
-	extern std::pair< enum, STATE > const VMIRROR; // = "VMIRROR";
-	extern std::pair< enum, STATE > const VYAG; // = "VYAG";
-	extern std::pair< enum, STATE > const VGRAT; // = "VGRAT";
-	extern std::pair< enum, STATE > const VCOL; // = "VCOL";
-	extern std::pair< enum, STATE > const VSLIT1; // = "VSLIT1";
-	extern std::pair< enum, STATE > const RETRACTED; // = "RETRACTED";
-	extern std::pair< enum, STATE > const YAG; // = "YAG";
+	extern std::pair< int, STATE > const HRETRACTED; // = "HRETRACTED";
+	extern std::pair< int, STATE > const HMAX; // = "HMAX";
+	extern std::pair< int, STATE > const HSLIT1; // = "HSLIT1";
+	extern std::pair< int, STATE > const HSLIT2; // = "HSLIT2";
+	extern std::pair< int, STATE > const HSLIT3; // = "HSLIT3";
+	extern std::pair< int, STATE > const HAPT1; // = "HAPT1";
+	extern std::pair< int, STATE > const HAPT2; // = "HAPT2";
+	extern std::pair< int, STATE > const HAPT3; // = "HAPT3";
+	extern std::pair< int, STATE > const VRETRACTED; // = "HRETRACTED";
+	extern std::pair< int, STATE > const VMAX; // = "VMAX";
+	extern std::pair< int, STATE > const VRF; // = "VRF";
+	extern std::pair< int, STATE > const VMIRROR; // = "VMIRROR";
+	extern std::pair< int, STATE > const VYAG; // = "VYAG";
+	extern std::pair< int, STATE > const VGRAT; // = "VGRAT";
+	extern std::pair< int, STATE > const VCOL; // = "VCOL";
+	extern std::pair< int, STATE > const VSLIT1; // = "VSLIT1";
+	extern std::pair< int, STATE > const RETRACTED; // = "RETRACTED";
+	extern std::pair< int, STATE > const YAG; // = "YAG";
 
 	extern std::vector<std::string> screenRecordList;
-	extern std::map<std::string, STATE> screenDirectionList;
-	extern std::map<enum, STATE> screenElementMap;
+	extern std::map<std::string, TYPE> screenDirectionList;
+	extern std::map<int, STATE> screenHElementMap;
+	extern std::map<int, STATE> screenVElementMap;
+	extern std::map<int, STATE> screenPElementMap;
 
 }
 

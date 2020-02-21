@@ -259,10 +259,10 @@ std::pair<epicsTimeStamp, short> EPICSInterface::getTimeStampShortPair(const str
 	return r;
 }
 
-std::pair<epicsTimeStamp, enum> EPICSInterface::getTimeStampEnumPair(const struct event_handler_args& args)
+std::pair<epicsTimeStamp, double> EPICSInterface::getTimeStampDoublePair(const struct event_handler_args& args)
 {
-	std::pair<epicsTimeStamp, enum> r;
-	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	std::pair<epicsTimeStamp, double> r;
+	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
 	r.first = tv->stamp;
 	r.second = tv->value;
 	return r;
