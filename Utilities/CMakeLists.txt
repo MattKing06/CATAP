@@ -8,6 +8,7 @@ set(SOURCE_FILES
     source/ValvePVRecords.cpp
     source/BPMPVRecords.cpp
     source/ChargePVRecords.cpp
+    source/LEDPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -18,6 +19,7 @@ set( INCLUDE_FILES
      include/ValvePVRecords.h
      include/BPMPVRecords.h
      include/ChargePVRecords.h
+     include/LEDPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)

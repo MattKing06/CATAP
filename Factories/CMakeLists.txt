@@ -6,6 +6,7 @@ set( SOURCE_FILES
     source/ChargeFactory.cpp
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
+    source/LEDFactory.cpp
 )
 
 set( INCLUDE_FILES
@@ -15,6 +16,7 @@ set( INCLUDE_FILES
     include/ChargeFactory.h
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
+    include/LEDFactory.h
 )
 
 set( TEST_FILES
@@ -25,6 +27,7 @@ set( TEST_FILES
     ChargeFactoryTest.cpp
     ValveFactoryTest.cpp
     GeneralMonitorFactoryTest.cpp
+    LEDFactoryTest.cpp
 )
 
 cmake_policy(SET CMP0022 NEW)

@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
+    source/LEDPythonInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -16,6 +17,7 @@ set( INCLUDE_FILES
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
     include/GeneralMonitorPythonInterface.h
+    include/LEDPythonInterface.h
 )
 
 set( TEST_FILES
