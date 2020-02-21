@@ -5,6 +5,7 @@ set( SOURCE_FILES
     source/BPM.cpp
     source/Charge.cpp
     source/Valve.cpp
+    source/GeneralMonitor.cpp
 )
 
 set( INCLUDE_FILES
@@ -13,6 +14,7 @@ set( INCLUDE_FILES
     include/BPM.h
     include/Charge.h
     include/Valve.h
+    include/GeneralMonitor.h
 )
 
 set( TEST_FILES
@@ -22,6 +24,7 @@ set( TEST_FILES
 	BPMTest.cpp
 	ChargeTest.cpp
         ValveTest.cpp
+        GeneralMonitorTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

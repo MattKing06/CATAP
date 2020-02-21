@@ -6,6 +6,7 @@ set( SOURCE_FILES
     source/MagnetPythonInterface.cpp 
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
+    source/GeneralMonitorPythonInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -14,6 +15,7 @@ set( INCLUDE_FILES
     include/ValvePythonInterface.h
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
+    include/GeneralMonitorPythonInterface.h
 )
 
 set( TEST_FILES

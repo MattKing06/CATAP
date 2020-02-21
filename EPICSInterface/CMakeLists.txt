@@ -5,6 +5,7 @@ set( SOURCE_FILES
     source/EPICSBPMInterface.cpp
     source/EPICSChargeInterface.cpp
     source/EPICSValveInterface.cpp
+    source/EPICSGeneralMonitorInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -13,6 +14,7 @@ set( INCLUDE_FILES
     include/EPICSBPMInterface.h 
     include/EPICSChargeInterface.h 
     include/EPICSValveInterface.h
+    include/EPICSGeneralMonitorInterface.h
 )
 
 set( TEST_FILES
@@ -22,6 +24,7 @@ set( TEST_FILES
     EPICSBPMInterfaceTest.cpp
     EPICSChargeInterfaceTest.cpp
     EPICSValveInterfaceTest.cpp
+    EPICSGeneralMonitorInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
