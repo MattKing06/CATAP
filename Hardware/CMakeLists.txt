@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/Valve.cpp
     source/GeneralMonitor.cpp
     source/LED.cpp
+    source/Stage.cpp
 )
 
 set( INCLUDE_FILES
@@ -17,6 +18,7 @@ set( INCLUDE_FILES
     include/Valve.h
     include/GeneralMonitor.h
     include/LED.h
+    include/Stage.h
 )
 
 set( TEST_FILES
@@ -28,6 +30,7 @@ set( TEST_FILES
         ValveTest.cpp
         GeneralMonitorTest.cpp
         LEDTest.cpp
+        StageTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

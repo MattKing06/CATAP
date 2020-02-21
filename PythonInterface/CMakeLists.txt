@@ -8,6 +8,7 @@ set( SOURCE_FILES
     source/ChargePythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
     source/LEDPythonInterface.cpp
+    source/StagePythonInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -18,6 +19,7 @@ set( INCLUDE_FILES
     include/ChargePythonInterface.h 
     include/GeneralMonitorPythonInterface.h
     include/LEDPythonInterface.h
+    include/StagePythonInterface.h
 )
 
 set( TEST_FILES
