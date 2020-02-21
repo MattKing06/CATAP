@@ -369,9 +369,377 @@ std::map<std::string, STATE> MagnetFactory::getAllPSUState() const
 }
 boost::python::dict MagnetFactory::getAllPSUState_Py() const
 {
-	return to_py_dict(getAllPSUState());
+	return to_py_dict<std::string, STATE>(getAllPSUState());
 }
 
+std::map<std::string, STATE> MagnetFactory::switchOffAll()
+{
+	return switchOff(getAllMagnetNames());
+}
+
+boost::python::dict MagnetFactory::switchOffAll_Py()
+{
+	return to_py_dict<std::string, STATE>(switchOffAll());
+}
+std::map<std::string, STATE> MagnetFactory::switchOnAll()
+{
+	return switchOn(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::switchOnAll_Py()
+{
+	return to_py_dict<std::string, STATE>(switchOnAll());
+}
+
+
+bool MagnetFactory::degauss(const std::string& name, const bool reset_to_zero)
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).degauss(reset_to_zero);
+	}
+	return false;
+}
+std::map<std::string, bool> MagnetFactory::degauss(const std::vector<std::string>& names, const bool reset_to_zero)
+{
+	std::map<std::string, bool> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = degauss(name, reset_to_zero);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::degauss_Py(const boost::python::list& names, const bool reset_to_zero)
+{
+	return to_py_dict<std::string, bool>(degauss(to_std_vector<std::string>(names), reset_to_zero));
+}
+
+
+std::vector<std::string> MagnetFactory::getAliases(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getAliases();
+	}
+	std::vector<std::string> dummy;
+	return dummy;
+}
+boost::python::list MagnetFactory::getAliases_Py(const std::string& name) const
+{
+	return to_py_list(getAliases(name));
+}
+std::map<std::string, std::vector<std::string>> MagnetFactory::getAliases(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::vector<std::string>> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getAliases(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getAliases_Py(const boost::python::list& names)
+{
+	return to_py_dict<std::string, std::vector<std::string>>(getAliases(to_std_vector<std::string>(names)));
+}
+
+
+
+std::string MagnetFactory::getManufacturer(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if(GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getManufacturer();
+	}
+	return GlobalConstants::DUMMY_NAME;
+}
+std::map<std::string, std::string> MagnetFactory::getManufacturer(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::string> return_map;
+	for(auto& name : names)
+	{
+		return_map[name] = getManufacturer(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getManufacturer_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getManufacturer(to_std_vector<std::string>(names)));
+}
+
+
+//// TODO Should be string
+//int MagnetFactory::getSerialNumber(const std::string& name) const;
+//std::map<std::string, int> MagnetFactory::getSerialNumber(const std::vector<std::string>& name) const;
+//boost::python::dict MagnetFactory::getManufacturerPy(const boost::python::list& name) const;
+//
+
+std::string MagnetFactory::getMagnetType(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMagnetType();
+	}
+	return GlobalConstants::DUMMY_NAME;
+}
+std::map<std::string, std::string> MagnetFactory::getMagnetType(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::string> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMagnetType(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMagnetType_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getMagnetType(to_std_vector<std::string>(names)));
+}
+
+
+std::string MagnetFactory::getMagnetRevType(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMagnetRevType();
+	}
+	return GlobalConstants::DUMMY_NAME;
+}
+std::map<std::string, std::string> MagnetFactory::getMagnetRevType(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::string> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMagnetRevType(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMagnetRevType_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getMagnetRevType(to_std_vector<std::string>(names)));
+}
+
+
+double MagnetFactory::getMagneticLength(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMagneticLength();
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getMagneticLength(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMagneticLength(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMagneticLength_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
+}
+
+
+
+
+std::string MagnetFactory::getFullPSUName(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getFullPSUName();
+	}
+	return GlobalConstants::DUMMY_NAME;
+}
+std::map<std::string, std::string> MagnetFactory::getFullPSUName(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::string> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getFullPSUName(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getFullPSUName_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getFullPSUName(to_std_vector<std::string>(names)));
+}
+
+
+
+
+
+std::string MagnetFactory::getMeasurementDataLocation(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMeasurementDataLocation();
+	}
+	return GlobalConstants::DUMMY_NAME;
+}
+std::map<std::string, std::string> MagnetFactory::getMeasurementDataLocation(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::string> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMeasurementDataLocation(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMeasurementDataLocation_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getMeasurementDataLocation(to_std_vector<std::string>(names)));
+}
+
+
+
+int MagnetFactory::getNumberOfDegaussSteps(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getNumberOfDegaussSteps();
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, int> MagnetFactory::getNumberOfDegaussSteps(const std::vector<std::string>& names) const
+{
+	std::map<std::string, int> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getNumberOfDegaussSteps(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getNumberOfDegaussSteps_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, int>(getNumberOfDegaussSteps(to_std_vector<std::string>(names)));
+}
+
+
+
+std::vector<double> MagnetFactory::setDegaussValues(const std::string& name, const std::vector<double>& values)
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).setDegaussValues(values);
+	}
+	std::vector<double> dummy;
+	return dummy;
+}
+boost::python::list MagnetFactory::setDegaussValues_Py(const std::string& name, const boost::python::list& values)
+{
+	return to_py_list<double>(setDegaussValues(name, to_std_vector<double>(values)));
+}
+std::map<std::string, std::vector<double>> MagnetFactory::setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values)
+{
+	std::map<std::string, std::vector<double>> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = setDegaussValues(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::setDegaussValues_Py(const boost::python::list& values, const boost::python::list& names)
+{
+	return to_py_dict<std::string, std::vector<double >>(setDegaussValues(to_std_vector<std::string>(values), to_std_vector<double>(values)));
+}
+
+
+
+
+
+std::vector<double> MagnetFactory::getDegaussValues(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getDegaussValues();
+	}
+	std::vector<double> dummy;
+	return dummy;
+}
+boost::python::list MagnetFactory::getDegaussValues_Py(const std::string& name) const
+{
+	return to_py_list<double>(getDegaussValues(to_std_vector<std::string>(name)));
+}
+std::map<std::string, std::vector<double>> MagnetFactory::getDegaussValues(const std::vector<std::string>& names) const
+{
+	std::map<std::string, std::vector<double>> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getDegaussValues(name);
+	}
+	return return_map;
+}
+/ boost::python::dict MagnetFactory::getDegaussValues_Py(const boost::python::list & name) const
+{
+	return to_py_dict<std::string, std::vector<double>>(getDegaussValues(to_std_vector<std::string>(names)));
+}
+
+
+double MagnetFactory::getDegaussTolerance(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getDegaussTolerance();
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getDegaussTolerance(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getDegaussTolerance(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getDegaussTolerance_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getDegaussTolerance(to_std_vector<std::string>(names)));
+}
+
+
+
+
+
+double MagnetFactory::getMagneticLength(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMagneticLength();
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getMagneticLength(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMagneticLength(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMagneticLength_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMagnetRevType(to_std_vector<std::string>(names)));
+}
+
+//double getRITolerance(const std::string& name) const;
+//std::map<std::string, double> getRITolerance(const std::vector < std::string>& names) const;
+//boost::python::dict getRITolerance_Py(const boost::python::list& name) const;
 
 
 
@@ -724,6 +1092,8 @@ std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const boost::filesy
 
 
 
+
+
 void MagnetFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -772,93 +1142,3 @@ bool MagnetFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }
-
-
-
-//double MagnetFactory::getRICurrent(const std::string& name)
-//{
-//	if (!hasBeenSetup)
-//	{
-//		messenger.printDebugMessage("Please call MagnetFactory.setup(VERSION)");
-//	}
-//	else
-//	{
-//		return magnetMap.find(name)->second.getREADI();
-//	}
-//	return std::numeric_limits<double>::min();
-//}
-
-//std::map<std::string, double> MagnetFactory::getRICurrents(const std::vector<std::string>& names)
-//{
-//	std::map<std::string, double> readis;
-//	for (auto& name : names)
-//	{
-//		double current = magnetMap.find(name)->second.getREADI();
-//		readis[name] = current;
-//	}
-//	return readis;
-//}
-
-
-// This is being moved so that
-//boost::python::dict MagnetFactory::getCurrents_Py(boost::python::list magNames)
-//{
-//	std::map<std::string, double> currents;
-//	std::vector<std::string> magNamesVector = to_std_vector<std::string>(magNames);
-//	currents = getCurrents(magNamesVector);
-//	boost::python::dict newPyDict = to_py_dict(currents);
-//	return newPyDict;
-//}
-//boost::python::dict MagnetFactory::getRICurrents_Py(boost::python::list names)
-//{
-//	std::map<std::string, double> RICurrents;
-//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-//	RICurrents = getRICurrents(namesVector);
-//	boost::python::dict newPyDict = to_py_dict(RICurrents);
-//	return newPyDict;
-//}
-//boost::python::dict MagnetFactory::getAllMagnetCurrents_Py()
-//{
-//	std::map<std::string, double> allCurrents = getAllMagnetCurrents();
-//	boost::python::dict allCurrentsPyDict = to_py_dict(allCurrents);
-//	return allCurrentsPyDict;
-//}
-//std::map<std::string, double> MagnetFactory::getAllMagnetCurrents()
-//{
-//	std::map<std::string, double> magnetsAndCurrentsMap;
-//	for (const auto &mag : magnetMap)
-//	{
-//		double current = mag.second.getCurrent();
-//		magnetsAndCurrentsMap[mag.first] = current;
-//	}
-//	return magnetsAndCurrentsMap;
-//}
-//bool MagnetFactory::turnOn_Py(boost::python::list names)
-//{
-//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-//	return turnOn(namesVector);
-//}
-//bool MagnetFactory::turnOff_Py(boost::python::list names)
-//{
-//	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-//	return turnOff(namesVector);
-//
-//}
-
-//bool MagnetFactory::setCurrents_Py(boost::python::dict magnetNamesAndCurrents)
-//{
-//	std::map<std::string, double> magnetNamesAndCurrentsToSet;
-//	std::vector<std::string> magnetNames = to_std_vector<std::string>(magnetNamesAndCurrents.keys());
-//	std::vector<double> currentsToSet = to_std_vector<double>(magnetNamesAndCurrents.values());
-//	auto magnetNamesIterator = magnetNames.begin();
-//	auto currentsToSetIterator = currentsToSet.begin();
-//	while (magnetNamesIterator != magnetNames.end() && currentsToSetIterator != currentsToSet.end())
-//	{
-//		std::pair<std::string, double> entryToInsert = std::pair<std::string, double>(magnetNamesIterator->data(), *currentsToSetIterator);
-//		magnetNamesAndCurrentsToSet.emplace(entryToInsert);
-//		magnetNamesIterator++;
-//		currentsToSetIterator++;
-//	}
-//	SETI(magnetNamesAndCurrentsToSet);
-//	return true;
-//}

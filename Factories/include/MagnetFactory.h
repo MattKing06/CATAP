@@ -56,9 +56,6 @@ class MagnetFactory
 		//MagnetFactory(std::string VERSION);
 		bool setup(const std::string &VERSION);
 		void setupChannels();
-		
-		// private
-		ConfigReader reader;
 
 		// Get Magnets Objects referecnes
 		// In the current design YOU CANNOT get a cOntainer of magnet object s (or ANY hardware object) 
@@ -70,8 +67,6 @@ class MagnetFactory
 		std::vector<std::string> getAllMagnetNames()const;
 		boost::python::list getAllMagnetNames_Py()const;
 
-
-		// methods for setting properties of magnet via PV name (or alias)
 
 		// getSETI
 		double getSETI(const std::string& name)const;
@@ -113,10 +108,102 @@ class MagnetFactory
 		
 		STATE switchOff(const std::string& name);
 		std::map<std::string, STATE> switchOff(const std::vector<std::string>& names);
-		boost::python::dict switchOff_Py(const boost::python::list names);
+		boost::python::dict switchOff_Py(const boost::python::list& names);
 		//bool switchOffAllMagnets();
 		
 
+
+		std::map<std::string, STATE> switchOffAll();
+		boost::python::dict switchOffAll_Py();
+
+		std::map<std::string, STATE> switchOnAll();
+		boost::python::dict switchOnAll_Py();
+		
+			   
+		bool degauss(const std::string& name, const bool reset_to_zero);
+		std::map<std::string, bool> degauss(const std::vector<std::string>& names, const bool reset_to_zero);
+		boost::python::dict degauss_Py(const boost::python::list& names, const bool reset_to_zero);
+		
+		
+		std::vector<std::string> getAliases(const std::string& name) const;
+		boost::python::list getAliases_Py(const std::string& name) const;
+		std::map<std::string, std::vector<std::string>> getAliases(const std::vector<std::string>& names) const;
+		boost::python::dict getAliases_Py(const boost::python::list& name) const;
+
+
+		std::string getManufacturer(const std::string& name) const;
+		std::map<std::string, std::string> getManufacturer(const std::vector<std::string>& name) const;
+		boost::python::dict getManufacturer_Py(const boost::python::list& name) const;
+
+		// TODO Should be string
+		int getSerialNumber(const std::string& name) const;
+		std::map<std::string, int> getSerialNumber(const std::vector<std::string>& name) const;
+		boost::python::dict getSerialNumber_Py(const boost::python::list& name) const;
+
+
+		std::string getMagnetType(const std::string& name) const;
+		std::map<std::string, std::string> getMagnetType(const std::vector<std::string>& name) const;
+		boost::python::dict getMagnetType_Py(const boost::python::list& name) const;
+
+
+		std::string getMagnetRevType(const std::string& name) const;
+		std::map<std::string, std::string> getMagnetRevType(const std::vector<std::string>& name) const;
+		boost::python::dict getMagnetRevType_Py(const boost::python::list& name) const;
+
+		double getMagneticLength(const std::string& name) const;
+		std::map<std::string, double> getMagneticLength(const std::vector<std::string>& name) const;
+		boost::python::dict getMagneticLength_Py(const boost::python::list& name) const;
+
+
+		std::string getFullPSUName(const std::string& name) const;
+		std::map<std::string, std::string>getFullPSUName(const std::vector<std::string>& name) const;
+		boost::python::dict getFullPSUName_Py(const boost::python::list& name) const;
+
+
+		std::string getMeasurementDataLocation(const std::string& name) const;
+		std::map<std::string, std::string> getMeasurementDataLocation(const std::vector<std::string>& name) const;
+		boost::python::dict getMeasurementDataLocation_Py(const boost::python::list& name) const;
+
+
+		int getNumberOfDegaussSteps(const std::string& name) const;
+		std::map<std::string, int> getNumberOfDegaussSteps(const std::vector<std::string>& name) const;
+		boost::python::dict  getNumberOfDegaussSteps_Py(const boost::python::list& name) const;
+
+		std::vector<double> getDegaussValues(const std::string& name) const;
+		boost::python::list getDegaussValues_Py(const std::string& name) const;
+		std::map<std::string, double> getDegaussValues(const std::vector < std::string>& names) const;
+		boost::python::dict getDegaussValues_Py(const boost::python::list& name) const;
+
+		double getDegaussTolerance(const std::string& name) const;
+		std::map<std::string, double> getDegaussTolerance(const std::vector < std::string>& names) const;
+		boost::python::dict getDegaussTolerance_Py(const boost::python::list& name) const;
+
+		double getRITolerance(const std::string& name) const;
+		std::map<std::string, double> getRITolerance(const std::vector < std::string>& names) const;
+		boost::python::dict getRITolerance_Py(const boost::python::list& name) const;
+
+
+		//int setNumberOfDegaussSteps(const int value);
+		
+		std::vector<double> setDegaussValues(const std::string& name, const std::vector<double>& values);
+		boost::python::list setDegaussValues_Py(const std::string& name, const boost::python::list& values);
+		std::map<std::string, std::vector<double>> setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values);
+		boost::python::dict setDegaussValues_Py(const boost::python::list& values);
+		
+		
+		double setDegaussTolerance(const std::string& name, const double value);
+		double setRITolerance(const std::string& name, const double value);
+		STATE getILKState(const std::string& name ) const;
+		bool SETIZero(const std::string& name);
+		bool setPSUState(const std::string& name, const STATE value);
+		bool offlineSetILKState(const std::string& name, const STATE value);
+
+
+
+
+
+
+		// magnet states and DBURTS 
 		magnetStateStruct getMagnetState() const;
 		std::map<std::string, std::map<std::string, STATE>> applyMagnetState(const magnetStateStruct& ms);
 
@@ -152,9 +239,10 @@ class MagnetFactory
 		bool isDebugOn();
 		bool isMessagingOn();
 
-		LoggingSystem messenger;
 private:
-		// private surely! 
+		LoggingSystem messenger;
+
+	// private surely! 
 		std::map<std::string, Magnet> magnetMap;
 
 
@@ -168,6 +256,10 @@ private:
 
 		// dummy_magnet is used to return values when users ask for a nOn-existing magnet's properties 
 		Magnet dummy_magnet;
+
+
+		// private
+		ConfigReader reader;
 
 };
 

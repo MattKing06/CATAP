@@ -63,89 +63,115 @@ class Magnet : public Hardware
 		Magnet(const Magnet& copyMagnet);
 
 
-		/*! Copy constructor for Magnet object
-		@param[in] copyMagnet references to magnet to be copied
+	/*! degauss a magnet 
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,  
 	*/
 		bool degauss(const bool reset_to_zero);
-		//bool degaussToZero();
-
-
-		std::map<std::string, std::string> magnetParametersAndValuesMap;
-		
-		// parameters that can be got, but NOT SET
+	/*! get the name alises for this magnet 
+		@param[out] names, vector contianing all the alias names */
 		std::vector<std::string> getAliases() const;
+	/*! get the name alises for this magnet (python version
+		@param[out] names, python list contianing all the alias names */
 		boost::python::list getAliases_Py() const;
-
+	/*! get the magnet manufacturer, defined in the master lattice yaml file
+		@param[out] result  */
 		std::string getManufacturer() const;
+	/*! get the magnet serial number, defined in the master lattice yaml file
+		@param[out] result  */
 		int getSerialNumber() const;
+	/*! get the type of magnet, defined in the master lattice yaml file
+		@param[out] result  */
 		std::string getMagnetType() const;
+	/*! get the magnet reverse type, defined in the master lattice yaml file
+		@param[out] result  */
 		std::string getMagnetRevType() const;
+	/*! get the magnetic length, defined in the master lattice yaml file
+		@param[out] result  */
 		double getMagneticLength() const;
+	/*! get the full-name (PV root) for the magnet's PSU, defined in the master lattice yaml file
+		@param[out] result  */
 		std::string getFullPSUName() const;
+	/*! get the measurement data location, defined in the master lattice yaml file
+		@param[out] result  */
 		std::string getMeasurementDataLocation() const;
-
-		// paramEters that can be get AND set 
+	/*! get the number if current vlaues that are set during the deguass procedure, initally defined in the master lattice yaml file
+		@param[out] result  */
 		int getNumberOfDegaussSteps() const;
+	/*! get the actual values used during teh degauss procedure, initially defined in the master lattice yaml file
+		@param[out] result  */
 		std::vector<double> getDegaussValues() const;
+	/*! get the actual values used during teh degauss procedure, initially defined in the master lattice yaml file (Python version)
+		@param[out] result  */
 		boost::python::list getDegaussValues_Py() const;
-		
+	/*! get the tolerance used to check if readi = seti when deguassing, initially defined in the master lattice yaml file
+		@param[out] result  */
 		double getDegaussTolerance() const;
+	/*! get the tolerance used to check if readi = seti when checking isREADIequalSETI, initially defined in the master lattice yaml file
+		@param[out] result  */
 		double getRITolerance() const;
-		
+	/*! get the type of magnet, defined in the master lattice yaml file
+		@param[out] result  */
 		int setNumberOfDegaussSteps(const int value);
+	/*! get the type of magnet, defined in the master lattice yaml file
+		@param[out] result  */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
+	/*! get the type of magnet, defined in the master lattice yaml file
+		@param[out] result  */
 		boost::python::list setDegaussValues_Py(const boost::python::list& values);
-		
+	/*! get the type of magnet, defined in the master lattice yaml file
+		@param[out] result  */
 		double setDegaussTolerance(const double value);
+	/*! get the type of magnet, defined in the master lattice yaml file
+		@param[out] result  */
 		double setRITolerance(const double value);
-
-		// Dynamic EPICS Value getters
+	/*! get the current READI 
+		@param[out] result  */
 		double getREADI() const;
+	/*! get the current SETI value 
+		@param[out] result  */
 		double getSETI() const;
+	/*! get the current state of the interlock 
+		@param[out] result  */
 		STATE getILKState() const;
+	/*! get the current state of the PSU 
+		@param[out] result  */
 		STATE getPSUState() const;
-
 	/*! set the current to value
-		@param[in] value			*/
+		@param[in] value			
+		@param[out] bool, if the command got sent to epics (not if setting that current was successfull!) 	*/
 		bool SETI(const double value); 
-	/*! set the current to zero	*/
+	/*! set the current to zero	
+		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool SETIZero(); 	
-	/*! switch the magnet PSU on	*/
+	/*! switch the magnet PSU on	
+		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool switchOn();
-	/*! switch the magnet PSU off	*/
+	/*! switch the magnet PSU off	
+		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool switchOff();
 	/*! switch the magnet PSU on to STATE value	
-		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
+		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
+		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool setPSUState(const STATE value);
-
 	/*! switch the magnet PSU on to STATE value
-		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
+		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
+		@param[out] bool, if the command got sent (not if setting that current was successfull!)	*/
 		bool offlineSetILKState(const STATE value);
-		/*! switch the magnet PSU on	*/
+	/*! enable debug-messages for this magnet 	*/
 		void debugMessagesOn();
-		/*! switch the magnet PSU on	*/
+	/*! disbale debug0messages for this magnet 	*/
 		void debugMessagesOff();
-		/*! switch the magnet PSU on	*/
+	/*! enable messages for this magnet 		*/
 		void messagesOn();
-		/*! switch the magnet PSU on	*/
+	/*! disable messages for this magnet		*/
 		void messagesOff();
 						
-		// maybe be more specific and only allow certain functions / vairables?? 
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;
-
-		/*! switch the magnet PSU on	*/
-		bool isDegaussing;
-		/*! switch the magnet PSU on	*/
-		bool last_degauss_success;
-		/*! switch the magnet PSU on	*/
-		size_t current_degauss_step;
-
 	protected:
 	// called from EPICS to update the GETSETI variable! 
 	/*! switch the magnet PSU on	*/
 		void updateGETSETI(const double& value);
-
 	/*! latest readi value and epicstimestamp 	*/
 		std::pair<epicsTimeStamp, double > READI;
 	/*! latest getseti value and epicstimestamp 	*/
@@ -154,23 +180,27 @@ class Magnet : public Hardware
 		std::pair<epicsTimeStamp, STATE > psuState;
 	/*! latest interlock state value and epicstimestamp 	*/
 		std::pair<epicsTimeStamp, STATE > ilkState;
-		
 	private:
+
+		std::map<std::string, std::string> magnetParametersAndValuesMap;
 	/*! Copy constructor for Magnet object
 		@param[in] copyMagnet references to magnet to be copied
 	*/
 		EPICSMagnetInterface_sptr epicsInterface;
-
+	/*! sets the PV struct for the magnet parameters that are monitored through epics, INFO ABOUT PV STRUCTS?*/
 		void setPVStructs();
-
 	/*! switch the magnet PSU on to STATE value
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
 		void offlineSETI(const double& value);
 	/*! switch the magnet PSU on to STATE value
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
 		bool offlineSetPSUState(const STATE value);
-
-
+	/*! flag set to True when this magnet is degaussing, otherwise false*/
+		bool isDegaussing;
+	/*! flag 	*/
+		bool last_degauss_success;
+	/*! current step in the deagussing cycle	*/
+		size_t current_degauss_step;
 		Degauss degausser;
 	/*! function run in new thread during degaussing 
 		@param[in] degauss-struct conatins data required for degaussing */
@@ -199,8 +229,6 @@ class Magnet : public Hardware
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */
 		std::string measurementDataLocation;
-
-
 	/*! check if readi is the same, to within a tolerance, as value
 		@param[in] value to compare with readi 
 		@param[in] tolerance tolerance for the comaprison
@@ -210,10 +238,8 @@ class Magnet : public Hardware
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
-		@param[out] true or false, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
-		*/
+		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
 		bool waitForMagnetToSettle(const double values, const double tolerance, const time_t waitTime);
-
 };
 /**\copydoc Hardware*/
 /**@}*/

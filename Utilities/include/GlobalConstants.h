@@ -60,6 +60,7 @@ namespace GlobalConstants
 	const std::string FILE_ALIAS = "FILE_ALIAS";
 
 	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
+	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
 }
