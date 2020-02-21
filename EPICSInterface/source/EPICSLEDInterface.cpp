@@ -1,4 +1,4 @@
-#include "..\include\EPICSLEDInterface.h"
+#include <EPICSLEDInterface.h>
 
 EPICSLEDInterface::EPICSLEDInterface()
 {
