@@ -126,9 +126,9 @@ class MagnetFactory
 		
 		
 		std::vector<std::string> getAliases(const std::string& name) const;
-		boost::python::list getAliases_Py(const std::string& name) const;
+		boost::python::list getAliases_Py1(const std::string& name) const;
 		std::map<std::string, std::vector<std::string>> getAliases(const std::vector<std::string>& names) const;
-		boost::python::dict getAliases_Py(const boost::python::list& name) const;
+		boost::python::dict getAliases_Py2(const boost::python::list& name) const;
 
 
 		std::string getManufacturer(const std::string& name) const;
@@ -170,9 +170,9 @@ class MagnetFactory
 		boost::python::dict  getNumberOfDegaussSteps_Py(const boost::python::list& name) const;
 
 		std::vector<double> getDegaussValues(const std::string& name) const;
-		boost::python::list getDegaussValues_Py(const std::string& name) const;
-		std::map<std::string, double> getDegaussValues(const std::vector < std::string>& names) const;
-		boost::python::dict getDegaussValues_Py(const boost::python::list& name) const;
+		boost::python::list getDegaussValues_Py1(const std::string& name) const;
+		std::map<std::string, std::vector<double>> getDegaussValues(const std::vector<std::string>& names) const;
+		boost::python::dict getDegaussValues_Py2(const boost::python::list& name) const;
 
 		double getDegaussTolerance(const std::string& name) const;
 		std::map<std::string, double> getDegaussTolerance(const std::vector < std::string>& names) const;
@@ -184,16 +184,16 @@ class MagnetFactory
 
 
 		//int setNumberOfDegaussSteps(const int value);
-		
-		std::vector<double> setDegaussValues(const std::string& name, const std::vector<double>& values);
-		boost::python::list setDegaussValues_Py(const std::string& name, const boost::python::list& values);
-		std::map<std::string, std::vector<double>> setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values);
-		boost::python::dict setDegaussValues_Py(const boost::python::list& values);
+		// THINK ABOUT THIS ONE!!! 
+		//std::vector<double> setDegaussValues(const std::string& name, const std::vector<double>& values);
+		//boost::python::list setDegaussValues_Py1(const std::string& name, const boost::python::list& values);
+		//std::map<std::string, std::vector<double>> setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values);
+		//boost::python::dict setDegaussValues_Py2(const boost::python::list& values);
 		
 		
 		double setDegaussTolerance(const std::string& name, const double value);
 		double setRITolerance(const std::string& name, const double value);
-		STATE getILKState(const std::string& name ) const;
+		//STATE getILKState(const std::string& name ) const;
 		bool SETIZero(const std::string& name);
 		bool setPSUState(const std::string& name, const STATE value);
 		bool offlineSetILKState(const std::string& name, const STATE value);

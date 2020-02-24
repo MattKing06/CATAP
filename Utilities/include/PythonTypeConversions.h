@@ -17,11 +17,12 @@ std::vector<typeOfNewVector> to_std_vector(const boost::python::object& iterable
 }
 template<class typeOfVectorToCOnvert>
 inline
-boost::python::list to_py_list(std::vector<typeOfVectorToCOnvert>& vector)
+boost::python::list to_py_list(const std::vector<typeOfVectorToCOnvert>& vector)
 {
 	typename std::vector<typeOfVectorToCOnvert>::iterator iter;
 	boost::python::list newList;
-	for (iter = vector.begin(); iter != vector.end(); ++iter)
+	//for (iter = vector.begin(); iter != vector.end(); ++iter)
+	for(auto&& iter = vector.begin(); iter != vector.end(); ++iter)
 	{
 		newList.append(*iter);
 	}
@@ -29,11 +30,11 @@ boost::python::list to_py_list(std::vector<typeOfVectorToCOnvert>& vector)
 }
 template<class typeOfVectorToCOnvert>
 inline
-boost::python::list to_py_list(boost::circular_buffer<typeOfVectorToCOnvert>& buffer)
+boost::python::list to_py_list(const boost::circular_buffer<typeOfVectorToCOnvert>& buffer)
 {
-	typename boost::circular_buffer<typeOfVectorToCOnvert>::iterator iter;
+	//typename boost::circular_buffer<typeOfVectorToCOnvert>::iterator iter;
 	boost::python::list newList;
-	for (iter = buffer.begin(); iter != buffer.end(); ++iter)
+	for (auto&& iter = buffer.begin(); iter != buffer.end(); ++iter)
 	{
 		newList.append(*iter);
 	}
@@ -41,25 +42,38 @@ boost::python::list to_py_list(boost::circular_buffer<typeOfVectorToCOnvert>& bu
 }
 template<class key, class value>
 inline
-boost::python::dict to_py_dict(std::map<key, value>& map)
+boost::python::dict to_py_dict(const std::map<key, value>& map)
 {
-	typename std::map<key, value>::iterator iter;
+	//typename std::map<key, value>::iterator iter;
 	boost::python::dict newDictiOnary;
-	for (iter = map.begin(); iter != map.end(); ++iter)
+	for(auto&& iter = map.begin(); iter != map.end(); ++iter)
 	{
 		newDictiOnary[iter->first] = iter->second;
 	}
 	return newDictiOnary;
 }
 
+//template<typename key, typename value>
+//inline
+//boost::python::dict to_py_dict(std::map<key, value>& map)
+//{
+//	typename std::map<key, value>::iterator iter;
+//	boost::python::dict newDictiOnary;
+//	for (iter = map.begin(); iter != map.end(); ++iter)
+//	{
+//		newDictiOnary[iter->first] = iter->second;
+//	}
+//	return newDictiOnary;
+//}
+
 //template<class key, std::vector<class value>>
 template<class key, class value>
 inline
-boost::python::dict to_py_dict(std::map<key, std::vector<value>>& map)
+boost::python::dict to_py_dict(const std::map<key, std::vector<value>>& map)
 {
-	typename std::map<key, std::vector<class value>>::iterator iter;
+	//typename std::map<key, std::vector<class value>>::iterator iter;
 	boost::python::dict newDictiOnary;
-	for (iter = map.begin(); iter != map.end(); ++iter)
+	for (auto&& iter = map.begin(); iter != map.end(); ++iter)
 	{
 		newDictiOnary[iter->first] = to_py_list<value>(iter->second);
 	}
@@ -67,7 +81,7 @@ boost::python::dict to_py_dict(std::map<key, std::vector<value>>& map)
 }
 
 template<typename key, typename value>
-std::map<key, value> to_std_map(boost::python::dict& map_in)
+std::map<key, value> to_std_map(const boost::python::dict& map_in)
 {
 	std::map<key, value> r;
 	std::vector<key> map_keys = to_std_vector<key>(map_in.keys());
