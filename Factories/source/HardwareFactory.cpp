@@ -11,6 +11,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
+	screenFactory(ScreenFactory(mode)),
 	mode(mode)
 {
 	messenger = LoggingSystem(true, true);
@@ -45,6 +46,13 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		if (!chargeFactory.hasBeenSetup)
 		{
 			setup = chargeFactory.setup(VERSION);
+		}
+	}
+	else if (hardwareType == "Screen")
+	{
+		if (!screenFactory.hasBeenSetup)
+		{
+			setup = screenFactory.setup(VERSION);
 		}
 	}
 	return setup;
@@ -108,7 +116,22 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		}
 	}
 	return chargeFactory;
-
+}
+ScreenFactory& HardwareFactory::getScreenFactory()
+{
+	if (!screenFactory.hasBeenSetup)
+	{
+		bool setup = screenFactory.setup("nominal");
+		if (setup)
+		{
+			return screenFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ScreenFactory");
+		}
+	}
+	return screenFactory;
 }
 
 void HardwareFactory::debugMessagesOn()

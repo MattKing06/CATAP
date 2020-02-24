@@ -77,6 +77,8 @@ namespace ScreenRecords
 
 	extern std::vector<std::string> screenRecordList;
 	extern std::map<std::string, TYPE> screenDirectionList;
+	extern std::map<std::string, STATE> screenDevicesToEnum;
+	extern std::map<std::string, TYPE> screenTypeToEnum;
 	extern std::map<int, STATE> screenHElementMap;
 	extern std::map<int, STATE> screenVElementMap;
 	extern std::map<int, STATE> screenPElementMap;

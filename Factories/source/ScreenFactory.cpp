@@ -235,6 +235,277 @@ std::string ScreenFactory::getScreenName(const std::string& name)
 	return "0";
 }
 
+bool ScreenFactory::isHOut(const std::string& name)
+{
+	return screenMap.find(name)->second.isHOut();
+
+}
+
+bool ScreenFactory::isVOut(const std::string& name)
+{
+	return screenMap.find(name)->second.isVOut();
+}
+
+bool ScreenFactory::isHIn(const std::string& name)
+{
+	return screenMap.find(name)->second.isHIn();
+}
+
+bool ScreenFactory::isVIn(const std::string& name)
+{
+	return screenMap.find(name)->second.isVIn();
+}
+
+bool ScreenFactory::is_HandV_OUT(const std::string& name)
+{
+	return screenMap.find(name)->second.is_HandV_OUT();
+}
+
+bool ScreenFactory::isScreenIn(const std::string& name)
+{
+	return screenMap.find(name)->second.isScreenIn();
+}
+
+bool ScreenFactory::isHMoving(const std::string& name)
+{
+	return screenMap.find(name)->second.isHMoving();
+}
+
+bool ScreenFactory::isVMoving(const std::string& name)
+{
+	return screenMap.find(name)->second.isVMoving();
+}
+
+bool ScreenFactory::isPMoving(const std::string& name)
+{
+	return screenMap.find(name)->second.isPMoving();
+}
+
+bool ScreenFactory::isMoving(const std::string& name)
+{
+	return screenMap.find(name)->second.isMoving();
+}
+
+bool ScreenFactory::isClearForBeam(const std::string& name)
+{
+	return screenMap.find(name)->second.isClearForBeam();
+}
+
+bool ScreenFactory::isMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isMover();
+}
+
+bool ScreenFactory::isVMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isVMover();
+}
+
+bool ScreenFactory::isHVMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isHVMover();
+}
+
+bool ScreenFactory::isPneumatic(const std::string& name)
+{
+	return screenMap.find(name)->second.isPneumatic();
+}
+
+bool ScreenFactory::isVELAPneumatic(const std::string& name)
+{
+	return screenMap.find(name)->second.isVELAPneumatic();
+}
+
+bool ScreenFactory::isVELAHVMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isVELAHVMover();
+}
+
+bool ScreenFactory::isCLARAHVMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isCLARAHVMover();
+}
+bool ScreenFactory::isCLARAVMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isCLARAVMover();
+}
+
+STATE ScreenFactory::getScreenState(const std::string& name)
+{
+	return screenMap.find(name)->second.getScreenState();
+}
+
+STATE ScreenFactory::getScreenSetState(const std::string& name)
+{
+	return screenMap.find(name)->second.getScreenSetState();
+}
+
+std::pair< STATE, TYPE > ScreenFactory::getScreenState(const std::string& name, TYPE type)
+{
+	return screenMap.find(name)->second.getScreenState(type);
+}
+
+std::pair< STATE, TYPE > ScreenFactory::getScreenSetState(const std::string& name, TYPE type)
+{
+	return screenMap.find(name)->second.getScreenSetState(type);
+}
+
+TYPE ScreenFactory::getScreenType(const std::string& name)
+{
+	return screenMap.find(name)->second.getScreenType();
+}
+
+std::vector< STATE > ScreenFactory::getAvailableDevices(const std::string& name)
+{
+	return screenMap.find(name)->second.getAvailableDevices();
+}
+
+bool ScreenFactory::isScreenInState(const std::string& name, STATE sta)
+{
+	return screenMap.find(name)->second.isScreenInState(sta);
+}
+
+bool ScreenFactory::isYAGIn(const std::string& name)
+{
+	return screenMap.find(name)->second.isYAGIn();
+}
+
+bool ScreenFactory::isRFCageIn(const std::string& name)
+{
+	return screenMap.find(name)->second.isRFCageIn();
+}
+
+bool ScreenFactory::isHElement(const std::string& name, STATE e)
+{
+	return screenMap.find(name)->second.isHElement(e);
+}
+
+bool ScreenFactory::isVElement(const std::string& name, STATE e)
+{
+	return screenMap.find(name)->second.isVElement(e);
+}
+
+bool ScreenFactory::isPElement(const std::string& name, STATE e)
+{
+	return screenMap.find(name)->second.isPElement(e);
+}
+
+bool ScreenFactory::isHEnabled(const std::string& name)
+{
+	return screenMap.find(name)->second.isHEnabled();
+}
+
+bool ScreenFactory::isVEnabled(const std::string& name)
+{
+	return screenMap.find(name)->second.isVEnabled();
+}
+
+double ScreenFactory::getACTPOS(const std::string& name)
+{
+	return screenMap.find(name)->second.getACTPOS();
+}
+
+double ScreenFactory::getJDiff(const std::string& name)
+{
+	return screenMap.find(name)->second.getJDiff();
+}
+
+double ScreenFactory::getDevicePosition(const std::string& name, STATE state)
+{
+	return screenMap.find(name)->second.getDevicePosition(state);
+}
+
+double ScreenFactory::getPosition(const std::string& name)
+{
+	return screenMap.find(name)->second.getPosition();
+}
+
+double ScreenFactory::get_H_ACTPOS(const std::string& name)
+{
+	return screenMap.find(name)->second.get_H_ACTPOS();
+}
+
+double ScreenFactory::get_V_ACTPOS(const std::string& name)
+{
+	return screenMap.find(name)->second.get_V_ACTPOS();
+}
+
+void ScreenFactory::moveScreenTo(const std::string& name, STATE& state)
+{
+	screenMap.find(name)->second.moveScreenTo(state);
+}
+
+void ScreenFactory::insertYAG(const std::string& name)
+{
+	screenMap.find(name)->second.insertYAG();
+}
+
+void ScreenFactory::makeReadEqualSet(const std::string& name)
+{
+	screenMap.find(name)->second.makeReadEqualSet();
+}
+
+void ScreenFactory::makeSetEqualRead(const std::string& name)
+{
+	screenMap.find(name)->second.makeSetEqualRead();
+}
+
+void ScreenFactory::moveScreenOut(const std::string& name)
+{
+	screenMap.find(name)->second.moveScreenOut();
+}
+
+void ScreenFactory::resetPosition(const std::string& name)
+{
+	screenMap.find(name)->second.resetPosition();
+}
+
+void ScreenFactory::jogScreen(const std::string& name, const double jog)
+{
+	screenMap.find(name)->second.jogScreen(jog);
+}
+
+void ScreenFactory::setPosition(const std::string& name, const double setPos, TYPE type)
+{
+	screenMap.find(name)->second.setPosition(setPos, type);
+}
+
+bool ScreenFactory::setScreenSetState(const std::string& name, STATE state)
+{
+	return screenMap.find(name)->second.setScreenSetState(state);
+}
+
+bool ScreenFactory::setScreenSDEV(const std::string& name, STATE& state)
+{
+	return screenMap.find(name)->second.setScreenSDEV(state);
+}
+
+bool ScreenFactory::setScreenTrigger(const std::string& name, const int& value)
+{
+	return screenMap.find(name)->second.setScreenTrigger(value);
+}
+
+bool ScreenFactory::setScreenTrigger(const std::string& name, const int& value, TYPE& type)
+{
+	return screenMap.find(name)->second.setScreenTrigger(value, type);
+}
+
+bool ScreenFactory::setEX(const std::string& name, const int& value, TYPE type)
+{
+	return screenMap.find(name)->second.setEX(value, type);
+}
+
+bool ScreenFactory::setEN(const std::string& name, const int& value, TYPE direction)
+{
+	return screenMap.find(name)->second.setEN(value, direction);
+}
+
+bool ScreenFactory::setTGTPOS(const std::string& name, const double& value, TYPE direction)
+{
+	return screenMap.find(name)->second.setTGTPOS(value, direction);
+}
+
+
 //void ScreenFactory::monitorForNShots(const std::string& name, const size_t& value)
 //{
 //	if (!hasBeenSetup)

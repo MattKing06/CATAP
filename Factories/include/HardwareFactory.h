@@ -3,6 +3,7 @@
 #include "MagnetFactory.h"
 #include "BPMFactory.h"
 #include "ChargeFactory.h"
+#include "ScreenFactory.h"
 #include "GlobalStateEnums.h"
 
 class HardwareFactory
@@ -23,6 +24,7 @@ public:
 	MagnetFactory& getMagnetFactory();
 	BPMFactory& getBPMFactory();
 	ChargeFactory& getChargeFactory();
+	ScreenFactory& getScreenFactory();
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -34,6 +36,7 @@ public:
 	MagnetFactory magnetFactory;
 	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
+	ScreenFactory screenFactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;

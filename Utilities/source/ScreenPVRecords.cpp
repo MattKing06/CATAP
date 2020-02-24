@@ -92,6 +92,52 @@ namespace ScreenRecords
 				screenDirectionList.insert(recordAndDirectionPair);
 			}
 		}
+		extern std::pair< int, STATE > const HRETRACTED; // = "HRETRACTED";
+		extern std::pair< int, STATE > const HMAX; // = "HMAX";
+		extern std::pair< int, STATE > const HSLIT1; // = "HSLIT1";
+		extern std::pair< int, STATE > const HSLIT2; // = "HSLIT2";
+		extern std::pair< int, STATE > const HSLIT3; // = "HSLIT3";
+		extern std::pair< int, STATE > const HAPT1; // = "HAPT1";
+		extern std::pair< int, STATE > const HAPT2; // = "HAPT2";
+		extern std::pair< int, STATE > const HAPT3; // = "HAPT3";
+		extern std::pair< int, STATE > const VRETRACTED; // = "HRETRACTED";
+		extern std::pair< int, STATE > const VMAX; // = "VMAX";
+		extern std::pair< int, STATE > const VRF; // = "VRF";
+		extern std::pair< int, STATE > const VMIRROR; // = "VMIRROR";
+		extern std::pair< int, STATE > const VYAG; // = "VYAG";
+		extern std::pair< int, STATE > const VGRAT; // = "VGRAT";
+		extern std::pair< int, STATE > const VCOL; // = "VCOL";
+		extern std::pair< int, STATE > const VSLIT1; // = "VSLIT1";
+		extern std::pair< int, STATE > const RETRACTED; // = "RETRACTED";
+		extern std::pair< int, STATE > const YAG; // = "YAG";
+		extern std::pair< int, STATE > const RF; // = "RF";
+
+		std::map<std::string, STATE> screenDevicesToEnum;
+		screenDevicesToEnum.insert(std::make_pair("HRETRACTED", STATE::HRETRACTED));
+		screenDevicesToEnum.insert(std::make_pair("HMAX", STATE::HMAX));
+		screenDevicesToEnum.insert(std::make_pair("HSLIT1", STATE::HSLIT1));
+		screenDevicesToEnum.insert(std::make_pair("HSLIT2", STATE::HSLIT2));
+		screenDevicesToEnum.insert(std::make_pair("HSLIT3", STATE::HSLIT3));
+		screenDevicesToEnum.insert(std::make_pair("HAPT1", STATE::HAPT1));
+		screenDevicesToEnum.insert(std::make_pair("HAPT2", STATE::HAPT2));
+		screenDevicesToEnum.insert(std::make_pair("VRETRACTED", STATE::VRETRACTED));
+		screenDevicesToEnum.insert(std::make_pair("VMAX", STATE::VMAX));
+		screenDevicesToEnum.insert(std::make_pair("VRF", STATE::VRF));
+		screenDevicesToEnum.insert(std::make_pair("VMIRROR", STATE::VMIRROR));
+		screenDevicesToEnum.insert(std::make_pair("VYAG", STATE::VYAG));
+		screenDevicesToEnum.insert(std::make_pair("VGRAT", STATE::VGRAT));
+		screenDevicesToEnum.insert(std::make_pair("VCOL", STATE::VCOL));
+		screenDevicesToEnum.insert(std::make_pair("VSLIT1", STATE::VSLIT1));
+		screenDevicesToEnum.insert(std::make_pair("RETRACTED", STATE::RETRACTED));
+		screenDevicesToEnum.insert(std::make_pair("YAG", STATE::YAG));
+
+		std::map<std::string, TYPE> screenTypeToEnum;
+		screenTypeToEnum.insert(std::make_pair("CLARA_HV_MOVER", TYPE::CLARA_HV_MOVER));
+		screenTypeToEnum.insert(std::make_pair("CLARA_V_MOVER", TYPE::CLARA_V_MOVER));
+		screenTypeToEnum.insert(std::make_pair("CLARA_PNEUMATIC", TYPE::CLARA_PNEUMATIC));
+		screenTypeToEnum.insert(std::make_pair("VELA_HV_MOVER", TYPE::VELA_HV_MOVER));
+		screenTypeToEnum.insert(std::make_pair("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC));
+
 		std::map<int, STATE> screenHElementMap;
 		std::map<int, STATE> screenVElementMap;
 		std::map<int, STATE> screenPElementMap;

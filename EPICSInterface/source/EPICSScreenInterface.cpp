@@ -371,7 +371,7 @@ void EPICSScreenInterface::updateHEX(const struct event_handler_args args)
 		+ std::to_string(recastScreen->exH.second) + " IN HORIZONTAL DIRECTION");
 }
 
-void EPICSScreenInterface::updateHEX(const struct event_handler_args args)
+void EPICSScreenInterface::updateVEX(const struct event_handler_args args)
 {
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
@@ -467,7 +467,7 @@ void EPICSScreenInterface::updateHSDEV(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
 	recastScreen->setSDEV(pairToUpdate.second, TYPE::HORIZONTAL);
-	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastValve->getHardwareName() + ": "
+	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second) + " IN HORIZONTAL DIRECTION");
 }
 
@@ -477,7 +477,7 @@ void EPICSScreenInterface::updateVSDEV(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
 	recastScreen->setSDEV(pairToUpdate.second, TYPE::VERTICAL);
-	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastValve->getHardwareName() + ": "
+	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second) + " IN HORIZONTAL DIRECTION");
 }
 
@@ -487,7 +487,7 @@ void EPICSScreenInterface::updateSDEV(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
 	recastScreen->setSDEV(pairToUpdate.second, TYPE::PNEUMATIC);
-	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastValve->getHardwareName() + ": "
+	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second));
 }
 

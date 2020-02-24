@@ -23,6 +23,7 @@
 #include "MagnetPythonInterface.h"
 #include "BPMPythonInterface.h"
 #include "ChargePythonInterface.h"
+#include "ScreenPythonInterface.h"
 
 //#include "Magnet.h"
 //#include "MagnetFactory.h"
@@ -50,7 +51,41 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("OK", STATE::OK)
 		.value("NONLINEAR", STATE::NONLINEAR)
 		.value("UNKNOWN", STATE::UNKNOWN)
+		.value("ENABLED", STATE::ENABLED)
+		.value("DISABLED", STATE::DISABLED)
+		.value("HRETRACTED", STATE::HRETRACTED)
+		.value("HMAX", STATE::HMAX)
+		.value("HSLIT1", STATE::HSLIT1)
+		.value("HSLIT2", STATE::HSLIT2)
+		.value("HSLIT3", STATE::HSLIT3)
+		.value("HAPT1", STATE::HAPT1)
+		.value("HAPT2", STATE::HAPT2)
+		.value("HAPT3", STATE::HAPT3)
+		.value("VRETRACTED", STATE::VRETRACTED)
+		.value("VMAX", STATE::VMAX)
+		.value("VRF", STATE::VRF)
+		.value("VMIRROR", STATE::VMIRROR)
+		.value("VYAG", STATE::VYAG)
+		.value("VGRAT", STATE::VGRAT)
+		.value("VCOL", STATE::VCOL)
+		.value("VSLIT1", STATE::VSLIT1)
+		.value("RETRACTED", STATE::RETRACTED)
+		.value("YAG", STATE::YAG)
+		.value("RF", STATE::RF)
 		;
+
+	boost::python::enum_<TYPE>("TYPE")
+		.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
+		.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
+		.value("CLARA_HV_MOVER", TYPE::CLARA_HV_MOVER)
+		.value("CLARA_V_MOVER", TYPE::CLARA_V_MOVER)
+		.value("CLARA_PNEUMATIC", TYPE::CLARA_PNEUMATIC)
+		.value("UNKNOWN_SCREEN_TYPE", TYPE::UNKNOWN_SCREEN_TYPE)
+		.value("HORIZONTAL", TYPE::HORIZONTAL)
+		.value("VERTICAL", TYPE::VERTICAL)
+		.value("PNEUMATIC", TYPE::PNEUMATIC)
+		;
+
 	boost::python::class_<EPICSInterface>("EPICSInterface", boost::python::no_init)
 		.def("debugMessagesOn", &EPICSInterface::debugMessagesOn)
 		.def("debugMessagesOff", &EPICSInterface::debugMessagesOff)
@@ -82,6 +117,8 @@ BOOST_PYTHON_MODULE(CATAP)
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_factory_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_factory_object();
+	BOOST_PYTHON_SCREEN_INCLUDE::expose_screen_object();
+	BOOST_PYTHON_SCREEN_INCLUDE::expose_screen_factory_object();
 
 
 	//// Magnet Exposure
@@ -159,6 +196,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("chargeFactory", &HardwareFactory::chargeFactory)
 		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.add_property("screenFactory", &HardwareFactory::screenFactory)
+		.def("getScreenFactory", &HardwareFactory::getScreenFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
 		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn)
 		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff)
