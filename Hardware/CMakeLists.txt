@@ -10,6 +10,7 @@ set( SOURCE_FILES
     source/LED.cpp
     source/Lighting.cpp
     source/RFModulator.cpp
+    source/RFProtection.cpp
     source/Stage.cpp
     source/Shutter.cpp
 )
@@ -25,6 +26,7 @@ set( INCLUDE_FILES
     include/LED.h
     include/Lighting.h
     include/RFModulator.h
+    include/RFProtection.h
     include/Stage.h
     include/Shutter.h
 )
@@ -41,6 +43,7 @@ set( TEST_FILES
         LEDTest.cpp
         LightingTest.cpp
         RFModulatorTest.cpp
+        RFProtectionTest.cpp
         StageTest.cpp
         ShutterTest.cpp
 )

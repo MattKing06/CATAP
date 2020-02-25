@@ -10,6 +10,7 @@ set( SOURCE_FILES
     source/LEDFactory.cpp
     source/LightingFactory.cpp
     source/RFModulatorFactory.cpp
+    source/RFProtectionFactory.cpp
     source/StageFactory.cpp
     source/ShutterFactory.cpp
 )
@@ -25,6 +26,7 @@ set( INCLUDE_FILES
     include/LEDFactory.h
     include/LightingFactory.h
     include/RFModulatorFactory.h
+    include/RFProtectionFactory.h
     include/StageFactory.h
     include/ShutterFactory.h
 )
@@ -41,6 +43,7 @@ set( TEST_FILES
     LEDFactoryTest.cpp
     LightingFactoryTest.cpp
     RFModulatorFactoryTest.cpp
+    RFProtectionFactoryTest.cpp
     StageFactoryTest.cpp
     ShutterFactoryTest.cpp
 

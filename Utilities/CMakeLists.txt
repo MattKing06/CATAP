@@ -12,6 +12,7 @@ set(SOURCE_FILES
     source/LEDPVRecords.cpp
     source/LightingPVRecords.cpp
     source/RFModulatorPVRecords.cpp
+    source/RFProtectionPVRecords.cpp
     source/StagePVRecords.cpp
     source/ShutterPVRecords.cpp
 )
@@ -28,6 +29,7 @@ set( INCLUDE_FILES
      include/LEDPVRecords.h
      include/LightingPVRecords.h
      include/RFModulatorPVRecords.h
+     include/RFProtectionPVRecords.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
 )

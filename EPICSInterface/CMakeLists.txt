@@ -10,6 +10,7 @@ set( SOURCE_FILES
     source/EPICSLEDInterface.cpp
     source/EPICSLightingInterface.cpp
     source/EPICSRFModulatorInterface.cpp
+    source/EPICSRFProtectionInterface.cpp
     source/EPICSStageInterface.cpp
     source/EPICSShutterInterface.cpp
 )
@@ -25,6 +26,7 @@ set( INCLUDE_FILES
     include/EPICSLEDInterface.h
     include/EPICSLightingInterface.h
     include/EPICSRFModulatorInterface.h
+    include/EPICSRFProtectionInterface.h
     include/EPICSStageInterface.h
     include/EPICSShutterInterface.h
 )
@@ -41,6 +43,7 @@ set( TEST_FILES
     EPICSLEDInterfaceTest.cpp
     EPICSLightingInterfaceTest.cpp
     EPICSRFModulatorInterfaceTest.cpp
+    EPICSRFProtectionInterfaceTest.cpp
     EPICSStageInterfaceTest.cpp
     EPICSShutterInterfaceTest.cpp
 )

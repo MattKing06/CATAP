@@ -11,6 +11,7 @@ set( SOURCE_FILES
     source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
     source/RFModulatorPythonInterface.cpp
+    source/RFProtectionPythonInterface.cpp
     source/StagePythonInterface.cpp
     source/ShutterPythonInterface.cpp
 )
@@ -26,6 +27,7 @@ set( INCLUDE_FILES
     include/LEDPythonInterface.h
     include/LightingPythonInterface.h
     include/RFModulatorPythonInterface.h
+    include/RFProtectionPythonInterface.h
     include/StagePythonInterface.h
     include/ShutterPythonInterface.h
 )
