@@ -6,6 +6,7 @@ set( SOURCE_FILES
     source/ChargeFactory.cpp
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
+    source/LaserMirrorFactory.cpp
     source/LEDFactory.cpp
     source/LightingFactory.cpp
     source/RFModulatorFactory.cpp
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/ChargeFactory.h
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
+    include/LaserMirrorFactory.h
     include/LEDFactory.h
     include/LightingFactory.h
     include/RFModulatorFactory.h
@@ -35,11 +37,13 @@ set( TEST_FILES
     ChargeFactoryTest.cpp
     ValveFactoryTest.cpp
     GeneralMonitorFactoryTest.cpp
+    LaserMirrorFactoryTest.cpp
     LEDFactoryTest.cpp
+    LightingFactoryTest.cpp
     RFModulatorFactoryTest.cpp
     StageFactoryTest.cpp
     ShutterFactoryTest.cpp
-    LightingFactoryTest.cpp
+
 )
 
 cmake_policy(SET CMP0022 NEW)

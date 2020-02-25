@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
+    source/LaserMirrorPythonInterface.cpp
     source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
     source/RFModulatorPythonInterface.cpp
@@ -21,6 +22,7 @@ set( INCLUDE_FILES
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
     include/GeneralMonitorPythonInterface.h
+    include/LaserMirrorPythonInterface.h
     include/LEDPythonInterface.h
     include/LightingPythonInterface.h
     include/RFModulatorPythonInterface.h

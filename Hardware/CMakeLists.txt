@@ -6,6 +6,7 @@ set( SOURCE_FILES
     source/Charge.cpp
     source/Valve.cpp
     source/GeneralMonitor.cpp
+    source/LaserMirror.cpp
     source/LED.cpp
     source/Lighting.cpp
     source/RFModulator.cpp
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/Charge.h
     include/Valve.h
     include/GeneralMonitor.h
+    include/LaserMirror.h
     include/LED.h
     include/Lighting.h
     include/RFModulator.h
@@ -35,6 +37,7 @@ set( TEST_FILES
 	ChargeTest.cpp
         ValveTest.cpp
         GeneralMonitorTest.cpp
+        LaserMirrorTest.cpp
         LEDTest.cpp
         LightingTest.cpp
         RFModulatorTest.cpp
