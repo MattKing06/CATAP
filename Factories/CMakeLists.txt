@@ -8,6 +8,7 @@ set( SOURCE_FILES
     source/GeneralMonitorFactory.cpp
     source/LEDFactory.cpp
     source/StageFactory.cpp
+    source/ShutterFactory.cpp
 )
 
 set( INCLUDE_FILES
@@ -19,6 +20,7 @@ set( INCLUDE_FILES
     include/GeneralMonitorFactory.h
     include/LEDFactory.h
     include/StageFactory.h
+    include/ShutterFactory.h
 )
 
 set( TEST_FILES
@@ -31,6 +33,7 @@ set( TEST_FILES
     GeneralMonitorFactoryTest.cpp
     LEDFactoryTest.cpp
     StageFactoryTest.cpp
+    ShutterFactoryTest.cpp
 )
 
 cmake_policy(SET CMP0022 NEW)

@@ -8,6 +8,7 @@ set( SOURCE_FILES
     source/EPICSGeneralMonitorInterface.cpp
     source/EPICSLEDInterface.cpp
     source/EPICSStageInterface.cpp
+    source/EPICSShutterInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -19,6 +20,7 @@ set( INCLUDE_FILES
     include/EPICSGeneralMonitorInterface.h
     include/EPICSLEDInterface.h
     include/EPICSStageInterface.h
+    include/EPICSShutterInterface.h
 )
 
 set( TEST_FILES
@@ -31,6 +33,7 @@ set( TEST_FILES
     EPICSGeneralMonitorInterfaceTest.cpp
     EPICSLEDInterfaceTest.cpp
     EPICSStageInterfaceTest.cpp
+    EPICSShutterInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

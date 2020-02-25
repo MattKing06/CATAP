@@ -10,6 +10,7 @@ set(SOURCE_FILES
     source/ChargePVRecords.cpp
     source/LEDPVRecords.cpp
     source/StagePVRecords.cpp
+    source/ShutterPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -22,6 +23,7 @@ set( INCLUDE_FILES
      include/ChargePVRecords.h
      include/LEDPVRecords.h
      include/StagePVRecords.h
+     include/ShutterPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)

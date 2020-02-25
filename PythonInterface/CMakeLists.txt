@@ -9,6 +9,7 @@ set( SOURCE_FILES
     source/GeneralMonitorPythonInterface.cpp
     source/LEDPythonInterface.cpp
     source/StagePythonInterface.cpp
+    source/ShutterPythonInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/GeneralMonitorPythonInterface.h
     include/LEDPythonInterface.h
     include/StagePythonInterface.h
+    include/ShutterPythonInterface.h
 )
 
 set( TEST_FILES
