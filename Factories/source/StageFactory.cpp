@@ -16,6 +16,6 @@ StageFactory::~StageFactory()
 {
 }
 
-void StageFactory::setup(std::vector<std::string> pvListToMonitor)
+void StageFactory::setup(std::string version)
 {
 }

@@ -12,7 +12,7 @@ public:
 	StageFactory(STATE mode);
 	StageFactory(const StageFactory& copyFactory);
 	~StageFactory();
-	void setup(std::vector<std::string> pvListToMonitor);
+	void setup(std::string version);
 	bool hasBeenSetup;
 	std::map<std::string, Stage> StageMap;
 };

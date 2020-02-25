@@ -12,7 +12,7 @@ public:
 	LEDFactory(STATE mode);
 	LEDFactory(const LEDFactory& copyFactory);
 	~LEDFactory();
-	void setup(std::vector<std::string> pvListToMonitor);
+	void setup(std::string version);
 	bool hasBeenSetup;
 	std::map<std::string, LED> LEDMap;
 };

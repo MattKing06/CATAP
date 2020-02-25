@@ -16,6 +16,7 @@ LEDFactory::~LEDFactory()
 {
 }
 
-void LEDFactory::setup(std::vector<std::string> pvListToMonitor)
+void LEDFactory::setup(std::string version)
 {
 }
+

@@ -1,5 +1,5 @@
 #ifndef EPICS_STAGE_INTERFACE_H_
-#define EPICS_STAGE_MONITOR_INTERFACE_H_
+#define EPICS_STAGE_INTERFACE_H_
 #include <EPICSInterface.h>
 
 class EPICSStageInterface : EPICSInterface
