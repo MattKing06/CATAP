@@ -8,6 +8,7 @@ set( SOURCE_FILES
     source/ChargePythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
     source/LEDPythonInterface.cpp
+    source/RFModulatorPythonInterface.cpp
     source/StagePythonInterface.cpp
     source/ShutterPythonInterface.cpp
 )
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/ChargePythonInterface.h 
     include/GeneralMonitorPythonInterface.h
     include/LEDPythonInterface.h
+    include/RFModulatorPythonInterface.h
     include/StagePythonInterface.h
     include/ShutterPythonInterface.h
 )

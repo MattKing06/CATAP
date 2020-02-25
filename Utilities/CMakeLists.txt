@@ -9,6 +9,7 @@ set(SOURCE_FILES
     source/BPMPVRecords.cpp
     source/ChargePVRecords.cpp
     source/LEDPVRecords.cpp
+    source/RFModulatorPVRecords.cpp
     source/StagePVRecords.cpp
     source/ShutterPVRecords.cpp
 )
@@ -22,6 +23,7 @@ set( INCLUDE_FILES
      include/BPMPVRecords.h
      include/ChargePVRecords.h
      include/LEDPVRecords.h
+     include/RFModulatorPVRecords.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
 )

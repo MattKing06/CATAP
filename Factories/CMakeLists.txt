@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
     source/LEDFactory.cpp
+    source/RFModulatorFactory.cpp
     source/StageFactory.cpp
     source/ShutterFactory.cpp
 )
@@ -19,6 +20,7 @@ set( INCLUDE_FILES
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
     include/LEDFactory.h
+    include/RFModulatorFactory.h
     include/StageFactory.h
     include/ShutterFactory.h
 )
@@ -32,6 +34,7 @@ set( TEST_FILES
     ValveFactoryTest.cpp
     GeneralMonitorFactoryTest.cpp
     LEDFactoryTest.cpp
+    RFModulatorFactoryTest.cpp
     StageFactoryTest.cpp
     ShutterFactoryTest.cpp
 )
