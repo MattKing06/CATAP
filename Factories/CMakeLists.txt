@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
     source/LEDFactory.cpp
+    source/LightingFactory.cpp
     source/RFModulatorFactory.cpp
     source/StageFactory.cpp
     source/ShutterFactory.cpp
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
     include/LEDFactory.h
+    include/LightingFactory.h
     include/RFModulatorFactory.h
     include/StageFactory.h
     include/ShutterFactory.h
@@ -37,6 +39,7 @@ set( TEST_FILES
     RFModulatorFactoryTest.cpp
     StageFactoryTest.cpp
     ShutterFactoryTest.cpp
+    LightingFactoryTest.cpp
 )
 
 cmake_policy(SET CMP0022 NEW)

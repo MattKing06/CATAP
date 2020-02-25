@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/EPICSValveInterface.cpp
     source/EPICSGeneralMonitorInterface.cpp
     source/EPICSLEDInterface.cpp
+    source/EPICSLightingInterface.cpp
     source/EPICSRFModulatorInterface.cpp
     source/EPICSStageInterface.cpp
     source/EPICSShutterInterface.cpp
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/EPICSValveInterface.h
     include/EPICSGeneralMonitorInterface.h
     include/EPICSLEDInterface.h
+    include/EPICSLightingInterface.h
     include/EPICSRFModulatorInterface.h
     include/EPICSStageInterface.h
     include/EPICSShutterInterface.h
@@ -34,6 +36,7 @@ set( TEST_FILES
     EPICSValveInterfaceTest.cpp
     EPICSGeneralMonitorInterfaceTest.cpp
     EPICSLEDInterfaceTest.cpp
+    EPICSLightingInterfaceTest.cpp
     EPICSRFModulatorInterfaceTest.cpp
     EPICSStageInterfaceTest.cpp
     EPICSShutterInterfaceTest.cpp

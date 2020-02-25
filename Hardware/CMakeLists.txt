@@ -7,6 +7,7 @@ set( SOURCE_FILES
     source/Valve.cpp
     source/GeneralMonitor.cpp
     source/LED.cpp
+    source/Lighting.cpp
     source/RFModulator.cpp
     source/Stage.cpp
     source/Shutter.cpp
@@ -20,6 +21,7 @@ set( INCLUDE_FILES
     include/Valve.h
     include/GeneralMonitor.h
     include/LED.h
+    include/Lighting.h
     include/RFModulator.h
     include/Stage.h
     include/Shutter.h
@@ -34,6 +36,7 @@ set( TEST_FILES
         ValveTest.cpp
         GeneralMonitorTest.cpp
         LEDTest.cpp
+        LightingTest.cpp
         RFModulatorTest.cpp
         StageTest.cpp
         ShutterTest.cpp
