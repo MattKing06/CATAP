@@ -10,6 +10,7 @@ set( SOURCE_FILES
     source/LaserMirrorFactory.cpp
     source/LEDFactory.cpp
     source/LightingFactory.cpp
+    source/RFHeartbeatFactory.cpp
     source/RFModulatorFactory.cpp
     source/RFProtectionFactory.cpp
     source/StageFactory.cpp
@@ -27,6 +28,7 @@ set( INCLUDE_FILES
     include/LaserMirrorFactory.h
     include/LEDFactory.h
     include/LightingFactory.h
+    include/RFHeartbeatFactory.h
     include/RFModulatorFactory.h
     include/RFProtectionFactory.h
     include/StageFactory.h
@@ -45,6 +47,7 @@ set( TEST_FILES
     LaserMirrorFactoryTest.cpp
     LEDFactoryTest.cpp
     LightingFactoryTest.cpp
+    RFHeartbeatFactoryTest.cpp
     RFModulatorFactoryTest.cpp
     RFProtectionFactoryTest.cpp
     StageFactoryTest.cpp

@@ -10,6 +10,7 @@ set( SOURCE_FILES
     source/LaserMirror.cpp
     source/LED.cpp
     source/Lighting.cpp
+    source/RFHeartbeat.cpp
     source/RFModulator.cpp
     source/RFProtection.cpp
     source/Stage.cpp
@@ -27,6 +28,7 @@ set( INCLUDE_FILES
     include/LaserMirror.h
     include/LED.h
     include/Lighting.h
+    include/RFHeartbeat.h
     include/RFModulator.h
     include/RFProtection.h
     include/Stage.h
@@ -45,6 +47,7 @@ set( TEST_FILES
         LaserMirrorTest.cpp
         LEDTest.cpp
         LightingTest.cpp
+        RFHeartbeatTest.cpp
         RFModulatorTest.cpp
         RFProtectionTest.cpp
         StageTest.cpp
