@@ -6,6 +6,7 @@ set( SOURCE_FILES
     source/ChargeFactory.cpp
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
+    source/IMGFactory.cpp
     source/LaserMirrorFactory.cpp
     source/LEDFactory.cpp
     source/LightingFactory.cpp
@@ -22,6 +23,7 @@ set( INCLUDE_FILES
     include/ChargeFactory.h
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
+    include/IMGFactory.h
     include/LaserMirrorFactory.h
     include/LEDFactory.h
     include/LightingFactory.h
@@ -39,6 +41,7 @@ set( TEST_FILES
     ChargeFactoryTest.cpp
     ValveFactoryTest.cpp
     GeneralMonitorFactoryTest.cpp
+    IMGFactoryTest.cpp
     LaserMirrorFactoryTest.cpp
     LEDFactoryTest.cpp
     LightingFactoryTest.cpp

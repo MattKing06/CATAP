@@ -8,6 +8,7 @@ set(SOURCE_FILES
     source/ValvePVRecords.cpp
     source/BPMPVRecords.cpp
     source/ChargePVRecords.cpp
+    source/IMGPVRecords.cpp
     source/LaserMirrorPVRecords.cpp
     source/LEDPVRecords.cpp
     source/LightingPVRecords.cpp
@@ -25,6 +26,7 @@ set( INCLUDE_FILES
      include/ValvePVRecords.h
      include/BPMPVRecords.h
      include/ChargePVRecords.h
+     include/IMGPVRecords.h
      include/LaserMirrorPVRecords.h
      include/LEDPVRecords.h
      include/LightingPVRecords.h
