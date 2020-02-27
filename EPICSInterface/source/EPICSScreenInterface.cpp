@@ -116,7 +116,7 @@ void EPICSScreenInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 		case TYPE::PNEUMATIC: pvStruct.updateFunction = this->updateMOVING; break;
 		}
 	}
-	else if (pvStruct.pvRecord == ScreenRecords::HACTPOS || pvStruct.pvRecord == ScreenRecords::VACTPOS || pvStruct.pvRecord == ScreenRecords::ACTPOS)
+	else if (pvStruct.pvRecord == ScreenRecords::HACTPOS || pvStruct.pvRecord == ScreenRecords::VACTPOS)
 	{
 	switch (ScreenRecords::screenDirectionList.at(pvStruct.pvRecord))
 	{
@@ -125,7 +125,7 @@ void EPICSScreenInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	case TYPE::PNEUMATIC: pvStruct.updateFunction = this->updateACTPOS; break;
 	}
 	}
-	else if (pvStruct.pvRecord == ScreenRecords::HEN || pvStruct.pvRecord == ScreenRecords::VEN || pvStruct.pvRecord == ScreenRecords::EN)
+	else if (pvStruct.pvRecord == ScreenRecords::HEN || pvStruct.pvRecord == ScreenRecords::VEN)
 	{
 	switch (ScreenRecords::screenDirectionList.at(pvStruct.pvRecord))
 	{
@@ -188,8 +188,8 @@ void EPICSScreenInterface::updateVDEVSTATE(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenStateV.first = pairToUpdate.first;
-	recastScreen->screenStateV.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
-	recastScreen->screenState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
+	recastScreen->screenStateV.second = ScreenRecords::screenVElementMap.at(pairToUpdate.second);
+	recastScreen->screenState.second = ScreenRecords::screenVElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenStateV.second) + " IN VERTICAL DIRECTION");
 }
@@ -199,7 +199,7 @@ void EPICSScreenInterface::updateDEVSTATE(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenState.first = pairToUpdate.first;
-	recastScreen->screenState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
+	recastScreen->screenState.second = ScreenRecords::screenPElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenState.second));
 }
@@ -210,6 +210,7 @@ void EPICSScreenInterface::updateHACTPOS(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->actposH.first = pairToUpdate.first;
 	recastScreen->actposH.second = pairToUpdate.second;
+	recastScreen->actpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("ACTPOS FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->actposH.second) + " IN VERTICAL DIRECTION");
 }
@@ -220,6 +221,7 @@ void EPICSScreenInterface::updateVACTPOS(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->actposV.first = pairToUpdate.first;
 	recastScreen->actposV.second = pairToUpdate.second;
+	recastScreen->actpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("ACTPOS FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->actposV.second) + " IN VERTICAL DIRECTION");
 }
@@ -262,6 +264,7 @@ void EPICSScreenInterface::updateHDEVCENT(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->devcentH.first = pairToUpdate.first;
 	recastScreen->devcentH.second = pairToUpdate.second;
+	recastScreen->devcent.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("DEV_CENT FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->devcentH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -271,7 +274,8 @@ void EPICSScreenInterface::updateVDEVCENT(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->devcentV.first = pairToUpdate.first;
-	recastScreen->devcentV.second= pairToUpdate.second;
+	recastScreen->devcentV.second = pairToUpdate.second;
+	recastScreen->devcent.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("DEV_CENT FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->devcentV.second) + " IN VERTICAL DIRECTION");
 }
@@ -493,7 +497,7 @@ void EPICSScreenInterface::updateMOVING(const struct event_handler_args args)
 void EPICSScreenInterface::updateHMAXPOS(const struct event_handler_args args)
 {
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->maxposH.first = pairToUpdate.first;
 	recastScreen->maxposH.second = pairToUpdate.second;
 	recastScreen->maxpos.second = pairToUpdate.second;
@@ -504,7 +508,7 @@ void EPICSScreenInterface::updateHMAXPOS(const struct event_handler_args args)
 void EPICSScreenInterface::updateVMAXPOS(const struct event_handler_args args)
 {
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->maxposV.first = pairToUpdate.first;
 	recastScreen->maxposV.second = pairToUpdate.second;
 	recastScreen->maxpos.second = pairToUpdate.second;
@@ -515,7 +519,7 @@ void EPICSScreenInterface::updateVMAXPOS(const struct event_handler_args args)
 void EPICSScreenInterface::updateMAXPOS(const struct event_handler_args args)
 {
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->maxpos.first = pairToUpdate.first;
 	recastScreen->maxpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("MAX_POS FOR: " + recastScreen->getHardwareName() + ": "
@@ -556,7 +560,7 @@ void EPICSScreenInterface::updateSDEV(const struct event_handler_args args)
 
 void EPICSScreenInterface::setSDEV(const int value, const pvStruct& pv)
 {
-	unsigned short us = GlobalConstants::one_ushort;
+	unsigned short us = (unsigned short)value;
 	putValue2(pv, us);
 }
 

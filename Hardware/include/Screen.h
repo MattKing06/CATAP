@@ -69,9 +69,9 @@ public:
 	std::pair< epicsTimeStamp, int > movingH;
 	std::pair< epicsTimeStamp, int > movingV;
 	std::pair< epicsTimeStamp, int > moving;
-	std::pair< epicsTimeStamp, int > maxposH;
-	std::pair< epicsTimeStamp, int > maxposV;
-	std::pair< epicsTimeStamp, int > maxpos;
+	std::pair< epicsTimeStamp, double > maxposH;
+	std::pair< epicsTimeStamp, double > maxposV;
+	std::pair< epicsTimeStamp, double > maxpos;
 	std::string name;
 	TYPE screenType;
 	std::vector< STATE > screenDeviceVector;
@@ -109,9 +109,9 @@ public:
 	int getMovingH() const;
 	int getMovingV() const;
 	int getMoving() const;
-	int getMaxPosH() const;
-	int getMaxPosV() const;
-	int getMaxPos() const;
+	double getMaxPosH() const;
+	double getMaxPosV() const;
+	double getMaxPos() const;
 	bool isHOut() const;
 	bool isVOut() const;
 	bool isHIn() const;
@@ -168,7 +168,7 @@ public:
 	bool setJOG(const double& value, TYPE type);
 	bool setTRIGGER(const int& value, TYPE type);
 	bool setMOVING(const int& value, TYPE type);
-	bool setMAXPOS(const int& value, TYPE type);
+	bool setMAXPOS(const double& value, TYPE type);
 	bool setREADY(const int& value, TYPE type);
 	bool setEX(const int& value, TYPE type);
 	bool setEN(const int& value, TYPE type);

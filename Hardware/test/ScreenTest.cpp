@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Screen.h"
 #include <vector>
-//#include <stdlib.h>
+#include <stdlib.h>
 #include <chrono>
 #include <thread>
 

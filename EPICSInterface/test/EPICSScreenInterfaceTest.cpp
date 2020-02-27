@@ -5,3 +5,7 @@
 #ifndef __CINT__
 #include <cadef.h>
 #endif
+
+BOOST_AUTO_TEST_SUITE(EPICSScreenInterfaceTestSuite)
+
+BOOST_AUTO_TEST_SUITE_END()

@@ -52,7 +52,7 @@ epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface()
 epicsInterface->ownerName = hardwareName;
 std::vector<std::string> screenDeviceStringVector;
 boost::split(screenDeviceStringVector, paramsMap.find("devices")->second, [](char c) {return c == ','; });
-for (auto value : screenDeviceStringVector) { std::cout << value << std::endl; screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
+for (auto value : screenDeviceStringVector) { screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
 screenStateH.second = STATE::UNKNOWN;
 screenStateV.second = STATE::UNKNOWN;
 screenState.second = STATE::UNKNOWN;
@@ -89,9 +89,9 @@ ready.second = GlobalConstants::zero_int;
 movingH.second = GlobalConstants::zero_int;
 movingV.second = GlobalConstants::zero_int;
 moving.second = GlobalConstants::zero_int;
-maxposH.second = GlobalConstants::zero_int;
-maxposV.second = GlobalConstants::zero_int;
-maxpos.second = GlobalConstants::zero_int;
+maxposH.second = GlobalConstants::double_min;
+maxposV.second = GlobalConstants::double_min;
+maxpos.second = GlobalConstants::double_min;
 }
 Screen::Screen(const Screen & copyScreen) :
 Hardware(copyScreen),
@@ -419,17 +419,17 @@ int Screen::getMoving() const
 	return moving.second;
 }
 
-int Screen::getMaxPosH() const
+double Screen::getMaxPosH() const
 {
 	return maxposH.second;
 }
 
-int Screen::getMaxPosV() const
+double Screen::getMaxPosV() const
 {
 	return maxposV.second;
 }
 
-int Screen::getMaxPos() const
+double Screen::getMaxPos() const
 {
 	return maxpos.second;
 }
@@ -520,7 +520,7 @@ bool Screen::isHIn() const
 
 bool Screen::isVIn() const
 {
-	if (screenStateV.second != STATE::VRETRACTED)
+	if (screenStateV.second != STATE::VRETRACTED || screenStateV.second != STATE::VRF)
 	{
 		return true;
 	}
@@ -529,7 +529,7 @@ bool Screen::isVIn() const
 
 bool Screen::isRFCageIn() const
 {
-	if (screenStateV.second != STATE::VRF || screenState.second != STATE::RF)
+	if (screenStateV.second == STATE::VRF || screenState.second == STATE::RF)
 	{
 		return true;
 	}
@@ -618,7 +618,7 @@ bool Screen::isScreenInState(STATE sta) const
 	{
 		return screenStateV.second == sta;
 	}
-	else if (isHElement(ScreenRecords::screenPElementMap.at(sta)))
+	else if (isPElement(ScreenRecords::screenPElementMap.at(sta)))
 	{
 		return screenState.second == sta;
 	}
@@ -715,11 +715,11 @@ void Screen::insertYAG()
 {
 	if(isMover())
 	{
-		moveScreenTo(STATE::VRF);
+		moveScreenTo(STATE::VYAG);
 	}
 	else
 	{
-		moveScreenTo(STATE::RF);
+		moveScreenTo(STATE::YAG);
 	}
 }
 
@@ -775,7 +775,7 @@ void Screen::moveScreenOut()
 	}
 	else if (isPneumatic())
 	{
-		moveScreenTo(STATE::RETRACTED);
+		moveScreenTo(STATE::RF);
 	}
 }
 
@@ -856,11 +856,30 @@ bool Screen::setScreenTriggerWDir(const int& value, TYPE type)
 
 bool Screen::moveScreenTo(STATE state)
 {
-	bool sdev = setScreenSetState(state);
-	if (sdev)
+	if (!isMoving())
 	{
-		return setScreenTrigger(1);
+		bool sdev = setScreenSetState(state);
+		if (sdev)
+		{
+			if (isVElement(state))
+			{
+				return setScreenTriggerWDir(1, TYPE::VERTICAL);
+			}
+			else if (isHElement(state))
+			{
+				return setScreenTriggerWDir(1, TYPE::HORIZONTAL);
+			}
+			else if (isPElement(state))
+			{
+				return setScreenTriggerWDir(1, TYPE::PNEUMATIC);
+			}
+		}
 	}
+	else
+	{
+		messenger.printMessage("SCREEN IS MOVING -- CANNOT MOVE");
+	}
+	return false;
 }
 
 bool Screen::setPosition(const double& value, TYPE type)
@@ -877,10 +896,12 @@ bool Screen::setScreenSetState(STATE state)
 {
 	if (isHElement(state))
 	{
+		screenSetStateV.second = STATE::VRETRACTED;
 		return setSDEV(findByValue(ScreenRecords::screenHElementMap, state), TYPE::HORIZONTAL);
 	}
 	else if (isVElement(state))
 	{
+		screenSetStateH.second = STATE::HRETRACTED;
 		return setSDEV(findByValue(ScreenRecords::screenVElementMap, state), TYPE::VERTICAL);
 	}
 	else if (isPElement(state))
@@ -981,7 +1002,7 @@ bool Screen::setREADY(const int& value, TYPE type)
 	return true;
 }
 
-bool Screen::setMAXPOS(const int& value, TYPE type)
+bool Screen::setMAXPOS(const double& value, TYPE type)
 {
 	switch (type)
 	{

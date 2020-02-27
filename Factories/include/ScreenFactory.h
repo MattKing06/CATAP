@@ -43,7 +43,6 @@ public:
 	//bool isVirtual;
 	STATE state;
 	STATE mode;
-	std::string getScreenType();
 	std::map<std::string, std::string> screenParametersAndValuesMap;
 	void setPVStructs();
 	void offlineSet(const long& value);

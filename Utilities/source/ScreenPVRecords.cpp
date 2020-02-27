@@ -62,6 +62,7 @@ const std::pair< int, STATE > ScreenRecords::VGRAT = std::make_pair(5, STATE::VG
 const std::pair< int, STATE > ScreenRecords::VCOL = std::make_pair(6, STATE::VCOL);
 const std::pair< int, STATE > ScreenRecords::VSLIT1 = std::make_pair(7, STATE::VSLIT1);
 const std::pair< int, STATE > ScreenRecords::RETRACTED = std::make_pair(0, STATE::RETRACTED);
+const std::pair< int, STATE > ScreenRecords::RF = std::make_pair(2, STATE::RF);
 const std::pair< int, STATE > ScreenRecords::YAG = std::make_pair(4, STATE::YAG);
 
 namespace ScreenRecords
@@ -71,10 +72,10 @@ namespace ScreenRecords
 	std::vector<std::string> screenRecordList{ HSDEV, HTRIGGER, HEX, HTGTPOS, HJOG, HJDIFF, HMOVING, HREADY, HGETDEV, HDEVSTATE, HMAXPOS, HDEVCENT, HACTPOS, HEN,
 												  VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, VREADY, VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN,
 												  SDEV,  TRIGGER,  EX,  TGTPOS,  JOG,  JDIFF,  MOVING,  READY,  GETDEV,  DEVSTATE,  MAXPOS,  DEVCENT,  ACTPOS,  EN };
-	std::vector<std::string> screenHVRecordList{ HSDEV, HTRIGGER, HEX, HTGTPOS, HJOG, HJDIFF, HMOVING, /*HREADY,*/ HGETDEV, HDEVSTATE, HMAXPOS, HDEVCENT, HACTPOS, HEN,
-												  VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, /*VREADY,*/ VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN };
+	std::vector<std::string> screenHVRecordList{ HSDEV, HTRIGGER, HEX, HTGTPOS, HJOG, HJDIFF, HMOVING, HREADY, HGETDEV, HDEVSTATE, HMAXPOS, HDEVCENT, HACTPOS, HEN,
+												  VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, VREADY, VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN };
 	std::vector<std::string> screenVRecordList{ VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, VREADY, VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN };
-	std::vector<std::string> screenPRecordList{ SDEV,  TRIGGER,  EX,  TGTPOS,  JOG,  JDIFF,  MOVING,  READY,  GETDEV,  DEVSTATE,  MAXPOS,  DEVCENT,  ACTPOS,  EN };
+	std::vector<std::string> screenPRecordList{ SDEV, TRIGGER, MOVING, READY, GETDEV, DEVSTATE, MAXPOS, DEVCENT };
 
 	std::map<std::string, TYPE> screenDirectionList{ 
 		std::pair<std::string, TYPE>(HSDEV,TYPE::HORIZONTAL),
@@ -84,6 +85,7 @@ namespace ScreenRecords
 		std::pair<std::string, TYPE>(HJOG,TYPE::HORIZONTAL),
 		std::pair<std::string, TYPE>(HJDIFF,TYPE::HORIZONTAL),
 		std::pair<std::string, TYPE>(HMOVING,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HREADY,TYPE::HORIZONTAL),
 		std::pair<std::string, TYPE>(HGETDEV,TYPE::HORIZONTAL),
 		std::pair<std::string, TYPE>(HDEVSTATE,TYPE::HORIZONTAL),
 		std::pair<std::string, TYPE>(HMAXPOS,TYPE::HORIZONTAL),
@@ -97,6 +99,7 @@ namespace ScreenRecords
 		std::pair<std::string, TYPE>(VJOG,TYPE::VERTICAL),
 		std::pair<std::string, TYPE>(VJDIFF,TYPE::VERTICAL),
 		std::pair<std::string, TYPE>(VMOVING,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VREADY,TYPE::VERTICAL),
 		std::pair<std::string, TYPE>(VGETDEV,TYPE::VERTICAL),
 		std::pair<std::string, TYPE>(VDEVSTATE,TYPE::VERTICAL),
 		std::pair<std::string, TYPE>(VMAXPOS,TYPE::VERTICAL),
@@ -105,17 +108,12 @@ namespace ScreenRecords
 		std::pair<std::string, TYPE>(VEN,TYPE::VERTICAL),
 		std::pair<std::string, TYPE>(SDEV,TYPE::PNEUMATIC),
 		std::pair<std::string, TYPE>(TRIGGER,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(EX,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(TGTPOS,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(JOG,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(JDIFF,TYPE::PNEUMATIC),
 		std::pair<std::string, TYPE>(MOVING,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(READY,TYPE::PNEUMATIC),
 		std::pair<std::string, TYPE>(GETDEV,TYPE::PNEUMATIC),
 		std::pair<std::string, TYPE>(DEVSTATE,TYPE::PNEUMATIC),
 		std::pair<std::string, TYPE>(MAXPOS,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(DEVCENT,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(ACTPOS,TYPE::PNEUMATIC),
-		std::pair<std::string, TYPE>(EN,TYPE::PNEUMATIC) };
+		std::pair<std::string, TYPE>(DEVCENT,TYPE::PNEUMATIC) };
 
 	std::map<std::string, STATE> screenDevicesToEnum{
 		std::pair<std::string, STATE>("HRETRACTED",STATE::HRETRACTED),
@@ -165,6 +163,7 @@ namespace ScreenRecords
 		std::pair<int, STATE>(7,STATE::VSLIT1) };
 	std::map<int, STATE> screenPElementMap{
 		std::pair<int, STATE>(0,STATE::RETRACTED),
+		std::pair<int, STATE>(2,STATE::RF),
 		std::pair<int, STATE>(4,STATE::YAG) };
 }
 

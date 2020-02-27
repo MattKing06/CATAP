@@ -74,6 +74,7 @@ namespace ScreenRecords
 	extern std::pair< int, STATE > const VCOL; // = "VCOL";
 	extern std::pair< int, STATE > const VSLIT1; // = "VSLIT1";
 	extern std::pair< int, STATE > const RETRACTED; // = "RETRACTED";
+	extern std::pair< int, STATE > const RF; // = "RF";
 	extern std::pair< int, STATE > const YAG; // = "YAG";
 
 	extern std::vector<std::string> screenRecordList;
