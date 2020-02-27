@@ -175,7 +175,7 @@ public:
 	bool setDEVSTATE(int& state, TYPE type);
 	bool setGETDEV(int& state, TYPE type);
 	bool setSDEV(int state, TYPE type);
-	int findByValue(std::map<int, STATE> mapOfElemen, STATE value) const;
+	int findByValue(std::map<int, STATE> mapOfElemen, STATE value);
 	bool isElement(std::map<int, STATE> mapOfElemen, STATE value) const;
 	friend class EPICSScreenInterface;
 protected:

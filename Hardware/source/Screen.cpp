@@ -37,6 +37,11 @@ case TYPE::VELA_HV_MOVER:
 	setPVStructs(ScreenRecords::screenHVRecordList);
 	break;
 }
+case TYPE::VELA_V_MOVER:
+{
+	setPVStructs(ScreenRecords::screenVRecordList);
+	break;
+}
 case TYPE::CLARA_PNEUMATIC:
 {
 	setPVStructs(ScreenRecords::screenPRecordList);
@@ -1189,9 +1194,9 @@ bool Screen::setSDEV(int state, TYPE type)
 	return false;
 }
 
-int Screen::findByValue(std::map<int, STATE> mapOfElemen, STATE value) const
+int Screen::findByValue(std::map<int, STATE> mapOfElemen, STATE value)
 {
-	auto& it = mapOfElemen.begin();
+	auto it = mapOfElemen.begin();
 	// Iterate through the map
 	while (it != mapOfElemen.end())
 	{
