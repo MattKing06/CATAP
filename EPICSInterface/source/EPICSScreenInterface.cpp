@@ -487,9 +487,9 @@ void EPICSScreenInterface::updateVMOVING(const struct event_handler_args args)
 void EPICSScreenInterface::updateMOVING(const struct event_handler_args args)
 {
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->moving.first = pairToUpdate.first;
-	recastScreen->moving.second = pairToUpdate.second;
+	recastScreen->moving.second = (int)pairToUpdate.second;
 	static_messenger.printDebugMessage("MOVING FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->moving.second));
 }
