@@ -24,8 +24,11 @@ namespace GlobalConstants
 	const double one_double = 1.0;
 	const double zero_point_one_double = 0.1;
 
-	const int zero_int= 0;
+	const int zero_int = 0;
 	const int one_int = 1;
+
+	const unsigned short zero_ushort = 0;
+	const unsigned short one_ushort = 1;
 
 	const size_t zero_sizet = 0;
 	const size_t one_sizet = 1;

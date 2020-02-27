@@ -2,6 +2,7 @@
 #define SCREEN_RECORDS
 #include <string>
 #include <vector>
+#include <map>
 
 #include "GlobalStateEnums.h"
 #include "GlobalConstants.h"
@@ -76,12 +77,18 @@ namespace ScreenRecords
 	extern std::pair< int, STATE > const YAG; // = "YAG";
 
 	extern std::vector<std::string> screenRecordList;
+	extern std::vector<std::string> screenHVRecordList;
+	extern std::vector<std::string> screenVRecordList;
+	extern std::vector<std::string> screenPRecordList;
+
 	extern std::map<std::string, TYPE> screenDirectionList;
 	extern std::map<std::string, STATE> screenDevicesToEnum;
 	extern std::map<std::string, TYPE> screenTypeToEnum;
 	extern std::map<int, STATE> screenHElementMap;
 	extern std::map<int, STATE> screenVElementMap;
 	extern std::map<int, STATE> screenPElementMap;
+
+	void insertIntoMaps();
 
 }
 

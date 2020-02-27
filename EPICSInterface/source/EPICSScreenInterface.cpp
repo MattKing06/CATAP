@@ -107,6 +107,15 @@ void EPICSScreenInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 		case TYPE::PNEUMATIC: pvStruct.updateFunction = this->updateDEVCENT; break;
 		}
 	}
+	else if (pvStruct.pvRecord == ScreenRecords::HMOVING || pvStruct.pvRecord == ScreenRecords::VMOVING || pvStruct.pvRecord == ScreenRecords::MOVING)
+	{
+		switch (ScreenRecords::screenDirectionList.at(pvStruct.pvRecord))
+		{
+		case TYPE::HORIZONTAL: pvStruct.updateFunction = this->updateHMOVING; break;
+		case TYPE::VERTICAL: pvStruct.updateFunction = this->updateVMOVING; break;
+		case TYPE::PNEUMATIC: pvStruct.updateFunction = this->updateMOVING; break;
+		}
+	}
 	else if (pvStruct.pvRecord == ScreenRecords::HACTPOS || pvStruct.pvRecord == ScreenRecords::VACTPOS || pvStruct.pvRecord == ScreenRecords::ACTPOS)
 	{
 	switch (ScreenRecords::screenDirectionList.at(pvStruct.pvRecord))
@@ -136,7 +145,8 @@ void EPICSScreenInterface::updateHGETDEV(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetStateH.first = pairToUpdate.first;
-	recastScreen->setGETDEV(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->screenSetStateH.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
+	recastScreen->screenSetState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN SET STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetStateH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -146,7 +156,8 @@ void EPICSScreenInterface::updateVGETDEV(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetStateV.first = pairToUpdate.first;
-	recastScreen->setGETDEV(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->screenSetStateV.second = ScreenRecords::screenVElementMap.at(pairToUpdate.second);
+	recastScreen->screenSetState.second = ScreenRecords::screenVElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN SET STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetStateV.second) + " IN VERTICAL DIRECTION");
 }
@@ -156,7 +167,7 @@ void EPICSScreenInterface::updateGETDEV(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
-	recastScreen->setGETDEV(pairToUpdate.second, TYPE::PNEUMATIC);
+	recastScreen->screenSetState.second = ScreenRecords::screenPElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN SET STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second));
 }
@@ -166,7 +177,8 @@ void EPICSScreenInterface::updateHDEVSTATE(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenStateH.first = pairToUpdate.first;
-	recastScreen->setDEVSTATE(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->screenStateH.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
+	recastScreen->screenState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenStateH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -176,7 +188,8 @@ void EPICSScreenInterface::updateVDEVSTATE(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenStateV.first = pairToUpdate.first;
-	recastScreen->setDEVSTATE(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->screenStateV.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
+	recastScreen->screenState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenStateV.second) + " IN VERTICAL DIRECTION");
 }
@@ -186,7 +199,7 @@ void EPICSScreenInterface::updateDEVSTATE(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenState.first = pairToUpdate.first;
-	recastScreen->setDEVSTATE(pairToUpdate.second, TYPE::PNEUMATIC);
+	recastScreen->screenState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenState.second));
 }
@@ -226,7 +239,8 @@ void EPICSScreenInterface::updateHTGTPOS(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->tgtposH.first = pairToUpdate.first;
-	recastScreen->setTGTPOS(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->tgtposH.second = pairToUpdate.second;
+	recastScreen->tgtpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("TGTPOS FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->tgtposH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -236,7 +250,8 @@ void EPICSScreenInterface::updateVTGTPOS(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->tgtposV.first = pairToUpdate.first;
-	recastScreen->setTGTPOS(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->tgtposV.second = pairToUpdate.second;
+	recastScreen->tgtpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("TGTPOS FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->tgtposV.second) + " IN VERTICAL DIRECTION");
 }
@@ -277,6 +292,7 @@ void EPICSScreenInterface::updateHJDIFF(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->jdiffH.first = pairToUpdate.first;
 	recastScreen->jdiffH.second = pairToUpdate.second;
+	recastScreen->jdiff.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("JDIFF FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->jdiffH.second));
 }
@@ -287,6 +303,7 @@ void EPICSScreenInterface::updateVJDIFF(const struct event_handler_args args)
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->jdiffV.first = pairToUpdate.first;
 	recastScreen->jdiffV.second = pairToUpdate.second;
+	recastScreen->jdiff.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("JDIFF FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->jdiffV.second));
 }
@@ -296,7 +313,8 @@ void EPICSScreenInterface::updateHJOG(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->jogH.first = pairToUpdate.first;
-	recastScreen->setJOG(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->jogH.second = pairToUpdate.second;
+	recastScreen->jog.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("JOG FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->jogH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -306,7 +324,8 @@ void EPICSScreenInterface::updateVJOG(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->jogV.first = pairToUpdate.first;
-	recastScreen->setJOG(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->jogV.second = pairToUpdate.second;
+	recastScreen->jog.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("JOG FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->jogV.second) + " IN VERTICAL DIRECTION");
 }
@@ -316,7 +335,8 @@ void EPICSScreenInterface::updateHEN(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->enH.first = pairToUpdate.first;
-	recastScreen->setEN(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->enH.second = pairToUpdate.second;
+	recastScreen->en.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("EN FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->enH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -326,9 +346,20 @@ void EPICSScreenInterface::updateVEN(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->enV.first = pairToUpdate.first;
-	recastScreen->setEN(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->enV.second = pairToUpdate.second;
+	recastScreen->en.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("EN FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->enV.second) + " IN VERTICAL DIRECTION");
+}
+
+void EPICSScreenInterface::updateEN(const struct event_handler_args args)
+{
+	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
+	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	recastScreen->en.first = pairToUpdate.first;
+	recastScreen->en.second = pairToUpdate.second;
+	static_messenger.printDebugMessage("EN FOR: " + recastScreen->getHardwareName() + ": "
+		+ std::to_string(recastScreen->en.second));
 }
 
 void EPICSScreenInterface::updateHTRIGGER(const struct event_handler_args args)
@@ -336,7 +367,8 @@ void EPICSScreenInterface::updateHTRIGGER(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->triggerH.first = pairToUpdate.first;;
-	recastScreen->setTRIGGER(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->triggerH.second = pairToUpdate.second;
+	recastScreen->trigger.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("TRIGGER FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->triggerH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -346,7 +378,8 @@ void EPICSScreenInterface::updateVTRIGGER(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->triggerV.first = pairToUpdate.first;
-	recastScreen->setTRIGGER(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->triggerV.second = pairToUpdate.second;
+	recastScreen->trigger.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("TRIGGER FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->triggerV.second) + " IN VERTICAL DIRECTION");
 }
@@ -356,7 +389,7 @@ void EPICSScreenInterface::updateTRIGGER(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->trigger.first = pairToUpdate.first;
-	recastScreen->setTRIGGER(pairToUpdate.second, TYPE::PNEUMATIC);
+	recastScreen->trigger.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("TRIGGER FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->trigger.second));
 }
@@ -366,7 +399,8 @@ void EPICSScreenInterface::updateHEX(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->exH.first = pairToUpdate.first;
-	recastScreen->setEX(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->exH.second = pairToUpdate.second;
+	recastScreen->ex.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("EX FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->exH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -376,9 +410,20 @@ void EPICSScreenInterface::updateVEX(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->exV.first = pairToUpdate.first;
-	recastScreen->setEX(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->exV.second = pairToUpdate.second;
+	recastScreen->ex.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("EX FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->exV.second) + " IN VERTICAL DIRECTION");
+}
+
+void EPICSScreenInterface::updateEX(const struct event_handler_args args)
+{
+	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
+	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	recastScreen->ex.first = pairToUpdate.first;
+	recastScreen->ex.second = pairToUpdate.second;
+	static_messenger.printDebugMessage("EX FOR: " + recastScreen->getHardwareName() + ": "
+		+ std::to_string(recastScreen->ex.second));
 }
 
 void EPICSScreenInterface::updateHREADY(const struct event_handler_args args)
@@ -386,7 +431,8 @@ void EPICSScreenInterface::updateHREADY(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->readyH.first = pairToUpdate.first;
-	recastScreen->setREADY(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->readyH.second = pairToUpdate.second;
+	recastScreen->ready.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("READY FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->readyH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -396,7 +442,8 @@ void EPICSScreenInterface::updateVREADY(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->readyV.first = pairToUpdate.first;
-	recastScreen->setREADY(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->readyV.second = pairToUpdate.second;
+	recastScreen->ready.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("READY FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->readyV.second) + " IN VERTICAL DIRECTION");
 }
@@ -406,7 +453,7 @@ void EPICSScreenInterface::updateREADY(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->ready.first = pairToUpdate.first;
-	recastScreen->setREADY(pairToUpdate.second, TYPE::PNEUMATIC);
+	recastScreen->ready.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("READY FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->ready.second));
 }
@@ -416,7 +463,8 @@ void EPICSScreenInterface::updateHMOVING(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->movingH.first = pairToUpdate.first;
-	recastScreen->setMOVING(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->movingH.second = pairToUpdate.second;
+	recastScreen->moving.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("MOVING FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->movingH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -426,7 +474,8 @@ void EPICSScreenInterface::updateVMOVING(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->movingV.first = pairToUpdate.first;
-	recastScreen->setMOVING(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->movingV.second = pairToUpdate.second;
+	recastScreen->moving.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("MOVING FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->movingV.second) + " IN VERTICAL DIRECTION");
 }
@@ -436,7 +485,7 @@ void EPICSScreenInterface::updateMOVING(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->moving.first = pairToUpdate.first;
-	recastScreen->setMOVING(pairToUpdate.second, TYPE::PNEUMATIC);
+	recastScreen->moving.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("MOVING FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->moving.second));
 }
@@ -446,7 +495,8 @@ void EPICSScreenInterface::updateHMAXPOS(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->maxposH.first = pairToUpdate.first;
-	recastScreen->setMAXPOS(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->maxposH.second = pairToUpdate.second;
+	recastScreen->maxpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("MAX_POS FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->maxposH.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -456,9 +506,20 @@ void EPICSScreenInterface::updateVMAXPOS(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->maxposV.first = pairToUpdate.first;
-	recastScreen->setMAXPOS(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->maxposV.second = pairToUpdate.second;
+	recastScreen->maxpos.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("MAX_POS FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->maxposV.second) + " IN VERTICAL DIRECTION");
+}
+
+void EPICSScreenInterface::updateMAXPOS(const struct event_handler_args args)
+{
+	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
+	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	recastScreen->maxpos.first = pairToUpdate.first;
+	recastScreen->maxpos.second = pairToUpdate.second;
+	static_messenger.printDebugMessage("MAX_POS FOR: " + recastScreen->getHardwareName() + ": "
+		+ std::to_string(recastScreen->maxpos.second));
 }
 
 void EPICSScreenInterface::updateHSDEV(const struct event_handler_args args)
@@ -466,7 +527,8 @@ void EPICSScreenInterface::updateHSDEV(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
-	recastScreen->setSDEV(pairToUpdate.second, TYPE::HORIZONTAL);
+	recastScreen->screenSetStateH.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
+	recastScreen->screenSetState.second = ScreenRecords::screenHElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -476,7 +538,8 @@ void EPICSScreenInterface::updateVSDEV(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
-	recastScreen->setSDEV(pairToUpdate.second, TYPE::VERTICAL);
+	recastScreen->screenSetStateV.second = ScreenRecords::screenVElementMap.at(pairToUpdate.second);
+	recastScreen->screenSetState.second = ScreenRecords::screenVElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second) + " IN HORIZONTAL DIRECTION");
 }
@@ -486,19 +549,21 @@ void EPICSScreenInterface::updateSDEV(const struct event_handler_args args)
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastScreen->screenSetState.first = pairToUpdate.first;
-	recastScreen->setSDEV(pairToUpdate.second, TYPE::PNEUMATIC);
+	recastScreen->screenSetState.second = ScreenRecords::screenPElementMap.at(pairToUpdate.second);
 	static_messenger.printDebugMessage("SCREEN STATE FOR: " + recastScreen->getHardwareName() + ": "
 		+ std::to_string(recastScreen->screenSetState.second));
 }
 
-void EPICSScreenInterface::setSDEV(const int& value, const pvStruct& pv)
+void EPICSScreenInterface::setSDEV(const int value, const pvStruct& pv)
 {
-	putValue2(pv, value);
+	unsigned short us = GlobalConstants::one_ushort;
+	putValue2(pv, us);
 }
 
 void EPICSScreenInterface::setTRIGGER(const int& value, const pvStruct& pv)
 {
-	putValue2(pv, value);
+	double val = value + 0.0;
+	putValue2(pv, val);
 }
 
 void EPICSScreenInterface::setEX(const int& value, const pvStruct& pv)

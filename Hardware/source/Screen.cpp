@@ -20,12 +20,39 @@ name(paramsMap.find("name")->second),
 position(std::stod(paramsMap.find("position")->second))
 {
 messenger.printDebugMessage("constructor");
-setPVStructs();
+switch (screenType)
+{
+case TYPE::CLARA_HV_MOVER:
+{
+	setPVStructs(ScreenRecords::screenHVRecordList);
+	break;
+}
+case TYPE::CLARA_V_MOVER:
+{
+	setPVStructs(ScreenRecords::screenVRecordList);
+	break;
+}
+case TYPE::VELA_HV_MOVER:
+{
+	setPVStructs(ScreenRecords::screenHVRecordList);
+	break;
+}
+case TYPE::CLARA_PNEUMATIC:
+{
+	setPVStructs(ScreenRecords::screenPRecordList);
+	break;
+}
+case TYPE::VELA_PNEUMATIC:
+{
+	setPVStructs(ScreenRecords::screenPRecordList);
+	break;
+}
+}
 epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
 epicsInterface->ownerName = hardwareName;
 std::vector<std::string> screenDeviceStringVector;
 boost::split(screenDeviceStringVector, paramsMap.find("devices")->second, [](char c) {return c == ','; });
-for (auto value : screenDeviceStringVector) { screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
+for (auto value : screenDeviceStringVector) { std::cout << value << std::endl; screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
 screenStateH.second = STATE::UNKNOWN;
 screenStateV.second = STATE::UNKNOWN;
 screenState.second = STATE::UNKNOWN;
@@ -49,8 +76,10 @@ jogV.second = GlobalConstants::double_min;
 jog.second = GlobalConstants::double_min;
 enH.second = STATE::UNKNOWN;
 enV.second = STATE::UNKNOWN;
+en.second = STATE::UNKNOWN;
 exH.second = GlobalConstants::zero_int;
 exV.second = GlobalConstants::zero_int;
+ex.second = GlobalConstants::zero_int;
 triggerH.second = GlobalConstants::zero_int;
 triggerV.second = GlobalConstants::zero_int;
 trigger.second = GlobalConstants::zero_int;
@@ -74,11 +103,10 @@ epicsInterface(copyScreen.epicsInterface)
 {
 }
 
-void Screen::setPVStructs()
+void Screen::setPVStructs(std::vector<std::string> recordList)
 {
 	messenger.printDebugMessage("in setPVstructs");
-
-	for (auto&& record : ScreenRecords::screenRecordList)
+	for (auto&& record : recordList)
 	{
 		messenger.printDebugMessage("in loop");
 		pvStructs[record] = pvStruct();
@@ -89,7 +117,6 @@ void Screen::setPVStructs()
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		messenger.printDebugMessage("Constructing PV information for ", record);
-
 		/*TODO
 		  This should be put into some general function: generateVirtualPV(PV) or something...
 		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
@@ -108,7 +135,6 @@ void Screen::setPVStructs()
 		//chid, count, mask, chtype are left undefined for now.
 		//pvStructs[pv.pvRecord] = pv;
 	}
-
 }
 
 std::vector<std::string> Screen::getAliases() const
@@ -759,16 +785,16 @@ void Screen::resetPosition()
 	{
 		if (isHIn() || isHEnabled())
 		{
-			setScreenTrigger(1, TYPE::HORIZONTAL);
+			setScreenTriggerWDir(1, TYPE::HORIZONTAL);
 		}
 		else if(isVIn() || isVEnabled())
 		{
-			setScreenTrigger(1, TYPE::VERTICAL);
+			setScreenTriggerWDir(1, TYPE::VERTICAL);
 		}
 	}
 	else
 	{
-		setScreenTrigger(1, TYPE::PNEUMATIC);
+		setScreenTriggerWDir(1, TYPE::PNEUMATIC);
 	}
 }
 
@@ -823,7 +849,7 @@ bool Screen::setScreenTrigger(const int& value)
 	}
 }
 
-bool Screen::setScreenTrigger(const int& value, TYPE type)
+bool Screen::setScreenTriggerWDir(const int& value, TYPE type)
 {
 	return setTRIGGER(value, type);
 }
@@ -842,7 +868,7 @@ bool Screen::setPosition(const double& value, TYPE type)
 	bool tgt = setTGTPOS(value, type);
 	if (tgt)
 	{
-		return setScreenTrigger(1, type);
+		return setScreenTriggerWDir(1, type);
 	}
 	return false;
 }
@@ -1175,4 +1201,32 @@ bool Screen::isElement(std::map<int, STATE> mapOfElemen, STATE value) const
 		it++;
 	}
 	return false;
+}
+
+void Screen::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+}
+
+void Screen::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG On");
+	epicsInterface->debugMessagesOn();
+}
+
+void Screen::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Screen::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES On");
+	epicsInterface->messagesOn();
 }

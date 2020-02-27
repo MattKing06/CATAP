@@ -63,7 +63,7 @@ public:
 	static void updateDEVCENT(const struct event_handler_args args);
 	static void updateACTPOS(const struct event_handler_args args);
 	static void updateEN(const struct event_handler_args args);
-	void setSDEV(const int& value, const pvStruct& pv);
+	void setSDEV(const int value, const pvStruct& pv);
 	void setEX(const int& value, const pvStruct& pv);
 	void setEN(const int& value, const pvStruct& pv);
 	void setTRIGGER(const int& value, const pvStruct& pv);

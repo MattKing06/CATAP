@@ -81,7 +81,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("isRFCageIn", &Screen::isRFCageIn)
 			.def("getACTPOS", &Screen::getACTPOS)
 			.def("getJDiff", &Screen::getJDiff)
-			.def("getDevicePosition", &Screen::getDevicePosition)
+			//.def("getDevicePosition", &Screen::getDevicePosition)
 			.def("getPosition", &Screen::getPosition)
 			.def("isVELAPneumatic", &Screen::isVELAPneumatic)
 			.def("isVELAHVMover", &Screen::isVELAHVMover)
@@ -95,7 +95,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("resetPosition", &Screen::resetPosition)
 			.def("setScreenSDEV", &Screen::setScreenSDEV)
 			.def("setScreenTrigger", &Screen::setScreenTrigger)
-			.def("setScreenTrigger", &Screen::setScreenTrigger)
+			.def("setScreenTriggerWDir", &Screen::setScreenTriggerWDir)
 			.def("setScreenSetState", &Screen::setScreenSetState)
 			.def("moveScreenTo", &Screen::moveScreenTo)
 			.def("jogScreen", &Screen::jogScreen)
@@ -108,22 +108,13 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setEX", &Screen::setEX)
 			.def("moveScreenTo", &Screen::moveScreenTo);
 	}
-
-	//typedef std::pair<int, int> IntPair;
-	//// This is our previous registratiOn functiOn (as above) using the cleaner typedef.
-	//to_PYTHON_cOnverter<IntPair, PairToTupleCOnverter<int, int> >();
-	//// Registers a cOnverter for a pair of int-pairs.
-	//to_PYTHON_cOnverter<std::pair<IntPair, IntPair>, PairToTupleCOnverter<IntPair, IntPair> >();
-
-
-
-
 	
 	void expose_screen_factory_object() {
 
 		//screen Factory Exposure
 		boost::python::class_<ScreenFactory>("ScreenFactory", boost::python::no_init)
-			.def(boost::python::init<STATE>())
+			//.def(boost::python::init<STATE>())
+			//.def(boost::python::init<TYPE>())
 			.def("setup", &ScreenFactory::setup)
 			.add_property("screenMap", &ScreenFactory::screenMap)
 			.def("getScreen", &ScreenFactory::getScreen, boost::python::return_value_policy<boost::python::reference_existing_object>())
@@ -144,45 +135,45 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("isHVMover", &ScreenFactory::isHVMover)
 			.def("isPneumatic", &ScreenFactory::isPneumatic)
 			.def("getScreenState", &ScreenFactory::getScreenState)
-			.def("getScreenState", &ScreenFactory::getScreenState)
+			.def("getScreenStatePair", &ScreenFactory::getScreenStatePair)
 			.def("getScreenSetState", &ScreenFactory::getScreenSetState)
-			.def("getScreenSetState", &ScreenFactory::getScreenSetState)
-			.def("getScreenType", &ScreenFactory::getScreenType)
-			.def("getAvailableDevices", &ScreenFactory::getAvailableDevices)
-			.def("isScreenInState", &ScreenFactory::isScreenInState)
-			.def("isHElement", &ScreenFactory::isHElement)
-			.def("isVElement", &ScreenFactory::isVElement)
-			.def("isPElement", &ScreenFactory::isPElement)
-			.def("isHEnabled", &ScreenFactory::isHEnabled)
-			.def("isVEnabled", &ScreenFactory::isVEnabled)
-			.def("isRFCageIn", &ScreenFactory::isRFCageIn)
-			.def("getACTPOS", &ScreenFactory::getACTPOS)
-			.def("getJDiff", &ScreenFactory::getJDiff)
-			.def("getDevicePosition", &ScreenFactory::getDevicePosition)
-			.def("getPosition", &ScreenFactory::getPosition)
-			.def("isVELAPneumatic", &ScreenFactory::isVELAPneumatic)
-			.def("isVELAHVMover", &ScreenFactory::isVELAHVMover)
-			.def("isCLARAHVMover", &ScreenFactory::isCLARAHVMover)
-			.def("isCLARAVMover", &ScreenFactory::isCLARAVMover)
-			.def("get_H_ACTPOS", &ScreenFactory::get_H_ACTPOS)
-			.def("get_V_ACTPOS", &ScreenFactory::get_V_ACTPOS)
-			.def("makeReadEqualSet", &ScreenFactory::makeReadEqualSet)
-			.def("makeSetEqualRead", &ScreenFactory::makeSetEqualRead)
-			.def("moveScreenOut", &ScreenFactory::moveScreenOut)
-			.def("resetPosition", &ScreenFactory::resetPosition)
-			.def("setScreenSDEV", &ScreenFactory::setScreenSDEV)
-			.def("setScreenTrigger", &ScreenFactory::setScreenTrigger)
-			.def("setScreenTrigger", &ScreenFactory::setScreenTrigger)
-			.def("setScreenSetState", &ScreenFactory::setScreenSetState)
-			.def("moveScreenTo", &ScreenFactory::moveScreenTo)
-			.def("jogScreen", &ScreenFactory::jogScreen)
-			.def("setPosition", &ScreenFactory::setPosition)
-			.def("setTGTPOS", &ScreenFactory::setTGTPOS)
-			.def("setScreenTrigger", &ScreenFactory::setScreenTrigger)
-			.def("setScreenSDEV", &ScreenFactory::setScreenSDEV)
-			.def("setEN", &ScreenFactory::setEN)
-			.def("setEX", &ScreenFactory::setEX)
-			.def("moveScreenTo", &ScreenFactory::moveScreenTo);
+			.def("getScreenSetStatePair", &ScreenFactory::getScreenSetStatePair);
+			//.def("getScreenType", &ScreenFactory::getScreenType)
+			//.def("getAvailableDevices", &ScreenFactory::getAvailableDevices)
+			//.def("isScreenInState", &ScreenFactory::isScreenInState)
+			//.def("isHElement", &ScreenFactory::isHElement)
+			//.def("isVElement", &ScreenFactory::isVElement)
+			//.def("isPElement", &ScreenFactory::isPElement)
+			//.def("isHEnabled", &ScreenFactory::isHEnabled)
+			//.def("isVEnabled", &ScreenFactory::isVEnabled)
+			//.def("isRFCageIn", &ScreenFactory::isRFCageIn)
+			//.def("getACTPOS", &ScreenFactory::getACTPOS)
+			//.def("getJDiff", &ScreenFactory::getJDiff)
+			////.def("getDevicePosition", &ScreenFactory::getDevicePosition)
+			//.def("getPosition", &ScreenFactory::getPosition)
+			//.def("isVELAPneumatic", &ScreenFactory::isVELAPneumatic)
+			//.def("isVELAHVMover", &ScreenFactory::isVELAHVMover)
+			//.def("isCLARAHVMover", &ScreenFactory::isCLARAHVMover)
+			//.def("isCLARAVMover", &ScreenFactory::isCLARAVMover)
+			//.def("get_H_ACTPOS", &ScreenFactory::get_H_ACTPOS)
+			//.def("get_V_ACTPOS", &ScreenFactory::get_V_ACTPOS)
+			//.def("makeReadEqualSet", &ScreenFactory::makeReadEqualSet)
+			//.def("makeSetEqualRead", &ScreenFactory::makeSetEqualRead)
+			//.def("moveScreenOut", &ScreenFactory::moveScreenOut)
+			//.def("resetPosition", &ScreenFactory::resetPosition)
+			//.def("setScreenSDEV", &ScreenFactory::setScreenSDEV)
+			//.def("setScreenTrigger", &ScreenFactory::setScreenTrigger)
+			//.def("setScreenTriggerWDir", &ScreenFactory::setScreenTriggerWDir)
+			//.def("setScreenSetState", &ScreenFactory::setScreenSetState)
+			//.def("moveScreenTo", &ScreenFactory::moveScreenTo)
+			//.def("jogScreen", &ScreenFactory::jogScreen)
+			//.def("setPosition", &ScreenFactory::setPosition)
+			//.def("setTGTPOS", &ScreenFactory::setTGTPOS)
+			//.def("setScreenTrigger", &ScreenFactory::setScreenTrigger)
+			//.def("setScreenSDEV", &ScreenFactory::setScreenSDEV)
+			//.def("setEN", &ScreenFactory::setEN)
+			//.def("setEX", &ScreenFactory::setEX)
+			//.def("moveScreenTo", &ScreenFactory::moveScreenTo);
 	}
 
 

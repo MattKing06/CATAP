@@ -340,14 +340,14 @@ STATE ScreenFactory::getScreenSetState(const std::string& name)
 	return screenMap.find(name)->second.getScreenSetState();
 }
 
-std::pair< STATE, TYPE > ScreenFactory::getScreenState(const std::string& name, TYPE type)
+std::pair< STATE, TYPE > ScreenFactory::getScreenStatePair(const std::string& name, TYPE type)
 {
-	return screenMap.find(name)->second.getScreenState(type);
+	return screenMap.find(name)->second.getScreenStatePair(type);
 }
 
-std::pair< STATE, TYPE > ScreenFactory::getScreenSetState(const std::string& name, TYPE type)
+std::pair< STATE, TYPE > ScreenFactory::getScreenSetStatePair(const std::string& name, TYPE type)
 {
-	return screenMap.find(name)->second.getScreenSetState(type);
+	return screenMap.find(name)->second.getScreenSetStatePair(type);
 }
 
 TYPE ScreenFactory::getScreenType(const std::string& name)
@@ -410,10 +410,10 @@ double ScreenFactory::getJDiff(const std::string& name)
 	return screenMap.find(name)->second.getJDiff();
 }
 
-double ScreenFactory::getDevicePosition(const std::string& name, STATE state)
-{
-	return screenMap.find(name)->second.getDevicePosition(state);
-}
+//double ScreenFactory::getDevicePosition(const std::string& name, STATE state)
+//{
+//	return screenMap.find(name)->second.getDevicePosition(state);
+//}
 
 double ScreenFactory::getPosition(const std::string& name)
 {
@@ -485,9 +485,9 @@ bool ScreenFactory::setScreenTrigger(const std::string& name, const int& value)
 	return screenMap.find(name)->second.setScreenTrigger(value);
 }
 
-bool ScreenFactory::setScreenTrigger(const std::string& name, const int& value, TYPE& type)
+bool ScreenFactory::setScreenTriggerWDir(const std::string& name, const int& value, TYPE& type)
 {
-	return screenMap.find(name)->second.setScreenTrigger(value, type);
+	return screenMap.find(name)->second.setScreenTriggerWDir(value, type);
 }
 
 bool ScreenFactory::setEX(const std::string& name, const int& value, TYPE type)

@@ -143,6 +143,14 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_LONG;
 		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_SHORT)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_SHORT;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_INT)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_INT;
+		}
 		else
 		{
 			pvStruct.monitorCHTYPE = ca_field_type(pvStruct.CHID);
@@ -256,6 +264,15 @@ std::pair<epicsTimeStamp, short> EPICSInterface::getTimeStampShortPair(const str
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
 	r.first = tv->stamp;
 	r.second = tv->value;
+	return r;
+}
+
+std::pair<epicsTimeStamp, int> EPICSInterface::getTimeStampEnumPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (int)tv->value;
 	return r;
 }
 

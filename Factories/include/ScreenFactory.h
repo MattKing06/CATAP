@@ -64,8 +64,8 @@ public:
 	bool isPneumatic(const std::string& name);
 	STATE getScreenState(const std::string& name);
 	STATE getScreenSetState(const std::string& name);
-	std::pair< STATE, TYPE > getScreenState(const std::string& name, TYPE type);
-	std::pair< STATE, TYPE > getScreenSetState(const std::string& name, TYPE type);
+	std::pair< STATE, TYPE > getScreenStatePair(const std::string& name, TYPE type);
+	std::pair< STATE, TYPE > getScreenSetStatePair(const std::string& name, TYPE type);
 	TYPE getScreenType(const std::string& name);
 	std::vector< STATE > getAvailableDevices(const std::string& name);
 	bool isScreenInState(const std::string& name, STATE sta);
@@ -97,7 +97,7 @@ public:
 	void setPosition(const std::string& name, const double setPos, TYPE type);
 	bool setScreenSDEV(const std::string& name, STATE& state);
 	bool setScreenTrigger(const std::string& name, const int& value);
-	bool setScreenTrigger(const std::string& name, const int& value, TYPE& type);
+	bool setScreenTriggerWDir(const std::string& name, const int& value, TYPE& type);
 	bool setEX(const std::string& name, const int& value, TYPE type);
 	bool setEN(const std::string& name, const int& value, TYPE direction);
 	bool setTGTPOS(const std::string& name, const double& value, TYPE direction);

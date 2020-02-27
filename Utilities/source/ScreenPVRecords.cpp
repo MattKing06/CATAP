@@ -52,7 +52,7 @@ const std::pair< int, STATE > ScreenRecords::HSLIT2 = std::make_pair(8, STATE::H
 const std::pair< int, STATE > ScreenRecords::HSLIT3 = std::make_pair(9, STATE::HSLIT3);
 const std::pair< int, STATE > ScreenRecords::HAPT1 = std::make_pair(10, STATE::HAPT1);
 const std::pair< int, STATE > ScreenRecords::HAPT2 = std::make_pair(11, STATE::HAPT2);
-const std::pair< int, STATE > ScreenRecords::HAPT3 = std::make_pair(0, STATE::HAPT3);
+const std::pair< int, STATE > ScreenRecords::HAPT3 = std::make_pair(12, STATE::HAPT3);
 const std::pair< int, STATE > ScreenRecords::VRETRACTED = std::make_pair(0, STATE::VRETRACTED);
 const std::pair< int, STATE > ScreenRecords::VMAX = std::make_pair(1, STATE::VMAX);
 const std::pair< int, STATE > ScreenRecords::VRF = std::make_pair(2, STATE::VRF);
@@ -68,97 +68,103 @@ namespace ScreenRecords
 {
 	std::string const HPV = ":H:";
 	std::string const VPV = ":V:";
-	std::vector<std::string> screenRecordList { HSDEV, HTRIGGER, HEX, HTGTPOS, HJOG, HJDIFF, HMOVING, HREADY, HGETDEV, HDEVSTATE, HMAXPOS, HDEVCENT, HACTPOS, HEN,
+	std::vector<std::string> screenRecordList{ HSDEV, HTRIGGER, HEX, HTGTPOS, HJOG, HJDIFF, HMOVING, HREADY, HGETDEV, HDEVSTATE, HMAXPOS, HDEVCENT, HACTPOS, HEN,
 												  VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, VREADY, VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN,
 												  SDEV,  TRIGGER,  EX,  TGTPOS,  JOG,  JDIFF,  MOVING,  READY,  GETDEV,  DEVSTATE,  MAXPOS,  DEVCENT,  ACTPOS,  EN };
-	std::string e = "e";
-	void insertIntoMaps()
-	{
-		for (auto&& it : screenRecordList)
-		{
-			if (it.rfind("H", 0) == 0)
-			{
-				std::pair<std::string, TYPE> recordAndDirectionPair = std::make_pair(it, TYPE::HORIZONTAL);
-				screenDirectionList.insert(recordAndDirectionPair);
-			}
-			else if (it.rfind("V", 0) == 0)
-			{
-				std::pair<std::string, TYPE> recordAndDirectionPair = std::make_pair(it, TYPE::VERTICAL);
-				screenDirectionList.insert(recordAndDirectionPair);
-			}
-			else
-			{
-				std::pair<std::string, TYPE> recordAndDirectionPair = std::make_pair(it, TYPE::PNEUMATIC);
-				screenDirectionList.insert(recordAndDirectionPair);
-			}
-		}
-		extern std::pair< int, STATE > const HRETRACTED; // = "HRETRACTED";
-		extern std::pair< int, STATE > const HMAX; // = "HMAX";
-		extern std::pair< int, STATE > const HSLIT1; // = "HSLIT1";
-		extern std::pair< int, STATE > const HSLIT2; // = "HSLIT2";
-		extern std::pair< int, STATE > const HSLIT3; // = "HSLIT3";
-		extern std::pair< int, STATE > const HAPT1; // = "HAPT1";
-		extern std::pair< int, STATE > const HAPT2; // = "HAPT2";
-		extern std::pair< int, STATE > const HAPT3; // = "HAPT3";
-		extern std::pair< int, STATE > const VRETRACTED; // = "HRETRACTED";
-		extern std::pair< int, STATE > const VMAX; // = "VMAX";
-		extern std::pair< int, STATE > const VRF; // = "VRF";
-		extern std::pair< int, STATE > const VMIRROR; // = "VMIRROR";
-		extern std::pair< int, STATE > const VYAG; // = "VYAG";
-		extern std::pair< int, STATE > const VGRAT; // = "VGRAT";
-		extern std::pair< int, STATE > const VCOL; // = "VCOL";
-		extern std::pair< int, STATE > const VSLIT1; // = "VSLIT1";
-		extern std::pair< int, STATE > const RETRACTED; // = "RETRACTED";
-		extern std::pair< int, STATE > const YAG; // = "YAG";
-		extern std::pair< int, STATE > const RF; // = "RF";
+	std::vector<std::string> screenHVRecordList{ HSDEV, HTRIGGER, HEX, HTGTPOS, HJOG, HJDIFF, HMOVING, /*HREADY,*/ HGETDEV, HDEVSTATE, HMAXPOS, HDEVCENT, HACTPOS, HEN,
+												  VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, /*VREADY,*/ VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN };
+	std::vector<std::string> screenVRecordList{ VSDEV, VTRIGGER, VEX, VTGTPOS, VJOG, VJDIFF, VMOVING, VREADY, VGETDEV, VDEVSTATE, VMAXPOS, VDEVCENT, VACTPOS, VEN };
+	std::vector<std::string> screenPRecordList{ SDEV,  TRIGGER,  EX,  TGTPOS,  JOG,  JDIFF,  MOVING,  READY,  GETDEV,  DEVSTATE,  MAXPOS,  DEVCENT,  ACTPOS,  EN };
 
-		std::map<std::string, STATE> screenDevicesToEnum;
-		screenDevicesToEnum.insert(std::make_pair("HRETRACTED", STATE::HRETRACTED));
-		screenDevicesToEnum.insert(std::make_pair("HMAX", STATE::HMAX));
-		screenDevicesToEnum.insert(std::make_pair("HSLIT1", STATE::HSLIT1));
-		screenDevicesToEnum.insert(std::make_pair("HSLIT2", STATE::HSLIT2));
-		screenDevicesToEnum.insert(std::make_pair("HSLIT3", STATE::HSLIT3));
-		screenDevicesToEnum.insert(std::make_pair("HAPT1", STATE::HAPT1));
-		screenDevicesToEnum.insert(std::make_pair("HAPT2", STATE::HAPT2));
-		screenDevicesToEnum.insert(std::make_pair("VRETRACTED", STATE::VRETRACTED));
-		screenDevicesToEnum.insert(std::make_pair("VMAX", STATE::VMAX));
-		screenDevicesToEnum.insert(std::make_pair("VRF", STATE::VRF));
-		screenDevicesToEnum.insert(std::make_pair("VMIRROR", STATE::VMIRROR));
-		screenDevicesToEnum.insert(std::make_pair("VYAG", STATE::VYAG));
-		screenDevicesToEnum.insert(std::make_pair("VGRAT", STATE::VGRAT));
-		screenDevicesToEnum.insert(std::make_pair("VCOL", STATE::VCOL));
-		screenDevicesToEnum.insert(std::make_pair("VSLIT1", STATE::VSLIT1));
-		screenDevicesToEnum.insert(std::make_pair("RETRACTED", STATE::RETRACTED));
-		screenDevicesToEnum.insert(std::make_pair("YAG", STATE::YAG));
+	std::map<std::string, TYPE> screenDirectionList{ 
+		std::pair<std::string, TYPE>(HSDEV,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HTRIGGER,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HEX,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HTGTPOS,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HJOG,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HJDIFF,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HMOVING,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HGETDEV,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HDEVSTATE,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HMAXPOS,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HDEVCENT,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HACTPOS,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(HEN,TYPE::HORIZONTAL),
+		std::pair<std::string, TYPE>(VSDEV,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VTRIGGER,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VEX,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VTGTPOS,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VJOG,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VJDIFF,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VMOVING,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VGETDEV,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VDEVSTATE,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VMAXPOS,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VDEVCENT,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VACTPOS,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(VEN,TYPE::VERTICAL),
+		std::pair<std::string, TYPE>(SDEV,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(TRIGGER,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(EX,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(TGTPOS,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(JOG,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(JDIFF,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(MOVING,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(GETDEV,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(DEVSTATE,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(MAXPOS,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(DEVCENT,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(ACTPOS,TYPE::PNEUMATIC),
+		std::pair<std::string, TYPE>(EN,TYPE::PNEUMATIC) };
 
-		std::map<std::string, TYPE> screenTypeToEnum;
-		screenTypeToEnum.insert(std::make_pair("CLARA_HV_MOVER", TYPE::CLARA_HV_MOVER));
-		screenTypeToEnum.insert(std::make_pair("CLARA_V_MOVER", TYPE::CLARA_V_MOVER));
-		screenTypeToEnum.insert(std::make_pair("CLARA_PNEUMATIC", TYPE::CLARA_PNEUMATIC));
-		screenTypeToEnum.insert(std::make_pair("VELA_HV_MOVER", TYPE::VELA_HV_MOVER));
-		screenTypeToEnum.insert(std::make_pair("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC));
+	std::map<std::string, STATE> screenDevicesToEnum{
+		std::pair<std::string, STATE>("HRETRACTED",STATE::HRETRACTED),
+		std::pair<std::string, STATE>("HMAX",STATE::HMAX),
+		std::pair<std::string, STATE>("HSLIT1",STATE::HSLIT1),
+		std::pair<std::string, STATE>("HSLIT2",STATE::HSLIT2),
+		std::pair<std::string, STATE>("HSLIT3",STATE::HSLIT3),
+		std::pair<std::string, STATE>("HAPT1",STATE::HAPT1),
+		std::pair<std::string, STATE>("HAPT2",STATE::HAPT2),
+		std::pair<std::string, STATE>("HAPT3",STATE::HAPT3),
+		std::pair<std::string, STATE>("VRETRACTED",STATE::VRETRACTED),
+		std::pair<std::string, STATE>("VMAX",STATE::VMAX),
+		std::pair<std::string, STATE>("VRF",STATE::VRF),
+		std::pair<std::string, STATE>("VMIRROR",STATE::VMIRROR),
+		std::pair<std::string, STATE>("VYAG",STATE::VYAG),
+		std::pair<std::string, STATE>("VGRAT",STATE::VGRAT),
+		std::pair<std::string, STATE>("VCOL",STATE::VCOL),
+		std::pair<std::string, STATE>("VSLIT1",STATE::VSLIT1),
+		std::pair<std::string, STATE>("RETRACTED",STATE::RETRACTED),
+		std::pair<std::string, STATE>("YAG",STATE::YAG),
+		std::pair<std::string, STATE>("RF",STATE::RF) };
 
-		std::map<int, STATE> screenHElementMap;
-		std::map<int, STATE> screenVElementMap;
-		std::map<int, STATE> screenPElementMap;
-		screenHElementMap.insert(HRETRACTED);
-		screenHElementMap.insert(HMAX);
-		screenHElementMap.insert(HSLIT1);
-		screenHElementMap.insert(HSLIT2);
-		screenHElementMap.insert(HSLIT3);
-		screenHElementMap.insert(HAPT1);
-		screenHElementMap.insert(HAPT2);
-		screenHElementMap.insert(HAPT3);
-		screenVElementMap.insert(VRETRACTED);
-		screenVElementMap.insert(VMAX);
-		screenVElementMap.insert(VRF);
-		screenVElementMap.insert(VMIRROR);
-		screenVElementMap.insert(VYAG);
-		screenVElementMap.insert(VGRAT);
-		screenVElementMap.insert(VCOL);
-		screenVElementMap.insert(VSLIT1);
-		screenPElementMap.insert(RETRACTED);
-		screenPElementMap.insert(YAG);
-	}
+	std::map<std::string, TYPE> screenTypeToEnum{
+		std::pair<std::string, TYPE>("CLARA_HV_MOVER",TYPE::CLARA_HV_MOVER),
+		std::pair<std::string, TYPE>("CLARA_V_MOVER",TYPE::CLARA_V_MOVER),
+		std::pair<std::string, TYPE>("VELA_HV_MOVER",TYPE::VELA_HV_MOVER),
+		std::pair<std::string, TYPE>("CLARA_PNEUMATIC",TYPE::CLARA_PNEUMATIC),
+		std::pair<std::string, TYPE>("VELA_PNEUMATIC",TYPE::VELA_PNEUMATIC) };
+
+	std::map<int, STATE> screenHElementMap{
+		std::pair<int, STATE>(0,STATE::HRETRACTED),
+		std::pair<int, STATE>(1,STATE::HMAX),
+		std::pair<int, STATE>(7,STATE::HSLIT1),
+		std::pair<int, STATE>(8,STATE::HSLIT2),
+		std::pair<int, STATE>(9,STATE::HSLIT3),
+		std::pair<int, STATE>(10,STATE::HAPT1),
+		std::pair<int, STATE>(11,STATE::HAPT2),
+		std::pair<int, STATE>(12,STATE::HAPT3) };
+	std::map<int, STATE> screenVElementMap{
+		std::pair<int, STATE>(0,STATE::VRETRACTED),
+		std::pair<int, STATE>(1,STATE::VMAX),
+		std::pair<int, STATE>(2,STATE::VRF),
+		std::pair<int, STATE>(3,STATE::VMIRROR),
+		std::pair<int, STATE>(4,STATE::VYAG),
+		std::pair<int, STATE>(5,STATE::VGRAT),
+		std::pair<int, STATE>(6,STATE::VCOL),
+		std::pair<int, STATE>(7,STATE::VSLIT1) };
+	std::map<int, STATE> screenPElementMap{
+		std::pair<int, STATE>(0,STATE::RETRACTED),
+		std::pair<int, STATE>(4,STATE::YAG) };
 }
 

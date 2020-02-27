@@ -26,7 +26,7 @@ public:
 	std::vector<std::string> getAliases() const;
 	std::map<std::string, std::string> screenParametersAndValuesMap;
 	LoggingSystem messenger;
-	void setPVStructs();
+	void setPVStructs(std::vector<std::string> recordList);
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -56,8 +56,10 @@ public:
 	std::pair< epicsTimeStamp, double > jog;
 	std::pair< epicsTimeStamp, int > enH;
 	std::pair< epicsTimeStamp, int > enV;
+	std::pair< epicsTimeStamp, int > en;
 	std::pair< epicsTimeStamp, int > exH;
 	std::pair< epicsTimeStamp, int > exV;
+	std::pair< epicsTimeStamp, int > ex;
 	std::pair< epicsTimeStamp, int > triggerH;
 	std::pair< epicsTimeStamp, int > triggerV;
 	std::pair< epicsTimeStamp, int > trigger;
@@ -157,7 +159,7 @@ public:
 	void resetPosition();
 	bool setScreenSDEV(STATE& state);
 	bool setScreenTrigger(const int& value);
-	bool setScreenTrigger(const int& value, TYPE type);
+	bool setScreenTriggerWDir(const int& value, TYPE type);
 	bool moveScreenTo(STATE state);
 	bool setScreenSetState(STATE state);
 	bool jogScreen(const double& value);
