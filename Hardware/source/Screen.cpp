@@ -1189,7 +1189,7 @@ bool Screen::setSDEV(int state, TYPE type)
 	return false;
 }
 
-int Screen::findByValue(std::map<int, STATE> mapOfElemen, STATE value)
+int Screen::findByValue(std::map<int, STATE> mapOfElemen, STATE value) const
 {
 	auto& it = mapOfElemen.begin();
 	// Iterate through the map
