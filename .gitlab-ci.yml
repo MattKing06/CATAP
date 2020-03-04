@@ -63,7 +63,7 @@ doxygen:
   script:
   - cd build
   - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
-  - scp ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
+  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
 
