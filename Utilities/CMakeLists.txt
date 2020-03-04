@@ -8,6 +8,15 @@ set(SOURCE_FILES
     source/ValvePVRecords.cpp
     source/BPMPVRecords.cpp
     source/ChargePVRecords.cpp
+    source/IMGPVRecords.cpp
+    source/LaserMirrorPVRecords.cpp
+    source/LEDPVRecords.cpp
+    source/LightingPVRecords.cpp
+    source/RFHeartbeatPVRecords.cpp
+    source/RFModulatorPVRecords.cpp
+    source/RFProtectionPVRecords.cpp
+    source/StagePVRecords.cpp
+    source/ShutterPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -18,6 +27,15 @@ set( INCLUDE_FILES
      include/ValvePVRecords.h
      include/BPMPVRecords.h
      include/ChargePVRecords.h
+     include/IMGPVRecords.h
+     include/LaserMirrorPVRecords.h
+     include/LEDPVRecords.h
+     include/LightingPVRecords.h
+     include/RFHeartbeatPVRecords.h
+     include/RFModulatorPVRecords.h
+     include/RFProtectionPVRecords.h
+     include/StagePVRecords.h
+     include/ShutterPVRecords.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)

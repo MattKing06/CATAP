@@ -5,6 +5,16 @@ set( SOURCE_FILES
     source/BPMFactory.cpp
     source/ChargeFactory.cpp
     source/ValveFactory.cpp
+    source/GeneralMonitorFactory.cpp
+    source/IMGFactory.cpp
+    source/LaserMirrorFactory.cpp
+    source/LEDFactory.cpp
+    source/LightingFactory.cpp
+    source/RFHeartbeatFactory.cpp
+    source/RFModulatorFactory.cpp
+    source/RFProtectionFactory.cpp
+    source/StageFactory.cpp
+    source/ShutterFactory.cpp
 )
 
 set( INCLUDE_FILES
@@ -13,6 +23,16 @@ set( INCLUDE_FILES
     include/BPMFactory.h
     include/ChargeFactory.h
     include/ValveFactory.h
+    include/GeneralMonitorFactory.h
+    include/IMGFactory.h
+    include/LaserMirrorFactory.h
+    include/LEDFactory.h
+    include/LightingFactory.h
+    include/RFHeartbeatFactory.h
+    include/RFModulatorFactory.h
+    include/RFProtectionFactory.h
+    include/StageFactory.h
+    include/ShutterFactory.h
 )
 
 set( TEST_FILES
@@ -22,6 +42,17 @@ set( TEST_FILES
     BPMFactoryTest.cpp
     ChargeFactoryTest.cpp
     ValveFactoryTest.cpp
+    GeneralMonitorFactoryTest.cpp
+    IMGFactoryTest.cpp
+    LaserMirrorFactoryTest.cpp
+    LEDFactoryTest.cpp
+    LightingFactoryTest.cpp
+    RFHeartbeatFactoryTest.cpp
+    RFModulatorFactoryTest.cpp
+    RFProtectionFactoryTest.cpp
+    StageFactoryTest.cpp
+    ShutterFactoryTest.cpp
+
 )
 
 cmake_policy(SET CMP0022 NEW)
