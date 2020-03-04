@@ -109,11 +109,11 @@ bool ValveFactory::setup(const std::string& VERSION)
 
 	for (auto& valve : valveMap)
 	{
+		// update aliases for valve in map
+		updateAliasNameMap(valve.second);
 		std::map<std::string, pvStruct>& valvePVStructs = valve.second.getPVStructs();
 		for (auto& pv : valvePVStructs)
 		{
-			// update aliases for valve in map
-			updateAliasNameMap(valve.second);
 			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
