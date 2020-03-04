@@ -3,6 +3,7 @@
 
 #include "yaml-cpp/parser.h"
 #include "yaml-cpp/yaml.h"
+#include <ConfigReaderExceptions.h>
 #include <LoggingSystem.h>
 #include <Magnet.h>
 #include <Valve.h>
@@ -54,7 +55,7 @@ public:
 	const std::map <std::string, std::string> extractRecordsIntoMap(const YAML::Node& configInformationNode) const;
 
 	std::string getHardwareTypeFromName(const std::string& fullPVName) const;
-	bool checkForValidTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
+	std::vector<std::string> compareFileWithTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string& version);
 	void initialiseFilenameAndParsedStatusMap();
 	const std::pair<std::string, std::string> extractControlsInformationIntoPair(const YAML::Node& controlsInformationNode) const;
@@ -94,10 +95,10 @@ public:
 			{
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
-
-				if (!checkForValidTemplate(configTemplate, config))
+				std::vector<std::string> missingEntriesFromFile = compareFileWithTemplate(configTemplate, config);
+				if (!missingEntriesFromFile.empty())
 				{
-					throw YAML::BadFile();
+					throw InvalidFileException(ConfigReader::yamlFilename, missingEntriesFromFile);
 				}
 
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
@@ -124,11 +125,14 @@ public:
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
 				SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
 		}
+		catch (InvalidFileException InvalidFileException)
+		{
+			InvalidFileException.printError();
+		}
 		catch (YAML::BadFile BadFileException)
 		{
 			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
-				ConfigReader::yamlFilename, ")  or file is not compliant with template ",
-				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::hardwareFolder, ".yaml");
+				ConfigReader::yamlFilename, ")");
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
