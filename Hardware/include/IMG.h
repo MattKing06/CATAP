@@ -18,9 +18,13 @@ public:
 	IMG(const std::map<std::string, std::string>& paramMap, STATE mode);
 	IMG(const IMG& copyIMG);
 	~IMG();
+	std::pair<epicsTimeStamp, double> pressure;
+	std::pair<epicsTimeStamp, STATE> state;
 	void setPVStructs();
 	EPICSIMGInterface_sptr epicsInterface;
 	std::map<std::string, std::string> IMGParamMap;
+	std::vector<std::string> aliases;
+	std::map<std::string, std::string> aliasToNameMap;
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
