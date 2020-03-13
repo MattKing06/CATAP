@@ -5,6 +5,17 @@ set( SOURCE_FILES
     source/BPM.cpp
     source/Charge.cpp
     source/Screen.cpp
+    source/Valve.cpp
+    source/GeneralMonitor.cpp
+    source/IMG.cpp
+    source/LaserMirror.cpp
+    source/LED.cpp
+    source/Lighting.cpp
+    source/RFHeartbeat.cpp
+    source/RFModulator.cpp
+    source/RFProtection.cpp
+    source/Stage.cpp
+    source/Shutter.cpp
 )
 
 set( INCLUDE_FILES
@@ -13,6 +24,17 @@ set( INCLUDE_FILES
     include/BPM.h
     include/Charge.h
     include/Screen.h
+    include/Valve.h
+    include/GeneralMonitor.h
+    include/IMG.h
+    include/LaserMirror.h
+    include/LED.h
+    include/Lighting.h
+    include/RFHeartbeat.h
+    include/RFModulator.h
+    include/RFProtection.h
+    include/Stage.h
+    include/Shutter.h
 )
 
 set( TEST_FILES
@@ -22,6 +44,17 @@ set( TEST_FILES
 	BPMTest.cpp
 	ChargeTest.cpp
 	ScreenTest.cpp
+        ValveTest.cpp
+        GeneralMonitorTest.cpp
+        IMGTest.cpp
+        LaserMirrorTest.cpp
+        LEDTest.cpp
+        LightingTest.cpp
+        RFHeartbeatTest.cpp
+        RFModulatorTest.cpp
+        RFProtectionTest.cpp
+        StageTest.cpp
+        ShutterTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

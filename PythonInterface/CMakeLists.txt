@@ -1,18 +1,41 @@
 message( "Processing Python Interface source files...")
 set( SOURCE_FILES
     source/PythonInterface.cpp 
+    source/MagnetPythonInterface.cpp
+    source/ValvePythonInterface.cpp
     source/MagnetPythonInterface.cpp 
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/ScreenPythonInterface.cpp 
+    source/GeneralMonitorPythonInterface.cpp
+    source/IMGPythonInterface.cpp
+    source/LaserMirrorPythonInterface.cpp
+    source/LEDPythonInterface.cpp
+    source/LightingPythonInterface.cpp
+    source/RFHeartbeatPythonInterface.cpp
+    source/RFModulatorPythonInterface.cpp
+    source/RFProtectionPythonInterface.cpp
+    source/StagePythonInterface.cpp
+    source/ShutterPythonInterface.cpp
 )
 
 set( INCLUDE_FILES
     include/PythonInterface.h 
     include/MagnetPythonInterface.h 
+    include/ValvePythonInterface.h
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
     include/ScreenPythonInterface.h 
+    include/GeneralMonitorPythonInterface.h
+    include/IMGPythonInterface.h
+    include/LaserMirrorPythonInterface.h
+    include/LEDPythonInterface.h
+    include/LightingPythonInterface.h
+    include/RFHeartbeatPythonInterface.h
+    include/RFModulatorPythonInterface.h
+    include/RFProtectionPythonInterface.h
+    include/StagePythonInterface.h
+    include/ShutterPythonInterface.h
 )
 
 set( TEST_FILES

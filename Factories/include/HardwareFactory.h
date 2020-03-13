@@ -4,7 +4,17 @@
 #include "BPMFactory.h"
 #include "ChargeFactory.h"
 #include "ScreenFactory.h"
+#include "ValveFactory.h"
 #include "GlobalStateEnums.h"
+
+/** @defgroup factories Factories
+	@brief A collection of classes for configuring, storing, and performing operations on multiple hardwares.
+
+	The factories associated with each hardware type are the main point of entry for the CATAP python libraries.
+	They will setup up all of the hardware configurations using the ConfigReader class, and then setup the connections
+	and subscriptions to EPICS (Virtual or CLARA) using each harwdare object's EPICSInterface. Once configured, the factories
+	can perform operations on multiple hardware objects which are stored in their associated maps of hardware.
+@{*/
 
 class HardwareFactory
 {
@@ -25,6 +35,7 @@ public:
 	BPMFactory& getBPMFactory();
 	ChargeFactory& getChargeFactory();
 	ScreenFactory& getScreenFactory();
+	ValveFactory& getValveFactory();
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -37,6 +48,7 @@ public:
 	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
 	ScreenFactory screenFactory;
+	ValveFactory valveFactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;
@@ -44,5 +56,5 @@ private:
 
 };
 
-
+/** @} */
 #endif // HardwareFactory_H_

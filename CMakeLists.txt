@@ -52,9 +52,6 @@ if(Boost_FOUND)
       add_definitiOns(-DBOOST_ALL_DYN_LINK)
     endif(UNIX)
 endif(Boost_FOUND)
-#search for Doxygen package
-find_package(Doxygen)
-
 
 add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)

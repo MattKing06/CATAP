@@ -19,7 +19,6 @@ yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
 
 mode(STATE::OFFLINE), hardwareFolder("")
 {
-	std::cout << "Constructor ConfigReader() called " << std::endl;
 	// since we have not specified a hardware component
 	// we assume that we want to load all hardware yaml files.
 	// So we set up the directory of the master lattice files, and nothing else.
@@ -30,7 +29,6 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	mode(mode),
 	hardwareFolder(hardwareType)
 {
-	std::cout << "Constructor ConfigReader(const std::string &hardwareType, const STATE& mode) called " << std::endl;
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 	initialiseFilenameAndParsedStatusMap();
 }
@@ -44,14 +42,12 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 		if (filename != templateFilename)
 		{
 			yamlFilenamesAndParsedStatusMap.emplace(std::pair<std::string, bool>(filename, false));
-			std::cout << "found " << filename << std::endl;
 		}
 	}
 }
 
 std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string& version)
 {
-	std::cout << "Searching for yaml files in: " << yamlFileDestination << std::endl;
 	boost::filesystem::path directory(yamlFileDestination);//+ '//' + version);
 	std::vector<std::string> filenames;
 	for (auto i = boost::filesystem::directory_iterator(directory); i != boost::filesystem::directory_iterator(); i++)
@@ -68,10 +64,6 @@ std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::strin
 				{
 					numberOfParsesExpected++;
 				}
-			}
-			else
-			{
-				std::cout << i->path().filename().string() << ": NOT YAML" << std::endl;
 			}
 		}
 		else
@@ -96,24 +88,28 @@ std::string ConfigReader::getHardwareTypeFromName(const std::string& fullPVName)
 		" Please check the PV name or contact support." };
 }
 
-bool ConfigReader::checkForValidTemplate(const YAML::Node& hardwareTemplate,
+std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node& hardwareTemplate,
 	const YAML::Node& hardwareComponent) const
 {
+	// this vector will contain any keys from the template that are not present in the config file.
+	std::vector<std::string> missingEntries;
 	for (const auto& keyAndValuePair : hardwareTemplate["properties"])
 	{
 		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
 		{
-			return false;
+			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
+			//return false;
 		}
 	}
 	for (const auto& keyAndValuePair : hardwareTemplate["controls_information"])
 	{
 		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
 		{
-			return false;
+			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
+			//return false;
 		}
 	}
-	return true;
+	return missingEntries;
 }
 
 bool ConfigReader::hasMoreFilesToParse() const
@@ -129,7 +125,6 @@ bool ConfigReader::hasMoreFilesToParse() const
 			return true;
 		}
 	}
-	std::cout << "hasMoreFilesToParse() has no more files to parse " << std::endl;
 	return false;
 }
 
@@ -216,12 +211,10 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		if (mode == STATE::VIRTUAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
-			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		else if (mode == STATE::PHYSICAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["name"].as<std::string>(), controlRecords);
-			std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		//else
 		//{

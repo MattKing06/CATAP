@@ -1,10 +1,12 @@
 message( "Processing ConfigReader source files...")
 set( SOURCE_FILES
-    source/ConfigReader.cpp 
+    source/ConfigReader.cpp
+    source/ConfigReaderExceptions.cpp
 )
 
 set( INCLUDE_FILES
     include/ConfigReader.h 
+    include/ConfigReaderExceptions.h
 )
 
 set( TEST_FILES

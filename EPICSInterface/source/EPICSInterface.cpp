@@ -50,7 +50,7 @@ void EPICSInterface::removeChannel(pvStruct& pvStruct)
 	MY_SEVCHK(status);
 }
 
-void EPICSInterface::detachFromCOntext()
+void EPICSInterface::detachFromContext()
 {
 	ca_detach_context();
 }
@@ -97,13 +97,12 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		{
 			pv = pvStruct.fullPVName;
 		}
-
-
-
-		std::cout << "ca_create_channel to  = " << pv << std::endl;
+		if (pvStruct.fullPVName.find("VALV") != std::string::npos)
+		{
+			pv = pvStruct.fullPVName;
+		}
 
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
-		std::cout << "ca_create_channel status = " << ca_state(pvStruct.CHID) << std::endl;
 		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		
@@ -290,7 +289,7 @@ std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_string*)(args.dbr);
 	return std::string(timeObject->value);

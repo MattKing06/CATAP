@@ -14,134 +14,26 @@ Hardware::Hardware()
 //}
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
-	mode(mode),
-	messenger(LoggingSystem(true, true)),
-	specificHardwareParameters(specificValueMap),
-	machineArea(specificValueMap.find("machine_area")->second),
-	hardwareType(specificValueMap.find("hardware_type")->second)
+mode(mode),
+messenger(LoggingSystem(false, false)),
+specificHardwareParameters(specificValueMap),
+machineArea(specificValueMap.find("machine_area")->second),
+hardwareType(specificValueMap.find("hardware_type")->second)
 {
-	// OLD METHOD	
-	if (mode == STATE::VIRTUAL)
+	switch (mode)
 	{
-		hardwareName = specificValueMap.find("virtual_name")->second.data();
-	}
-	else if (mode == STATE::PHYSICAL)
-	{
-		hardwareName = specificValueMap.find("name")->second.data();
-	}
-	else
-	{
-		mode = STATE::OFFLINE;
-		hardwareName = specificValueMap.find("name")->second.data();
+	case STATE::VIRTUAL: hardwareName = "VM-" + specificValueMap.find("name")->second; break;
+	case STATE::PHYSICAL: hardwareName = specificValueMap.find("name")->second; break;
+	default:
+		hardwareName = specificValueMap.find("name")->second; break;
 	}
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
-	// equal_range returns a variable containing start (first) and end (second)
-	// iterators for items in the multimap corresponding to pv records.
-	if (hardwareType.compare("Magnet") != 0 && hardwareType.compare("BPM") != 0 && hardwareType.compare("Charge") != 0 && hardwareType.compare("Screen") != 0)
-	{
-		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
-		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-		std::vector<std::string> pvRecordVec;
-
-		// split a string by commas
-		boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
-
-		messenger.printDebugMessage("Constructing PV information for ", hardwareName);
-		for (auto record : pvRecordVec)
-		{
-			pvStruct pv = pvStruct();
-			pv.fullPVName = hardwareName;
-			pv.pvRecord = record;
-			//chid, count, mask, chtype are left undefined for now.
-			pvStructs[pv.pvRecord] = pv;
-		}
-	}
-
-
-
-
-	//
-	//
-	//
-	//
-	//// equal_range returns a variable containing start (first) and end (second)
-	//// iterators for items in the multimap corresponding to pv records.
-	//std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
-	//// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-	//std::vector<std::string> pvRecordVec;
-
-	//// split a string by commas
-	//boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
-
-	//messenger.printDebugMessage("Constructing PV information for ", hardwareName);
-	//for (auto record : pvRecordVec)
-	//{
-	//	pvStruct pv = pvStruct();
-	//	pv.fullPVName = hardwareName;
-	//	pv.pvRecord = record;
-	//	//chid, count, mask, chtype are left undefined for now.
-	//	pvStructs[pv.pvRecord] = pv;
-	//}
-
-	//// NEW METHOD
-	//// the full PV record goes in pv.fullPVRecord
-	//if (GlobalFunctions::entryExists(specificHardwareParameters, "records"))
-	//{
-	//	//std::string pvRecordsStr = specificHardwareParameters.find("records")->second.data();
-	//	//// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-	//	//std::vector<std::string> pvRecordVec;
-	//	//// split a string by commas
-	//	//boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
-
-	//	//messenger.printDebugMessage("constructing PV information for ", hardwareName);
-	//	//for (auto&& record : pvRecordVec)
-	//	//{
-	//	//	pvStruct pv = pvStruct();
-
-	//	//	// This is from the OLD method, and i'm trying not to break it, by including 
-	//	//	if (mode == STATE::VIRTUAL)
-	//	//	{
-	//	//		pv.fullPVName = specificValueMap.find("virtual_name")->second.data();
-	//	//	}
-	//	//	else if (mode == STATE::PHYSICAL)
-	//	//	{
-	//	//		pv.fullPVName = specificValueMap.find("name")->second.data();
-	//	//	}
-
-
-	//	//	pv.pvRecord = record;
-	//	//	//chid, count, mask, chtype are left undefined for now.
-	//	//	pvStructs[pv.pvRecord] = pv;
-	//	//}
-
-
-	//	// equal_range returns a variable cOntaining start (first) and end (second)
-	//	// iterators for items in the multimap correspOnding to pv records.
-	//	//std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
-	//	//// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-	//	//std::vector<std::string> pvRecordVec;
-
-	//	//// split a string by commas
-	//	//boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
-
-	//	//messenger.printDebugMessage("constructing PV information for ", hardwareName);
-	//	//for (auto record : pvRecordVec)
-	//	//{
-	//	//	pvStruct pv = pvStruct();
-	//	//	pv.fullPVName = hardwareName;
-	//	//	pv.pvRecord = record;
-	//	//	//chid, count, mask, chtype are left undefined for now.
-	//	//	pvStructs[pv.pvRecord] = pv;
-	//	//}
-	//	//messenger.printDebugMessage("Finished constructing: ", hardwareName);
-	//}
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
 	messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
 	machineArea(copyHardware.machineArea), mode(copyHardware.mode)
 {
-	std::cout << "Hardware copy constructor called " << std::endl;
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
 }

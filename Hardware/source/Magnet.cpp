@@ -38,14 +38,14 @@ Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) 
 	Hardware(paramsMap, mode),
 	// Assumes all these find succeed ? 
 manufacturer(paramsMap.find("manufacturer")->second),
-serialNumber(std::stoi(paramsMap.find("serial_number")->second.data())),
+serialNumber(paramsMap.find("serial_number")->second.data()),
 magType(paramsMap.find("mag_type")->second),
-magRevType(paramsMap.find("mag_rev_type")->second),
-RI_tolerance(std::stof(paramsMap.find("RI_tolerance")->second)),
-numberOfDegaussSteps(std::stoi(paramsMap.find("number_of_degauss_steps")->second)),
+//magRevType(paramsMap.find("mag_rev_type")->second),
+RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
+numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
-fullPSUName(paramsMap.find("PSU")->second),
-measurementDataLocation(paramsMap.find("measurement_data_location")->second),
+//fullPSUName(paramsMap.find("PSU")->second),
+//measurementDataLocation(paramsMap.find("measurement_data_location")->second),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
 GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
@@ -60,6 +60,7 @@ isDegaussing(false)
 	setPVStructs();
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
+	messenger.debugMessagesOn();
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
 	for (auto value : degaussValuesStrVec){ degaussValues.push_back(std::stof(value)); }
 	epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
@@ -69,9 +70,12 @@ isDegaussing(false)
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
 manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
-magType(copyMagnet.magType), magRevType(copyMagnet.magRevType), RI_tolerance(copyMagnet.RI_tolerance),
+magType(copyMagnet.magType), 
+//magRevType(copyMagnet.magRevType),
+RI_tolerance(copyMagnet.RI_tolerance),
 numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
-fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurementDataLocation),
+//fullPSUName(copyMagnet.fullPSUName), 
+//measurementDataLocation(copyMagnet.measurementDataLocation),
 magneticLength(copyMagnet.magneticLength), epicsInterface(copyMagnet.epicsInterface)
 {
 }
@@ -124,7 +128,7 @@ std::string Magnet::getManufacturer() const
 {
 	return this->manufacturer;
 }
-int Magnet::getSerialNumber() const
+std::string Magnet::getSerialNumber() const
 {
 	return this->serialNumber;
 }
@@ -132,10 +136,10 @@ std::string Magnet::getMagnetType() const
 {
 	return this->magType;
 }
-std::string Magnet::getMagnetRevType() const
-{
-	return this->magRevType;
-}
+//std::string Magnet::getMagnetRevType() const
+//{
+//	return this->magRevType;
+//}
 double Magnet::getRITolerance() const
 {
 	return this->RI_tolerance;
@@ -184,14 +188,14 @@ double Magnet::getMagneticLength() const
 {
 	return this->magneticLength;
 }
-std::string Magnet::getFullPSUName() const
-{
-	return this->fullPSUName;
-}
-std::string Magnet::getMeasurementDataLocation() const
-{
-	return this->measurementDataLocation;
-}
+//std::string Magnet::getFullPSUName() const
+//{
+//	return this->fullPSUName;
+//}
+//std::string Magnet::getMeasurementDataLocation() const
+//{
+//	return this->measurementDataLocation;
+//}
 
 //bool Magnet::degauss()
 //{
