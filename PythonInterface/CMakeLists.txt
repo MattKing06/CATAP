@@ -1,12 +1,14 @@
 message( "Processing Python Interface source files...")
 set( SOURCE_FILES
-    source/PythonInterface.cpp 
-    source/MagnetPythonInterface.cpp
+    source/DataTypesPythonInterface.cpp
+ #   source/PythonInterface.cpp 
     source/ValvePythonInterface.cpp
     source/MagnetPythonInterface.cpp 
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
+	source/GlobalStatesPythonInterface.cpp
+    source/HardwareFactoryPythonInterface.cpp
     source/IMGPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
     source/LEDPythonInterface.cpp
@@ -19,13 +21,17 @@ set( SOURCE_FILES
 )
 
 set( INCLUDE_FILES
-    include/PythonInterface.h 
+    include/DataTypesPythonInterface.h
+ #   include/PythonInterface.h 
     include/MagnetPythonInterface.h 
     include/ValvePythonInterface.h
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
     include/GeneralMonitorPythonInterface.h
-    include/IMGPythonInterface.h
+	include/GlobalStatesPythonInterface.h
+    include/HardwareFactoryPythonInterface.h
+    include/HardwarePythonInterface.h
+	include/IMGPythonInterface.h
     include/LaserMirrorPythonInterface.h
     include/LEDPythonInterface.h
     include/LightingPythonInterface.h
@@ -42,34 +48,47 @@ set( TEST_FILES
 cmake_policy(SET CMP0022 NEW)
 find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63 REQUIRED COMPONENTS python3)
-add_library(PythonInterface SHARED ${SOURCE_FILES} ${INCLUDE_FILES})
-IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-  message("COMPILING PYTHON INTERFACE WITH -fPIC")
-  SET_TARGET_PROPERTIES(PythonInterface PROPERTIES COMPILE_FLAGS "-fPIC")
-ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
-#set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
-target_include_directories(PythonInterface PUBLIC ${Boost_INCLUDE_DIR})
-target_include_directories(PythonInterface PUBLIC ${PYTHON_INCLUDE_DIR})
-target_include_directories(PythonInterface PRIVATE include)
-target_include_directories(PythonInterface PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
-target_include_directories(PythonInterface PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
-target_include_directories(PythonInterface PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
-target_include_directories(PythonInterface PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
-TARGET_LINK_LIBRARIES(PythonInterface PUBLIC
-					 ${Boost_LIBRARIES}
-					 ${PYTHON_LIBRARY}
-					 PRIVATE
-					 Factories
-					 Hardware
-					 ConfigReader
-					 Utilities)
-if (UNIX)
-  set_target_properties(PythonInterface PROPERTIES PREFIX "")
-endif(UNIX)
-set_target_properties(PythonInterface PROPERTIES OUTPUT_NAME "CATAP")
-if(WIN32)
-set_target_properties(PythonInterface PROPERTIES SUFFIX ".pyd")
-endif(WIN32)
-set_property(TARGET PythonInterface PROPERTY FOLDER "PythonInterface")
+foreach(FILE ${SOURCE_FILES})
+    # GET ASSOCIATED INCLUDE FILE BASED FROM SOURCE FILE
+    string(REPLACE "source/" "include/" INCLUDE_FILENAME "${FILE}")
+	string(REPLACE ".cpp" ".h" INCLUDE_FILE "${INCLUDE_FILENAME}")
+	message("INCLUDE FILE: ${INCLUDE_FILE} ")
+	# GET LIB NAME AND LIB FOLDER NAME FROM SOURCE FILE
+    string(REPLACE "PythonInterface.cpp" "" LIBFILENAME "${FILE}")
+    message("LIBRARY NAME: ${LIBNAME}")
+    string(REGEX REPLACE "source/" "_" LIBNAME "${LIBFILENAME}")
+	string(REGEX REPLACE "_" "" LIBFOLDERNAME "${LIBNAME}")
+	add_library(${LIBNAME} SHARED ${FILE} ${INCLUDE_FILE})
+	IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+	  message("COMPILING ${LIBNAME} WITH -fPIC")
+	  SET_TARGET_PROPERTIES(${LIBNAME} PROPERTIES COMPILE_FLAGS "-fPIC")
+	ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+	#set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
+	target_include_directories(${LIBNAME} PUBLIC ${Boost_INCLUDE_DIR})
+	target_include_directories(${LIBNAME} PUBLIC ${PYTHON_INCLUDE_DIR})
+	target_include_directories(${LIBNAME} PRIVATE include)
+	target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
+	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
+						 ${Boost_LIBRARIES}
+						 ${PYTHON_LIBRARY}
+						 PRIVATE
+						 Factories
+						 Hardware
+						 ConfigReader
+						 Utilities)
+	if (UNIX)
+	  set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
+	endif(UNIX)
+	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
+	set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}>)
+	if(WIN32)
+		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
+	endif(WIN32)
+	set_property(TARGET ${LIBNAME} PROPERTY FOLDER "PythonInterface")
+endforeach(FILE)
 
-add_subdirectory(test)
+
+#add_subdirectory(test)

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(CATAP)
 cmake_policy(SET CMP0074 NEW)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CXX_STANDARD 17)
 set(PY_VERSION 3)
 if (WIN32)
