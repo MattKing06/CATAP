@@ -47,6 +47,8 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		if (!screenFactory.hasBeenSetup)
 		{
 			setup = screenFactory.setup(VERSION);
+		}
+	}
 	else if (hardwareType == "Valve")
 	{
 		if (!valveFactory.hasBeenSetup)
