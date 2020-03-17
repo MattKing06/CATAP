@@ -128,10 +128,6 @@ bool MagnetFactory::setup(const std::string& version)
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	//// epics magnet interface has been initialized in Magnet constructor
-	//// but we have a lot of PV information to retrieve from EPICS first
-	//// so we will cycle through the PV structs, and set up their values.
-
 	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
 
@@ -141,6 +137,11 @@ bool MagnetFactory::setup(const std::string& version)
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+
+	// 
+	//convertConfigStringsToGlobalTypeEnums();
+
+
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 
@@ -191,6 +192,11 @@ bool MagnetFactory::setup(const std::string& version)
 	//std::cout << "hasBeenSetup = true " << std::endl;
 	return hasBeenSetup;
 }
+
+//void MagnetFactory::convertConfigStringsToGlobalTypeEnums()
+//{/
+//
+//}
 
 void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 {
@@ -334,7 +340,6 @@ boost::python::dict MagnetFactory::getAllREADI_Py() const
 
 
 
-
 STATE MagnetFactory::getPSUState(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
@@ -412,6 +417,14 @@ std::map<std::string, bool> MagnetFactory::degauss(const std::vector<std::string
 boost::python::dict MagnetFactory::degauss_Py(const boost::python::list& names, const bool reset_to_zero)
 {
 	return to_py_dict<std::string, bool>(degauss(to_std_vector<std::string>(names), reset_to_zero));
+}
+std::map<std::string, bool> MagnetFactory::degaussALL(const bool reset_to_zero)
+{
+	return degauss(getAllMagnetNames(), reset_to_zero);
+}
+boost::python::dict MagnetFactory::degaussAll_Py(const bool reset_to_zero)
+{
+	return degauss_Py(to_py_list<std::string>(getAllMagnetNames()), reset_to_zero);
 }
 
 
@@ -522,32 +535,6 @@ boost::python::dict MagnetFactory::getMagnetRevType_Py(const boost::python::list
 	return to_py_dict<std::string, std::string>(getMagnetRevType(to_std_vector<std::string>(names)));
 }
 
-//
-//double MagnetFactory::getMagneticLength(const std::string& name) const
-//{
-//	std::string fullName = getFullName(name);
-//	if (GlobalFunctions::entryExists(magnetMap, fullName))
-//	{
-//		return magnetMap.at(fullName).getMagneticLength();
-//	}
-//	return GlobalConstants::double_min;
-//}
-//std::map<std::string, double> MagnetFactory::getMagneticLength(const std::vector<std::string>& names) const
-//{
-//	std::map<std::string, double> return_map;
-//	for (auto&& name : names)
-//	{
-//		return_map[name] = getMagneticLength(name);
-//	}
-//	return return_map;
-//}
-//boost::python::dict MagnetFactory::getMagneticLength_Py(const boost::python::list& names) const
-//{
-//	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
-//}
-
-
-
 
 std::string MagnetFactory::getFullPSUName(const std::string& name) const
 {
@@ -572,10 +559,6 @@ boost::python::dict MagnetFactory::getFullPSUName_Py(const boost::python::list& 
 	return to_py_dict<std::string, std::string>(getFullPSUName(to_std_vector<std::string>(names)));
 }
 
-
-
-
-
 std::string MagnetFactory::getMeasurementDataLocation(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
@@ -599,9 +582,7 @@ boost::python::dict MagnetFactory::getMeasurementDataLocation_Py(const boost::py
 	return to_py_dict<std::string, std::string>(getMeasurementDataLocation(to_std_vector<std::string>(names)));
 }
 
-
-
-int MagnetFactory::getNumberOfDegaussSteps(const std::string& name) const
+size_t MagnetFactory::getNumberOfDegaussSteps(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
@@ -610,9 +591,9 @@ int MagnetFactory::getNumberOfDegaussSteps(const std::string& name) const
 	}
 	return GlobalConstants::double_min;
 }
-std::map<std::string, int> MagnetFactory::getNumberOfDegaussSteps(const std::vector<std::string>& names) const
+std::map<std::string, size_t> MagnetFactory::getNumberOfDegaussSteps(const std::vector<std::string>& names) const
 {
-	std::map<std::string, int> return_map;
+	std::map<std::string, size_t> return_map;
 	for (auto&& name : names)
 	{
 		return_map[name] = getNumberOfDegaussSteps(name);
@@ -621,40 +602,8 @@ std::map<std::string, int> MagnetFactory::getNumberOfDegaussSteps(const std::vec
 }
 boost::python::dict MagnetFactory::getNumberOfDegaussSteps_Py(const boost::python::list& names) const
 {
-	return to_py_dict<std::string, int>(getNumberOfDegaussSteps(to_std_vector<std::string>(names)));
+	return to_py_dict<std::string, size_t>(getNumberOfDegaussSteps(to_std_vector<std::string>(names)));
 }
-
-
-
-//std::vector<double> MagnetFactory::setDegaussValues(const std::string& name, const std::vector<double>& values)
-//{
-//	std::string fullName = getFullName(name);
-//	if (GlobalFunctions::entryExists(magnetMap, fullName))
-//	{
-//		return magnetMap.at(fullName).setDegaussValues(values);
-//	}
-//	std::vector<double> dummy;
-//	return dummy;
-//}
-//boost::python::list MagnetFactory::setDegaussValues_Py1(const std::string& name, const boost::python::list& values)
-//{
-//	return to_py_list<double>(setDegaussValues(name, to_std_vector<double>(values)));
-//}
-//std::map<std::string, std::vector<double>> MagnetFactory::setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values)
-//{
-//	std::map<std::string, std::vector<double>> return_map;
-//	for (auto&& name : names)
-//	{
-//		return_map[name] = setDegaussValues(name);
-//	}
-//	return return_map;
-//}
-//boost::python::dict MagnetFactory::setDegaussValues_Py2(const boost::python::list& values, const boost::python::list& names)
-//{
-//	return to_py_dict<std::string, std::vector<double >>(setDegaussValues(to_std_vector<std::string>(values), to_std_vector<double>(values)));
-//}
-//
-
 
 
 
@@ -668,7 +617,7 @@ std::vector<double> MagnetFactory::getDegaussValues(const std::string& name) con
 	std::vector<double> dummy;
 	return dummy;
 }
-boost::python::list MagnetFactory::getDegaussValues_Py1(const std::string& name) const
+boost::python::list MagnetFactory::getDegaussValuesSingle_Py(const std::string& name) const
 {
 	return to_py_list<double>(getDegaussValues(name));
 }
@@ -681,7 +630,7 @@ std::map<std::string, std::vector<double>> MagnetFactory::getDegaussValues(const
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getDegaussValues_Py2(const boost::python::list & names) const
+boost::python::dict MagnetFactory::getDegaussValuesMulti_Py(const boost::python::list & names) const
 {
 	return to_py_dict<std::string, std::vector<double>>(getDegaussValues(to_std_vector<std::string>(names)));
 }
@@ -710,8 +659,81 @@ boost::python::dict MagnetFactory::getDegaussTolerance_Py(const boost::python::l
 	return to_py_dict<std::string, double>(getDegaussTolerance(to_std_vector<std::string>(names)));
 }
 
+std::vector<double> MagnetFactory::setDegaussValues(const std::string& name, const std::vector<double>& values)
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).setDegaussValues(values);
+	}
+	std::vector<double> dummy;
+	return dummy;
+}
+boost::python::list MagnetFactory::setDegaussValuesSingle_Py(const std::string& name, const boost::python::list& values)
+{
+	return to_py_list(setDegaussValues(name, to_std_vector<double>(values)));
+}
+std::map<std::string, std::vector<double>> MagnetFactory::setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values)
+{
+	std::map<std::string, std::vector<double>> r;
+	for (auto&& name : names)
+	{
+		r[name] = setDegaussValues(name, values);
+	}
+	return r;
+}
+boost::python::dict MagnetFactory::setDegaussValuesMulti_Py(const boost::python::list& names, const boost::python::list& values)
+{
+	return to_py_dict <std::string, std::vector<double>>(setDegaussValues(to_std_vector<std::string>(names), to_std_vector<double>(values)));
+}
 
 
+double MagnetFactory::setDegaussTolerance(const std::string& name, const double value)
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).setDegaussTolerance(value);
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::setDegaussTolerance(const std::vector < std::string>& names, const double value)
+{
+	std::map<std::string, double> r;
+	for (auto&& name : names)
+	{
+		r[name] = setDegaussTolerance(name, value);
+	}
+	return r;
+}
+boost::python::dict MagnetFactory::setDegaussTolerance_Py(const boost::python::list& names, const double value)
+{
+	return to_py_dict <std::string, double>(setDegaussTolerance(to_std_vector<std::string>(names), value));
+}
+
+
+double MagnetFactory::setREADITolerance(const std::string& name, const double value)
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).setREADITolerance(value);
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::setREADITolerance(const std::vector < std::string>& names, const double value)
+{
+	std::map<std::string, double> r;
+	for (auto&& name : names)
+	{
+		r[name] = setREADITolerance(name, value);
+	}
+	return r;
+}
+boost::python::dict MagnetFactory::setREADITolerance_Py(const boost::python::list& names, const double value)
+{	
+	return to_py_dict <std::string, double>(setREADITolerance(to_std_vector<std::string>(names), value));
+}
 
 
 double MagnetFactory::getMagneticLength(const std::string& name) const
@@ -737,9 +759,29 @@ boost::python::dict MagnetFactory::getMagneticLength_Py(const boost::python::lis
 	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
 }
 
-//double getRITolerance(const std::string& name) const;
-//std::map<std::string, double> getRITolerance(const std::vector < std::string>& names) const;
-//boost::python::dict getRITolerance_Py(const boost::python::list& name) const;
+double MagnetFactory::getREADITolerance(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getREADITolerance();
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getREADITolerance(const std::vector < std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getREADITolerance(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getREADITolerance_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
+
+}
 
 
 
@@ -781,65 +823,6 @@ boost::python::dict MagnetFactory::getAllILKState_Py() const
 }
 
 
-magnetStateStruct MagnetFactory::getMagnetState()const
-{
-	magnetStateStruct magState;
-	magState.magNames = getAllMagnetNames();
-	magState.numMags = magState.magNames.size();
-	//std::cout << "getMagnetState getttign magnet states" << std::endl;
-	for (auto&& magnet : magState.magNames)
-	{
-		magState.psuStates.push_back(getPSUState(magnet));
-		magState.setiValues.push_back(getSETI(magnet));
-		magState.readiValues.push_back(getREADI(magnet));
-		//std::cout << "magState.magnet " << magnet << std::endl;
-		//std::cout << "magState.psuStates " << ENUM_TO_STRING(magState.psuStates.back()) << std::endl;
-		//std::cout << "magState.setiValues " << magState.setiValues.back() << std::endl;
-		//std::cout << "magState.readiValues " << magState.readiValues.back() << std::endl;
-	}
-	magState.magNames_Py = to_py_list<std::string>(magState.magNames);
-	magState.psuStates_Py = to_py_list<STATE>(magState.psuStates);
-	magState.setiValues_Py = to_py_list<double>(magState.setiValues);
-	magState.readiValues_Py = to_py_list<double>(magState.readiValues);
-	return magState;
-}
-std::map<std::string, std::map<std::string, STATE>> MagnetFactory::applyMagnetState(const magnetStateStruct& ms)
-{
-	std::vector<std::string> magnets_to_switch_on, magnets_to_switch_off;
-	std::map<std::string, double> names_and_setis;
-
-	std::vector<std::string>::const_iterator name;// = ms.magNames.begin();
-	std::vector<double>::const_iterator seti;// = ms.setiValues.begin();
-	std::vector<STATE>::const_iterator psu;// = ms.setiValues.begin();
-
-	for(name = ms.magNames.begin(), seti = ms.setiValues.begin(), psu = ms.psuStates.begin();
-		name < ms.magNames.end() && seti < ms.setiValues.end() && psu < ms.psuStates.end();
-		++name, ++seti, ++psu)
-	{
-		if(*psu == STATE::ON)
-		{
-			magnets_to_switch_on.push_back(*name);
-		}
-		else
-		{
-			magnets_to_switch_off.push_back(*name);
-		}
-		names_and_setis[*name] = *seti;
-	}
-	std::map<std::string, std::map<std::string, STATE>> mag_state_results;
-	mag_state_results["switch_on_result"] = switchOn(magnets_to_switch_on);
-	mag_state_results["switch_off_result"] = switchOff(magnets_to_switch_off);
-	mag_state_results["seti_result"] = SETI(names_and_setis);
-
-	return mag_state_results;
-}
-
-
-
-
-
-
-
 STATE MagnetFactory::SETI(const std::string& name, const double& value)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
@@ -862,7 +845,19 @@ boost::python::dict MagnetFactory::SETI_Py(boost::python::dict& namesAndCurrents
 {
 	return to_py_dict<std::string, STATE>(SETI(to_std_map<std::string,double>(namesAndCurrentsDict)));
 }
-
+std::map<std::string, STATE> MagnetFactory::SETIAllZero()
+{
+	std::map<std::string, double> s;
+	for (auto&& name : getAllMagnetNames())
+	{
+		s[name] = GlobalConstants::zero_double;
+	}
+	return SETI(s);
+}
+boost::python::dict MagnetFactory::SETIAllZero_Py()
+{
+	return to_py_dict<std::string, STATE>(SETIAllZero());
+}
 
 
 STATE MagnetFactory::switchOn(const std::string& name)
@@ -926,7 +921,7 @@ bool MagnetFactory::writeDBURT(const std::string& filePath, const std::string& f
 	dburt db;
 	db.comment = commment;
 	db.timestamp = GlobalFunctions::getTimeAndDateString();
-	db.magnetstates = getMagnetState();
+	db.magnetstates = getMagnetStates();
 
 	boost::filesystem::path directory(filePath);
 	boost::filesystem::path file(fileName);
@@ -939,6 +934,7 @@ bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, c
 	std::ofstream fout(full_path.c_str());
 	if (!fout)
 	{
+		messenger.printDebugMessage("writeDBURT failed to open file at ", full_path);
 		return false;
 	}
 	// temp objects for header to write to file 
@@ -959,16 +955,18 @@ bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, c
 	std::map<std::string, std::string> magnet_data;
 	std::map<std::string, std::map<std::string, std::string> > magnet_data_to_write;
 
-	// simple loop with counter, 
-	for (auto i = 0; i < dburt_to_write.magnetstates.magNames.size(); ++i)
+	// dburt_to_write.magnetstates.magnetStatesMap
+		
+	//std::map<std::string, magnetState>::iterator magnetStatesMap_it = dburt_to_write.magnetstates.magnetStatesMap.begin();
+
+	for(auto&& mag_state : dburt_to_write.magnetstates.magnetStatesMap)
 	{
 		magnet_data.clear();
-		magnet_data[MagnetRecords::SETI] = std::to_string(dburt_to_write.magnetstates.setiValues[i]);
-		magnet_data[MagnetRecords::READI] = std::to_string(dburt_to_write.magnetstates.readiValues[i]);
-		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(dburt_to_write.magnetstates.psuStates[i]);
-		magnet_data_to_write[dburt_to_write.magnetstates.magNames[i]] = magnet_data;
-		//messenger.printDebugMessage(ms.magNames[i] + " SETI / READI / RPOWER = " + std::to_string(ms.setiValues[i]) + " / " + std::to_string(ms.readiValues[i]) + " / " + ENUM_TO_STRING(ms.psuStates[i]));
-	}
+		magnet_data[MagnetRecords::SETI] = std::to_string(mag_state.second.seti);
+		magnet_data[MagnetRecords::READI] = std::to_string(mag_state.second.readi);
+		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psuState);
+		magnet_data_to_write[mag_state.first] = magnet_data;
+	} 
 	YAML::Node data_node(magnet_data_to_write);
 	fout << data_node;
 	messenger.printDebugMessage("writeDBURT generated DBURT at ", full_path);
@@ -1011,6 +1009,7 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 	//int i = 0;
 	for (auto&& it : file_data)
 	{
+		// If the first string is "HEADER" get header info
 		if (it.first.as<std::string>() == GlobalConstants::HEADER)
 		{
 			for (auto&& it2 : it.second)
@@ -1026,9 +1025,12 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 				}
 			}
 		}
-		else
+		else // If the string **must** be a magnet name
 		{
-			read_dburt.magnetstates.magNames.push_back(it.first.as<std::string>());
+			// The First 
+			magnetState mag_state_to_fill = magnetState();
+			//read_dburt.magnetstates.magNames.push_back(it.first.as<std::string>());
+			mag_state_to_fill.name = it.first.as<std::string>();
 			for (auto&& it2 : it.second)
 			{
 				std::string record = it2.first.as<std::string>();
@@ -1036,12 +1038,12 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 				if (MagnetRecords::SETI == record)
 				{
 					//std::cout << record << " is " << MagnetRecords::SETI << std::endl;
-					read_dburt.magnetstates.setiValues.push_back(it2.second.as<double>());
+					mag_state_to_fill.seti = it2.second.as<double>();
 				}
 				else if (MagnetRecords::READI == record)
 				{
 					//std::cout << record << " is " << MagnetRecords::READI << std::endl;
-					read_dburt.magnetstates.readiValues.push_back(it2.second.as<double>());
+					mag_state_to_fill.readi= it2.second.as<double>();
 				}
 				else if (MagnetRecords::RPOWER == record)
 				{
@@ -1049,26 +1051,27 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 					if (val == "ON")
 					{
 						//std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
-						read_dburt.magnetstates.psuStates.push_back(STATE::ON);
+						mag_state_to_fill.psuState = STATE::ON;
 					}
 					else
 					{
-						read_dburt.magnetstates.psuStates.push_back(STATE::OFF);
+						mag_state_to_fill.psuState = STATE::OFF;
 					}
 				}
 			}
+			// update the magnetStatesMap with the magnetState for this magnet 
+			read_dburt.magnetstates.magnetStatesMap[mag_state_to_fill.name] = mag_state_to_fill;
+			std::cout << "added " << mag_state_to_fill.name << " to magnetStatesMap" << std::endl;
+			std::cout << ENUM_TO_STRING(mag_state_to_fill.psuState) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
 		}
 	}
-	read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
-	
+	/*read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
 	read_dburt.magnetstates.magNames_Py = to_py_list<std::string>(read_dburt.magnetstates.magNames);
 	read_dburt.magnetstates.psuStates_Py = to_py_list<STATE>(read_dburt.magnetstates.psuStates);
 	read_dburt.magnetstates.readiValues_Py = to_py_list<double>(read_dburt.magnetstates.readiValues);
-	read_dburt.magnetstates.setiValues_Py = to_py_list<double>(read_dburt.magnetstates.setiValues);
+	read_dburt.magnetstates.setiValues_Py = to_py_list<double>(read_dburt.magnetstates.setiValues);*/
 	return read_dburt;
 }
-
-
 
 std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const boost::filesystem::path& full_path)const
 {
@@ -1088,6 +1091,83 @@ std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const boost::filesy
 		}
 	}
 	return r;
+}
+
+
+
+magnetState MagnetFactory::getMagnetState(const std::string& name)const
+{
+	if (GlobalFunctions::entryExists(magnetMap, name))
+	{
+		return magnetMap.at(name).getMagnetState();
+	}
+	return magnetState();
+}
+magnetStates MagnetFactory::getMagnetStates()const
+{
+	magnetStates ms;
+	for (auto&& magnet : getAllMagnetNames())
+	{
+		ms.magnetStatesMap[magnet] = getMagnetState(magnet);
+	}
+	ms.numMags = ms.magnetStatesMap.size();
+	return ms;
+}
+bool MagnetFactory::setMagnetState(const magnetState& ms)
+{
+	if (GlobalFunctions::entryExists(magnetMap, ms.name))
+	{
+		return magnetMap.at(ms.name).setMagnetState(ms);
+	}
+	return false;
+}
+
+std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates & ms)
+{
+	std::cout << "applyMagnetStates " << std::endl;
+	std::map<std::string, bool> r;
+	for (auto&& mag_state : ms.magnetStatesMap)
+	{
+		std::cout << "APPLY magnet State for " << mag_state.second.name << std::endl;
+		r[mag_state.first] = setMagnetState(mag_state.second);
+	}
+	return r;
+}
+
+bool MagnetFactory::readAndApplyDBURT(const std::string& fileName)
+{
+	std::cout << "readAndApplyDBURT " << std::endl;
+	std::map<std::string, std::map<std::string, STATE>> r;
+	auto db = readDBURT(fileName);
+	auto apply_result = applyMagnetStates(db.magnetstates);
+	return true;
+}
+
+
+bool MagnetFactory::isMagnetStateEqualDBURT(const std::string& fileName)
+{
+	auto db = readDBURT(fileName);
+	auto ms = getMagnetStates();
+
+	//auto& db_ms = db.magnetstates;
+	//auto& ms_ms = ms;
+
+	//std::vector<std::string> magNames;
+	//std::vector<STATE> psuStates;
+	//std::vector<double> setiValues, readiValues;
+
+	//if (db_ms.numMags == ms_ms.numMags)
+	//{
+
+	//}
+	//else
+	//{ 
+	//	
+	//}
+
+	//for(auto i = 0; i< )
+	
+	return false;
 }
 
 

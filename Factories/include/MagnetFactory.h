@@ -11,27 +11,18 @@
 #include <boost/python/list.hpp>
 #include <boost/filesystem.hpp>
 
-
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
-
 /// one-stop shop for magnet state
-struct magnetStateStruct
-{   // proviude a default constructor
-	magnetStateStruct():
-		numMags(GlobalConstants::one_sizet) 
+struct magnetStates
+{   // magnetStates a default constructor
+	magnetStates():
+		numMags(GlobalConstants::zero_sizet) 
 		{};
 	size_t numMags;
-	std::vector<std::string> magNames;
-	std::vector<STATE> psuStates;
-	std::vector<double> setiValues, readiValues;
-
-	boost::python::list magNames_Py;
-	boost::python::list psuStates_Py;
-	boost::python::list readiValues_Py;
-	boost::python::list setiValues_Py;
+	std::map<std::string, magnetState> magnetStatesMap;
+	boost::python::dict magnetStateMap_Py;
 };
-
 /// DBURTs are magnet-states plus comment and timestamp 
 struct dburt
 {   // proviude a default constructor
@@ -41,7 +32,7 @@ struct dburt
 	{};
 	std::string comment;
 	std::string timestamp;
-	magnetStateStruct magnetstates;
+	magnetStates magnetstates;
 	//magnetStateStruct magnetstates_Py;
 };
 
@@ -66,8 +57,7 @@ class MagnetFactory
 
 		std::vector<std::string> getAllMagnetNames()const;
 		boost::python::list getAllMagnetNames_Py()const;
-
-
+		
 		// getSETI
 		double getSETI(const std::string& name)const;
 		std::map<std::string, double> getSETIs(const std::vector<std::string>& names) const;
@@ -82,7 +72,6 @@ class MagnetFactory
 		std::map<std::string, double> getAllREADI() const;
 		boost::python::dict getAllREADI_Py() const;
 		
-
 		// getPSUState
 		STATE getPSUState(const std::string& name) const;
 		std::map<std::string, STATE> getPSUStates(const std::vector<std::string>& namess) const;
@@ -100,6 +89,9 @@ class MagnetFactory
 		STATE SETI(const std::string& name, const double &value);
 		std::map<std::string, STATE> SETI(const std::map<std::string, double> &namesAndCurrentsMap);
 		boost::python::dict SETI_Py(boost::python::dict& namesAndCurrentsMap);
+		std::map<std::string, STATE> SETIAllZero();
+		boost::python::dict SETIAllZero_Py();
+
 		
 		STATE switchOn(const std::string& name);
 		std::map<std::string, STATE> switchOn(const std::vector<std::string>& names);
@@ -111,26 +103,24 @@ class MagnetFactory
 		boost::python::dict switchOff_Py(const boost::python::list& names);
 		//bool switchOffAllMagnets();
 		
-
-
 		std::map<std::string, STATE> switchOffAll();
 		boost::python::dict switchOffAll_Py();
 
 		std::map<std::string, STATE> switchOnAll();
 		boost::python::dict switchOnAll_Py();
-		
-			   
+					   
 		bool degauss(const std::string& name, const bool reset_to_zero);
 		std::map<std::string, bool> degauss(const std::vector<std::string>& names, const bool reset_to_zero);
+		std::map<std::string, bool> degaussALL(const bool reset_to_zero);
 		boost::python::dict degauss_Py(const boost::python::list& names, const bool reset_to_zero);
+		boost::python::dict degaussAll_Py(const bool reset_to_zero);
 		
 		
 		std::vector<std::string> getAliases(const std::string& name) const;
 		boost::python::list getAliases_Py1(const std::string& name) const;
 		std::map<std::string, std::vector<std::string>> getAliases(const std::vector<std::string>& names) const;
 		boost::python::dict getAliases_Py2(const boost::python::list& name) const;
-
-
+		
 		std::string getManufacturer(const std::string& name) const;
 		std::map<std::string, std::string> getManufacturer(const std::vector<std::string>& name) const;
 		boost::python::dict getManufacturer_Py(const boost::python::list& name) const;
@@ -139,8 +129,7 @@ class MagnetFactory
 		int getSerialNumber(const std::string& name) const;
 		std::map<std::string, int> getSerialNumber(const std::vector<std::string>& name) const;
 		boost::python::dict getSerialNumber_Py(const boost::python::list& name) const;
-
-
+		
 		std::string getMagnetType(const std::string& name) const;
 		std::map<std::string, std::string> getMagnetType(const std::vector<std::string>& name) const;
 		boost::python::dict getMagnetType_Py(const boost::python::list& name) const;
@@ -153,61 +142,70 @@ class MagnetFactory
 		double getMagneticLength(const std::string& name) const;
 		std::map<std::string, double> getMagneticLength(const std::vector<std::string>& name) const;
 		boost::python::dict getMagneticLength_Py(const boost::python::list& name) const;
-
-
+		
 		std::string getFullPSUName(const std::string& name) const;
 		std::map<std::string, std::string>getFullPSUName(const std::vector<std::string>& name) const;
 		boost::python::dict getFullPSUName_Py(const boost::python::list& name) const;
-
-
+		
 		std::string getMeasurementDataLocation(const std::string& name) const;
 		std::map<std::string, std::string> getMeasurementDataLocation(const std::vector<std::string>& name) const;
 		boost::python::dict getMeasurementDataLocation_Py(const boost::python::list& name) const;
-
-
-		int getNumberOfDegaussSteps(const std::string& name) const;
-		std::map<std::string, int> getNumberOfDegaussSteps(const std::vector<std::string>& name) const;
+		
+		size_t getNumberOfDegaussSteps(const std::string& name) const;
+		std::map<std::string, size_t> getNumberOfDegaussSteps(const std::vector<std::string>& name) const;
 		boost::python::dict  getNumberOfDegaussSteps_Py(const boost::python::list& name) const;
 
 		std::vector<double> getDegaussValues(const std::string& name) const;
-		boost::python::list getDegaussValues_Py1(const std::string& name) const;
+		boost::python::list getDegaussValuesSingle_Py(const std::string& name) const;
 		std::map<std::string, std::vector<double>> getDegaussValues(const std::vector<std::string>& names) const;
-		boost::python::dict getDegaussValues_Py2(const boost::python::list& name) const;
+		boost::python::dict getDegaussValuesMulti_Py(const boost::python::list& name) const;
 
 		double getDegaussTolerance(const std::string& name) const;
 		std::map<std::string, double> getDegaussTolerance(const std::vector < std::string>& names) const;
 		boost::python::dict getDegaussTolerance_Py(const boost::python::list& name) const;
 
-		double getRITolerance(const std::string& name) const;
-		std::map<std::string, double> getRITolerance(const std::vector < std::string>& names) const;
-		boost::python::dict getRITolerance_Py(const boost::python::list& name) const;
+		double getREADITolerance(const std::string& name) const;
+		std::map<std::string, double> getREADITolerance(const std::vector < std::string>& names) const;
+		boost::python::dict getREADITolerance_Py(const boost::python::list& name) const;
 
 
 		//int setNumberOfDegaussSteps(const int value);
 		// THINK ABOUT THIS ONE!!! 
-		//std::vector<double> setDegaussValues(const std::string& name, const std::vector<double>& values);
-		//boost::python::list setDegaussValues_Py1(const std::string& name, const boost::python::list& values);
-		//std::map<std::string, std::vector<double>> setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values);
-		//boost::python::dict setDegaussValues_Py2(const boost::python::list& values);
+		std::vector<double> setDegaussValues(const std::string& name, const std::vector<double>& values);
+		boost::python::list setDegaussValuesSingle_Py(const std::string& name, const boost::python::list& values);
+		std::map<std::string, std::vector<double>> setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values);
+		boost::python::dict setDegaussValuesMulti_Py(const boost::python::list& names,const boost::python::list& values);
 		
 		
 		double setDegaussTolerance(const std::string& name, const double value);
-		double setRITolerance(const std::string& name, const double value);
-		//STATE getILKState(const std::string& name ) const;
-		bool SETIZero(const std::string& name);
-		bool setPSUState(const std::string& name, const STATE value);
+		std::map<std::string, double> setDegaussTolerance(const std::vector < std::string>& names, const double value);
+		boost::python::dict setDegaussTolerance_Py(const boost::python::list& name, const double value);
+
+
+		double setREADITolerance(const std::string& name, const double value);
+		std::map<std::string, double> setREADITolerance(const std::vector < std::string>& names, const double value);
+		boost::python::dict setREADITolerance_Py(const boost::python::list& names, const double value);
+
+
+
 		bool offlineSetILKState(const std::string& name, const STATE value);
 
-
-
-
-
+			   		 
 
 		// magnet states and DBURTS 
-		magnetStateStruct getMagnetState() const;
-		std::map<std::string, std::map<std::string, STATE>> applyMagnetState(const magnetStateStruct& ms);
+		
+		//magnetState getMagnetState()const;
+		//bool setMagnetState(const magnetState& ms);
+		//bool isInState(const magnetState& ms) const;
+		//bool isInSETIandPSUState(const magnetState& ms)const;
+		//
 
-			   
+		magnetState getMagnetState(const std::string& name)const;
+		magnetStates getMagnetStates() const;
+		bool setMagnetState(const magnetState& ms) ;
+		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms);
+
+					   
 		/// Write a DBURT
 		bool writeDBURT(const std::string& fileName)const;
 		bool writeDBURT(const std::string& fileName, const std::string& commment)const;
@@ -216,6 +214,11 @@ class MagnetFactory
 		// read a dburt from file
 		dburt readDBURT(const std::string& fileName)const;
 		dburt readDBURT(const std::string& filePath, const std::string& fileName)const;
+
+		bool readAndApplyDBURT(const std::string& fileName);
+
+		bool isMagnetStateEqualDBURT(const std::string& fileName);
+
 
 		//bool readAndApplyDburt();
 		//bool applyDBURT(const dburt& dburt_to_apply);

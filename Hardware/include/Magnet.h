@@ -11,6 +11,7 @@
 #include <vector>
 #include "MagnetPVRecords.h"
 #include "GlobalConstants.h"
+#include "GlobalTypeEnums.h"
 
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
@@ -21,6 +22,21 @@ class EPICSMagnetInterface;
 class Degauss;
 class Magnet;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
+
+
+struct magnetState
+{   // proviude a default constructor
+	magnetState() :
+		name(GlobalConstants::DUMMY_NAME),
+		psuState(STATE::ERR),
+		ilkState(STATE::ERR),
+		seti(GlobalConstants::double_min),
+		readi(GlobalConstants::double_min)
+	{};
+	std::string name;
+	STATE psuState, ilkState;
+	double seti, readi;
+};
 
 #include <thread>
 
@@ -54,18 +70,29 @@ class Magnet : public Hardware
 		
 	/*! Custom constructor for Magnet object
 		@param[in] magnetParametersAndValuesMap strings defining parameters extracted from YAML config files
-		@param[in] mode Defines the STATE of Magnet we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)
-	*/
+		@param[in] mode Defines the STATE of Magnet we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)			*/
 		Magnet(const std::map<std::string, std::string>& magnetParametersAndValuesMap, STATE mode);
 	/*! Copy constructor for Magnet object
-		@param[in] copyMagnet references to magnet to be copied
-	*/
+		@param[in] copyMagnet references to magnet to be copied					*/
 		Magnet(const Magnet& copyMagnet);
 
-
+	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilkstate and psustae
+		@param[out] magnetState structured data									*/
+		magnetState getMagnetState()const;
+	/*! set a magnetState (structured data with magnet name and latest, readi, seti, ilkstate and psustae
+		@param[in] magnetState structured data to set
+		@param[out] bool, for if commands successfully got sent to EPICS		*/
+		bool setMagnetState(const magnetState& ms);
+	/*! check if the current magnet state is the same as the passed in state 
+		@param[in] magnetState structured data to check
+		@param[out] bool, for if in same state or not							*/
+		bool isInState(const magnetState& ms) const;
+	/*! check if the current magnet SETI and PSU state is the same as the passed in magnetState
+		@param[in] magnetState structured data to check
+		@param[out] bool, for if in same state or not							*/
+		bool isInSETIandPSUState(const magnetState& ms)const;
 	/*! degauss a magnet 
-		@param[in] reset_to_zero, whether to set zero current or can be true or false,  
-	*/
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const bool reset_to_zero);
 	/*! get the name alises for this magnet 
 		@param[out] names, vector contianing all the alias names */
@@ -94,36 +121,35 @@ class Magnet : public Hardware
 	/*! get the measurement data location, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMeasurementDataLocation() const;
-	/*! get the number if current vlaues that are set during the deguass procedure, initally defined in the master lattice yaml file
+	/*! get the number of values that are set during the deguass procedure, initally defined in the master lattice yaml file, can be changed with setDegaussValues
 		@param[out] result  */
-		int getNumberOfDegaussSteps() const;
-	/*! get the actual values used during teh degauss procedure, initially defined in the master lattice yaml file
+		size_t getNumberOfDegaussSteps() const;
+	/*! get the actual values used during the degauss procedure, initially defined in the master lattice yaml file
 		@param[out] result  */
 		std::vector<double> getDegaussValues() const;
-	/*! get the actual values used during teh degauss procedure, initially defined in the master lattice yaml file (Python version)
+	/*! get the actual values used during the degauss procedure, initially defined in the master lattice yaml file (Python version)
 		@param[out] result  */
 		boost::python::list getDegaussValues_Py() const;
 	/*! get the tolerance used to check if readi = seti when deguassing, initially defined in the master lattice yaml file
 		@param[out] result  */
 		double getDegaussTolerance() const;
 	/*! get the tolerance used to check if readi = seti when checking isREADIequalSETI, initially defined in the master lattice yaml file
-		@param[out] result  */
-		double getRITolerance() const;
-	/*! get the type of magnet, defined in the master lattice yaml file
-		@param[out] result  */
-		int setNumberOfDegaussSteps(const int value);
-	/*! get the type of magnet, defined in the master lattice yaml file
-		@param[out] result  */
+		@param[out] READI_toelrance after settign new value  */
+		double getREADITolerance() const;
+	/*! set the READI_tolerance, this value is used to say if READI == SETI to within READI_tolerance
+		@param[in] value to set READ_tolerance to
+		@param[out] READI_tolerance after setting new value */
+		double setREADITolerance(const double value);
+	/*! set the values used during degaussing
+		@param[out] new value sthat will be used */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
-	/*! get the type of magnet, defined in the master lattice yaml file
+	/*! set the values used during degaussing (Python version)
 		@param[out] result  */
 		boost::python::list setDegaussValues_Py(const boost::python::list& values);
-	/*! get the type of magnet, defined in the master lattice yaml file
-		@param[out] result  */
+	/*! set new degaussTolerance (for checking when READ == SETI during degaussing), initially defined in the master lattice yaml file
+		@param[in] new degaussTolerance
+		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
-	/*! get the type of magnet, defined in the master lattice yaml file
-		@param[out] result  */
-		double setRITolerance(const double value);
 	/*! get the current READI 
 		@param[out] result  */
 		double getREADI() const;
@@ -171,7 +197,7 @@ class Magnet : public Hardware
 	protected:
 	// called from EPICS to update the GETSETI variable! 
 	/*! switch the magnet PSU on	*/
-		void updateGETSETI(const double& value);
+	//	void updateGETSETI(const double& value);
 	/*! latest readi value and epicstimestamp 	*/
 		std::pair<epicsTimeStamp, double > READI;
 	/*! latest getseti value and epicstimestamp 	*/
@@ -181,11 +207,9 @@ class Magnet : public Hardware
 	/*! latest interlock state value and epicstimestamp 	*/
 		std::pair<epicsTimeStamp, STATE > ilkState;
 	private:
-
+	/*! map containing all the magnet objects				*/
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
-	/*! Copy constructor for Magnet object
-		@param[in] copyMagnet references to magnet to be copied
-	*/
+	/*! object to interface to epics						*/
 		EPICSMagnetInterface_sptr epicsInterface;
 	/*! sets the PV struct for the magnet parameters that are monitored through epics, INFO ABOUT PV STRUCTS?*/
 		void setPVStructs();
@@ -195,19 +219,21 @@ class Magnet : public Hardware
 	/*! switch the magnet PSU on to STATE value
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
 		bool offlineSetPSUState(const STATE value);
+		Degauss degausser;
 	/*! flag set to True when this magnet is degaussing, otherwise false*/
 		bool isDegaussing;
 	/*! flag 	*/
 		bool last_degauss_success;
 	/*! current step in the deagussing cycle	*/
 		size_t current_degauss_step;
-		Degauss degausser;
+	/*! number of steps in the degaussing procedure, defined in the master lattice yaml file	*/
+		size_t numberOfDegaussSteps;
 	/*! function run in new thread during degaussing 
-		@param[in] degauss-struct conatins data required for degaussing */
+		@param[in] degauss-struct contains data required for degaussing */
 		static void staticEntryDeGauss(const Degauss& ds);
 	/*! current values to set during degauss procedure, defined in the master lattice yaml file	and setable 	*/
 		std::vector<double> degaussValues;
-	/*! tolerance used durign degausing to decide if readi == seti,		*/
+	/*! tolerance used during degausing to decide if readi == seti,		*/
 		double degaussTolerance;
 	/*! alternative names for the magnet (usually shorter thna the full PV root), defined in the master lattice yaml file	*/
 		std::vector<std::string> aliases;
@@ -217,29 +243,42 @@ class Magnet : public Hardware
 		int serialNumber;
 	/*! magnet type, e.g. SOL, DIP, QUAD, VCOR, HCOR, defined in the master lattice yaml file	*/
 		std::string magType;
-	/*! , defined in the master lattice yaml file	*/
+		TYPE magtype;
+	/*! how the magnet reverses polarity (as seen in the control system, or defined offline), defined in the master lattice yaml file	*/
 		std::string magRevType;
-	/*! , defined in the master lattice yaml file	*/
-		double RI_tolerance;
-	/*! , defined in the master lattice yaml file	*/
-		int numberOfDegaussSteps; // TODO: this should be a size_t or uint
+	/*! The tolerance used when checking if READI is eqal to SETI, defined in the master lattice yaml file	*/
+		double READI_tolerance;
 	/*! magnetic length, defined in the master lattice yaml file */
 		double magneticLength;
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */
 		std::string measurementDataLocation;
-	/*! check if readi is the same, to within a tolerance, as value
-		@param[in] value to compare with readi 
-		@param[in] tolerance tolerance for the comaprison
-		@param[out] true or false, depending on result of comparison */
-		bool isREADIequalValue(const double value, const double tolerance);
-	/*! switch the magnet PSU on to STATE value
-		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
-		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
-		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
+	/*! check if the current READI is equal to a value, to within a tolerance
+		@param[in]  value to compare with READI
+		@param[in]  tolerance for comparisaon
+		@param[out] bool, true if value is equal READI, otherwise false 		*/
+		bool isREADIequalValue(const double value, const double tolerance) const;
+	/*! wait up to waitTime for the magnet READI to reach a value (to within a tolerance) or the magnet PSU on to STATE value
+		@param[in] value to wait for READI to reach 
+		@param[in] tolerance for comparison 
+		@param[in] waitTime, maximum time to wait before returning false
 		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
-		bool waitForMagnetToSettle(const double values, const double tolerance, const time_t waitTime);
+		bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
+
+		static std::map<std::string, TYPE> create_map()
+		{
+			std::map<std::string, TYPE> m;
+			m["Magnet"] = TYPE::MAGNET;
+			m["QUADRUPOLE"] = TYPE::QUADRUPOLE;
+			m["DIPOLE"] = TYPE::DIPOLE;
+			m["HVCOR"] = TYPE::HVCOR;
+			m["VCOR"] = TYPE::VCOR;
+			m["HCOR"] = TYPE::HCOR;
+			m["SOLENOID"] = TYPE::SOLENOID;
+			return m;
+		}
+		static const std::map<std::string, TYPE> magnet_string_to_type_map;
 };
 /**\copydoc Hardware*/
 /**@}*/

@@ -131,5 +131,8 @@ bool EPICSMagnetInterface::setNewPSUState(const STATE value, const pvStruct& pv)
 	case STATE::ON: epics_value = GlobalConstants::one_ushort; break;
 	case STATE::OFF: epics_value = GlobalConstants::zero_ushort; break;
 	}
+
+	messenger.printDebugMessage("Set STATE =  ", epics_value);
+
 	return putValue2(pv, epics_value);
 }

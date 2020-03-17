@@ -3,6 +3,12 @@
 #include <boost/make_shared.hpp>
 #include <vector>
 #include "GlobalFunctions.h"
+#include "GlobalTypeEnums.h"
+
+
+// map to convert yaml file strings to magnet TYPE enums
+const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
+
 
 Hardware::Hardware()
 {
@@ -56,6 +62,16 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 			//chid, count, mask, chtype are left undefined for now.
 			pvStructs[pv.pvRecord] = pv;
 		}
+
+
+		if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
+		{
+			if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
+			{
+				hardwareType_e = string_to_hardware_type_map.at("Magnet");
+			}
+		}
+
 	}
 	else
 	{
