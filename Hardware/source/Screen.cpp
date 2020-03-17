@@ -807,11 +807,27 @@ bool Screen::jogScreen(const double& value)
 {
 	if (isHEnabled() || isHIn())
 	{
-		return setJOG(value, TYPE::HORIZONTAL);
+		bool jog = setJOG(value, TYPE::HORIZONTAL);
+		if (jog)
+		{
+			return setScreenTriggerWDir(1, TYPE::VERTICAL);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else if (isVEnabled() || isVIn())
 	{
-		return setJOG(value, TYPE::VERTICAL);
+		bool jog = setJOG(value, TYPE::VERTICAL);
+		if (jog)
+		{
+			return setScreenTriggerWDir(1, TYPE::VERTICAL);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
