@@ -5,11 +5,13 @@
 #include "PythonTypeConversions.h"
 
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
 
 //using namespace boost::PYTHON;
 //using namespace boost;
 namespace BOOST_PYTHON_SCREEN_INCLUDE
 {
+
 	void expose_screen_object() {
 
 		// bpm exposure
@@ -152,7 +154,13 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setup", &ScreenFactory::setup)
 			.add_property("screenMap", &ScreenFactory::screenMap)
 			.def("getScreen", &ScreenFactory::getScreen, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getAllScreens", &ScreenFactory::getAllScreens)
+			//.def("getAllScreens", &ScreenFactory::getAllScreens_Py)
+			.def("getAllScreenNames", &ScreenFactory::getAllScreenNames_Py)
+			.def("getAllScreenStates", &ScreenFactory::getAllScreenStates_Py)
+			.def("getAllScreenSetStates", &ScreenFactory::getAllScreenSetStates_Py)
+			//.def("getScreens", &ScreenFactory::getScreens_Py)
+			.def("getScreenStates", &ScreenFactory::getScreenStates_Py)
+			.def("getScreenSetStates", &ScreenFactory::getScreenSetStates_Py)
 			.def("isHOut", &ScreenFactory::isHOut)
 			.def("isVOut", &ScreenFactory::isVOut)
 			.def("isHIn", &ScreenFactory::isHIn)

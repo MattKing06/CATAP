@@ -126,12 +126,14 @@ BOOST_PYTHON_MODULE(CATAP)
 		// Charge Exposure
 
 		// Parameter Map Exposure
-		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
+	boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
 	boost::python::class_<std::map<std::string, std::vector< double > > >("numericalVectorParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::vector< double > > >());
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
+	boost::python::class_<std::map<std::string, Screen> >("screenMap")
+		.def(boost::python::map_indexing_suite<std::map<std::string, Screen> >());
 	boost::python::class_<std::vector< double > >("stdVectorDouble")
 		.def(boost::python::vector_indexing_suite<std::vector< double > >());
 	boost::python::class_<boost::circular_buffer< double > >("circularBufferDouble")

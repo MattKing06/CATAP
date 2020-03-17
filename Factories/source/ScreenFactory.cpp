@@ -209,6 +209,26 @@ Screen& ScreenFactory::getScreen(const std::string& fullScreenName)
 	return screenMap.find(fullScreenName)->second;
 }
 
+std::map<std::string, STATE> ScreenFactory::getScreenStates(std::vector<std::string> names)
+{
+	std::map<std::string, STATE> states;
+	for (auto it : names)
+	{
+		states[it] = getScreenState(it);
+	}
+	return states;
+}
+
+std::map<std::string, STATE> ScreenFactory::getScreenSetStates(std::vector<std::string> names)
+{
+	std::map<std::string, STATE> states;
+	for (auto it : names)
+	{
+		states[it] = getScreenSetState(it);
+	}
+	return states;
+}
+
 std::map<std::string, Screen> ScreenFactory::getAllScreens()
 {
 	if (!hasBeenSetup)
@@ -220,6 +240,30 @@ std::map<std::string, Screen> ScreenFactory::getAllScreens()
 		messenger.printDebugMessage("ScreenS HAVE ALREADY BEEN constRUCTED.");
 	}
 	return screenMap;
+}
+
+std::map<std::string, STATE> ScreenFactory::getAllScreenStates()
+{
+	std::vector<std::string> names = getAllScreenNames();
+	std::map<std::string, STATE> states = getScreenStates(names);
+	return states;
+}
+
+std::map<std::string, STATE> ScreenFactory::getAllScreenSetStates()
+{
+	std::vector<std::string> names = getAllScreenNames();
+	std::map<std::string, STATE> states = getScreenSetStates(names);
+	return states;
+}
+
+std::vector<std::string> ScreenFactory::getAllScreenNames()
+{
+	std::vector<std::string> names;
+	for (auto it : screenMap)
+	{
+		names.push_back(it.first);
+	}
+	return names;
 }
 
 std::string ScreenFactory::getScreenName(const std::string& name)
@@ -503,6 +547,62 @@ bool ScreenFactory::setEN(const std::string& name, const int& value, TYPE direct
 bool ScreenFactory::setTGTPOS(const std::string& name, const double& value, TYPE direction)
 {
 	return screenMap.find(name)->second.setTGTPOS(value, direction);
+}
+
+boost::python::list ScreenFactory::getAllScreenNames_Py()
+{
+	std::vector<std::string> screens;
+	screens = getAllScreenNames();
+	boost::python::list newPyList = to_py_list(screens);
+	return newPyList;
+}
+
+boost::python::dict ScreenFactory::getAllScreenStates_Py()
+{
+	std::map<std::string, STATE> screens;
+	screens = getAllScreenStates();
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+
+boost::python::dict ScreenFactory::getAllScreenSetStates_Py()
+{
+	std::map<std::string, STATE> screens;
+	screens = getAllScreenSetStates();
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+
+boost::python::dict ScreenFactory::getAllScreens_Py()
+{
+	std::map<std::string, Screen> screens;
+	screens = getAllScreens();
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+
+boost::python::dict ScreenFactory::getScreenStates_Py(boost::python::list names)
+{
+	std::map<std::string, STATE> screens;
+	screens = getScreenStates(to_std_vector<std::string>(names));
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+
+boost::python::dict ScreenFactory::getScreenSetStates_Py(boost::python::list names)
+{
+	std::map<std::string, STATE> screens;
+	screens = getScreenSetStates(to_std_vector<std::string>(names));
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+
+boost::python::dict ScreenFactory::getScreens_Py(boost::python::list names)
+{
+	std::map<std::string, Screen> screens;
+	screens = getScreens(to_std_vector<std::string>(names));
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
 }
 
 
