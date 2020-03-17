@@ -3,12 +3,14 @@ message("Processing Utilities source files...")
 set(SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
+    source/GlobalTypeEnums.cpp
     source/GlobalFunctions.cpp
 	source/MagnetPVRecords.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
      include/GlobalStateEnums.h
+     include/GlobalTypeEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
 	 include/MagnetPVRecords.h
