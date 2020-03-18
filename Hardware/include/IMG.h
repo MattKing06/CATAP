@@ -11,6 +11,12 @@ class EPICSIMGInterface;
 
 typedef boost::shared_ptr<EPICSIMGInterface> EPICSIMGInterface_sptr;
 
+/** @addtogroup hardware
+ *@{*/
+ /*! A class to store information and communicate via EPICS to control IMG on VELA/CLARA.
+	 A collection of these classes will be stored in map in the IMGFactory class.
+ */
+
 class IMG : Hardware
 {
 public:
@@ -25,11 +31,20 @@ public:
 	std::map<std::string, std::string> IMGParamMap;
 	std::vector<std::string> aliases;
 	std::map<std::string, std::string> aliasToNameMap;
+	double getIMGPressure() const;
+	/*! checks value of the Pressure of the IMG element.
+	@param[out] Doubletrue if valveState is open, false if valveState is CLOSED or ERR */
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+	friend class EPICSIMGInterface;
+
+
 };
+/**\copydoc Hardware*/
+/**@}*/
 
 
 #endif //IMG_H_
