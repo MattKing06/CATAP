@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/MagnetFactory.cpp
     source/BPMFactory.cpp
     source/ChargeFactory.cpp
+    source/ScreenFactory.cpp
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
     source/IMGFactory.cpp
@@ -22,6 +23,7 @@ set( INCLUDE_FILES
     include/MagnetFactory.h
     include/BPMFactory.h
     include/ChargeFactory.h
+    include/ScreenFactory.h
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
     include/IMGFactory.h
@@ -41,6 +43,7 @@ set( TEST_FILES
     MagnetFactoryTest.cpp
     BPMFactoryTest.cpp
     ChargeFactoryTest.cpp
+    ScreenFactoryTest.cpp
     ValveFactoryTest.cpp
     GeneralMonitorFactoryTest.cpp
     IMGFactoryTest.cpp
@@ -52,7 +55,6 @@ set( TEST_FILES
     RFProtectionFactoryTest.cpp
     StageFactoryTest.cpp
     ShutterFactoryTest.cpp
-
 )
 
 cmake_policy(SET CMP0022 NEW)

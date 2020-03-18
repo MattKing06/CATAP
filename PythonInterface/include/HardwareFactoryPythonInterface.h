@@ -17,6 +17,8 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("chargeFactory", &HardwareFactory::chargeFactory)
 			.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.add_property("screenFactory", &HardwareFactory::screenFactory)
+			.def("getScreenFactory", &HardwareFactory::getScreenFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("valveFactory", &HardwareFactory::valveFactory)
 			.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("hardwareMap", &HardwareFactory::hardwareMap)
@@ -24,6 +26,7 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &HardwareFactory::messagesOn, boost::python::arg("self"))
 			.def("messagesOff", &HardwareFactory::messagesOff, boost::python::arg("self"));
+
 	}
 }
 
