@@ -9,7 +9,9 @@
 
 namespace IMGRecords
 {
-
+	extern std::string const Pressure;
+	extern std::string const Sta;
+	extern std::vector<std::string> imgRecordList;
 }
 
 namespace IMGState
