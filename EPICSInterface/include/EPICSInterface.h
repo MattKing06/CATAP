@@ -168,6 +168,8 @@ public:
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	 * @param[out] pair : The value and timestamp from EPICS cast as a epicsTimeStamp, short pair. */
 	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);
+	static std::pair<epicsTimeStamp, int> getTimeStampEnumPair(const struct event_handler_args& args);
+	static std::pair<epicsTimeStamp, double> getTimeStampDoublePair(const struct event_handler_args& args);
 	// Add in some more for vectors as we need them ... 
 
 

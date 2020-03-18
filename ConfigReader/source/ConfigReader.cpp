@@ -8,7 +8,9 @@
 const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "MAG", "Magnet" },
 	{ "BPM", "Beam Position Monitor" },
-	{ "CHA", "Charge" }
+	{ "CHA", "Charge" },
+	{ "SCR", "Screen" },
+	{ "YAG", "Screen" }
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);

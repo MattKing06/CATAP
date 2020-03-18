@@ -9,6 +9,7 @@
 #include <Valve.h>
 #include <BPM.h>
 #include <Charge.h>
+#include <Screen.h>
 #include <string>
 #include <fstream>
 #include <iostream>

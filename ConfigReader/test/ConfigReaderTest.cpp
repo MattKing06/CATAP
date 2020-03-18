@@ -17,20 +17,20 @@ BOOST_AUTO_TEST_SUITE(ConfigReaderTestSuite)
 		BOOST_CHECK_THROW(ConfigReader reader(undefinedFilename, STATE::VIRTUAL); , std::runtime_error);
 	}
 
-	BOOST_AUTO_TEST_CASE(cOnfig_reader_parsing_master_lattice_yaml_document_test)
-	{
-		std::string hardwareType = "Magnet";
-		std::string nameHCOR = "VM-CLA-C2V-MAG-HCOR-01";
-		std::string nameVCOR = "VM-CLA-C2V-MAG-HCOR-01";
-		ConfigReader reader(hardwareType, STATE::VIRTUAL);
-		std::map<std::string, Magnet> returnedParams;
-		while (reader.hasMoreFilesToParse())
-		{
-			reader.parseNextYamlFile(returnedParams);
-		}
-		BOOST_CHECK(returnedParams.at(nameHCOR).getHardwareName() == nameHCOR);
-		BOOST_CHECK(returnedParams.at(nameVCOR).getHardwareName() == nameVCOR);
+	//BOOST_AUTO_TEST_CASE(cOnfig_reader_parsing_master_lattice_yaml_document_test)
+	//{
+	//	std::string hardwareType = "Magnet";
+	//	std::string nameHCOR = "VM-CLA-C2V-MAG-HCOR-01";
+	//	std::string nameVCOR = "VM-CLA-C2V-MAG-HCOR-01";
+	//	ConfigReader reader(hardwareType, STATE::VIRTUAL);
+	//	std::map<std::string, Magnet> returnedParams;
+	//	while (reader.hasMoreFilesToParse())
+	//	{
+	//		reader.parseNextYamlFile(returnedParams);
+	//	}
+	//	BOOST_CHECK(returnedParams.at(nameHCOR).getHardwareName() == nameHCOR);
+	//	BOOST_CHECK(returnedParams.at(nameVCOR).getHardwareName() == nameVCOR);
 
-	}
+	//}
 
 BOOST_AUTO_TEST_SUITE_END()

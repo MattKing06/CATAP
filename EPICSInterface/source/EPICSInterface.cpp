@@ -91,7 +91,9 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 			pvStruct.fullPVName.find("VALV") != std::string::npos ||
 			pvStruct.fullPVName.find("BPM") != std::string::npos ||
 			pvStruct.fullPVName.find("WCM") != std::string::npos ||
-			pvStruct.fullPVName.find("FCUP") != std::string::npos)
+			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
+			pvStruct.fullPVName.find("SCR") != std::string::npos ||
+			pvStruct.fullPVName.find("YAG") != std::string::npos)
 		{
 			pv = pvStruct.fullPVName;
 		}
@@ -140,6 +142,14 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		else if (ca_field_type(pvStruct.CHID) == DBR_LONG)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_LONG;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_SHORT)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_SHORT;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_INT)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_INT;
 		}
 		else
 		{
@@ -252,11 +262,28 @@ std::pair<epicsTimeStamp, short> EPICSInterface::getTimeStampShortPair(const str
 {
 	std::pair<epicsTimeStamp, short> r;
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
-	r.first  = tv->stamp;
+	r.first = tv->stamp;
 	r.second = tv->value;
 	return r;
 }
 
+std::pair<epicsTimeStamp, int> EPICSInterface::getTimeStampEnumPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (int)tv->value;
+	return r;
+}
+
+std::pair<epicsTimeStamp, double> EPICSInterface::getTimeStampDoublePair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, double> r;
+	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = tv->value;
+	return r;
+}
 
 std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)
 {

@@ -24,6 +24,7 @@
 #include <ValvePythonInterface.h>
 #include <BPMPythonInterface.h>
 #include <ChargePythonInterface.h>
+#include <ScreenPythonInterface.h>
 #include <vector>
 #include <map>
 
@@ -54,6 +55,39 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("CLOSED", STATE::CLOSED)
 		.value("NONLINEAR", STATE::NONLINEAR)
 		.value("UNKNOWN", STATE::UNKNOWN)
+		.value("ENABLED", STATE::ENABLED)
+		.value("DISABLED", STATE::DISABLED)
+		.value("HRETRACTED", STATE::HRETRACTED)
+		.value("HMAX", STATE::HMAX)
+		.value("HSLIT1", STATE::HSLIT1)
+		.value("HSLIT2", STATE::HSLIT2)
+		.value("HSLIT3", STATE::HSLIT3)
+		.value("HAPT1", STATE::HAPT1)
+		.value("HAPT2", STATE::HAPT2)
+		.value("HAPT3", STATE::HAPT3)
+		.value("VRETRACTED", STATE::VRETRACTED)
+		.value("VMAX", STATE::VMAX)
+		.value("VRF", STATE::VRF)
+		.value("VMIRROR", STATE::VMIRROR)
+		.value("VYAG", STATE::VYAG)
+		.value("VGRAT", STATE::VGRAT)
+		.value("VCOL", STATE::VCOL)
+		.value("VSLIT1", STATE::VSLIT1)
+		.value("RETRACTED", STATE::RETRACTED)
+		.value("YAG", STATE::YAG)
+		.value("RF", STATE::RF)
+		;
+
+	boost::python::enum_<TYPE>("TYPE")
+		.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
+		.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
+		.value("CLARA_HV_MOVER", TYPE::CLARA_HV_MOVER)
+		.value("CLARA_V_MOVER", TYPE::CLARA_V_MOVER)
+		.value("CLARA_PNEUMATIC", TYPE::CLARA_PNEUMATIC)
+		.value("UNKNOWN_SCREEN_TYPE", TYPE::UNKNOWN_SCREEN_TYPE)
+		.value("HORIZONTAL", TYPE::HORIZONTAL)
+		.value("VERTICAL", TYPE::VERTICAL)
+		.value("PNEUMATIC", TYPE::PNEUMATIC)
 		;
 
 	//boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
@@ -81,6 +115,8 @@ BOOST_PYTHON_MODULE(CATAP)
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_factory_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_factory_object();
+	BOOST_PYTHON_SCREEN_INCLUDE::expose_screen_object();
+	BOOST_PYTHON_SCREEN_INCLUDE::expose_screen_factory_object();
 
 	//expose valve object and valveFactory object
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveObject();
@@ -90,12 +126,14 @@ BOOST_PYTHON_MODULE(CATAP)
 		// Charge Exposure
 
 		// Parameter Map Exposure
-		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
+	boost::python::class_<std::map<std::string, double> >("numericalParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, double> >());
 	boost::python::class_<std::map<std::string, std::vector< double > > >("numericalVectorParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::vector< double > > >());
 	boost::python::class_<std::map<std::string, std::string> >("stringParamMap")
 		.def(boost::python::map_indexing_suite<std::map<std::string, std::string> >());
+	boost::python::class_<std::map<std::string, Screen> >("screenMap")
+		.def(boost::python::map_indexing_suite<std::map<std::string, Screen> >());
 	boost::python::class_<std::vector< double > >("stdVectorDouble")
 		.def(boost::python::vector_indexing_suite<std::vector< double > >());
 	boost::python::class_<boost::circular_buffer< double > >("circularBufferDouble")
@@ -122,6 +160,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("chargeFactory", &HardwareFactory::chargeFactory)
 		.def("getChargeFactory", &HardwareFactory::getChargeFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.add_property("screenFactory", &HardwareFactory::screenFactory)
+		.def("getScreenFactory", &HardwareFactory::getScreenFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("valveFactory", &HardwareFactory::valveFactory)
 		.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap)

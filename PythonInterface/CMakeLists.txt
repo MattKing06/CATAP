@@ -6,6 +6,7 @@ set( SOURCE_FILES
     source/MagnetPythonInterface.cpp 
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
+    source/ScreenPythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
     source/IMGPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
@@ -24,6 +25,7 @@ set( INCLUDE_FILES
     include/ValvePythonInterface.h
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
+    include/ScreenPythonInterface.h 
     include/GeneralMonitorPythonInterface.h
     include/IMGPythonInterface.h
     include/LaserMirrorPythonInterface.h

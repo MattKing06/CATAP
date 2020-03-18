@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/Magnet.cpp
     source/BPM.cpp
     source/Charge.cpp
+    source/Screen.cpp
     source/Valve.cpp
     source/GeneralMonitor.cpp
     source/IMG.cpp
@@ -22,6 +23,7 @@ set( INCLUDE_FILES
     include/Magnet.h
     include/BPM.h
     include/Charge.h
+    include/Screen.h
     include/Valve.h
     include/GeneralMonitor.h
     include/IMG.h
@@ -41,6 +43,7 @@ set( TEST_FILES
 	MagnetTest.cpp
 	BPMTest.cpp
 	ChargeTest.cpp
+	ScreenTest.cpp
         ValveTest.cpp
         GeneralMonitorTest.cpp
         IMGTest.cpp

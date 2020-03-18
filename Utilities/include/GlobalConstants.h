@@ -35,6 +35,12 @@ namespace GlobalConstants
 	const double one_double = 1.0;
 	/*! Double-type variable for 0.1 */
 	const double zero_point_one_double = 0.1;
+
+	/*! Unsigned short-type variable for 0 */
+	const unsigned short zero_ushort = 0;
+	/*! Unsigned short-type variable for 1 */
+	const unsigned short one_ushort = 1;
+
 	/*! Integer-type variable for 0 */
 	const int zero_int= 0;
 	/*! Integer-type variable for 1 */
