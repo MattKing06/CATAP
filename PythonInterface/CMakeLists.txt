@@ -85,7 +85,7 @@ foreach(FILE ${SOURCE_FILES})
 	  set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
 	endif(UNIX)
 	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
-	set_target_properties(${LIBNAME} PROPERTIES RUNTIME_LIBRARY_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}>)
+	set_target_properties(${LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}>)
 	
 	if(WIN32)
 		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
