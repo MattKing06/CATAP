@@ -1,13 +1,8 @@
 STATES
 ======
 
-.. autoclass:: CATAP.STATE
-    :members:
+.. automodule:: GlobalStates
+    :members: STATE
     :undoc-members:
     
-    
-    
-    
-.. automodule:: CATAP.STATE
-    :undoc-members:
 

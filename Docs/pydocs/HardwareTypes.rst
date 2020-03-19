@@ -9,8 +9,8 @@ Hardware Types
 ===========================
 Hardware Class
 ===========================
-.. autoclass:: CATAP.Hardware
-   :members:
+.. automodule:: HardwareFactory
+   :members: Hardware
    :undoc-members:
 
 
@@ -20,8 +20,8 @@ Hardware Class
 ===========================
 BPM Class
 ===========================
-.. autoclass:: CATAP.BPM
-   :members:
+.. automodule:: BPM
+   :members: BPM
    :undoc-members:
 
 
@@ -30,8 +30,8 @@ BPM Class
 ===========================
 Charge Class
 ===========================
-.. autoclass:: CATAP.Charge
-   :members:
+.. automodule:: Charge
+   :members: Charge
    :undoc-members:
 
 
@@ -39,8 +39,8 @@ Charge Class
 ===========================
 Magnet Class
 ===========================
-.. autoclass:: CATAP.Magnet
-   :members:
+.. automodule:: Magnet
+   :members: Magnet
    :undoc-members:
 
 
@@ -49,29 +49,9 @@ Magnet Class
 ===========================
 Vacuum Valve Class
 ===========================
-.. autoclass:: CATAP.Valve
-   :members:
+.. automodule:: Valve
+   :members: Valve
    :undoc-members:
 
 
-
-
-.. automodule:: CATAP.Hardware
-    :members:
-
-
-.. automodule:: CATAP.BPM
-    :members:
-
-
-.. automodule:: CATAP.Charge
-    :members:
-
-
-.. automodule:: CATAP.Magnet
-    :members:
-
-
-.. automodule:: CATAP.Valve
-    :members:
 

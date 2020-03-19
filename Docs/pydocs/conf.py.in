@@ -16,13 +16,15 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('@CATAP_LOCATION@'))
 
-for p in sys.path:
-    print(p)
-
+print(sys.path)
 #sys.path.append(os.path.join(os.path.dirname(__file__), #'C:\\Users\\ujo48515\\Documents\\VELA-CLARA-Mock-Controller-build\\PythonInterface#\\Release'))
 
-import CATAP
-
+from CATAP.HardwareFactory import *
+from CATAP.BPM import *
+from CATAP.GlobalStates import *
+from CATAP.Charge import *
+from CATAP.Magnet import *
+from CATAP.Valve import *
 
 # -- Project information -----------------------------------------------------
 

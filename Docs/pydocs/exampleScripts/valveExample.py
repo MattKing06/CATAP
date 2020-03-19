@@ -1,4 +1,4 @@
-from CATAP import *
+from CATAP.HardwareFactory import *
 
 # create a hardware factory for CLARA hardware
 HF = HardwareFactory(STATE.PHYSICAL)

@@ -4,6 +4,7 @@ if(UNIX)
 endif(UNIX)
 
 find_package(Sphinx)
+
 if(NOT DEFINED SPHINX_THEME)
   set(SPHINX_THEME default)
 endif()
@@ -13,7 +14,7 @@ if(NOT DEFINED SPHINX_THEME_DIR)
 endif()
 if (WIN32)
   if(NOT DEFINED CATAP_LOCATION)
-    set(CATAP_LOCATION ${CMAKE_BINARY_DIR}/PythonInterface/Release)
+    set(CATAP_LOCATION ${CMAKE_BINARY_DIR}/PythonInterface/)
   endif()
 endif(WIN32)
 
