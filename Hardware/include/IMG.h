@@ -27,14 +27,17 @@ public:
 	std::pair<epicsTimeStamp, double> pressure;
 	std::pair<epicsTimeStamp, STATE> state;
 	void setPVStructs();
+	
 	EPICSIMGInterface_sptr epicsInterface;
 	std::map<std::string, std::string> IMGParamMap;
 	std::vector<std::string> aliases;
 	std::map<std::string, std::string> aliasToNameMap;
-	double getIMGPressure() const;
-	/*! checks value of the Pressure of the IMG element.
-	@param[out] Doubletrue if valveState is open, false if valveState is CLOSED or ERR */
-
+	std::vector<std::string> getAliases() const;
+	/*! sets the valve state to open.
+	If we have a Physical valve then the request is sent to CLARA EPICS to open the valve.
+	If we have a Virtual valve then the request is sent to Virtual EPICS to open the valve.
+	If we have an Offline valve then the valve state is simply set to OPEN. */
+	
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

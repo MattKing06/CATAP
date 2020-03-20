@@ -42,17 +42,24 @@ void IMG::setPVStructs() {
 
 }
 
-double IMG::getIMGPressure() const
+std::vector<std::string> IMG::getAliases() const
 {
-	return this->pressure.second;
+	return aliases;
 }
 
 void IMG::debugMessagesOn()
 {
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
 }
 
 void IMG::debugMessagesOff()
 {
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+
 }
 
 void IMG::messagesOn()
