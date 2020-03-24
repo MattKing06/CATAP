@@ -47,6 +47,26 @@ set( INCLUDE_FILES
 set( TEST_FILES
     PythonInterfaceTest.cpp
 )
+if(WIN32)
+	set(THIRD_PARTY_LIB_DIRS 
+		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_system-vc140-mt-1_63.dll
+		${EPICS_COM_DLL}
+		${EPICS_CA_DLL}
+		)
+endif(WIN32)
+if(UNIX)
+	set(THIRD_PARTY_LIB_DIRS 
+		${Boost_LIBRARY_DIRS}/libboost_filesystem.so
+		${Boost_LIBRARY_DIRS}/libboost_python3.so
+		${Boost_LIBRARY_DIRS}/libboost_python.so
+		${Boost_LIBRARY_DIRS}/libboost_system.so
+		${EPICS_COM_LIB}
+		${EPICS_CA_LIB}
+		)
+endif(UNIX)
 cmake_policy(SET CMP0022 NEW)
 find_package(PythonLibs ${PY_VERSION})
 find_package(Boost 1.63 REQUIRED COMPONENTS python3)
@@ -86,11 +106,18 @@ foreach(FILE ${SOURCE_FILES})
 	endif(UNIX)
 	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
 	set_target_properties(${LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}>)
-	
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}/__init__.py)
 	if(WIN32)
 		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
 	endif(WIN32)
+	foreach(LIBRARY ${THIRD_PARTY_LIB_DIRS})
+		add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}> )
+		add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/> )
+	endforeach(LIBRARY)
 	set_property(TARGET ${LIBNAME} PROPERTY FOLDER "PythonInterface")
+	# need to use Boost_LIBRARY_DIRS variable to move over the dlls to each sub-directory of CATAP, if they are not there.
+	# may be best to use the target's LIBRARY_OUTPUT_DIRECTORY...
+
 endforeach(FILE)
 
 
