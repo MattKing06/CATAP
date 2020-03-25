@@ -11,10 +11,11 @@
 #include <boost/python.hpp>
 #include <boost/circular_buffer.hpp>
 
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
+
 /** @addtogroup factories
  @{*/
- /*! A class to store, setup, and perform operations on multiple Screen objects*/
-typedef void(*updateFunctionPtr)(struct event_handler_args args);
+ /*! A class to store, setup, and perform operations on multiple BPM objects*/
 class BPM;
 class BPMFactory
 {
@@ -29,7 +30,7 @@ public:
 	OFFLINE BPMFactory will perform operations on Offline BPMs.*/	
 	BPMFactory(STATE mode);
 	/*! Copy constructor for BPMFactory (used for = operator)
-	@param[in] copyBPMFactory the BPMFactory we want to copy over.*/
+	@param[in] copyBPMFactory: the BPMFactory we want to copy over.*/
 	BPMFactory(const BPMFactory& copyBPMFactory);
 	/*! BPMFactory destructor.
 	Goes through all BPM objects in the screenMap and removes connections/subscriptions to EPICS if they exist.*/
@@ -598,13 +599,13 @@ public:
 	@param[out] dict: true if it worked, keyed by name.*/
 	boost::python::dict reCalAllAttenuation_Py(const double& charge);
 
-	/*! turns debug messages on for screenFactory and calls same function in all screens and configReader*/
+	/*! turns debug messages on for BPMFactory and calls same function in all BPMs and configReader*/
 	void debugMessagesOn();
-	/*! turns debug messages off for screenFactory and calls same function in all screens and configReader*/
+	/*! turns debug messages off for BPMFactory and calls same function in all BPMs and configReader*/
 	void debugMessagesOff();
-	/*! turns messages on for screenFactory and calls same function in all screens and configReader*/
+	/*! turns messages on for BPMFactory and calls same function in all BPMs and configReader*/
 	void messagesOn();
-	/*! turns messages off for screenFactory and calls same function in all screens and configReader*/
+	/*! turns messages off for BPMFactory and calls same function in all BPMs and configReader*/
 	void messagesOff();
 	/*! returns true if messenger debug flag is true, false otherwise*/
 	bool isDebugOn();

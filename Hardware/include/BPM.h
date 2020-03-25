@@ -24,7 +24,7 @@ public:
 	BPM();
 	/*! Custom constructor for BPM object
 		@param[in] bpmParametersAndValuesMap: strings defining parameters extracted from YAML config files
-		@param[in] mode: Defines the STATE of Screen we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)
+		@param[in] mode: Defines the STATE of BPM we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)
 	*/
 	BPM(const std::map<std::string, std::string>& bpmParametersAndValuesMap, STATE mode);
 	/*! Copy constructor call for BPM object*/
