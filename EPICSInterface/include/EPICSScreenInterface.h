@@ -268,5 +268,6 @@ public:
 	void setJOG(const double& value, const pvStruct& pv);
     static LoggingSystem static_messenger;
 };
-
+/** \copydoc EPICSInterface*/
+/** @}*/
 #endif //EPICS_Screen_INTERFACE_H_
