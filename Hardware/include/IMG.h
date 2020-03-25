@@ -38,6 +38,7 @@ public:
 	If we have a Virtual valve then the request is sent to Virtual EPICS to open the valve.
 	If we have an Offline valve then the valve state is simply set to OPEN. */
 	
+	double getIMGPressure();
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

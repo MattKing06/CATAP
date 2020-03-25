@@ -47,6 +47,11 @@ std::vector<std::string> IMG::getAliases() const
 	return aliases;
 }
 
+double IMG::getIMGPressure()
+{
+	return pressure.second;
+}
+
 void IMG::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
