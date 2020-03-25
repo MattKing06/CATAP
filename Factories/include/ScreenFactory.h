@@ -13,8 +13,6 @@
 /** @addtogroup factories
  @{*/
  /*! A class to store, setup, and perform operations on multiple Screen objects*/
-//typedef void(*updateFunctionPtr)(struct event_handler_args args);
-//class Screen;
 class ScreenFactory
 {
 public:

@@ -438,6 +438,14 @@ std::vector< std::vector< double > > BPMFactory::getDataVector(const std::string
 	return vector3;
 }
 
+std::pair< std::vector< double >, std::vector< double > > BPMFactory::getXYPositionVector(const std::string& name)
+{
+	std::vector< double > x = bpmMap.find(name)->second.getXPVVector();
+	std::vector< double > y = bpmMap.find(name)->second.getYPVVector();
+	std::pair<std::vector< double >, std::vector< double > > positiOnsPair = std::make_pair(x, y);
+	return positiOnsPair;
+}
+
 boost::circular_buffer< double > BPMFactory::getXPVBuffer(const std::string& name)
 {
 	if (!hasBeenSetup)

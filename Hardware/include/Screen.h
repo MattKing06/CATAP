@@ -14,8 +14,8 @@ class EPICSScreenInterface;
 typedef boost::shared_ptr<EPICSScreenInterface> EPICSScreenInterface_sptr;
 /** @addtogroup hardware
  *@{*/
- /*! A class to store information and communicate via EPICS to control Vacuum Valves on VELA/CLARA.
-	 A collection of these classes will be stored in map in the ValveFactory class.
+ /*! A class to store information and communicate via EPICS to control screens on VELA/CLARA.
+	 A collection of these classes will be stored in map in the ScreenFactory class.
  */
 class Screen : public Hardware
 {
