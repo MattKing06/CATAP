@@ -47,6 +47,8 @@ set( INCLUDE_FILES
 set( TEST_FILES
     PythonInterfaceTest.cpp
 )
+
+
 if(WIN32)
 	set(THIRD_PARTY_LIB_DIRS 
 		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-1_63.dll
@@ -74,12 +76,13 @@ foreach(FILE ${SOURCE_FILES})
     # GET ASSOCIATED INCLUDE FILE BASED FROM SOURCE FILE
     string(REPLACE "source/" "include/" INCLUDE_FILENAME "${FILE}")
 	string(REPLACE ".cpp" ".h" INCLUDE_FILE "${INCLUDE_FILENAME}")
-	message("INCLUDE FILE: ${INCLUDE_FILE} ")
 	# GET LIB NAME AND LIB FOLDER NAME FROM SOURCE FILE
     string(REPLACE "PythonInterface.cpp" "" LIBFILENAME "${FILE}")
-    message("LIBRARY NAME: ${LIBNAME}")
     string(REGEX REPLACE "source/" "_" LIBNAME "${LIBFILENAME}")
 	string(REGEX REPLACE "_" "" LIBFOLDERNAME "${LIBNAME}")
+	# Let's cache the library names as we go so that we can add them as dependencies
+	# to the Python documentation (CATAPPyDocs package) without doing this string manipulation.
+	set(LIBNAMES "${LIBNAMES};${LIBNAME}" CACHE INTERNAL "CATAP LIB NAMES")
 	add_library(${LIBNAME} SHARED ${FILE} ${INCLUDE_FILE})
 	IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 	  message("COMPILING ${LIBNAME} WITH -fPIC")
@@ -120,6 +123,5 @@ foreach(FILE ${SOURCE_FILES})
 	# may be best to use the target's LIBRARY_OUTPUT_DIRECTORY...
 
 endforeach(FILE)
-
 
 #add_subdirectory(test)
