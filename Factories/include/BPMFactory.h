@@ -73,6 +73,9 @@ public:
 	@param[in] name: the name of the BPM.
 	@param[out] name : the name of the BPM. Not sure why this function is here.*/
 	std::string getBPMName(const std::string& name);
+	/*!returns all BPM names defined in the config file.
+	@param[out] std::vector<std::string,BPM>: returns a map of BPM object names.*/
+	std::vector<std::string> getAllBPMNames();
 	/*!returns the speficied BPM hardware objects.
 	@param[in] std::vector<std::string> names: the names of the BPMs.
 	@param[out] std::map<std::string,BPM>: returns a map of BPM objects, keyed by name.*/
@@ -594,6 +597,9 @@ public:
 	/*!returns a Python dict of beamline position values of all BPMs.
 	@param[out] dict: the beamline position values, keyed by name.*/
 	boost::python::dict getAllPosition_Py();
+	/*!returns a python list of all BPM names defined in the config file.
+	@param[out] list: returns a list of BPM object names.*/
+	boost::python::list getAllBPMNames_Py();
 	/*!recalibrates the attenuations of all BPMs based on bunch charge.
 	@param[in] charge: the bunch charge.
 	@param[out] dict: true if it worked, keyed by name.*/
