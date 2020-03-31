@@ -51,6 +51,8 @@ public:
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of 
 	* the associated hardware object.*/
 	std::string ownerName;
+	
+	// We also need to create a STATIC messenger in derived epicsinterface claases, 
 	LoggingSystem messenger;
 	/*! turns debug messaging on for this EPICSInterface instance*/
 	void debugMessagesOn();
@@ -157,6 +159,10 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, int pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
+
+	static void updateTimeStampUShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, unsigned short>& pairToUpdate);
+	// sometimes you have to return a pair<timestamp,int> and then choose a STAT based On the int
+	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 

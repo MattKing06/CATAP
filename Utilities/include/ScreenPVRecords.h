@@ -5,6 +5,8 @@
 #include <map>
 
 #include "GlobalStateEnums.h"
+#include "GlobalTypeEnums.h"
+
 #include "GlobalConstants.h"
 
 /*! @addtogroup utils*/

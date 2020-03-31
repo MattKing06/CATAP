@@ -17,6 +17,7 @@ class EPICSMagnetInterface : public EPICSInterface
 {
 public:
 	EPICSMagnetInterface();
+	EPICSMagnetInterface(const EPICSMagnetInterface& copyInterface);
 	~EPICSMagnetInterface();
 
 	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
@@ -32,6 +33,7 @@ public:
 	static void updateRILK(const struct event_handler_args args);
 
 
+	// We need to a STATIC messenger so that the static call back functions can use it to print messages 
 	static LoggingSystem messenger;
 };
 

@@ -7,6 +7,7 @@
 #include <PV.h>
 #endif
 #include <GlobalStateEnums.h>
+#include <GlobalTypeEnums.h>
 #include "GlobalConstants.h"
 
 /** @defgroup hardware Hardware
@@ -57,7 +58,9 @@ public:
 	std::string hardwareType;
 	std::string hardwareName;
 	
-	
+	// need to sort out private/protected access for these variables
+	TYPE machineArea_e;
+	TYPE hardwareType_e;
 
 	std::map<std::string, pvStruct> pvStructs;
 	
@@ -68,6 +71,14 @@ public:
 	LoggingSystem messenger;
 
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
+
+	static std::map<std::string, TYPE> create_map()
+	{
+		std::map<std::string, TYPE> m;
+		m["Magnet"] = TYPE::MAGNET;
+		return m;
+	}
+	static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
 };
 /** @}*/

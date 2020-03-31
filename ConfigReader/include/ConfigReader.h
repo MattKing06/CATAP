@@ -74,6 +74,7 @@ public:
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
+				//messenger.printDebugMessage("parseNextYamlFile is trying to parse ", yamlFilename);
 				parseYamlFile(hardwareMapToFill);
 				yamlFilenamesAndParsedStatusMap[yamlFilename] = true;
 			}
@@ -91,11 +92,18 @@ public:
 		{
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			YAML::Parser parser(fileInput);
+			messenger.printDebugMessage("Calling LoadFile");
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			if (config.size() > 0)
 			{
+				messenger.printDebugMessage("LoadFile got config data, getting template");
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
+				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
+
+				messenger.printDebugMessage("LoadFile got template");
+
+
 				std::vector<std::string> missingEntriesFromFile = compareFileWithTemplate(configTemplate, config);
 				if (!missingEntriesFromFile.empty())
 				{
@@ -111,9 +119,11 @@ public:
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-
-				
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
+
+/* 				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
+					<< ENUM_TO_STRING(mode) << std::endl;
+ */
 			}
 			else
 			{
@@ -125,6 +135,7 @@ public:
 		{
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
 				SEPARATOR, ConfigReader::yamlFilename + "): " + std::string(EmptyFileException.what()));
+			exit(0);
 		}
 		catch (InvalidFileException InvalidFileException)
 		{
@@ -133,18 +144,21 @@ public:
 		catch (YAML::BadFile BadFileException)
 		{
 			messenger.printMessage("Could not find file (" + ConfigReader::yamlFileDestination, SEPARATOR,
-				ConfigReader::yamlFilename, ")");
+				ConfigReader::yamlFilename, ")  ");
+			exit(0);
 		}
 		catch (YAML::ParserException EmptyFileException)
 		{
 			messenger.printMessage("Problem with file (" +
 				ConfigReader::yamlFileDestination, SEPARATOR, ConfigReader::yamlFilename +
 				"): " + std::string(EmptyFileException.what()));
+			exit(0);
 		}
 		catch (YAML::BadConversion ConvervsionException)
 		{
-			messenger.printMessage(std::string(ConvervsionException.what()));
-		}
+			messenger.printMessage("ConvervsionException " + std::string(ConvervsionException.what()));
+			exit(0);
+		} 
 	}
 };
 /**@}*/

@@ -108,9 +108,11 @@ BOOST_PYTHON_MODULE(CATAP)
 
 
 	// expose magnet object and magnetfactoryobejct
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct_and_dburt();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
-	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct();
+
+	//BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct();
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_object();
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_factory_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();

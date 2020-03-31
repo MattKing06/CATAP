@@ -3,6 +3,12 @@
 #include <boost/make_shared.hpp>
 #include <vector>
 #include "GlobalFunctions.h"
+#include "GlobalTypeEnums.h"
+
+
+// map to convert yaml file strings to magnet TYPE enums
+const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
+
 
 Hardware::Hardware()
 {
@@ -15,19 +21,49 @@ Hardware::Hardware()
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
-messenger(LoggingSystem(false, false)),
+messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
-hardwareType(specificValueMap.find("hardware_type")->second)
+hardwareType(specificValueMap.find("hardware_type")->second),
+hardwareName(specificValueMap.find("name")->second)
 {
-	switch (mode)
+	//messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+	// equal_range returns a variable containing start (first) and end (second)
+	// iterators for items in the multimap corresponding to pv records.
+
+	if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
 	{
-	case STATE::VIRTUAL: hardwareName = "VM-" + specificValueMap.find("name")->second; break;
-	case STATE::PHYSICAL: hardwareName = specificValueMap.find("name")->second; break;
-	default:
-		hardwareName = specificValueMap.find("name")->second; break;
+		if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
+		{
+			hardwareType_e = string_to_hardware_type_map.at("Magnet");
+		}
 	}
-	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+
+/* 	if (hardwareType.compare("Magnet") != 0)
+	{
+		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS TRUE");
+		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
+		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+		std::vector<std::string> pvRecordVec;
+
+		// split a string by commas
+		boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
+
+		//messenger.printDebugMessage("Constructing PV information for ", hardwareName);
+		for (auto record : pvRecordVec)
+		{
+			pvStruct pv = pvStruct();
+			pv.fullPVName = hardwareName;
+			pv.pvRecord = record;
+			//chid, count, mask, chtype are left undefined for now.
+			pvStructs[pv.pvRecord] = pv;
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS FALSE");
+	} */
+	//messenger.printDebugMessage(hardwareName, " Hardware Constructor Finished ");
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
