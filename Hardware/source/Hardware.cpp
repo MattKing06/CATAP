@@ -82,7 +82,6 @@ hardwareType(specificValueMap.find("hardware_type")->second)
 				hardwareType_e = string_to_hardware_type_map.at("Magnet");
 			}
 		}
-
 	}
 	else
 	{
