@@ -1,0 +1,12 @@
+controls_information:
+    PV: true
+    pv_record_map:
+        On: EBT-INJ-VAC-VALV-06:On
+        Off: EBT-INJ-VAC-VALV-06:Off
+        Sta: EBT-INJ-VAC-VALV-06:Sta
+properties:
+    machine_area: INJ
+    hardware_type: Valve
+    name: EBT-INJ-VAC-VALV-06
+    virtual_name: VM-EBT-INJ-VAC-VALV-06
+    name_alias: "INJ-VALV6"

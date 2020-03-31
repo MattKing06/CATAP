@@ -1,0 +1,12 @@
+controls_information:
+    PV: true, false
+    records: Q
+    pv_record_map:
+        Q: CLA-S01-DIA-WCM-01:Q
+properties:
+    machine_area: S01
+    hardware_type: Charge
+    name: UNDEFINED
+    virtual_name: UNDEFINED
+    position: UNDEFINED
+    charge_type: WCM,FCUP

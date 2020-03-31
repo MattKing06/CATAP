@@ -1,0 +1,12 @@
+controls_information:
+    PV: true, false
+    pv_record_map:
+        On: UNDEFINED
+        Off: UNDEFINED
+        Sta: UNDEFINED
+properties:
+    machine_area: UNDEFINED
+    hardware_type: Valve
+    name: UNDEFINED
+    name_alias: UNDEFINED
+    virtual_name: UNDEFINED

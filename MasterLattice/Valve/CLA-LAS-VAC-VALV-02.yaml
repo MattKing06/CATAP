@@ -1,0 +1,12 @@
+controls_information:
+    PV: true
+    pv_record_map:
+        On: CLA-LAS-VAC-VALV-02:On
+        Off: CLA-LAS-VAC-VALV-02:Off
+        Sta: CLA-LAS-VAC-VALV-02:Sta
+properties:
+    machine_area: LAS
+    hardware_type: Valve
+    name: CLA-LAS-VAC-VALV-02
+    virtual_name: VM-CLA-LAS-VAC-VALV-02
+    name_alias: "LAS-VALV2"

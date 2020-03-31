@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-INJ-MAG-VCOR-10:GETSETI
+    READI: EBT-INJ-MAG-VCOR-10:READI
+    RILK: EBT-INJ-MAG-VCOR-10:RILK
+    RPOWER: EBT-INJ-MAG-VCOR-10:RPOWER
+    SETI: EBT-INJ-MAG-VCOR-10:SETI
+    SPOWER: EBT-INJ-MAG-VCOR-10:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "6.0,-6.0,4.0,-4.0,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  field_integral_coefficients: "0.108940217,0.0"
+  hardware_type: Magnet
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: VCOR
+  magnetic_length: 182.9665314
+  manufacturer: Scanditronix
+  name: EBT-INJ-MAG-VCOR-10
+  name_alias: INJ-VCOR10,INJ-VCOR10
+  num_degauss_steps: 11
+  position: 16.732
+  ri_tolerance: 0.01
+  serial_number: 1279-14610-0009

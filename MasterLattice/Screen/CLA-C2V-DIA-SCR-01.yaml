@@ -1,0 +1,27 @@
+controls_information:
+    PV: true
+    records: V:SDEV, V:TRIGGER, V:EX, V:TGTPOS, V:JOG, V:JDIFF, V:MOVING, V:READY, V:GET_DEV, V:DEV_STATE, V:MAX_POS, V:DEV_CENT, V:ACTPOS, V:EN
+    pv_record_map:
+        "V:SDEV": CLA-C2V-DIA-SCR-01:V:SDEV
+        "V:TRIGGER": CLA-C2V-DIA-SCR-01:V:TRIGGER
+        "V:EX": CLA-C2V-DIA-SCR-01:V:EX
+        "V:TGTPOS": CLA-C2V-DIA-SCR-01:V:TGTPOS
+        "V:JOG": CLA-C2V-DIA-SCR-01:V:JOG
+        "V:JDIFF": CLA-C2V-DIA-SCR-01:V:JDIFF
+        "V:MOVING": CLA-C2V-DIA-SCR-01:V:MOVING
+        "V:READY": CLA-C2V-DIA-SCR-01:V:READY
+        "V:GET_DEV": CLA-C2V-DIA-SCR-01:V:GET_DEV
+        "V:DEV_STATE": CLA-C2V-DIA-SCR-01:V:DEV_STATE
+        "V:MAX_POS": CLA-C2V-DIA-SCR-01:V:MAX_POS
+        "V:DEV_CENT": CLA-C2V-DIA-SCR-01:V:DEV_CENT
+        "V:ACTPOS": CLA-C2V-DIA-SCR-01:V:ACTPOS
+        "V:EN": CLA-C2V-DIA-SCR-01:V:EN
+properties:
+    name: CLA-C2V-DIA-SCR-01
+    name_alias: UNDEFINED
+    machine_area: C2V
+    hardware_type: Screen
+    screen_type: CLARA_V_MOVER
+    has_camera: true
+    position: 0.0
+    devices: "VRETRACTED,VMAX,VRF,VYAG,VCOL,VGRAT"
