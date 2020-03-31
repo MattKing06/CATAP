@@ -47,11 +47,7 @@ namespace GlobalFunctions {
 		//time_t     now = timeNow();
 		//struct tm  tstruct;
 		//char       buf[GlobalConstants::eighty_sizet];
-
-
-
 		//localtime(&tstruct, &now);
-
 		// // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
 		// // for more information about date/time format
 		// // strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%",&tstruct);

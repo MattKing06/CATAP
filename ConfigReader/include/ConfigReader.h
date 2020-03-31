@@ -102,13 +102,6 @@ public:
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 
 				messenger.printDebugMessage("LoadFile got template");
-				if (!checkForValidTemplate(configTemplate, config))
-				{
-					messenger.printDebugMessage("Error template does not match config data filename = ", ConfigReader::yamlFilename);
-					exit(0);
-					// TODO: i'm forcing a quit here without  aproper exception, so as to be clear what the error was
-					//throw YAML::BadFile();
-				}
 
 
 				std::vector<std::string> missingEntriesFromFile = compareFileWithTemplate(configTemplate, config);

@@ -258,18 +258,12 @@ class Magnet : public Hardware
 		//std::string magRevType;
 		double RI_tolerance;
 
-		int numberOfDegaussSteps; // TODO: this should be a size_t or uint
+		//int numberOfDegaussSteps; // TODO: this should be a size_t or uint
 		
 
 
-		bool isREADIequalValue(const double value, const double tolerance);
-		bool waitForMagnetToSettle(const double values,
-								   const double tolerance,
-								   const time_t waitTime);
 
-
-
-		double magneticLength;
+		//double magneticLength;
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */

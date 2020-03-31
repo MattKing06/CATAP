@@ -32,7 +32,6 @@ Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) 
 Hardware(paramsMap, mode),
 epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
 //messenger(LoggingSystem(true, true)),
-	Hardware(paramsMap, mode),
 	// Assumes all these find succeed ? 
 manufacturer(paramsMap.find("manufacturer")->second),
 serialNumber(paramsMap.find("serial_number")->second.data()),
@@ -65,9 +64,7 @@ isDegaussing(false)
 	{ 
 		degaussValues.push_back(std::stof(value)); 
 	}
-
 	// set the magnet_type
-	
 	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
 	{
 		if(GlobalFunctions::entryExists( magnet_string_to_type_map, paramsMap.at("mag_type")))
@@ -81,19 +78,19 @@ isDegaussing(false)
 	// epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 }
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
-manufacturer(copyMagnet.manufacturer), serialNumber(copyMagnet.serialNumber),
-magType(copyMagnet.magType), magRevType(copyMagnet.magRevType), READI_tolerance(copyMagnet.READI_tolerance),
-numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
-fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurementDataLocation),
-magneticLength(copyMagnet.magneticLength), epicsInterface(copyMagnet.epicsInterface),
-aliases(copyMagnet.aliases)
+manufacturer(copyMagnet.manufacturer), 
+serialNumber(copyMagnet.serialNumber),
 magType(copyMagnet.magType), 
-//magRevType(copyMagnet.magRevType),
+magRevType(copyMagnet.magRevType), 
+READI_tolerance(copyMagnet.READI_tolerance),
+numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), 
+degaussValues(copyMagnet.degaussValues),
+fullPSUName(copyMagnet.fullPSUName), 
+measurementDataLocation(copyMagnet.measurementDataLocation),
+aliases(copyMagnet.aliases),
 RI_tolerance(copyMagnet.RI_tolerance),
-numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
-//fullPSUName(copyMagnet.fullPSUName), 
-//measurementDataLocation(copyMagnet.measurementDataLocation),
-magneticLength(copyMagnet.magneticLength), epicsInterface(copyMagnet.epicsInterface)
+magneticLength(copyMagnet.magneticLength), 
+epicsInterface(copyMagnet.epicsInterface)
 {
 }
 std::vector<std::string> Magnet::getAliases() const
