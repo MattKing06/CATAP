@@ -242,8 +242,9 @@ class MagnetFactory
 		bool isDebugOn();
 		bool isMessagingOn();
 
-private:
 		LoggingSystem messenger;
+private:
+
 
 	// private surely! 
 		std::map<std::string, Magnet> magnetMap;
