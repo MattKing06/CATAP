@@ -1,7 +1,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <iostream>
-#include "BPM.h"
+#include <BPM.h>
 #include <map>
 #include <vector>
 #include <numeric>
@@ -12,48 +12,49 @@
 
 BPM::BPM()
 {}
-
-	BPM::BPM(const std::map<std::string, std::string> & paramsMap, STATE mode) :
-	Hardware(paramsMap, mode),
-	bpmType(paramsMap.find("bpm_type")->second),
-	name(paramsMap.find("name")->second),
-	att1cal(std::stol(paramsMap.find("att1cal")->second)),
-	att2cal(std::stol(paramsMap.find("att2cal")->second)),
-	v1cal(std::stod(paramsMap.find("v1cal")->second)),
-	v2cal(std::stod(paramsMap.find("v2cal")->second)),
-	qcal(std::stod(paramsMap.find("qcal")->second)),
-	mn(std::stod(paramsMap.find("mn")->second)),
-	position(std::stod(paramsMap.find("position")->second))
+BPM::BPM(const std::map<std::string, std::string> & paramsMap, STATE mode) :
+Hardware(paramsMap, mode),
+bpmType(paramsMap.find("bpm_type")->second),
+name(paramsMap.find("name")->second),
+att1cal(std::stol(paramsMap.find("att1cal")->second)),
+att2cal(std::stol(paramsMap.find("att2cal")->second)),
+v1cal(std::stod(paramsMap.find("v1cal")->second)),
+v2cal(std::stod(paramsMap.find("v2cal")->second)),
+qcal(std::stod(paramsMap.find("qcal")->second)),
+mn(std::stod(paramsMap.find("mn")->second)),
+position(std::stod(paramsMap.find("position")->second))
 {
-	bufferSize = 10;
-	xpvshots = 0;
-	ypvshots = 0;
-	datashots = 0;
-	qshots = 0;
-	ra1 = 0;
-	ra2 = 0;
-	monitoringxpv = false;
-	monitoringypv = false;
-	monitoringdata = false;
-	epicsInterface = boost::make_shared<EPICSBPMInterface>(EPICSBPMInterface());
-	xBuffer.resize(bufferSize);
-	xPVBuffer.resize(bufferSize);
-	yBuffer.resize(bufferSize);
-	yPVBuffer.resize(bufferSize);
-	qBuffer.resize(bufferSize);
-	dataBuffer.resize(bufferSize);
-	for (auto&& it : dataBuffer)
-	{
-		it.resize(9);
-	}
-	pu1Buffer.resize(bufferSize);
-	pu2Buffer.resize(bufferSize);
-	pu3Buffer.resize(bufferSize);
-	pu4Buffer.resize(bufferSize);
-	c1Buffer.resize(bufferSize);
-	c2Buffer.resize(bufferSize);
-	p1Buffer.resize(bufferSize);
-	p2Buffer.resize(bufferSize);
+messenger.printDebugMessage("constructor");
+setPVStructs();
+bufferSize = 10;
+xpvshots = 0;
+ypvshots = 0;
+datashots = 0;
+qshots = 0;
+monitoringxpv = false;
+monitoringypv = false;
+monitoringdata = false;
+epicsInterface = boost::make_shared<EPICSBPMInterface>(EPICSBPMInterface());
+epicsInterface->ownerName = hardwareName;
+xBuffer.resize(bufferSize);
+xPVBuffer.resize(bufferSize);
+yBuffer.resize(bufferSize);
+yPVBuffer.resize(bufferSize);
+qBuffer.resize(bufferSize);
+dataBuffer.resize(bufferSize);
+statusBuffer.resize(bufferSize);
+for (auto&& it : dataBuffer)
+{
+	it.resize(9);
+}
+pu1Buffer.resize(bufferSize);
+pu2Buffer.resize(bufferSize);
+pu3Buffer.resize(bufferSize);
+pu4Buffer.resize(bufferSize);
+c1Buffer.resize(bufferSize);
+c2Buffer.resize(bufferSize);
+p1Buffer.resize(bufferSize);
+p2Buffer.resize(bufferSize);
 }
 BPM::BPM(const BPM & copyBPM) :
 Hardware(copyBPM),
@@ -69,6 +70,44 @@ position(copyBPM.position),
 epicsInterface(copyBPM.epicsInterface)
 {
 }
+
+void BPM::setPVStructs()
+{
+	messenger.printDebugMessage("in setPVstructs");
+
+	for (auto&& record : BPMRecords::bpmRecordList)
+	{
+		messenger.printDebugMessage("in loop");
+		pvStructs[record] = pvStruct();
+		messenger.printDebugMessage(record);
+		pvStructs[record].pvRecord = record;
+
+		// TODO NO ERROR CHECKING! (we assum config file is good??? 
+		std::string PV = specificHardwareParameters.find(record)->second.data();
+		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+		messenger.printDebugMessage("Constructing PV information for ", record);
+
+		/*TODO
+		  This should be put into some general function: generateVirtualPV(PV) or something...
+		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+		  The config reader level if that is the case.
+		  DJS maybe they should, how certian cna we be all virtual PVs will get a VM- prefix???
+		  */
+		if (mode == STATE::VIRTUAL)
+		{
+			pvStructs[record].fullPVName = "VM-" + PV;
+		}
+		else
+		{
+			pvStructs[record].fullPVName = PV;
+		}
+		//pv.pvRecord = record;
+		//chid, count, mask, chtype are left undefined for now.
+		//pvStructs[pv.pvRecord] = pv;
+	}
+
+}
+
 std::vector<std::string> BPM::getAliases() const
 {
 	return this->aliases;
@@ -84,39 +123,49 @@ std::string BPM::getBPMName() const
 	return this->name;
 }
 
-//STATE BPM::getBPMState() const
-//{
-//	return bpmState;
-//}
-
 double BPM::getX() const
 {
-	return this->x;
+	return this->x.second;
 }
 
 double BPM::getXFromPV() const
 {
-	return this->xPV;
+	return this->xPV.second;
 }
 
 double BPM::getY() const
 {
-	return this->y;
+	return this->y.second;
 }
 
 double BPM::getYFromPV() const
 {
-	return this->yPV;
+	return this->yPV.second;
 }
 
 double BPM::getQ() const
 {
-	return this->q;
+	return this->q.second;
+}
+
+STATE BPM::getStatus() const
+{
+	return status;
+}
+
+boost::circular_buffer< STATE > BPM::getStatusBuffer() const
+{
+	return statusBuffer;
+}
+
+std::vector< STATE > BPM::getStatusVector() const
+{
+	return statusVector;
 }
 
 std::vector< double > BPM::getData() const
 {
-	return this->data;
+	return this->data.second;
 }
 
 std::vector< double > BPM::getXPVVector() const
@@ -157,7 +206,7 @@ std::vector< double > BPM::getQVector() const
 
 double BPM::getResolution() const
 {
-	return this->resolution;
+	return this->resolution.second;
 }
 
 double BPM::getPosition() const
@@ -190,6 +239,21 @@ bool BPM::isDataBufferFull() const
 		return true;
 	}
 	return false;
+}
+
+bool BPM::isXPVBufferNotFull() const
+{
+	return !isXPVBufferFull();
+}
+
+bool BPM::isYPVBufferNotFull() const
+{
+	return !isYPVBufferFull();
+}
+
+bool BPM::isDataBufferNotFull() const
+{
+	return !isDataBufferFull();
 }
 
 size_t BPM::getBufferSize() const
@@ -229,47 +293,47 @@ boost::circular_buffer< std::vector< double > > BPM::getDataBuffer() const
 
 long BPM::getSA1() const
 {
-	return this->sa1;
+	return this->sa1.second;
 }
 
 long BPM::getSA2() const
 {
-	return this->sa2;
+	return this->sa2.second;
 }
 
 long BPM::getSD1() const
 {
-	return this->sd1;
+	return this->sd1.second;
 }
 
 long BPM::getSD2() const
 {
-	return this->sd2;
+	return this->sd2.second;
 }
 
 long BPM::getRA1() const
 {
-	return this->ra1;
+	return this->ra1.second;
 }
 
 long BPM::getRA2() const
 {
-	return this->ra2;
+	return this->ra2.second;
 }
 
 long BPM::getRD1() const
 {
-	return this->rd1;
+	return this->rd1.second;
 }
 
 long BPM::getRD2() const
 {
-	return this->rd2;
+	return this->rd2.second;
 }
 
 bool BPM::setXPV(const double& value)
 {
-	xPV = value;
+	xPV.second = value;
 	xPVBuffer.push_back(value);
 	xpvshots++;
 	if (monitoringxpv)
@@ -288,9 +352,9 @@ bool BPM::setXPV(const double& value)
 
 bool BPM::setYPV(const double& value)
 {
-	yPV = value;
+	yPV.second = value;
 	yPVBuffer.push_back(value);
-	++ypvshots;
+	ypvshots++;
 	if (monitoringypv)
 	{
 		if (ypvshots <= yPVVector.size())
@@ -329,81 +393,117 @@ bool BPM::ismonitoring() const
 	return false;
 }
 
+void BPM::offlineSet(const long& value)
+{
+	epicsTimeGetCurrent(&sa1.first);
+	sa1.first = sa1.first;
+	sa1.second = value;
+	sa1.second = value;
+}
+
 bool BPM::setRA1(const long& value)
 {
-	ra1 = value;
+	ra1.second = value;
 	return true;
 }
 
 bool BPM::setRA2(const long& value)
 {
-	ra2 = value;
+	ra2.second = value;
 	return true;
 }
 
 bool BPM::setRD1(const long& value)
 {
-	rd1 = value;
+	rd1.second = value;
 	return true;
 }
 
 bool BPM::setRD2(const long& value)
 {
-	rd2 = value;
+	rd2.second = value;
 	return true;
 }
 
 bool BPM::setSA1(const long& value)
 {
-	sa1 = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSA1(value, pvStructs.at(BPMRecords::SA1));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSA1(value, pvStructs.at(BPMRecords::SA1));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
 bool BPM::setSA2(const long& value)
 {
-	sa2 = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSA2(value, pvStructs.at(BPMRecords::SA2));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSA2(value, pvStructs.at(BPMRecords::SA2));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
 bool BPM::setSD1(const long& value)
 {
-	sd1 = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSD1(value, pvStructs.at(BPMRecords::SD1));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSD1(value, pvStructs.at(BPMRecords::SD1));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
 bool BPM::setSD2(const long& value)
 {
-	sd2 = value;
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		epicsInterface->setSD2(value, pvStructs.at(BPMRecords::SD2));
+		break;
+	case STATE::VIRTUAL:
+		epicsInterface->setSD2(value, pvStructs.at(BPMRecords::SD2));
+		break;
+	default:
+		offlineSet(value);
+	}
 	return true;
 }
 
-bool BPM::setAWAK(const long& value)
+bool BPM::setAWAK(const double& value)
 {
-	awak = value;
+	awak.second = value;
 	return true;
 }
 
-bool BPM::setAWAKTStamp(const double& value)
+bool BPM::setRDY(const double& value)
 {
-	awaktstamp = value;
-	return true;
-}
-
-bool BPM::setRDY(const long& value)
-{
-	rdy = value;
-	return true;
-}
-
-bool BPM::setRDYTStamp(const double& value)
-{
-	rdytstamp = value;
+	rdy.second = value;
 	return true;
 }
 
 bool BPM::setData(const std::vector< double >& value)
 {
-	data = value;
+	data.second = value;
 	pu1 = value[1];
 	pu2 = value[2];
 	c1 = value[3];
@@ -423,20 +523,21 @@ bool BPM::setData(const std::vector< double >& value)
 	p2Buffer.push_back(p2);
 	setResolution();
 	setQ(value);
-	qBuffer.push_back(q);
-	++datashots;
+	qBuffer.push_back(q.second);
+	datashots++;
 	if (monitoringdata)
 	{
 		if (datashots <= dataVector.size())
 		{
 			dataVector[datashots - 1] = value;
-			qVector[datashots - 1] = q;
+			qVector[datashots - 1] = q.second;
 		}
 		else
 		{
 			monitoringdata = false;
 		}
 	}
+	checkStatus();
 	return true;
 }
 
@@ -455,9 +556,9 @@ bool BPM::setQ(const std::vector< double >& rawData)
 
 	v1 = (std::abs(u11 - u14) + std::abs(u12 - u14)) / 2;
 	v2 = (std::abs(u21 - u24) + std::abs(u22 - u24)) / 2;
-	q1 = (qcal * (v1 / v1cal)) * (pow(10, -((att1cal - ra1) / 20)));
-	q2 = (qcal * (v2 / v2cal)) * (pow(10, -((att2cal - ra2) / 20)));
-	q = ((q1 + q2) / 2);
+	q1 = (qcal * (v1 / v1cal)) * (pow(10, -((att1cal - ra1.second) / 20)));
+	q2 = (qcal * (v2 / v2cal)) * (pow(10, -((att2cal - ra2.second) / 20)));
+	q.second = ((q1 + q2) / 2);
 
 	return true;
 }
@@ -465,7 +566,7 @@ bool BPM::setQ(const std::vector< double >& rawData)
 bool BPM::setResolution()
 {
 	double u11, u12, u13, u14, u21, u22, u23, u24, v11, v12, v21, v22;
-	double rmsVals, resolution;
+	double rmsVals;
 	u11 = std::accumulate(pu1Buffer.begin(), pu1Buffer.end(), 0.0) / pu1Buffer.size();
 	u12 = std::accumulate(pu2Buffer.begin(), pu2Buffer.end(), 0.0) / pu2Buffer.size();
 	u13 = std::accumulate(c1Buffer.begin(), c1Buffer.end(), 0.0) / c1Buffer.size();
@@ -481,8 +582,8 @@ bool BPM::setResolution()
 	if (v11 && v12 && v21 && v22 != 0)
 	{
 		rmsVals = ((v11 + v12) - (v21 + v22)) / ((v11 + v12) + (v21 + v22));
+		resolution.second = rmsVals * sqrt(2) * (0.001 * mn);
 	}
-	resolution = rmsVals * sqrt(2) * (0.001 * mn);
 	return true;
 }
 
@@ -490,56 +591,66 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 {
 	if (buf[buf.size() - 1] == buf[buf.size()])
 	{
-		return true;
+		return true;	
 	}
 	return false;
 }
 
-//void BPM::checkStatus()
-//{
-//	if (awaktstamp - rdytstamp > 1.0)
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (checkBuffer(xBuffer) || checkBuffer(yBuffer))
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (isnan(xBuffer.back()) || isnan(yBuffer.back()))
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::BAD;
-//		statusBuffer.push_back(bpmdo->status);
-//	}
-//	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::NOnLINEAR;
-//		statusBuffer.push_back(status);
-//	}
-//	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::GOOD;
-//		statusBuffer.push_back(status);
-//	}
-//	else
-//	{
-//		status = beamPositiOnmonitorStructs::BPM_STATUS::UNKNOWN;
-//		statusBuffer.push_back(status);
-//	}
-//}
+void BPM::checkStatus()
+{
+	/*if (awak.first - rdy.first > 1.0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}*/
+	if (xpvshots == 0 || ypvshots == 0 || datashots == 0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (checkBuffer(xPVBuffer) || checkBuffer(yPVBuffer))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (checkBuffer(pu1Buffer) || checkBuffer(pu2Buffer) || checkBuffer(pu3Buffer) || checkBuffer(pu4Buffer))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (xpvshots > 0 && ypvshots > 0)
+		if(isnan(xPVBuffer.back()) || isnan(yPVBuffer.back()))
+		{
+			status = STATE::BAD;
+			statusBuffer.push_back(status);
+		}
+	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
+	{
+		status = STATE::NONLINEAR;
+		statusBuffer.push_back(status);
+	}
+	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
+	{
+		status = STATE::GOOD;
+		statusBuffer.push_back(status);
+	}
+	else
+	{
+		status = STATE::UNKNOWN;
+		statusBuffer.push_back(status);
+	}
+	if (ismonitoring())
+	{
+		statusVector.push_back(status);
+	}
+}
 
 bool BPM::reCalAttenuation(const double& charge)
 {
 	double qqC = charge / qcal;
 
-	long currAtt1 = ra1;
-	long currAtt2 = ra2;
+	long currAtt1 = ra1.second;
+	long currAtt2 = ra2.second;
 
 	long newAtt1 = (20 * log10(qqC)) + att1cal;
 	long newAtt2 = (20 * log10(qqC)) + att2cal;
@@ -589,11 +700,13 @@ void BPM::setVectorSize(const size_t& value)
 	xPVVector.clear();
 	yPVVector.clear();
 	qVector.clear();
+	statusVector.clear();
 	dataVector.clear();
 	vectorSize = value;
 	xPVVector.resize(vectorSize);
 	yPVVector.resize(vectorSize);
 	qVector.resize(vectorSize);
+	statusVector.resize(vectorSize);
 	dataVector.resize(vectorSize);
 	for (auto&& it2 : dataVector)
 	{
@@ -610,6 +723,7 @@ void BPM::setBufferSize(const size_t& value)
 	yBuffer.resize(bufferSize);
 	yPVBuffer.resize(bufferSize);
 	qBuffer.resize(bufferSize);
+	statusBuffer.resize(bufferSize);
 	dataBuffer.resize(bufferSize);
 	pu1Buffer.resize(bufferSize);
 	pu2Buffer.resize(bufferSize);
@@ -636,6 +750,7 @@ void BPM::clearBuffers()
 	yPVBuffer.clear();
 	qBuffer.clear();
 	dataBuffer.clear();
+	statusBuffer.clear();
 	pu1Buffer.clear();
 	pu2Buffer.clear();
 	pu3Buffer.clear();

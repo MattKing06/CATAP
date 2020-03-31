@@ -10,6 +10,11 @@
 #include <GlobalTypeEnums.h>
 #include "GlobalConstants.h"
 
+/** @defgroup hardware Hardware
+ *  @brief A collection of classes that represent hardware components of VELA/CLARA with parameters defined by configuration files.
+ *	@{
+ */
+
 class Hardware
 {
 public:
@@ -76,5 +81,5 @@ public:
 	static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
 };
-
+/** @}*/
 #endif //HARDWARE_H_

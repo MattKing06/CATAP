@@ -103,9 +103,7 @@ class Magnet : public Hardware
 	/*! get the magnet manufacturer, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getManufacturer() const;
-	/*! get the magnet serial number, defined in the master lattice yaml file
-		@param[out] result  */
-		int getSerialNumber() const;
+
 	/*! get the type of magnet, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMagnetType() const;
@@ -119,6 +117,11 @@ class Magnet : public Hardware
 		@param[out] result  */
 		std::string getFullPSUName() const;
 	/*! get the measurement data location, defined in the master lattice yaml file
+		@param[out] result  */
+	/*! get the magnet serial number, defined in the master lattice yaml file
+		@param[out] result  */
+		std::string getSerialNumber() const;
+	/*! get the magnet data measurmetn location 
 		@param[out] result  */
 		std::string getMeasurementDataLocation() const;
 	/*! get the number of values that are set during the deguass procedure, initally defined in the master lattice yaml file, can be changed with setDegaussValues
@@ -239,8 +242,7 @@ class Magnet : public Hardware
 		std::vector<std::string> aliases;
 	/*! magnet manufacturer, defined in the master lattice yaml file	*/
 		std::string manufacturer;
-	/*! magnet serial number, defined in the master lattice yaml file	*/
-		int serialNumber;
+
 	/*! magnet type, e.g. SOL, DIP, QUAD, VCOR, HCOR, defined in the master lattice yaml file	*/
 		std::string magType;
 		TYPE magtype;
@@ -249,6 +251,24 @@ class Magnet : public Hardware
 	/*! The tolerance used when checking if READI is eqal to SETI, defined in the master lattice yaml file	*/
 		double READI_tolerance;
 	/*! magnetic length, defined in the master lattice yaml file */
+		double magneticLength;
+	/*! magnet serial number, defined in the master lattice yaml file	*/
+		std::string serialNumber;
+
+		//std::string magRevType;
+		double RI_tolerance;
+
+		int numberOfDegaussSteps; // TODO: this should be a size_t or uint
+		
+
+
+		bool isREADIequalValue(const double value, const double tolerance);
+		bool waitForMagnetToSettle(const double values,
+								   const double tolerance,
+								   const time_t waitTime);
+
+
+
 		double magneticLength;
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;

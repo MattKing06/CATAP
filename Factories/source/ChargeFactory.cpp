@@ -8,17 +8,9 @@
 #include <cadef.h>
 #endif
 
-#define MY_SEVCHK(status)		\
-{								\
-	if (status != ECA_NORMAL)	\
-		{						\
-		SEVCHK(status, NULL);	\
-		exit(status);			\
-		}						\
-}								\
-
 ChargeFactory::ChargeFactory() : ChargeFactory(STATE::OFFLINE)
 {
+	std::cout << "ChargeFactory DEFAULT constRUCTOR called " << std::endl;
 }
 
 ChargeFactory::ChargeFactory(STATE mode):
@@ -39,6 +31,7 @@ ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 	messenger(copyChargeFactory.messenger),
 	reader(copyChargeFactory.reader)
 {
+	messenger.printDebugMessage("ChargeFactory Copy cOntructor");
 	chargeMap.insert(copyChargeFactory.chargeMap.begin(), copyChargeFactory.chargeMap.end());
 }
 
@@ -63,22 +56,29 @@ ChargeFactory::~ChargeFactory()
 
 void ChargeFactory::populateChargeMap()
 {
+	messenger.printDebugMessage("ChargeFactory is populating the charge map");
 	if (!reader.hasMoreFilesToParse())
 	{
 		throw std::runtime_error("Did not receive cOnfiguratiOn parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
+		messenger.printDebugMessage("Charge Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(chargeMap);
 	}
+	messenger.printDebugMessage("ChargeFactory has finished populating the charge map");
 }
 
 void ChargeFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == "Q"
+	if (pvStruct.pvRecord == ChargeRecords::Q
 		)
 	{
 		pvStruct.monitor = true;
+	}
+	else
+	{
+		pvStruct.monitor = false;
 	}
 }
 
@@ -103,39 +103,37 @@ bool ChargeFactory::setup(const std::string &VERSION)
 	}
 	if (mode == STATE::VIRTUAL)
 	{
-		messenger.printDebugMessage(" VIRTUAL SETUP: TRUE");
+		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	//// epics magnet interface has been initialized in charge constructor
+	//// epics magnet interface has been initialized in BPM constructor
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();
 
 	setupChannels();
 	EPICSInterface::sendToEPICS();
-	for (auto &charge : chargeMap)
+	for (auto& charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
 		for (auto& pv : chargePVStructs)
 		{
-
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				retrievemonitorStatus(pv.second);
-				charge.second.epicsInterface->retrieveCHID(pv.second);
 				charge.second.epicsInterface->retrieveCHTYPE(pv.second);
 				charge.second.epicsInterface->retrieveCOUNT(pv.second);
 				charge.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.debugMessagesOn();
-				messenger.printDebugMessage(pv.second.pvRecord + ": read" + std::to_string(ca_read_access(pv.second.CHID)) +
-					"write" + std::to_string(ca_write_access(pv.second.CHID)) +
-					"state" + std::to_string(ca_state(pv.second.CHID)) + "\n");
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
 					charge.second.epicsInterface->createSubscription(charge.second, pv.second);
 				}
+				EPICSInterface::sendToEPICS();
 			}
 			else
 			{
@@ -147,6 +145,7 @@ bool ChargeFactory::setup(const std::string &VERSION)
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
+	std::cout << "end" << std::endl;
 }
 
 std::map<std::string, Charge> ChargeFactory::getChargeDiagnostics(std::vector<std::string> chargeNames)
@@ -190,6 +189,33 @@ std::string ChargeFactory::getChargeDiagnosticName(const std::string& name)
 	return "0";
 }
 
+void ChargeFactory::setBufferSize(const std::string& name, const size_t& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		chargeMap.find(name)->second.setBufferSize(value);
+	}
+}
+
+void ChargeFactory::setAllBufferSize(const size_t& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		for (auto& it : chargeMap)
+		{
+			chargeMap.find(it.first)->second.setBufferSize(value);
+		}
+	}
+}
+
 void ChargeFactory::monitorForNShots(const std::string& name, const size_t& value)
 {
 	if (!hasBeenSetup)
@@ -213,6 +239,21 @@ void ChargeFactory::monitorMultipleForNShots(const std::vector< std::string >& n
 		for (auto&& it : names)
 		{
 			chargeMap.find(it)->second.monitorForNShots(value);
+		}
+	}
+}
+
+void ChargeFactory::monitorAllForNShots(const size_t& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		for (auto& it : chargeMap)
+		{
+			chargeMap.find(it.first)->second.monitorForNShots(value);
 		}
 	}
 }

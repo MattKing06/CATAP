@@ -4,6 +4,18 @@ set( SOURCE_FILES
     source/EPICSMagnetInterface.cpp
     source/EPICSBPMInterface.cpp
     source/EPICSChargeInterface.cpp
+    source/EPICSScreenInterface.cpp
+    source/EPICSValveInterface.cpp
+    source/EPICSGeneralMonitorInterface.cpp
+    source/EPICSIMGInterface.cpp
+    source/EPICSLaserMirrorInterface.cpp
+    source/EPICSLEDInterface.cpp
+    source/EPICSLightingInterface.cpp
+    source/EPICSRFHeartbeatInterface.cpp
+    source/EPICSRFModulatorInterface.cpp
+    source/EPICSRFProtectionInterface.cpp
+    source/EPICSStageInterface.cpp
+    source/EPICSShutterInterface.cpp
 )
 
 set( INCLUDE_FILES
@@ -11,14 +23,38 @@ set( INCLUDE_FILES
     include/EPICSMagnetInterface.h 
     include/EPICSBPMInterface.h 
     include/EPICSChargeInterface.h 
+    include/EPICSScreenInterface.h 
+    include/EPICSValveInterface.h
+    include/EPICSGeneralMonitorInterface.h
+    include/EPICSIMGInterface.h
+    include/EPICSLaserMirrorInterface.h
+    include/EPICSLEDInterface.h
+    include/EPICSLightingInterface.h
+    include/EPICSRFHeartbeatInterface.h
+    include/EPICSRFModulatorInterface.h
+    include/EPICSRFProtectionInterface.h
+    include/EPICSStageInterface.h
+    include/EPICSShutterInterface.h
 )
 
 set( TEST_FILES
-	EPICSInterfaceTestHelper.cpp
+    EPICSInterfaceTestHelper.cpp
     EPICSInterfaceTest.cpp
     EPICSMagnetInterfaceTest.cpp
     EPICSBPMInterfaceTest.cpp
     EPICSChargeInterfaceTest.cpp
+    EPICSScreenInterfaceTest.cpp
+    EPICSValveInterfaceTest.cpp
+    EPICSGeneralMonitorInterfaceTest.cpp
+    EPICSIMGInterfaceTest.cpp
+    EPICSLaserMirrorInterfaceTest.cpp
+    EPICSLEDInterfaceTest.cpp
+    EPICSLightingInterfaceTest.cpp
+    EPICSRFHeartbeatInterfaceTest.cpp
+    EPICSRFModulatorInterfaceTest.cpp
+    EPICSRFProtectionInterfaceTest.cpp
+    EPICSStageInterfaceTest.cpp
+    EPICSShutterInterfaceTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSInterface STATIC ${SOURCE_FILES} ${INCLUDE_FILES})

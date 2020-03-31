@@ -7,7 +7,10 @@
 
 const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "MAG", "Magnet" },
-	{ "BPM", "Beam Position Monitor" }
+	{ "BPM", "Beam Position Monitor" },
+	{ "CHA", "Charge" },
+	{ "SCR", "Screen" },
+	{ "YAG", "Screen" }
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
@@ -50,7 +53,6 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 
 std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::string& version)
 {
-	std::cout << "Searching for yaml files in: " << yamlFileDestination << std::endl;
 	boost::filesystem::path directory(yamlFileDestination);//+ '//' + version);
 	std::vector<std::string> filenames;
 	for (auto i = boost::filesystem::directory_iterator(directory); i != boost::filesystem::directory_iterator(); i++)
@@ -67,10 +69,6 @@ std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::strin
 				{
 					numberOfParsesExpected++;
 				}
-			}
-			else
-			{
-				std::cout << i->path().filename().string() << ": NOT YAML" << std::endl;
 			}
 		}
 		else
@@ -95,26 +93,29 @@ std::string ConfigReader::getHardwareTypeFromName(const std::string& fullPVName)
 		" Please check the PV name or contact support." };
 }
 
-bool ConfigReader::checkForValidTemplate(const YAML::Node& hardwareTemplate,
+std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node& hardwareTemplate,
 	const YAML::Node& hardwareComponent) const
 {
+	// this vector will contain any keys from the template that are not present in the config file.
+	std::vector<std::string> missingEntries;
 	for (const auto& keyAndValuePair : hardwareTemplate["properties"])
 	{
 		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
 		{
 			messenger.printDebugMessage("Error missing property: " + keyAndValuePair.first.as<std::string>());
-			return false;
+			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
+			//return false;
 		}
 	}
 	for (const auto& keyAndValuePair : hardwareTemplate["controls_information"])
 	{
 		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
 		{
-			messenger.printDebugMessage("Error missing controls_information: " + keyAndValuePair.first.as<std::string>());
-			return false;
+			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
+			//return false;
 		}
 	}
-	return true;
+	return missingEntries;
 }
 
 bool ConfigReader::hasMoreFilesToParse() const
@@ -133,7 +134,6 @@ bool ConfigReader::hasMoreFilesToParse() const
 			return true;
 		}
 	}
-	messenger.printDebugMessage("hasMoreFilesToParse() has no more files to parse ");
 	return false;
 }
 
@@ -220,12 +220,10 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		if (mode == STATE::VIRTUAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["virtual_name"].as<std::string>(), controlRecords);
-			//std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		else if (mode == STATE::PHYSICAL)
 		{
 			pvAndRecordPair = std::make_pair(configInformationNode["properties"]["name"].as<std::string>(), controlRecords);
-			//std::cout << pvAndRecordPair.first << " , " << pvAndRecordPair.second << std::endl;
 		}
 		//else
 		//{

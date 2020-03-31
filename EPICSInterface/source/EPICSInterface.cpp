@@ -50,7 +50,7 @@ void EPICSInterface::removeChannel(pvStruct& pvStruct)
 	MY_SEVCHK(status);
 }
 
-void EPICSInterface::detachFromCOntext()
+void EPICSInterface::detachFromContext()
 {
 	ca_detach_context();
 }
@@ -87,16 +87,22 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
-		if (pvStruct.fullPVName.find("MAG") != std::string::npos)
+		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
+			pvStruct.fullPVName.find("VALV") != std::string::npos ||
+			pvStruct.fullPVName.find("BPM") != std::string::npos ||
+			pvStruct.fullPVName.find("WCM") != std::string::npos ||
+			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
+			pvStruct.fullPVName.find("SCR") != std::string::npos ||
+			pvStruct.fullPVName.find("YAG") != std::string::npos)
+		{
+			pv = pvStruct.fullPVName;
+		}
+		if (pvStruct.fullPVName.find("VALV") != std::string::npos)
 		{
 			pv = pvStruct.fullPVName;
 		}
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
-		
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
-
-
-
 		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		
@@ -132,6 +138,18 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		else if (ca_field_type(pvStruct.CHID) == DBR_ENUM)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_ENUM;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_LONG)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_LONG;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_SHORT)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_SHORT;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_INT)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_INT;
 		}
 		else
 		{
@@ -194,13 +212,27 @@ void EPICSInterface::setPVTimeStampFromArgs(pvStruct& pv, const event_handler_ar
 	pv.time = time->stamp;
 }
 
-
 void EPICSInterface::updateTimeStampDoublePair(const struct event_handler_args& args,
 	std::pair<epicsTimeStamp, double>& pairToUpdate)
 {
 	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
-	pairToUpdate.first  = tv->stamp;
+	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size)
+{
+	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<double> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
 }
 
 void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& args,
@@ -210,6 +242,7 @@ void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& arg
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = (int)tv->value;
 }
+
 //void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
 //{
 //	std::pair<epicsTimeStamp, short> r;
@@ -220,8 +253,24 @@ void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& arg
 
 void EPICSInterface::updateTimeStampUShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, unsigned short>& pairToUpdate)
 {
-	std::pair<epicsTimeStamp, unsigned short> r;
+	//std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+
+void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, long>& pairToUpdate)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
+{
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = tv->value;
 }
@@ -231,14 +280,36 @@ std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUShortPair
 {
 	std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-
 	dbr_enum_t a = tv->value;
 	//std::cout << "tv->value  = " << a << std::endl;
 	r.first  = tv->stamp;
 	r.second = (unsigned short)a;
+/* 
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = tv->value;
+ */	
+ return r;
+}
+
+std::pair<epicsTimeStamp, int> EPICSInterface::getTimeStampEnumPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (int)tv->value;
 	return r;
 }
 
+std::pair<epicsTimeStamp, double> EPICSInterface::getTimeStampDoublePair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, double> r;
+	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = tv->value;
+	return r;
+}
 
 
 
@@ -246,14 +317,11 @@ std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_string*)(args.dbr);
 	return std::string(timeObject->value);
 }
-
-
-
 
 double EPICSInterface::returnValueFromArgsAsDouble(const event_handler_args args)
 {

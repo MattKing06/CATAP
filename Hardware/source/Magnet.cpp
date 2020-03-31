@@ -32,6 +32,26 @@ Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) 
 Hardware(paramsMap, mode),
 epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
 //messenger(LoggingSystem(true, true)),
+	Hardware(paramsMap, mode),
+	// Assumes all these find succeed ? 
+manufacturer(paramsMap.find("manufacturer")->second),
+serialNumber(paramsMap.find("serial_number")->second.data()),
+magType(paramsMap.find("mag_type")->second),
+//magRevType(paramsMap.find("mag_rev_type")->second),
+RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
+numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
+degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
+//fullPSUName(paramsMap.find("PSU")->second),
+//measurementDataLocation(paramsMap.find("measurement_data_location")->second),
+magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
+READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
+psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
+ilkState(std::make_pair(epicsTimeStamp(), STATE::ERR) ),
+//GETSETI(GlobalConstants::double_min),//this needs to be lower limits
+//psuState(STATE::ERR),
+//READI(GlobalConstants::double_min),
+//ilkState(STATE::ERR),
 isDegaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
@@ -39,6 +59,7 @@ isDegaussing(false)
 	setPVStructs();
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec;
+	messenger.debugMessagesOn();
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
 	for (auto value : degaussValuesStrVec) 
 	{ 
@@ -66,6 +87,13 @@ numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.
 fullPSUName(copyMagnet.fullPSUName), measurementDataLocation(copyMagnet.measurementDataLocation),
 magneticLength(copyMagnet.magneticLength), epicsInterface(copyMagnet.epicsInterface),
 aliases(copyMagnet.aliases)
+magType(copyMagnet.magType), 
+//magRevType(copyMagnet.magRevType),
+RI_tolerance(copyMagnet.RI_tolerance),
+numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), degaussValues(copyMagnet.degaussValues),
+//fullPSUName(copyMagnet.fullPSUName), 
+//measurementDataLocation(copyMagnet.measurementDataLocation),
+magneticLength(copyMagnet.magneticLength), epicsInterface(copyMagnet.epicsInterface)
 {
 }
 std::vector<std::string> Magnet::getAliases() const
@@ -112,9 +140,6 @@ void Magnet::setPVStructs()
 	}
 
 }
-
-
-
 
 magnetState Magnet::getMagnetState()const
 {
@@ -172,7 +197,7 @@ std::string Magnet::getManufacturer() const
 {
 	return this->manufacturer;
 }
-int Magnet::getSerialNumber() const
+std::string Magnet::getSerialNumber() const
 {
 	return this->serialNumber;
 }
@@ -184,7 +209,6 @@ std::string Magnet::getMagnetRevType() const
 {
 	return this->magRevType;
 }
-
 double Magnet::getREADITolerance() const
 {
 	return READI_tolerance;
@@ -194,8 +218,6 @@ double Magnet::setREADITolerance(const double value)
 	READI_tolerance = value;
 	return READI_tolerance;
 }
-
-
 size_t Magnet::getNumberOfDegaussSteps() const
 {
 	return numberOfDegaussSteps;

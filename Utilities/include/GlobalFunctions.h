@@ -13,6 +13,14 @@
 #include "GlobalConstants.h"
 
 
+/*! @addtogroup utils*/
+/*!@{*/
+
+/*!
+	Namespace to define functions that are used throughout CATAP.
+	These can be used within any class and were written for ease-of-use.
+*/
+
 namespace GlobalFunctions{
 
     /*
@@ -140,4 +148,5 @@ namespace GlobalFunctions{
 
 
 }
+/*! @}*/
 #endif

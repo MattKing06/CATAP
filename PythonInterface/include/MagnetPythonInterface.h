@@ -53,9 +53,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getSETI", &Magnet::getSETI)
 			.def("SETI", &Magnet::SETI)
 			.def("getREADI", &Magnet::getREADI)
-			
 			.def("degauss", &Magnet::degauss)
-			
 			.def("debugMessagesOn", &Magnet::debugMessagesOn)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
 			.def("messagesOn", &Magnet::messagesOn)

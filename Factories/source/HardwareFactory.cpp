@@ -12,17 +12,12 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
+	screenFactory(ScreenFactory(mode)),
+	valveFactory(ValveFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
-	//mode = mode;
-	/*messenger.printDebugMessage("MagnetFactory being cOntructed");
-	magnetFactory = MagnetFactory(mode);
-	messenger.printDebugMessage("MagnetFactory cOntructed");
-	*/
-	//bpmFactory = BPMFactory(mode);
-	//chargeFactory = ChargeFactory(mode);
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
@@ -48,6 +43,20 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 			setup = chargeFactory.setup(VERSION);
 		}
 	}
+	else if (hardwareType == "Screen")
+	{
+		if (!screenFactory.hasBeenSetup)
+		{
+			setup = screenFactory.setup(VERSION);
+		}
+	}
+	else if (hardwareType == "Valve")
+	{
+		if (!valveFactory.hasBeenSetup)
+		{
+			setup = valveFactory.setup(VERSION);
+		}
+	}
 	return setup;
 }
 MagnetFactory& HardwareFactory::getMagnetFactory()
@@ -66,8 +75,26 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	}
 	else
 	{
-		messenger.printDebugMessage("getMagnetFactory() called after magnetFactory already setup");
 		return magnetFactory;
+	}
+}
+ValveFactory& HardwareFactory::getValveFactory()
+{
+	if (!valveFactory.hasBeenSetup)
+	{
+		bool setup = valveFactory.setup("nominal");
+		if (setup)
+		{
+			return valveFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ValveFactory");
+		}
+	}
+	else
+	{
+		return valveFactory;
 	}
 }
 BPMFactory& HardwareFactory::getBPMFactory()
@@ -84,8 +111,10 @@ BPMFactory& HardwareFactory::getBPMFactory()
 			messenger.printMessage("Unable to setup BPMFactory");
 		}
 	}
-	return bpmFactory;
-
+	else
+	{
+		return bpmFactory;
+	}
 }
 ChargeFactory& HardwareFactory::getChargeFactory()
 {
@@ -102,28 +131,52 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		}
 	}
 	return chargeFactory;
-
 }
+ScreenFactory& HardwareFactory::getScreenFactory()
+{
+	if (!screenFactory.hasBeenSetup)
+	{
+		bool setup = screenFactory.setup("nominal");
+		if (setup)
+		{
+			return screenFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ScreenFactory");
+		}
+	}
+	return screenFactory;
+}
+
 
 void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG On");
+	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
 	magnetFactory.debugMessagesOn();
+	bpmFactory.debugMessagesOn();
+	chargeFactory.debugMessagesOn();
 }
 
 void HardwareFactory::debugMessagesOff()
 {
-	messenger.printDebugMessage("HARDWARE-FAC", "DEBUG OFF");
+	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG OFF");
 	messenger.debugMessagesOff();
 	magnetFactory.debugMessagesOff();
+	bpmFactory.debugMessagesOff();
+	chargeFactory.debugMessagesOff();
+	valveFactory.debugMessagesOff();
 }
 
 void HardwareFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("HARDWARE-FAC - MESSAGES On");
+	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
 	magnetFactory.messagesOn();
+	bpmFactory.messagesOn();
+	chargeFactory.messagesOn();
+	valveFactory.messagesOn();
 }
 
 void HardwareFactory::messagesOff()
@@ -131,6 +184,9 @@ void HardwareFactory::messagesOff()
 	messenger.printMessage("HARDWARE-FAC - MESSAGES OFF");
 	messenger.messagesOff();
 	magnetFactory.messagesOff();
+	bpmFactory.messagesOff();
+	chargeFactory.messagesOff();
+	valveFactory.messagesOff();
 }
 
 bool HardwareFactory::isMessagingOn()

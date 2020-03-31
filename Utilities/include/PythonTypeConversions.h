@@ -8,6 +8,9 @@
 #include <boost/iterator/zip_iterator.hpp>
 #include <vector>
 #include <map>
+
+/*! @addtogroup utils*/
+/*!@{*/
 template< typename typeOfNewVector>
 inline
 std::vector<typeOfNewVector> to_std_vector(const boost::python::object& iterable)
@@ -65,7 +68,6 @@ boost::python::dict to_py_dict(const std::map<key, value>& map)
 //	}
 //	return newDictiOnary;
 //}
-
 //template<class key, std::vector<class value>>
 template<class key, class value>
 inline
@@ -79,7 +81,6 @@ boost::python::dict to_py_dict(const std::map<key, std::vector<value>>& map)
 	}
 	return newDictiOnary;
 }
-
 template<typename key, typename value>
 std::map<key, value> to_std_map(const boost::python::dict& map_in)
 {
@@ -96,5 +97,5 @@ std::map<key, value> to_std_map(const boost::python::dict& map_in)
 	}
 	return r;
 }
-
+/*!@}*/
 #endif

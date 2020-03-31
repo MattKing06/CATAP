@@ -150,6 +150,7 @@ bool MagnetFactory::setup(const std::string& version)
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
 		*/
+		updateAliasNameMap(magnet.second);
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
 		for (auto& pv : magPVStructs)
 		{
