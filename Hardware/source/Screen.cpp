@@ -595,6 +595,15 @@ bool Screen::isVELAHVMover() const
 	return false;
 }
 
+bool Screen::isVELAVMover() const
+{
+	if (getScreenType() == TYPE::VELA_V_MOVER)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool Screen::isCLARAHVMover() const
 {
 	if (getScreenType() == TYPE::CLARA_HV_MOVER)
@@ -908,7 +917,7 @@ bool Screen::setPosition(const double& value, TYPE type)
 	bool tgt = setTGTPOS(value, type);
 	if (tgt)
 	{
-		return setScreenTriggerWDir(1, type);
+		return setEX(1, type);
 	}
 	return false;
 }

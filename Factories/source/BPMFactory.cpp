@@ -193,6 +193,23 @@ std::map<std::string, BPM> BPMFactory::getAllBPMs()
 	return bpmMap;
 }
 
+std::vector<std::string> BPMFactory::getAllBPMNames()
+{
+	std::vector<std::string> names;
+	if (!hasBeenSetup)
+	{
+		this->setup("nominal");
+	}
+	else
+	{
+		for (auto& it : bpmMap)
+		{
+			names.push_back(it.first);
+		}
+	}
+	return names;
+}
+
 std::string BPMFactory::getBPMName(const std::string& name)
 {
 	if (!hasBeenSetup)
@@ -436,6 +453,14 @@ std::vector< std::vector< double > > BPMFactory::getDataVector(const std::string
 	std::vector< double > vector2(9, std::numeric_limits<double>::min());
 	std::vector< std::vector< double > > vector3(9, vector2);
 	return vector3;
+}
+
+std::pair< std::vector< double >, std::vector< double > > BPMFactory::getXYPositionVector(const std::string& name)
+{
+	std::vector< double > x = bpmMap.find(name)->second.getXPVVector();
+	std::vector< double > y = bpmMap.find(name)->second.getYPVVector();
+	std::pair<std::vector< double >, std::vector< double > > positiOnsPair = std::make_pair(x, y);
+	return positiOnsPair;
 }
 
 boost::circular_buffer< double > BPMFactory::getXPVBuffer(const std::string& name)
@@ -1206,6 +1231,14 @@ std::map<std::string, std::pair<std::vector< double >, std::vector< double > > >
 		bpmsAndPositiOnsMap.insert(nameAndPositiOnsPair);
 	}
 	return bpmsAndPositiOnsMap;
+}
+
+boost::python::list BPMFactory::getAllBPMNames_Py()
+{
+	std::vector< std::string > namevec;
+	namevec = getAllBPMNames();
+	boost::python::list newPyList = to_py_list(namevec);
+	return newPyList;
 }
 
 boost::python::list BPMFactory::getData_Py(const std::string& bpmName)

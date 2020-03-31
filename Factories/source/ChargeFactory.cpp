@@ -189,7 +189,19 @@ std::string ChargeFactory::getChargeDiagnosticName(const std::string& name)
 	return "0";
 }
 
-void ChargeFactory::setBufferSize(const size_t& value)
+void ChargeFactory::setBufferSize(const std::string& name, const size_t& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		chargeMap.find(name)->second.setBufferSize(value);
+	}
+}
+
+void ChargeFactory::setAllBufferSize(const size_t& value)
 {
 	if (!hasBeenSetup)
 	{
@@ -227,6 +239,21 @@ void ChargeFactory::monitorMultipleForNShots(const std::vector< std::string >& n
 		for (auto&& it : names)
 		{
 			chargeMap.find(it)->second.monitorForNShots(value);
+		}
+	}
+}
+
+void ChargeFactory::monitorAllForNShots(const size_t& value)
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call ChargeFactory.setup(VERSION)");
+	}
+	else
+	{
+		for (auto& it : chargeMap)
+		{
+			chargeMap.find(it.first)->second.monitorForNShots(value);
 		}
 	}
 }
