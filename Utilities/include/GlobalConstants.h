@@ -46,12 +46,6 @@ namespace GlobalConstants
 	/*! Integer-type variable for 1 */
 	const int one_int = 1;
 
-	/*! Unsigned sort Integer-type for 0 */
-	const unsigned short zero_ushort = 0;
-
-	/*! Unsigned sort  Integer-type for 1 */
-	const unsigned short one_ushort = 1;
-
 	//const epicsUInt16 zero_epicsUInt16= 0;
 	//const epicsUInt16 one_epicsUInt16 = 1;
 
