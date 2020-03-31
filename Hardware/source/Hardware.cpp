@@ -26,20 +26,31 @@ specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second)
 {
-	// OLD METHOD	
-	if (mode == STATE::VIRTUAL)
+	//// OLD METHOD	
+	//if (mode == STATE::VIRTUAL)
+	//{
+	//	hardwareName = specificValueMap.find("virtual_name")->second.data();
+	//}
+	//else if (mode == STATE::PHYSICAL)
+	//{
+	//	hardwareName = specificValueMap.find("name")->second.data();
+	//}
+	//else
+	//{
+	//	mode = STATE::OFFLINE;
+	//	hardwareName = specificValueMap.find("name")->second.data();
+	//}
 	{
-		hardwareName = specificValueMap.find("virtual_name")->second.data();
+		switch (mode)
+		{
+		case STATE::VIRTUAL: hardwareName = specificValueMap.find("name")->second; break;
+		case STATE::PHYSICAL: hardwareName = specificValueMap.find("name")->second; break;
+		default:
+			hardwareName = specificValueMap.find("name")->second; break;
+		}
+		messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	}
-	else if (mode == STATE::PHYSICAL)
-	{
-		hardwareName = specificValueMap.find("name")->second.data();
-	}
-	else
-	{
-		mode = STATE::OFFLINE;
-		hardwareName = specificValueMap.find("name")->second.data();
-	}
+
 	//messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.

@@ -94,15 +94,17 @@ void Magnet::setPVStructs()
 		  This should be put into some general function: generateVirtualPV(PV) or something...
 		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
 		  The config reader level if that is the case.
-		  DJS maybe they should, how certian cna we be all virtual PVs will get a VM- prefix??? 
+		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix??? 
 		  */
 		if (mode == STATE::VIRTUAL)
 		{
 			pvStructs[record].fullPVName = "VM-" + PV;
+			std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
 		}
 		else
 		{
 			pvStructs[record].fullPVName = PV;
+			std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
 		}
 		//pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.

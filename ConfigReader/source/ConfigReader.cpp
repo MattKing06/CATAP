@@ -121,12 +121,15 @@ bool ConfigReader::hasMoreFilesToParse() const
 {
 	for (const auto& file : yamlFilenamesAndParsedStatusMap)
 	{
+		messenger.printDebugMessage(file.first);
 		if (file.second)
 		{
+			messenger.printDebugMessage(file.first, " parsed ");
 			continue;
 		}
 		if (!file.second)
 		{
+			messenger.printDebugMessage(file.first, " NOT parsed ");
 			return true;
 		}
 	}

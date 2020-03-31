@@ -3,10 +3,6 @@
 #include <iostream>
 #include <fstream>
 //#include <filesystem> ?? not using  c++ 17 ???
-
-
-
-
 #ifndef __CINT__
 #include <cadef.h>
 #endif
@@ -86,7 +82,7 @@ void MagnetFactory::populateMagnetMap()
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		//messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
+		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(magnetMap);
 	}
 	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map, found ", magnetMap.size()," magnets objects" );
@@ -108,7 +104,6 @@ void MagnetFactory::setupChannels()
 	for (auto& magnet : magnetMap)
 	{
 		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
-
 		for (auto& pv : pvStructs)
 		{
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
@@ -124,10 +119,7 @@ bool MagnetFactory::setup(const std::string& version)
 		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
 		return true;
 	}
-	if (mode == STATE::VIRTUAL)
-	{
-		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
-	}
+
 	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
 
@@ -152,7 +144,7 @@ bool MagnetFactory::setup(const std::string& version)
 	*/
 	for (auto& magnet : magnetMap)
 	{
-		//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
+			//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
 		updateAliasNameMap(magnet.second);
 		//std::cout << "magnet.first = " << magnet.first << std::endl;
 		/*

@@ -85,18 +85,18 @@ public:
 		try
 		{
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
-			//std::cout << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << std::endl;
+			std::cout << ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename << std::endl;
 			YAML::Parser parser(fileInput);
-			//messenger.printDebugMessage("Calling LoadFile");
+			messenger.printDebugMessage("Calling LoadFile");
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			if (config.size() > 0)
 			{
-				//messenger.printDebugMessage("LoadFile got config data, getting template");
+				messenger.printDebugMessage("LoadFile got config data, getting template");
 				
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
 				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
-				//messenger.printDebugMessage("LoadFile got template");
+				messenger.printDebugMessage("LoadFile got template");
 				if (!checkForValidTemplate(configTemplate, config))
 				{
 					messenger.printDebugMessage("Error template does not match config data filename = ", ConfigReader::yamlFilename);
@@ -104,31 +104,44 @@ public:
 					// TODO: i'm forcing a quit here without  aproper exception, so as to be clear what the error was
 					//throw YAML::BadFile();
 				}
-				//messenger.printMessage("Template is valid, getting controls info ");
-				auto pvAndRecordPair = extractControlsInformationIntoPair(config);
-				//messenger.printMessage("Got Controls info, extracting Hardware Info ");
+
+
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
+				auto recordsMap = extractRecordsIntoMap(config);
+				parameters.insert(recordsMap.begin(), recordsMap.end());
+				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
+			
+				//messenger.printMessage("Template is valid, getting controls info ");
+				//auto pvAndRecordPair = extractControlsInformationIntoPair(config);
+				//messenger.printMessage("Got Controls info, extracting Hardware Info ");
+				//auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
 				//messenger.printMessage("Extracted Hardware Information, processing");
 				/*NEW FUNCTIONALITY ONLY IMPLMENTED FOR MAGNETS SO FAR */
-				if (typeid(HardwareType) == typeid(Magnet))
+				//if (typeid(HardwareType) == typeid(Magnet))
+				//{
+		  //    /**** PROBLEM WITH CONVERTING TYPES IN YAML FILE TO VARIABLES OF MAGNET ****/
+				//	//messenger.printMessage("ConvervsionException " + std::string(ConvervsionException.what()));
+				//	auto recordsMap = extractRecordsIntoMap(config);
+				//	parameters.insert(recordsMap.begin(), recordsMap.end());
+				//	messenger.printMessage("Inserted Hardware Information into recordsMap");
+				//}
+				///*IF NOT A MAGNET, USE OLD FUNCTIONALITY*/
+				//else
+				//{
+				//	parameters.insert(pvAndRecordPair);
+				//}
+				//for (auto prop : hardwareParameterMap)
+				//{
+				//	parameters.insert(prop);
+				//	messenger.printMessage("Inserted recordsMap into hardwareParameterMap");
+				//}
+
+				for (auto&& parameter : parameters)
 				{
-		      /**** PROBLEM WITH CONVERTING TYPES IN YAML FILE TO VARIABLES OF MAGNET ****/
-					//messenger.printMessage("ConvervsionException " + std::string(ConvervsionException.what()));
-					auto recordsMap = extractRecordsIntoMap(config);
-					parameters.insert(recordsMap.begin(), recordsMap.end());
-					//messenger.printMessage("Inserted Hardware Information into recordsMap");
+					messenger.printMessage(parameter.first, parameter.second);
 				}
-				/*IF NOT A MAGNET, USE OLD FUNCTIONALITY*/
-				else
-				{
-					parameters.insert(pvAndRecordPair);
-				}
-				for (auto prop : hardwareParameterMap)
-				{
-					parameters.insert(prop);
-					//messenger.printMessage("Inserted recordsMap into hardwareParameterMap");
-				}
-				//messenger.printMessage("Generating Fresh Hardware");
+
+				messenger.printMessage("Generating Fresh Hardware");
 				HardwareType freshHardware = HardwareType(parameters, mode);
 
 				// fill map via [] operator to construct IN-PLACE
@@ -136,8 +149,8 @@ public:
 				// and HardwareType is set up with default constructor, instead of our params.
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
-				//std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
-				//	<< ENUM_TO_STRING(mode) << std::endl;
+				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
+					<< ENUM_TO_STRING(mode) << std::endl;
 
 				//for (auto&& item : hardwareMapToFill)
 				//{
