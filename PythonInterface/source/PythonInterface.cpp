@@ -39,6 +39,7 @@ BOOST_PYTHON_MODULE(CATAP)
 	CATAP_docstring_options.disable_cpp_signatures();
 
 	//Global State Enum exposure
+	// TODO move to function
 	boost::python::enum_<STATE>("STATE","Global Enums used for displaying States")
 		.value("On", STATE::ON)
 		.value("OFF", STATE::OFF)
@@ -78,6 +79,7 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("RF", STATE::RF)
 		;
 
+	// TODOD: move to function
 	boost::python::enum_<TYPE>("TYPE")
 		.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
 		.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
@@ -88,10 +90,27 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("HORIZONTAL", TYPE::HORIZONTAL)
 		.value("VERTICAL", TYPE::VERTICAL)
 		.value("PNEUMATIC", TYPE::PNEUMATIC)
+		.value("UNKNOWN_TYPE", TYPE::UNKNOWN_TYPE)
+		.value("MAGNET", TYPE::MAGNET)
+		.value("QUADRUPOLE", TYPE::QUADRUPOLE)
+		.value("DIPOLE", TYPE::DIPOLE)
+		.value("HVCOR", TYPE::HVCOR)
+		.value("VCOR", TYPE::VCOR)
+		.value("HCOR", TYPE::HCOR)
+		.value("SOLENOID", TYPE::SOLENOID)
+		.value("BA1", TYPE::BA1)
+		.value("BA2", TYPE::BA2)
+		.value("VELA", TYPE::VELA)
+		.value("GUN", TYPE::GUN)
+		.value("S01", TYPE::S01)
+		.value("S02", TYPE::S02)
+		.value("C2V", TYPE::C2V)
+		.value("S01", TYPE::S01)
 		;
 
 	//boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
 	// Hardware Exposure
+	// TODOD: move to function
 	boost::python::class_<Hardware>("Hardware", boost::python::no_init)
 		.def_readonly("machineArea", &Hardware::machineArea)
 		.def_readonly("hardwareType", &Hardware::hardwareType)
