@@ -2,7 +2,7 @@
 #define GLOBAL_STATES_PYTHON_INTERFACE_H_
 #include <boost/python.hpp>
 #include <GlobalStateEnums.h>
-#include <GlobalTypeEnums.h>
+
 
 namespace BOOST_PYTHON_STATES_INCLUDE
 {
@@ -46,20 +46,6 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("RETRACTED", STATE::RETRACTED)
 			.value("YAG", STATE::YAG)
 			.value("RF", STATE::RF)
-			;
-	}
-	void expose_global_type_enums()
-	{
-		boost::python::enum_<TYPE>("TYPE")
-			.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
-			.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
-			.value("CLARA_HV_MOVER", TYPE::CLARA_HV_MOVER)
-			.value("CLARA_V_MOVER", TYPE::CLARA_V_MOVER)
-			.value("CLARA_PNEUMATIC", TYPE::CLARA_PNEUMATIC)
-			.value("UNKNOWN_SCREEN_TYPE", TYPE::UNKNOWN_SCREEN_TYPE)
-			.value("HORIZONTAL", TYPE::HORIZONTAL)
-			.value("VERTICAL", TYPE::VERTICAL)
-			.value("PNEUMATIC", TYPE::PNEUMATIC)
 			;
 	}
 }
