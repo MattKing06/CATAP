@@ -1,5 +1,18 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <iostream>
 #include <IMG.h>
 #include <IMGPVRecords.h>
+#include <map>
+#include <vector>
+#include <functional>
+#include "boost/algorithm/string/split.hpp"
+#include <boost/make_shared.hpp>
+
+#include "PythonTypeConversions.h"
+#include "GlobalConstants.h"
+#include "GlobalFunctions.h"
+
 IMG::IMG()
 {
 }

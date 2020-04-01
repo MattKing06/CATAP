@@ -13,6 +13,18 @@ EPICSIMGInterface::~EPICSIMGInterface()
 	messenger.printDebugMessage("EPICSIMGInterface Destructor Called");
 }
 
+void EPICSIMGInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) const
+{
+	if (pvStruct.pvRecord == IMGRecords::Pressure)
+	{
+		pvStruct.updateFunction = this->updateIMGP;
+	}
+	else
+	{
+		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
+	}
+}
+
 void EPICSIMGInterface::updateIMGP(const struct event_handler_args args)
 {
 	IMG* recastIMG = static_cast<IMG*>(args.usr);

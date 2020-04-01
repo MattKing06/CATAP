@@ -1,11 +1,21 @@
 #ifndef IMG_H_
 #define IMG_H_
 
+#include <LoggingSystem.h>
+#ifndef HARDWARE_H_
 #include <Hardware.h>
+#endif //HARDWARE_H_
+#ifndef EPICS_IMG_INTERFACE_H_
 #include <EPICSIMGInterface.h>
+#endif //EPICS_IMG_INTERFACE_H_
+#include <boost/shared_ptr.hpp>
+#include <vector>
+#include <IMGPVRecords.h>
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
-#include <boost/make_shared.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
+
 
 class EPICSIMGInterface;
 
@@ -17,7 +27,7 @@ typedef boost::shared_ptr<EPICSIMGInterface> EPICSIMGInterface_sptr;
 	 A collection of these classes will be stored in map in the IMGFactory class.
  */
 
-class IMG : Hardware
+class IMG : public Hardware
 {
 public:
 	IMG();

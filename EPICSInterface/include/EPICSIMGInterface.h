@@ -21,6 +21,7 @@ public:
 	EPICSIMGInterface();
 	~EPICSIMGInterface();
 	std::string ownerName;
+	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 	// EPICS calls these functiOns to update a variable
 	static void updateIMGP(const struct event_handler_args args);
 	/*! messenger object for EPICSIMGInterface messaging. */
