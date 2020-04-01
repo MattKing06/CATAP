@@ -15,13 +15,12 @@
 #include <iostream>
 #include <map>
 
+const std::string MASTER_LATTICE_FILE_LOCATION = MASTER_LATTICE_LOCATION;
 #if defined(__unix__) ||  defined(_unix)
-const std::string HOME = getenv("HOME");
-const std::string MASTER_LATTICE_FILE_LOCATION = HOME + "/MasterLattice";
 const std::string SEPARATOR = "/";
 #endif
 #ifdef _WIN32
-const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\apclara1.dl.ac.uk\\ControlRoomApps\\Controllers\\bin\\CATAP 2.0 Tools and Libraries\\MasterLatticeYAMLFiles";
+
 const std::string SEPARATOR = "\\";
 #endif
 /*! @defgroup configreader ConfigReader*/

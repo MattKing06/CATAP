@@ -1,0 +1,27 @@
+controls_information:
+    PV: true
+    records: V:SDEV, V:TRIGGER, V:EX, V:TGTPOS, V:JOG, V:JDIFF, V:MOVING, V:READY, V:GET_DEV, V:DEV_STATE, V:MAX_POS, V:DEV_CENT, V:ACTPOS, V:EN
+    pv_record_map:
+        "V:SDEV": CLA-S02-DIA-SCR-02:V:SDEV
+        "V:TRIGGER": CLA-S02-DIA-SCR-02:V:TRIGGER
+        "V:EX": CLA-S02-DIA-SCR-02:V:EX
+        "V:TGTPOS": CLA-S02-DIA-SCR-02:V:TGTPOS
+        "V:JOG": CLA-S02-DIA-SCR-02:V:JOG
+        "V:JDIFF": CLA-S02-DIA-SCR-02:V:JDIFF
+        "V:MOVING": CLA-S02-DIA-SCR-02:V:MOVING
+        "V:READY": CLA-S02-DIA-SCR-02:V:READY
+        "V:GET_DEV": CLA-S02-DIA-SCR-02:V:GET_DEV
+        "V:DEV_STATE": CLA-S02-DIA-SCR-02:V:DEV_STATE
+        "V:MAX_POS": CLA-S02-DIA-SCR-02:V:MAX_POS
+        "V:DEV_CENT": CLA-S02-DIA-SCR-02:V:DEV_CENT
+        "V:ACTPOS": CLA-S02-DIA-SCR-02:V:ACTPOS
+        "V:EN": CLA-S02-DIA-SCR-02:V:EN
+properties:
+    name: CLA-S02-DIA-SCR-02
+    name_alias: UNDEFINED
+    machine_area: S02
+    hardware_type: Screen
+    screen_type: CLARA_V_MOVER
+    has_camera: true
+    position: 0.0
+    devices: "VRETRACTED,VMAX,VRF,VYAG,VGRAT"

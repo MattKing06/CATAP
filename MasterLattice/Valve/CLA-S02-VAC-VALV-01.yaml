@@ -1,0 +1,12 @@
+controls_information:
+    PV: true
+    pv_record_map:
+        On: CLA-S02-VAC-VALV-01:On
+        Off: CLA-S02-VAC-VALV-01:Off
+        Sta: CLA-S02-VAC-VALV-01:Sta
+properties:
+    machine_area: S02
+    hardware_type: Valve
+    name: CLA-S02-VAC-VALV-01
+    virtual_name: VM-CLA-S02-VAC-VALV-01  
+    name_alias: "S02-VALV1"

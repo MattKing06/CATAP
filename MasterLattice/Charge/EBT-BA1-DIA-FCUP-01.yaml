@@ -1,0 +1,12 @@
+controls_information:
+    PV: true
+    records: Q
+    pv_record_map:
+        Q: EBT-BA1-DIA-FCUP-01:Q
+properties:
+    machine_area: BA1
+    hardware_type: Charge
+    name: EBT-BA1-DIA-FCUP-01
+    virtual_name: VM-EBT-BA1-DIA-FCUP-01
+    position: 29.9503
+    charge_type: FCUP

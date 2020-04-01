@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-BA1-MAG-VCOR-02:GETSETI
+    READI: EBT-BA1-MAG-VCOR-02:READI
+    RILK: EBT-BA1-MAG-VCOR-02:RILK
+    RPOWER: EBT-BA1-MAG-VCOR-02:RPOWER
+    SETI: EBT-BA1-MAG-VCOR-02:SETI
+    SPOWER: EBT-BA1-MAG-VCOR-02:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "7.0,-7.0,4.5,-4.5,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  field_integral_coefficients: "0.0,0.0"
+  hardware_type: Magnet
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: VCOR
+  magnetic_length: 182.2535211
+  manufacturer: Scanditronix
+  name: EBT-BA1-MAG-VCOR-02
+  name_alias: BA1-VCOR2,BA1-VCOR2
+  num_degauss_steps: 11
+  position: 0.0
+  ri_tolerance: 0.01
+  serial_number: 0000-00000-0000

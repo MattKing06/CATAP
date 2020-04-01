@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-INJ-MAG-QUAD-06:GETSETI
+    READI: EBT-INJ-MAG-QUAD-06:READI
+    RILK: EBT-INJ-MAG-QUAD-06:RILK
+    RPOWER: EBT-INJ-MAG-QUAD-06:RPOWER
+    SETI: EBT-INJ-MAG-QUAD-06:SETI
+    SPOWER: EBT-INJ-MAG-QUAD-06:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
+  field_integral_coefficients: "-3.77887463072432E-05,0.000518011967842953,0.102826208113528,0.00197957472695541"
+  hardware_type: Magnet
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: QUAD
+  magnetic_length: 125.033079276906
+  manufacturer: Scanditronix
+  name: EBT-INJ-MAG-QUAD-06
+  name_alias: INJ-QUAD06,INJ-QUAD-06
+  num_degauss_steps: 11
+  position: 5.099
+  ri_tolerance: 0.001
+  serial_number: EBTFQ2M02
