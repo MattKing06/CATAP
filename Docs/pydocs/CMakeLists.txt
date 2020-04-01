@@ -41,3 +41,5 @@ add_custom_target(CATAPPyDocs ALL
 ${SPHINX_EXECUTABLE} -q -b html -c ${BINARY_BUILD_DIR} -d ${SPHINX_CACHE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SPHINX_HTML_DIR} COMMENT "Building HTML docs with Sphinx")
 message("LIB NAMES: ${LIBNAMES}")
 add_dependencies(CATAPPyDocs ${LIBNAMES})
+
+set_property(TARGET CATAPPyDocs PROPERTY FOLDER "Documentation")

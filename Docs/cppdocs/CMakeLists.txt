@@ -10,3 +10,5 @@ if (DOXYGEN_FOUND)
 	doxygen_add_docs(CATAPDocs
 					 ${PROJECT_SOURCE_DIR})
 endif(DOXYGEN_FOUND)
+
+set_property(TARGET CATAPDocs PROPERTY FOLDER "Documentation")
