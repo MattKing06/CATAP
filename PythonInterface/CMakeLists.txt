@@ -9,6 +9,7 @@ set( SOURCE_FILES
     source/ScreenPythonInterface.cpp 
     source/GeneralMonitorPythonInterface.cpp
 	source/GlobalStatesPythonInterface.cpp
+	source/GlobalTypesPythonInterface.cpp
     source/HardwareFactoryPythonInterface.cpp
     source/IMGPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
@@ -31,6 +32,7 @@ set( INCLUDE_FILES
     include/ScreenPythonInterface.h 
     include/GeneralMonitorPythonInterface.h
 	include/GlobalStatesPythonInterface.h
+	include/GlobalTypesPythonInterface.h
     include/HardwareFactoryPythonInterface.h
     include/HardwarePythonInterface.h
 	include/IMGPythonInterface.h
