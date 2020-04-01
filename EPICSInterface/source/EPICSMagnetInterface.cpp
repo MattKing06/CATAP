@@ -2,9 +2,18 @@
 
 LoggingSystem EPICSMagnetInterface::messenger;
 
-EPICSMagnetInterface::EPICSMagnetInterface() : EPICSInterface()
+
+
+EPICSMagnetInterface::EPICSMagnetInterface() : 
+EPICSInterface()
 {
 	messenger = LoggingSystem(true, true);
+	messenger.printDebugMessage("EPICSMagnetInterface Constructor Called");
+}
+
+EPICSMagnetInterface::EPICSMagnetInterface(const EPICSMagnetInterface& copyInterface)
+{
+	messenger.printDebugMessage("EPICSMagnetInterface Copy Constructor Called");
 }
 
 EPICSMagnetInterface::~EPICSMagnetInterface()
@@ -41,36 +50,32 @@ void EPICSMagnetInterface::retrieveupdateFunctionForRecord(pvStruct &pvStruct) c
 void EPICSMagnetInterface::updateGETSETI(const struct event_handler_args args)
 {
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
-	
 	updateTimeStampDoublePair(args, recastMagnet->GETSETI);
-	
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("GETSETI"), args);
 	//double value = returnValueFromArgsAsDouble(args);
 	//recastMagnet->offlineSETI(value);
-	messenger.printDebugMessage("GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-														+ std::to_string(recastMagnet->GETSETI.second));
+	//messenger.printDebugMessage("EPICS_UPDATE GETSETI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	//													+ std::to_string(recastMagnet->GETSETI.second));
 }
 
 // TODO rename 
 void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 {
+	// TODO: this seems to get called twice on startup, often the first time the number returned is totally incorrect, 
+	// on the second callback the correct number is returned, maybe some weird EPIPCS thing
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
-	std::pair<epicsTimeStamp, short> pairToUpdate = getTimeStampShortPair(args);
+	// we get the value and then manually convert to a STATE 
+	std::pair<epicsTimeStamp, unsigned short> pairToUpdate = getTimeStampUShortPair(args);
 	recastMagnet->psuState.first = pairToUpdate.first;
-
-	switch (pairToUpdate.second)
+	switch(pairToUpdate.second)
 	{
-	case GlobalConstants::zero_int: recastMagnet->psuState.second = STATE::OFF; break;
-	case GlobalConstants::one_int:  recastMagnet->psuState.second = STATE::ON; break;
-	default:
-		recastMagnet->psuState.second = STATE::ERR;
+		case GlobalConstants::zero_ushort: recastMagnet->psuState.second = STATE::OFF; break;
+		case GlobalConstants::one_ushort:  recastMagnet->psuState.second = STATE::ON; break;
+		default: recastMagnet->psuState.second = STATE::ERR;
+		//messenger.printDebugMessage("!!WARNING!! EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ",a);
 	}
-	//psuState2.second = tv->value;
-	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RPOWER"), args);
-	//STATE value = returnValueFromArgsAsState(args);
-	//recastMagnet->setPSUState(value);
-	messenger.printDebugMessage("RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-														+ ENUM_TO_STRING(recastMagnet->psuState.second));
+	//messenger.printDebugMessage("EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	//													+ ENUM_TO_STRING(recastMagnet->psuState.second));
 }
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
@@ -81,14 +86,19 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
 	//double value = returnValueFromArgsAsDouble(args);
 	//recastMagnet->READI2 = returnTSVFromArgsDouble(args);
-	messenger.printDebugMessage("READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-		+ std::to_string(recastMagnet->READI.second));
+
+	//if(recastMagnet ->hardwareName == "CLA-C2V-MAG-VCOR-01")
+	//{ 
+	//	messenger.printDebugMessage("EPICS_UPDATE READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	//		+ std::to_string(recastMagnet->READI.second));
+	//}
+
 }
 
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 {
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
 	recastMagnet->ilkState.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
@@ -100,13 +110,9 @@ void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RILK"), args);
 	//STATE value = returnValueFromArgsAsState(args);
 	//recastMagnet->setILKState(value);
-	messenger.printDebugMessage("RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-								+ ENUM_TO_STRING(recastMagnet->ilkState.second));
+	//messenger.printDebugMessage("EPICS_UPDATE RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
+	//							+ ENUM_TO_STRING(recastMagnet->ilkState.second));
 }
-
-
-
-
 
 // TODO rename 
 bool EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv) const
@@ -119,11 +125,14 @@ bool EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv
 bool EPICSMagnetInterface::setNewPSUState(const STATE value, const pvStruct& pv) const
 {
 	// This needs to switch 
-	int epics_value = GlobalConstants::zero_int;
+	unsigned short epics_value = GlobalConstants::zero_ushort;
 	switch (value)
 	{
-	case STATE::ON: epics_value = GlobalConstants::one_int; break;
-	case STATE::OFF: epics_value = GlobalConstants::zero_int; break;
+	case STATE::ON: epics_value = GlobalConstants::one_ushort; break;
+	case STATE::OFF: epics_value = GlobalConstants::zero_ushort; break;
 	}
+
+	messenger.printDebugMessage("Set STATE =  ", epics_value);
+
 	return putValue2(pv, epics_value);
 }

@@ -37,6 +37,13 @@ MagnetFactory
    :undoc-members:
    :show-inheritance:
 
+===========================
+ScreenFactory
+===========================
+.. autoclass:: CATAP.ScreenFactory
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 ===========================
 ValveFactory

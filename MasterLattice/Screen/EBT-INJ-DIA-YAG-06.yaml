@@ -1,0 +1,21 @@
+controls_information:
+    PV: true
+    records: SDEV, TRIGGER, MOVING, READY, GET_DEV, DEV_STATE, MAX_POS, DEV_CENT
+    pv_record_map:
+        "SDEV": EBT-INJ-DIA-YAG-06:SDEV
+        "TRIGGER": EBT-INJ-DIA-YAG-06:TRIGGER
+        "MOVING": EBT-INJ-DIA-YAG-06:MOVING
+        "READY": EBT-INJ-DIA-YAG-06:READY
+        "GET_DEV": EBT-INJ-DIA-YAG-06:GET_DEV
+        "DEV_STATE": EBT-INJ-DIA-YAG-06:DEV_STATE
+        "MAX_POS": EBT-INJ-DIA-YAG-06:MAX_POS
+        "DEV_CENT": EBT-INJ-DIA-YAG-06:DEV_CENT
+properties:
+    name: EBT-INJ-DIA-YAG-06
+    name_alias: UNDEFINED
+    machine_area: INJ
+    hardware_type: Screen
+    screen_type: VELA_PNEUMATIC
+    has_camera: true
+    position: 0.0
+    devices: "RETRACTED,RF,YAG"

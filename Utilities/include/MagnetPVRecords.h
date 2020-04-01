@@ -29,6 +29,20 @@ namespace MagnetRecords
 	extern std::vector<std::string> magnetRecordList;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
 }
 
+namespace MagnetPSUValueToState
+{
+	// add a converter here 
+	
+	extern std::map<std::string, STATE> magnetPSUStrToSTATE;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
+
+	
+
+	extern std::map<int, STATE> magnetPSUIntToSTATE;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
+}
+
+
+
+
 namespace MagnetState
 {
 	struct magnetStateStruct

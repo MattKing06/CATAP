@@ -7,10 +7,10 @@
 
 
 EPICSInterface::EPICSInterface() : 
-thisCaContext(nullptr)
+thisCaContext(nullptr),
+messenger(LoggingSystem(false, false))
 {
 	int status;
-	messenger = LoggingSystem(false, false);
 	/* 
 		This 'enables' callbacks, monitoring, etc
 		thisCaContext is the current (AND ONLY) context,
@@ -26,11 +26,11 @@ thisCaContext(nullptr)
 	thisCaContext = ca_current_context();
 }
 
-EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine)
+EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine):
+messenger(LoggingSystem(true, true))
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
-	messenger = LoggingSystem(false, false);
 }
 
 EPICSInterface::~EPICSInterface()
@@ -101,8 +101,8 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		{
 			pv = pvStruct.fullPVName;
 		}
-
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
+		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		
@@ -243,6 +243,23 @@ void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& arg
 	pairToUpdate.second = (int)tv->value;
 }
 
+//void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
+//{
+//	std::pair<epicsTimeStamp, short> r;
+//	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+//	pairToUpdate.first = tv->stamp;
+//	pairToUpdate.second = tv->value;
+//}
+
+void EPICSInterface::updateTimeStampUShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, unsigned short>& pairToUpdate)
+{
+	//std::pair<epicsTimeStamp, unsigned short> r;
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+
 void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
 	std::pair<epicsTimeStamp, long>& pairToUpdate)
 {
@@ -258,12 +275,30 @@ void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& a
 	pairToUpdate.second = tv->value;
 }
 
+
+std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUShortPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, unsigned short> r;
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	dbr_enum_t a = tv->value;
+	//std::cout << "tv->value  = " << a << std::endl;
+	r.first  = tv->stamp;
+	r.second = (unsigned short)a;
+/* 
+	std::pair<epicsTimeStamp, short> r;
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = tv->value;
+ */	
+ return r;
+}
+
 std::pair<epicsTimeStamp, short> EPICSInterface::getTimeStampShortPair(const struct event_handler_args& args)
 {
 	std::pair<epicsTimeStamp, short> r;
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
 	r.first = tv->stamp;
-	r.second = tv->value;
+	r.second = (short)tv->value;
 	return r;
 }
 
@@ -285,6 +320,8 @@ std::pair<epicsTimeStamp, double> EPICSInterface::getTimeStampDoublePair(const s
 	return r;
 }
 
+
+
 std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
@@ -294,9 +331,6 @@ std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args
 	auto timeObject = (const struct dbr_time_string*)(args.dbr);
 	return std::string(timeObject->value);
 }
-
-
-
 
 double EPICSInterface::returnValueFromArgsAsDouble(const event_handler_args args)
 {

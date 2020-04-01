@@ -123,11 +123,6 @@ std::string BPM::getBPMName() const
 	return this->name;
 }
 
-//STATE BPM::getBPMState() const
-//{
-//	return bpmState;
-//}
-
 double BPM::getX() const
 {
 	return this->x.second;
@@ -244,6 +239,21 @@ bool BPM::isDataBufferFull() const
 		return true;
 	}
 	return false;
+}
+
+bool BPM::isXPVBufferNotFull() const
+{
+	return !isXPVBufferFull();
+}
+
+bool BPM::isYPVBufferNotFull() const
+{
+	return !isYPVBufferFull();
+}
+
+bool BPM::isDataBufferNotFull() const
+{
+	return !isDataBufferFull();
 }
 
 size_t BPM::getBufferSize() const
@@ -485,21 +495,9 @@ bool BPM::setAWAK(const double& value)
 	return true;
 }
 
-bool BPM::setAWAKTStamp(const double& value)
-{
-	awaktstamp = value;
-	return true;
-}
-
 bool BPM::setRDY(const double& value)
 {
 	rdy.second = value;
-	return true;
-}
-
-bool BPM::setRDYTStamp(const double& value)
-{
-	rdytstamp = value;
 	return true;
 }
 

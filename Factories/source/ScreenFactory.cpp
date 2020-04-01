@@ -365,6 +365,11 @@ bool ScreenFactory::isVELAHVMover(const std::string& name)
 	return screenMap.find(name)->second.isVELAHVMover();
 }
 
+bool ScreenFactory::isVELAVMover(const std::string& name)
+{
+	return screenMap.find(name)->second.isVELAVMover();
+}
+
 bool ScreenFactory::isCLARAHVMover(const std::string& name)
 {
 	return screenMap.find(name)->second.isCLARAHVMover();

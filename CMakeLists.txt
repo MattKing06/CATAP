@@ -57,6 +57,9 @@ if(Boost_FOUND)
     endif(UNIX)
 endif(Boost_FOUND)
 
+set(MASTER_LATTICE_LOCATION ${CMAKE_SOURCE_DIR}/MasterLattice)
+add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+
 add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)
 add_subdirectory(ConfigReader)

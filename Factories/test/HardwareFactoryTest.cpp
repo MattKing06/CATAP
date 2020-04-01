@@ -63,9 +63,9 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 	//status = hardwareFactory.setup("Magnet", "nominal");
 	MagnetFactory& magFactory = hardwareFactory.getMagnetFactory();
 	BOOST_TEST_MESSAGE("RETRIEVED MAGNET FACTORY");
-	Magnet& HCOR = magFactory.getMagnet("VM-CLA-C2V-MAG-HCOR-01");
+	Magnet& HCOR = magFactory.getMagnet("CLA-C2V-MAG-HCOR-01");
 	BOOST_TEST_MESSAGE("RETRIEVED MAGNET " + HCOR.getHardwareName());
-	BOOST_CHECK(HCOR.getHardwareName() == "VM-CLA-C2V-MAG-HCOR-01");
+	BOOST_CHECK(HCOR.getHardwareName() == "CLA-C2V-MAG-HCOR-01");
 }
 
 BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)

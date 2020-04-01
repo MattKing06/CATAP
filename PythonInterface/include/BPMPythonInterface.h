@@ -131,6 +131,7 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 			.def("getStatus", &BPMFactory::getStatus)
 			.def("getData", &BPMFactory::getData_Py)
 			.def("getXYPosition", &BPMFactory::getXYPosition)
+			.def("getAllBPMNames", &BPMFactory::getAllBPMNames_Py)
 			.def("getXPVVector", &BPMFactory::getXPVVector_Py)
 			.def("getYPVVector", &BPMFactory::getYPVVector_Py)
 			.def("getQVector", &BPMFactory::getQVector_Py)

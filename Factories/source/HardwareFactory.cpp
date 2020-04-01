@@ -5,9 +5,10 @@ HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 }
 HardwareFactory::~HardwareFactory()
 {
-	messenger.printDebugMessage("HardwareFactory DestructiOn Called");
+	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(STATE mode) :
+	messenger(LoggingSystem(true, true)),
 	magnetFactory(MagnetFactory(mode)),
 	bpmFactory(BPMFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
@@ -15,7 +16,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	valveFactory(ValveFactory(mode)),
 	mode(mode)
 {
-	messenger = LoggingSystem(true, true);
+	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
@@ -60,20 +61,16 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 }
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
-	std::cout << "called getMagnetFactory() " << std::endl;
 	if (!magnetFactory.hasBeenSetup)
 	{
-		std::cout << "!magnetFactory.hasBeenSetup " << std::endl;
 		bool setup = magnetFactory.setup("nominal");
-		if (setup)
+		if(setup)
 		{
-			std::cout << "magnetFactory setup" << std::endl;
 			return magnetFactory;
 		}
 		else
 		{
-			std::cout << "Unable to setup MagnetFactory" << std::endl;
-			messenger.printMessage("Unable to setup MagnetFactory");
+			messenger.printMessage("Unable to setup MagnetFactory, Hopefully you'll never see this");
 		}
 	}
 	else

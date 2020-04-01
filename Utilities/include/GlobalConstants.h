@@ -46,10 +46,16 @@ namespace GlobalConstants
 	/*! Integer-type variable for 1 */
 	const int one_int = 1;
 
+	//const epicsUInt16 zero_epicsUInt16= 0;
+	//const epicsUInt16 one_epicsUInt16 = 1;
+
+
+
 	/*! Unsigned Integer-type for 0 */
 	const size_t zero_sizet = 0;
 	/*! Unsigned Integer-type for 1 */
 	const size_t one_sizet = 1;
+	const size_t eighty_sizet = 80;
 
 	/*! Unsigned Short-type to represent ACTIVATE to EPICS */
 	const unsigned short EPICS_ACTIVATE = 1;
@@ -79,6 +85,14 @@ namespace GlobalConstants
 	const time_t TIMET_45 = 45;
 	/*! Arithmetic time-type capable of representing time 60 */
 	const time_t TIMET_60 = 60;
+
+	const std::string COMMENT = "COMMENT";
+	const std::string TIMESTAMP = "TIMESTAMP";
+	const std::string HEADER = "HEADER";
+	const std::string FILE_ALIAS = "FILE_ALIAS";
+
+	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
+	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
 }

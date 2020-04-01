@@ -1,4 +1,8 @@
 #include "GlobalFunctions.h"
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
 
 namespace GlobalFunctions {
 
@@ -30,6 +34,27 @@ namespace GlobalFunctions {
 
 	time_t timeNow(){ return time(nullptr); }
 
+	std::string getTimeAndDateString()
+	{
+		auto t = std::time(nullptr);
+		auto tm = *std::localtime(&t);
+
+		std::ostringstream oss;
+		oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+		auto str = oss.str();
+		return str;
+		//  std::cout << "baseObject::currentDateTime() " << std::endl;
+		//time_t     now = timeNow();
+		//struct tm  tstruct;
+		//char       buf[GlobalConstants::eighty_sizet];
+		//localtime(&tstruct, &now);
+		// // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+		// // for more information about date/time format
+		// // strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%",&tstruct);
+		//strftime(buf, sizeof(buf), "%c", &tstruct);
+		//// std::cout << "buf = " << buf <<  std::endl;
+		//return buf;
+	}
 
 	void pause_x(std::chrono::milliseconds x)
 	{

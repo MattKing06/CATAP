@@ -2,7 +2,7 @@
 #define GLOBAL_STATES_PYTHON_INTERFACE_H_
 #include <boost/python.hpp>
 #include <GlobalStateEnums.h>
-
+#include <GlobalTypeEnums.h>
 
 namespace BOOST_PYTHON_STATES_INCLUDE
 {

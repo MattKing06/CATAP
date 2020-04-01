@@ -24,17 +24,12 @@ BPM Class
    :members: BPM
    :undoc-members:
 
-
-
-
 ===========================
 Charge Class
 ===========================
 .. automodule:: Charge
    :members: Charge
    :undoc-members:
-
-
 
 ===========================
 Magnet Class
@@ -43,8 +38,12 @@ Magnet Class
    :members: Magnet
    :undoc-members:
 
-
-
+===========================
+Screen Class
+===========================
+.. autoclass:: CATAP.Screen
+   :members:
+   :undoc-members:
 
 ===========================
 Vacuum Valve Class

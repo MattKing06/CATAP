@@ -113,6 +113,8 @@ namespace GlobalFunctions{
 
 	extern time_t timeNow();// { return time(nullptr); }
 
+	extern std::string getTimeAndDateString();
+
 	//std::string currentDateTime()
 	//{
 	//	time_t     now = timeNow();

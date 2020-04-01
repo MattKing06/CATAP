@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: CLA-C2V-MAG-QUAD-02:GETSETI
+    READI: CLA-C2V-MAG-QUAD-02:READI
+    RILK: CLA-C2V-MAG-QUAD-02:RILK
+    RPOWER: CLA-C2V-MAG-QUAD-02:RPOWER
+    SETI: CLA-C2V-MAG-QUAD-02:SETI
+    SPOWER: CLA-C2V-MAG-QUAD-02:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 1.0
+  degauss_values: "200.0,-200.0,100.0,-100.0,50.0,-50.0,25.0,-25.0,10.0,-10.0,0.0"
+  field_integral_coefficients: "-1.30779403854705E-11,5.72293796261772E-09,-9.08645007418186E-07,5.97762384752619E-05,1.47596073775721E-02,1.58516912403471E-02"
+  hardware_type: Magnet
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: QUAD
+  magnetic_length: 121.511900610076
+  manufacturer: Danfysik
+  name: CLA-C2V-MAG-QUAD-02
+  name_alias: C2V-QUAD2,C2V-QUAD2
+  num_degauss_steps: 11
+  position: 6.950148145
+  ri_tolerance: 0.1
+  serial_number: '13254'
