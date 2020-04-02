@@ -1,1 +1,4 @@
+# This is a template for auto-generating the __init__ files
+# for individual modules of CATAP.
+
 from ${LIBNAME} import *

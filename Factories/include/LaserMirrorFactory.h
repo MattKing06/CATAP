@@ -12,9 +12,17 @@ public:
 	LaserMirrorFactory(STATE mode);
 	LaserMirrorFactory(const LaserMirrorFactory& copyFactory);
 	~LaserMirrorFactory();
+	LoggingSystem messenger;
+	ConfigReader reader;
 	void setup(std::string version);
 	bool hasBeenSetup;
 	std::map<std::string, LaserMirror> LaserMirrorMap;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isDebugOn();
+	bool isMessagingOn();
 };
 
 #endif // LASER_MIRROR_FACTORY_H_
