@@ -41,6 +41,7 @@ class MagnetFactory
 	public:
 		MagnetFactory();
 		MagnetFactory(STATE mode);
+		MagnetFactory(STATE mode, TYPE area);
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
 		~MagnetFactory();
 		/*NEED constRUCTOR THAT TAKES VERSION??*/

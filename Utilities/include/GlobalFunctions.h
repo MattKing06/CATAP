@@ -11,7 +11,7 @@
 #include <chrono>
 #include <thread>
 #include "GlobalConstants.h"
-
+#include "GlobalTypeEnums.h"
 
 /*! @addtogroup utils*/
 /*!@{*/
@@ -146,6 +146,7 @@ namespace GlobalFunctions{
 	void pause_1()   ;
 
 
+	extern TYPE stringToType(const std::string& string_to_compare);
 
 }
 /*! @}*/

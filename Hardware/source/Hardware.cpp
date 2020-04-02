@@ -6,11 +6,9 @@
 #include "GlobalTypeEnums.h"
 
 
-// map to convert yaml file strings to magnet TYPE enums
-const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
-
-
-Hardware::Hardware()
+Hardware::Hardware() :
+machineArea(TYPE::UNKNOWN_TYPE),
+hardwareType(TYPE::UNKNOWN_TYPE)
 {
 }
 
@@ -23,21 +21,18 @@ Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, S
 mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
-machineArea(specificValueMap.find("machine_area")->second),
-hardwareType(specificValueMap.find("hardware_type")->second),
+//machineArea(specificValueMap.find("machine_area")->second),
+//hardwareType(specificValueMap.find("hardware_type")->second),
+// this will NOT be set correctly if your machine_area type is not defined in GlobalTypeEnums AND in GlobalFunctions::stringToType
+machineArea(GlobalFunctions::stringToType(specificValueMap.find("machine_area")->second)),
+// this will NOT be set correctly if your hardware_type type is not defined in GlobalTypeEnums AND in GlobalFunctions::stringToType
+hardwareType(GlobalFunctions::stringToType(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second)
 {
 	//messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
 
-	if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
-	{
-		if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
-		{
-			hardwareType_e = string_to_hardware_type_map.at("Magnet");
-		}
-	}
 
 /* 	if (hardwareType.compare("Magnet") != 0)
 	{
@@ -74,11 +69,19 @@ Hardware::Hardware(const Hardware& copyHardware) :
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
 }
 
-std::string Hardware::getMachineArea() const
+std::string Hardware::getMachineAreaString() const
+{
+	return ENUM_TO_STRING(machineArea);
+}
+std::string Hardware::getHardwareTypeString() const
+{
+	return ENUM_TO_STRING(hardwareType);
+}
+TYPE Hardware::getMachineArea() const
 {
 	return machineArea;
 }
-std::string Hardware::getHardwareType() const
+TYPE Hardware::getHardwareType() const
 {
 	return hardwareType;
 }

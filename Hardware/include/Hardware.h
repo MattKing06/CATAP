@@ -29,9 +29,16 @@ public:
 	Hardware(const Hardware& copyHardware);
 
 	
-	std::string getMachineArea() const;
-	std::string getHardwareType() const;
+	std::string getMachineAreaString() const;
+	std::string getHardwareTypeString() const;
+	
+	TYPE getMachineArea() const;
+	TYPE getHardwareType() const;
+
+	
 	std::string getHardwareName() const;
+
+
 	STATE getMode() const;
 
 	// TODO: do we need this? can't an child of these class just access pvStructs,
@@ -53,14 +60,13 @@ public:
 	bool isMessagingOn();
 	bool isDebugOn();
 
-// need to sort out private/protected access for these variables
-	std::string machineArea;
-	std::string hardwareType;
+
 	std::string hardwareName;
 	
 	// need to sort out private/protected access for these variables
-	TYPE machineArea_e;
-	TYPE hardwareType_e;
+	// need to sort out private/protected access for these variables
+	TYPE machineArea;
+	TYPE hardwareType;
 
 	std::map<std::string, pvStruct> pvStructs;
 	
@@ -72,13 +78,6 @@ public:
 
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
-	static std::map<std::string, TYPE> create_map()
-	{
-		std::map<std::string, TYPE> m;
-		m["Magnet"] = TYPE::MAGNET;
-		return m;
-	}
-	static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
 };
 /** @}*/

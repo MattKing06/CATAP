@@ -106,6 +106,9 @@ BOOST_PYTHON_MODULE(CATAP)
 		.value("S02", TYPE::S02)
 		.value("C2V", TYPE::C2V)
 		.value("S01", TYPE::S01)
+		.value("CLARA_PH1", TYPE::CLARA_PH1)
+		.value("CLARA_2_BA1", TYPE::CLARA_2_BA1)
+		.value("CLARA_2_BA1_BA2", TYPE::CLARA_2_BA1_BA2)
 		;
 
 	//boost::python::class_<EPICSMagnetInterface, boost::python::bases<EPICSInterface>, boost::noncopyable>("EPICSMagnetInterface", boost::python::no_init);
@@ -115,6 +118,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def_readonly("machineArea", &Hardware::machineArea)
 		.def_readonly("hardwareType", &Hardware::hardwareType)
 		.def_readonly("specificHardwareParameters", &Hardware::specificHardwareParameters)
+		.def("getMachineAreaString", &Hardware::getMachineAreaString)
+		.def("getHardwareTypeString", &Hardware::getHardwareTypeString)
 		.def("getMachineArea", &Hardware::getMachineArea)
 		.def("getHardwareType", &Hardware::getHardwareType)
 		.def("getHardwareName", &Hardware::getHardwareName)

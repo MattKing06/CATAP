@@ -101,5 +101,14 @@ namespace GlobalFunctions {
 		pause_x(GlobalConstants::PAUSE_1);
 	}
 
+	TYPE stringToType(const std::string& string_to_check)
+	{
+		auto it = GlobalConstants::stringToTypeMap.find(string_to_check);
+		if (it != GlobalConstants::stringToTypeMap.end())
+		{
+			return GlobalConstants::stringToTypeMap.at(string_to_check);
+		}
+		return TYPE::UNKNOWN_TYPE;
+	}
 
 }
