@@ -11,7 +11,7 @@ class EPICSLightingInterface;
 
 typedef boost::shared_ptr<EPICSLightingInterface> EPICSLightingInterface_sptr;
 
-class Lighting : Hardware
+class Lighting : public Hardware
 {
 public:
 	Lighting();
