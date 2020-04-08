@@ -91,6 +91,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 			pvStruct.fullPVName.find("VALV") != std::string::npos ||
 			pvStruct.fullPVName.find("BPM") != std::string::npos ||
 			pvStruct.fullPVName.find("WCM") != std::string::npos ||
+			pvStruct.fullPVName.find("IMG") != std::string::npos ||
 			pvStruct.fullPVName.find("FCUP") != std::string::npos)
 		{
 			pv = pvStruct.fullPVName;

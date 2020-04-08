@@ -1,6 +1,7 @@
 #include <ValveFactory.h>
 #include <GlobalFunctions.h>
 #include <PythonTypeConversions.h>
+#include <boost/filesystem.hpp>
 ValveFactory::ValveFactory() :
 	ValveFactory(STATE::OFFLINE)
 {

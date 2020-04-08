@@ -60,7 +60,7 @@ std::vector<std::string> IMG::getAliases() const
 	return aliases;
 }
 
-double IMG::getIMGPressure()
+double IMG::getIMGPressure() const
 {
 	return pressure.second;
 }

@@ -4,7 +4,6 @@
 #include <LoggingSystem.h>
 #include <ConfigReader.h>
 #include <IMG.h>
-#pragma Once
 #include <GlobalFunctions.h>
 #include <GlobalStateEnums.h>
 #include <map>
@@ -80,17 +79,26 @@ public:
 	/*! gets IMG Pressure for multiple IMGs
 	* @param[in] names : a vector of full-names/aliases for IMGs
 	* @param[out] pressure : a map of full IMGs names and their current pressures*/
-	boost::python::dict getIMGPressure_Py(const boost::python::list& IMGNames) const;
 	std::map<std::string, double> getIMGPressures(const std::vector<std::string>& names) const;
-	boost::python::dict getIMGPressures_Py() const;
+	boost::python::dict getIMGPressures_Py(const boost::python::list& names) const;
 	/*! gets the pressures of all IMGs
 	* @param[out] states : a map of all IMG names and their current pressures*/
-	/*std::map<std::string, STATE> getAllIMGPressures() const;
-	/*! used by open and close functions to set the valve state of a particular valve.
-	* depending on the mode of the ValveFactory, this will either send the state change to EPICS
-	* (PHSYICAL, VIRTUAL) or just set the valveState for that valve (OFFLINE)
-	* @param[in] name : the name of the IMG we want to change
-	* @param[in] state : the state we want to set the valve to (OPEN,CLOSED)*/
+	std::map<std::string, double> IMGFactory::getAllIMGPressure() const;
+	/*! gets the pressure of all IMGS
+	* @param[out] states : a map of all IMGS names and their current pressures*/
+	boost::python::dict IMGFactory::getAllIMGPressure_Py() const;
+	/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/
+	void debugMessagesOn();
+	/*! turns debug messages off for valveFactory and calls same function in all valves and configReader*/
+	void debugMessagesOff();
+	/*! turns messages on for valveFactory and calls same function in all valves and configReader*/
+	void messagesOn();
+	/*! turns messages off for valveFactory and calls same function in all valves and configReader*/
+	void messagesOff();
+	/*! returns true if messenger debug flag is true, false otherwise*/
+	bool isDebugOn();
+	/*! returns true if messenger messages flag is true, false otherwise*/
+	bool isMessagingOn();
 private:
 	void updateAliasNameMap(const IMG& img);
 	std::map<std::string, std::string> alias_name_map;

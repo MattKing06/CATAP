@@ -1,6 +1,7 @@
 #include <EPICSIMGInterface.h>
 
 //LoggingSystem EPICSIMGInterface::static_messenger;
+LoggingSystem EPICSIMGInterface::messenger;
 
 EPICSIMGInterface::EPICSIMGInterface() : EPICSInterface()
 {

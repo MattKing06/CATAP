@@ -1,5 +1,7 @@
 #include <IMGFactory.h>
-
+#include <GlobalFunctions.h>
+#include <PythonTypeConversions.h>
+#include <boost/filesystem.hpp>
 
 IMGFactory::IMGFactory():
 	IMGFactory(STATE::OFFLINE)
@@ -26,7 +28,6 @@ IMGFactory::IMGFactory(const IMGFactory& copyIMGFactory)
 	messenger.printDebugMessage("IMG copy constructor called");
 	IMGMap.insert(copyIMGFactory.IMGMap.begin(), copyIMGFactory.IMGMap.end());
 }
-
 
 IMGFactory::~IMGFactory()
 {
@@ -213,17 +214,87 @@ void IMGFactory::updateAliasNameMap(const IMG& img)
 		}
 	}
 }
-
-
 std::vector<std::string> IMGFactory::getAllIMGNames() const
 {
+	std::vector<std::string> returnNames;
+	for (auto&& item : IMGMap)
+	{
+		returnNames.push_back(item.first);
+	}
+	return returnNames;
 }
 double IMGFactory::getIMGPressure(const std::string& name) const
 {
+	std::string fullName = getFullName(name);
+	return IMGMap.at(fullName).getIMGPressure();
 }
-boost::python::dict IMGFactory::getIMGPressure_Py(const boost::python::list& IMGNames) const
+std::map<std::string, double> IMGFactory::getIMGPressures(const std::vector<std::string>& names) const
 {
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getIMGPressure(name);
+	}
+	return return_map;
 }
-boost::python::dict IMGFactory::getIMGPressures_Py() const
+boost::python::dict IMGFactory::getIMGPressures_Py(const boost::python::list& names) const
 {
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	return to_py_dict(getIMGPressures(namesVector));
+}
+std::map<std::string, double> IMGFactory::getAllIMGPressure() const
+{
+	return getIMGPressures(getAllIMGNames());
+}
+boost::python::dict IMGFactory::getAllIMGPressure_Py() const
+{
+	return to_py_dict<std::string, double>(getAllIMGPressure());
+}
+void IMGFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("VALV-FAC - DEBUG On");
+	reader.debugMessagesOn();
+	for (auto& img : IMGMap)
+	{
+		img.second.debugMessagesOn();
+	}
+}
+void IMGFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("VALV-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& img : IMGMap)
+	{
+		img.second.debugMessagesOff();
+	}
+}
+void IMGFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("VALV-FAC - MESSAGES On");
+	reader.messagesOn();
+	for (auto& img : IMGMap)
+	{
+		img.second.messagesOn();
+	}
+}
+void IMGFactory::messagesOff()
+{
+	messenger.printMessage("VALV-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& img : IMGMap)
+	{
+		img.second.messagesOff();
+	}
+}
+bool IMGFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool IMGFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
 }
