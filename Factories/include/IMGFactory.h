@@ -83,10 +83,10 @@ public:
 	boost::python::dict getIMGPressures_Py(const boost::python::list& names) const;
 	/*! gets the pressures of all IMGs
 	* @param[out] states : a map of all IMG names and their current pressures*/
-	std::map<std::string, double> IMGFactory::getAllIMGPressure() const;
+	std::map<std::string, double> getAllIMGPressure() const;
 	/*! gets the pressure of all IMGS
 	* @param[out] states : a map of all IMGS names and their current pressures*/
-	boost::python::dict IMGFactory::getAllIMGPressure_Py() const;
+	boost::python::dict getAllIMGPressure_Py() const;
 	/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for valveFactory and calls same function in all valves and configReader*/
