@@ -43,8 +43,8 @@ public:
 	std::vector<std::string> aliases;
 	std::map<std::string, std::string> aliasToNameMap;
 	std::vector<std::string> getAliases() const;
-	STATE IMG::getIMGState() const;
-	void IMG::setIMGState(const STATE& states);
+	STATE getIMGState() const;
+	void setIMGState(const STATE& states);
 	double getIMGPressure() const;
 	void debugMessagesOn();
 	void debugMessagesOff();
