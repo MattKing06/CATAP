@@ -43,11 +43,8 @@ public:
 	std::vector<std::string> aliases;
 	std::map<std::string, std::string> aliasToNameMap;
 	std::vector<std::string> getAliases() const;
-	/*! sets the valve state to open.
-	If we have a Physical valve then the request is sent to CLARA EPICS to open the valve.
-	If we have a Virtual valve then the request is sent to Virtual EPICS to open the valve.
-	If we have an Offline valve then the valve state is simply set to OPEN. */
-	
+	STATE IMG::getIMGState() const;
+	void IMG::setIMGState(const STATE& states);
 	double getIMGPressure() const;
 	void debugMessagesOn();
 	void debugMessagesOff();

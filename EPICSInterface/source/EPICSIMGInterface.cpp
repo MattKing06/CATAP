@@ -20,6 +20,10 @@ void EPICSIMGInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) cons
 	{
 		pvStruct.updateFunction = this->updateIMGP;
 	}
+	else if (pvStruct.pvRecord == IMGRecords::Sta)
+	{
+		pvStruct.updateFunction = this->updateIMGState;
+	}
 	else
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
@@ -33,4 +37,20 @@ void EPICSIMGInterface::updateIMGP(const struct event_handler_args args)
 
 	messenger.printDebugMessage("Pressure VALUE FOR: " + recastIMG->getHardwareName() + ": "
 		+ std::to_string(recastIMG->pressure.second));
+}
+
+void EPICSIMGInterface::updateIMGState(const struct event_handler_args args)
+{
+	IMG* recastIMG = getHardwareFromArgs<IMG>(args);
+	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
+	recastIMG->state.first = pairToUpdate.first;
+	switch (pairToUpdate.second)
+	{
+	case GlobalConstants::zero_int: recastIMG->setIMGState(STATE::OFF); break;
+	case GlobalConstants::one_int: recastIMG->setIMGState(STATE::ON); break;
+	default:
+		recastIMG->setIMGState(STATE::ERR);
+	}
+	messenger.printDebugMessage("IMG STATE FOR: " + recastIMG->getHardwareName() + ": "
+		+ ENUM_TO_STRING(recastIMG->state.second));
 }

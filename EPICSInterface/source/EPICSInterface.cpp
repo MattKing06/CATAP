@@ -100,6 +100,10 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		{
 			pv = pvStruct.fullPVName;
 		}
+		else if (pvStruct.fullPVName.find("IMG") != std::string::npos)
+		{
+			pv = pvStruct.fullPVName;
+		}
 
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		

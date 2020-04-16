@@ -24,6 +24,7 @@ public:
 	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 	// EPICS calls these functiOns to update a variable
 	static void updateIMGP(const struct event_handler_args args);
+	static void updateIMGState(const struct event_handler_args);
 	/*! messenger object for EPICSIMGInterface messaging. */
 //	static LoggingSystem static_messenger;
 	static LoggingSystem messenger;

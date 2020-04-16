@@ -14,6 +14,7 @@ namespace BOOST_PYTHON_IMG_INCLUDE
 		boost::python::class_<IMG, boost::python::bases<Hardware>, boost::noncopyable>("IMG", boost::python::no_init)
 			.add_property("Pressure", &IMG::getIMGPressure)
 			.add_property("name", &IMG::getHardwareName)
+			.add_property("state", &IMG::getIMGState, &IMG::setIMGState)
 			.def("getIMGPressure", &IMG::getIMGPressure)
 			.def("debugMessagesOn", &Valve::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &Valve::debugMessagesOff, boost::python::arg("self"))

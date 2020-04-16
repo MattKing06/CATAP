@@ -33,7 +33,7 @@ public:
 	IMG hardware objects when they are created by ConfigReader*/
 	STATE mode;
 	/*! Flag to say whether the ValveFactory setup function has been completed successfully.*/
-	bool setup(std::string version);
+	bool setup(const std::string& version);
 	/*! passes an empty IMGMap to the configReader to be populated by IMG objects that are
 		created from the YAML Config files.*/
 	bool hasBeenSetup;

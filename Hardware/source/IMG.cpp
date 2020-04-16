@@ -65,6 +65,22 @@ double IMG::getIMGPressure() const
 	return pressure.second;
 }
 
+STATE IMG::getIMGState() const
+{
+	return state.second;
+}
+
+void IMG::setIMGState(const STATE& states)
+{
+	switch (states)
+	{
+	case STATE::ON: state.second = STATE::ON; break;
+	case STATE::OFF: state.second = STATE::OFF; break;
+	default:
+		state.second = STATE::ERR;
+	}
+}
+
 void IMG::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

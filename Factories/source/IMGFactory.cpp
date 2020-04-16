@@ -71,7 +71,7 @@ void IMGFactory::populateIMGMap()
 	}
 	messenger.printDebugMessage("IMGFactory has finished populating the IMG map");
 }
-bool IMGFactory::setup(std::string version)
+bool IMGFactory::setup(const std::string& version)
 {
 	messenger.printDebugMessage("called IMG Factory setup ");
 	if (hasBeenSetup)
@@ -131,7 +131,7 @@ bool IMGFactory::setup(std::string version)
 			}
 			else
 			{
-				std::cout << img.first << " CANNOT CONNECT TO EPICS" << std::endl;
+				//std::cout << img.first << " CANNOT CONNECT TO EPICS" << std::endl;
 				messenger.printMessage(img.first, " CANNOT CONNECT TO EPICS");
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
@@ -253,7 +253,7 @@ boost::python::dict IMGFactory::getAllIMGPressure_Py() const
 void IMGFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
-	messenger.printDebugMessage("VALV-FAC - DEBUG On");
+	messenger.printDebugMessage("IMG-FAC - DEBUG On");
 	reader.debugMessagesOn();
 	for (auto& img : IMGMap)
 	{
@@ -262,7 +262,7 @@ void IMGFactory::debugMessagesOn()
 }
 void IMGFactory::debugMessagesOff()
 {
-	messenger.printDebugMessage("VALV-FAC - DEBUG OFF");
+	messenger.printDebugMessage("IMG-FAC - DEBUG OFF");
 	messenger.debugMessagesOff();
 	reader.debugMessagesOff();
 	for (auto& img : IMGMap)
@@ -273,7 +273,7 @@ void IMGFactory::debugMessagesOff()
 void IMGFactory::messagesOn()
 {
 	messenger.messagesOn();
-	messenger.printMessage("VALV-FAC - MESSAGES On");
+	messenger.printMessage("IMG-FAC - MESSAGES On");
 	reader.messagesOn();
 	for (auto& img : IMGMap)
 	{
@@ -282,7 +282,7 @@ void IMGFactory::messagesOn()
 }
 void IMGFactory::messagesOff()
 {
-	messenger.printMessage("VALV-FAC - MESSAGES OFF");
+	messenger.printMessage("IMG-FAC - MESSAGES OFF");
 	messenger.messagesOff();
 	reader.messagesOff();
 	for (auto& img : IMGMap)
