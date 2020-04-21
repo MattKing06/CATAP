@@ -1,6 +1,9 @@
 #ifndef MAGNET_FACTORY_H_
 #define MAGNET_FACTORY_H_
 
+#include "GlobalStateEnums.h"
+#include "GlobalTypeEnums.h"
+#include "GlobalFunctions.h"
 #include "LoggingSystem.h"
 #include "ConfigReader.h"
 #pragma Once
@@ -41,12 +44,24 @@ class MagnetFactory
 	public:
 		MagnetFactory();
 		MagnetFactory(STATE mode);
-		MagnetFactory(STATE mode, TYPE area);
+		MagnetFactory(STATE mode, TYPE machineArea);
+		MagnetFactory(STATE mode, const std::vector<TYPE>& machineAreas);
+		MagnetFactory(STATE mode, const boost::python::list& machineAreas);
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
 		~MagnetFactory();
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
-		bool setup(const std::string &VERSION);
+		
+		// OVERLOADED SETUP FUNCTIONS TO ALLWO USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
+		bool setup();
+		bool setup(const std::string& version);
+		bool setup(TYPE machineArea);
+		bool setup(const std::string& version, TYPE machineArea);
+		bool setup(const std::vector<TYPE>& machineAreas);
+		bool setup(const boost::python::list& machineAreas);
+		bool setup(const std::string& version, const boost::python::list& machineAreas);
+		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
+
 		void setupChannels();
 
 		// Get Magnets Objects referecnes
@@ -245,8 +260,6 @@ class MagnetFactory
 
 		LoggingSystem messenger;
 private:
-
-
 	// private surely! 
 		std::map<std::string, Magnet> magnetMap;
 
@@ -262,6 +275,9 @@ private:
 		// dummy_magnet is used to return values when users ask for a nOn-existing magnet's properties 
 		Magnet dummy_magnet;
 
+		/* which areas need to be included */
+		std::vector<TYPE> machineAreas;
+		void cutMagnetMapByMachineAreas();
 
 		// private
 		ConfigReader reader;

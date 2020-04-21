@@ -10,8 +10,8 @@ BOOST_AUTO_TEST_SUITE(HardwareTestSuite)
 BOOST_AUTO_TEST_CASE(empty_hardware_test)
 {
 	Hardware component = Hardware();
-	TYPE expectedMachineArea = TYPE::UNKNOWN_TYPE;
-	TYPE expectedHardwareType = TYPE::UNKNOWN_TYPE;
+	TYPE expectedMachineArea = TYPE::UNKNOWN_AREA;
+	TYPE expectedHardwareType = TYPE::UNKNOWN_AREA;
 	BOOST_CHECK_EQUAL(component.getHardwareType(), expectedHardwareType);
 	BOOST_CHECK_EQUAL(component.getMachineArea(), expectedMachineArea);
 	BOOST_CHECK_EQUAL(component.getSpecificHardwareParameters().empty(), true);

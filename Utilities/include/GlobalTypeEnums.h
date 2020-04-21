@@ -30,7 +30,10 @@
 #define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem)  case elem : return BOOST_PP_STRINGIZE(elem);
 #define DEFINE_ENUM_WITH_STRING_CONVERSIONS(name, enumerators) enum name {BOOST_PP_SEQ_ENUM(enumerators)};inline  std::string ENUM_TO_STRING(name v){switch(v){BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE,name,enumerators)default: return "[Unknown " BOOST_PP_STRINGIZE(name) "]";}}
 
-
+/*
+		 **************** README *********************
+		 IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
+*/
 DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
 										(UNKNOWN_TYPE)
 							// magnets
@@ -42,6 +45,8 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
                                            (HCOR)
 										   (SOLENOID)
 							/// machine areas  are these "types" ?? YES!!
+										(UNKNOWN_AREA)
+										(ALL_VELA_CLARA)
 										 (VELA_GUN)
 										 (CLARA_GUN)
 										 (HRRG_GUN)
@@ -50,6 +55,7 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 										 (BA1)
 										 (BA2)
 										 (VELA)
+										 (INJ)
 										 (GUN)
 										 (S01)
 										 (S02)

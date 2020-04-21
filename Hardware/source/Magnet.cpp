@@ -31,26 +31,18 @@ Magnet::Magnet()
 Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
 epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
-//messenger(LoggingSystem(true, true)),
-	// Assumes all these find succeed ? 
+// Assumes all these find succeed ? 
 manufacturer(paramsMap.find("manufacturer")->second),
 serialNumber(paramsMap.find("serial_number")->second.data()),
 magType(paramsMap.find("mag_type")->second),
-//magRevType(paramsMap.find("mag_rev_type")->second),
 RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
 numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
-//fullPSUName(paramsMap.find("PSU")->second),
-//measurementDataLocation(paramsMap.find("measurement_data_location")->second),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
 GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
 ilkState(std::make_pair(epicsTimeStamp(), STATE::ERR) ),
-//GETSETI(GlobalConstants::double_min),//this needs to be lower limits
-//psuState(STATE::ERR),
-//READI(GlobalConstants::double_min),
-//ilkState(STATE::ERR),
 isDegaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
@@ -129,7 +121,7 @@ void Magnet::setPVStructs()
 		else
 		{
 			pvStructs[record].fullPVName = PV;
-			std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
+			std::cout << "Magnet PV " + pvStructs[record].fullPVName << std::endl;
 		}
 		//pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.

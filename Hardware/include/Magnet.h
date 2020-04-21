@@ -103,7 +103,6 @@ class Magnet : public Hardware
 	/*! get the magnet manufacturer, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getManufacturer() const;
-
 	/*! get the type of magnet, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMagnetType() const;
@@ -257,13 +256,7 @@ class Magnet : public Hardware
 
 		//std::string magRevType;
 		double RI_tolerance;
-
-		//int numberOfDegaussSteps; // TODO: this should be a size_t or uint
-		
-
-
-
-		//double magneticLength;
+	
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */

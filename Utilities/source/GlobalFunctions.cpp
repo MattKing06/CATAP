@@ -111,4 +111,52 @@ namespace GlobalFunctions {
 		return TYPE::UNKNOWN_TYPE;
 	}
 
+
+	bool isInMachineArea(TYPE testArea, TYPE area)
+	{
+		// we will have multiple, overlapping machine areas, 
+		// and so we need a function to check if an area is in testArea
+		// atm we'll do this 
+		switch (testArea)
+		{
+		case TYPE::UNKNOWN_AREA:
+			return false;
+		case TYPE::ALL_VELA_CLARA:
+			return true;
+		case TYPE::VELA_GUN:
+			return testArea == area;
+		case TYPE::CLARA_GUN:
+			return testArea == area;
+		case TYPE::HRRG_GUN:
+			return testArea == area;
+		case TYPE::LRRG_GUN:
+			return testArea == area;
+		case TYPE::L01:
+			return testArea == area;
+		case TYPE::BA1:
+			return testArea == area;
+		case TYPE::BA2:
+			return testArea == area;
+		case TYPE::VELA:
+			return entryExists(std::vector<TYPE>{TYPE::VELA_GUN, TYPE::VELA, TYPE::INJ}, area);
+		case TYPE::INJ:
+			return testArea == area;
+		case TYPE::GUN:
+			return entryExists(std::vector<TYPE>{TYPE::VELA_GUN, TYPE::CLARA_GUN, TYPE::HRRG_GUN, TYPE::LRRG_GUN}, area);
+		case TYPE::S01:
+			return testArea == area;
+		case TYPE::S02:
+			return testArea == area;
+		case TYPE::C2V:
+			return testArea == area;
+		case TYPE::CLARA_PH1:
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V}, area);
+		case TYPE::CLARA_2_BA1:
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::BA1}, area);
+		case TYPE::CLARA_2_BA1_BA2:
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::BA1, TYPE::BA2}, area);
+		}
+		return false;
+	}
+
 }

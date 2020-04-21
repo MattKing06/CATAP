@@ -1,4 +1,5 @@
 #include "HardwareFactory.h"
+#include "PythonTypeConversions.h"
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -19,6 +20,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
+
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
@@ -59,11 +61,26 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	}
 	return setup;
 }
+
+
+
 MagnetFactory& HardwareFactory::getMagnetFactory()
+{
+	return getMagnetFactory(std::vector<TYPE>{TYPE::ALL_VELA_CLARA});
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(TYPE machineArea)
+{
+	return getMagnetFactory(std::vector<TYPE>{machineArea});
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(const boost::python::list& machineAreas)
+{
+	return getMagnetFactory(to_std_vector<TYPE>(machineAreas));
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machineAreas )
 {
 	if (!magnetFactory.hasBeenSetup)
 	{
-		bool setup = magnetFactory.setup("nominal");
+		bool setup = magnetFactory.setup(GlobalConstants::nominal, machineAreas);
 		if(setup)
 		{
 			return magnetFactory;
@@ -78,6 +95,9 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 		return magnetFactory;
 	}
 }
+
+
+
 ValveFactory& HardwareFactory::getValveFactory()
 {
 	if (!valveFactory.hasBeenSetup)

@@ -7,8 +7,8 @@
 
 
 Hardware::Hardware() :
-machineArea(TYPE::UNKNOWN_TYPE),
-hardwareType(TYPE::UNKNOWN_TYPE)
+machineArea(TYPE::UNKNOWN_AREA),
+hardwareType(TYPE::UNKNOWN_AREA)
 {
 }
 

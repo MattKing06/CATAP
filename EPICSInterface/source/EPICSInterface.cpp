@@ -8,7 +8,7 @@
 
 EPICSInterface::EPICSInterface() : 
 thisCaContext(nullptr),
-messenger(LoggingSystem(false, false))
+messenger(LoggingSystem(true, true))
 {
 	int status;
 	/* 

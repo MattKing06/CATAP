@@ -33,6 +33,8 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(TYPE::HORIZONTAL), TYPE::HORIZONTAL},
 			{ENUM_TO_STRING(TYPE::VERTICAL), TYPE::VERTICAL},
 				// Machine Areas
+				{ENUM_TO_STRING(TYPE::UNKNOWN_AREA), TYPE::UNKNOWN_AREA},
+				{ENUM_TO_STRING(TYPE::ALL_VELA_CLARA), TYPE::ALL_VELA_CLARA},
 				{ENUM_TO_STRING(TYPE::BA1), TYPE::BA1},
 				{ENUM_TO_STRING(TYPE::BA2), TYPE::BA2},
 				{ENUM_TO_STRING(TYPE::VELA), TYPE::VELA},
@@ -140,6 +142,10 @@ namespace GlobalConstants
 	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
 	const std::string DUMMY_NAME = "DUMMY_NAME";
 
+
+	// when calling setup for a factory we pass "version" variable, 
+	// so far this is not used practically, but we are keeping it  in case fo futre need
+	const std::string nominal = "nominal";
 
 }
 /*! @}*/

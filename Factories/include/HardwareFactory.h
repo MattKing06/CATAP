@@ -31,7 +31,12 @@ public:
 	//HardwareFactory(std::string hardwareType, std::string VERSION);
 	~HardwareFactory();
 	bool setup(const std::string& hardwareType, const std::string& VERSION);
+
 	MagnetFactory& getMagnetFactory();
+	MagnetFactory& getMagnetFactory(TYPE machineArea);
+	MagnetFactory& getMagnetFactory(const boost::python::list& machineAreas);
+	MagnetFactory& getMagnetFactory(const std::vector<TYPE>& machineAreas);
+
 	BPMFactory& getBPMFactory();
 	ChargeFactory& getChargeFactory();
 	ScreenFactory& getScreenFactory();

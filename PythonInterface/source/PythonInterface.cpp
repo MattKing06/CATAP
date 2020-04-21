@@ -177,11 +177,22 @@ BOOST_PYTHON_MODULE(CATAP)
 
 		//BPM Factory Exposure
 	//Charge Factory Exposure
+
+
+			// OVERLOADED SETUP FUNCTIONS TO ALLOW USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
+	MagnetFactory& (HardwareFactory::* getMagnetFactory_NoArg)() = &HardwareFactory::getMagnetFactory;
+	MagnetFactory& (HardwareFactory::* setup_AreaArg)(TYPE ) = &HardwareFactory::getMagnetFactory;
+	MagnetFactory& (HardwareFactory::* setup_AreasArg)(const boost::python::list&) = &HardwareFactory::getMagnetFactory;
+
+
 		// Hardware Factory Exposure
-	boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"),boost::python::args("mode"))))
+	boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", 
+		boost::python::init<STATE>((boost::python::args("self"),boost::python::args("mode"))))
 		.def("setup",&HardwareFactory::setup, (boost::python::args("self"),boost::python::arg("hardwareType"),boost::python::args("version")))
 		.add_property("magnetFactory", &HardwareFactory::magnetFactory)
-		.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getMagnetFactory", getMagnetFactory_NoArg, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getMagnetFactory", setup_AreaArg, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getMagnetFactory", setup_AreasArg, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("bpmFactory", &HardwareFactory::bpmFactory)
 		.def("getBPMFactory", &HardwareFactory::getBPMFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("chargeFactory", &HardwareFactory::chargeFactory)

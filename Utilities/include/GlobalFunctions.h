@@ -148,6 +148,24 @@ namespace GlobalFunctions{
 
 	extern TYPE stringToType(const std::string& string_to_compare);
 
+	// isInMahineArea
+
+
+	template<class T>
+	bool entryExists(const std::vector<T>& v, const T& item)
+	{
+		if (std::find(v.begin(), v.end(), item) != v.end()) {
+			/* v contains x */
+			return true;
+		}
+		else {
+			/* v does not contain x */
+			return false;
+		}
+	}
+
+	extern bool isInMachineArea(TYPE testArea, TYPE area);
+
 }
 /*! @}*/
 #endif

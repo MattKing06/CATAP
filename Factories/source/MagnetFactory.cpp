@@ -3,43 +3,52 @@
 #include <iostream>
 #include <fstream>
 //#include <filesystem> ?? not using  c++ 17 ???
-#ifndef __CINT__
 #include <cadef.h>
-#endif
 
-
-#include "GlobalFunctions.h"
-#include "GlobalConstants.h"
 #include <PythonTypeConversions.h>
-
-
 #include "yaml-cpp/emitter.h"
 
 
 MagnetFactory::MagnetFactory() :
-	MagnetFactory(STATE::OFFLINE)
+MagnetFactory(STATE::OFFLINE)
 {
-	std::cout << "MagnetFactory DEFAULT constRUCTOR called " << std::endl;
+	// std::cout << "MagnetFactory DEFAULT CONSTRUCTOR called " << std::endl;
 }
 
 MagnetFactory::MagnetFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Magnet", mode))
-	//:dummy_magnet(Magnet("DUMMY_MAGNET"))
+MagnetFactory(mode, TYPE::ALL_VELA_CLARA)
 {
-	//hasBeenSetup = false;
-	messenger.printDebugMessage("Magnet Factory constructed");
-	//mode = mode;
-	//reader = ;
+	// messenger.printDebugMessage("Magnet Factory constructed");
 }
-MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory)
-	: hasBeenSetup(copyMagnetFactory.hasBeenSetup),
-	mode(copyMagnetFactory.mode),
-	messenger(copyMagnetFactory.messenger),
-	reader(copyMagnetFactory.reader),
-	dummy_magnet(copyMagnetFactory.dummy_magnet)
+MagnetFactory::MagnetFactory(STATE mode, TYPE machineArea) :
+MagnetFactory(mode, std::vector<TYPE>{ machineArea })
+{
+	// messenger.printDebugMessage("Magnet Factory constructed");
+}
+
+// practically, all constructurs should end up here
+MagnetFactory::MagnetFactory(STATE mode, const boost::python::list& machineAreas):
+MagnetFactory(mode, to_std_vector<TYPE>(machineAreas))
+{}
+
+MagnetFactory::MagnetFactory(STATE mode, const std::vector<TYPE>& machineAreas) :
+messenger(LoggingSystem(true, true)),
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Magnet", mode)),
+machineAreas(machineAreas)
+{
+
+}
+
+//Copy Constructor
+MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory) : 
+hasBeenSetup(copyMagnetFactory.hasBeenSetup),
+mode(copyMagnetFactory.mode),
+machineAreas(machineAreas),
+messenger(copyMagnetFactory.messenger),
+reader(copyMagnetFactory.reader),
+dummy_magnet(copyMagnetFactory.dummy_magnet)
 {
 	messenger.printDebugMessage("MagnetFactory Copy contructor");
 	magnetMap.insert(copyMagnetFactory.magnetMap.begin(), copyMagnetFactory.magnetMap.end());
@@ -85,8 +94,41 @@ void MagnetFactory::populateMagnetMap()
 		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile(magnetMap);
 	}
+	// Now we go through and select only the magnets that correspond to the correct machineArea
+	cutMagnetMapByMachineAreas();
+
 	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map, found ", magnetMap.size()," magnets objects" );
 }
+
+void MagnetFactory::cutMagnetMapByMachineAreas()
+{
+	// loop over each magnet
+	for (auto it = magnetMap.cbegin(); it != magnetMap.cend() /* not hoisted */; /* no increment */)
+	{
+		// flag for if we should erase this entry, default to true 
+		bool should_erase = true;
+		// now we loop over every area in machineAreas and checl against isInMachineArea
+		for (auto&& machineArea : machineAreas)
+		{
+			// if this returns true then we should keep the magnet and can break out the for loop 
+			if (GlobalFunctions::isInMachineArea(machineArea, it->second.getMachineArea()))
+			{
+				should_erase = false;
+				break;
+			}
+		}
+		// if should_erase is still true, erase object from  magnetMap
+		if (should_erase)
+		{
+			it = magnetMap.erase(it); //  m.erase(it++);    
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 
 void MagnetFactory::setMonitorStatus(pvStruct& pvStruct)
 {
@@ -111,7 +153,36 @@ void MagnetFactory::setupChannels()
 	}
 }
 
+
+bool MagnetFactory::setup()
+{
+	return setup(GlobalConstants::nominal, machineAreas);
+}
 bool MagnetFactory::setup(const std::string& version)
+{
+	return setup(version, machineAreas);
+}
+bool MagnetFactory::setup(TYPE machineArea)
+{
+	return setup(GlobalConstants::nominal, machineAreas);
+}
+bool MagnetFactory::setup(const std::string& version, TYPE machineArea)
+{
+	return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});
+}
+bool MagnetFactory::setup(const std::vector<TYPE>& machineAreas)
+{
+	return setup(GlobalConstants::nominal, machineAreas);
+}
+bool MagnetFactory::setup(const boost::python::list& machineAreas)
+{
+	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));
+}
+bool MagnetFactory::setup(const std::string& version, const boost::python::list& machineAreas)
+{
+	return setup(version, to_std_vector<TYPE>(machineAreas));
+}
+bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& machineAreas)
 {
 	messenger.printDebugMessage("called Magnet Factory  setup ");
 	if (hasBeenSetup)
@@ -119,26 +190,19 @@ bool MagnetFactory::setup(const std::string& version)
 		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
 		return true;
 	}
-
 	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
-
 	//std::cout << "populateMagnetMap() fin" << std::endl;;
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
-
 	// 
 	//convertConfigStringsToGlobalTypeEnums();
-
-
 	setupChannels();
 	EPICSInterface::sendToEPICS();
-
 	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
-
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
 	*/

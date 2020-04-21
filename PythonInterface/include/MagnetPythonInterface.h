@@ -106,17 +106,34 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 
 
-		Magnet& getMagnet(const std::string & fullMagnetName);
-		//boost::python::list getAllMagnetNames_Py()const;
-
-		// getSETI
+		//Magnet& getMagnet(const std::string & fullMagnetName);
 
 		bool(MagnetFactory::*degauss_single)(const std::string &, const bool)= &MagnetFactory::degauss;
+
+		// OVERLOADED SETUP FUNCTIONS TO ALLOW USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
+		bool (MagnetFactory::* setup_NoArg)() = &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_VersionArg)(const std::string&) = &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_TypeArg)(TYPE)= &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_VersionTypeArg)(const std::string&, TYPE  )= &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_ListArg)(const boost::python::list&) = &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &MagnetFactory::setup;
+
+
+
+		/*NEED constRUCTOR THAT TAKES VERSION??*/
+		//MagnetFactory(std::string VERSION);
 
 
 		boost::python::class_<MagnetFactory, boost::noncopyable>("MagnetFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
-			.def("setup", &MagnetFactory::setup)
+			.def(boost::python::init<STATE, TYPE>())
+			.def(boost::python::init<STATE, boost::python::list>())
+			.def("setup", setup_NoArg)
+			.def("setup", setup_VersionArg)
+			.def("setup", setup_TypeArg)
+			.def("setup", setup_VersionTypeArg)
+			.def("setup", setup_ListArg)
+			.def("setup", setup_VersionListArg)
 			//.add_property("magnetMap", &MagnetFactory::magnetMap)
 			.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			// NO you can't do this is you can't create a map of Magnet references 
