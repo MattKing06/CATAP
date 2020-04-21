@@ -24,6 +24,9 @@ messenger(LoggingSystem(true, true))
 	}
 
 	thisCaContext = ca_current_context();
+
+	messenger.printDebugMessage("EPICSInterface constuctor ");
+
 }
 
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine):

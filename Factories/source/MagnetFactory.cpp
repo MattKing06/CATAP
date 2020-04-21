@@ -201,15 +201,44 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 	// 
 	//convertConfigStringsToGlobalTypeEnums();
 	setupChannels();
-	EPICSInterface::sendToEPICS();
+	int status = EPICSInterface::caFlushIO("ca_create_channel");
+	switch (status)
+	{
+	case ECA_NORMAL:
+		messenger.printMessage("success");
+		break;
+	case ECA_TIMEOUT:
+		messenger.printMessage("timeout");
+		break;
+	case ECA_BADTYPE:
+		messenger.printMessage("Invalid DBR_XXXX type");
+		break;
+	case ECA_BADCHID:
+		messenger.printMessage("Corrupted CHID");
+		break;
+	case ECA_BADCOUNT:
+		messenger.printMessage("Requested count larger than native element count");
+		break;
+	case ECA_GETFAIL:
+		messenger.printMessage("A local database get failed");
+		break;
+	case ECA_NORDACCESS:
+		messenger.printMessage("Read access denied");
+		break;
+	case ECA_DISCONN:
+		messenger.printMessage("Unable to allocate memory");
+		break;
+	default:
+		messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
+	}
+
 	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
 	*/
 	for (auto& magnet : magnetMap)
 	{
-			//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
-		updateAliasNameMap(magnet.second);
+		//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
 		//std::cout << "magnet.first = " << magnet.first << std::endl;
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
@@ -242,7 +271,36 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 				//return hasBeenSetup;
 			}
 		}
-		EPICSInterface::sendToEPICS();
+		int status = EPICSInterface::caFlushIO("ca_create_subscription");
+		switch (status)
+		{
+		case ECA_NORMAL:
+				messenger.printMessage("success");
+			break;
+		case ECA_TIMEOUT:
+			messenger.printMessage("timeout");
+			break;
+		case ECA_BADTYPE:
+			messenger.printMessage("Invalid DBR_XXXX type");
+			break;
+		case ECA_BADCHID:
+			messenger.printMessage("Corrupted CHID");
+			break;
+		case ECA_BADCOUNT:
+			messenger.printMessage("Requested count larger than native element count");
+			break;
+		case ECA_GETFAIL:
+			messenger.printMessage("A local database get failed");
+			break;
+		case ECA_NORDACCESS:
+			messenger.printMessage("Read access denied");
+			break;
+		case ECA_DISCONN:
+			messenger.printMessage("Unable to allocate memory");
+			break;
+		default:
+			messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
+		}
 	}
 
 	hasBeenSetup = true;
@@ -271,6 +329,21 @@ void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 	}
 	// now add in the aliases
 	std::vector<std::string> aliases = magnet.getAliases();
+
+	std::ostringstream vts;
+	if (!aliases.empty())
+	{
+		// Convert all but the last element to avoid a trailing "," 
+		std::copy(aliases.begin(), aliases.end() - 1,
+			std::ostream_iterator<std::string>(vts, ", "));
+
+		// Now add the last element with no delimiter 
+		vts << aliases.back();
+	}
+
+	messenger.printMessage("Got Aliases: ", vts.str(), " for " + full_name);
+
+
 	for (auto&& next_alias : aliases)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))

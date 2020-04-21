@@ -92,6 +92,16 @@ public:
 	void detachFromContext();
 	/*! Used to send the buffered requests to EPICS using ca_pend_io function*/
 	static void sendToEPICS();
+	/*! Used to send ca_flush_io after creating a channel */
+	static int caFlushIO(const std::string& ca)
+	{
+		int status = ca_flush_io();
+		SEVCHK(status, ca.c_str());
+		//printStatusResult(status, mess1.c_str(), mess2.c_str());
+		return status;
+	}
+
+
 	/*! Converts an epicsTimeStamp into a formatted string for printing the timestamp.
 	* @param[in] stamp : The timestamp we want to convert to string
 	* @param[out] stampString : The string representation of the epicsTimeStamp input.*/
