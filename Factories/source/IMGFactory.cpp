@@ -110,6 +110,7 @@ bool IMGFactory::setup(const std::string& version)
 		std::map<std::string, pvStruct>& imgPVStructs = img.second.getPVStructs();
 		for (auto& pv : imgPVStructs)
 		{
+			
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				std::cout << "cs_conn, getting some values " << std::endl;
@@ -136,7 +137,6 @@ bool IMGFactory::setup(const std::string& version)
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
 			}
-			//updateAliasNameMap(magnet.second);
 		}
 	}
 
