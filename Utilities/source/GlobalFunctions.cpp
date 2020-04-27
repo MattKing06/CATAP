@@ -34,6 +34,18 @@ namespace GlobalFunctions {
 
 	time_t timeNow(){ return time(nullptr); }
 
+	std::string toString(const std::vector<TYPE>& vec)
+	{
+		std::vector<std::string> vec_string;
+		for (auto it : vec)
+		{
+			vec_string.push_back(ENUM_TO_STRING(it));
+		}
+		return toString(vec_string);
+	}
+
+
+
 	std::string getTimeAndDateString()
 	{
 		auto t = std::time(nullptr);
@@ -50,7 +62,7 @@ namespace GlobalFunctions {
 		//localtime(&tstruct, &now);
 		// // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
 		// // for more information about date/time format
-		// // strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%",&tstruct);
+		// // strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%",&tstruct);99iiiiiii
 		//strftime(buf, sizeof(buf), "%c", &tstruct);
 		//// std::cout << "buf = " << buf <<  std::endl;
 		//return buf;

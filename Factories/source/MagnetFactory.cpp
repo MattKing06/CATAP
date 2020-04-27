@@ -16,30 +16,31 @@ MagnetFactory(STATE::OFFLINE)
 }
 
 MagnetFactory::MagnetFactory(STATE mode) :
-MagnetFactory(mode, TYPE::ALL_VELA_CLARA)
-{
-	// messenger.printDebugMessage("Magnet Factory constructed");
-}
-MagnetFactory::MagnetFactory(STATE mode, TYPE machineArea) :
-MagnetFactory(mode, std::vector<TYPE>{ machineArea })
-{
-	// messenger.printDebugMessage("Magnet Factory constructed");
-}
-
-// practically, all constructurs should end up here
-MagnetFactory::MagnetFactory(STATE mode, const boost::python::list& machineAreas):
-MagnetFactory(mode, to_std_vector<TYPE>(machineAreas))
-{}
-
-MagnetFactory::MagnetFactory(STATE mode, const std::vector<TYPE>& machineAreas) :
 messenger(LoggingSystem(true, true)),
 mode(mode),
 hasBeenSetup(false),
 reader(ConfigReader("Magnet", mode)),
-machineAreas(machineAreas)
+machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
 {
-
+	// messenger.printDebugMessage("Magnet Factory constructed");
 }
+
+
+//MagnetFactory::MagnetFactory(STATE mode, TYPE machineArea) :
+//MagnetFactory(mode, std::vector<TYPE>{ machineArea })
+//{
+//	// messenger.printDebugMessage("Magnet Factory constructed");
+//}
+//MagnetFactory::MagnetFactory(STATE mode, const boost::python::list& machineAreas):
+//MagnetFactory(mode, to_std_vector<TYPE>(machineAreas))
+//{}
+//MagnetFactory::MagnetFactory(STATE mode, const std::vector<TYPE>& machineAreas) :
+//messenger(LoggingSystem(true, true)),
+//mode(mode),
+//hasBeenSetup(false),
+//reader(ConfigReader("Magnet", mode)),
+//machineAreas(machineAreas)
+//{}
 
 //Copy Constructor
 MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory) : 
@@ -148,9 +149,73 @@ void MagnetFactory::setupChannels()
 		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
 		for (auto& pv : pvStructs)
 		{
+			// thsi is connecting to a CHID
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}
+	/*messenger.printMessage("caFlushIO");
+	int status = EPICSInterface::caFlushIO("ca_create_channel");
+	switch (status)
+	{
+	case ECA_NORMAL:
+		messenger.printMessage("success");
+		break;
+	case ECA_TIMEOUT:
+		messenger.printMessage("timeout");
+		break;
+	case ECA_BADTYPE:
+		messenger.printMessage("Invalid DBR_XXXX type");
+		break;
+	case ECA_BADCHID:
+		messenger.printMessage("Corrupted CHID");
+		break;
+	case ECA_BADCOUNT:
+		messenger.printMessage("Requested count larger than native element count");
+		break;
+	case ECA_GETFAIL:
+		messenger.printMessage("A local database get failed");
+		break;
+	case ECA_NORDACCESS:
+		messenger.printMessage("Read access denied");
+		break;
+	case ECA_DISCONN:
+		messenger.printMessage("Unable to allocate memory");
+		break;
+	default:
+		messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
+	}*/
+
+	EPICSInterface::sendToEPICS();
+
+	for (auto& magnet : magnetMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			// thsi is connecting to a CHID
+			channel_state state = ca_state(pv.second.CHID);
+			switch (state)
+			{
+			case cs_never_conn:
+				messenger.printMessage(pv.second.fullPVName," cs_never_conn");
+				break;
+			case cs_prev_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_prev_conn");
+				break;
+			case cs_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_conn");
+				break;
+			case cs_closed:
+				messenger.printMessage(pv.second.fullPVName, " cs_closed");
+				break;
+			default:
+				messenger.printMessage("!!! Unexpected error while searching ca_state: ");
+			}
+		}
+	}
+	// now check all CHID
+
+
 }
 
 
@@ -184,7 +249,8 @@ bool MagnetFactory::setup(const std::string& version, const boost::python::list&
 }
 bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& machineAreas)
 {
-	messenger.printDebugMessage("called Magnet Factory  setup ");
+	MagnetFactory::machineAreas = machineAreas;
+	messenger.printDebugMessage("Magnet Factory setup with Machine_Areas = ", GlobalFunctions::toString(MagnetFactory::machineAreas));
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
@@ -201,37 +267,6 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 	// 
 	//convertConfigStringsToGlobalTypeEnums();
 	setupChannels();
-	int status = EPICSInterface::caFlushIO("ca_create_channel");
-	switch (status)
-	{
-	case ECA_NORMAL:
-		messenger.printMessage("success");
-		break;
-	case ECA_TIMEOUT:
-		messenger.printMessage("timeout");
-		break;
-	case ECA_BADTYPE:
-		messenger.printMessage("Invalid DBR_XXXX type");
-		break;
-	case ECA_BADCHID:
-		messenger.printMessage("Corrupted CHID");
-		break;
-	case ECA_BADCOUNT:
-		messenger.printMessage("Requested count larger than native element count");
-		break;
-	case ECA_GETFAIL:
-		messenger.printMessage("A local database get failed");
-		break;
-	case ECA_NORDACCESS:
-		messenger.printMessage("Read access denied");
-		break;
-	case ECA_DISCONN:
-		messenger.printMessage("Unable to allocate memory");
-		break;
-	default:
-		messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
-	}
-
 	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.

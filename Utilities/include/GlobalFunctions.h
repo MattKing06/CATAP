@@ -10,6 +10,8 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <sstream>
+#include <iterator>
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
 
@@ -110,6 +112,23 @@ namespace GlobalFunctions{
 	//	double p = pow(UTL::TEN_DOUBLE, (double)n);
 	//	return std::round(a * p) / p;
 	//}
+
+
+	template<typename T = int>
+	std::string toString(const std::vector<T>& vec)
+	{
+		std::ostringstream oss;
+		if (!vec.empty())
+		{
+			// Convert all but the last element to avoid a trailing ","
+			std::copy(vec.begin(), vec.end() - 1, std::ostream_iterator<T>(oss, ","));
+			// Now add the last element with no delimiter
+			oss << vec.back();
+		}
+		return oss.str();
+	}
+
+	extern std::string toString(const std::vector<TYPE>& vec);
 
 	extern time_t timeNow();// { return time(nullptr); }
 

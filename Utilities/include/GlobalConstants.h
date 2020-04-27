@@ -147,6 +147,9 @@ namespace GlobalConstants
 	// so far this is not used practically, but we are keeping it  in case fo futre need
 	const std::string nominal = "nominal";
 
+	// passed to config reader, should be a TYPE
+	const std::string Magnet = "Magnet";
+
 }
 /*! @}*/
 #endif // GLOBAL_CONSTANTS_H_

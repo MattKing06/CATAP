@@ -80,9 +80,11 @@ MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machin
 {
 	if (!magnetFactory.hasBeenSetup)
 	{
+		messenger.printMessage("magnetFactory is being setup");
 		bool setup = magnetFactory.setup(GlobalConstants::nominal, machineAreas);
 		if(setup)
 		{
+			messenger.printMessage("magnetFactory setup complete");
 			return magnetFactory;
 		}
 		else
@@ -92,6 +94,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machin
 	}
 	else
 	{
+		messenger.printMessage("magnetFactory has already been setup");
 		return magnetFactory;
 	}
 }

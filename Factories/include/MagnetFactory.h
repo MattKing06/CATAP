@@ -44,15 +44,16 @@ class MagnetFactory
 	public:
 		MagnetFactory();
 		MagnetFactory(STATE mode);
-		MagnetFactory(STATE mode, TYPE machineArea);
+		/*MagnetFactory(STATE mode, TYPE machineArea);
 		MagnetFactory(STATE mode, const std::vector<TYPE>& machineAreas);
 		MagnetFactory(STATE mode, const boost::python::list& machineAreas);
+		*/
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
 		~MagnetFactory();
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
 		
-		// OVERLOADED SETUP FUNCTIONS TO ALLWO USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
+		// OVERLOADED SETUP FUNCTIONS TO ALLOW USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
 		bool setup();
 		bool setup(const std::string& version);
 		bool setup(TYPE machineArea);

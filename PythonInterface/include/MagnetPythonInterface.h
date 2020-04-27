@@ -118,16 +118,14 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		bool (MagnetFactory::* setup_ListArg)(const boost::python::list&) = &MagnetFactory::setup;
 		bool (MagnetFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &MagnetFactory::setup;
 
-
-
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
 
 
 		boost::python::class_<MagnetFactory, boost::noncopyable>("MagnetFactory", boost::python::no_init)
-			.def(boost::python::init<STATE>())
-			.def(boost::python::init<STATE, TYPE>())
-			.def(boost::python::init<STATE, boost::python::list>())
+			//.def(boost::python::init<STATE>())
+			//.def(boost::python::init<STATE, TYPE>())
+			//.def(boost::python::init<STATE, boost::python::list>())
 			.def("setup", setup_NoArg)
 			.def("setup", setup_VersionArg)
 			.def("setup", setup_TypeArg)
