@@ -1,6 +1,7 @@
 #ifndef GLOBAL_STATES_PYTHON_INTERFACE_H_
 #define GLOBAL_STATES_PYTHON_INTERFACE_H_
 #include <boost/python.hpp>
+#include <boost/python/converter/registry.hpp>
 #include <GlobalStateEnums.h>
 
 
@@ -9,6 +10,8 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 	void expose_global_state_enums()
 	{
 		//Global State Enum exposure
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<STATE>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::enum_<STATE>("STATE", "Global Enums used for displaying States")
 			.value("On", STATE::ON)
 			.value("OFF", STATE::OFF)

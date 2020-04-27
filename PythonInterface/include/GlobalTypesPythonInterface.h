@@ -3,12 +3,14 @@
 
 #include <GlobalTypeEnums.h>
 #include <boost/python.hpp>
-
+#include <boost/python/converter/registry.hpp>
 
 namespace BOOST_PYTHON_TYPES_INCLUDE
 {
 	void expose_global_type_enums()
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<TYPE>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::enum_<TYPE>("TYPE")
 			.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
 			.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
