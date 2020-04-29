@@ -22,6 +22,10 @@ set( SOURCE_FILES
     source/ShutterPythonInterface.cpp
 )
 
+set( GENERAL_INCLUDE_FILES
+    include/HardwarePythonInterface.h
+)
+
 set( INCLUDE_FILES
     include/DataTypesPythonInterface.h
  #   include/PythonInterface.h 
@@ -94,6 +98,7 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PUBLIC ${Boost_INCLUDE_DIR})
 	target_include_directories(${LIBNAME} PUBLIC ${PYTHON_INCLUDE_DIR})
 	target_include_directories(${LIBNAME} PRIVATE include)
+    target_include_directories(${LIBNAME} PRIVATE GENERAL_INCLUDE_FILES)
 	target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)

@@ -16,6 +16,7 @@ namespace BOOST_PYTHON_DATA_TYPES_INCLUDE
 
 	void expose_data_types()
 	{
+
 		bool is_numerical_map_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<std::map<std::string, double> >())->to_python_target_type());
 		if (is_numerical_map_registered) return;
 		boost::python::class_<std::map<std::string, double> >("numericalParamMap")
