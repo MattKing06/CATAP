@@ -93,7 +93,8 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 			pvStruct.fullPVName.find("WCM") != std::string::npos ||
 			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
 			pvStruct.fullPVName.find("SCR") != std::string::npos ||
-			pvStruct.fullPVName.find("YAG") != std::string::npos)
+			pvStruct.fullPVName.find("YAG") != std::string::npos ||
+			pvStruct.fullPVName.find("IMG") != std::string::npos )
 		{
 			pv = pvStruct.fullPVName;
 		}
@@ -101,6 +102,11 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		{
 			pv = pvStruct.fullPVName;
 		}
+		else if (pvStruct.fullPVName.find("IMG") != std::string::npos)
+		{
+			pv = pvStruct.fullPVName;
+		}
+
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		

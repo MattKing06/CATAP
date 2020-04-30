@@ -14,6 +14,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	chargeFactory(ChargeFactory(mode)),
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
+	imgFactory(IMGFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -22,7 +23,14 @@ HardwareFactory::HardwareFactory(STATE mode) :
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
-	if (hardwareType == "Magnet")
+	if (hardwareType == "IMG")
+	{
+		if (!imgFactory.hasBeenSetup)
+		{
+			setup = imgFactory.setup(VERSION);
+		}
+	}
+	else if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
 		{
@@ -97,6 +105,26 @@ ValveFactory& HardwareFactory::getValveFactory()
 		return valveFactory;
 	}
 }
+IMGFactory& HardwareFactory::getIMGFactory()
+{
+	if (!imgFactory.hasBeenSetup)
+	{
+		bool setup = imgFactory.setup("nominal");
+		if (setup)
+		{
+			return imgFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup IMGFactory");
+		}
+	}
+	else
+	{
+		return imgFactory;
+	}
+}
+
 BPMFactory& HardwareFactory::getBPMFactory()
 {
 	if (!bpmFactory.hasBeenSetup)

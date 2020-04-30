@@ -25,6 +25,7 @@
 #include <BPMPythonInterface.h>
 #include <ChargePythonInterface.h>
 #include <ScreenPythonInterface.h>
+#include <IMGPythonInterface.h>
 #include <vector>
 #include <map>
 
@@ -124,6 +125,10 @@ BOOST_PYTHON_MODULE(CATAP)
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveObject();
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveFactoryObject();
 
+	//expose IMG object and IMGFactory object
+	BOOST_PYTHON_IMG_INCLUDE::expose_img_object();
+	BOOST_PYTHON_IMG_INCLUDE::expose_img_factory_object();
+
 	// BPM Exposure
 		// Charge Exposure
 
@@ -166,6 +171,8 @@ BOOST_PYTHON_MODULE(CATAP)
 		.def("getScreenFactory", &HardwareFactory::getScreenFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("valveFactory", &HardwareFactory::valveFactory)
 		.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.add_property("IMGFactory", &HardwareFactory::imgFactory)
+		.def("getIMGFactory", &HardwareFactory::getIMGFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.add_property("hardwareMap", &HardwareFactory::hardwareMap)
 		.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
 		.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))

@@ -5,6 +5,7 @@
 #include "ChargeFactory.h"
 #include "ScreenFactory.h"
 #include "ValveFactory.h"
+#include "IMGFactory.h"
 #include "GlobalStateEnums.h"
 
 /** @defgroup factories Factories
@@ -36,6 +37,7 @@ public:
 	ChargeFactory& getChargeFactory();
 	ScreenFactory& getScreenFactory();
 	ValveFactory& getValveFactory();
+	IMGFactory& getIMGFactory();
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -49,6 +51,7 @@ public:
 	ChargeFactory chargeFactory;
 	ScreenFactory screenFactory;
 	ValveFactory valveFactory;
+	IMGFactory imgFactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;
