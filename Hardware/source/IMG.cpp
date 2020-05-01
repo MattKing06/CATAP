@@ -27,7 +27,10 @@ pressure(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 	messenger = LoggingSystem(true, true);
 }
 
-IMG::IMG(const IMG& copyIMG)
+IMG::IMG(const IMG& copyIMG):
+	Hardware(copyIMG),
+	state(copyIMG.state),
+	pressure(copyIMG.pressure)
 {
 }
 
