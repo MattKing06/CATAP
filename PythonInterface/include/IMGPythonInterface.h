@@ -29,7 +29,7 @@ namespace BOOST_PYTHON_IMG_INCLUDE
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
 			.def("setup", &IMGFactory::setup, (boost::python::arg("self"), boost::python::arg("version")))
 			.def("getIMG", &IMGFactory::getIMG, (boost::python::arg("self"), boost::python::arg("name")), boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getAllIMGNames", &IMGFactory::getAllIMGNames, (boost::python::arg("self")))
+			.def("getAllIMGNames", &IMGFactory::getAllIMGNames_Py, (boost::python::arg("self")))
 			.def("getIMGPressure", &IMGFactory::getIMGPressure, (boost::python::arg("self"), boost::python::arg("name")))
 			.def("getIMGPressures", &IMGFactory::getIMGPressures_Py, (boost::python::arg("self"), boost::python::arg("names")))
 			.def("getAllIMGPressure", &IMGFactory::getAllIMGPressure_Py, (boost::python::arg("self")))

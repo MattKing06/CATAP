@@ -39,7 +39,7 @@ public:
 	bool hasBeenSetup;
 	/*! Map containing all Valves created from ConfigReader, keyed by harwdare name*/
 	std::map<std::string, IMG> IMGMap;
-	/*! ConfigReader to parse YAML config files and create associated Valve objects*/
+	/*! ConfigReader to parse YAML config files and create associated IMG objects*/
 	ConfigReader reader;
 	/*! Used to print messages both normal and debug, also sets the On/Off flags for debug and normal messages*/
 	LoggingSystem messenger;
@@ -75,6 +75,7 @@ public:
 	/*! gets the IMG state of a particular IMG
 	 * @param[in] name :The full-name or alias of the valve
 	 * @param[out] pressure :The state the IMG is currently in (OPEN,CLOSED,ERR)*/
+	boost::python::list getAllIMGNames_Py()const;
 	double getIMGPressure(const std::string& name) const;
 	/*! gets IMG Pressure for multiple IMGs
 	* @param[in] names : a vector of full-names/aliases for IMGs

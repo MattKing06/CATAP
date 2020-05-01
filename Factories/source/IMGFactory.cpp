@@ -173,22 +173,19 @@ IMG& IMGFactory::getIMG(const std::string& fullIMGName)
 	}
 	return dummyIMG;
 }
-std::string IMGFactory::getFullName(const std::string& name_to_check) const
-{
-	std::cout << "getFullName looking for " << name_to_check << std::endl;
-	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
+std::string IMGFactory::getFullName(const std::string& nameToCheck) const
+{	
+	messenger.printMessage(dummyIMG.getHardwareName());
+	if (GlobalFunctions::entryExists(alias_name_map, nameToCheck))
 	{
-		std::cout << name_to_check << " found " << std::endl;
-		return alias_name_map.at(name_to_check);
+		return alias_name_map.at(nameToCheck);
 	}
-	std::cout << name_to_check << " NOT found " << std::endl;
 	return dummyIMG.getHardwareName();
 }
 void IMGFactory::updateAliasNameMap(const IMG& img)
 {
 	// first add in the IMG full name
 	std::string full_name = img.getHardwareName();
-	messenger.printMessage("updateAliasNameMap ", full_name);
 	if (GlobalFunctions::entryExists(alias_name_map, full_name))
 	{
 		messenger.printMessage("!!ERROR!! ", full_name, " IMG name already exists! ");
@@ -223,11 +220,19 @@ std::vector<std::string> IMGFactory::getAllIMGNames() const
 	}
 	return returnNames;
 }
+
+boost::python::list IMGFactory::getAllIMGNames_Py() const
+{
+	return to_py_list(getAllIMGNames());
+}
+
+
 double IMGFactory::getIMGPressure(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
 	return IMGMap.at(fullName).getIMGPressure();
 }
+
 std::map<std::string, double> IMGFactory::getIMGPressures(const std::vector<std::string>& names) const
 {
 	std::map<std::string, double> return_map;
