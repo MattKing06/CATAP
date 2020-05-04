@@ -68,7 +68,8 @@ hardwareName(specificValueMap.find("name")->second)
 
 Hardware::Hardware(const Hardware& copyHardware) :
 	messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
-	machineArea(copyHardware.machineArea), mode(copyHardware.mode)
+	machineArea(copyHardware.machineArea), mode(copyHardware.mode), hardwareName(copyHardware.hardwareName),
+	hardwareType_e(copyHardware.hardwareType_e), machineArea_e(copyHardware.machineArea_e)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
