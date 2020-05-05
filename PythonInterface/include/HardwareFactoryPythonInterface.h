@@ -8,6 +8,8 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 {
 	void exposeHardwareFactoryObject()
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<HardwareFactory>())->to_python_target_type());
+		if (is_registered) return;
 		// Hardware Factory Exposure
 		boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"), boost::python::args("mode"))))
 			.def("setup", &HardwareFactory::setup, (boost::python::args("self"), boost::python::arg("hardwareType"), boost::python::args("version")))
