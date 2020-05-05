@@ -1,0 +1,28 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: CLA-L01-MAG-SOL-01:GETSETI
+    READI: CLA-L01-MAG-SOL-01:READI
+    RILK: CLA-L01-MAG-SOL-01:RILK
+    RPOWER: CLA-L01-MAG-SOL-01:RPOWER
+    SETI: CLA-L01-MAG-SOL-01:SETI
+    SPOWER: CLA-L01-MAG-SOL-01:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.5
+  degauss_values: "150.0,-150.0,100.0,-100.0,66.0,-66.0,30.0,-30.0,10.0,-10.0,0.0"
+  field_integral_coefficients: "0.911580969,-0.0374385376,0.00106926073,-1.64644381e-05,1.01769629e-07,0,0,0.37651102,0.12171419"
+  hardware_type: MAGNET
+  machine_area: L01
+  mag_set_max_wait_time: 45.0
+  mag_type: SOLENOID
+  magnetic_length: 726.918205128205
+  manufacturer: '"EfremovInstitute"'
+  name: CLA-L01-MAG-SOL-01
+  name_alias: L01-SOL01,L01-SOL-01
+  num_degauss_steps: 11
+  position: 1.64
+  ri_tolerance: 0.1
+  serial_number: 08
+  min_i : -150.0
+  max_i : 150.0

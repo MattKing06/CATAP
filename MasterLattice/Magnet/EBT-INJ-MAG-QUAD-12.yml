@@ -1,0 +1,28 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-INJ-MAG-QUAD-12:GETSETI
+    READI: EBT-INJ-MAG-QUAD-12:READI
+    RILK: EBT-INJ-MAG-QUAD-12:RILK
+    RPOWER: EBT-INJ-MAG-QUAD-12:RPOWER
+    SETI: EBT-INJ-MAG-QUAD-12:SETI
+    SPOWER: EBT-INJ-MAG-QUAD-12:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
+  field_integral_coefficients: "1.58996386665694,6.76912235527686E-05"
+  hardware_type: MAGNET
+  machine_area: INJ
+  mag_set_max_wait_time: 45.0
+  mag_type: QUADRUPOLE
+  magnetic_length: 70.4236023746139
+  manufacturer: Scanditronix
+  name: EBT-INJ-MAG-QUAD-12
+  name_alias: INJ-QUAD12,INJ-QUAD-12
+  num_degauss_steps: 11
+  position: 17.042
+  ri_tolerance: 0.001
+  serial_number: EMIQM04
+  min_i : -10.5
+  max_i : 10.5

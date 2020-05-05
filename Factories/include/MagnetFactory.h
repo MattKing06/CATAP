@@ -147,8 +147,8 @@ class MagnetFactory
 		std::map<std::string, int> getSerialNumber(const std::vector<std::string>& name) const;
 		boost::python::dict getSerialNumber_Py(const boost::python::list& name) const;
 		
-		std::string getMagnetType(const std::string& name) const;
-		std::map<std::string, std::string> getMagnetType(const std::vector<std::string>& name) const;
+		TYPE getMagnetType(const std::string& name) const;
+		std::map<std::string, TYPE> getMagnetType(const std::vector<std::string>& name) const;
 		boost::python::dict getMagnetType_Py(const boost::python::list& name) const;
 
 
@@ -186,6 +186,21 @@ class MagnetFactory
 		boost::python::dict getREADITolerance_Py(const boost::python::list& name) const;
 
 
+		// get min I 
+		double getMinI(const std::string& name)const;
+		std::map<std::string, double> getMinIs(const std::vector<std::string>& names) const;
+		boost::python::dict getMinIs_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllMinI() const;
+		boost::python::dict getAllMinI_Py() const;
+		// get max I 
+		double getMaxI(const std::string& name)const;
+		std::map<std::string, double> getMaxIs(const std::vector<std::string>& names) const;
+		boost::python::dict getMaxIs_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllMaxI() const;
+		boost::python::dict getAllMaxI_Py() const;
+
+
+
 		//int setNumberOfDegaussSteps(const int value);
 		// THINK ABOUT THIS ONE!!! 
 		std::vector<double> setDegaussValues(const std::string& name, const std::vector<double>& values);
@@ -208,6 +223,16 @@ class MagnetFactory
 		bool offlineSetILKState(const std::string& name, const STATE value);
 
 			   		 
+		bool isAType(const std::string& name, const TYPE type)const;
+		bool isAQuad(const std::string& name)const;
+		bool isADip(const std::string& name)const;
+		bool isASol(const std::string& name)const;
+		bool isABSol(const std::string& name)const;
+		bool isAVCor(const std::string& name)const;
+		bool isAHCor(const std::string& name)const;
+		bool isACor(const std::string& name)const;
+
+
 
 		// magnet states and DBURTS 
 		

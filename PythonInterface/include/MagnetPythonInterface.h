@@ -39,21 +39,28 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 	void expose_magnet_object() {
 
 		// magnet exposure
-		boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
+		boost::python::class_<Magnet, boost::python::bases<Hardware>, 
+			boost::noncopyable>("Magnet", boost::python::no_init)
+			// Note some variables are exposed as properties and with functions 
 			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
 			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
 			.add_property("READI", &Magnet::getREADI)
 			.add_property("name", &Magnet::getHardwareName)
 			.add_property("manufacturer", &Magnet::getManufacturer)
 			.add_property("serial_number", &Magnet::getSerialNumber)
-			.add_property("magnet_type", &Magnet::getMagnetType)
+			.add_property("min_i", &Magnet::getMinI)
+			.add_property("max_i", &Magnet::getMaxI)
+			.add_property("is_degaussing", &Magnet::isDegaussing)
 			//.add_property("epicsInterface", &Magnet::epicsInterface)
 			.def("switchOff", &Magnet::switchOff)
 			.def("switchOn", &Magnet::switchOn)
 			.def("getSETI", &Magnet::getSETI)
 			.def("SETI", &Magnet::SETI)
 			.def("getREADI", &Magnet::getREADI)
+			.def("getMinI", &Magnet::getMinI)
+			.def("getMaxI", &Magnet::getMaxI)
 			.def("degauss", &Magnet::degauss)
+			.def("isDegaussing", &Magnet::isDegaussing)
 			.def("debugMessagesOn", &Magnet::debugMessagesOn)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
 			.def("messagesOn", &Magnet::messagesOn)
@@ -92,7 +99,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 		std::string(MagnetFactory::*getManufacturer_single)(const std::string&)const = &MagnetFactory::getManufacturer;
 		//int(MagnetFactory::*getSerialNumber_single)(const std::string&)const = &MagnetFactory::getSerialNumber;
-		std::string(MagnetFactory::*getMagnetType_single)(const std::string&)const = &MagnetFactory::getMagnetType;
+		TYPE(MagnetFactory::*getMagnetType_single)(const std::string&)const = &MagnetFactory::getMagnetType;
 		std::string(MagnetFactory::*getMagnetRevType_single)(const std::string&)const = &MagnetFactory::getMagnetRevType;
 		std::string(MagnetFactory::*getFullPSUName_single)(const std::string&)const = &MagnetFactory::getFullPSUName;
 		std::string(MagnetFactory::*getMeasurementDataLocation_single)(const std::string&)const = &MagnetFactory::getMeasurementDataLocation;
@@ -138,6 +145,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			//.def("getMagnets", &MagnetFactory::getMagnets_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			
 			.def("getAllMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
+
+			// for backwards compatability with VC_Controllers
+			.def("getMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
 					
 			.def("getPSUState", &MagnetFactory::getPSUState)
 			.def("getPSUState", &MagnetFactory::getPSUState_Py)
@@ -196,6 +206,15 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 			.def("getNumberOfDegaussSteps", getNumberOfDegaussSteps_single)
 			.def("getNumberOfDegaussSteps", &MagnetFactory::getNumberOfDegaussSteps_Py)
+
+			.def("isAType", &MagnetFactory::isAType)
+			.def("isAQuad", &MagnetFactory::isAQuad)
+			.def("isADip", &MagnetFactory::isADip)
+			.def("isASol", &MagnetFactory::isASol)
+			.def("isABSol", &MagnetFactory::isABSol)
+			.def("isAVCor", &MagnetFactory::isAVCor)
+			.def("isAHCor", &MagnetFactory::isAHCor)
+			.def("isACor", &MagnetFactory::isACor)
 
 
 		//boost::python::dict getNumberOfDegaussSteps_Py(const boost::python::list & name) const;

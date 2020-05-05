@@ -12,7 +12,7 @@ properties:
   degauss_tolerance: 0.1
   degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
   field_integral_coefficients: "-3.06357099595939E-05,0.000442533546326552,0.101577009522434,0.00146589509380893"
-  hardware_type: Magnet
+  hardware_type: MAGNET
   machine_area: UNDEFINED
   mag_set_max_wait_time: 45.0
   mag_type: QUAD

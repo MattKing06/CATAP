@@ -14,7 +14,7 @@
 #include "GlobalFunctions.h"
 
 // map to convert yaml file strings to magnet TYPE enums
-const std::map<std::string, TYPE> Magnet::magnet_string_to_type_map = Magnet::create_map();
+//const std::map<std::string, TYPE> Magnet::magnet_string_to_type_map = Magnet::create_map();
 
 
 Degauss::Degauss() :
@@ -34,16 +34,18 @@ epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface()))
 // Assumes all these find succeed ? 
 manufacturer(paramsMap.find("manufacturer")->second),
 serialNumber(paramsMap.find("serial_number")->second.data()),
-magType(paramsMap.find("mag_type")->second),
+//magType(paramsMap.find("mag_type")->second),
 RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
 numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+min_i(std::stof(paramsMap.find("min_i")->second)),
+max_i(std::stof(paramsMap.find("max_i")->second)),
 GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
 ilkState(std::make_pair(epicsTimeStamp(), STATE::ERR) ),
-isDegaussing(false)
+is_degaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
 	epicsInterface->ownerName = hardwareName;
@@ -59,10 +61,15 @@ isDegaussing(false)
 	// set the magnet_type
 	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
 	{
-		if(GlobalFunctions::entryExists( magnet_string_to_type_map, paramsMap.at("mag_type")))
+		if(GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramsMap.at("mag_type")))
 		{
-			magType = magnet_string_to_type_map.at(paramsMap.at("mag_type"));
+			magType = GlobalConstants::stringToTypeMap.at(paramsMap.at("mag_type"));
 		}
+		else
+		{
+			magType = TYPE::UNKNOWN_TYPE;
+		}
+
 	}
 	// convert value for YAML key "name_aliases", to vector of strings and set equal to memebr variable aliases
 	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });
@@ -72,7 +79,7 @@ isDegaussing(false)
 Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
 manufacturer(copyMagnet.manufacturer), 
 serialNumber(copyMagnet.serialNumber),
-magType(copyMagnet.magType), 
+magType(copyMagnet.magType),
 magRevType(copyMagnet.magRevType), 
 READI_tolerance(copyMagnet.READI_tolerance),
 numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), 
@@ -182,6 +189,16 @@ bool Magnet::isInSETIandPSUState(const magnetState& ms)const
 	}
 	return false;
 }
+
+double Magnet::getMinI()const
+{
+	return this->min_i;
+}
+double Magnet::getMaxI()const
+{
+	return this->max_i;
+}
+
 std::string Magnet::getManufacturer() const
 {
 	return this->manufacturer;
@@ -190,9 +207,9 @@ std::string Magnet::getSerialNumber() const
 {
 	return this->serialNumber;
 }
-std::string Magnet::getMagnetType() const
+TYPE Magnet::getMagnetType() const
 {
-	return this->magType;
+	return magType;
 }
 std::string Magnet::getMagnetRevType() const
 {
@@ -256,9 +273,14 @@ std::string Magnet::getMeasurementDataLocation() const
 	return measurementDataLocation;
 }
 
+bool Magnet::isDegaussing()const
+{
+	return is_degaussing;
+}
+
 bool Magnet::degauss(const bool reset_to_zero)
 {
-	if (isDegaussing)
+	if (is_degaussing)
 	{
 
 	}
@@ -273,7 +295,7 @@ bool Magnet::degauss(const bool reset_to_zero)
 				delete degausser.degauss_thread;
 				degausser.degauss_thread = nullptr;
 			}
-			isDegaussing = true;
+			is_degaussing = true;
 			degausser.degauss_values = degaussValues;
 			degausser.current_step = GlobalConstants::zero_sizet;
 			degausser.resetToZero = reset_to_zero;
@@ -320,7 +342,7 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 	}
 
 	ds.magnet->last_degauss_success = degauss_success;
-	ds.magnet->isDegaussing = false;
+	ds.magnet->is_degaussing = false;
 }
 
 

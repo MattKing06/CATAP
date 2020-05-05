@@ -105,7 +105,7 @@ class Magnet : public Hardware
 		std::string getManufacturer() const;
 	/*! get the type of magnet, defined in the master lattice yaml file
 		@param[out] result  */
-		std::string getMagnetType() const;
+		TYPE getMagnetType() const;
 	/*! get the magnet reverse type, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMagnetRevType() const;
@@ -142,7 +142,12 @@ class Magnet : public Hardware
 		@param[in] value to set READ_tolerance to
 		@param[out] READI_tolerance after setting new value */
 		double setREADITolerance(const double value);
-	/*! set the values used during degaussing
+	/*! get the minimum I value that can be set for this magnet,  defined in the master lattice yaml file*/
+		double getMinI()const;
+	/*! get the maximum I value that can be set for this magnet,  defined in the master lattice yaml file*/
+		double getMaxI()const;
+
+		/*! set the values used during degaussing
 		@param[out] new value sthat will be used */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
 	/*! set the values used during degaussing (Python version)
@@ -164,6 +169,10 @@ class Magnet : public Hardware
 	/*! get the current state of the PSU 
 		@param[out] result  */
 		STATE getPSUState() const;
+
+	/*! returns TRUE if the magnet is performing a degauss procedure*/
+		bool isDegaussing()const;
+		
 	/*! set the current to value
 		@param[in] value			
 		@param[out] bool, if the command got sent to epics (not if setting that current was successfull!) 	*/
@@ -193,7 +202,7 @@ class Magnet : public Hardware
 		void messagesOn();
 	/*! disable messages for this magnet		*/
 		void messagesOff();
-						
+
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;
 	protected:
@@ -223,7 +232,7 @@ class Magnet : public Hardware
 		bool offlineSetPSUState(const STATE value);
 		Degauss degausser;
 	/*! flag set to True when this magnet is degaussing, otherwise false*/
-		bool isDegaussing;
+		bool is_degaussing;
 	/*! flag 	*/
 		bool last_degauss_success;
 	/*! current step in the deagussing cycle	*/
@@ -243,8 +252,8 @@ class Magnet : public Hardware
 		std::string manufacturer;
 
 	/*! magnet type, e.g. SOL, DIP, QUAD, VCOR, HCOR, defined in the master lattice yaml file	*/
-		std::string magType;
-		TYPE magtype;
+		//std::string magType;
+		TYPE magType;
 	/*! how the magnet reverses polarity (as seen in the control system, or defined offline), defined in the master lattice yaml file	*/
 		std::string magRevType;
 	/*! The tolerance used when checking if READI is eqal to SETI, defined in the master lattice yaml file	*/
@@ -254,9 +263,18 @@ class Magnet : public Hardware
 	/*! magnet serial number, defined in the master lattice yaml file	*/
 		std::string serialNumber;
 
+	/*! magnet minimum SETI value that can be passed, defined in the master lattice yaml file	*/
+		double min_i;
+	/*! magnet maximum SETI value that can be passed, defined in the master lattice yaml file	*/
+		double max_i;
+
+
 		//std::string magRevType;
 		double RI_tolerance;
 	
+
+
+
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */
@@ -273,19 +291,19 @@ class Magnet : public Hardware
 		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
 		bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
 
-		static std::map<std::string, TYPE> create_map()
-		{
-			std::map<std::string, TYPE> m;
-			m["Magnet"] = TYPE::MAGNET;
-			m["QUADRUPOLE"] = TYPE::QUADRUPOLE;
-			m["DIPOLE"] = TYPE::DIPOLE;
-			m["HVCOR"] = TYPE::HVCOR;
-			m["VCOR"] = TYPE::VCOR;
-			m["HCOR"] = TYPE::HCOR;
-			m["SOLENOID"] = TYPE::SOLENOID;
-			return m;
-		}
-		static const std::map<std::string, TYPE> magnet_string_to_type_map;
+		//static std::map<std::string, TYPE> create_map()
+		//{
+		//	std::map<std::string, TYPE> m;
+		//	m["Magnet"] = TYPE::MAGNET;
+		//	m["QUADRUPOLE"] = TYPE::QUADRUPOLE;
+		//	m["DIPOLE"] = TYPE::DIPOLE;
+		//	m["HVCOR"] = TYPE::HVCOR;
+		//	m["VCOR"] = TYPE::VCOR;
+		//	m["HCOR"] = TYPE::HCOR;
+		//	m["SOLENOID"] = TYPE::SOLENOID;
+		//	return m;
+		//}
+		//static const std::map<std::string, TYPE> magnet_string_to_type_map;
 };
 /**\copydoc Hardware*/
 /**@}*/

@@ -10,17 +10,17 @@
 
 
 MagnetFactory::MagnetFactory() :
-MagnetFactory(STATE::OFFLINE)
+	MagnetFactory(STATE::OFFLINE)
 {
 	// std::cout << "MagnetFactory DEFAULT CONSTRUCTOR called " << std::endl;
 }
 
 MagnetFactory::MagnetFactory(STATE mode) :
-messenger(LoggingSystem(true, true)),
-mode(mode),
-hasBeenSetup(false),
-reader(ConfigReader("Magnet", mode)),
-machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
+	messenger(LoggingSystem(true, true)),
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("Magnet", mode)),
+	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
 {
 	// messenger.printDebugMessage("Magnet Factory constructed");
 }
@@ -43,13 +43,13 @@ machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
 //{}
 
 //Copy Constructor
-MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory) : 
-hasBeenSetup(copyMagnetFactory.hasBeenSetup),
-mode(copyMagnetFactory.mode),
-machineAreas(machineAreas),
-messenger(copyMagnetFactory.messenger),
-reader(copyMagnetFactory.reader),
-dummy_magnet(copyMagnetFactory.dummy_magnet)
+MagnetFactory::MagnetFactory(const MagnetFactory& copyMagnetFactory) :
+	hasBeenSetup(copyMagnetFactory.hasBeenSetup),
+	mode(copyMagnetFactory.mode),
+	machineAreas(machineAreas),
+	messenger(copyMagnetFactory.messenger),
+	reader(copyMagnetFactory.reader),
+	dummy_magnet(copyMagnetFactory.dummy_magnet)
 {
 	messenger.printDebugMessage("MagnetFactory Copy contructor");
 	magnetMap.insert(copyMagnetFactory.magnetMap.begin(), copyMagnetFactory.magnetMap.end());
@@ -67,7 +67,7 @@ MagnetFactory::~MagnetFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-                    if (pvStruct.second.EVID)
+					if (pvStruct.second.EVID)
 					{
 						magnet.second.epicsInterface->removeSubscription(pvStruct.second);
 						ca_flush_io();
@@ -98,7 +98,7 @@ void MagnetFactory::populateMagnetMap()
 	// Now we go through and select only the magnets that correspond to the correct machineArea
 	cutMagnetMapByMachineAreas();
 
-	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map, found ", magnetMap.size()," magnets objects" );
+	messenger.printDebugMessage("MagnetFactory has finished populating the magnet map, found ", magnetMap.size(), " magnets objects");
 }
 
 void MagnetFactory::cutMagnetMapByMachineAreas()
@@ -109,6 +109,9 @@ void MagnetFactory::cutMagnetMapByMachineAreas()
 		// flag for if we should erase this entry, default to true 
 		bool should_erase = true;
 		// now we loop over every area in machineAreas and checl against isInMachineArea
+
+		messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
+
 		for (auto&& machineArea : machineAreas)
 		{
 			// if this returns true then we should keep the magnet and can break out the for loop 
@@ -117,10 +120,17 @@ void MagnetFactory::cutMagnetMapByMachineAreas()
 				should_erase = false;
 				break;
 			}
+			else
+			{
+
+			}
+
+		
 		}
 		// if should_erase is still true, erase object from  magnetMap
 		if (should_erase)
 		{
+			messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
 			it = magnetMap.erase(it); //  m.erase(it++);    
 		}
 		else
@@ -153,57 +163,28 @@ void MagnetFactory::setupChannels()
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}
-	/*messenger.printMessage("caFlushIO");
-	int status = EPICSInterface::caFlushIO("ca_create_channel");
-	switch (status)
-	{
-	case ECA_NORMAL:
-		messenger.printMessage("success");
-		break;
-	case ECA_TIMEOUT:
-		messenger.printMessage("timeout");
-		break;
-	case ECA_BADTYPE:
-		messenger.printMessage("Invalid DBR_XXXX type");
-		break;
-	case ECA_BADCHID:
-		messenger.printMessage("Corrupted CHID");
-		break;
-	case ECA_BADCOUNT:
-		messenger.printMessage("Requested count larger than native element count");
-		break;
-	case ECA_GETFAIL:
-		messenger.printMessage("A local database get failed");
-		break;
-	case ECA_NORDACCESS:
-		messenger.printMessage("Read access denied");
-		break;
-	case ECA_DISCONN:
-		messenger.printMessage("Unable to allocate memory");
-		break;
-	default:
-		messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
-	}*/
-
 	EPICSInterface::sendToEPICS();
-
+	messenger.printMessage("Checking CHID state for conenction errors.");
+	size_t error_count = 0;
 	for (auto& magnet : magnetMap)
 	{
 		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
 		for (auto& pv : pvStructs)
 		{
-			// thsi is connecting to a CHID
+			++error_count;
+			// this is connecting to a CHID
 			channel_state state = ca_state(pv.second.CHID);
 			switch (state)
 			{
 			case cs_never_conn:
-				messenger.printMessage(pv.second.fullPVName," cs_never_conn");
+				messenger.printMessage(pv.second.fullPVName, " cs_never_conn");
 				break;
 			case cs_prev_conn:
 				messenger.printMessage(pv.second.fullPVName, " cs_prev_conn");
 				break;
 			case cs_conn:
-				messenger.printMessage(pv.second.fullPVName, " cs_conn");
+				--error_count;
+				//messenger.printMessage(pv.second.fullPVName, " cs_conn");
 				break;
 			case cs_closed:
 				messenger.printMessage(pv.second.fullPVName, " cs_closed");
@@ -213,9 +194,7 @@ void MagnetFactory::setupChannels()
 			}
 		}
 	}
-	// now check all CHID
-
-
+	messenger.printMessage("Checking CHID state for connection errors... Found ", error_count, " errors.");
 }
 
 
@@ -247,7 +226,7 @@ bool MagnetFactory::setup(const std::string& version, const boost::python::list&
 {
 	return setup(version, to_std_vector<TYPE>(machineAreas));
 }
-bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& machineAreas)
+bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas)
 {
 	MagnetFactory::machineAreas = machineAreas;
 	messenger.printDebugMessage("Magnet Factory setup with Machine_Areas = ", GlobalFunctions::toString(MagnetFactory::machineAreas));
@@ -256,16 +235,13 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
 		return true;
 	}
-	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
-	//std::cout << "populateMagnetMap() fin" << std::endl;;
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
 	// 
-	//convertConfigStringsToGlobalTypeEnums();
 	setupChannels();
 	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
 	/*
@@ -274,7 +250,6 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 	for (auto& magnet : magnetMap)
 	{
 		//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
-		//std::cout << "magnet.first = " << magnet.first << std::endl;
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
 		*/
@@ -294,7 +269,7 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 				//messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
 				//	"write", std::to_string(ca_write_access(pv.second.CHID)),
 				//	"state", std::to_string(ca_state(pv.second.CHID)));
-				if(pv.second.monitor)
+				if (pv.second.monitor)
 				{
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
 				}
@@ -302,15 +277,13 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 			else
 			{
 				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
-				//hasBeenSetup = false;
-				//return hasBeenSetup;
 			}
 		}
 		int status = EPICSInterface::caFlushIO("ca_create_subscription");
 		switch (status)
 		{
 		case ECA_NORMAL:
-				messenger.printMessage("success");
+			messenger.printMessage("success");
 			break;
 		case ECA_TIMEOUT:
 			messenger.printMessage("timeout");
@@ -337,7 +310,6 @@ bool MagnetFactory::setup(const std::string& version,const std::vector<TYPE>& ma
 			messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
 		}
 	}
-
 	hasBeenSetup = true;
 	//std::cout << "hasBeenSetup = true " << std::endl;
 	return hasBeenSetup;
@@ -406,6 +378,112 @@ std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 }
 
 
+
+
+
+bool MagnetFactory::isAType(const std::string& name, const TYPE type)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMagnetType() == type;
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getSETI cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+bool MagnetFactory::isAQuad(const std::string& name)const
+{
+	return isAType(name, TYPE::QUADRUPOLE);
+}
+bool MagnetFactory::isADip(const std::string& name)const
+{
+	return isAType(name, TYPE::DIPOLE);
+}
+bool MagnetFactory::isASol(const std::string& name)const
+{
+	return isAType(name, TYPE::SOLENOID);
+}
+bool MagnetFactory::isABSol(const std::string& name)const
+{
+	return isAType(name, TYPE::SOLENOID);
+}
+bool MagnetFactory::isAVCor(const std::string& name)const
+{
+	return isAType(name, TYPE::VERTICAL_CORRECTOR);
+}
+bool MagnetFactory::isAHCor(const std::string& name)const
+{
+	return isAType(name, TYPE::HORIZONTAL_CORRECTOR);
+}
+bool MagnetFactory::isACor(const std::string& name)const
+{
+	return isAVCor(name) || isAHCor(name);
+}
+
+
+double MagnetFactory::getMinI(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMinI();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getMinI cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getMinIs(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMinI(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMinIs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMinIs(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllMinI() const
+{
+	return getMinIs(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllMinI_Py() const
+{
+	return to_py_dict<std::string, double>(getAllMinI());
+}
+// get max I 
+double MagnetFactory::getMaxI(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMaxI();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getMinI cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getMaxIs(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getMaxI(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMaxIs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMaxIs(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllMaxI() const
+{
+	return getMaxIs(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllMaxI_Py() const
+{
+	return to_py_dict<std::string, double>(getAllMaxI());
+}
 
 
 // GET MAGNET OBJECT  FUNCTIONS
@@ -626,7 +704,7 @@ boost::python::dict MagnetFactory::getAliases_Py2(const boost::python::list& nam
 std::string MagnetFactory::getManufacturer(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
-	if(GlobalFunctions::entryExists(magnetMap, fullName))
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
 		return magnetMap.at(fullName).getManufacturer();
 	}
@@ -635,7 +713,7 @@ std::string MagnetFactory::getManufacturer(const std::string& name) const
 std::map<std::string, std::string> MagnetFactory::getManufacturer(const std::vector<std::string>& names) const
 {
 	std::map<std::string, std::string> return_map;
-	for(auto& name : names)
+	for (auto& name : names)
 	{
 		return_map[name] = getManufacturer(name);
 	}
@@ -653,18 +731,18 @@ boost::python::dict MagnetFactory::getManufacturer_Py(const boost::python::list&
 //boost::python::dict MagnetFactory::getManufacturerPy(const boost::python::list& name) const;
 //
 
-std::string MagnetFactory::getMagnetType(const std::string& name) const
+TYPE MagnetFactory::getMagnetType(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
 		return magnetMap.at(fullName).getMagnetType();
 	}
-	return GlobalConstants::DUMMY_NAME;
+	return TYPE::UNKNOWN_TYPE;
 }
-std::map<std::string, std::string> MagnetFactory::getMagnetType(const std::vector<std::string>& names) const
+std::map<std::string, TYPE> MagnetFactory::getMagnetType(const std::vector<std::string>& names) const
 {
-	std::map<std::string, std::string> return_map;
+	std::map<std::string, TYPE> return_map;
 	for (auto&& name : names)
 	{
 		return_map[name] = getMagnetType(name);
@@ -673,7 +751,7 @@ std::map<std::string, std::string> MagnetFactory::getMagnetType(const std::vecto
 }
 boost::python::dict MagnetFactory::getMagnetType_Py(const boost::python::list& names) const
 {
-	return to_py_dict<std::string, std::string>(getMagnetType(to_std_vector<std::string>(names)));
+	return to_py_dict<std::string, TYPE>(getMagnetType(to_std_vector<std::string>(names)));
 }
 
 
@@ -795,7 +873,7 @@ std::map<std::string, std::vector<double>> MagnetFactory::getDegaussValues(const
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getDegaussValuesMulti_Py(const boost::python::list & names) const
+boost::python::dict MagnetFactory::getDegaussValuesMulti_Py(const boost::python::list& names) const
 {
 	return to_py_dict<std::string, std::vector<double>>(getDegaussValues(to_std_vector<std::string>(names)));
 }
@@ -896,7 +974,7 @@ std::map<std::string, double> MagnetFactory::setREADITolerance(const std::vector
 	return r;
 }
 boost::python::dict MagnetFactory::setREADITolerance_Py(const boost::python::list& names, const double value)
-{	
+{
 	return to_py_dict <std::string, double>(setREADITolerance(to_std_vector<std::string>(names), value));
 }
 
@@ -913,7 +991,7 @@ double MagnetFactory::getMagneticLength(const std::string& name) const
 std::map<std::string, double> MagnetFactory::getMagneticLength(const std::vector<std::string>& names) const
 {
 	std::map<std::string, double> return_map;
-	for(auto&& name : names)
+	for (auto&& name : names)
 	{
 		return_map[name] = getMagneticLength(name);
 	}
@@ -1008,7 +1086,7 @@ std::map<std::string, STATE> MagnetFactory::SETI(const std::map<std::string, dou
 }
 boost::python::dict MagnetFactory::SETI_Py(boost::python::dict& namesAndCurrentsDict)
 {
-	return to_py_dict<std::string, STATE>(SETI(to_std_map<std::string,double>(namesAndCurrentsDict)));
+	return to_py_dict<std::string, STATE>(SETI(to_std_map<std::string, double>(namesAndCurrentsDict)));
 }
 std::map<std::string, STATE> MagnetFactory::SETIAllZero()
 {
@@ -1068,7 +1146,7 @@ std::map<std::string, STATE> MagnetFactory::switchOff(const std::vector<std::str
 }
 boost::python::dict MagnetFactory::switchOff_Py(const boost::python::list& names)
 {
-	return to_py_dict<std::string,STATE>(switchOff(to_std_vector<std::string>(names) ));
+	return to_py_dict<std::string, STATE>(switchOff(to_std_vector<std::string>(names)));
 }
 
 
@@ -1121,17 +1199,17 @@ bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, c
 	std::map<std::string, std::map<std::string, std::string> > magnet_data_to_write;
 
 	// dburt_to_write.magnetstates.magnetStatesMap
-		
+
 	//std::map<std::string, magnetState>::iterator magnetStatesMap_it = dburt_to_write.magnetstates.magnetStatesMap.begin();
 
-	for(auto&& mag_state : dburt_to_write.magnetstates.magnetStatesMap)
+	for (auto&& mag_state : dburt_to_write.magnetstates.magnetStatesMap)
 	{
 		magnet_data.clear();
 		magnet_data[MagnetRecords::SETI] = std::to_string(mag_state.second.seti);
 		magnet_data[MagnetRecords::READI] = std::to_string(mag_state.second.readi);
 		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psuState);
 		magnet_data_to_write[mag_state.first] = magnet_data;
-	} 
+	}
 	YAML::Node data_node(magnet_data_to_write);
 	fout << data_node;
 	messenger.printDebugMessage("writeDBURT generated DBURT at ", full_path);
@@ -1152,7 +1230,7 @@ dburt MagnetFactory::readDBURT(const std::string& filePath, const std::string& f
 dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) const
 {
 	std::pair<bool, std::string> r = isDBURTFileAlias(full_path);
-	if(r.first)
+	if (r.first)
 	{
 		messenger.printDebugMessage(full_path, " is a dburt alias");
 		boost::filesystem::path alias_path(r.second);
@@ -1164,7 +1242,7 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 		//std::cout << full_path << " is NOT dburt alias" << std::endl;
 	}
 
-	
+
 	dburt read_dburt;
 	std::ifstream fileInput;
 	fileInput = std::ifstream(full_path.string());
@@ -1208,7 +1286,7 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 				else if (MagnetRecords::READI == record)
 				{
 					//std::cout << record << " is " << MagnetRecords::READI << std::endl;
-					mag_state_to_fill.readi= it2.second.as<double>();
+					mag_state_to_fill.readi = it2.second.as<double>();
 				}
 				else if (MagnetRecords::RPOWER == record)
 				{
@@ -1287,7 +1365,7 @@ bool MagnetFactory::setMagnetState(const magnetState& ms)
 	return false;
 }
 
-std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates & ms)
+std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates& ms)
 {
 	std::cout << "applyMagnetStates " << std::endl;
 	std::map<std::string, bool> r;
@@ -1331,7 +1409,7 @@ bool MagnetFactory::isMagnetStateEqualDBURT(const std::string& fileName)
 	//}
 
 	//for(auto i = 0; i< )
-	
+
 	return false;
 }
 

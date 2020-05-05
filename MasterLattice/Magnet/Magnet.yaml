@@ -12,7 +12,7 @@ properties:
   degauss_tolerance: 0.1
   degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
   field_integral_coefficients: "-0.002065291,0.037340159,7.863201936,0.211661623"
-  hardware_type: Magnet
+  hardware_type: MAGNET
   machine_area: UNDEFINED
   mag_set_max_wait_time: 45.0
   mag_type: UNDEFINED
@@ -25,3 +25,5 @@ properties:
   position: 17.859
   ri_tolerance: 0.001
   serial_number: EBTFDIM03 
+  min_i: -99999999.99999999
+  max_i: 99999999.99999999

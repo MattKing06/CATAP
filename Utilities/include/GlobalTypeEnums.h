@@ -40,10 +40,11 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 										(MAGNET)
                                         (QUADRUPOLE)
                                            (DIPOLE)
-                                           (HVCOR)
-                                           (VCOR)
-                                           (HCOR)
+                                        //   (HVCOR) is there such thing as an HVCorr ??? 
+                                           (VERTICAL_CORRECTOR)
+                                           (HORIZONTAL_CORRECTOR)
 										   (SOLENOID)
+										   (BUCKING_SOLENOID)
 							/// machine areas  are these "types" ?? YES!!
 										(UNKNOWN_AREA)
 										(ALL_VELA_CLARA)

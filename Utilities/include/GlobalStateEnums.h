@@ -37,10 +37,11 @@
 
 
 /*
-		 **************** README *********************
-		 IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToSateMap in GlobalConstants.h
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToSateMap in GlobalConstants.h			
 */
-
 /*! @addtogroup utils*/
 /*!@{*/
 DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
@@ -48,6 +49,7 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE, (OFF)
 //(ERROR) !!YOU CAN@T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
 (UNKNOWN_NAME)
 (SUCCESS)
+(TIMING)
 (OFFLINE)
 (PHYSICAL)
 (VIRTUAL)

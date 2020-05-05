@@ -164,9 +164,9 @@ namespace GlobalFunctions {
 		case TYPE::CLARA_PH1:
 			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V}, area);
 		case TYPE::CLARA_2_BA1:
-			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::BA1}, area);
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::INJ, TYPE::BA1}, area);
 		case TYPE::CLARA_2_BA1_BA2:
-			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::BA1, TYPE::BA2}, area);
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::INJ, TYPE::BA1, TYPE::BA2}, area);
 		}
 		return false;
 	}

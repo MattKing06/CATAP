@@ -12,10 +12,10 @@ properties:
   degauss_tolerance: 0.1
   degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
   field_integral_coefficients: "-2.28625597225573E-05,0.000310696398249702,0.103519837397042,0.00104459623600727"
-  hardware_type: Magnet
-  machine_area: UNDEFINED
+  hardware_type: MAGNET
+  machine_area: INJ
   mag_set_max_wait_time: 45.0
-  mag_type: QUAD
+  mag_type: QUADRUPOLE
   magnetic_length: 125.223958037202
   manufacturer: Scanditronix
   name: EBT-INJ-MAG-QUAD-05
@@ -24,3 +24,5 @@ properties:
   position: 4.845
   ri_tolerance: 0.001
   serial_number: EBTFQ2M05
+  min_i : -10.5
+  max_i : 10.5
