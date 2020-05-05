@@ -1,0 +1,11 @@
+controls_information:
+    PV: true
+    pv_record_map:
+        Sta: EBT-INJ-VAC-IMG-07:Sta
+        P: EBT-INJ-VAC-IMG-07:P
+properties:
+    machine_area: INJ
+    hardware_type: IMG
+    name: EBT-INJ-VAC-IMG-07
+    virtual_name: VM-EBT-INJ-VAC-IMG-07
+    name_alias: "IMG-07"
