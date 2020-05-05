@@ -18,19 +18,23 @@ IMG::IMG()
 }
 
 IMG::IMG(const std::map<std::string, std::string>& paramMap, STATE mode) : Hardware(paramMap, mode),
+epicsInterface(boost::make_shared<EPICSIMGInterface>(EPICSIMGInterface())),
 state(std::make_pair(epicsTimeStamp(), STATE::ERR)),
 pressure(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 {
 	setPVStructs();
-	epicsInterface = boost::make_shared<EPICSIMGInterface>(EPICSIMGInterface());
-	epicsInterface->ownerName = hardwareName;
 	messenger = LoggingSystem(true, true);
+	// convert value for YAML key "name_aliases", to vector of strings and set equal to memebr variable aliases
+	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+	// convert yaml mag_type strings to CATAP.TYPE enum
 }
 
 IMG::IMG(const IMG& copyIMG):
 	Hardware(copyIMG),
 	state(copyIMG.state),
-	pressure(copyIMG.pressure)
+	pressure(copyIMG.pressure),
+	aliases(copyIMG.aliases),
+	epicsInterface(copyIMG.epicsInterface)
 {
 }
 
