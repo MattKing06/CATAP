@@ -490,9 +490,9 @@ boost::python::dict MagnetFactory::getAllMaxI_Py() const
 
 // GET MAGNET OBJECT  FUNCTIONS
 //
-Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
+Magnet& MagnetFactory::getMagnet(const std::string& magnetName)
 {
-	std::string full_name = getFullName(fullMagnetName);
+	std::string full_name = getFullName(magnetName);
 	if (GlobalFunctions::entryExists(magnetMap, full_name))
 	{
 		return magnetMap.at(full_name);
@@ -1072,8 +1072,11 @@ STATE MagnetFactory::SETI(const std::string& name, const double& value)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
 	{
-		magnetMap.at(name).SETI(value);
-		return STATE::SUCCESS;
+		if (magnetMap.at(name).SETI(value))
+		{
+			return STATE::SUCCESS;
+		}
+		return STATE::FAIL;
 	}
 	return STATE::UNKNOWN_NAME;
 }
@@ -1109,8 +1112,11 @@ STATE MagnetFactory::switchOn(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
 	{
-		magnetMap.at(name).switchOn();
-		return STATE::SUCCESS;
+		if (magnetMap.at(name).switchOn())
+		{
+			return STATE::SUCCESS;
+		}
+		return STATE::FAIL;
 	}
 	return STATE::UNKNOWN_NAME;
 }
@@ -1132,8 +1138,11 @@ STATE MagnetFactory::switchOff(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
 	{
-		magnetMap.at(name).switchOff();
-		return STATE::SUCCESS;
+		if (magnetMap.at(name).switchOff())
+		{
+			return STATE::SUCCESS;
+		}
+		return STATE::FAIL;
 	}
 	return STATE::UNKNOWN_NAME;
 }
@@ -1332,11 +1341,11 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 
 std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
 {
-	messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path.string());
+	messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path);
 	std::ifstream fileInput;
-	fileInput = std::ifstream(full_path.string());
+	fileInput = std::ifstream(full_path);
 	YAML::Parser parser(fileInput);
-	YAML::Node file_data = YAML::LoadFile(full_path.string());
+	YAML::Node file_data = YAML::LoadFile(full_path);
 
 	std::pair<bool, std::string> r(false, "");
 
@@ -1407,7 +1416,6 @@ bool MagnetFactory::applyDBURT(const std::string& fileName)
 	auto apply_result = applyMagnetStates(db.magnetstates, types);
 	return true;
 }
-
 bool MagnetFactory::applyDBURTQuadOnly(const std::string& fileName)
 {
 	std::vector<TYPE> types{ TYPE::QUADRUPOLE};
