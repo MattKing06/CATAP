@@ -23,22 +23,35 @@
 	These can be used within any class and were written for ease-of-use.
 */
 
-namespace GlobalFunctions{
+namespace GlobalFunctions {
 
-    /*
-            We often check if entries exist in maps,
-            use these functiOns to do it safely
-            be careful to pick the correct One!
-        */
-    template<class T>
-    bool entryExists(const std::map<std::string, T>& m, const std::string& name)
-    {
-        bool ret = false;
-        auto it = m.find(name);
-        if (it != m.end())
-            ret = true;
-        return ret;
-    }
+	/*
+			We often check if entries exist in maps,
+			use these functiOns to do it safely
+			be careful to pick the correct One!
+		*/
+	template<class T>
+	bool entryExists(const std::map<std::string, T>& m, const std::string& name)
+	{
+		bool ret = false;
+		auto it = m.find(name);
+		if (it != m.end())
+			ret = true;
+		return ret;
+	}
+
+	template<class T>
+	bool entryExists(const std::vector<T>& v, const T& item)
+	{
+		if (std::find(v.begin(), v.end(), item) != v.end()) {
+			/* v contains x */
+			return true;
+		}
+		else {
+			/* v does not contain x */
+			return false;
+		}
+	}
     //template<class T>
     //bool entryExists(const std::map<std::string, T>& m, std::string& name)
     //{
@@ -170,18 +183,7 @@ namespace GlobalFunctions{
 	// isInMahineArea
 
 
-	template<class T>
-	bool entryExists(const std::vector<T>& v, const T& item)
-	{
-		if (std::find(v.begin(), v.end(), item) != v.end()) {
-			/* v contains x */
-			return true;
-		}
-		else {
-			/* v does not contain x */
-			return false;
-		}
-	}
+
 
 	extern bool isInMachineArea(TYPE testArea, TYPE area);
 

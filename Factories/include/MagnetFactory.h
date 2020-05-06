@@ -245,9 +245,8 @@ class MagnetFactory
 		magnetState getMagnetState(const std::string& name)const;
 		magnetStates getMagnetStates() const;
 		bool setMagnetState(const magnetState& ms) ;
-		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms);
-
-					   
+		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types);
+							   
 		/// Write a DBURT
 		bool writeDBURT(const std::string& fileName)const;
 		bool writeDBURT(const std::string& fileName, const std::string& commment)const;
@@ -257,7 +256,15 @@ class MagnetFactory
 		dburt readDBURT(const std::string& fileName)const;
 		dburt readDBURT(const std::string& filePath, const std::string& fileName)const;
 
-		bool readAndApplyDBURT(const std::string& fileName);
+
+
+		bool applyDBURT(const std::string& filePath, const std::string& fileName);
+		bool applyDBURTQuadOnly(const std::string& filePath,  const std::string& fileName);
+		bool applyDBURTCorOnly(const std::string& filePath, const std::string& fileName);
+
+		bool applyDBURT(const std::string& fileName);
+		bool applyDBURTQuadOnly(const std::string& fileName);
+		bool applyDBURTCorOnly(const std::string& fileName);
 
 		bool isMagnetStateEqualDBURT(const std::string& fileName);
 

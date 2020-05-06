@@ -62,7 +62,7 @@ void EPICSMagnetInterface::updateGETSETI(const struct event_handler_args args)
 void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 {
 	// TODO: this seems to get called twice on startup, often the first time the number returned is totally incorrect, 
-	// on the second callback the correct number is returned, maybe some weird EPIPCS thing
+	// on the second callback the correct number is returned, maybe some weird EPIPCS thing?
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
 	// we get the value and then manually convert to a STATE 
 	std::pair<epicsTimeStamp, unsigned short> pairToUpdate = getTimeStampUShortPair(args);
@@ -71,11 +71,13 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 	{
 		case GlobalConstants::zero_ushort: recastMagnet->psuState.second = STATE::OFF; break;
 		case GlobalConstants::one_ushort:  recastMagnet->psuState.second = STATE::ON; break;
+		// TODO: WTF is going on here, thsi is from the virtual machine, but is only visiible in CATAP  ??
+		case 256:  recastMagnet->psuState.second = STATE::ON; break;
 		default: recastMagnet->psuState.second = STATE::ERR;
 		//messenger.printDebugMessage("!!WARNING!! EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ",a);
 	}
-	//messenger.printDebugMessage("EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-	//													+ ENUM_TO_STRING(recastMagnet->psuState.second));
+	messenger.printDebugMessage("EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ", 
+								 pairToUpdate.second, " = " + ENUM_TO_STRING(recastMagnet->psuState.second));
 }
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)

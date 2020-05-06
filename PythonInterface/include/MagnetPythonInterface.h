@@ -125,6 +125,13 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		bool (MagnetFactory::* setup_ListArg)(const boost::python::list&) = &MagnetFactory::setup;
 		bool (MagnetFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &MagnetFactory::setup;
 
+		bool (MagnetFactory::* applyDBURT_filename)(const std::string&) = &MagnetFactory::applyDBURT;
+		bool (MagnetFactory::* applyDBURTQuadOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
+		bool (MagnetFactory::* applyDBURTCorOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTCorOnly;
+		bool (MagnetFactory::* applyDBURT_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURT;
+		bool (MagnetFactory::* applyDBURTQuadOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
+		bool (MagnetFactory::* applyDBURTCorOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTCorOnly;
+
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
 
@@ -235,15 +242,22 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		//bool readAndApplyDBURT(const std::string & fileName);
 		//bool isMagnetStateEqualDBURT(const std::string & fileName);
 		//std::string getFullName(const std::string & name_to_check) const;
-		
-
 
 			.def("readDBURT", readDBURTT_file)
 			.def("readDBURT", readDBURT_path_file)
 			.def("writeDBURT", writeDBURT_file)
 			.def("writeDBURT", writeDBURT_file_comment)
 			.def("writeDBURT", writeDBURT_path_file_comment)
-			.def("readAndApplyDBURT", &MagnetFactory::readAndApplyDBURT)
+			
+			.def("applyDBURT",			applyDBURT_filename)
+			.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filename)
+			.def("applyDBURTCorOnly",	applyDBURTCorOnly_filename)
+
+			.def("applyDBURT",			applyDBURT_filepath_filename)
+			.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filepath_filename)
+			.def("applyDBURTCorOnly",	applyDBURTCorOnly_filepath_filename)
+
+
 			.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
 			.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
 			.def("messagesOn", &MagnetFactory::messagesOn)

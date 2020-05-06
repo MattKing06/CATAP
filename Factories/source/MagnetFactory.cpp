@@ -1,6 +1,8 @@
 #include "MagnetFactory.h"
 #include <map>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <fstream>
 //#include <filesystem> ?? not using  c++ 17 ???
 #include <cadef.h>
@@ -1205,7 +1207,13 @@ bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, c
 	for (auto&& mag_state : dburt_to_write.magnetstates.magnetStatesMap)
 	{
 		magnet_data.clear();
-		magnet_data[MagnetRecords::SETI] = std::to_string(mag_state.second.seti);
+		
+		// FIX THE NUMEBR OF DECIMAL PLACES IN SETI TO 3 
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(3) << mag_state.second.seti;
+		std::string s = stream.str();
+
+		magnet_data[MagnetRecords::SETI] = stream.str();;
 		magnet_data[MagnetRecords::READI] = std::to_string(mag_state.second.readi);
 		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psuState);
 		magnet_data_to_write[mag_state.first] = magnet_data;
@@ -1229,20 +1237,23 @@ dburt MagnetFactory::readDBURT(const std::string& filePath, const std::string& f
 }
 dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) const
 {
-	std::pair<bool, std::string> r = isDBURTFileAlias(full_path);
+	messenger.printDebugMessage("readDBURTFile passed " + full_path.string());
+	// Check if BURT file  magnet data or alias
+	std::pair<bool, std::string> r = isDBURTFileAlias(full_path.string());
+
+
 	if (r.first)
 	{
-		messenger.printDebugMessage(full_path, " is a dburt alias");
+		messenger.printDebugMessage(full_path.string(), " is a dburt alias");
 		boost::filesystem::path alias_path(r.second);
 		//TODO potential infinte loop ??? 
 		return readDBURTFile(alias_path);
 	}
 	else
 	{
-		//std::cout << full_path << " is NOT dburt alias" << std::endl;
+		messenger.printDebugMessage(full_path.string(), " is a dburt data file");
 	}
-
-
+	
 	dburt read_dburt;
 	std::ifstream fileInput;
 	fileInput = std::ifstream(full_path.string());
@@ -1267,6 +1278,9 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 					read_dburt.comment = it2.second.as<std::string>();
 				}
 			}
+
+			messenger.printDebugMessage("timestamp: ", read_dburt.timestamp);
+			messenger.printDebugMessage("comment: ", read_dburt.comment);
 		}
 		else // If the string **must** be a magnet name
 		{
@@ -1316,8 +1330,9 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 	return read_dburt;
 }
 
-std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const boost::filesystem::path& full_path)const
+std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
 {
+	messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path.string());
 	std::ifstream fileInput;
 	fileInput = std::ifstream(full_path.string());
 	YAML::Parser parser(fileInput);
@@ -1331,8 +1346,10 @@ std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const boost::filesy
 		{
 			r.first = true;
 			r.second = it.second.as<std::string>();
+			messenger.printDebugMessage("isDBURTFileAlias found FILE_ALIAS pointing to " + r.second);
 		}
 	}
+	messenger.printDebugMessage("isDBURTFileAlias returning ", r.first);
 	return r;
 }
 
@@ -1365,26 +1382,82 @@ bool MagnetFactory::setMagnetState(const magnetState& ms)
 	return false;
 }
 
-std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates& ms)
+std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types)
 {
 	std::cout << "applyMagnetStates " << std::endl;
 	std::map<std::string, bool> r;
 	for (auto&& mag_state : ms.magnetStatesMap)
 	{
-		std::cout << "APPLY magnet State for " << mag_state.second.name << std::endl;
-		r[mag_state.first] = setMagnetState(mag_state.second);
+		if (GlobalFunctions::entryExists(types, getMagnetType(mag_state.second.name)))
+		{
+			std::cout << "APPLY magnet State for " << mag_state.second.name << std::endl;
+			r[mag_state.first] = setMagnetState(mag_state.second);
+		}
 	}
 	return r;
 }
 
-bool MagnetFactory::readAndApplyDBURT(const std::string& fileName)
+bool MagnetFactory::applyDBURT(const std::string& fileName)
 {
-	std::cout << "readAndApplyDBURT " << std::endl;
+	std::vector<TYPE> types {TYPE::QUADRUPOLE, TYPE::DIPOLE, TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR,
+		TYPE::SOLENOID, TYPE::BUCKING_SOLENOID};
+	std::cout << "applyDBURT " << std::endl;
 	std::map<std::string, std::map<std::string, STATE>> r;
 	auto db = readDBURT(fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates);
+	auto apply_result = applyMagnetStates(db.magnetstates, types);
 	return true;
 }
+
+bool MagnetFactory::applyDBURTQuadOnly(const std::string& fileName)
+{
+	std::vector<TYPE> types{ TYPE::QUADRUPOLE};
+	std::cout << "applyDBURTQuadOnly " << std::endl;
+	std::map<std::string, std::map<std::string, STATE>> r;
+	auto db = readDBURT(fileName);
+	auto apply_result = applyMagnetStates(db.magnetstates, types);
+	return true;
+}
+bool MagnetFactory::applyDBURTCorOnly(const std::string& fileName)
+{
+	std::vector<TYPE> types{ TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR};
+	std::cout << "applyDBURTCorOnly " << std::endl;
+	std::map<std::string, std::map<std::string, STATE>> r;
+	auto db = readDBURT(fileName);
+	auto apply_result = applyMagnetStates(db.magnetstates, types);
+	return true;
+}
+
+
+bool MagnetFactory::applyDBURT(const std::string& filePath, const std::string& fileName)
+{
+	std::vector<TYPE> types{ TYPE::QUADRUPOLE, TYPE::DIPOLE, TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR,
+		TYPE::SOLENOID, TYPE::BUCKING_SOLENOID };
+	std::cout << "applyDBURT fp fn" << std::endl;
+	std::map<std::string, std::map<std::string, STATE>> r;
+	auto db = readDBURT(filePath, fileName);
+	auto apply_result = applyMagnetStates(db.magnetstates, types);
+	return true;
+}
+bool MagnetFactory::applyDBURTQuadOnly(const std::string& filePath, const std::string& fileName)
+{
+	std::vector<TYPE> types{ TYPE::QUADRUPOLE };
+	std::cout << "applyDBURTQuadOnly " << std::endl;
+	std::map<std::string, std::map<std::string, STATE>> r;
+	auto db = readDBURT(filePath,fileName);
+	auto apply_result = applyMagnetStates(db.magnetstates, types);
+	return true;
+}
+bool MagnetFactory::applyDBURTCorOnly(const std::string& filePath, const std::string& fileName)
+{
+	std::vector<TYPE> types{ TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR };
+	std::cout << "applyDBURTCorOnly " << std::endl;
+	std::map<std::string, std::map<std::string, STATE>> r;
+	auto db = readDBURT(filePath, fileName);
+	auto apply_result = applyMagnetStates(db.magnetstates, types);
+	return true;
+}
+
+
 
 
 bool MagnetFactory::isMagnetStateEqualDBURT(const std::string& fileName)
