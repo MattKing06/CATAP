@@ -18,7 +18,8 @@ typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
 /// one-stop shop for magnet state
 struct magnetStates
-{   // magnetStates a default constructor
+{   
+	/*! Default constructor call for magnetStates */
 	magnetStates():
 		numMags(GlobalConstants::zero_sizet) 
 		{};
@@ -28,7 +29,7 @@ struct magnetStates
 };
 /// DBURTs are magnet-states plus comment and timestamp 
 struct dburt
-{   // proviude a default constructor
+{   /*! Default constructor call for dburt */
 	dburt() :
 		comment("NO COMMENT"),
 		timestamp("NO TIME")
