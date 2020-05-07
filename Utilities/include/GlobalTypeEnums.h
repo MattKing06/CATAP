@@ -45,6 +45,11 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
                                            (HORIZONTAL_CORRECTOR)
 										   (SOLENOID)
 										   (BUCKING_SOLENOID)
+							// magnet PSU polarity switching type 
+										(NR)
+										(BIPOLAR)
+										(NR_GANGED)     /// Yeah NR_GANGED, just when you thought it was already too complicated
+										(POSITIVE_ONLY)
 							/// machine areas  are these "types" ?? YES!!
 										(UNKNOWN_AREA)
 										(ALL_VELA_CLARA)
@@ -64,6 +69,7 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 										 (CLARA_PH1)
 										 (CLARA_2_BA1)
 										 (CLARA_2_BA1_BA2)
+							// M
 							// screen stuff
 										(VELA_PNEUMATIC)
 										(VELA_HV_MOVER)
