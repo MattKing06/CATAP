@@ -40,8 +40,8 @@ MagnetFactory
 ===========================
 ScreenFactory
 ===========================
-.. autoclass:: CATAP.ScreenFactory
-   :members:
+.. automodule:: Screen
+   :members: ScreenFactory
    :undoc-members:
    :show-inheritance:
 

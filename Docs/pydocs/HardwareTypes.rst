@@ -41,8 +41,8 @@ Magnet Class
 ===========================
 Screen Class
 ===========================
-.. autoclass:: CATAP.Screen
-   :members:
+.. automodule:: Screen
+   :members: Screen
    :undoc-members:
 
 ===========================
