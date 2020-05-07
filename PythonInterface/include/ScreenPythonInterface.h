@@ -13,7 +13,8 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 {
 
 	void expose_screen_object() {
-
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Screen>())->to_python_target_type());
+		if (is_registered) return;
 		// bpm exposure
 		boost::python::class_<Screen, boost::python::bases<Hardware>, boost::noncopyable>("Screen", boost::python::no_init)
 			.add_property("name", &Screen::getScreenName)
@@ -146,7 +147,8 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 	}
 	
 	void expose_screen_factory_object() {
-
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ScreenFactory>())->to_python_target_type());
+		if (is_registered) return;
 		//screen Factory Exposure
 		boost::python::class_<ScreenFactory>("ScreenFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())

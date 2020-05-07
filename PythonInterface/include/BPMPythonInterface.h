@@ -11,7 +11,8 @@
 namespace BOOST_PYTHON_BPM_INCLUDE
 {
 	void expose_bpm_object() {
-
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<BPM>())->to_python_target_type());
+		if (is_registered) return;
 		// bpm exposure
 		boost::python::class_<BPM, boost::python::bases<Hardware>, boost::noncopyable>("BPM", boost::python::no_init)
 			.add_property("name", &BPM::getBPMName)
@@ -96,6 +97,8 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 	
 	void expose_bpm_factory_object() {
 
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<BPMFactory>())->to_python_target_type());
+		if (is_registered) return;
 		//bpm Factory Exposure
 		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())

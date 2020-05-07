@@ -12,6 +12,8 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 
 	void expose_rf_heartbeat_object() 
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFHeartbeat>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<RFHeartbeat, boost::python::bases<Hardware>, boost::noncopyable>("RFHeartbeat", boost::python::no_init)
 			.def("debugMessagesOn", &RFHeartbeat::debugMessagesOn)
 			.def("debugMessagesOff", &RFHeartbeat::debugMessagesOff)
@@ -22,6 +24,8 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 	}
 	void expose_rf_heartbeat_factory_object() 
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFHeartbeatFactory>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<RFHeartbeatFactory, boost::noncopyable>("RFHeartbeatFactory", boost::python::no_init)
 			.def("debugMessagesOn", &RFHeartbeatFactory::debugMessagesOn)
 			.def("debugMessagesOff", &RFHeartbeatFactory::debugMessagesOff)
