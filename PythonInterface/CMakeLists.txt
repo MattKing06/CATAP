@@ -125,10 +125,10 @@ foreach(FILE ${SOURCE_FILES})
 	endif(UNIX)
 
 	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
-	set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
 
 
 	if(WIN32)
+		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
 	    set(TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/$<CONFIG>/CATAP/")
 		set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/${LIBFOLDERNAME})
 		set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/${LIBFOLDERNAME})
@@ -157,7 +157,6 @@ foreach(FILE ${SOURCE_FILES})
 			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/> )
 		endforeach(LIBRARY)
 	endif(UNIX)
-
 
 	set_property(TARGET ${LIBNAME} PROPERTY FOLDER "PythonInterface")
 	# need to use Boost_LIBRARY_DIRS variable to move over the dlls to each sub-directory of CATAP, if they are not there.
