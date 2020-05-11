@@ -1,7 +1,7 @@
 TYPES
 ======
 
-.. autoclass:: GlobalTypes
+.. automodule:: GlobalTypes
     :members: TYPE
     :undoc-members:
     
