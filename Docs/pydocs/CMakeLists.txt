@@ -5,6 +5,11 @@ if(UNIX)
   set(SPHINX_DIR = "/usr/bin")
 endif(UNIX)
 
+if (WIN32)
+  set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Docs/pydocs;${CMAKE_MODULE_PATH}")
+  message("ADDED MODULE PATH: " ${CMAKE_MODULE_PATH})
+endif(WIN32)
+
 find_package(Sphinx)
 
 if(NOT DEFINED SPHINX_THEME)
