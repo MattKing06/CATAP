@@ -12,6 +12,8 @@ namespace BOOST_PYTHON_LIGHTING_INCLUDE
 
 	void expose_lighting_object() 
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Lighting>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<Lighting, boost::python::bases<Hardware>, boost::noncopyable>("Lighting", boost::python::no_init)
 			.def("debugMessagesOn", &Lighting::debugMessagesOn)
 			.def("debugMessagesOff", &Lighting::debugMessagesOff)
@@ -22,6 +24,8 @@ namespace BOOST_PYTHON_LIGHTING_INCLUDE
 	}
 	void expose_lighting_factory_object() 
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LightingFactory>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<LightingFactory, boost::noncopyable>("LightingFactory", boost::python::no_init)
 			.def("debugMessagesOn", &LightingFactory::debugMessagesOn)
 			.def("debugMessagesOff", &LightingFactory::debugMessagesOff)

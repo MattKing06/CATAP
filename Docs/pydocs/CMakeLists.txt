@@ -47,4 +47,4 @@ ${SPHINX_EXECUTABLE} -q -b html -c ${BINARY_BUILD_DIR} -d ${SPHINX_CACHE_DIR} ${
 message("LIB NAMES: ${LIBNAMES}")
 add_dependencies(CATAPPyDocs ${LIBNAMES})
 
-set_property(TARGET CATAPPyDocs PROPERTY FOLDER "Documentation")
+set_property(TARGET CATAPPyDocs PROPERTY FOLDER "Docs")

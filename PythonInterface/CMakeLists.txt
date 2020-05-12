@@ -56,7 +56,15 @@ set( TEST_FILES
 
 
 if(WIN32)
-	set(THIRD_PARTY_LIB_DIRS 
+	set(THIRD_PARTY_DEBUG_LIB_DIRS 
+		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-gd-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-gd-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-gd-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_system-vc140-mt-gd-1_63.dll
+		${EPICS_COM_DLL}
+		${EPICS_CA_DLL}
+		)
+	set(THIRD_PARTY_RELEASE_LIB_DIRS 
 		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-1_63.dll
 		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-1_63.dll
 		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-1_63.dll
@@ -115,17 +123,41 @@ foreach(FILE ${SOURCE_FILES})
 	  set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
 	  set_target_properties(${LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}>)
 	endif(UNIX)
+
 	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}/__init__.py)
-	add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP/")
+
+
 	if(WIN32)
 		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
-		set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}>)
+	    set(TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/$<CONFIG>/CATAP/")
+		set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/${LIBFOLDERNAME})
+		set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/${LIBFOLDERNAME})
+		get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
+		get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
+		message("DEBUG OUTPUT DIR: " ${DEBUG_OUTPUT_DIRECTORY})
+		message("RELEASE OUTPUT DIR: " ${RELEASE_OUTPUT_DIRECTORY})
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${DEBUG_OUTPUT_DIRECTORY}/__init__.py)
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${RELEASE_OUTPUT_DIRECTORY}/__init__.py)
+		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" ${TOP_LEVEL_CATAP_DIR})
+		foreach(LIBRARY ${THIRD_PARTY_DEBUG_LIB_DIRS})
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${DEBUG_OUTPUT_DIRECTORY})
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${TOP_LEVEL_CATAP_DIR})
+		endforeach(LIBRARY)
+
+		foreach(LIBRARY ${THIRD_PARTY_RELEASE_LIB_DIRS})
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${RELEASE_OUTPUT_DIRECTORY})
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${TOP_LEVEL_CATAP_DIR})
+		endforeach(LIBRARY)
 	endif(WIN32)
-	foreach(LIBRARY ${THIRD_PARTY_LIB_DIRS})
-		add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}> )
-		add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/> )
-	endforeach(LIBRARY)
+	if (UNIX)
+		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}/__init__.py)
+		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP/")
+		foreach(LIBRARY ${THIRD_PARTY_LIB_DIRS})
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}> )
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/> )
+		endforeach(LIBRARY)
+	endif(UNIX)
+
 	set_property(TARGET ${LIBNAME} PROPERTY FOLDER "PythonInterface")
 	# need to use Boost_LIBRARY_DIRS variable to move over the dlls to each sub-directory of CATAP, if they are not there.
 	# may be best to use the target's LIBRARY_OUTPUT_DIRECTORY...

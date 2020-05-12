@@ -11,4 +11,4 @@ if (DOXYGEN_FOUND)
 					 ${PROJECT_SOURCE_DIR})
 endif(DOXYGEN_FOUND)
 
-set_property(TARGET CATAPDocs PROPERTY FOLDER "Documentation")
+set_property(TARGET CATAPDocs PROPERTY FOLDER "Docs")

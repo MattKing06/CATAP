@@ -12,6 +12,8 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 
 	void expose_rf_modulator_object() 
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFModulator>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<RFModulator, boost::python::bases<Hardware>, boost::noncopyable>("RFModulator", boost::python::no_init)
 			.def("debugMessagesOn", &RFModulator::debugMessagesOn)
 			.def("debugMessagesOff", &RFModulator::debugMessagesOff)
@@ -22,6 +24,8 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 	}
 	void expose_rf_modulator_factory_object() 
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFModulatorFactory>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<RFModulatorFactory, boost::noncopyable>("RFModulatorFactory", boost::python::no_init)
 			.def("debugMessagesOn", &RFModulatorFactory::debugMessagesOn)
 			.def("debugMessagesOff", &RFModulatorFactory::debugMessagesOff)
