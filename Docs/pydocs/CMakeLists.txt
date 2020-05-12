@@ -16,7 +16,7 @@ if(NOT DEFINED SPHINX_THEME_DIR)
 endif()
 if (WIN32)
   if(NOT DEFINED CATAP_LOCATION)
-    set(CATAP_LOCATION ${CMAKE_BINARY_DIR}/PythonInterface/)
+    set(CATAP_LOCATION ${CMAKE_BINARY_DIR}/PythonInterface/Release)
   endif()
 endif(WIN32)
 

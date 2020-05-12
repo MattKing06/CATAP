@@ -1,7 +1,7 @@
 from CATAP.HardwareFactory import *
 
-# create a hardware factory for CLARA hardware
-HF = HardwareFactory(STATE.PHYSICAL)
+# create a hardware factory for Virtual CLARA hardware
+HF = HardwareFactory(STATE.VIRTUAL)
 # turn off messaging
 HF.messagesOff()
 HF.debugMessagesOff()
