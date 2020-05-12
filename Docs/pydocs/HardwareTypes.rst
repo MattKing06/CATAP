@@ -9,12 +9,9 @@ Hardware Types
 ===========================
 Hardware Class
 ===========================
-.. automodule:: HardwareFactory
+.. automodule:: BPM
    :members: Hardware
    :undoc-members:
-
-
-
 
 
 ===========================
