@@ -70,5 +70,4 @@ add_subdirectory(EPICSInterface)
 add_subdirectory(Utilities)
 add_subdirectory(Docs)
 
-message(" C++: '${CMAKE_CXX_COMPILER}'")
-message("Using CMake VERSION: ${CMAKE_VERSION}")
+
