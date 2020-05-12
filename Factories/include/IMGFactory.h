@@ -62,7 +62,7 @@ public:
 	@param name checks the name in the alias map if not full name.
 			and returns the Valve stored in IMGMap at that full name
 	*/
-	IMG& getIMG(const std::string& fullValveName);
+	IMG& getIMG(const std::string& fullIMGName);
 	/*!
 	retrieves the full name of the IMG object from the alias map for IMGs
 	@param[in] nameToCheck :a known name of the valve
