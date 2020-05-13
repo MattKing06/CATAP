@@ -11,7 +11,7 @@ class EPICSLEDInterface;
 
 typedef boost::shared_ptr<EPICSLEDInterface> EPICSLEDInterface_sptr;
 
-class LED : Hardware
+class LED : public Hardware
 {
 public:
 	LED();

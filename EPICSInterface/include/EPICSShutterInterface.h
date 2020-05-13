@@ -2,7 +2,7 @@
 #define EPICS_SHUTTER_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSShutterInterface : EPICSInterface
+class EPICSShutterInterface : public EPICSInterface
 {
 public:
 	EPICSShutterInterface();

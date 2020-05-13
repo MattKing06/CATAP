@@ -2,7 +2,7 @@
 #define EPICS_IMG_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSIMGInterface : EPICSInterface
+class EPICSIMGInterface : public EPICSInterface
 {
 public:
 	EPICSIMGInterface();

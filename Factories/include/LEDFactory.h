@@ -12,9 +12,16 @@ public:
 	LEDFactory(STATE mode);
 	LEDFactory(const LEDFactory& copyFactory);
 	~LEDFactory();
+	LoggingSystem messenger;
 	void setup(std::string version);
 	bool hasBeenSetup;
 	std::map<std::string, LED> LEDMap;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isDebugOn();
+	bool isMessagingOn();
 };
 
 #endif // LED_FACTORY_H_

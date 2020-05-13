@@ -2,7 +2,7 @@
 #define EPICS_LIGHTING_MONITOR_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSLightingInterface : EPICSInterface
+class EPICSLightingInterface : public EPICSInterface
 {
 public:
 	EPICSLightingInterface();

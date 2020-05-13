@@ -11,7 +11,7 @@ class EPICSGeneralMonitorInterface;
 
 typedef boost::shared_ptr<EPICSGeneralMonitorInterface> EPICSGeneralMonitorInterface_sptr;
 
-class GeneralMonitor : Hardware
+class GeneralMonitor : public Hardware
 {
 public:
 	GeneralMonitor();
@@ -25,6 +25,7 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+
 };
 
 

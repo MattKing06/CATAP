@@ -2,7 +2,7 @@
 #define EPICS_LASER_MIRROR_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSLaserMirrorInterface : EPICSInterface
+class EPICSLaserMirrorInterface : public EPICSInterface
 {
 public:
 	EPICSLaserMirrorInterface();

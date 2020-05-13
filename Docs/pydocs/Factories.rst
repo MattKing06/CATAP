@@ -6,8 +6,8 @@ Factories
 ===========================
 HardwareFactory
 ===========================
-.. autoclass:: CATAP.HardwareFactory
-   :members:
+.. automodule:: HardwareFactory
+   :members: HardwareFactory
    :undoc-members:
 
 
@@ -15,8 +15,8 @@ HardwareFactory
 ===========================
 BPMFactory
 ===========================
-.. autoclass:: CATAP.BPMFactory
-   :members:
+.. automodule:: BPM
+   :members: BPMFactory
    :undoc-members:
    :show-inheritance:
 
@@ -24,57 +24,35 @@ BPMFactory
 ===========================
 ChargeFactory
 ===========================
-.. autoclass:: CATAP.ChargeFactory
-   :members:
+.. automodule:: Charge
+   :members: ChargeFactory
    :undoc-members:
    :show-inheritance:
 
 ===========================
 MagnetFactory
 ===========================
-.. autoclass:: CATAP.MagnetFactory
-   :members:
+.. automodule:: Magnet
+   :members: MagnetFactory
    :undoc-members:
    :show-inheritance:
 
 ===========================
 ScreenFactory
 ===========================
-.. autoclass:: CATAP.ScreenFactory
-   :members:
+.. automodule:: Screen
+   :members: ScreenFactory
    :undoc-members:
    :show-inheritance:
 
 ===========================
 ValveFactory
 ===========================
-.. autoclass:: CATAP.ValveFactory
-   :members:
+.. automodule:: Valve
+   :members: ValveFactory
    :undoc-members:
    :show-inheritance:
 
 
-
-
-
-
-.. automodule:: CATAP.HardwareFactory
-    :members:
-
-
-.. automodule:: CATAP.BPMFactory
-    :members:
-
-
-.. automodule:: CATAP.ChargeFactory
-    :members:
-
-
-.. automodule:: CATAP.MagnetFactory
-    :members:
-
-
-.. automodule:: CATAP.ValveFactory
-    :members:
 
 

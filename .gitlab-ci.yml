@@ -10,6 +10,9 @@ before_script:
   - which g++
   - which python3
   - echo $PATH
+  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
+  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
+  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   - ls
 
 cmake:
