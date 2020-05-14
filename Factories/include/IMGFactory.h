@@ -31,9 +31,9 @@ public:
 	~IMGFactory();
 	/*! The kind of IMGFactory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
 	IMG hardware objects when they are created by ConfigReader*/
-	STATE mode;
-	/*! Flag to say whether the ValveFactory setup function has been completed successfully.*/
-	bool setup(const std::string& version);
+	//STATE mode;
+	/*! Flag to say whether the IMGFactory setup function has been completed successfully.*/
+	void setup(std::string version);
 	/*! passes an empty IMGMap to the configReader to be populated by IMG objects that are
 		created from the YAML Config files.*/
 	bool hasBeenSetup;
@@ -105,6 +105,7 @@ private:
 	std::map<std::string, std::string> alias_name_map;
 	IMG dummyIMG;
 	/*access IMG functionality without crashing out when we cannot connect to EPICS.*/
+
 };
 
 #endif // IMG_FACTORY_H_

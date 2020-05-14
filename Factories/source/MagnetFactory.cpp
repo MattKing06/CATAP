@@ -173,7 +173,7 @@ bool MagnetFactory::setup(const std::string& version)
 			}
 			else
 			{
-				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(magnet.first, ":", pv.second.pvRecord, " CANNOT CONNECT TO EPICS");
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
 			}

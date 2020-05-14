@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE(setting_up_valve_factory_and_get_states)
 	auto stateMap = valvFac.getAllValveStates();
 	for (auto&& item : stateMap)
 	{
-		valvFac.messenger.printDebugMessage(item.first, " : ", item.second);
+		valvFac.messenger.printDebugMessage(item.first, " : ", ENUM_TO_STRING(item.second));
 	}
 }
 

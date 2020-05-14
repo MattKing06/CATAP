@@ -9,68 +9,45 @@ Hardware Types
 ===========================
 Hardware Class
 ===========================
-.. autoclass:: CATAP.Hardware
-   :members:
+.. automodule:: BPM
+   :members: Hardware
    :undoc-members:
-
-
-
 
 
 ===========================
 BPM Class
 ===========================
-.. autoclass:: CATAP.BPM
-   :members:
+.. automodule:: BPM
+   :members: BPM
    :undoc-members:
 
 ===========================
 Charge Class
 ===========================
-.. autoclass:: CATAP.Charge
-   :members:
+.. automodule:: Charge
+   :members: Charge
    :undoc-members:
 
 ===========================
 Magnet Class
 ===========================
-.. autoclass:: CATAP.Magnet
-   :members:
+.. automodule:: Magnet
+   :members: Magnet
    :undoc-members:
 
 ===========================
 Screen Class
 ===========================
-.. autoclass:: CATAP.Screen
-   :members:
+.. automodule:: Screen
+   :members: Screen
    :undoc-members:
 
 ===========================
 Vacuum Valve Class
 ===========================
-.. autoclass:: CATAP.Valve
-   :members:
+.. automodule:: Valve
+   :members: Valve
    :undoc-members:
 
 
-
-
-.. automodule:: CATAP.Hardware
-    :members:
-
-
-.. automodule:: CATAP.BPM
-    :members:
-
-
-.. automodule:: CATAP.Charge
-    :members:
-
-
-.. automodule:: CATAP.Magnet
-    :members:
-
-
-.. automodule:: CATAP.Valve
-    :members:
 

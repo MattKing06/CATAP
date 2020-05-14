@@ -11,7 +11,7 @@ class EPICSRFHeartbeatInterface;
 
 typedef boost::shared_ptr<EPICSRFHeartbeatInterface> EPICSRFHeartbeatInterface_sptr;
 
-class RFHeartbeat : Hardware
+class RFHeartbeat : public Hardware
 {
 public:
 	RFHeartbeat();

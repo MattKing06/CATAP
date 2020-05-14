@@ -20,18 +20,30 @@ void Stage::setPVStructs()
 {
 }
 
-void Stage::debugMessagesOn()
-{
-}
-
 void Stage::debugMessagesOff()
 {
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
 }
 
-void Stage::messagesOn()
+void Stage::debugMessagesOn()
 {
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
 }
 
 void Stage::messagesOff()
 {
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Stage::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
 }

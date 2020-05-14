@@ -13,8 +13,15 @@ public:
 	LightingFactory(const LightingFactory& copyFactory);
 	~LightingFactory();
 	void setup(std::string version);
+	LoggingSystem messenger;
 	bool hasBeenSetup;
-	std::map<std::string, Lighting> LightingMap;
+	std::map<std::string, Lighting> lightingMap;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isDebugOn();
+	bool isMessagingOn();
 };
 
 #endif // LIGHTING_FACTORY_H_

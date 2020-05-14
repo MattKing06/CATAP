@@ -2,7 +2,7 @@
 #define EPICS_RF_HEARTBEAT_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSRFHeartbeatInterface : EPICSInterface
+class EPICSRFHeartbeatInterface : public EPICSInterface
 {
 public:
 	EPICSRFHeartbeatInterface();
