@@ -20,18 +20,30 @@ void Shutter::setPVStructs()
 {
 }
 
-void Shutter::debugMessagesOn()
-{
-}
-
 void Shutter::debugMessagesOff()
 {
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
 }
 
-void Shutter::messagesOn()
+void Shutter::debugMessagesOn()
 {
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
 }
 
 void Shutter::messagesOff()
 {
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void Shutter::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
 }

@@ -24,6 +24,7 @@ const std::string SEPARATOR = "/";
 
 const std::string SEPARATOR = "\\";
 #endif
+
 /*! @defgroup configreader ConfigReader*/
 /**@{*/
 class ConfigReader

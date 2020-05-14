@@ -2,7 +2,7 @@
 #define EPICS_RF_MODULATOR_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSRFModulatorInterface : EPICSInterface
+class EPICSRFModulatorInterface : public EPICSInterface
 {
 public:
 	EPICSRFModulatorInterface();

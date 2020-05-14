@@ -9,7 +9,6 @@
 
 namespace BOOST_PYTHON_IMG_INCLUDE
 {
-
 	void expose_img_object() {
 		boost::python::class_<IMG, boost::python::bases<Hardware>, boost::noncopyable>("IMG", boost::python::no_init)
 			.add_property("Pressure", &IMG::getIMGPressure)
@@ -39,9 +38,6 @@ namespace BOOST_PYTHON_IMG_INCLUDE
 			.def("messagesOff", &IMGFactory::messagesOff, (boost::python::arg("self")))
 			;
 	}
-
-
-
 }
 
 #endif //IMG_PYTHON_INTERFACE_H_

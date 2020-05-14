@@ -90,10 +90,9 @@ void IMG::debugMessagesOn()
 
 void IMG::debugMessagesOff()
 {
-	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
 	messenger.debugMessagesOff();
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
 	epicsInterface->debugMessagesOff();
-
 }
 
 void IMG::messagesOn()

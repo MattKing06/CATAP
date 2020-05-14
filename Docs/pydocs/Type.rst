@@ -1,13 +1,13 @@
 TYPES
 ======
 
-.. autoclass:: CATAP.TYPE
-    :members:
+.. automodule:: GlobalTypes
+    :members: TYPE
     :undoc-members:
     
     
     
     
-.. automodule:: CATAP.TYPE
+.. automodule:: GlobalTypes
     :undoc-members:
 

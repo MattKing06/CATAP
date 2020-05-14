@@ -12,6 +12,8 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 
 	void exposeValveObject()
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Valve>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<Valve, boost::python::bases<Hardware>, boost::noncopyable>("Valve", boost::python::no_init)
 			.add_property("state", &Valve::getValveState, &Valve::setValveState)
 			.add_property("name", &Valve::getHardwareName)
@@ -28,6 +30,8 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 
 	void exposeValveFactoryObject()
 	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ValveFactory>())->to_python_target_type());
+		if (is_registered) return;
 		void(ValveFactory:: * openSingle)(const std::string&) = &ValveFactory::open;
 		void(ValveFactory:: * closeSingle)(const std::string&) = &ValveFactory::close;
 		boost::python::class_<ValveFactory, boost::noncopyable>("ValveFactory", boost::python::no_init)

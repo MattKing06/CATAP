@@ -2,7 +2,7 @@
 #define EPICS_STAGE_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSStageInterface : EPICSInterface
+class EPICSStageInterface : public EPICSInterface
 {
 public:
 	EPICSStageInterface();

@@ -2,7 +2,7 @@
 #define EPICS_RF_PROTECTION_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSRFProtectionInterface : EPICSInterface
+class EPICSRFProtectionInterface : public EPICSInterface
 {
 public:
 	EPICSRFProtectionInterface();
