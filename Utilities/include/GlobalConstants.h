@@ -95,6 +95,9 @@ namespace GlobalConstants
 	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
+	const std::string nominal = "nominal";
+
+
 }
 /*! @}*/
 #endif // GLOBAL_CONSTANTS_H_
