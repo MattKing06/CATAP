@@ -58,7 +58,7 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 										 (HRRG_GUN)
 										 (LRRG_GUN)
 										 (L01)
-										 (BA1)
+										 (BA1) 
 										 (BA2)
 										 (VELA)
 										 (INJ)
