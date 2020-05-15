@@ -1,5 +1,5 @@
-#ifndef SHUTTER_H_
-#define SHUTTER_H_
+#ifndef LLRF_H_
+#define LLRF_H_
 
 #include <Hardware.h>
 #include <EPICSLLRFInterface.h>
@@ -27,4 +27,4 @@ public:
 };
 
 
-#endif //SHUTTER_H_
+#endif //LLRF_H_

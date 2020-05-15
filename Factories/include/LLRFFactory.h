@@ -58,6 +58,9 @@ public:
 	bool isDebugOn();
 	bool isMessagingOn();
 
+
+	/*! Flag to say whether the LLRFFactory setup function has been completed successfully.*/
+	bool hasBeenSetup; // PUBLIC as it is used by hardwarefactory, could make it a friend
 private:
 
 	void populateLLRFMap();
@@ -67,8 +70,7 @@ private:
 	STATE mode;
 	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
 	ConfigReader reader;
-	/*! Flag to say whether the LLRFFactory setup function has been completed successfully.*/
-	bool hasBeenSetup;
+
 
 	std::vector<TYPE> machineAreas;
 

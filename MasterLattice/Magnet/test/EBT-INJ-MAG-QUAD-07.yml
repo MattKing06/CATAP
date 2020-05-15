@@ -19,7 +19,7 @@ properties:
   magnetic_length: 125.299909233924
   manufacturer: Scanditronix
   name: EBT-INJ-MAG-QUAD-07
-  name_alias: INJ-QUAD07,INJ-QUAD07
+  name_alias: INJ-QUAD07,INJ-QUAD-07
   num_degauss_steps: 11
   position: 7.38
   ri_tolerance: 0.001

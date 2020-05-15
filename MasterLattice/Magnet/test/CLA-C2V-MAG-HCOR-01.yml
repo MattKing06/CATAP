@@ -19,7 +19,7 @@ properties:
   magnetic_length: 137.0
   manufacturer: Danfysik
   name: CLA-C2V-MAG-HCOR-01
-  name_alias: C2V-HCOR1,C2V-HCOR1
+  name_alias: C2V-HCOR1,C2V-HCOR-01
   num_degauss_steps: 11
   position: 6.536928145
   ri_tolerance: 0.1

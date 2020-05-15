@@ -6,7 +6,7 @@
 #include "yaml-cpp/exceptions.h"
 
 
-// TODOD cna we have some more explanation for what this is and is used for ??
+// TODO can we have some more explanation for what this is and is used for ??
 const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "MAG", "Magnet" },
 	{ "BPM", "Beam Position Monitor" },
@@ -18,8 +18,10 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
 ConfigReader::ConfigReader():
-yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
-mode(STATE::OFFLINE), hardwareFolder("")
+yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), 
+yamlFilename(""),
+mode(STATE::OFFLINE), 
+hardwareFolder("")
 {
 	messenger.printDebugMessage("ConfigReader() Constructor called");
 	// since we have not specified a hardware component
@@ -40,6 +42,7 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 
 void ConfigReader::initialiseFilenameAndParsedStatusMap()
 {
+	//messenger.printDebugMessage("ConfigReader called initialiseFilenameAndParsedStatusMap");
 	std::vector<std::string> filenamesInDirectory = findYAMLFilesInDirectory("");
 	std::string templateFilename = hardwareFolder + ".yaml";
 	std::string all_file_names = "";

@@ -16,6 +16,7 @@ reader(ConfigReader("LLRF", mode)),
 messenger(LoggingSystem(true, true)),
 machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
 {
+	messenger.printDebugMessage("LLRFFactory constructed");
 }
 
 LLRFFactory::LLRFFactory(const LLRFFactory& copyFactory) :
@@ -120,6 +121,24 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	//}
 	hasBeenSetup = true;
 	return hasBeenSetup;
+}
+
+
+void LLRFFactory::populateLLRFMap()
+{
+	messenger.printDebugMessage("LLRFFactory is populating the magnet map");
+	if (!reader.hasMoreFilesToParse())
+	{
+		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, "
+			"please contact support");
+	}
+	while (reader.hasMoreFilesToParse())
+	{
+		messenger.printDebugMessage("LLRFFactory calling parseNextYamlFile");
+		reader.parseNextYamlFile(LLRFMap);
+	}
+	messenger.printDebugMessage("LLRFFactory has finished populating "
+		"the LLRF MAP, found ", LLRFMap.size(), " magnets objects");
 }
 
 void LLRFFactory::debugMessagesOn()

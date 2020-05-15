@@ -18,6 +18,7 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("ERROR", STATE::ERR)
 			.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
 			.value("SUCCESS", STATE::SUCCESS)
+			.value("FAIL", STATE::FAIL)
 			.value("OFFLINE", STATE::OFFLINE)
 			.value("PHYSICAL", STATE::PHYSICAL)
 			.value("VIRTUAL", STATE::VIRTUAL)

@@ -90,9 +90,10 @@ public:
 		std::map<std::string, std::string> parameters;
 		try
 		{
+			std::string fn = ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename;
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			YAML::Parser parser(fileInput);
-			messenger.printDebugMessage("Calling LoadFile");
+			messenger.printDebugMessage("Calling LoadFile fn = " + fn);
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			if (config.size() > 0)
 			{

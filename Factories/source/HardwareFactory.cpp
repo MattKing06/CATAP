@@ -14,6 +14,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	chargeFactory(ChargeFactory(mode)),
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
+	llrffactory(LLRFFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -22,6 +23,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
+	// TODO these TYPES should be the type ENUM
 	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
@@ -59,6 +61,27 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	}
 	return setup;
 }
+
+LLRFFactory& HardwareFactory::getLLRFFactory()
+{
+	if (!llrffactory.hasBeenSetup)
+	{
+		bool setup = llrffactory.setup("nominal");
+		if (setup)
+		{
+			return llrffactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup LLRFFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		return llrffactory;
+	}
+}
+
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
 	if (!magnetFactory.hasBeenSetup)

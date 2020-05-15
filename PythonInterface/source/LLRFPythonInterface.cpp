@@ -3,7 +3,7 @@
 #include <GlobalStatesPythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
 
-BOOST_PYTHON_MODULE(_LED)
+BOOST_PYTHON_MODULE(_LLRF)
 {
 	boost::python::docstring_options CATAP_docstring_options;//(true, true, false);
 	CATAP_docstring_options.enable_all();
@@ -11,6 +11,6 @@ BOOST_PYTHON_MODULE(_LED)
 	BOOST_PYTHON_TYPES_INCLUDE::expose_global_type_enums();
 	BOOST_PYTHON_STATES_INCLUDE::expose_global_state_enums();
 	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
-	BOOST_PYTHON_LED_INCLUDE::expose_llrf_object();
-	BOOST_PYTHON_LED_INCLUDE::expose_llrf_factory_object();
+	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_object();
+	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_factory_object();
 }
