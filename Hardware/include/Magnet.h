@@ -285,11 +285,11 @@ class Magnet : public Hardware
 			std::map<std::string, TYPE> m;
 			m["Magnet"] = TYPE::MAGNET;
 			m["QUADRUPOLE"] = TYPE::QUADRUPOLE;
-			m["DIPOLE"] = TYPE::DIPOLE;
-			m["HVCOR"] = TYPE::HVCOR;
-			m["VCOR"] = TYPE::VCOR;
-			m["HCOR"] = TYPE::HCOR;
-			m["SOLENOID"] = TYPE::SOLENOID;
+			//m["DIPOLE"] = TYPE::DIPOLE;
+			////m["HVCOR"] = TYPE::HVCOR;
+			//m["VCOR"] = TYPE::VCOR;
+			//m["HCOR"] = TYPE::HCOR;
+			//m["SOLENOID"] = TYPE::SOLENOID;
 			return m;
 		}
 		static const std::map<std::string, TYPE> magnet_string_to_type_map;

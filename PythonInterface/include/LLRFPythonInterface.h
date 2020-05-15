@@ -1,8 +1,8 @@
-#ifndef LED_PYTHON_INTERFACE_H_
-#define LED_PYTHON_INTERFACE_H_
+#ifndef LLLRF_PYTHON_INTERFACE_H_
+#define LLLRF_PYTHON_INTERFACE_H_
 
-#include <LED.h>
-#include <LEDFactory.h>
+#include <LLRF.h>
+#include <LLRFFactory.h>
 #include <PythonTypeConversions.h>
 #include <boost/python.hpp>
 
@@ -10,32 +10,34 @@
 namespace BOOST_PYTHON_LED_INCLUDE
 {
 
-	void expose_led_object() 
+	void expose_llrf_object()
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LED>())->to_python_target_type());
 		if (is_registered) return;
-		boost::python::class_<LED, boost::python::bases<Hardware>, boost::noncopyable>("LED", boost::python::no_init)
-			.def("debugMessagesOn", &LED::debugMessagesOn)
-			.def("debugMessagesOff", &LED::debugMessagesOff)
-			.def("messagesOn", &LED::messagesOn)
-			.def("messagesOff", &LED::messagesOff)
-			.def("isDebugOn", &LED::isDebugOn)
-			.def("isMessagingOn", &LED::isMessagingOn);
+		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
+			.def("debugMessagesOn", &LLRF::debugMessagesOn)
+			.def("debugMessagesOff", &LLRF::debugMessagesOff)
+			.def("messagesOn", &LLRF::messagesOn)
+			.def("messagesOff", &LLRF::messagesOff)
+			.def("isDebugOn", &LLRF::isDebugOn)
+			.def("isMessagingOn", &LLRF::isMessagingOn);
 	}
-	void expose_led_factory_object() 
+	void expose_llrf_factory_object()
 	{
+
+
+
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LEDFactory>())->to_python_target_type());
 		if (is_registered) return;
-		boost::python::class_<LEDFactory, boost::noncopyable>("LEDFactory", boost::python::no_init)
-			.def("debugMessagesOn", &LEDFactory::debugMessagesOn)
-			.def("debugMessagesOff", &LEDFactory::debugMessagesOff)
-			.def("messagesOn", &LEDFactory::messagesOn)
-			.def("messagesOff", &LEDFactory::messagesOff)
-			.def("isDebugOn", &LEDFactory::isDebugOn)
-			.def("isMessagingOn", &LEDFactory::isMessagingOn);
+		boost::python::class_<LLRFFactory, boost::noncopyable>("LLRFFactory", boost::python::no_init)
+			.def("debugMessagesOn", &LLRFFactory::debugMessagesOn)
+			.def("debugMessagesOn", &LLRFFactory::debugMessagesOn)
+			.def("debugMessagesOff", &LLRFFactory::debugMessagesOff)
+			.def("messagesOn", &LLRFFactory::messagesOn)
+			.def("messagesOff", &LLRFFactory::messagesOff)
+			.def("isDebugOn", &LLRFFactory::isDebugOn)
+			.def("isMessagingOn", &LLRFFactory::isMessagingOn);
 	}
-
-
 
 }
 

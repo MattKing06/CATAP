@@ -51,9 +51,6 @@ public:
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
-
-	bool hasBeenSetup;
-	std::map<std::string, LLRF> LLRFMap;
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -74,6 +71,9 @@ private:
 	bool hasBeenSetup;
 
 	std::vector<TYPE> machineAreas;
+
+
+	std::map<std::string, LLRF> LLRFMap;
 
 };
 

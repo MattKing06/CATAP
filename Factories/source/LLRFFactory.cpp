@@ -62,13 +62,6 @@ bool LLRFFactory::setup(const std::string& version, const boost::python::list& m
 }
 bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas)
 {
-	return setup(version, to_std_vector<TYPE>(machineAreas));
-}
-
-
-void LLRFFactory::setup(TYPE machein_area)
-{
-
 	messenger.printDebugMessage("called LLRF Factory  setup ");
 	if (hasBeenSetup)
 	{

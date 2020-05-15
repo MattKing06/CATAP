@@ -5,12 +5,15 @@
 #include "boost/filesystem.hpp"
 #include "yaml-cpp/exceptions.h"
 
+
+// TODOD cna we have some more explanation for what this is and is used for ??
 const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "MAG", "Magnet" },
 	{ "BPM", "Beam Position Monitor" },
 	{ "CHA", "Charge" },
 	{ "SCR", "Screen" },
-	{ "YAG", "Screen" }
+	{ "YAG", "Screen" },
+	{ "LLRF", "LLRF" } // ??? 
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
