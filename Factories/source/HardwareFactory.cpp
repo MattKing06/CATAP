@@ -1,4 +1,5 @@
 #include "HardwareFactory.h"
+#include "GlobalFunctions.h"
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -62,11 +63,21 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	return setup;
 }
 
-LLRFFactory& HardwareFactory::getLLRFFactory()
+// YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
+//LLRFFactory& HardwareFactory::getLLRFFactory(const TYPE machineArea)
+//{
+//	return getLLRFFactory(std::vector<TYPE>{machineArea});
+//}
+LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machineAreas)
+{
+	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
+}
+
+LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
 {
 	if (!llrffactory.hasBeenSetup)
 	{
-		bool setup = llrffactory.setup("nominal");
+		bool setup = llrffactory.setup("nominal", machineAreas);
 		if (setup)
 		{
 			return llrffactory;

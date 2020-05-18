@@ -160,7 +160,7 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
 		{
-			messenger.printMessage("!!ERROR!! ", magnet.getHardwareName(), " alias = ", next_alias, " already exists");
+			messenger.printMessage("!!ERROR!! ", llrf.getHardwareName(), " alias = ", next_alias, " already exists");
 		}
 		else
 		{
@@ -169,10 +169,6 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 		}
 	}
 }
-
-
-
-
 
 
 
