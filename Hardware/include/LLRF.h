@@ -43,7 +43,7 @@ class TraceData
 			all the trace data goes here (online data)
 		*/
 		//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_data_buffer;
-
+		std::vector<double> trace_data;
 		// max value in trace
 		double trace_max;
 		// traces indices over which to calculate trace_cut_mean
@@ -102,6 +102,11 @@ protected:
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
 
+
+	// special aase for the HRRG_GUN and LRRG_GUN
+	void setMachineArea(const TYPE area);
+
+
 private:
 
 	/*! alternative names for the magnet (usually shorter thna the full PV root), 
@@ -111,8 +116,10 @@ private:
 
 	std::map<std::string, TraceData> trace_data_map;
 
-
+	void setTraceDataMap();
 	void scaleDummyTraces();
+
+	std::string fullLLRFTraceName(const std::string& name_in)const;
 
 	void addDummyTraces(const std::map<std::string, std::string>& paramMap);
 

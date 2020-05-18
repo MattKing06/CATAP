@@ -160,7 +160,7 @@ namespace GlobalFunctions{
 	void pause_1()   ;
 
 
-
+	bool isInMachineArea(TYPE testArea, TYPE area);
 }
 /*! @}*/
 #endif

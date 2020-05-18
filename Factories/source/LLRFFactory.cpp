@@ -3,6 +3,7 @@
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
+#include <algorithm>
 
 LLRFFactory::LLRFFactory() : 
 LLRFFactory(STATE::OFFLINE)
@@ -61,8 +62,18 @@ bool LLRFFactory::setup(const std::string& version, const boost::python::list& m
 {
 	return setup(version, to_std_vector<TYPE>(machineAreas));
 }
-bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas)
+bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
+	machineAreas = machineAreas_IN;
+	// we CANNOT HAVE HRRG_GUN AND LRG_GUN, default to LRRG_GUN
+	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+	{
+		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+		{
+			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG_GUN), machineAreas.end());
+		}
+	}
+
 	messenger.printDebugMessage("called LLRF Factory  setup ");
 	if (hasBeenSetup)
 	{
@@ -82,6 +93,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	cutLLRFMapByMachineAreas();
 
 	//setupChannels();
 	//EPICSInterface::sendToEPICS();
@@ -139,6 +151,74 @@ void LLRFFactory::populateLLRFMap()
 	messenger.printDebugMessage("LLRFFactory has finished populating "
 		"the LLRF MAP, found ", LLRFMap.size(), " LLRF objects");
 }
+
+
+void LLRFFactory::cutLLRFMapByMachineAreas()
+{
+	size_t start_size = LLRFMap.size();
+	// loop over each magnet
+	for (auto it = LLRFMap.begin(); it != LLRFMap.end() /* not hoisted */; /* no increment */)
+	{
+		// flag for if we should erase this entry, default to true 
+		bool should_erase = true;
+		// now we loop over every area in machineAreas and checl against isInMachineArea
+
+		messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
+
+		for (auto&& machineArea : machineAreas)
+		{
+			// if this returns true then we should keep the LLRF and can break out the for loop 
+			if (GlobalFunctions::isInMachineArea(machineArea, it->second.getMachineArea()))
+			{
+				should_erase = false;
+				break;
+			}
+			// if this returns true then we should keep the LLRF and can break out the for loop 
+			else if(it->second.getMachineArea() == TYPE::GUN )
+			{
+				if (GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+				{
+					it->second.setMachineArea(TYPE::HRRG_GUN);
+					should_erase = false;
+					break;
+				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+				{
+					it->second.setMachineArea(TYPE::LRRG_GUN);
+					should_erase = false;
+					break;
+				}
+				else
+				{
+					//messenger.printDebugMessage("ERROR NEVER SHOW THIS ");
+				}
+			}
+			else
+			{ 
+			
+			}
+		}
+		// if should_erase is still true, erase object from  magnetMap
+		if (should_erase)
+		{
+			messenger.printDebugMessage("LLRF Factory erasing " + it->second.getHardwareName());
+			it = LLRFMap.erase(it); //  m.erase(it++);    
+		}
+		else
+		{
+			++it;
+		}
+	}
+	size_t end_size = LLRFMap.size();
+	messenger.printDebugMessage("cutLLRFMapByMachineAreas LLRFMap.size() went from ", start_size," to ", end_size);
+
+}
+
+
+
+
+
+
 
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {

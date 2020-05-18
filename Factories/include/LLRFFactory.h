@@ -73,11 +73,14 @@ private:
 
 
 	std::vector<TYPE> machineAreas;
+	void cutLLRFMapByMachineAreas();
 
 	void updateAliasNameMap(const LLRF& llrf);
 	std::map<std::string, std::string> alias_name_map;
 
 	std::map<std::string, LLRF> LLRFMap;
+
+
 
 };
 

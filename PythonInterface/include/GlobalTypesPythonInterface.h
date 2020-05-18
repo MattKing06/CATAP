@@ -42,6 +42,7 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("S02", TYPE::S02)
 			.value("C2V", TYPE::C2V)
 			.value("S01", TYPE::S01)
+			.value("L01", TYPE::L01)
 			.value("HRRG_GUN", TYPE::HRRG_GUN)
 			.value("LRRG_GUN", TYPE::LRRG_GUN)
 			.value("CLARA_PH1", TYPE::CLARA_PH1)
