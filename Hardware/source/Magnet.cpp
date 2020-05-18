@@ -130,7 +130,7 @@ void Magnet::setPVStructs()
 		else
 		{
 			pvStructs[record].fullPVName = PV;
-			std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
+			std::cout << "Physical Magnet PV " + pvStructs[record].fullPVName << std::endl;
 		}
 		//pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.

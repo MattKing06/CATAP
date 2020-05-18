@@ -110,11 +110,13 @@ public:
 				{
 					throw InvalidFileException(ConfigReader::yamlFilename, missingEntriesFromFile);
 				}
-
+				messenger.printDebugMessage("extractHardwareInformationIntoMap");
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
+				messenger.printDebugMessage("extractRecordsIntoMap");
 				auto recordsMap = extractRecordsIntoMap(config);
 				parameters.insert(recordsMap.begin(), recordsMap.end());
 				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
+				messenger.printDebugMessage("Constuct Hardware");
 				HardwareType freshHardware = HardwareType(parameters, mode);
 
 				// fill map via [] operator to construct IN-PLACE

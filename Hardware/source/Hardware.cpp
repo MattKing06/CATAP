@@ -14,24 +14,22 @@ Hardware::Hardware()
 {
 }
 
-//Hardware::Hardware(const std::string& name):
-//hardwareName(name) 
-//{
-//}
-
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
+// TODO exceptions?? shoudl be more robut, 
+// TODO we DONT need teh string verions machine_area  and hardware_type they are ENUMS
+// TODO is hardware type and machine area in al hardware files ?? 
 machineArea(specificValueMap.find("machine_area")->second),
-machineArea_e(specificValueMap.find("machine_area")->second),
+machineArea_e(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
 hardwareType(specificValueMap.find("hardware_type")->second),
+//hardwareType_e(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second)
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-
 	if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
 	{
 		if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))

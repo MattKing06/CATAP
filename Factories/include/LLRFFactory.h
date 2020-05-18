@@ -74,6 +74,7 @@ private:
 
 	std::vector<TYPE> machineAreas;
 
+	void updateAliasNameMap(const LLRF& llrf);
 
 	std::map<std::string, LLRF> LLRFMap;
 

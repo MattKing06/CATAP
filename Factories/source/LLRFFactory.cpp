@@ -83,17 +83,16 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		return hasBeenSetup;
 	}
 
-
 	//setupChannels();
 	//EPICSInterface::sendToEPICS();
 
 
-	//for (auto& valve : valveMap)
-	//{
-	//	// update aliases for valve in map
-	//	updateAliasNameMap(valve.second);
-	//	std::map<std::string, pvStruct>& valvePVStructs = valve.second.getPVStructs();
-	//	for (auto& pv : valvePVStructs)
+	for (auto& llrf : LLRFMap)
+	{
+		// update aliases for valve in map
+		updateAliasNameMap(llrf.second);
+		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
+	//	for (auto& pv : pvstruct)
 	//	{
 	//		// sets the monitor state in the pvstruict to true or false
 	//		if (ca_state(pv.second.CHID) == cs_conn)
@@ -118,7 +117,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	//			messenger.printMessage(valve.first, " CANNOT CONNECT TO EPICS");
 	//		}
 	//	}
-	//}
+	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
@@ -141,7 +140,35 @@ void LLRFFactory::populateLLRFMap()
 		"the LLRF MAP, found ", LLRFMap.size(), " LLRF objects");
 }
 
-
+void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
+{
+	// first add in the magnet full name
+	std::string full_name = llrf.getHardwareName();
+	//messenger.printMessage("updateAliasNameMap ", full_name);
+	if (GlobalFunctions::entryExists(alias_name_map, full_name))
+	{
+		//messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
+	}
+	else
+	{
+		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
+		alias_name_map[full_name] = full_name;
+	}
+	// now add in the aliases
+	std::vector<std::string> aliases = llrf.getAliases();
+	for (auto&& next_alias : aliases)
+	{
+		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
+		{
+			messenger.printMessage("!!ERROR!! ", magnet.getHardwareName(), " alias = ", next_alias, " already exists");
+		}
+		else
+		{
+			alias_name_map[next_alias] = full_name;
+			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
+		}
+	}
+}
 
 
 

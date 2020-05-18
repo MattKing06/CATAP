@@ -33,6 +33,7 @@ hardwareFolder("")
 ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	messenger(LoggingSystem(true, true)),
 	mode(mode),
+	// TODO hardwareType should be TYPE ENUM not a string 
 	hardwareFolder(hardwareType)
 {
 	messenger.printDebugMessage("ConfigReader(const std::string &hardwareType, const STATE& mode) Constructor called");
@@ -45,6 +46,7 @@ void ConfigReader::initialiseFilenameAndParsedStatusMap()
 	//messenger.printDebugMessage("ConfigReader called initialiseFilenameAndParsedStatusMap");
 	std::vector<std::string> filenamesInDirectory = findYAMLFilesInDirectory("");
 	std::string templateFilename = hardwareFolder + ".yaml";
+	messenger.printDebugMessage("ConfigReader templateFilename: " + templateFilename);
 	std::string all_file_names = "";
 	for (const auto& filename : filenamesInDirectory)
 	{
