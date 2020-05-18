@@ -15,7 +15,7 @@ controls_information:
         PULSE_LENGTH : CLA-GUN-LRF-CTRL-01:vm:feed_fwd:duration
         INTERLOCK : CLA-GUN-LRF-CTRL-01:app:interlock:state
         PULSE_SHAPE : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp
-        PULSE_SHAPE_APPLY : CLA-GUN-LRF-CTRL-01:
+        PULSE_SHAPE_APPLY : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:apply_tables
         CH1_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:status
         CH1_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:enable
         CH1_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:U_level

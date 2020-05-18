@@ -1,420 +1,421 @@
 controls_information:
     PV: true
     pv_record_map:
-        KEEP_ALIVE : CLA-GUN-RF-SCR-01:HB
-        AMP_FF : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
-        TRIG_SOURCE : CLA-GUN-LRF-CTRL-01:tcm:trig:source
-        AMP_SP : CLA-GUN-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
-        PHI_FF : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_ph:phase
-        PHI_SP : CLA-GUN-LRF-CTRL-01:vm:dsp:sp_ph:phase
-        RF_OUTPUT : CLA-GUN-LRF-CTRL-01:app:rf_ctrl
-        FF_PHASE_LOCK_STATE  : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_ph:lock
-        FF_AMP_LOCK_STATE  : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:lock
-        TIME_VECTOR : CLA-GUN-LRF-CTRL-01:app:time_vector
-        PULSE_OFFSET : CLA-GUN-LRF-CTRL-01:vm:feed_fwd:offset
-        PULSE_LENGTH : CLA-GUN-LRF-CTRL-01:vm:feed_fwd:duration
-        INTERLOCK : CLA-GUN-LRF-CTRL-01:app:interlock:state
-        PULSE_SHAPE : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp
-        PULSE_SHAPE_APPLY : CLA-GUN-LRF-CTRL-01:
-        CH1_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:status
-        CH1_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:enable
-        CH1_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:U_level
-        CH1_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:P_level
-        CH1_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:Pdbm_level
-        CH2_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:status
-        CH2_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:enable
-        CH2_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:U_level
-        CH2_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:P_level
-        CH2_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:Pdbm_level
-        CH3_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:status
-        CH3_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:enable
-        CH3_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:U_level
-        CH3_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:P_level
-        CH3_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:Pdbm_level
-        CH4_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:status
-        CH4_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:enable
-        CH4_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:U_level
-        CH4_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:P_level
-        CH4_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:Pdbm_level
-        CH5_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:status
-        CH5_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:enable
-        CH5_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:U_level
-        CH5_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:P_level
-        CH5_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:Pdbm_level
-        CH6_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:status
-        CH6_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:enable
-        CH6_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:U_level
-        CH6_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:P_level
-        CH6_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:Pdbm_level
-        CH7_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:status
-        CH7_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:enable
-        CH7_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:U_level
-        CH7_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:P_level
-        CH7_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:Pdbm_level
-        CH8_INTERLOCK_STATUS : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:status
-        CH8_INTERLOCK_ENABLE : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:enable
-        CH8_INTERLOCK_U : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:U_level
-        CH8_INTERLOCK_P : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:P_level
-        CH8_INTERLOCK_PDBM : CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:Pdbm_level
+        KEEP_ALIVE : CLA-L01-RF-SCR-01:HB
+        AMP_FF : CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
+        TRIG_SOURCE : CLA-L01-LRF-CTRL-01:tcm:trig:source
+        AMP_SP : CLA-L01-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
+        PHI_FF : CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:phase
+        PHI_SP : CLA-L01-LRF-CTRL-01:vm:dsp:sp_ph:phase
+        RF_OUTPUT : CLA-L01-LRF-CTRL-01:app:rf_ctrl
+        FF_PHASE_LOCK_STATE  : CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:lock
+        FF_AMP_LOCK_STATE  : CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:lock
+        TIME_VECTOR : CLA-L01-LRF-CTRL-01:app:time_vector
+        PULSE_OFFSET : CLA-L01-LRF-CTRL-01:vm:feed_fwd:offset
+        PULSE_LENGTH : CLA-L01-LRF-CTRL-01:vm:feed_fwd:duration
+        INTERLOCK : CLA-L01-LRF-CTRL-01:app:interlock:state
+        PULSE_SHAPE : CLA-L01-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp
+        PULSE_SHAPE_APPLY : CLA-L01-LRF-CTRL-01:vm:dsp:ff_pulse_shape:apply_tables;
+        CH1_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:status
+        CH1_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:enable
+        CH1_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:U_level
+        CH1_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:P_level
+        CH1_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:Pdbm_level
+        CH2_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:status
+        CH2_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:enable
+        CH2_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:U_level
+        CH2_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:P_level
+        CH2_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:Pdbm_level
+        CH3_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:status
+        CH3_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:enable
+        CH3_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:U_level
+        CH3_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:P_level
+        CH3_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:Pdbm_level
+        CH4_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:status
+        CH4_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:enable
+        CH4_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:U_level
+        CH4_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:P_level
+        CH4_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:Pdbm_level
+        CH5_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:status
+        CH5_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:enable
+        CH5_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:U_level
+        CH5_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:P_level
+        CH5_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:Pdbm_level
+        CH6_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:status
+        CH6_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:enable
+        CH6_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:U_level
+        CH6_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:P_level
+        CH6_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:Pdbm_level
+        CH7_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:status
+        CH7_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:enable
+        CH7_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:U_level
+        CH7_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:P_level
+        CH7_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:Pdbm_level
+        CH8_INTERLOCK_STATUS : CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:status
+        CH8_INTERLOCK_ENABLE : CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:enable
+        CH8_INTERLOCK_U : CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:U_level
+        CH8_INTERLOCK_P : CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:P_level
+        CH8_INTERLOCK_PDBM : CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:Pdbm_level
         #Traces concatenated ONE record 
-        LLRF_TRACES = CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec;
-        LLRF_TRACES_SCAN = CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec.SCAN;
-        LLRF_TRACES_ACQM = CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec.ACQM;
-        CH1_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
-        CH1_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.POWER
-        CH1_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.ACQM
-        CH1_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN
-        CH1_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_phase.ACQM
-        CH1_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_phase.PHASE_REMOTE
-        CH1_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_derivative.SCAN
-        CH1_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch1:phase_derivative.SCAN
-        CH1_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch1:power_local.SCAN
-        CH2_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch2:power_remote.SCAN
-        CH2_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch2:power_remote.POWER
-        CH2_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch2:power_remote.ACQM
-        CH2_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_phase.SCAN
-        CH2_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_phase.ACQM
-        CH2_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_phase.PHASE_REMOTE
-        CH2_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_derivative.SCAN
-        CH2_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch2:phase_derivative.SCAN
-        CH2_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch2:power_local.SCAN
-        CH3_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch3:power_remote.SCAN
-        CH3_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch3:power_remote.POWER
-        CH3_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch3:power_remote.ACQM
-        CH3_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_phase.SCAN
-        CH3_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_phase.ACQM
-        CH3_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_phase.PHASE_REMOTE
-        CH3_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_derivative.SCAN
-        CH3_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch3:phase_derivative.SCAN
-        CH3_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch3:power_local.SCAN
-        CH4_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch4:power_remote.SCAN
-        CH4_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch4:power_remote.POWER
-        CH4_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch4:power_remote.ACQM
-        CH4_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_phase.SCAN
-        CH4_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_phase.ACQM
-        CH4_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_phase.PHASE_REMOTE
-        CH4_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_derivative.SCAN
-        CH4_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch4:phase_derivative.SCAN
-        CH4_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch4:power_local.SCAN
-        CH5_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch5:power_remote.SCAN
-        CH5_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch5:power_remote.POWER
-        CH5_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch5:power_remote.ACQM
-        CH5_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_phase.SCAN
-        CH5_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_phase.ACQM
-        CH5_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_phase.PHASE_REMOTE
-        CH5_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_derivative.SCAN
-        CH5_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch5:phase_derivative.SCAN
-        CH5_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch5:power_local.SCAN
-        CH6_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch6:power_remote.SCAN
-        CH6_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch6:power_remote.POWER
-        CH6_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch6:power_remote.ACQM
-        CH6_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_phase.SCAN
-        CH6_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_phase.ACQM
-        CH6_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_phase.PHASE_REMOTE
-        CH6_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_derivative.SCAN
-        CH6_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch6:phase_derivative.SCAN
-        CH6_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch6:power_local.SCAN
-        CH7_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch7:power_remote.SCAN
-        CH7_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch7:power_remote.POWER
-        CH7_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch7:power_remote.ACQM
-        CH7_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_phase.SCAN
-        CH7_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_phase.ACQM
-        CH7_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_phase.PHASE_REMOTE
-        CH7_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_derivative.SCAN
-        CH7_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch7:phase_derivative.SCAN
-        CH7_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch7:power_local.SCAN
-        CH8_PWR_REM_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch8:power_remote.SCAN
-        CH8_PWR_REM       : CLA-GUN-LRF-CTRL-01:ad1:ch8:power_remote.POWER
-        CH8_PWR_REM_ACQM  : CLA-GUN-LRF-CTRL-01:ad1:ch8:power_remote.ACQM
-        CH8_PHASE_REM_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_phase.SCAN
-        CH8_PHASE_REM_ACQM: CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_phase.ACQM
-        CH8_PHASE_REM     : CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_phase.PHASE_REMOTE
-        CH8_AMP_DER_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_derivative.SCAN
-        CH8_PHASE_DER_SCAN: CLA-GUN-LRF-CTRL-01:ad1:ch8:phase_derivative.SCAN
-        CH8_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch8:power_local.SCAN
+        LLRF_TRACES : CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec;
+        LLRF_TRACES_SCAN : CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec.SCAN;
+        LLRF_TRACES_ACQM : CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec.ACQM;
+        CH1_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
+        CH1_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.POWER
+        CH1_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.ACQM
+        CH1_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN
+        CH1_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch1:amp_phase.ACQM
+        CH1_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch1:amp_phase.PHASE_REMOTE
+        CH1_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch1:amp_derivative.SCAN
+        CH1_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch1:phase_derivative.SCAN
+        CH1_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch1:power_local.SCAN
+        CH2_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch2:power_remote.SCAN
+        CH2_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch2:power_remote.POWER
+        CH2_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch2:power_remote.ACQM
+        CH2_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch2:amp_phase.SCAN
+        CH2_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch2:amp_phase.ACQM
+        CH2_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch2:amp_phase.PHASE_REMOTE
+        CH2_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch2:amp_derivative.SCAN
+        CH2_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch2:phase_derivative.SCAN
+        CH2_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch2:power_local.SCAN
+        CH3_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch3:power_remote.SCAN
+        CH3_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch3:power_remote.POWER
+        CH3_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch3:power_remote.ACQM
+        CH3_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch3:amp_phase.SCAN
+        CH3_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch3:amp_phase.ACQM
+        CH3_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch3:amp_phase.PHASE_REMOTE
+        CH3_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch3:amp_derivative.SCAN
+        CH3_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch3:phase_derivative.SCAN
+        CH3_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch3:power_local.SCAN
+        CH4_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch4:power_remote.SCAN
+        CH4_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch4:power_remote.POWER
+        CH4_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch4:power_remote.ACQM
+        CH4_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch4:amp_phase.SCAN
+        CH4_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch4:amp_phase.ACQM
+        CH4_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch4:amp_phase.PHASE_REMOTE
+        CH4_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch4:amp_derivative.SCAN
+        CH4_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch4:phase_derivative.SCAN
+        CH4_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch4:power_local.SCAN
+        CH5_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch5:power_remote.SCAN
+        CH5_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch5:power_remote.POWER
+        CH5_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch5:power_remote.ACQM
+        CH5_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch5:amp_phase.SCAN
+        CH5_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch5:amp_phase.ACQM
+        CH5_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch5:amp_phase.PHASE_REMOTE
+        CH5_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch5:amp_derivative.SCAN
+        CH5_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch5:phase_derivative.SCAN
+        CH5_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch5:power_local.SCAN
+        CH6_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch6:power_remote.SCAN
+        CH6_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch6:power_remote.POWER
+        CH6_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch6:power_remote.ACQM
+        CH6_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch6:amp_phase.SCAN
+        CH6_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch6:amp_phase.ACQM
+        CH6_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch6:amp_phase.PHASE_REMOTE
+        CH6_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch6:amp_derivative.SCAN
+        CH6_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch6:phase_derivative.SCAN
+        CH6_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch6:power_local.SCAN
+        CH7_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch7:power_remote.SCAN
+        CH7_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch7:power_remote.POWER
+        CH7_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch7:power_remote.ACQM
+        CH7_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch7:amp_phase.SCAN
+        CH7_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch7:amp_phase.ACQM
+        CH7_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch7:amp_phase.PHASE_REMOTE
+        CH7_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch7:amp_derivative.SCAN
+        CH7_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch7:phase_derivative.SCAN
+        CH7_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch7:power_local.SCAN
+        CH8_PWR_REM_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch8:power_remote.SCAN
+        CH8_PWR_REM       : CLA-L01-LRF-CTRL-01:ad1:ch8:power_remote.POWER
+        CH8_PWR_REM_ACQM  : CLA-L01-LRF-CTRL-01:ad1:ch8:power_remote.ACQM
+        CH8_PHASE_REM_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch8:amp_phase.SCAN
+        CH8_PHASE_REM_ACQM: CLA-L01-LRF-CTRL-01:ad1:ch8:amp_phase.ACQM
+        CH8_PHASE_REM     : CLA-L01-LRF-CTRL-01:ad1:ch8:amp_phase.PHASE_REMOTE
+        CH8_AMP_DER_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch8:amp_derivative.SCAN
+        CH8_PHASE_DER_SCAN: CLA-L01-LRF-CTRL-01:ad1:ch8:phase_derivative.SCAN
+        CH8_PWR_LOC_SCAN  : CLA-L01-LRF-CTRL-01:ad1:ch8:power_local.SCAN
 properties:
   hardware_type: LLRF
   machine_area: GUN
-  name: CLA-GUN-LRF-CTRL-01
+  name: CLA-L01-LRF-CTRL-01
   name_alias: CLA-GUN, GUN
+  chanel_to_trace_map : element1,element2,element3
   
   
   
   
   
 
-# PV_SUFFIX_LIB_KEEP_ALIVE = CLA-GUN-RF-SCR-01:HB;
+# PV_SUFFIX_LIB_KEEP_ALIVE = CLA-L01-RF-SCR-01:HB;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_LIB_AMP_FF = CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:amplitude;
+# PV_SUFFIX_LIB_AMP_FF = CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:amplitude;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_TRIG_SOURCE = CLA-GUN-LRF-CTRL-01:tcm:trig:source;
+# PV_SUFFIX_TRIG_SOURCE = CLA-L01-LRF-CTRL-01:tcm:trig:source;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_LIB_AMP_SP = CLA-GUN-LRF-CTRL-01:vm:dsp:sp_amp:amplitude;
+# PV_SUFFIX_LIB_AMP_SP = CLA-L01-LRF-CTRL-01:vm:dsp:sp_amp:amplitude;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_LIB_PHI_FF = CLA-GUN-LRF-CTRL-01:vm:dsp:ff_ph:phase;
+# PV_SUFFIX_LIB_PHI_FF = CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:phase;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_LIB_PHI_SP = CLA-GUN-LRF-CTRL-01:vm:dsp:sp_ph:phase;
+# PV_SUFFIX_LIB_PHI_SP = CLA-L01-LRF-CTRL-01:vm:dsp:sp_ph:phase;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_LIB_RF_OUTPUT = CLA-GUN-LRF-CTRL-01:app:rf_ctrl;
+# PV_SUFFIX_LIB_RF_OUTPUT = CLA-L01-LRF-CTRL-01:app:rf_ctrl;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 # PV_MASK           = DBE_VALUE;     
 
-# PV_SUFFIX_FF_PHASE_LOCK_STATE  = CLA-GUN-LRF-CTRL-01:vm:dsp:ff_ph:lock;
+# PV_SUFFIX_FF_PHASE_LOCK_STATE  = CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:lock;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
 # # the lock SP check box #
-# PV_SUFFIX_FF_AMP_LOCK_STATE  = CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:lock;
+# PV_SUFFIX_FF_AMP_LOCK_STATE  = CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:lock;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_LIB_TIME_VECTOR = CLA-GUN-LRF-CTRL-01:app:time_vector;
+# PV_SUFFIX_LIB_TIME_VECTOR = CLA-L01-LRF-CTRL-01:app:time_vector;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1017;
 # PV_MASK           = DBE_VALUE;
 
-# PV_SUFFIX_LIB_PULSE_OFFSET = CLA-GUN-LRF-CTRL-01:vm:feed_fwd:offset;
+# PV_SUFFIX_LIB_PULSE_OFFSET = CLA-L01-LRF-CTRL-01:vm:feed_fwd:offset;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 # PV_MASK           = DBE_VALUE;
 
-# PV_SUFFIX_LIB_PULSE_LENGTH = CLA-GUN-LRF-CTRL-01:vm:feed_fwd:duration;
+# PV_SUFFIX_LIB_PULSE_LENGTH = CLA-L01-LRF-CTRL-01:vm:feed_fwd:duration;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_INTERLOCK = CLA-GUN-LRF-CTRL-01:app:interlock:state;
+# PV_SUFFIX_INTERLOCK = CLA-L01-LRF-CTRL-01:app:interlock:state;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
  
     
-# PV_SUFFIX_LIB_PULSE_SHAPE = CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp;
+# PV_SUFFIX_LIB_PULSE_SHAPE = CLA-L01-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1024;
 
 
-# PV_SUFFIX_LIB_PULSE_SHAPE_APPLY = CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:apply_tables;
+# PV_SUFFIX_LIB_PULSE_SHAPE_APPLY = CLA-L01-LRF-CTRL-01:vm:dsp:ff_pulse_shape:apply_tables;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH1_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:status;
+# PV_SUFFIX_CH1_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH1_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:enable;
+# PV_SUFFIX_CH1_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH1_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:U_level;
+# PV_SUFFIX_CH1_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH1_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:P_level;
+# PV_SUFFIX_CH1_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH1_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:Pdbm_level;
+# PV_SUFFIX_CH1_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH2_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:status;
+# PV_SUFFIX_CH2_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH2_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:enable;
+# PV_SUFFIX_CH2_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH2_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:U_level;
+# PV_SUFFIX_CH2_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH2_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:P_level;
+# PV_SUFFIX_CH2_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH2_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:Pdbm_level;
+# PV_SUFFIX_CH2_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH3_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:status;
+# PV_SUFFIX_CH3_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH3_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:enable;
+# PV_SUFFIX_CH3_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH3_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:U_level;
+# PV_SUFFIX_CH3_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH3_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:P_level;
+# PV_SUFFIX_CH3_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH3_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:Pdbm_level;
+# PV_SUFFIX_CH3_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH4_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:status;
+# PV_SUFFIX_CH4_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH4_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:enable;
+# PV_SUFFIX_CH4_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH4_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:U_level;
+# PV_SUFFIX_CH4_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH4_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:P_level;
+# PV_SUFFIX_CH4_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH4_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:Pdbm_level;
+# PV_SUFFIX_CH4_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH5_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:status;
+# PV_SUFFIX_CH5_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH5_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:enable;
+# PV_SUFFIX_CH5_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH5_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:U_level;
+# PV_SUFFIX_CH5_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH5_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:P_level;
+# PV_SUFFIX_CH5_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH5_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:Pdbm_level;
+# PV_SUFFIX_CH5_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH6_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:status;
+# PV_SUFFIX_CH6_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH6_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:enable;
+# PV_SUFFIX_CH6_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH6_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:U_level;
+# PV_SUFFIX_CH6_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH6_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:P_level;
+# PV_SUFFIX_CH6_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH6_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:Pdbm_level;
+# PV_SUFFIX_CH6_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH7_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:status;
+# PV_SUFFIX_CH7_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH7_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:enable;
+# PV_SUFFIX_CH7_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH7_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:U_level;
+# PV_SUFFIX_CH7_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH7_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:P_level;
+# PV_SUFFIX_CH7_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH7_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:Pdbm_level;
+# PV_SUFFIX_CH7_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH8_INTERLOCK_STATUS = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:status;
+# PV_SUFFIX_CH8_INTERLOCK_STATUS = CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:status;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH8_INTERLOCK_ENABLE = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:enable;
+# PV_SUFFIX_CH8_INTERLOCK_ENABLE = CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:enable;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH8_INTERLOCK_U = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:U_level;
+# PV_SUFFIX_CH8_INTERLOCK_U = CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:U_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH8_INTERLOCK_P = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:P_level;
+# PV_SUFFIX_CH8_INTERLOCK_P = CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:P_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_CH8_INTERLOCK_PDBM = CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:Pdbm_level;
+# PV_SUFFIX_CH8_INTERLOCK_PDBM = CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:Pdbm_level;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1;
 
@@ -426,36 +427,36 @@ properties:
 # Traces concatenated ONE record 
 
 
-# PV_SUFFIX_LLRF_TRACES = CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec;
+# PV_SUFFIX_LLRF_TRACES = CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec;
 # PV_CHTYPE        = DBR_TIME_DOUBLE;
 # PV_COUNT         = 24567;
 
 
-# PV_SUFFIX_LLRF_TRACES_SCAN = CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec.SCAN;
+# PV_SUFFIX_LLRF_TRACES_SCAN = CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec.SCAN;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
-# PV_SUFFIX_LLRF_TRACES_ACQM = CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec.ACQM;
+# PV_SUFFIX_LLRF_TRACES_ACQM = CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec.ACQM;
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
 # FOR THE FOLLOWING ALSO DO ch2, ch3,ch4 ... up to ch8
 
-# PV_SUFFIX_PWR_REM_SCAN = CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
+# PV_SUFFIX_PWR_REM_SCAN = CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
-# PV_SUFFIX_PWR_REM = CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.POWER;
+# PV_SUFFIX_PWR_REM = CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.POWER;
 # PV_CHTYPE        = DBR_DOUBLE;
 # PV_COUNT         = 1017;
 
-# PV_SUFFIX_PHASE_REM_SCAN = CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN; 
+# PV_SUFFIX_PHASE_REM_SCAN = CLA-L01-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN; 
 # PV_CHTYPE        = DBR_ENUM;
 # PV_COUNT         = 1;
 
 
-# PV_SUFFIX_PHASE_REM = CLA-GUN-LRF-CTRL-01:amp_phase.PHASE_REMOTE;
+# PV_SUFFIX_PHASE_REM = CLA-L01-LRF-CTRL-01:amp_phase.PHASE_REMOTE;
 # PV_CHTYPE        = DBR_TIME_DOUBLE;
 # PV_COUNT         = 1017;
 
@@ -483,152 +484,152 @@ properties:
 # THESE are the PVs the VC_LLRF controller connects to     
 # NOTE it does NOT connect to the individual power and phase traces
 
-# CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_phase.PHASE_REMOTE
-# CLA-GUN-LRF-CTRL-01:ad1:ch7:power_remote.POWER
+# CLA-L01-LRF-CTRL-01:ad1:ch7:amp_phase.PHASE_REMOTE
+# CLA-L01-LRF-CTRL-01:ad1:ch7:power_remote.POWER
 # etc.
 
 # for the VM we probably want them in, if we rae going to fake them and then concatenate them 
     
     
     
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:lock
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:ff_ph:lock
-# Create channel to CLA-GUN-LRF-CTRL-01:app:rf_ctrl
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:ff_ph:phase
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:sp_ph:phase
-# Create channel to CLA-GUN-LRF-CTRL-01:app:time_vector
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:feed_fwd:duration
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:feed_fwd:offset
-# Create channel to CLA-GUN-LRF-CTRL-01:tcm:trig:source
-# Create channel to CLA-GUN-LRF-CTRL-01:app:interlock:state
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp
-# Create channel to CLA-GUN-LRF-CTRL-01:vm:dsp:ff_pulse_shape:apply_tables
-# Create channel to CLA-GUN-RF-SCR-01:HB
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch1:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch2:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch3:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch4:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch5:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch6:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch7:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:status
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:enable
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:U_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:P_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:interlock:ch8:Pdbm_level
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:dod_demod_vec.ACQM
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch7:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch5:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch6:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch8:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch1:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch2:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch3:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:power_local.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:power_remote.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_phase.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:amp_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:phase_derivative.SCAN
-# Create channel to CLA-GUN-LRF-CTRL-01:ad1:ch4:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:lock
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:lock
+# Create channel to CLA-L01-LRF-CTRL-01:app:rf_ctrl
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:phase
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:sp_ph:phase
+# Create channel to CLA-L01-LRF-CTRL-01:app:time_vector
+# Create channel to CLA-L01-LRF-CTRL-01:vm:feed_fwd:duration
+# Create channel to CLA-L01-LRF-CTRL-01:vm:feed_fwd:offset
+# Create channel to CLA-L01-LRF-CTRL-01:tcm:trig:source
+# Create channel to CLA-L01-LRF-CTRL-01:app:interlock:state
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:ff_pulse_shape:amp
+# Create channel to CLA-L01-LRF-CTRL-01:vm:dsp:ff_pulse_shape:apply_tables
+# Create channel to CLA-L01-RF-SCR-01:HB
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch1:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch2:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch3:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch4:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch5:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch6:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch7:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:status
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:enable
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:U_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:P_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:interlock:ch8:Pdbm_level
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec.ACQM
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch7:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch5:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch6:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch8:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch1:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch2:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch3:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:power_local.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:power_remote.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:amp_phase.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:amp_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:phase_derivative.SCAN
+# Create channel to CLA-L01-LRF-CTRL-01:ad1:ch4:power_local.SCAN
 
 
 

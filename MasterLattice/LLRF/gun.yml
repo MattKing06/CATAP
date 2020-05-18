@@ -134,6 +134,9 @@ controls_information:
         CH8_PWR_LOC_SCAN  : CLA-GUN-LRF-CTRL-01:ad1:ch8:power_local.SCAN
 properties:
     hardware_type: LLRF
-    machine_area: GUN
-    name: CLA-GUN-LRF-CTRL-01
-    name_alias: CLA-GUN, GUN   
+    machine_area: L01
+    name: CLA-L01-LRF-CTRL-01
+    name_alias: CLA-L01, L01-LLRF   
+    hardware_type: LLRF
+    chanel_to_trace_map : element1,element2,element3
+    
