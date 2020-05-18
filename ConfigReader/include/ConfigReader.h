@@ -74,7 +74,7 @@ public:
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
-				//messenger.printDebugMessage("parseNextYamlFile is trying to parse ", yamlFilename);
+				messenger.printDebugMessage("parseNextYamlFile is trying to parse ", yamlFilename);
 				parseYamlFile(hardwareMapToFill);
 				yamlFilenamesAndParsedStatusMap[yamlFilename] = true;
 			}
@@ -121,6 +121,8 @@ public:
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
+
+				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill");
 
 /* 				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
 					<< ENUM_TO_STRING(mode) << std::endl;

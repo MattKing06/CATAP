@@ -126,7 +126,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 
 void LLRFFactory::populateLLRFMap()
 {
-	messenger.printDebugMessage("LLRFFactory is populating the magnet map");
+	messenger.printDebugMessage("LLRFFactory is populating the LLRF object map");
 	if (!reader.hasMoreFilesToParse())
 	{
 		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, "
@@ -138,8 +138,17 @@ void LLRFFactory::populateLLRFMap()
 		reader.parseNextYamlFile(LLRFMap);
 	}
 	messenger.printDebugMessage("LLRFFactory has finished populating "
-		"the LLRF MAP, found ", LLRFMap.size(), " magnets objects");
+		"the LLRF MAP, found ", LLRFMap.size(), " LLRF objects");
 }
+
+
+
+
+
+
+
+
+
 
 void LLRFFactory::debugMessagesOn()
 {

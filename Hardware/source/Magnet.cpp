@@ -28,6 +28,7 @@ wait_time(GlobalConstants::TIMET_45)
 
 Magnet::Magnet()
 {}
+
 Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
 epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 

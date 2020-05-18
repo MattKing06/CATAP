@@ -53,12 +53,12 @@ public:
 	bool isMessagingOn();
 	bool isDebugOn();
 
-// need to sort out private/protected access for these variables
-	std::string machineArea;
-	std::string hardwareType;
 	std::string hardwareName;
 	
 	// need to sort out private/protected access for these variables
+	// TODOD THESE SHOULD NOT BE STRINGS, they are TYPE enums
+	std::string machineArea;
+	std::string hardwareType;
 	TYPE machineArea_e;
 	TYPE hardwareType_e;
 

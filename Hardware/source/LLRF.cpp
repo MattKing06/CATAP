@@ -4,7 +4,11 @@ LLRF::LLRF()
 {
 }
 
-LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode)
+LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
+Hardware(paramMap, mode),
+// calls copy constructor and destroys 
+epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
+machineArea(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
 {
 }
 

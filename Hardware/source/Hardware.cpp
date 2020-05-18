@@ -24,10 +24,11 @@ mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
 machineArea(specificValueMap.find("machine_area")->second),
+machineArea_e(specificValueMap.find("machine_area")->second),
 hardwareType(specificValueMap.find("hardware_type")->second),
 hardwareName(specificValueMap.find("name")->second)
 {
-	//messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
 
