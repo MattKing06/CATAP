@@ -15,7 +15,9 @@ mode(mode),
 hasBeenSetup(false),
 reader(ConfigReader("LLRF", mode)),
 messenger(LoggingSystem(true, true)),
-machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
+machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
+dummy_llrf(LLRF()),
+dummy_trace_data(std::vector<double>(1017,GlobalConstants::double_min))
 {
 	messenger.printDebugMessage("LLRFFactory constructed");
 }
@@ -214,12 +216,6 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 
 }
 
-
-
-
-
-
-
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {
 	// first add in the magnet full name
@@ -248,6 +244,289 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
 		}
 	}
+}
+
+
+std::string LLRFFactory::getFullName(const std::string& name_to_check) const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return alias_name_map.at(name_to_check);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return dummy_llrf.getHardwareName();
+}
+
+
+bool LLRFFactory::setPhi(const std::string& llrf_name, double value)
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).setPhi(value);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return false;
+}
+bool LLRFFactory::setAmp(const std::string& llrf_name, double value)
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).setAmp(value);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return false;
+}
+bool LLRFFactory::setAmpMW(const std::string& llrf_name, double value)
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).setAmpMW(value);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return false;
+}
+bool LLRFFactory::setPhiDEG(const std::string& llrf_name, double value)
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).setPhiDEG(value);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return false;
+}
+double LLRFFactory::getPhi(const std::string& llrf_name)const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).getPhi();
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return GlobalConstants::double_min;
+}
+double LLRFFactory::getAmp(const std::string& llrf_name)const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).getAmp();
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return GlobalConstants::double_min;
+}
+double LLRFFactory::getAmpMVM(const std::string& llrf_name)const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).getAmpMVM();
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return GlobalConstants::double_min;
+}
+double LLRFFactory::getPhiDEG(const std::string& llrf_name)const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return LLRFMap.at(llrf_name).getPhiDEG();
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, std::vector<double>> LLRFFactory::getAllTraceData(const std::string& llrf_name)const
+{	
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getAllTraceData();
+	}
+	return 	std::map<std::string, std::vector<double>>{ { llrf_name, dummy_trace_data}};
+}
+
+std::pair<std::string, std::vector<double>> LLRFFactory::getTraceData(const std::string& llrf_name, const std::string& trace_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getTraceData(trace_name);
+	}
+	return 	std::pair<std::string, std::vector<double>>(llrf_name, dummy_trace_data);
+}
+boost::python::dict LLRFFactory::getTraceData_Py(const std::string& llrf_name, const std::string& trace_name)
+{
+	std::pair<std::string, std::vector<double>> r = getTraceData(llrf_name, trace_name);
+	std::map<std::string, std::vector<double>> r2 { { r.first , r.second }};
+	return to_py_dict<std::string, std::vector<double>>(r2);
+}
+
+
+std::vector<double> LLRFFactory::getTraceValues(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getTraceValues(full_name);
+	}
+	return dummy_trace_data;
+}
+std::vector<double> LLRFFactory::getCavRevPwr(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCavRevPwr();
+	}
+	return dummy_trace_data;
+}
+std::vector<double> LLRFFactory::getCavFwdPwr(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCavFwdPwr();
+	}
+	return dummy_trace_data;
+}
+std::vector<double> LLRFFactory::getKlyRevPwr(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getKlyRevPwr();
+	}
+	return dummy_trace_data;
+}
+std::vector<double> LLRFFactory::getKlyFwdPwr(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getKlyFwdPwr();
+	}
+	return dummy_trace_data;
+}
+std::vector<double> LLRFFactory::getCavRevPha(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCavRevPha();
+	}
+	return dummy_trace_data;
+}
+std::vector<double> LLRFFactory::getCavFwdPha(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCavFwdPha();
+	}
+	return dummy_trace_data;
+}
+
+std::vector<double> LLRFFactory::getKlyRevPha(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getKlyRevPha();
+	}
+	return dummy_trace_data;
+}
+
+std::vector<double> LLRFFactory::getKlyFwdPha(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getKlyFwdPha();
+	}
+	return dummy_trace_data;
+}
+
+std::vector<double> LLRFFactory::getProbePwr(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCavFwdPwr();
+	}
+	return dummy_trace_data;
+}
+
+std::vector<double> LLRFFactory::getProbePha(const std::string& llrf_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCavFwdPwr();
+	}
+	return dummy_trace_data;
+}
+
+boost::python::dict LLRFFactory::getAllTraceData_Py(const std::string& name)
+{
+	return to_py_dict<std::string, std::vector<double>>(getAllTraceData(name));
+}
+
+boost::python::list LLRFFactory::getTraceValues_Py(const std::string& name)const
+{
+	return to_py_list<double>(getTraceValues(name));
+}
+boost::python::list LLRFFactory::getCavRevPwr_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getCavRevPwr(llrf_name));
+}
+boost::python::list LLRFFactory::getCavFwdPwr_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getCavFwdPwr(llrf_name));
+}
+boost::python::list LLRFFactory::getKlyRevPwr_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getKlyRevPwr(llrf_name));
+}
+boost::python::list LLRFFactory::getKlyFwdPwr_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getKlyFwdPwr(llrf_name));
+}
+boost::python::list LLRFFactory::getCavRevPha_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getCavRevPha(llrf_name));
+}
+boost::python::list LLRFFactory::getCavFwdPha_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getCavFwdPha(llrf_name));
+}
+boost::python::list LLRFFactory::getKlyRevPha_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getKlyRevPha(llrf_name));
+}
+boost::python::list LLRFFactory::getKlyFwdPha_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getKlyFwdPha(llrf_name));
+}
+boost::python::list LLRFFactory::getProbePha_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getProbePha(llrf_name));
+}
+boost::python::list LLRFFactory::getProbePwr_Py(const std::string& llrf_name)const
+{
+	return to_py_list<double>(getProbePwr(llrf_name));
 }
 
 

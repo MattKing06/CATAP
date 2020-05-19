@@ -13,9 +13,6 @@
 class EPICSLLRFInterface;
 typedef boost::shared_ptr<EPICSLLRFInterface> EPICSLLRFInterface_sptr;
 
-
-
-
 class TraceData
 {
 	public:
@@ -42,7 +39,7 @@ class TraceData
 		/*
 			all the trace data goes here (online data)
 		*/
-		//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_data_buffer;
+		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_data_buffer;
 		std::vector<double> trace_data;
 		// max value in trace
 		double trace_max;
@@ -50,6 +47,10 @@ class TraceData
 		size_t mean_start_index, mean_stop_index;
 		// mean of values between  mean_start_index, mean_stop_index
 		double trace_cut_mean;
+
+		// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor 
+		size_t  trace_data_size;
+
 };
 
 
@@ -68,9 +69,8 @@ public:
 
 	bool setPhi(double value);
 	bool setAmp(double value);
-	bool setAmpMVM(double value);
+	bool setAmpMW(double value);
 	bool setPhiDEG(double value);
-
 	double getPhi()const;
 	double getAmp()const;
 	double getAmpMVM()const;
@@ -82,6 +82,34 @@ public:
 	/*! get the name alises for this LLRF (python version)
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
+
+
+	std::map<std::string, std::vector<double>> getAllTraceData()const;
+	std::pair<std::string, std::vector<double>> getTraceData(const std::string& name)const;
+	std::vector<double> getTraceValues(const std::string& name)const;
+	std::vector<double> getCavRevPwr()const;
+	std::vector<double> getCavFwdPwr()const;
+	std::vector<double> getKlyRevPwr()const;
+	std::vector<double> getKlyFwdPwr()const;
+	std::vector<double> getCavRevPha()const;
+	std::vector<double> getCavFwdPha()const;
+	std::vector<double> getKlyRevPha()const;
+	std::vector<double> getKlyFwdPha()const;
+	std::vector<double> getProbePwr()const;
+	std::vector<double> getProbePha()const;
+	boost::python::dict getAllTraceData_Py();
+	boost::python::dict getTraceData_Py(const std::string& name);
+	boost::python::list getTraceValues_Py(const std::string& name)const;
+	boost::python::list getCavRevPwr_Py()const;
+	boost::python::list getCavFwdPwr_Py()const;
+	boost::python::list getKlyRevPwr_Py()const;
+	boost::python::list getKlyFwdPwr_Py()const;
+	boost::python::list getCavRevPha_Py()const;
+	boost::python::list getCavFwdPha_Py()const;
+	boost::python::list getKlyRevPha_Py()const;
+	boost::python::list getKlyFwdPha_Py()const;
+	boost::python::list getProbePha_Py()const;
+	boost::python::list getProbePwr_Py()const;
 
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -105,6 +133,9 @@ protected:
 
 	// special aase for the HRRG_GUN and LRRG_GUN
 	void setMachineArea(const TYPE area);
+
+
+
 
 
 private:
@@ -131,6 +162,9 @@ private:
 	std::vector<double> krpha_dummy_trace;
 	std::vector<double> cfpha_dummy_trace;
 	std::vector<double> crpha_dummy_trace;
+
+	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor
+	size_t trace_data_size;
 
 };
 

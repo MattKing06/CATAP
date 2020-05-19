@@ -51,6 +51,58 @@ public:
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
+	// get a LLRF object (GUN, L01, etc... ) 
+	LLRF& getLLRF(const std::string& llrf_name);
+
+
+	bool setPhi(const std::string& llrf_name, double value);
+	bool setAmp(const std::string& llrf_name, double value);
+	bool setAmpMW(const std::string& llrf_name, double value);
+	bool setPhiDEG(const std::string& llrf_name, double value);
+	double getPhi(const std::string& llrf_name)const;
+	double getAmp(const std::string& llrf_name)const;
+	double getAmpMVM(const std::string& llrf_name)const;
+	double getPhiDEG(const std::string& llrf_name)const;
+
+	/*! get the name alises for this LLRF
+	@param[out] names, vector containing  all the alias names */
+	std::vector<std::string> getAliases() const;
+	/*! get the name alises for this LLRF (python version)
+		@param[out] names, python list containing all the alias names */
+	boost::python::list getAliases_Py() const;
+
+
+	std::map<std::string, std::vector<double>> getAllTraceData(const std::string& llrf_name)const;
+	std::pair<std::string, std::vector<double>> getTraceData(const std::string& llrf_name, const std::string& trace_name)const;
+	std::vector<double> getTraceValues(const std::string& name)const;
+	std::vector<double> getCavRevPwr(const std::string& llrf_name)const;
+	std::vector<double> getCavFwdPwr(const std::string& llrf_name)const;
+	std::vector<double> getKlyRevPwr(const std::string& llrf_name)const;
+	std::vector<double> getKlyFwdPwr(const std::string& llrf_name)const;
+	std::vector<double> getCavRevPha(const std::string& llrf_name)const;
+	std::vector<double> getCavFwdPha(const std::string& llrf_name)const;
+	std::vector<double> getKlyRevPha(const std::string& llrf_name)const;
+	std::vector<double> getKlyFwdPha(const std::string& llrf_name)const;
+	std::vector<double> getProbePwr(const std::string& llrf_name)const;
+	std::vector<double> getProbePha(const std::string& llrf_name)const;
+	boost::python::dict getAllTraceData_Py(const std::string& name);
+	boost::python::dict getTraceData_Py(const std::string& llrf_name, const std::string& trace_name);
+	boost::python::list getTraceValues_Py(const std::string& name)const;
+	boost::python::list getCavRevPwr_Py(const std::string& llrf_name)const;
+	boost::python::list getCavFwdPwr_Py(const std::string& llrf_name)const;
+	boost::python::list getKlyRevPwr_Py(const std::string& llrf_name)const;
+	boost::python::list getKlyFwdPwr_Py(const std::string& llrf_name)const;
+	boost::python::list getCavRevPha_Py(const std::string& llrf_name)const;
+	boost::python::list getCavFwdPha_Py(const std::string& llrf_name)const;
+	boost::python::list getKlyRevPha_Py(const std::string& llrf_name)const;
+	boost::python::list getKlyFwdPha_Py(const std::string& llrf_name)const;
+	boost::python::list getProbePha_Py(const std::string& llrf_name)const;
+	boost::python::list getProbePwr_Py(const std::string& llrf_name)const;
+
+
+	std::string getFullName(const std::string& name_to_check) const;
+
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -81,6 +133,9 @@ private:
 	std::map<std::string, LLRF> LLRFMap;
 
 
+	LLRF dummy_llrf;
+
+	std::vector<double> dummy_trace_data;
 
 };
 

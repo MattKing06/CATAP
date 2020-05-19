@@ -144,6 +144,8 @@ namespace GlobalConstants
 	const size_t one_sizet = 1;
 	const size_t eighty_sizet = 80;
 
+
+
 	/*! Unsigned Short-type to represent ACTIVATE to EPICS */
 	const unsigned short EPICS_ACTIVATE = 1;
 	/*! Unsigned Short-type to represent SEND to EPICS */

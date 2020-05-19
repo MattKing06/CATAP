@@ -2,21 +2,27 @@
 #include "boost/algorithm/string/split.hpp"
 #include "LLRFPVRecords.h"
 #include "GlobalFunctions.h"
+#include "PythonTypeConversions.h"
 
 
 
 
 TraceData::TraceData():
+trace_data_size(1017),
 name("unknown"),
-trace_max(0.0),
-mean_start_index(0),
-mean_stop_index(0),
-trace_cut_mean(0),
-trace_data(std::vector<double>{1017, 0.0})
+trace_max(GlobalConstants::double_min),
+mean_start_index(GlobalConstants::zero_sizet),
+mean_stop_index(GlobalConstants::zero_sizet),
+trace_cut_mean(GlobalConstants::double_min)
 {
-
 }
-TraceData::TraceData(const TraceData& copy_trace_data)
+TraceData::TraceData(const TraceData& copy_trace_data) :
+trace_data_size(copy_trace_data.trace_data_size),
+name(copy_trace_data.name),
+trace_max(copy_trace_data.trace_max),
+mean_start_index(copy_trace_data.mean_start_index),
+mean_stop_index(copy_trace_data.mean_stop_index),
+trace_cut_mean(copy_trace_data.trace_cut_mean)
 {
 
 }
@@ -29,14 +35,16 @@ TraceData::~TraceData()
 
 
 
-LLRF::LLRF()
+LLRF::LLRF() :
+	trace_data_size(1017)
 {
 }
 
 LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
-Hardware(paramMap, mode),
-// calls copy constructor and destroys 
-epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
+	Hardware(paramMap, mode),
+	trace_data_size(1017),
+	// calls copy constructor and destroys 
+	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("LLRF Constructor");
@@ -52,7 +60,10 @@ epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
 
 }
 
-LLRF::LLRF(const LLRF& copyLLRF)
+LLRF::LLRF(const LLRF& copyLLRF) :
+	Hardware(copyLLRF),
+	trace_data_size(copyLLRF.trace_data_size),
+	epicsInterface(copyLLRF.epicsInterface)
 {
 }
 
@@ -108,7 +119,7 @@ bool LLRF::setPhi(double value)
 	phi_sp.second = value;
 	return true;
 }
-bool LLRF::setAmpMVM(double value)
+bool LLRF::setAmpMW(double value)
 {
 	amp_MVM.second = value;
 	
@@ -140,6 +151,130 @@ double LLRF::getPhiDEG()const
 }
 
 
+std::map<std::string, std::vector<double>> LLRF::getAllTraceData()const
+{
+	std::map<std::string, std::vector<double>> r;
+	for (auto&& data : trace_data_map)
+	{
+		r[data.first] = getTraceValues(data.first);
+	}
+	return r;
+}
+
+std::pair<std::string, std::vector<double>> LLRF::getTraceData(const std::string& name)const
+{
+	std::pair<std::string, std::vector<double>> r;
+	r.first  = fullLLRFTraceName(name);
+	r.second = getTraceValues(r.first);
+	return r;
+}
+
+std::vector<double> LLRF::getTraceValues(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).trace_data_buffer.back().second;
+	}
+	messenger.printDebugMessage("LLRF::getTraceValues ERROR, trace ", n, " does not exist");
+	std::vector<double> r(trace_data_size, GlobalConstants::double_min);//MAGIC_NUMBER
+	return r;
+}
+std::vector<double> LLRF::getCavRevPwr()const
+{
+	return getTraceValues(GlobalConstants::CAVITY_REVERSE_POWER);
+}
+std::vector<double> LLRF::getCavFwdPwr()const
+{
+	return getTraceValues(GlobalConstants::CAVITY_FORWARD_POWER);
+}
+std::vector<double> LLRF::getKlyRevPwr()const
+{
+	return getTraceValues(GlobalConstants::KLYSTRON_REVERSE_POWER);
+}
+std::vector<double> LLRF::getKlyFwdPwr()const
+{
+	return getTraceValues(GlobalConstants::KLYSTRON_FORWARD_POWER);
+}
+std::vector<double> LLRF::getCavRevPha()const
+{
+	return getTraceValues(GlobalConstants::CAVITY_REVERSE_PHASE);
+}
+std::vector<double> LLRF::getCavFwdPha()const
+{
+	return getTraceValues(GlobalConstants::CAVITY_FORWARD_PHASE);
+}
+std::vector<double> LLRF::getKlyRevPha()const
+{
+	return getTraceValues(GlobalConstants::KLYSTRON_REVERSE_PHASE);
+}
+std::vector<double> LLRF::getKlyFwdPha()const
+{
+	return getTraceValues(GlobalConstants::KLYSTRON_FORWARD_PHASE);
+}
+std::vector<double> LLRF::getProbePwr()const
+{
+	return getTraceValues(GlobalConstants::CAVITY_PROBE_POWER);
+}
+std::vector<double> LLRF::getProbePha()const
+{
+	return getTraceValues(GlobalConstants::CAVITY_PROBE_PHASE);
+}
+//-------------------------------------------------------------------------------
+boost::python::dict LLRF::getAllTraceData_Py()
+{
+	return to_py_dict<std::string, std::vector<double>>(getAllTraceData());
+}
+boost::python::dict LLRF::getTraceData_Py(const std::string& name)
+{
+	std::pair<std::string, std::vector<double>> r = getTraceData(name);
+	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
+	return to_py_dict<std::string, std::vector<double>>(r2);
+}
+boost::python::list LLRF::getTraceValues_Py(const std::string& name)const
+{
+	return to_py_list(getTraceValues(name));
+}
+boost::python::list LLRF::getCavRevPwr_Py()const
+{
+	return to_py_list(getCavRevPwr());
+}
+boost::python::list LLRF::getCavFwdPwr_Py()const
+{
+	return to_py_list(getCavFwdPwr());
+}
+boost::python::list LLRF::getKlyRevPwr_Py()const
+{
+	return to_py_list(getKlyRevPwr());
+}
+boost::python::list LLRF::getKlyFwdPwr_Py()const
+{
+	return to_py_list(getKlyFwdPwr());
+}
+boost::python::list LLRF::getCavRevPha_Py()const
+{
+	return to_py_list(getCavRevPha());
+}
+boost::python::list LLRF::getCavFwdPha_Py()const
+{
+	return to_py_list(getCavFwdPha());
+}
+boost::python::list LLRF::getKlyRevPha_Py()const
+{
+	return to_py_list(getKlyRevPha());
+}
+boost::python::list LLRF::getKlyFwdPha_Py()const
+{
+	return to_py_list(getKlyFwdPha());
+}
+boost::python::list LLRF::getProbePha_Py()const
+{
+	return to_py_list(getProbePha());
+}
+boost::python::list LLRF::getProbePwr_Py()const
+{
+	return to_py_list(getProbePwr());
+}
 
 
 
@@ -216,34 +351,34 @@ void  LLRF::scaleDummyTraces()
 
 void LLRF::setTraceDataMap()
 {
-	trace_data_map[GlobalConstants::KLYSTRON_FORWARD_POWER] = TraceData();
-	trace_data_map[GlobalConstants::KLYSTRON_FORWARD_PHASE] = TraceData();
-	trace_data_map[GlobalConstants::KLYSTRON_REVERSE_POWER] = TraceData();
-	trace_data_map[GlobalConstants::KLYSTRON_REVERSE_PHASE] = TraceData();
+	trace_data_map[GlobalConstants::KLYSTRON_FORWARD_POWER];// = TraceData();
+	trace_data_map[GlobalConstants::KLYSTRON_FORWARD_PHASE];// = TraceData();
+	trace_data_map[GlobalConstants::KLYSTRON_REVERSE_POWER];// = TraceData();
+	trace_data_map[GlobalConstants::KLYSTRON_REVERSE_PHASE];// = TraceData();
 	if (machine_area == TYPE::LRRG_GUN)
 	{
-		trace_data_map[GlobalConstants::LRRG_CAVITY_FORWARD_POWER] = TraceData();
-		trace_data_map[GlobalConstants::LRRG_CAVITY_FORWARD_PHASE] = TraceData();
-		trace_data_map[GlobalConstants::LRRG_CAVITY_REVERSE_POWER] = TraceData();
-		trace_data_map[GlobalConstants::LRRG_CAVITY_REVERSE_PHASE] = TraceData();
+		trace_data_map[GlobalConstants::LRRG_CAVITY_FORWARD_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::LRRG_CAVITY_FORWARD_PHASE];// = TraceData();
+		trace_data_map[GlobalConstants::LRRG_CAVITY_REVERSE_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::LRRG_CAVITY_REVERSE_PHASE];// = TraceData();
 	}
 	else if (machine_area == TYPE::LRRG_GUN)
 	{
-		trace_data_map[GlobalConstants::HRRG_CAVITY_FORWARD_POWER] = TraceData();
-		trace_data_map[GlobalConstants::HRRG_CAVITY_FORWARD_PHASE] = TraceData();
-		trace_data_map[GlobalConstants::HRRG_CAVITY_REVERSE_POWER] = TraceData();
-		trace_data_map[GlobalConstants::HRRG_CAVITY_REVERSE_PHASE] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_POWER] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_PHASE] = TraceData();
+		trace_data_map[GlobalConstants::HRRG_CAVITY_FORWARD_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::HRRG_CAVITY_FORWARD_PHASE];// = TraceData();
+		trace_data_map[GlobalConstants::HRRG_CAVITY_REVERSE_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::HRRG_CAVITY_REVERSE_PHASE];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_PROBE_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_PROBE_PHASE];// = TraceData();
 	}
 	else if(machine_area == TYPE::LRRG_GUN)
 	{
-		trace_data_map[GlobalConstants::CAVITY_FORWARD_POWER] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_FORWARD_PHASE] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_REVERSE_POWER] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_REVERSE_PHASE] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_POWER] = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_PHASE] = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_FORWARD_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_FORWARD_PHASE];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_REVERSE_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_REVERSE_PHASE];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_PROBE_POWER];// = TraceData();
+		trace_data_map[GlobalConstants::CAVITY_PROBE_PHASE];// = TraceData();
 	}
 }
 
