@@ -142,6 +142,7 @@ namespace GlobalConstants
 	const size_t zero_sizet = 0;
 	/*! Unsigned Integer-type for 1 */
 	const size_t one_sizet = 1;
+	const size_t two_sizet = 2;
 	const size_t eighty_sizet = 80;
 
 

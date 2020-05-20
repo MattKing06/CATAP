@@ -3,6 +3,7 @@
 #include "LLRFPVRecords.h"
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
+#include <numeric>
 
 
 
@@ -13,9 +14,12 @@ name("unknown"),
 trace_max(GlobalConstants::double_min),
 mean_start_index(GlobalConstants::zero_sizet),
 mean_stop_index(GlobalConstants::zero_sizet),
-trace_cut_mean(GlobalConstants::double_min)
+trace_cut_mean(GlobalConstants::double_min),
+trace_data_buffer_size(GlobalConstants::two_sizet)
 {
+
 }
+
 TraceData::TraceData(const TraceData& copy_trace_data) :
 trace_data_size(copy_trace_data.trace_data_size),
 name(copy_trace_data.name),
@@ -62,7 +66,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 
 LLRF::LLRF(const LLRF& copyLLRF) :
 	Hardware(copyLLRF),
-	trace_data_size(copyLLRF.trace_data_size),
+	//trace_data_size(copyLLRF.trace_data_size),
 	epicsInterface(copyLLRF.epicsInterface)
 {
 }
@@ -121,10 +125,11 @@ bool LLRF::setPhi(double value)
 }
 bool LLRF::setAmpMW(double value)
 {
-	amp_MVM.second = value;
-	
+	messenger.printDebugMessage("setAmpMW");
 	// atm we are going to fake power traces
-	scaleDummyTraces();
+	amp_MW.second = value;
+	scaleAllDummyTraces();
+	messenger.printDebugMessage("fin");
 	return true;
 }
 bool LLRF::setPhiDEG(double value)
@@ -141,9 +146,9 @@ double LLRF::getPhi()const
 {
 	return phi_sp.second;
 }
-double LLRF::getAmpMVM()const
+double LLRF::getAmpMW()const
 {
-	return amp_MVM.second;
+	return amp_MW.second;
 }
 double LLRF::getPhiDEG()const
 {
@@ -327,60 +332,241 @@ void LLRF::setMachineArea(const TYPE area)
 	machine_area = area;
 	machine_area_str = ENUM_TO_STRING(machine_area);
 	messenger.printDebugMessage("NEW Machien Area =  " + machine_area_str);
+	setTraceDataMap();
 }
 
-void  LLRF::scaleDummyTraces()
+void  LLRF::scaleAllDummyTraces()
 {
+	messenger.printDebugMessage("scaleAllDummyTraces()  ");
 	using namespace GlobalConstants;
-	double scale_factor = amp_MVM.second * 1000000.0;
-	trace_data_map.at(KLYSTRON_FORWARD_POWER).trace_data = kfpow_dummy_trace;
-	//for (auto i = trace_data_map.at(KLYSTRON_FORWARD_POWER).trace_data).begin(); i != trace_data_map.at(KLYSTRON_FORWARD_POWER).trace_data).end() /* not hoisted */; /* no increment */)
-	for (auto i : trace_data_map.at(KLYSTRON_FORWARD_POWER).trace_data) //.begin(); i != trace_data_map.at(KLYSTRON_FORWARD_POWER).trace_data).end() /* not hoisted */; /* no increment */)
+	messenger.printDebugMessage("KLYSTRON_FORWARD_POWER");
+	scaleDummyTrace(trace_data_map.at(KLYSTRON_FORWARD_POWER), kfpow_dummy_trace);
+	messenger.printDebugMessage("KLYSTRON_REVERSE_POWER");
+	scaleDummyTrace(trace_data_map.at(KLYSTRON_REVERSE_POWER), krpow_dummy_trace);
+	messenger.printDebugMessage("CAVITY_FORWARD_POWER");
+	messenger.printDebugMessage(fullLLRFTraceName(CAVITY_FORWARD_POWER));
+	scaleDummyTrace(trace_data_map.at(fullLLRFTraceName(CAVITY_FORWARD_POWER)), cfpow_dummy_trace);
+	messenger.printDebugMessage("CAVITY_REVERSE_POWER");
+	scaleDummyTrace(trace_data_map.at(fullLLRFTraceName(CAVITY_REVERSE_POWER)), crpow_dummy_trace);
+	messenger.printDebugMessage("calling updateTraceCutMeans");
+	updateTraceCutMeans();
+}
+
+
+void LLRF::scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace)
+{
+	std::pair<epicsTimeStamp, std::vector<double>> dummy_trace_item;
+	dummy_trace_item.first = epicsTimeStamp();
+	dummy_trace_item.second = dummy_trace;
+
+	double scale_factor = amp_MW.second * 1000000.0;
+	for (auto& i : dummy_trace_item.second)
 	{
 		i = i * scale_factor;
 	}
-	//trace_data_map.at(KLYSTRON_REVERSE_POWER).trace_data = kfpow_dummy_trace
-	//for (auto i : trace_data_map.at(KLYSTRON_REVERSE_POWER).trace_data)
-	//{
-	//	i = i * scale_factor;
-	//}
-		//std::transform(myv1.begin(), myv1.end(), myv1.begin(),
-	//	std::bind(std::multiplies<T>(), std::placeholders::_1, 3));
+	trace_data.trace_data_buffer.push_back(dummy_trace_item);
 }
 
+
+
+
+
+size_t LLRF::getIndex(const double time) const
+{
+	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
+	auto r = std::lower_bound(time_vector.begin(), time_vector.end(), time);
+	return r - time_vector.begin();
+}
+//____________________________________________________________________________________________
+double LLRF::getTime(const size_t index) const
+{
+	if (index > time_vector.size() - 1)
+	{
+		return GlobalConstants::double_min;
+	}
+	return time_vector[index];
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStartEndTime(const double start, const double end, const std::string& name)
+{
+	bool a = setMeanStartIndex(name, getIndex(start));
+	if (a)
+	{
+		a = setMeanStopIndex(name, getIndex(end));
+	}
+	return a;
+}
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStartIndex(const std::string& name, size_t  value)
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		if (trace_data_map.at(n).trace_data_size - 1 >= value)
+		{
+			trace_data_map.at(n).mean_start_index = value;
+			return true;
+		}
+	}
+	//    else
+	//        message(name," NOT FOUND!");
+	return false;
+}
+//-------------------------------------------------------------------------------------------------------------------
+size_t LLRF::getMeanStopIndex(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).mean_stop_index;
+	}
+	return GlobalConstants::double_min;
+}
+//-------------------------------------------------------------------------------------------------------------------
+size_t LLRF::getMeanStartIndex(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).mean_start_index;
+	}
+	return GlobalConstants::double_min;
+}
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStopIndex(const std::string& name, size_t  value)
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		if (trace_data_map.at(n).trace_data_size - 1 >= value)
+		{
+			trace_data_map.at(n).mean_stop_index = value;
+			return true;
+		}
+	}
+	//message(name," NOT FOUND!");
+	return false;
+}
+//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getMeanStartTime(const std::string& name)const
+{
+	return getTime(getMeanStartIndex(name));
+}
+//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getMeanStopTime(const std::string& name)const
+{
+	return getTime(getMeanStopIndex(name));
+}
+//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getCutMean(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).trace_cut_mean;
+	}
+	return GlobalConstants::double_min;
+}
+
+void LLRF::updateTraceCutMeans()
+{
+	messenger.printDebugMessage("updateTraceCutMeans");
+	for (auto& it : trace_data_map)
+	{
+		calculateTraceCutMean(it.second);
+	}
+}
+void LLRF::calculateTraceCutMean(TraceData& trace)
+{
+	/*
+		The trace cut mean is the mean value between two indices on a trace
+	*/
+	if (trace.mean_stop_index == trace.mean_start_index)
+	{
+		trace.trace_cut_mean = trace.trace_data_buffer.back().second[trace.mean_start_index];
+	}
+	else if (trace.mean_stop_index > trace.mean_start_index)
+	{
+		trace.trace_cut_mean = 
+			std::accumulate(
+				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_index,
+				trace.trace_data_buffer.back().second.cbegin() + trace.mean_stop_index,
+				GlobalConstants::zero_double) / (trace.mean_stop_index - trace.mean_start_index);
+	}
+}
 
 void LLRF::setTraceDataMap()
 {
-	trace_data_map[GlobalConstants::KLYSTRON_FORWARD_POWER];// = TraceData();
-	trace_data_map[GlobalConstants::KLYSTRON_FORWARD_PHASE];// = TraceData();
-	trace_data_map[GlobalConstants::KLYSTRON_REVERSE_POWER];// = TraceData();
-	trace_data_map[GlobalConstants::KLYSTRON_REVERSE_PHASE];// = TraceData();
+	messenger.printDebugMessage(getHardwareName() + ", Settign the Trace Data Map");
+	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_POWER);
+	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_PHASE);
+	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_POWER);
+	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_PHASE);
 	if (machine_area == TYPE::LRRG_GUN)
 	{
-		trace_data_map[GlobalConstants::LRRG_CAVITY_FORWARD_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::LRRG_CAVITY_FORWARD_PHASE];// = TraceData();
-		trace_data_map[GlobalConstants::LRRG_CAVITY_REVERSE_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::LRRG_CAVITY_REVERSE_PHASE];// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_REVERSE_PHASE);// = TraceData();
 	}
-	else if (machine_area == TYPE::LRRG_GUN)
+	else if (machine_area == TYPE::HRRG_GUN)
 	{
-		trace_data_map[GlobalConstants::HRRG_CAVITY_FORWARD_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::HRRG_CAVITY_FORWARD_PHASE];// = TraceData();
-		trace_data_map[GlobalConstants::HRRG_CAVITY_REVERSE_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::HRRG_CAVITY_REVERSE_PHASE];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_PHASE];// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_REVERSE_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_PHASE);// = TraceData();
 	}
-	else if(machine_area == TYPE::LRRG_GUN)
+	else if(machine_area == TYPE::L01)
 	{
-		trace_data_map[GlobalConstants::CAVITY_FORWARD_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_FORWARD_PHASE];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_REVERSE_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_REVERSE_PHASE];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_POWER];// = TraceData();
-		trace_data_map[GlobalConstants::CAVITY_PROBE_PHASE];// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_REVERSE_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_PHASE);// = TraceData();
 	}
+	std::stringstream ss;
+	ss << "Added trace names: ";
+	for (auto&& it : trace_data_map)
+	{
+
+		ss << it.first;
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
+
 }
+void LLRF::addToTraceDataMap(const std::string& name)
+{
+	trace_data_map[name];
+	auto& td = trace_data_map.at(name);
+	setTraceDataBufferSize(td, td.trace_data_buffer_size);
+}
+
+void LLRF::setTraceDataBufferSize(TraceData& trace_data, const size_t new_size)
+{
+	//  init circular buffer and fill it with dummy data 
+	std::pair<epicsTimeStamp, std::vector<double>> temp_all_trace_item;
+	temp_all_trace_item.first = epicsTimeStamp();
+	std::vector<double> temp2(trace_data.trace_data_size, GlobalConstants::double_min);
+	temp_all_trace_item.second = temp2;
+	trace_data.trace_data_buffer.assign(new_size, temp_all_trace_item);
+}
+bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size)
+{
+	std::string trace_name = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
+	{
+		setTraceDataBufferSize(trace_data_map.at(trace_name), new_size);
+		return true;
+	}
+	return false;
+}
+
 
 
 void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
@@ -501,6 +687,15 @@ void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
 			}
 		}
 	}
+	if (GlobalFunctions::entryExists(paramMap, "time_vector"))
+	{
+		boost::split(dummy_trace_string, paramMap.find("time_vector")->second, [](char c) {return c == ','; });
+		for (auto value : dummy_trace_string)
+		{
+			//messenger.printDebugMessage(value);
+			time_vector.push_back(std::stof(value));
+		}
+	}
 }
 
 
@@ -555,7 +750,7 @@ std::string LLRF::fullLLRFTraceName(const std::string& name_in)const
 	}
 
 
-	if (machine_area == TYPE::HRRG_GUN || machine_area == TYPE::LRRG_GUN)
+	if (machine_area == TYPE::HRRG_GUN )
 	{
 		if (name == CAVITY_REVERSE_PHASE)
 			return HRRG_CAVITY_REVERSE_PHASE;
@@ -574,23 +769,21 @@ std::string LLRF::fullLLRFTraceName(const std::string& name_in)const
 
 		if (name == CAVITY_PROBE_PHASE)
 			return HRRG_CAVITY_PROBE_PHASE;
-
-
 	}
-	//else if (machine_area == llrfStructs::LLRF_TYPE::CLARA_LRRG || myLLRFType == llrfStructs::LLRF_TYPE::VELA_LRRG)
-	//{
-	//	if (name == CAVITY_REVERSE_PHASE)
-	//		return LRRG_CAVITY_REVERSE_PHASE;
+	else if (machine_area == TYPE::LRRG_GUN)
+	{
+		if (name == CAVITY_REVERSE_PHASE)
+			return LRRG_CAVITY_REVERSE_PHASE;
 
-	//	if (name == CAVITY_FORWARD_PHASE)
-	//		return LRRG_CAVITY_FORWARD_PHASE;
+		if (name == CAVITY_FORWARD_PHASE)
+			return LRRG_CAVITY_FORWARD_PHASE;
 
-	//	if (name == CAVITY_REVERSE_POWER)
-	//		return LRRG_CAVITY_REVERSE_POWER;
+		if (name == CAVITY_REVERSE_POWER)
+			return LRRG_CAVITY_REVERSE_POWER;
 
-	//	if (name == CAVITY_FORWARD_POWER)
-	//		return LRRG_CAVITY_FORWARD_POWER;
-	//}
+		if (name == CAVITY_FORWARD_POWER)
+			return LRRG_CAVITY_FORWARD_POWER;
+	}
 	else if (machine_area == TYPE::L01)
 	{
 		if (name == CAVITY_REVERSE_PHASE)

@@ -40,6 +40,7 @@ class TraceData
 			all the trace data goes here (online data)
 		*/
 		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_data_buffer;
+		size_t trace_data_buffer_size;
 		std::vector<double> trace_data;
 		// max value in trace
 		double trace_max;
@@ -73,7 +74,7 @@ public:
 	bool setPhiDEG(double value);
 	double getPhi()const;
 	double getAmp()const;
-	double getAmpMVM()const;
+	double getAmpMW()const;
 	double getPhiDEG()const;
 
 	/*! get the name alises for this LLRF
@@ -83,6 +84,10 @@ public:
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
 
+
+
+	size_t getIndex(const double time) const;
+	double getTime(const size_t index) const;
 
 	std::map<std::string, std::vector<double>> getAllTraceData()const;
 	std::pair<std::string, std::vector<double>> getTraceData(const std::string& name)const;
@@ -111,6 +116,24 @@ public:
 	boost::python::list getProbePha_Py()const;
 	boost::python::list getProbePwr_Py()const;
 
+//--------------------------------------------------------------------------------------------------
+	/*  ___  __        __   ___           ___            __
+		 |  |__)  /\  /  ` |__      |\/| |__   /\  |\ | /__`
+		 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
+	*/
+	bool setMeanStartEndTime(const double start, const double end, const std::string& name);
+	bool setMeanStartIndex(const std::string& name, size_t  value);
+	bool setMeanStopIndex(const std::string& name, size_t  value);
+	size_t getMeanStartIndex(const std::string& name)const;
+	size_t getMeanStopIndex(const std::string& name)const;
+	//double getMean(const std::string& name)const;
+	double getCutMean(const std::string& name)const;
+	double getMeanStartTime(const std::string& name)const;
+	double getMeanStopTime(const std::string& name)const;
+
+	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
+
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -126,7 +149,7 @@ protected:
 	std::pair<epicsTimeStamp, double > phi_sp;
 
 	/*! latest amp_sp value and epicstimestamp 	*/
-	std::pair<epicsTimeStamp, double > amp_MVM;
+	std::pair<epicsTimeStamp, double > amp_MW;
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
 
@@ -143,17 +166,27 @@ private:
 	/*! alternative names for the magnet (usually shorter thna the full PV root), 
 		defined in the master lattice yaml file	*/
 	std::vector<std::string> aliases;
+		
 
 
 	std::map<std::string, TraceData> trace_data_map;
 
 	void setTraceDataMap();
-	void scaleDummyTraces();
+	void addToTraceDataMap(const std::string& name);
+	void setTraceDataBufferSize(TraceData& trace_data, const size_t new_size);
+
+	void updateTraceCutMeans();
+	void calculateTraceCutMean(TraceData& trace);
+
+	void scaleAllDummyTraces();
+	void scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace);
 
 	std::string fullLLRFTraceName(const std::string& name_in)const;
 
 	void addDummyTraces(const std::map<std::string, std::string>& paramMap);
 
+	std::vector<double> time_vector;
+	
 	std::vector<double> kfpow_dummy_trace;
 	std::vector<double> krpow_dummy_trace;
 	std::vector<double> cfpow_dummy_trace;
@@ -163,8 +196,10 @@ private:
 	std::vector<double> cfpha_dummy_trace;
 	std::vector<double> crpha_dummy_trace;
 
-	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor
+	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor ??? 
 	size_t trace_data_size;
+	void setTraceDataBufferSize(const size_t new_size);
+
 
 };
 

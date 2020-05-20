@@ -10,7 +10,11 @@
 const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
 
 
-Hardware::Hardware()
+Hardware::Hardware() :
+	machine_area(TYPE::UNKNOWN_TYPE),
+	hardware_type(TYPE::UNKNOWN_TYPE),
+	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
 {
 }
 

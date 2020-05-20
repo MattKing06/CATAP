@@ -38,7 +38,7 @@ public:
 	ChargeFactory& getChargeFactory();
 	ScreenFactory& getScreenFactory();
 	ValveFactory& getValveFactory();
-	//LLRFFactory& getLLRFFactory(const TYPE machineArea);
+	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
 	bool operator ==(const HardwareFactory& HardwareFactory) const;

@@ -51,6 +51,9 @@ public:
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
+	std::vector<std::string> getLLRFNames();
+	boost::python::list getLLRFNames_Py();
+
 	// get a LLRF object (GUN, L01, etc... ) 
 	LLRF& getLLRF(const std::string& llrf_name);
 
@@ -61,7 +64,7 @@ public:
 	bool setPhiDEG(const std::string& llrf_name, double value);
 	double getPhi(const std::string& llrf_name)const;
 	double getAmp(const std::string& llrf_name)const;
-	double getAmpMVM(const std::string& llrf_name)const;
+	double getAmpMW(const std::string& llrf_name)const;
 	double getPhiDEG(const std::string& llrf_name)const;
 
 	/*! get the name alises for this LLRF
@@ -98,6 +101,29 @@ public:
 	boost::python::list getKlyFwdPha_Py(const std::string& llrf_name)const;
 	boost::python::list getProbePha_Py(const std::string& llrf_name)const;
 	boost::python::list getProbePwr_Py(const std::string& llrf_name)const;
+
+
+
+	size_t getIndex(const std::string& name, const double time) const;
+	double getTime (const std::string& name, const size_t index) const;
+	//--------------------------------------------------------------------------------------------------
+	/*  ___  __        __   ___           ___            __
+		 |  |__)  /\  /  ` |__      |\/| |__   /\  |\ | /__`
+		 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
+	*/
+	bool setMeanStartEndTime(const std::string& llrf_name, const std::string& trace_name, const double start, const double end);
+	bool setMeanStartIndex  (const std::string& llrf_name, const std::string& trace_name, size_t  value);
+	bool setMeanStopIndex   (const std::string& llrf_name, const std::string& trace_name, size_t  value);
+	size_t getMeanStartIndex(const std::string& llrf_name, const std::string& trace_name)const;
+	size_t getMeanStopIndex (const std::string& llrf_name, const std::string& trace_name)const;
+	double getMean          (const std::string& llrf_name, const std::string& trace_name)const;
+	double getCutMean       (const std::string& llrf_name, const std::string& trace_name)const;
+	double getMeanStartTime (const std::string& llrf_name, const std::string& trace_name)const;
+	double getMeanStopTime  (const std::string& llrf_name, const std::string& trace_name)const;
+
+
+	bool setTraceDataBufferSize(const std::string& llrf_name, const std::string& trace_name, const size_t new_size);
+
 
 
 	std::string getFullName(const std::string& name_to_check) const;

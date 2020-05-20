@@ -199,6 +199,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 			{ 
 			
 			}
+			it->second.setMachineArea(it->second.getMachineArea());
 		}
 		// if should_erase is still true, erase object from  magnetMap
 		if (should_erase)
@@ -246,6 +247,33 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 	}
 }
 
+
+
+std::vector<std::string> LLRFFactory::getLLRFNames()
+{
+	std::vector<std::string> r;
+	for (auto&& it : LLRFMap)
+	{
+		r.push_back(it.first);
+	}
+	return r;
+}
+
+boost::python::list LLRFFactory::getLLRFNames_Py()
+{
+	return to_py_list<std::string>(getLLRFNames());
+}
+
+
+LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name);
+	}
+	return dummy_llrf;
+}
 
 std::string LLRFFactory::getFullName(const std::string& name_to_check) const
 {
@@ -326,13 +354,13 @@ double LLRFFactory::getAmp(const std::string& llrf_name)const
 	//std::cout << name_to_check << " NOT found " << std::endl;
 	return GlobalConstants::double_min;
 }
-double LLRFFactory::getAmpMVM(const std::string& llrf_name)const
+double LLRFFactory::getAmpMW(const std::string& llrf_name)const
 {
 	//std::cout << "getFullName looking for " << name_to_check << std::endl;
 	if (GlobalFunctions::entryExists(LLRFMap, llrf_name))
 	{
 		//std::cout << name_to_check << " found " << std::endl;
-		return LLRFMap.at(llrf_name).getAmpMVM();
+		return LLRFMap.at(llrf_name).getAmpMW();
 	}
 	//std::cout << name_to_check << " NOT found " << std::endl;
 	return GlobalConstants::double_min;
@@ -528,6 +556,129 @@ boost::python::list LLRFFactory::getProbePwr_Py(const std::string& llrf_name)con
 {
 	return to_py_list<double>(getProbePwr(llrf_name));
 }
+
+
+size_t LLRFFactory::getIndex(const std::string& name, const double time) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getIndex(time);
+	}
+	return GlobalConstants::double_min;
+}
+double LLRFFactory::getTime(const std::string& name, const size_t index) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getTime(index);
+	}
+	return GlobalConstants::double_min;
+}
+//--------------------------------------------------------------------------------------------------
+/*  ___  __        __   ___           ___            __
+	 |  |__)  /\  /  ` |__      |\/| |__   /\  |\ | /__`
+	 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
+*/
+bool LLRFFactory::setMeanStartEndTime(const std::string& llrf_name, const std::string& trace_name, const double start, const double end)
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).setMeanStartEndTime(start, end, trace_name);
+	}
+	return false;
+}
+bool LLRFFactory::setMeanStartIndex(const std::string& llrf_name, const std::string& trace_name, size_t  value)
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).setMeanStartIndex(trace_name, value);
+	}
+	return false;
+}
+bool LLRFFactory::setMeanStopIndex(const std::string& llrf_name, const std::string& trace_name, size_t  value)
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).setMeanStopIndex(trace_name, value);
+	}
+	return false;
+}
+size_t LLRFFactory::getMeanStartIndex(const std::string& llrf_name, const std::string& trace_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getMeanStartIndex(trace_name);
+	}
+	return 999999999;
+}
+size_t LLRFFactory::getMeanStopIndex(const std::string& llrf_name, const std::string& trace_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getMeanStopIndex(trace_name);
+	}
+	return 999999999;
+}
+//double LLRFFactory::getMean(const std::string& llrf_name, const std::string& trace_name)const
+//{
+//	std::string full_name = getFullName(llrf_name);
+//	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+//	{
+//		return LLRFMap.at(full_name).getMean(trace_name);
+//	}
+//	return GlobalConstants::double_min;
+//}
+double LLRFFactory::getCutMean(const std::string& llrf_name, const std::string& trace_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getCutMean(trace_name);
+	}
+	return GlobalConstants::double_min;
+}
+double LLRFFactory::getMeanStartTime(const std::string& llrf_name, const std::string& trace_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getMeanStartTime(trace_name);
+	}
+	return GlobalConstants::double_min;
+}
+double LLRFFactory::getMeanStopTime(const std::string& llrf_name, const std::string& trace_name)const
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).getMeanStopTime(trace_name);
+	}
+	return GlobalConstants::double_min;
+}
+
+
+bool LLRFFactory::setTraceDataBufferSize(const std::string& llrf_name, const std::string& trace_name, const size_t new_size)
+{
+	std::string full_name = getFullName(llrf_name);
+	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+	{
+		return LLRFMap.at(full_name).setTraceDataBufferSize(trace_name, new_size);
+	}
+	return false;
+}
+
+
+
+
+
+
 
 
 
