@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-INJ-MAG-DIP-02:GETSETI
+    READI: EBT-INJ-MAG-DIP-02:READI
+    RILK: EBT-INJ-MAG-DIP-02:RILK
+    RPOWER: EBT-INJ-MAG-DIP-02:RPOWER
+    SETI: EBT-INJ-MAG-DIP-02:SETI
+    SPOWER: EBT-INJ-MAG-DIP-02:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  field_integral_coefficients: "-0.00038343,0.002868828,8.075456266,-0.299379231"
+  hardware_type: Magnet
+  machine_area: INJ
+  mag_set_max_wait_time: 45.0
+  mag_type: DIP
+  magnetic_length: 413.824
+  manufacturer: Scanditronix
+  name: EBT-INJ-MAG-DIP-02
+  name_alias: INJ-DIP02,INJ-DIP-02
+  num_degauss_steps: 11
+  position: 16.169
+  ri_tolerance: 0.001
+  serial_number: EBTFDIM01

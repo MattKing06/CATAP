@@ -97,6 +97,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 {
 	if (!magnetFactory.hasBeenSetup)
 	{
+		messenger.printMessage("Setup magnet Factory Nominal");
 		bool setup = magnetFactory.setup("nominal");
 		if(setup)
 		{
