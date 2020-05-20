@@ -1,6 +1,6 @@
 message("Processing Utilities source files...")
 
-set(SOURCE_FILES
+set( SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
     source/GlobalTypeEnums.cpp
