@@ -116,11 +116,10 @@ public:
 				auto recordsMap = extractRecordsIntoMap(config);
 				parameters.insert(recordsMap.begin(), recordsMap.end());
 				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
-				messenger.printDebugMessage("Constuct Hardware");
+				messenger.printDebugMessage("Constuct Hardware, mode = ", ENUM_TO_STRING(mode));
 
-				// TODO we are copyign hardware 
 				HardwareType freshHardware = HardwareType(parameters, mode);
-
+								
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.

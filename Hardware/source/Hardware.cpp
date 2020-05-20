@@ -16,6 +16,7 @@ Hardware::Hardware() :
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
 	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
 {
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
@@ -25,10 +26,12 @@ specificHardwareParameters(specificValueMap),
 // TODO exceptions?? shoudl be more robut, 
 // TODO we DONT need teh string verions machine_area  and hardware_type they are ENUMS
 // TODO is hardware type and machine area in al hardware files ?? 
+
 machine_area_str(specificValueMap.find("machine_area")->second),
 machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
+
 hardware_type_str(specificValueMap.find("hardware_type")->second),
-//hardwareType_e(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
+hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second)
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
