@@ -9,8 +9,8 @@ BOOST_AUTO_TEST_SUITE(HardwareTestSuite)
 BOOST_AUTO_TEST_CASE(empty_hardware_test)
 {
 	Hardware component = Hardware();
-	std::string expectedMachineArea_Str = "";
-	std::string expectedHardwareType_Str = "";
+	std::string expectedMachineArea_Str = "UNKNOWN_TYPE";
+	std::string expectedHardwareType_Str = "UNKNOWN_TYPE";
 	TYPE expectedMachineArea = TYPE::UNKNOWN_TYPE;
 	TYPE expectedHardwareType = TYPE::UNKNOWN_TYPE;
 	BOOST_CHECK_EQUAL(component.getHardwareTypeStr(), expectedHardwareType_Str);
