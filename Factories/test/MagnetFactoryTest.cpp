@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 	{
 		if (ca_state(magFac.getMagnet(testMagnetName).pvStructs.at("RILK").CHID) == cs_conn)
 		{
-			BOOST_CHECK_EQUAL(magFac.getILKState(testMagnetName), STATE::ON);
+			BOOST_CHECK_EQUAL(magFac.getILKState(testMagnetName), STATE::OK);
 		}
 		else
 		{
