@@ -8,6 +8,7 @@ set( SOURCE_FILES
     source/MagnetPVRecords.cpp
     source/ValvePVRecords.cpp
     source/BPMPVRecords.cpp
+    source/CameraPVRecords.cpp
     source/ChargePVRecords.cpp
     source/ScreenPVRecords.cpp
     source/IMGPVRecords.cpp
@@ -30,6 +31,7 @@ set( INCLUDE_FILES
      include/MagnetPVRecords.h
      include/ValvePVRecords.h
      include/BPMPVRecords.h
+     include/CameraPVRecords.h
      include/ChargePVRecords.h
      include/ScreenPVRecords.h
      include/IMGPVRecords.h
