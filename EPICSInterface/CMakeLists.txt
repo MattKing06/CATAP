@@ -52,6 +52,7 @@ set( TEST_FILES
     EPICSLaserMirrorInterfaceTest.cpp
     EPICSLEDInterfaceTest.cpp
     EPICSLightingInterfaceTest.cpp
+    EPICSLLRFInterfaceTest.cpp
     EPICSRFHeartbeatInterfaceTest.cpp
     EPICSRFModulatorInterfaceTest.cpp
     EPICSRFProtectionInterfaceTest.cpp

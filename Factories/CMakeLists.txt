@@ -52,6 +52,7 @@ set( TEST_FILES
     LaserMirrorFactoryTest.cpp
     LEDFactoryTest.cpp
     LightingFactoryTest.cpp
+    LLRFFactoryTest.cpp
     RFHeartbeatFactoryTest.cpp
     RFModulatorFactoryTest.cpp
     RFProtectionFactoryTest.cpp
