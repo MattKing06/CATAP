@@ -102,7 +102,7 @@ void LLRF::setPVStructs()
 		{
 			pvStructs[record].fullPVName = PV;
 		}
-		messenger.printDebugMessage(record = " PV  = " + pvStructs[record].fullPVName);
+		messenger.printDebugMessage(record, " = ","PV  = " + pvStructs[record].fullPVName);
 		//pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.
 		//pvStructs[pv.pvRecord] = pv;
