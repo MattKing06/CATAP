@@ -6,7 +6,7 @@
 #include <cadef.h>
 #endif
 
-BOOST_AUTO_TEST_CASE(start_epics_led_interface_tests)
+BOOST_AUTO_TEST_CASE(start_epics_camera_interface_tests)
 {
-	BOOST_TEST_MESSAGE("------	RUNNING EPICS LED INTERFACE TESTS	------");
+	BOOST_TEST_MESSAGE("------	RUNNING EPICS CAMERA INTERFACE TESTS	------");
 }
