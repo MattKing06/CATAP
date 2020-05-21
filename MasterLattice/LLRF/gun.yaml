@@ -137,6 +137,7 @@ properties:
     hardware_type: LLRF
     machine_area: GUN
     name: CLA-GUN-LRF-CTRL-01
+    virtual_name: VM-CLA-GUN-LRF-CTRL-01
     name_alias: CLA-GUN, GUN-LLRF, GUNU   
     chanel_to_trace_map : element1,element2,element3
     KLYSTRON_FORWARD_POWER : 1

@@ -136,6 +136,7 @@ properties:
   hardware_type: LLRF
   machine_area: L01
   name: CLA-L01-LRF-CTRL-01
+  virtual_name: VM-CLA-L01-LRF-CTRL-01
   name_alias: CLA-L01, L01-LLRF,L01
   chanel_to_trace_map : element1,element2,element3
   
