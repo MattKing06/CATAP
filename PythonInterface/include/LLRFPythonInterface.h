@@ -17,10 +17,15 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
 			
 
-			.def("getPhi", &LLRF::setPhi)
-			.def("getAmp", &LLRF::setAmp)
+			.def("setPhi", &LLRF::setPhi)
+			.def("setAmp", &LLRF::setAmp)
 			.def("setAmpMW", &LLRF::setAmpMW)
-			.def("getPhiDEG", &LLRF::setPhiDEG)
+			.def("setPhiDEG", &LLRF::setPhiDEG)
+
+			.def("getPhi", &LLRF::getPhi)
+			.def("getAmp", &LLRF::getAmp)
+			.def("getAmpMW", &LLRF::getAmpMW)
+			.def("getPhiDEG", &LLRF::getPhiDEG)
 
 			.def("getAliases", &LLRF::getAliases_Py)
 
