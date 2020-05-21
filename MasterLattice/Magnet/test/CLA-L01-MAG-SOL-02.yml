@@ -19,7 +19,7 @@ properties:
   magnetic_length: 726.918205128205
   manufacturer: '"EfremovInstitute"'
   name: CLA-L01-MAG-SOL-02
-  name_alias: L01-SOL2,L01-SOL2
+  name_alias: L01-SOL02,L01-SOL-02
   num_degauss_steps: 11
   position: 2.7
   ri_tolerance: 0.1

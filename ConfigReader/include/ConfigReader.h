@@ -74,7 +74,7 @@ public:
 			if (!filename.second)
 			{
 				yamlFilename = filename.first;
-				//messenger.printDebugMessage("parseNextYamlFile is trying to parse ", yamlFilename);
+				messenger.printDebugMessage("parseNextYamlFile is trying to parse ", yamlFilename);
 				parseYamlFile(hardwareMapToFill);
 				yamlFilenamesAndParsedStatusMap[yamlFilename] = true;
 			}
@@ -90,9 +90,10 @@ public:
 		std::map<std::string, std::string> parameters;
 		try
 		{
+			std::string fn = ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename;
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			YAML::Parser parser(fileInput);
-			messenger.printDebugMessage("Calling LoadFile");
+			messenger.printDebugMessage("Calling LoadFile fn = " + fn);
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			if (config.size() > 0)
 			{
@@ -109,17 +110,23 @@ public:
 				{
 					throw InvalidFileException(ConfigReader::yamlFilename, missingEntriesFromFile);
 				}
-
+				messenger.printDebugMessage("extractHardwareInformationIntoMap");
 				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
+				messenger.printDebugMessage("extractRecordsIntoMap");
 				auto recordsMap = extractRecordsIntoMap(config);
 				parameters.insert(recordsMap.begin(), recordsMap.end());
 				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
-				HardwareType freshHardware = HardwareType(parameters, mode);
+				messenger.printDebugMessage("Constuct Hardware, mode = ", ENUM_TO_STRING(mode));
 
+				HardwareType freshHardware = HardwareType(parameters, mode);
+								
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
+				hardwareMapToFill[freshHardware.getHardwareName()] 
+					= freshHardware;
+
+				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill");
 
 /* 				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
 					<< ENUM_TO_STRING(mode) << std::endl;

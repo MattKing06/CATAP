@@ -29,8 +29,10 @@ public:
 	Hardware(const Hardware& copyHardware);
 
 	
-	std::string getMachineArea() const;
-	std::string getHardwareType() const;
+	std::string getMachineAreaStr() const;
+	TYPE getMachineArea() const;
+	std::string getHardwareTypeStr() const;
+	TYPE getHardwareType() const;
 	std::string getHardwareName() const;
 	STATE getMode() const;
 
@@ -53,14 +55,14 @@ public:
 	bool isMessagingOn();
 	bool isDebugOn();
 
-// need to sort out private/protected access for these variables
-	std::string machineArea;
-	std::string hardwareType;
 	std::string hardwareName;
 	
 	// need to sort out private/protected access for these variables
-	TYPE machineArea_e;
-	TYPE hardwareType_e;
+	// TODOD THESE SHOULD NOT BE STRINGS, they are TYPE enums
+	std::string machine_area_str;
+	std::string hardware_type_str;
+	TYPE machine_area;
+	TYPE hardware_type;
 
 	std::map<std::string, pvStruct> pvStructs;
 	

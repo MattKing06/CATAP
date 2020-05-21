@@ -13,7 +13,7 @@ properties:
   degauss_values: "190.0,-190.0,80.0,-80.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
   field_integral_coefficients: "-9.5201E-07,0.000151557,0.894506059,0.126202232"
   hardware_type: Magnet
-  machine_area: UNDEFINED
+  machine_area: C2V
   mag_set_max_wait_time: 45.0
   mag_type: DIP
   magnetic_length: 397.752

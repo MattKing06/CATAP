@@ -10,32 +10,38 @@
 const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
 
 
-Hardware::Hardware()
+Hardware::Hardware() :
+	machine_area(TYPE::UNKNOWN_TYPE),
+	hardware_type(TYPE::UNKNOWN_TYPE),
+	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
 {
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
-
-//Hardware::Hardware(const std::string& name):
-//hardwareName(name) 
-//{
-//}
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
-machineArea(specificValueMap.find("machine_area")->second),
-hardwareType(specificValueMap.find("hardware_type")->second),
+// TODO exceptions?? shoudl be more robut, 
+// TODO we DONT need teh string verions machine_area  and hardware_type they are ENUMS
+// TODO is hardware type and machine area in al hardware files ?? 
+
+machine_area_str(specificValueMap.find("machine_area")->second),
+machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
+
+hardware_type_str(specificValueMap.find("hardware_type")->second),
+hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second)
 {
-	//messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-
 	if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
 	{
 		if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
 		{
-			hardwareType_e = string_to_hardware_type_map.at("Magnet");
+			hardware_type = string_to_hardware_type_map.at("Magnet");
 		}
 	}
 
@@ -67,21 +73,35 @@ hardwareName(specificValueMap.find("name")->second)
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
-	messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
-	machineArea(copyHardware.machineArea), mode(copyHardware.mode), hardwareName(copyHardware.hardwareName),
-	hardwareType_e(copyHardware.hardwareType_e), machineArea_e(copyHardware.machineArea_e)
+	messenger(copyHardware.messenger), 
+	hardware_type(copyHardware.hardware_type),
+	machine_area(copyHardware.machine_area), 
+	mode(copyHardware.mode), 
+	hardwareName(copyHardware.hardwareName),
+	hardware_type_str(copyHardware.hardware_type_str),
+	machine_area_str(copyHardware.machine_area_str)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
 }
 
-std::string Hardware::getMachineArea() const
+std::string Hardware::getMachineAreaStr() const
 {
-	return machineArea;
+	return machine_area_str;
 }
-std::string Hardware::getHardwareType() const
+
+TYPE Hardware::getMachineArea() const
 {
-	return hardwareType;
+	return machine_area;
+}
+
+std::string Hardware::getHardwareTypeStr() const
+{
+	return hardware_type_str;
+}
+TYPE Hardware::getHardwareType() const
+{
+	return hardware_type;
 }
 std::string Hardware::getHardwareName() const
 {

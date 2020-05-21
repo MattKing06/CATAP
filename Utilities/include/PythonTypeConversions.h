@@ -81,6 +81,25 @@ boost::python::dict to_py_dict(const std::map<key, std::vector<value>>& map)
 	}
 	return newDictiOnary;
 }
+
+template<class key, class value>
+inline
+boost::python::dict to_py_dict(const std::pair<key, std::vector<value>>& pair)
+{
+	boost::python::dict newDictiOnary;
+	newDictiOnary[pair.first] = to_py_list<value>(pair.second);
+	return newDictiOnary;
+}
+
+template<class value>
+inline
+boost::python::dict to_py_dict(const std::pair<std::string, std::vector<value>>& pair)
+{
+	boost::python::dict newDictiOnary;
+	newDictiOnary[pair.first] = to_py_list<value>(pair.second);
+	return newDictiOnary;
+}
+
 template<typename key, typename value>
 std::map<key, value> to_std_map(const boost::python::dict& map_in)
 {

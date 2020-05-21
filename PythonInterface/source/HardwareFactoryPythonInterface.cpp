@@ -9,6 +9,7 @@
 #include <LaserMirrorPythonInterface.h>
 #include <LEDPythonInterface.h>
 #include <LightingPythonInterface.h>
+#include <LLRFPythonInterface.h>
 #include <MagnetPythonInterface.h>
 #include <RFHeartbeatPythonInterface.h>
 #include <RFModulatorPythonInterface.h>
@@ -44,6 +45,8 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_LED_INCLUDE::expose_led_factory_object();
 	BOOST_PYTHON_LIGHTING_INCLUDE::expose_lighting_object();
 	BOOST_PYTHON_LIGHTING_INCLUDE::expose_lighting_factory_object();
+	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_object();
+	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_factory_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct_and_dburt();

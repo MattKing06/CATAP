@@ -19,7 +19,7 @@ properties:
   magnetic_length: 70.4236023746139
   manufacturer: Scanditronix
   name: EBT-BA1-MAG-QUAD-02
-  name_alias: BA1-QUAD02,BA1-QUAD02
+  name_alias: BA1-QUAD02,BA1-QUAD-02
   num_degauss_steps: 11
   position: 0.0
   ri_tolerance: 0.001

@@ -37,7 +37,21 @@ namespace GlobalFunctions{
             ret = true;
         return ret;
     }
-    //template<class T>
+
+	template<class T>
+	bool entryExists(const std::vector<T>& v, const T& item)
+	{
+		if (std::find(v.begin(), v.end(), item) != v.end()) {
+			/* v contains x */
+			return true;
+		}
+		else {
+			/* v does not contain x */
+			return false;
+		}
+	}
+
+	//template<class T>
     //bool entryExists(const std::map<std::string, T>& m, std::string& name)
     //{
     //    bool ret = false;
@@ -146,7 +160,7 @@ namespace GlobalFunctions{
 	void pause_1()   ;
 
 
-
+	bool isInMachineArea(TYPE testArea, TYPE area);
 }
 /*! @}*/
 #endif

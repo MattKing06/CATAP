@@ -5,7 +5,9 @@
 #include "ChargeFactory.h"
 #include "ScreenFactory.h"
 #include "ValveFactory.h"
+#include "LLRFFactory.h"
 #include "GlobalStateEnums.h"
+#include "GlobalTypeEnums.h"
 
 /** @defgroup factories Factories
 	@brief A collection of classes for configuring, storing, and performing operations on multiple hardwares.
@@ -36,6 +38,9 @@ public:
 	ChargeFactory& getChargeFactory();
 	ScreenFactory& getScreenFactory();
 	ValveFactory& getValveFactory();
+	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
+	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
+	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -49,6 +54,7 @@ public:
 	ChargeFactory chargeFactory;
 	ScreenFactory screenFactory;
 	ValveFactory valveFactory;
+	LLRFFactory llrffactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;

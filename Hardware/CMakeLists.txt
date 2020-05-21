@@ -11,6 +11,7 @@ set( SOURCE_FILES
     source/LaserMirror.cpp
     source/LED.cpp
     source/Lighting.cpp
+    source/LLRF.cpp
     source/RFHeartbeat.cpp
     source/RFModulator.cpp
     source/RFProtection.cpp
@@ -30,6 +31,7 @@ set( INCLUDE_FILES
     include/LaserMirror.h
     include/LED.h
     include/Lighting.h
+    include/LLRF.h
     include/RFHeartbeat.h
     include/RFModulator.h
     include/RFProtection.h
@@ -44,17 +46,18 @@ set( TEST_FILES
 	BPMTest.cpp
 	ChargeTest.cpp
 	ScreenTest.cpp
-        ValveTest.cpp
-        GeneralMonitorTest.cpp
-        IMGTest.cpp
-        LaserMirrorTest.cpp
-        LEDTest.cpp
-        LightingTest.cpp
-        RFHeartbeatTest.cpp
-        RFModulatorTest.cpp
-        RFProtectionTest.cpp
-        StageTest.cpp
-        ShutterTest.cpp
+    ValveTest.cpp
+    GeneralMonitorTest.cpp
+    IMGTest.cpp
+    LaserMirrorTest.cpp
+    LEDTest.cpp
+    LightingTest.cpp
+    LLRFTest.cpp
+    RFHeartbeatTest.cpp
+    RFModulatorTest.cpp
+    RFProtectionTest.cpp
+    StageTest.cpp
+    ShutterTest.cpp
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
