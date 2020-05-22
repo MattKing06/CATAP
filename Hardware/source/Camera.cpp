@@ -1,4 +1,6 @@
-#include <Camera.h>
+#include "Camera.h"
+#include "GlobalFunctions.h"
+#include "PythonTypeConversions.h"
 
 Camera::Camera()
 {
@@ -19,6 +21,21 @@ Camera::~Camera()
 void Camera::setPVStructs()
 {
 }
+
+
+
+
+
+
+std::vector<std::string> Camera::getAliases() const
+{
+	return aliases;
+}
+boost::python::list Camera::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+
 
 void Camera::debugMessagesOn()
 {

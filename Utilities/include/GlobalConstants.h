@@ -53,16 +53,13 @@ namespace GlobalConstants
 				
 				{ENUM_TO_STRING(TYPE::LAS), TYPE::LAS},
 
-
 				{"Magnet", TYPE::MAGNET},
 								
-
 				{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
 				{"Valve", TYPE::VALVE},
-
 				{ENUM_TO_STRING(TYPE::BPM_TYPE), TYPE::BPM_TYPE},
 				{"BPM", TYPE::BPM_TYPE},
-				
+
 				{"IMG", TYPE::IMG_TYPE},
 				{ENUM_TO_STRING(TYPE::IMG_TYPE), TYPE::IMG_TYPE},
 				
@@ -210,6 +207,9 @@ namespace GlobalConstants
 
 
 	const std::string nominal = "nominal";
+	
+	
+
 
 
 	const std::string LRRG_CAVITY_REVERSE_PHASE = "LRRG_CAVITY_REVERSE_PHASE";

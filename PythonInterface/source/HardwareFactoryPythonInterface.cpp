@@ -14,6 +14,7 @@
 #include <RFHeartbeatPythonInterface.h>
 #include <RFModulatorPythonInterface.h>
 #include <RFProtectionPythonInterface.h>
+#include <CameraPythonInterface.h>
 #include <ScreenPythonInterface.h>
 #include <ShutterPythonInterface.h>
 #include <StagePythonInterface.h>
@@ -47,6 +48,9 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_LIGHTING_INCLUDE::expose_lighting_factory_object();
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_object();
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_factory_object();
+	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_object();
+	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_factory_object();
+
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct_and_dburt();

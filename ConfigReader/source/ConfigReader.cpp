@@ -13,7 +13,8 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "CHA", "Charge" },
 	{ "SCR", "Screen" },
 	{ "YAG", "Screen" },
-	{ "LLRF", "LLRF" } // ??? 
+	{ "LLRF", "LLRF"  }, // ??? 
+	{ "CAM", "Camera" }
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
