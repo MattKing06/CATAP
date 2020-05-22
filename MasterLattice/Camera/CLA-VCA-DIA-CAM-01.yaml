@@ -2,82 +2,82 @@
 controls_information:
     PV: true
     pv_record_map:
-        HDF_WriteFile_RBV    : EBT-INJ-DIA-CAM-13:HDF:WriteFile_RBV
-        HDF_WriteStatus    : EBT-INJ-DIA-CAM-13:HDF:WriteStatus
-        HDF_WriteMessage    : EBT-INJ-DIA-CAM-13:HDF:WriteMessage
-        HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-13:HDF:NumCaptured_RBV
-        HDF_Capture_RBV    : EBT-INJ-DIA-CAM-13:HDF:Capture_RBV
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-13:CAM:Acquire_RBV
-        HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-13:HDF:NumCapture_RBV
-        MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:NumCaptured_RBV
-        MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:WriteFile_RBV
-        MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-13:MAGICK:WriteStatus
-        MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-13:MAGICK:WriteMessage
-        MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:Capture_RBV
-        MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:NumCapture_RBV
-        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-13:ANA:StepSize_RBV
-        ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-13:ANA:EnableCallbacks_RBV
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-13:ANA:UseNPoint
-        ANA_X_RBV    : EBT-INJ-DIA-CAM-13:ANA:X_RBV
-        ANA_Y_RBV    : EBT-INJ-DIA-CAM-13:ANA:Y_RBV
-        ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaX_RBV
-        ANA_SigmaY_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaY_RBV
-        ANA_CovXY_RBV    : EBT-INJ-DIA-CAM-13:ANA:CovXY_RBV
-        ANA_AvgIntensity_RBV    : EBT-INJ-DIA-CAM-13:ANA:AvgIntensity_RBV
-        ANA_Intensity_RBV    : EBT-INJ-DIA-CAM-13:ANA:Intensity_RBV
-        ANA_XPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:XPix_RBV
-        ANA_YPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:YPix_RBV
-        ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaXPix_RBV
-        ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaYPix_RBV
-        ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-13:ANA:PixelResults_RBV
-        ANA_MaskXCenter_RBV    : EBT-INJ-DIA-CAM-13:ANA:MaskXCenter_RBV
-        ANA_MaskYCenter_RBV    : EBT-INJ-DIA-CAM-13:ANA:MaskYCenter_RBV
-        ANA_MaskXRad_RBV    : EBT-INJ-DIA-CAM-13:ANA:MaskXRad_RBV
-        ANA_MaskYRad_RBV    : EBT-INJ-DIA-CAM-13:ANA:MaskYRad_RBV
-        ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-13:ANA:CenterX_RBV
-        ANA_CenterY_RBV    : EBT-INJ-DIA-CAM-13:ANA:CenterY_RBV
-        ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-13:ANA:PixMM_RBV
-        CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-13:CAM:AcquireTime_RBV
-        CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-13:CAM:AcquirePeriod_RBV
-        CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-13:CAM:ArrayRate_RBV
-        CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-13:CAM:Temperature_RBV
-        HDF_FilePath    : EBT-INJ-DIA-CAM-13:HDF:FilePath
-        HDF_FileName    : EBT-INJ-DIA-CAM-13:HDF:FileName
-        HDF_FileNumber    : EBT-INJ-DIA-CAM-13:HDF:FileNumber
-        HDF_WriteFile    : EBT-INJ-DIA-CAM-13:HDF:WriteFile
-        CAM_Acquire    : EBT-INJ-DIA-CAM-13:CAM:Acquire
-        CAM_Acquire    : EBT-INJ-DIA-CAM-13:CAM:Acquire
-        HDF_Capture    : EBT-INJ-DIA-CAM-13:HDF:Capture
-        HDF_NumCapture    : EBT-INJ-DIA-CAM-13:HDF:NumCapture
-        MAGICK_FileName    : EBT-INJ-DIA-CAM-13:MAGICK:FileName
-        MAGICK_FilePath    : EBT-INJ-DIA-CAM-13:MAGICK:FilePath
-        MAGICK_FileNumber    : EBT-INJ-DIA-CAM-13:MAGICK:FileNumber
-        MAGICK_Capture    : EBT-INJ-DIA-CAM-13:MAGICK:Capture
-        MAGICK_WriteFile    : EBT-INJ-DIA-CAM-13:MAGICK:WriteFile
-        MAGICK_NumCapture    : EBT-INJ-DIA-CAM-13:MAGICK:NumCapture
-        ANA_StepSize    : EBT-INJ-DIA-CAM-13:ANA:StepSize
-        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-13:ANA:EnableCallbacks
-        ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:NewBkgrnd
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-13:ANA:UseNPoint
-        CAM2_ArrayData    : EBT-INJ-DIA-CAM-13:CAM2:ArrayData
-        ANA_MaskXCenter    : EBT-INJ-DIA-CAM-13:ANA:MaskXCenter
-        ANA_MaskYCenter    : EBT-INJ-DIA-CAM-13:ANA:MaskYCenter
-        ANA_MaskXRad    : EBT-INJ-DIA-CAM-13:ANA:MaskXRad
-        ANA_MaskYRad    : EBT-INJ-DIA-CAM-13:ANA:MaskYRad
-        ANA_CenterX    : EBT-INJ-DIA-CAM-13:ANA:CenterX
-        ANA_CenterY    : EBT-INJ-DIA-CAM-13:ANA:CenterY
-        ANA_PixMM    : EBT-INJ-DIA-CAM-13:ANA:PixMM
+        HDF_WriteFile_RBV    : CLA-VCA-DIA-CAM-01:HDF:WriteFile_RBV
+        HDF_WriteStatus    : CLA-VCA-DIA-CAM-01:HDF:WriteStatus
+        HDF_WriteMessage    : CLA-VCA-DIA-CAM-01:HDF:WriteMessage
+        HDF_NumCaptured_RBV    : CLA-VCA-DIA-CAM-01:HDF:NumCaptured_RBV
+        HDF_Capture_RBV    : CLA-VCA-DIA-CAM-01:HDF:Capture_RBV
+        CAM_Acquire_RBV    : CLA-VCA-DIA-CAM-01:CAM:Acquire_RBV
+        HDF_NumCapture_RBV    : CLA-VCA-DIA-CAM-01:HDF:NumCapture_RBV
+        MAGICK_NumCaptured_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:NumCaptured_RBV
+        MAGICK_WriteFile_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:WriteFile_RBV
+        MAGICK_WriteStatus    : CLA-VCA-DIA-CAM-01:MAGICK:WriteStatus
+        MAGICK_WriteMessage    : CLA-VCA-DIA-CAM-01:MAGICK:WriteMessage
+        MAGICK_Capture_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:Capture_RBV
+        MAGICK_NumCapture_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:NumCapture_RBV
+        ANA_StepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
+        ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
+        ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
+        ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint
+        ANA_X_RBV    : CLA-VCA-DIA-CAM-01:ANA:X_RBV
+        ANA_Y_RBV    : CLA-VCA-DIA-CAM-01:ANA:Y_RBV
+        ANA_SigmaX_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaX_RBV
+        ANA_SigmaY_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaY_RBV
+        ANA_CovXY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXY_RBV
+        ANA_AvgIntensity_RBV    : CLA-VCA-DIA-CAM-01:ANA:AvgIntensity_RBV
+        ANA_Intensity_RBV    : CLA-VCA-DIA-CAM-01:ANA:Intensity_RBV
+        ANA_XPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:XPix_RBV
+        ANA_YPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:YPix_RBV
+        ANA_SigmaXPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaXPix_RBV
+        ANA_SigmaYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaYPix_RBV
+        ANA_CovXYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXYPix_RBV
+        ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV
+        ANA_MaskXCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter_RBV
+        ANA_MaskYCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter_RBV
+        ANA_MaskXRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad_RBV
+        ANA_MaskYRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad_RBV
+        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
+        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
+        ANA_PixMM_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixMM_RBV
+        CAM_AcquireTime_RBV    : CLA-VCA-DIA-CAM-01:CAM:AcquireTime_RBV
+        CAM_AcquirePeriod_RBV    : CLA-VCA-DIA-CAM-01:CAM:AcquirePeriod_RBV
+        CAM_ArrayRate_RBV    : CLA-VCA-DIA-CAM-01:CAM:ArrayRate_RBV
+        CAM_Temperature_RBV    : CLA-VCA-DIA-CAM-01:CAM:Temperature_RBV
+        HDF_FilePath    : CLA-VCA-DIA-CAM-01:HDF:FilePath
+        HDF_FileName    : CLA-VCA-DIA-CAM-01:HDF:FileName
+        HDF_FileNumber    : CLA-VCA-DIA-CAM-01:HDF:FileNumber
+        HDF_WriteFile    : CLA-VCA-DIA-CAM-01:HDF:WriteFile
+        CAM_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Acquire
+        CAM_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Acquire
+        HDF_Capture    : CLA-VCA-DIA-CAM-01:HDF:Capture
+        HDF_NumCapture    : CLA-VCA-DIA-CAM-01:HDF:NumCapture
+        MAGICK_FileName    : CLA-VCA-DIA-CAM-01:MAGICK:FileName
+        MAGICK_FilePath    : CLA-VCA-DIA-CAM-01:MAGICK:FilePath
+        MAGICK_FileNumber    : CLA-VCA-DIA-CAM-01:MAGICK:FileNumber
+        MAGICK_Capture    : CLA-VCA-DIA-CAM-01:MAGICK:Capture
+        MAGICK_WriteFile    : CLA-VCA-DIA-CAM-01:MAGICK:WriteFile
+        MAGICK_NumCapture    : CLA-VCA-DIA-CAM-01:MAGICK:NumCapture
+        ANA_StepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
+        ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
+        ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
+        ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
+        ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint
+        CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
+        ANA_MaskXCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter
+        ANA_MaskYCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter
+        ANA_MaskXRad    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad
+        ANA_MaskYRad    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad
+        ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
+        ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
+        ANA_PixMM    : CLA-VCA-DIA-CAM-01:ANA:PixMM
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :    : CLA-LAS-DIA-LED-01:Off
+        LED_Off    : CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
 
 properties:
     hardware_type: Camera
     machine_area : INJ
-    name : EBT-INJ-DIA-CAM-03
+    name : CLA-VCA-DIA-CAM-01
     name_alias: INJ-CAM-01, INJ-CAM1  # include screen names here as well 
     CAM_TYPE : VELA_CAM 
     SCREEN_NAME : INJ-SCR-01 # which screen is the camera looking at 
@@ -85,9 +85,9 @@ properties:
     MAX_SHOTS_NUMBER  :	600 # max number of shots that can be taken in a single burst 
     ## these are the indices of each value in the array PixelResults_RBV
     RESULTS_COUNT : 5 #
-    X_POS :0 #
+    X_POS : 0 #
     Y_POS : 1 #
-    X_SIGMA_POS :2 #
+    X_SIGMA_POS : 2 #
     Y_SIGMA_POS : 3 #
     COV_POS : 4 #
     ## these are the names of each value in the array PixelResults_RBV to be keys for a python dictionary
@@ -98,13 +98,13 @@ properties:
     COV_NAME : COV
     X_MASK_DEF				: 1280 #; some default values, better values  are to be determined
     Y_MASK_DEF				: 1080 #; some default values, better values  are to be determined
-    X_MASK_RAD_DEF			:1240 #some default values, better values  are to be determined
+    X_MASK_RAD_DEF			: 1240 #some default values, better values  are to be determined
     Y_MASK_RAD_DEF			: 1040 #some default values, better values  are to be determined
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
-    ARRAY_DATA_NUM_PIX_X :1280 #; array data passed through EPICS
-    ARRAY_DATA_NUM_PIX_Y :1080 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
     BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
     X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
@@ -116,7 +116,7 @@ properties:
     ARRAY_DATA_X_PIX_2_MM : 0.006 #; 
     ARRAY_DATA_Y_PIX_2_MM :  0.006 #;
     SENSOR_MAX_TEMP : 27.0 #;
-    SENSOR_MIN_TEMP :5.0 #;
+    SENSOR_MIN_TEMP : 5.0 #;
     MIN_X_PIXEL_POS : 150.0 #; these are used to decide if the beam is close to the edge    float  as analysis results in pixels returns float  
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge

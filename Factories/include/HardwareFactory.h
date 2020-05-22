@@ -54,11 +54,11 @@ public:
 	bool isDebugOn();
 	std::map<std::string, Hardware> hardwareMap;
 	MagnetFactory magnetFactory;
-	BPMFactory bpmFactory;
 	ChargeFactory chargeFactory;
 	ScreenFactory screenFactory;
 	ValveFactory valveFactory;
 	LLRFFactory llrffactory;
+	BPMFactory bpmFactory;
 	CameraFactory cameraFactory;
 	// virtual physical or offline
 	STATE mode;

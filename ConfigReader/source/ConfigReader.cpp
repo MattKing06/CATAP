@@ -37,7 +37,7 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	// TODO hardwareType should be TYPE ENUM not a string 
 	hardwareFolder(hardwareType)
 {
-	messenger.printDebugMessage("ConfigReader(const std::string &hardwareType, const STATE& mode) Constructor called");
+	messenger.printDebugMessage("ConfigReader( " + hardwareType + ", " + ENUM_TO_STRING(mode) + ") Constructor called");
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 	initialiseFilenameAndParsedStatusMap();
 }
@@ -73,7 +73,9 @@ std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::strin
 				|| i->path().extension() == ".yaml"
 				|| i->path().extension() == ".yml")
 			{
+				
 				filenames.push_back(i->path().filename().string());
+				messenger.printDebugMessage("ConfigReader found: " + filenames.back());
 				if (i->path().filename().string() != hardwareFolder)
 				{
 					numberOfParsesExpected++;

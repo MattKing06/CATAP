@@ -28,6 +28,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<CameraFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<CameraFactory, boost::noncopyable>("CameraFactory", boost::python::no_init)
+			.def("getCameraNames", &CameraFactory::getCameraNames_Py)
 			.def("debugMessagesOn", &CameraFactory::debugMessagesOn)
 			.def("debugMessagesOff", &CameraFactory::debugMessagesOff)
 			.def("messagesOn", &CameraFactory::messagesOn)

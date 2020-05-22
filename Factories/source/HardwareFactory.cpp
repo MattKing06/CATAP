@@ -16,6 +16,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
+	cameraFactory(CameraFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
