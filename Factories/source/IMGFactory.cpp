@@ -3,13 +3,13 @@
 #include <PythonTypeConversions.h>
 #include <boost/filesystem.hpp>
 
-IMGFactory::IMGFactory():
+IMGFactory::IMGFactory() :
 	IMGFactory(STATE::OFFLINE)
 {
 	std::cout << "IMGFactory DEFAULT constRUCTOR called " << std::endl;
 }
 
-IMGFactory::IMGFactory(STATE mode):
+IMGFactory::IMGFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("IMG", mode))
@@ -110,7 +110,7 @@ bool IMGFactory::setup(const std::string& version)
 		std::map<std::string, pvStruct>& imgPVStructs = img.second.getPVStructs();
 		for (auto& pv : imgPVStructs)
 		{
-			
+
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				std::cout << "cs_conn, getting some values " << std::endl;
@@ -174,7 +174,7 @@ IMG& IMGFactory::getIMG(const std::string& fullIMGName)
 	return dummyIMG;
 }
 std::string IMGFactory::getFullName(const std::string& nameToCheck) const
-{	
+{
 	messenger.printMessage(dummyIMG.getHardwareName());
 	if (GlobalFunctions::entryExists(alias_name_map, nameToCheck))
 	{
@@ -299,60 +299,6 @@ bool IMGFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
-bool IMGFactory::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
-
-void IMGFactory::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("IMG FACTORY - DEBUG ON");
-	// reader.debugMessagesOn();
-	for (auto& IMG : IMGMap)
-	{
-		IMG.second.debugMessagesOn();
-	}
-}
-
-void IMGFactory::debugMessagesOff()
-{
-	messenger.printDebugMessage("IMG FACTORY - DEBUG OFF");
-	messenger.debugMessagesOff();
-	// reader.debugMessagesOff();
-	for (auto& IMG : IMGMap)
-	{
-		IMG.second.debugMessagesOff();
-	}
-}
-
-void IMGFactory::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("IMG FACTORY - MESSAGES ON");
-	// reader.messagesOn();
-	for (auto& IMG : IMGMap)
-	{
-		IMG.second.messagesOn();
-	}
-}
-
-void IMGFactory::messagesOff()
-{
-	messenger.printMessage("IMG FACTORY - MESSAGES OFF");
-	messenger.messagesOff();
-	// reader.messagesOff();
-	for (auto& IMG : IMGMap)
-	{
-		IMG.second.messagesOff();
-	}
-}
-
-bool IMGFactory::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
-
 bool IMGFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();

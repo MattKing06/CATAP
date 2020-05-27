@@ -23,6 +23,8 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getScreenFactory", &HardwareFactory::getScreenFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("valveFactory", &HardwareFactory::valveFactory)
 			.def("getValveFactory", &HardwareFactory::getValveFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.add_property("IMGFactory", &HardwareFactory::imgFactory)
+			.def("getIMGFactory", &HardwareFactory::getIMGFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("hardwareMap", &HardwareFactory::hardwareMap)
 			.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
