@@ -161,6 +161,8 @@ namespace GlobalFunctions{
 
 
 	bool isInMachineArea(TYPE testArea, TYPE area);
+
+
 }
 /*! @}*/
 #endif

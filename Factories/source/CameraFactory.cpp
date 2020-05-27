@@ -16,7 +16,7 @@ messenger(LoggingSystem(true, true)),
 machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
 dummy_cam(Camera())
 {
-	messenger.printDebugMessage("LLRFFactory constructed");
+	messenger.printDebugMessage("CameraFactory constructed");
 }
 
 CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
@@ -64,20 +64,10 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
-	machineAreas = machineAreas_IN;
-	// we CANNOT HAVE HRRG_GUN AND LRG_GUN, default to LRRG_GUN
-	if (GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
-	{
-		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
-		{
-			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG_GUN), machineAreas.end());
-		}
-	}
-
-	messenger.printDebugMessage("called LLRF Factory  setup ");
+	messenger.printDebugMessage("called Camera Factory setup ");
 	if (hasBeenSetup)
 	{
-		messenger.printDebugMessage("setup LLRF Factory : it has been setup");
+		messenger.printDebugMessage("setup Camera Factory: it has been setup");
 		return true;
 	}
 	if (mode == STATE::VIRTUAL)
@@ -99,7 +89,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	//EPICSInterface::sendToEPICS();
 
 
-	for (auto& item : CameraMap)
+	for (auto& item : camera_map)
 	{
 		// update aliases for valve in map
 		updateAliasNameMap(item.second);
@@ -146,18 +136,316 @@ void CameraFactory::populateCameraMap()
 	while (reader.hasMoreFilesToParse())
 	{
 		messenger.printDebugMessage("CameraFactory calling parseNextYamlFile");
-		reader.parseNextYamlFile(CameraMap);
+		reader.parseNextYamlFile(camera_map);
 	}
 	messenger.printDebugMessage("CameraFactory has finished populating "
-		"the LLRF MAP, found ", CameraMap.size(), " LLRF objects");
+		"the Camera MAP, found ", camera_map.size(), " Camera  objects");
 }
+
+double CameraFactory::pix2mmX(const std::string& name, double value)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).pix2mmX(value);
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::pix2mmY(const std::string& name, double value)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).pix2mmY(value);
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::mm2pixX(const std::string& name, double value)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).mm2pixX(value);
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::mm2pixY(const std::string& name, double value)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).mm2pixY(value);
+	}
+	return GlobalConstants::double_min;
+}
+
+double CameraFactory::getpix2mmX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getpix2mmX();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getpix2mmY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getpix2mmY();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::setpix2mmX(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setpix2mmX(value);
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::setpix2mmY(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setpix2mmY(value);
+	}
+	return GlobalConstants::double_min;
+}
+
+
+double CameraFactory::getX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getX();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getY();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getSigX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSigX();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getSigY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSigY();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getSigXY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSigXY();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getXPix(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getXPix();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getYPix(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getYPix();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getSigXPix(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSigXPix();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getSigYPix(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSigYPix();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getSigXYPix(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSigXYPix();
+	}
+	return GlobalConstants::double_min;
+}
+
+bool CameraFactory::setX(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setX(value);
+	}
+	return false;
+}
+bool CameraFactory::setY(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setY(value);
+	}
+	return false;
+}
+bool CameraFactory::setSigX(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setSigX(value);
+	}
+	return false;
+}
+bool CameraFactory::setSigY(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setSigY(value);
+	}
+	return false;
+}
+bool CameraFactory::setSigXY(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setSigXY(value);
+	}
+	return false;
+}
+//bool CameraFactory::setXPix(const std::string& name, double value)
+//{
+//	std::string full_name = getFullName(name);
+//	if (GlobalFunctions::entryExists(camera_map, full_name))
+//	{
+//		return camera_map.at(full_name).setXPix(value);
+//	}
+//	return false;
+//}
+//bool CameraFactory::setYPix(const std::string& name, double value)
+//{
+//	std::string full_name = getFullName(name);
+//	if (GlobalFunctions::entryExists(camera_map, full_name))
+//	{
+//		return camera_map.at(full_name).setYPix(value);
+//	}
+//	return false;
+//}
+//bool CameraFactory::setSigXPix(const std::string& name, double value)
+//{
+//	std::string full_name = getFullName(name);
+//	if (GlobalFunctions::entryExists(camera_map, full_name))
+//	{
+//		return camera_map.at(full_name).setSigXPix(value);
+//	}
+//	return false;
+//}
+//bool CameraFactory::setSigYPix(const std::string& name, double value)
+//{
+//	std::string full_name = getFullName(name);
+//	if (GlobalFunctions::entryExists(camera_map, full_name))
+//	{
+//		return camera_map.at(full_name).setSigYPix(value);
+//	}
+//	return false;
+//}
+//bool CameraFactory::setSigXYPix(const std::string& name, double value)
+//{
+//	std::string full_name = getFullName(name);
+//	if (GlobalFunctions::entryExists(camera_map, full_name))
+//	{
+//		return camera_map.at(full_name).setSigXYPix(value);
+//	}
+//	return false;
+//}
+
+double CameraFactory::getSumIntensity(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSumIntensity();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getAvgIntensity(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAvgIntensity();
+	}
+	return GlobalConstants::double_min;
+}
+bool CameraFactory::setSumIntensity(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setSumIntensity(value);
+	}
+	return false;
+}
+bool CameraFactory::setAvgIntensity(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setAvgIntensity(value);
+	}
+	return false;
+}
+
+
+
+
 
 
 
 std::vector<std::string> CameraFactory::getCameraNames()
 {
 	std::vector<std::string> r;
-	for (auto&& it : CameraMap)
+	for (auto&& it : camera_map)
 	{
 		r.push_back(it.first);
 	}
@@ -184,9 +472,9 @@ std::string CameraFactory::getFullName(const std::string& name_to_check) const
 std::vector<std::string> CameraFactory::getAliases(const std::string cam_name) const
 {
 	std::string full_name = getFullName(cam_name);
-	if (GlobalFunctions::entryExists(CameraMap, full_name))
+	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return CameraMap.at(full_name).getAliases();
+		return camera_map.at(full_name).getAliases();
 	}
 	return std::vector<std::string>{dummy_cam.getHardwareName()};
 }
@@ -201,9 +489,9 @@ boost::python::list CameraFactory::getAliases_Py(const std::string cam_name) con
 Camera& CameraFactory::getCamera(const std::string& cam_name)
 {
 	std::string full_name = getFullName(cam_name);
-	if (GlobalFunctions::entryExists(CameraMap, full_name))
+	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return CameraMap.at(full_name);
+		return camera_map.at(full_name);
 	}
 	return dummy_cam;
 }
@@ -241,9 +529,9 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 
 void CameraFactory::cutLHarwdareMapByMachineAreas()
 {
-	size_t start_size = CameraMap.size();
+	size_t start_size = camera_map.size();
 	// loop over each magnet
-	for (auto it = CameraMap.begin(); it != CameraMap.end() /* not hoisted */; /* no increment */)
+	for (auto it = camera_map.begin(); it != camera_map.end() /* not hoisted */; /* no increment */)
 	{
 		// flag for if we should erase this entry, default to true 
 		bool should_erase = true;
@@ -268,15 +556,15 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 		if (should_erase)
 		{
 			messenger.printDebugMessage("Camera Factory erasing " + it->second.getHardwareName());
-			it = CameraMap.erase(it); //  m.erase(it++);    
+			it = camera_map.erase(it); //  m.erase(it++);    
 		}
 		else
 		{
 			++it;
 		}
 	}
-	size_t end_size = CameraMap.size();
-	messenger.printDebugMessage("cutLLRFMapByMachineAreas CameraMap.size() went from ", start_size, " to ", end_size);
+	size_t end_size = camera_map.size();
+	messenger.printDebugMessage("cutLLRFMapByMachineAreas camera_map.size() went from ", start_size, " to ", end_size);
 }
 
 
@@ -305,7 +593,7 @@ void CameraFactory::debugMessagesOn()
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("CameraFactory Factory - DEBUG On");
 	// reader.debugMessagesOn();
-	for (auto& item : CameraMap)
+	for (auto& item : camera_map)
 	{
 		item.second.debugMessagesOn();
 	}
@@ -315,7 +603,7 @@ void CameraFactory::debugMessagesOff()
 	messenger.printDebugMessage("CameraFactory Factory - DEBUG OFF");
 	messenger.debugMessagesOff();
 	// reader.debugMessagesOff();
-	for (auto& item : CameraMap)
+	for (auto& item : camera_map)
 	{
 		item.second.debugMessagesOff();
 	}
@@ -325,7 +613,7 @@ void CameraFactory::messagesOn()
 	messenger.messagesOn();
 	messenger.printMessage("CameraFactory Factory - MESSAGES ON");
 	// reader.messagesOn();
-	for (auto& item : CameraMap)
+	for (auto& item : camera_map)
 	{
 		item.second.messagesOn();
 	}
@@ -335,7 +623,7 @@ void CameraFactory::messagesOff()
 	messenger.printMessage("CameraFactory Factory - MESSAGES OFF");
 	messenger.messagesOff();
 	// reader.messagesOff();
-	for (auto& item : CameraMap)
+	for (auto& item : camera_map)
 	{
 		item.second.messagesOff();
 	}

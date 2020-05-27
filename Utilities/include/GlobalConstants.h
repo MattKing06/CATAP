@@ -57,6 +57,10 @@ namespace GlobalConstants
 								
 				{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
 				{"Valve", TYPE::VALVE},
+
+				{ENUM_TO_STRING(TYPE::CAMERA_TYPE), TYPE::CAMERA_TYPE},
+				{"Camera", TYPE::CAMERA_TYPE},
+
 				{ENUM_TO_STRING(TYPE::BPM_TYPE), TYPE::BPM_TYPE},
 				{"BPM", TYPE::BPM_TYPE},
 

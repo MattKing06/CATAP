@@ -53,49 +53,7 @@ public:
 
 	std::vector<std::string> getCameraNames();
 	boost::python::list getCameraNames_Py();
-		
 	Camera& getCamera(const std::string& cam_name);
-	
-
-	double pix2mmX(const std::string& name, double value)const;
-	double pix2mmY(const std::string& name, double value)const;
-	double mm2pixX(const std::string& name, double value)const;
-	double mm2pixY(const std::string& name, double value)const;
-
-	double getpix2mmX(const std::string& name)const;
-	double getpix2mmY(const std::string& name)const;
-	double setpix2mmX(const std::string& name, double value);
-	double setpix2mmY(const std::string& name, double value);
-
-
-	double getX(const std::string& name)const;
-	double getY(const std::string& name)const;
-	double getSigX(const std::string& name)const;
-	double getSigY(const std::string& name)const;
-	double getSigXY(const std::string& name)const;
-	double getXPix(const std::string& name)const;
-	double getYPix(const std::string& name)const;
-	double getSigXPix(const std::string& name)const;
-	double getSigYPix(const std::string& name)const;
-	double getSigXYPix(const std::string& name)const;
-
-	bool setX(const std::string& name, double value);
-	bool setY(const std::string& name, double value);
-	bool setSigX(const std::string& name, double value);
-	bool setSigY(const std::string& name, double value);
-	bool setSigXY(const std::string& name, double value);
-	//bool setXPix(const std::string& name, double value);
-	//bool setYPix(const std::string& name, double value);
-	//bool setSigXPix(const std::string& name, double value);
-	//bool setSigYPix(const std::string& name, double value);
-	//bool setSigXYPix(const std::string& name, double value);
-
-	double getSumIntensity(const std::string& name)const;
-	double getAvgIntensity(const std::string& name)const;
-	bool setSumIntensity(const std::string& name, double value);
-	bool setAvgIntensity(const std::string& name, double value);
-
-	
 	std::string getFullName(const std::string& name_to_check) const;
 
 	/*! get the name alises for this 
@@ -126,7 +84,7 @@ private:
 	
 	void populateCameraMap();
 
-	std::map<std::string, Camera> camera_map;
+	std::map<std::string, Camera> CameraMap;
 
 
 	std::vector<TYPE> machineAreas;

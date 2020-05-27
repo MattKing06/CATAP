@@ -186,6 +186,11 @@ const std::map<std::string, std::string> ConfigReader::extractRecordsIntoMap(con
 {
 	auto controlsInformationNode = configInformationNode["controls_information"];
 	std::map<std::string, std::string> pvRecordMap = controlsInformationNode["pv_record_map"].as<std::map<std::string, std::string> >();
+	// for debugging print data in file 
+	//for (auto&& it : pvRecordMap)
+	//{
+	//	messenger.printDebugMessage(it.first + " = " + it.second);
+	//}
 	return pvRecordMap;
 }
 
@@ -213,6 +218,11 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 		}
 
 	}
+	// for debugging print data in file 
+	//for (auto&& it : hardwarePropertyAndValueVector)
+	//{
+	//	messenger.printDebugMessage(it.first + " = " + it.second);
+	//}
 	return hardwarePropertyAndValueVector;
 }
 
@@ -240,6 +250,10 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		//{
 		//	mode = STATE::OFFLINE;
 		//}
+
+
+
+
 		return pvAndRecordPair;
 	}
 	else

@@ -74,7 +74,7 @@ controls_information:
         LED_On : CLA-LAS-DIA-LED-01:On
         LED_Off : CLA-LAS-DIA-LED-01:Off
 properties:
-    hardware_type: Camera
+    hardware_type : Camera
     machine_area : INJ
     name : CLA-C2V-DIA-CAM-01
     name_alias: C2V-CAM-01, C2V-CAM1  # include screen names here as well 
