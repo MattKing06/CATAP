@@ -5,19 +5,24 @@
 #include "boost/filesystem.hpp"
 #include "yaml-cpp/exceptions.h"
 
+
+// TODO can we have some more explanation for what this is and is used for ??
 const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "MAG", "Magnet" },
 	{ "BPM", "Beam Position Monitor" },
 	{ "CHA", "Charge" },
 	{ "SCR", "Screen" },
 	{ "YAG", "Screen" },
-	{ "IMG", "IMG" }
+	{ "IMG", "IMG" },
+	{ "LLRF", "LLRF" } // ??? 
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
 ConfigReader::ConfigReader():
-yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), yamlFilename(""),
-mode(STATE::OFFLINE), hardwareFolder("")
+yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), 
+yamlFilename(""),
+mode(STATE::OFFLINE), 
+hardwareFolder("")
 {
 	messenger.printDebugMessage("ConfigReader() Constructor called");
 	// since we have not specified a hardware component
@@ -29,6 +34,7 @@ mode(STATE::OFFLINE), hardwareFolder("")
 ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	messenger(LoggingSystem(true, true)),
 	mode(mode),
+	// TODO hardwareType should be TYPE ENUM not a string 
 	hardwareFolder(hardwareType)
 {
 	messenger.printDebugMessage("ConfigReader(const std::string &hardwareType, const STATE& mode) Constructor called");
@@ -38,8 +44,10 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 
 void ConfigReader::initialiseFilenameAndParsedStatusMap()
 {
+	//messenger.printDebugMessage("ConfigReader called initialiseFilenameAndParsedStatusMap");
 	std::vector<std::string> filenamesInDirectory = findYAMLFilesInDirectory("");
 	std::string templateFilename = hardwareFolder + ".yaml";
+	messenger.printDebugMessage("ConfigReader templateFilename: " + templateFilename);
 	std::string all_file_names = "";
 	for (const auto& filename : filenamesInDirectory)
 	{

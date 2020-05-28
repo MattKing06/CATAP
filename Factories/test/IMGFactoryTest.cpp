@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(img_factory_check_values_on_pressure_test)
 	{
 		if (ca_state(imgFac.getIMG(testIMGName).pvStructs.at("P").CHID) == cs_conn)
 		{
-			BOOST_CHECK(isnan(imgFac.getIMGPressure(testIMGName)) == true);
+			BOOST_CHECK(isnan(imgFac.getIMGPressure(testIMGName)) != true);
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 		}
 		else

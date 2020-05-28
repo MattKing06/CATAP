@@ -1,4 +1,5 @@
 #include "HardwareFactory.h"
+#include "GlobalFunctions.h"
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -15,6 +16,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
 	imgFactory(IMGFactory(mode)),
+	llrffactory(LLRFFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -67,10 +69,43 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	}
 	return setup;
 }
+
+// YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
+LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
+{
+	return getLLRFFactory(std::vector<TYPE>{machineArea});
+}
+LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machineAreas)
+{
+	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
+}
+
+LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
+{
+	messenger.printMessage("getLLRFFactory Called");
+	if (!llrffactory.hasBeenSetup)
+	{
+		bool setup = llrffactory.setup("nominal", machineAreas);
+		if (setup)
+		{
+			return llrffactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup LLRFFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		return llrffactory;
+	}
+}
+
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
 	if (!magnetFactory.hasBeenSetup)
 	{
+		messenger.printMessage("Setup magnet Factory Nominal");
 		bool setup = magnetFactory.setup("nominal");
 		if(setup)
 		{

@@ -1,15 +1,15 @@
 #include "MagnetPVRecords.h"
 
-
-std::string const MagnetRecords::GETSETI = "GETSETI";
-std::string const MagnetRecords::READI = "READI";
-std::string const MagnetRecords::RILK = "RILK";
-std::string const MagnetRecords::RPOWER = "RPOWER";
-std::string const MagnetRecords::SETI = "SETI";
-std::string const MagnetRecords::SPOWER = "SPOWER";
-
 namespace MagnetRecords
 {
+	std::string const GETSETI = "GETSETI";
+	std::string const READI = "READI";
+	std::string const RILK = "RILK";
+	std::string const RPOWER = "RPOWER";
+	std::string const SETI = "SETI";
+	std::string const SPOWER = "SPOWER";
+
+
 	std::vector<std::string> magnetRecordList = { GETSETI,READI,RILK,RPOWER,SETI,SPOWER };
 }
 

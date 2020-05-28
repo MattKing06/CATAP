@@ -13,7 +13,7 @@ properties:
   degauss_values: "58.0,-58.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,3.0,-3.0,0.0"
   field_integral_coefficients: "-2.23133410405682E-10,4.5196171252132E-08,-3.46208258004659E-06,1.11195870210961E-04,2.38129337415767E-02,9.81229429460256E-03"
   hardware_type: Magnet
-  machine_area: UNDEFINED
+  machine_area: S02
   mag_set_max_wait_time: 45.0
   mag_type: QUAD
   magnetic_length: 128.68478212775

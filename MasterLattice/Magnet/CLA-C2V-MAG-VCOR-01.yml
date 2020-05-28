@@ -13,7 +13,7 @@ properties:
   degauss_values: "10.0,-10.0,7.0,-7.0,5.0,-5.0,2.5,-2.5,1.0,-1.0,0.0"
   field_integral_coefficients: "0.142064204721245,0.00344016005203196"
   hardware_type: Magnet
-  machine_area: UNDEFINED
+  machine_area: C2V
   mag_set_max_wait_time: 45.0
   mag_type: VCOR
   magnetic_length: 140.0

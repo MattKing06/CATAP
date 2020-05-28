@@ -12,6 +12,11 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 
 	void expose_shutter_object() 
 	{
+		//bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Magnet>())->to_python_target_type());
+		//if (is_registered) return;
+		//// magnet exposure
+		//boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
+
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Shutter>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<Shutter, boost::python::bases<Hardware>, boost::noncopyable>("Shutter", boost::python::no_init)

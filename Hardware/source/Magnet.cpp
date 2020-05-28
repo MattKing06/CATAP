@@ -28,6 +28,7 @@ wait_time(GlobalConstants::TIMET_45)
 
 Magnet::Magnet()
 {}
+
 Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
 epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
@@ -77,20 +78,21 @@ isDegaussing(false)
 	// convert yaml mag_type strings to CATAP.TYPE enum
 	// epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 }
-Magnet::Magnet(const Magnet& copyMagnet) : Hardware(copyMagnet),
-manufacturer(copyMagnet.manufacturer), 
-serialNumber(copyMagnet.serialNumber),
-magType(copyMagnet.magType), 
-magRevType(copyMagnet.magRevType), 
-READI_tolerance(copyMagnet.READI_tolerance),
-numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), 
-degaussValues(copyMagnet.degaussValues),
-fullPSUName(copyMagnet.fullPSUName), 
-measurementDataLocation(copyMagnet.measurementDataLocation),
-aliases(copyMagnet.aliases),
-RI_tolerance(copyMagnet.RI_tolerance),
-magneticLength(copyMagnet.magneticLength), 
-epicsInterface(copyMagnet.epicsInterface)
+Magnet::Magnet(const Magnet& copyMagnet) : 
+	Hardware(copyMagnet),
+	manufacturer(copyMagnet.manufacturer), 
+	serialNumber(copyMagnet.serialNumber),
+	magType(copyMagnet.magType), 
+	magRevType(copyMagnet.magRevType), 
+	READI_tolerance(copyMagnet.READI_tolerance),
+	numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), 
+	degaussValues(copyMagnet.degaussValues),
+	fullPSUName(copyMagnet.fullPSUName), 
+	measurementDataLocation(copyMagnet.measurementDataLocation),
+	aliases(copyMagnet.aliases),
+	RI_tolerance(copyMagnet.RI_tolerance),
+	magneticLength(copyMagnet.magneticLength), 
+	epicsInterface(copyMagnet.epicsInterface)
 {
 }
 std::vector<std::string> Magnet::getAliases() const
@@ -129,7 +131,7 @@ void Magnet::setPVStructs()
 		else
 		{
 			pvStructs[record].fullPVName = PV;
-			std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
+			std::cout << "Physical Magnet PV " + pvStructs[record].fullPVName << std::endl;
 		}
 		//pv.pvRecord = record;
 		//chid, count, mask, chtype are left undefined for now.

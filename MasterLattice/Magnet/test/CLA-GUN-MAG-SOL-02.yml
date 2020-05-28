@@ -19,7 +19,7 @@ properties:
   magnetic_length: 139.5
   manufacturer: SEF
   name: CLA-GUN-MAG-SOL-02
-  name_alias: LRG-SOL,LRG-SOL
+  name_alias: LRG-SOL-02,LRG-SOL02
   num_degauss_steps: 11
   position: 0.127
   ri_tolerance: 0.1

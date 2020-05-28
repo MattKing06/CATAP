@@ -11,8 +11,8 @@ namespace BOOST_PYTHON_HARDWARE_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Hardware>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<Hardware>("Hardware", boost::python::no_init)
-			.def_readonly("machineArea", &Hardware::machineArea)
-			.def_readonly("hardwareType", &Hardware::hardwareType)
+			.def_readonly("machineArea", &Hardware::machine_area)
+			.def_readonly("hardwareType", &Hardware::hardware_type)
 			.def_readonly("specificHardwareParameters", &Hardware::specificHardwareParameters)
 			.def("getMachineArea", &Hardware::getMachineArea)
 			.def("getHardwareType", &Hardware::getHardwareType)

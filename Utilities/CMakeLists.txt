@@ -1,6 +1,6 @@
 message("Processing Utilities source files...")
 
-set(SOURCE_FILES
+set( SOURCE_FILES
     source/PythonTypeConversions.cpp
     source/GlobalStateEnums.cpp
     source/GlobalTypeEnums.cpp
@@ -14,6 +14,7 @@ set(SOURCE_FILES
     source/LaserMirrorPVRecords.cpp
     source/LEDPVRecords.cpp
     source/LightingPVRecords.cpp
+    source/LLRFPVRecords.cpp
     source/RFHeartbeatPVRecords.cpp
     source/RFModulatorPVRecords.cpp
     source/RFProtectionPVRecords.cpp
@@ -35,6 +36,7 @@ set( INCLUDE_FILES
      include/LaserMirrorPVRecords.h
      include/LEDPVRecords.h
      include/LightingPVRecords.h
+     include/LLRFPVRecords.h
      include/RFHeartbeatPVRecords.h
      include/RFModulatorPVRecords.h
      include/RFProtectionPVRecords.h
