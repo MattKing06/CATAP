@@ -53,7 +53,7 @@ public:
 
 	std::vector<std::string> getCameraNames();
 	boost::python::list getCameraNames_Py();
-		
+
 	Camera& getCamera(const std::string& cam_name);
 	
 
@@ -104,7 +104,10 @@ public:
 	/*! get the name alises for this LLRF (python version)
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py(const std::string cam_name) const;
-
+	
+	std::string getScreen(const std::string cam_name) const;
+	std::vector<std::string> getScreenNames(const std::string cam_name) const;
+	boost::python::list getScreenNames_Py(const std::string cam_name) const;
 
 	void debugMessagesOn();
 	void debugMessagesOff();

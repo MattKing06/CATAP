@@ -469,6 +469,30 @@ std::string CameraFactory::getFullName(const std::string& name_to_check) const
 
 
 
+std::string CameraFactory::getScreen(const std::string cam_name) const
+{
+	std::string full_name = getFullName(cam_name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getScreen();
+	}
+	return "UNKNOWN";
+}
+std::vector<std::string> CameraFactory::getScreenNames(const std::string cam_name) const
+{
+	std::string full_name = getFullName(cam_name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getScreenNames();
+	}
+	return std::vector<std::string>{"UNKNOWN"};
+}
+boost::python::list CameraFactory::getScreenNames_Py(const std::string cam_name) const
+{
+	return to_py_list<std::string>(getScreenNames(cam_name));
+}
+
+
 std::vector<std::string> CameraFactory::getAliases(const std::string cam_name) const
 {
 	std::string full_name = getFullName(cam_name);
@@ -479,7 +503,7 @@ std::vector<std::string> CameraFactory::getAliases(const std::string cam_name) c
 	return std::vector<std::string>{dummy_cam.getHardwareName()};
 }
 /*! get the name alises for this LLRF (python version)
-	@param[out] names, python list containing all the alias names */
+	@param[ou	return to_py_list<std::string>(getAliases(cam_name));t] names, python list containing all the alias names */
 boost::python::list CameraFactory::getAliases_Py(const std::string cam_name) const
 {
 	return to_py_list<std::string>(getAliases(cam_name));
@@ -504,6 +528,7 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 	//messenger.printMessage("updateAliasNameMap ", full_name);
 	if (GlobalFunctions::entryExists(alias_name_map, full_name))
 	{
+		// Not necessarily an error, screen_name goes in the alias map too 
 		//messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
 	}
 	else
@@ -511,8 +536,15 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
 		alias_name_map[full_name] = full_name;
 	}
-	// now add in the aliases
-	std::vector<std::string> aliases = camera.getAliases();
+	// now add in the aliases, for cameras we have name_alias and screen_name to include 
+	std::vector<std::string> name_aliases = camera.getAliases();
+	std::vector<std::string> screen_aliases = camera.getScreenNames();
+	std::vector<std::string> aliases; 
+	aliases.reserve(name_aliases.size() + screen_aliases.size());
+	aliases.insert(aliases.end(), name_aliases.begin(), name_aliases.end());
+	aliases.insert(aliases.end(), screen_aliases.begin(), screen_aliases.end());
+
+
 	for (auto&& next_alias : aliases)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
@@ -563,22 +595,36 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 			++it;
 		}
 	}
+	// a bit of cancer below ...
+	// now check if there are two virtual_cathdoe cameras, if so remove thje VELA one (arbitrary decision, but meh)
+	auto it_vela = camera_map.end();  
+	auto it_clara = camera_map.end();  
+	for (auto it = camera_map.begin(); it != camera_map.end() /* not hoisted */; /* no increment */)
+	{
+		if (it->second.getMachineArea() == TYPE::VELA_LASER)
+		{
+			//messenger.printDebugMessage("Found VELA Virtual Cathdoe Camera");
+			it_vela = it;
+		}
+		if (it->second.getMachineArea() == TYPE::CLARA_LASER)
+		{
+			//messenger.printDebugMessage("Found CLARA Virtual Cathdoe Camera");
+			it_clara = it;
+		}
+		++it;
+	}
+	if (it_vela != camera_map.end())
+	{
+		if (it_clara != camera_map.end())
+		{
+			camera_map.erase(it_vela);
+			messenger.printDebugMessage("Still 2 Virtual_cathode Cameras, deleteing the VELA one");
+		}
+	}
+
 	size_t end_size = camera_map.size();
-	messenger.printDebugMessage("cutLLRFMapByMachineAreas camera_map.size() went from ", start_size, " to ", end_size);
+	messenger.printDebugMessage("cutLHarwdareMapByMachineAreas camera_map.size() went from ", start_size, " to ", end_size);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

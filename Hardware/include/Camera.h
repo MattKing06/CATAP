@@ -28,12 +28,21 @@ public:
 	~Camera();
 	void setPVStructs();
 
-	/*! get the name alises for this LLRF
+	/*! get the name alises for this Camera
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;
-	/*! get the name alises for this LLRF (python version)
+	/*! get the name alises for this Camera (python version)
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
+	/*! get the screen name (and aliases) the camera is attached to 
+	@param[out] names, vector containing  all the screen names (and their aliases) */
+	std::vector<std::string> getScreenNames() const;
+	/*! get the screen name (and aliases) the camera is attached to (python version)
+	@param[out] names, python list containing all the screen names (and their aliases) */
+	boost::python::list getScreenNames_Py() const;
+	/*! get the screen name the camera is attached to 
+	@param[out] name, */
+	std::string getScreen()const;
 
 
 	double pix2mmX(double value)const;
@@ -128,6 +137,8 @@ private:
 	double pix2mmX_ratio;
 	double pix2mmY_ratio;
 
+
+	std::vector<std::string> screen_names;
 
 	
 

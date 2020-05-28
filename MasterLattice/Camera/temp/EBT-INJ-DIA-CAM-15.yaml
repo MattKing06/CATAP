@@ -76,7 +76,7 @@ controls_information:
 
 properties:
     hardware_type: Camera
-    machine_area : INJ
+    machine_area : INJ  # Set by where the camera physically *IS* 
     name : EBT-INJ-DIA-CAM-15
     name_alias: INJ-CAM-15, INJ-CAM15  # include screen names here as well 
     CAM_TYPE : VELA_CAM 

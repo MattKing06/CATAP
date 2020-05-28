@@ -109,6 +109,9 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 {
 	// this vector will contain any keys from the template that are not present in the config file.
 	std::vector<std::string> missingEntries;
+	// flags so if an error is found print info from file to help fix it 
+	bool print_properties = false;
+	bool print_ctrlsinfo = false;
 	for (const auto& keyAndValuePair : hardwareTemplate["properties"])
 	{
 		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
@@ -116,6 +119,7 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 			messenger.printDebugMessage("Error missing property: " + keyAndValuePair.first.as<std::string>());
 			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
 			//return false;
+			print_properties = true;
 		}
 	}
 	for (const auto& keyAndValuePair : hardwareTemplate["controls_information"])
@@ -123,9 +127,30 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
 		{
 			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
+			print_ctrlsinfo = true;
 			//return false;
 		}
 	}
+
+	if (print_properties)
+	{
+		messenger.printDebugMessage("property Errors found, printing all discovered properties ");		
+		for (const auto& keyAndValuePair : hardwareComponent["properties"])
+		{
+			messenger.printDebugMessage(keyAndValuePair.first.as<std::string>() + " = " +
+				keyAndValuePair.second.as<std::string>());
+		}
+	}
+	if (print_ctrlsinfo)
+	{
+		messenger.printDebugMessage("controls_information Errors found, printing all discovered controls_information ");
+		for (const auto& keyAndValuePair : hardwareComponent["controls_information"])
+		{
+			messenger.printDebugMessage(keyAndValuePair.first.as<std::string>() + " = " +
+				keyAndValuePair.second.as<std::string>());
+		}
+	}
+
 	return missingEntries;
 }
 

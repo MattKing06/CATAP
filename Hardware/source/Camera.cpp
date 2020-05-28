@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
+#include "boost/algorithm/string/split.hpp"
+#include <algorithm>
 
 Camera::Camera():
 Hardware()
@@ -23,7 +25,21 @@ sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 {
 
-	
+	// TODO name_alias should be in harwdare constructor?? 
+	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+	boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
+
+	// REMOVE SPACES FROM THE NAME
+	for (auto& name : screen_names)
+	{
+		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+		messenger.printDebugMessage(hardwareName, " added screen_name " + name);
+	}
+	for (auto& name : aliases)
+	{
+		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+		messenger.printDebugMessage(hardwareName, " added aliase " + name);
+	}
 
 }
 
@@ -252,12 +268,6 @@ bool Camera::setAvgIntensity(double value)
 }
 
 
-
-
-
-
-
-
 std::vector<std::string> Camera::getAliases() const
 {
 	return aliases;
@@ -267,6 +277,23 @@ boost::python::list Camera::getAliases_Py() const
 	return to_py_list<std::string>(getAliases());
 }
 
+std::string Camera::getScreen()const
+{
+	if (screen_names.size() > 0)
+	{
+		return screen_names[0];
+	}
+	return "UNKNOWN";
+}
+
+std::vector<std::string> Camera::getScreenNames() const
+{
+	return screen_names;
+}
+boost::python::list Camera::getScreenNames_Py() const
+{
+	return to_py_list<std::string>(getScreenNames());
+}
 
 void Camera::debugMessagesOn()
 {

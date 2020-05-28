@@ -76,11 +76,11 @@ controls_information:
 
 properties:
     hardware_type: Camera
-    machine_area : INJ
+    machine_area : INJ # Set by where the camera physically *IS* 
     name : EBT-INJ-DIA-CAM-16
     name_alias: INJ-CAM-16, INJ-CAM16  # include screen names here as well 
     CAM_TYPE : VELA_CAM 
-    SCREEN_NAME : INJ-SCR-01 # which screen is the camera looking at 
+    SCREEN_NAME : INJ-SCR-10, INJ-YAG-10 # which screen is the camera looking at 
     IP_ADDRESS_STREAM : "" 
     MAX_SHOTS_NUMBER  :	600 # max number of shots that can be taken in a single burst 
     ## these are the indices of each value in the array PixelResults_RBV
