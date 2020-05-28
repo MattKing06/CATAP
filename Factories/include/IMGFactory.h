@@ -27,24 +27,24 @@ public:
 	@param[in] copyIMGFactory the IMGFactory we want to copy over.*/
 	IMGFactory(const IMGFactory& copyFactory);
 	/*! IMGFactory destructor.
-	Goes through all Valve objects in the valveMap and removes connections/subscriptions to EPICS if they exist.*/
+	Goes through all IMG objects in the imgMap and removes connections/subscriptions to EPICS if they exist.*/
 	~IMGFactory();
 	/*! The kind of IMGFactory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
 	IMG hardware objects when they are created by ConfigReader*/
 	STATE mode;
-	/*! Flag to say whether the ValveFactory setup function has been completed successfully.*/
+	/*! Flag to say whether the IMGFactory setup function has been completed successfully.*/
 	bool setup(const std::string& version);
 	/*! passes an empty IMGMap to the configReader to be populated by IMG objects that are
 		created from the YAML Config files.*/
 	bool hasBeenSetup;
-	/*! Map containing all Valves created from ConfigReader, keyed by harwdare name*/
+	/*! Map containing all IMGs created from ConfigReader, keyed by harwdare name*/
 	std::map<std::string, IMG> IMGMap;
 	/*! ConfigReader to parse YAML config files and create associated IMG objects*/
 	ConfigReader reader;
 	/*! Used to print messages both normal and debug, also sets the On/Off flags for debug and normal messages*/
 	LoggingSystem messenger;
 	/*! The main function that sets up EPICS connections and subscriptions to all
-	valves in the Valve map. We set up all channels before sending them to EPICS
+	IMGs in the IMG map. We set up all channels before sending them to EPICS
 	for efficiency. After channels, the remaining data for pvStructs are set as well
 	as any subscriptions that are needed for monitoring.
 	@param[in] version NOT IN USE
@@ -60,20 +60,20 @@ public:
 	void retrieveMonitorStatus(pvStruct& pvStruct);
 	/*! returns IMG by name
 	@param name checks the name in the alias map if not full name.
-			and returns the Valve stored in IMGMap at that full name
+			and returns the IMGs stored in IMGMap at that full name
 	*/
 	IMG& getIMG(const std::string& fullIMGName);
 	/*!
 	retrieves the full name of the IMG object from the alias map for IMGs
-	@param[in] nameToCheck :a known name of the valve
+	@param[in] nameToCheck :a known name of the IMG
 	@param[out] fullName : the full hardware name associated with the alias.
 	*/
 	std::string getFullName(const std::string& nameToCheck) const;
-	/*!gets all of the hardware names associated with all of the valves in IMGMap
-	 *@param[out] IMGNames :a vector containing all of the harwdare names for the valves in IMGMap*/
+	/*!gets all of the hardware names associated with all of the IMGs in IMGMap
+	 *@param[out] IMGNames :a vector containing all of the harwdare names for the IMGs in IMGMap*/
 	std::vector<std::string> getAllIMGNames() const;
 	/*! gets the IMG state of a particular IMG
-	 * @param[in] name :The full-name or alias of the valve
+	 * @param[in] name :The full-name or alias of the IMG
 	 * @param[out] pressure :The state the IMG is currently in (OPEN,CLOSED,ERR)*/
 	boost::python::list getAllIMGNames_Py()const;
 	double getIMGPressure(const std::string& name) const;
@@ -88,13 +88,13 @@ public:
 	/*! gets the pressure of all IMGS
 	* @param[out] states : a map of all IMGS names and their current pressures*/
 	boost::python::dict getAllIMGPressure_Py() const;
-	/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/
+	/*! turns debug messages on for IMGFactory and calls same function in all IMGs and configReader*/
 	void debugMessagesOn();
-	/*! turns debug messages off for valveFactory and calls same function in all valves and configReader*/
+	/*! turns debug messages off for IMGFactory and calls same function in all IMGs and configReader*/
 	void debugMessagesOff();
-	/*! turns messages on for valveFactory and calls same function in all valves and configReader*/
+	/*! turns messages on for IMGFactory and calls same function in all IMGs and configReader*/
 	void messagesOn();
-	/*! turns messages off for valveFactory and calls same function in all valves and configReader*/
+	/*! turns messages off for IMGFactory and calls same function in all IMGs and configReader*/
 	void messagesOff();
 	/*! returns true if messenger debug flag is true, false otherwise*/
 	bool isDebugOn();
