@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/EPICSMagnetInterface.cpp
     source/EPICSBPMInterface.cpp
     source/EPICSChargeInterface.cpp
+    source/EPICSCameraInterface.cpp
     source/EPICSScreenInterface.cpp
     source/EPICSValveInterface.cpp
     source/EPICSGeneralMonitorInterface.cpp
@@ -24,6 +25,7 @@ set( INCLUDE_FILES
     include/EPICSMagnetInterface.h 
     include/EPICSBPMInterface.h 
     include/EPICSChargeInterface.h 
+    include/EPICSCameraInterface.h 
     include/EPICSScreenInterface.h 
     include/EPICSValveInterface.h
     include/EPICSGeneralMonitorInterface.h
@@ -46,6 +48,7 @@ set( TEST_FILES
     EPICSBPMInterfaceTest.cpp
     EPICSChargeInterfaceTest.cpp
     EPICSScreenInterfaceTest.cpp
+    EPICSCameraInterfaceTest.cpp
     EPICSValveInterfaceTest.cpp
     EPICSGeneralMonitorInterfaceTest.cpp
     EPICSIMGInterfaceTest.cpp

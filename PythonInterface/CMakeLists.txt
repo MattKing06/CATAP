@@ -4,6 +4,7 @@ set( SOURCE_FILES
  #   source/PythonInterface.cpp 
     source/ValvePythonInterface.cpp
     source/MagnetPythonInterface.cpp 
+	source/CameraPythonInterface.cpp 
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/ScreenPythonInterface.cpp 
@@ -31,6 +32,7 @@ set( INCLUDE_FILES
     include/DataTypesPythonInterface.h
  #   include/PythonInterface.h 
     include/MagnetPythonInterface.h 
+    include/CameraPythonInterface.h 
     include/ValvePythonInterface.h
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 

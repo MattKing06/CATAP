@@ -1,10 +1,10 @@
 #ifndef LLRF_FACTORY_H_
 #define LLRF_FACTORY_H_
-
 #include <ConfigReader.h>
 #include <LLRF.h>
 #include <GlobalStateEnums.h>
 #include <vector>
+
 class LLRFFactory
 {
 public:
@@ -67,12 +67,13 @@ public:
 	double getAmpMW(const std::string& llrf_name)const;
 	double getPhiDEG(const std::string& llrf_name)const;
 
-	/*! get the name alises for this LLRF
-	@param[out] names, vector containing  all the alias names */
-	std::vector<std::string> getAliases() const;
-	/*! get the name alises for this LLRF (python version)
-		@param[out] names, python list containing all the alias names */
-	boost::python::list getAliases_Py() const;
+	//// TODOD this should be in the LLRF object and this version one needs a llrf obejct name passed 
+	///*! get the name alises for this LLRF
+	//@param[out] names, vector containing  all the alias names */
+	//std::vector<std::string> getAliases() const;
+	///*! get the name alises for this LLRF (python version)
+	//	@param[out] names, python list containing all the alias names */
+	//boost::python::list getAliases_Py() const;
 
 
 	std::map<std::string, std::vector<double>> getAllTraceData(const std::string& llrf_name)const;
