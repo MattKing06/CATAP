@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/Magnet.cpp
     source/BPM.cpp
     source/Charge.cpp
+    source/Camera.cpp
     source/Screen.cpp
     source/Valve.cpp
     source/GeneralMonitor.cpp
@@ -24,6 +25,7 @@ set( INCLUDE_FILES
     include/Magnet.h
     include/BPM.h
     include/Charge.h
+    include/Camera.h
     include/Screen.h
     include/Valve.h
     include/GeneralMonitor.h
@@ -43,6 +45,7 @@ set( TEST_FILES
 	HardwareTestHelper.cpp
 	HardwareTest.cpp
 	MagnetTest.cpp
+	CameraTest.cpp
 	BPMTest.cpp
 	ChargeTest.cpp
 	ScreenTest.cpp

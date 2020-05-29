@@ -54,7 +54,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	messenger.printDebugMessage("LLRF Constructor");
 	epicsInterface->ownerName = hardwareName;
 	setPVStructs();
-
+	// TODO name_alias should be in harwdare constructor?? 
 	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
 	// TODOD add in the channel number to trace name map data
 	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });

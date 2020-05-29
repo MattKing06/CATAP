@@ -17,6 +17,8 @@ namespace BOOST_PYTHON_HARDWARE_INCLUDE
 			.def("getMachineArea", &Hardware::getMachineArea)
 			.def("getHardwareType", &Hardware::getHardwareType)
 			.def("getHardwareName", &Hardware::getHardwareName)
+			.def("getMachineAreaStr", &Hardware::getMachineAreaStr)
+			.def("getHardwareTypeStr", &Hardware::getHardwareTypeStr)
 			.def("getMode", &Hardware::getMode)
 			.def("debugMessagesOn", &Hardware::debugMessagesOn)
 			.def("debugMessagesOff", &Hardware::debugMessagesOff)

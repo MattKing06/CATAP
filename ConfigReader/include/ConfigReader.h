@@ -98,8 +98,10 @@ public:
 			config = YAML::LoadFile(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			if (config.size() > 0)
 			{
+				//TODO: we should only load the config template once per factory set-up ? 
 				messenger.printDebugMessage("LoadFile got config data, getting template");
 				std::string hardwareTemplateFilename = ConfigReader::yamlFileDestination + SEPARATOR + config["properties"]["hardware_type"].as<std::string>() + ".yaml";
+				// TODO fix  ".yaml" is required 
 				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 
@@ -120,14 +122,16 @@ public:
 				messenger.printDebugMessage("Constuct Hardware, mode = ", ENUM_TO_STRING(mode));
 
 				HardwareType freshHardware = HardwareType(parameters, mode);
-								
+				
+				messenger.printDebugMessage("Add New harwdare to hardwareMapToFill");
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
 				hardwareMapToFill[freshHardware.getHardwareName()] 
 					= freshHardware;
 
-				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill");
+				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill"
+				 + " current size = ", hardwareMapToFill.size());
 
 /* 				std::cout << "name  = " << freshHardware.getHardwareName() << ", mode = "
 					<< ENUM_TO_STRING(mode) << std::endl;

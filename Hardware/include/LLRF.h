@@ -63,6 +63,8 @@ public:
 	LLRF(const LLRF& copyLLRF);
 	~LLRF();
 	void setPVStructs();
+
+	// TODO private ?? 
 	EPICSLLRFInterface_sptr epicsInterface;
 	std::map<std::string, std::string> LLRFParamMap;
 

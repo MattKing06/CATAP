@@ -113,9 +113,9 @@ namespace GlobalFunctions {
 		case TYPE::ALL_VELA_CLARA:
 			return true;
 		case TYPE::VELA_GUN:
-			return testArea == area;
+			return entryExists(std::vector<TYPE>{TYPE::VELA_GUN, TYPE::VELA_LASER}, area);
 		case TYPE::CLARA_GUN:
-			return testArea == area;
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::CLARA_LASER}, area);
 		case TYPE::HRRG_GUN:
 			return testArea == area;
 		case TYPE::LRRG_GUN:
@@ -138,12 +138,18 @@ namespace GlobalFunctions {
 			return testArea == area;
 		case TYPE::C2V:
 			return testArea == area;
+		case TYPE::VELA_INJ:
+			return entryExists(std::vector<TYPE>{TYPE::VELA_GUN, TYPE::VELA_LASER, TYPE::INJ}, area);
+		case TYPE::VELA_2_BA1:
+			return entryExists(std::vector<TYPE>{TYPE::VELA_LASER, TYPE::VELA_GUN, TYPE::INJ, TYPE::BA1}, area);
+		case TYPE::VELA_2_BA1_BA2:
+			return entryExists(std::vector<TYPE>{TYPE::VELA_LASER, TYPE::VELA_GUN, TYPE::INJ, TYPE::BA1, TYPE::BA2}, area);
 		case TYPE::CLARA_PH1:
-			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V}, area);
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_LASER, TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V}, area);
 		case TYPE::CLARA_2_BA1:
-			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::INJ, TYPE::BA1}, area);
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_LASER, TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::INJ, TYPE::BA1}, area);
 		case TYPE::CLARA_2_BA1_BA2:
-			return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::INJ, TYPE::BA1, TYPE::BA2}, area);
+			return entryExists(std::vector<TYPE>{TYPE::CLARA_LASER, TYPE::CLARA_GUN, TYPE::L01, TYPE::S01, TYPE::S02, TYPE::C2V, TYPE::INJ, TYPE::BA1, TYPE::BA2}, area);
 		}
 		return false;
 	}

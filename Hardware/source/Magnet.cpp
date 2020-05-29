@@ -74,6 +74,7 @@ isDegaussing(false)
 		}
 	}
 	// convert value for YAML key "name_aliases", to vector of strings and set equal to memebr variable aliases
+	// TODO name_alias should be in harwdare constructor?? 
 	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });
 	// convert yaml mag_type strings to CATAP.TYPE enum
 	// epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());

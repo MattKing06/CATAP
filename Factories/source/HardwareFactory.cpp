@@ -17,6 +17,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	valveFactory(ValveFactory(mode)),
 	imgFactory(IMGFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
+	cameraFactory(CameraFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -88,6 +89,7 @@ LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAre
 		bool setup = llrffactory.setup("nominal", machineAreas);
 		if (setup)
 		{
+			messenger.printMessage("getLLRFFactory Complete");
 			return llrffactory;
 		}
 		else
@@ -97,6 +99,7 @@ LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAre
 	}
 	else
 	{
+		messenger.printMessage("getLLRFFactory Complete");
 		return llrffactory;
 	}
 }
@@ -109,6 +112,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 		bool setup = magnetFactory.setup("nominal");
 		if(setup)
 		{
+			messenger.printMessage("getMagnetFactory Complete");
 			return magnetFactory;
 		}
 		else
@@ -118,6 +122,7 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	}
 	else
 	{
+		messenger.printMessage("getMagnetFactory Complete");
 		return magnetFactory;
 	}
 }
@@ -128,6 +133,7 @@ ValveFactory& HardwareFactory::getValveFactory()
 		bool setup = valveFactory.setup("nominal");
 		if (setup)
 		{
+			messenger.printMessage("getValveFactory Complete");
 			return valveFactory;
 		}
 		else
@@ -137,6 +143,7 @@ ValveFactory& HardwareFactory::getValveFactory()
 	}
 	else
 	{
+		messenger.printMessage("getValveFactory Complete");
 		return valveFactory;
 	}
 }
@@ -167,6 +174,7 @@ BPMFactory& HardwareFactory::getBPMFactory()
 		bool setup = bpmFactory.setup("nominal");
 		if (setup)
 		{
+			messenger.printMessage("getBPMFactory Complete");
 			return bpmFactory;
 		}
 		else
@@ -176,6 +184,7 @@ BPMFactory& HardwareFactory::getBPMFactory()
 	}
 	else
 	{
+		messenger.printMessage("getBPMFactory Complete");
 		return bpmFactory;
 	}
 }
@@ -186,6 +195,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		bool setup = chargeFactory.setup("nominal");
 		if (setup)
 		{
+			messenger.printMessage("getLLRFFactory Complete");
 			return chargeFactory;
 		}
 		else
@@ -202,6 +212,7 @@ ScreenFactory& HardwareFactory::getScreenFactory()
 		bool setup = screenFactory.setup("nominal");
 		if (setup)
 		{
+			messenger.printMessage("getScreenFactory Complete");
 			return screenFactory;
 		}
 		else
@@ -212,6 +223,24 @@ ScreenFactory& HardwareFactory::getScreenFactory()
 	return screenFactory;
 }
 
+
+CameraFactory& HardwareFactory::getCameraFactory()
+{
+	if (!cameraFactory.hasBeenSetup)
+	{
+		bool setup = cameraFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getCameraFactory Complete");
+			return cameraFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup cameraFactory");
+		}
+	}
+	return cameraFactory;
+}
 
 void HardwareFactory::debugMessagesOn()
 {
