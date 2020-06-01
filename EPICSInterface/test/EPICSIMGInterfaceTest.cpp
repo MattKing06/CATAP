@@ -26,7 +26,6 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_get_pressure_test)
 		ca_get(setPV.CHTYPE, setPV.CHID, &returnValue);
 		ca_pend_io(CA_PEND_IO_TIMEOUT);
 		BOOST_CHECK(isnan(returnValue) != true);
-		//BOOST_CHECK_EQUAL(returnValue, 3.0);
 	}
 	else
 	{

@@ -37,12 +37,11 @@ BOOST_AUTO_TEST_CASE(getting_setting_state_img_test)
 	BOOST_TEST_MESSAGE("------	IMG HW: GETTING AND SETTING STATE OF IMG	------");
 	IMG img = IMG();
 	STATE error = STATE::ERR;
-	STATE on = STATE::ON;
-	STATE off = STATE::OFF;
-	img.setIMGState(STATE::ON);
-	BOOST_CHECK_EQUAL(img.getIMGState(), on);
-	img.setIMGState(STATE::OFF);
-	BOOST_CHECK_EQUAL(img.getIMGState(), off);
+	STATE ok = STATE::OK;
+	img.setIMGState(STATE::OK);
+	BOOST_CHECK_EQUAL(img.getIMGState(), ok);
+	img.setIMGState(STATE::ERR);
+	BOOST_CHECK_EQUAL(img.getIMGState(), error);
 }
 
 BOOST_AUTO_TEST_CASE(getting_img_aliases_test)

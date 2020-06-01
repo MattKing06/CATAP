@@ -81,8 +81,8 @@ void IMG::setIMGState(const STATE& states)
 {
 	switch (states)
 	{
-	case STATE::ON: state.second = STATE::ON; break;
-	case STATE::OFF: state.second = STATE::OFF; break;
+	case STATE::OK: state.second = STATE::OK; break;
+	case STATE::ERR: state.second = STATE::ERR; break;
 	default:
 		state.second = STATE::ERR;
 	}

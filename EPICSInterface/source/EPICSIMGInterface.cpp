@@ -46,8 +46,8 @@ void EPICSIMGInterface::updateIMGState(const struct event_handler_args args)
 	recastIMG->state.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
-	case GlobalConstants::zero_int: recastIMG->setIMGState(STATE::OFF); break;
-	case GlobalConstants::one_int: recastIMG->setIMGState(STATE::ON); break;
+	case GlobalConstants::zero_int: recastIMG->setIMGState(STATE::ERR); break;
+	case GlobalConstants::one_int: recastIMG->setIMGState(STATE::OK); break;
 	default:
 		recastIMG->setIMGState(STATE::ERR);
 	}
