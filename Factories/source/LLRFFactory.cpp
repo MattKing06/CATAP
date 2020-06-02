@@ -105,6 +105,10 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	{
 		// update aliases for valve in map
 		updateAliasNameMap(llrf.second);
+		// update deafult tarce mean indecies 
+		llrf.second.setDefaultPowerTraceMeanTimes();
+
+
 		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
 	//	for (auto& pv : pvstruct)
 	//	{

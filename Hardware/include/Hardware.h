@@ -81,7 +81,6 @@ public:
 		return m;
 	}
 	static const std::map<std::string, TYPE> string_to_hardware_type_map;
-
 };
 /** @}*/
 #endif //HARDWARE_H_

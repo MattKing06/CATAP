@@ -46,6 +46,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			//.def("getMean", &LLRFFactory::getMeanStartIndex)
 			.def("getCavRevPha",&LLRF::getCavRevPha)
 			.def("getCutMean",  &LLRF::getCutMean)
+			.def("getPowerCutMean",  &LLRF::getPowerCutMean_Py)
+			
 			
 			
 			

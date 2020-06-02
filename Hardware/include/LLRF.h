@@ -157,6 +157,10 @@ public:
 	size_t getMeanStopIndex(const std::string& name)const;
 	//double getMean(const std::string& name)const;
 	double getCutMean(const std::string& name)const;
+	std::map<std::string, double> getPowerCutMean()const;
+	boost::python::dict getPowerCutMean_Py()const;
+
+	// don;t use anymore ... 
 	double getMeanStartTime(const std::string& name)const;
 	double getMeanStopTime(const std::string& name)const;
 
@@ -189,15 +193,17 @@ protected:
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
 
-
-	// special aase for the HRRG_GUN and LRRG_GUN
+	// special case for the HRRG_GUN and LRRG_GUN
 	void setMachineArea(const TYPE area);
-
+	void setDefaultPowerTraceMeanTimes();
 
 
 
 
 private:
+	
+	double crest_phase;
+	double operating_phase;
 
 	/*! alternative names for the magnet (usually shorter thna the full PV root), 
 		defined in the master lattice yaml file	*/
@@ -234,6 +240,9 @@ private:
 	std::vector<double> krpha_dummy_trace;
 	std::vector<double> cfpha_dummy_trace;
 	std::vector<double> crpha_dummy_trace;
+
+	std::vector<std::string> power_trace_names;
+
 
 	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor ??? 
 	size_t trace_data_size;

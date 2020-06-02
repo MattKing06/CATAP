@@ -40,9 +40,6 @@ TraceData::~TraceData()
 }
 
 
-
-
-
 LLRF::LLRF() :
 	trace_data_size(1017)
 {
@@ -50,6 +47,7 @@ LLRF::LLRF() :
 
 LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
+	crest_phase(std::stof(paramMap.find("crest_phase")->second)),
 	trace_data_size(1017),
 	// calls copy constructor and destroys 
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
@@ -65,6 +63,18 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	
 
 	addDummyTraces(paramMap);
+
+
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::KLYSTRON_FORWARD_POWER));
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::KLYSTRON_REVERSE_POWER));
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_FORWARD_POWER));
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_REVERSE_POWER));
+	if (machine_area != TYPE::LRRG_GUN)
+	{
+		power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_PROBE_POWER));
+	}
+
+
 
 }
 
@@ -114,7 +124,44 @@ void LLRF::setPVStructs()
 
 }
 
+void LLRF::setMachineArea(const TYPE area) // called from factory
+{
+	machine_area = area;
+	machine_area_str = ENUM_TO_STRING(machine_area);
+	messenger.printDebugMessage("NEW Machien Area =  " + machine_area_str);
+	setTraceDataMap();
+}
 
+void LLRF::setDefaultPowerTraceMeanTimes()
+// called from factory
+{
+	setMeanStartEndTime(
+		std::stof(specificHardwareParameters.find("kfpow_mean_start_time")->second),
+		std::stof(specificHardwareParameters.find("kfpow_mean_end_time")->second),
+		GlobalConstants::KLYSTRON_FORWARD_POWER);
+	setMeanStartEndTime(
+		std::stof(specificHardwareParameters.find("krpow_mean_start_time")->second),
+		std::stof(specificHardwareParameters.find("krpow_mean_end_time")->second),
+		GlobalConstants::KLYSTRON_REVERSE_POWER);
+	setMeanStartEndTime(
+		std::stof(specificHardwareParameters.find("cfpow_mean_start_time")->second),
+		std::stof(specificHardwareParameters.find("cfpow_mean_end_time")->second),
+		GlobalConstants::CAVITY_FORWARD_POWER);
+	setMeanStartEndTime(
+		std::stof(specificHardwareParameters.find("crpow_mean_start_time")->second),
+		std::stof(specificHardwareParameters.find("crpow_mean_end_time")->second),
+		GlobalConstants::CAVITY_REVERSE_POWER);
+	if(GlobalFunctions::entryExists(specificHardwareParameters, "cppow_mean_start_time"))
+	{
+		if (GlobalFunctions::entryExists(specificHardwareParameters, "cppow_mean_end_time"))
+		{
+			setMeanStartEndTime(
+				std::stof(specificHardwareParameters.find("cppow_mean_start_time")->second),
+				std::stof(specificHardwareParameters.find("cppow_mean_end_time")->second),
+				GlobalConstants::CAVITY_PROBE_POWER);
+		}
+	}
+}
 
 
 bool LLRF::setAmp(double value)
@@ -495,6 +542,20 @@ double LLRF::getCutMean(const std::string& name)const
 	return GlobalConstants::double_min;
 }
 
+std::map<std::string, double> LLRF::getPowerCutMean()const
+{
+	std::map<std::string, double> r;
+	for (auto&& trace : power_trace_names)
+	{
+		r[trace] = getCutMean(trace);
+	}
+	return r;
+}
+boost::python::dict LLRF::getPowerCutMean_Py()const
+{
+	return to_py_dict<std::string, double>(getPowerCutMean());
+}
+
 void LLRF::updateTraceCutMeans()
 {
 	messenger.printDebugMessage("updateTraceCutMeans");
@@ -530,13 +591,7 @@ void LLRF::calculateTraceCutMean(TraceData& trace)
 
 
 
-void LLRF::setMachineArea(const TYPE area)
-{
-	machine_area = area;
-	machine_area_str = ENUM_TO_STRING(machine_area);
-	messenger.printDebugMessage("NEW Machien Area =  " + machine_area_str);
-	setTraceDataMap();
-}
+
 
 void  LLRF::scaleAllDummyTraces()
 {
