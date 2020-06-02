@@ -13,6 +13,7 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "CHA", "Charge" },
 	{ "SCR", "Screen" },
 	{ "YAG", "Screen" },
+	{ "IMG", "IMG" },
 	{ "LLRF", "LLRF"  }, // ??? 
 	{ "CAM", "Camera" }
 };

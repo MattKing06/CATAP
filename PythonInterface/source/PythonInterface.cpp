@@ -26,7 +26,7 @@
 //#include <BPMPythonInterface.h>
 //#include <ChargePythonInterface.h>
 #include <ScreenPythonInterface.h>
-
+//#include <IMGPythonInterface.h>
 #include <vector>
 #include <map>
 
@@ -109,6 +109,10 @@ BOOST_PYTHON_MODULE(CATAP)
 	//expose valve object and valveFactory object
 	//BOOST_PYTHON_VALVE_INCLUDE::exposeValveObject();
 	//BOOST_PYTHON_VALVE_INCLUDE::exposeValveFactoryObject();
+
+	//expose IMG object and IMGFactory object
+	//BOOST_PYTHON_IMG_INCLUDE::expose_img_object();
+	//BOOST_PYTHON_IMG_INCLUDE::expose_img_factory_object();
 
 	// BPM Exposure
 		// Charge Exposure

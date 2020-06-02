@@ -5,6 +5,7 @@
 #include "ChargeFactory.h"
 #include "ScreenFactory.h"
 #include "ValveFactory.h"
+#include "IMGFactory.h"
 #include "LLRFFactory.h"
 #include "CameraFactory.h"
 #include "GlobalStateEnums.h"
@@ -39,9 +40,8 @@ public:
 	ChargeFactory& getChargeFactory();
 	ScreenFactory& getScreenFactory();
 	ValveFactory& getValveFactory();
-	
+	IMGFactory& getIMGFactory();
 	CameraFactory& getCameraFactory();
-	
 	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
@@ -57,6 +57,7 @@ public:
 	ChargeFactory chargeFactory;
 	ScreenFactory screenFactory;
 	ValveFactory valveFactory;
+	IMGFactory imgFactory;
 	LLRFFactory llrffactory;
 	BPMFactory bpmFactory;
 	CameraFactory cameraFactory;

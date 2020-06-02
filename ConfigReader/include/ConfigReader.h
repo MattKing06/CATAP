@@ -10,6 +10,7 @@
 #include <BPM.h>
 #include <Charge.h>
 #include <Screen.h>
+#include <IMG.h>
 #include <string>
 #include <fstream>
 #include <iostream>
