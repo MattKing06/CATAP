@@ -9,9 +9,11 @@
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 #include <boost/circular_buffer.hpp>
+#include <utility> 
 
 class EPICSLLRFInterface;
 typedef boost::shared_ptr<EPICSLLRFInterface> EPICSLLRFInterface_sptr;
+
 
 class TraceData
 {
@@ -45,13 +47,18 @@ class TraceData
 		// max value in trace
 		double trace_max;
 		// traces indices over which to calculate trace_cut_mean
-		size_t mean_start_index, mean_stop_index;
+		//size_t mean_start_index, mean_stop_index;
+		
+		std::pair<size_t, size_t> mean_start_stop;
+		std::pair<double, double> mean_start_stop_time;
+		
+		size_t  stop_minus_start;
+		
 		// mean of values between  mean_start_index, mean_stop_index
 		double trace_cut_mean;
 
 		// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor 
 		size_t  trace_data_size;
-
 };
 
 
@@ -122,8 +129,30 @@ public:
 		 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
 	*/
 	bool setMeanStartEndTime(const double start, const double end, const std::string& name);
+	bool setMeanStartEndIndex(const size_t start, const size_t end, const std::string& name);
+	
+	std::pair<size_t, size_t> getMeanStartEndIndex(const std::string& name) const;
+	std::pair<double, double> getMeanStartEndTime(const std::string& name) const;
+	boost::python::list getMeanStartEndIndex_Py(const std::string& name) const;
+	boost::python::list  getMeanStartEndTime_Py(const std::string& name) const;
+		
+	std::map<std::string, std::pair<size_t, size_t>> getTraceMeanIndices()const;
+	std::map<std::string, std::pair<double, double>> getTraceMeanTimes()const;
+	boost::python::dict getTraceMeanIndices_Py()const;
+	boost::python::dict getTraceMeanTimes_Py()const;
+	
+	void setTraceMeanIndices(const std::map<std::string, std::pair<size_t, size_t>>& settings);
+	void setTraceMeanTimes(const std::map<std::string, std::pair<double, double>>& settings);
+	void setTraceMeanIndices_Py(const boost::python::dict& settings);
+	void setTraceMeanTimes_Py(const boost::python::dict& settings);
+	
+	
+	
 	bool setMeanStartIndex(const std::string& name, size_t  value);
 	bool setMeanStopIndex(const std::string& name, size_t  value);
+
+
+
 	size_t getMeanStartIndex(const std::string& name)const;
 	size_t getMeanStopIndex(const std::string& name)const;
 	//double getMean(const std::string& name)const;
@@ -131,7 +160,14 @@ public:
 	double getMeanStartTime(const std::string& name)const;
 	double getMeanStopTime(const std::string& name)const;
 
+
+
+
+
+
+
 	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
+
 
 
 	void debugMessagesOn();
@@ -202,6 +238,9 @@ private:
 	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor ??? 
 	size_t trace_data_size;
 	void setTraceDataBufferSize(const size_t new_size);
+
+
+
 
 
 };

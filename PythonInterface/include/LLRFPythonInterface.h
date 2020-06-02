@@ -32,15 +32,26 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getIndex", &LLRF::getIndex)
 			.def("getTime",  &LLRF::getTime)
 
+			.def("setMeanStartEndIndex", &LLRF::setMeanStartEndIndex)
 			.def("setMeanStartEndTime", &LLRF::setMeanStartEndTime)
-			.def("setMeanStartIndex", &LLRF::setMeanStartIndex)
-			.def("setMeanStopIndex",  &LLRF::setMeanStopIndex)
-			.def("getMeanStartIndex", &LLRF::getMeanStartIndex)
+			.def("getMeanStartEndIndex", &LLRF::getMeanStartEndIndex)
+			.def("getMeanStartEndTime", &LLRF::getMeanStartEndTime)
+
+			.def("getTraceMeanIndices", &LLRF::getTraceMeanIndices_Py)
+			.def("getTraceMeanTimes", &LLRF::getTraceMeanTimes_Py)
+			.def("setTraceMeanIndices", &LLRF::setTraceMeanIndices_Py)
+			.def("setTraceMeanTimes", &LLRF::setTraceMeanTimes_Py)
+
+
 			//.def("getMean", &LLRFFactory::getMeanStartIndex)
 			.def("getCavRevPha",&LLRF::getCavRevPha)
 			.def("getCutMean",  &LLRF::getCutMean)
-			.def("getMeanStartTime",&LLRF::getMeanStartTime)
-			.def("getMeanStopTime", &LLRF::getMeanStopTime)
+			
+			
+			
+
+
+
 
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)
 

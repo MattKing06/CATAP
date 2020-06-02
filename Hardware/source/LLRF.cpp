@@ -12,9 +12,11 @@ TraceData::TraceData():
 trace_data_size(1017),
 name("unknown"),
 trace_max(GlobalConstants::double_min),
-mean_start_index(GlobalConstants::zero_sizet),
-mean_stop_index(GlobalConstants::zero_sizet),
-trace_cut_mean(GlobalConstants::double_min),
+mean_start_stop(std::pair<size_t,size_t>( GlobalConstants::nine99999,GlobalConstants::nine99999)),
+mean_start_stop_time(std::pair<double, double>(GlobalConstants::double_min, GlobalConstants::double_min)),
+//mean_start_index(GlobalConstants::zero_sizet),
+//mean_stop_index(GlobalConstants::zero_sizet),
+//trace_cut_mean(GlobalConstants::double_min),
 trace_data_buffer_size(GlobalConstants::two_sizet)
 {
 
@@ -24,8 +26,10 @@ TraceData::TraceData(const TraceData& copy_trace_data) :
 trace_data_size(copy_trace_data.trace_data_size),
 name(copy_trace_data.name),
 trace_max(copy_trace_data.trace_max),
-mean_start_index(copy_trace_data.mean_start_index),
-mean_stop_index(copy_trace_data.mean_stop_index),
+mean_start_stop(copy_trace_data.mean_start_stop),
+mean_start_stop_time(copy_trace_data.mean_start_stop_time),
+//mean_start_index(copy_trace_data.mean_start_index),
+//mean_stop_index(copy_trace_data.mean_stop_index),
 trace_cut_mean(copy_trace_data.trace_cut_mean)
 {
 
@@ -306,6 +310,224 @@ boost::python::list LLRF::getAliases_Py() const
 
 
 
+/*
+  _____                   ___     _     __  __
+ |_   _| _ __ _ __ ___   / __|  _| |_  |  \/  |___ __ _ _ _  ___
+   | || '_/ _` / _/ -_) | (_| || |  _| | |\/| / -_) _` | ' \(_-<
+   |_||_| \__,_\__\___|  \___\_,_|\__| |_|  |_\___\__,_|_||_/__/
+*/
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStartEndTime(const double start, const double end, const std::string& name)
+{
+	bool a = setMeanStartIndex(name, getIndex(start));
+	if (a)
+	{
+		a = setMeanStopIndex(name, getIndex(end));
+	}
+	return a;
+}
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStartEndIndex(const size_t start, const size_t end, const std::string& name)
+{
+	bool a = setMeanStartIndex(name, start);
+	if (a)
+	{
+		a = setMeanStopIndex(name, end);
+	}
+	return a;
+}
+std::pair<size_t, size_t> LLRF::getMeanStartEndIndex(const std::string& name) const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).mean_start_stop;
+	}
+	return std::pair<size_t, size_t>(GlobalConstants::nine99999, GlobalConstants::nine99999);
+}
+std::pair<double, double> LLRF::getMeanStartEndTime(const std::string& name) const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).mean_start_stop_time;
+	}
+	return std::pair<double, double>(GlobalConstants::double_min, GlobalConstants::double_min);
+}
+boost::python::list LLRF::getMeanStartEndIndex_Py(const std::string& name) const
+{
+	return to_py_list<size_t, size_t>(getMeanStartEndIndex(name));
+}
+boost::python::list  LLRF::getMeanStartEndTime_Py(const std::string& name) const
+{
+	return to_py_list<double, double>(getMeanStartEndTime(name));
+}
+std::map<std::string, std::pair<size_t, size_t>> LLRF::getTraceMeanIndices()const
+{
+	std::map<std::string, std::pair<size_t, size_t>> r;
+	for (auto&& trace : trace_data_map)
+	{
+		r[trace.first] = trace.second.mean_start_stop;
+	}
+	return r;
+}
+std::map<std::string, std::pair<double, double>> LLRF::getTraceMeanTimes()const
+{
+	std::map<std::string, std::pair<double, double>> r;
+	for (auto&& trace : trace_data_map)
+	{
+		r[trace.first] = trace.second.mean_start_stop_time;
+	}
+	return r;
+}
+boost::python::dict LLRF::getTraceMeanIndices_Py()const
+{
+	return to_py_dict<std::string, size_t, size_t>(getTraceMeanIndices());
+}
+boost::python::dict LLRF::getTraceMeanTimes_Py()const
+{
+	return to_py_dict<std::string, double, double>(getTraceMeanTimes());
+}
+void LLRF::setTraceMeanIndices(const std::map<std::string, std::pair<size_t, size_t>>& settings)
+{
+	for (auto&& it : settings)
+	{
+		setMeanStartEndIndex(it.second.first, it.second.second, it.first);
+	}
+}
+void LLRF::setTraceMeanTimes(const std::map<std::string, std::pair<double, double>>& settings)
+{
+	for (auto&& it : settings)
+	{
+		setMeanStartEndTime(it.second.first, it.second.second, it.first);
+	}
+}
+void LLRF::setTraceMeanIndices_Py(const boost::python::dict& settings)
+{
+	setTraceMeanIndices(to_std_map_pair<std::string, size_t>(settings));
+}
+void LLRF::setTraceMeanTimes_Py(const boost::python::dict& settings)
+{
+	setTraceMeanTimes(to_std_map_pair<std::string, double>(settings));
+}
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStartIndex(const std::string& name, size_t  value)
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		if (trace_data_map.at(n).trace_data_size - 1 >= value)
+		{
+			//trace_data_map.at(n).mean_start_index = value;
+			trace_data_map.at(n).mean_start_stop.first = value;
+
+			if (trace_data_map.at(n).mean_start_stop.first <= trace_data_map.at(n).mean_start_stop.second)
+			{
+				trace_data_map.at(n).stop_minus_start = trace_data_map.at(n).mean_start_stop.second - trace_data_map.at(n).mean_start_stop.first;
+			}
+			trace_data_map.at(n).mean_start_stop_time.first = getTime(trace_data_map.at(n).mean_start_stop.first);
+			return true;
+		}
+	}
+	return false;
+}
+//-------------------------------------------------------------------------------------------------------------------
+size_t LLRF::getMeanStopIndex(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).mean_start_stop.second;
+		//return trace_data_map.at(n).mean_stop_index;
+	}
+	return GlobalConstants::double_min;
+}
+//-------------------------------------------------------------------------------------------------------------------
+size_t LLRF::getMeanStartIndex(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).mean_start_stop.first;
+		//return trace_data_map.at(n).mean_start_index;
+	}
+	return GlobalConstants::double_min;
+}
+//-------------------------------------------------------------------------------------------------------------------
+bool LLRF::setMeanStopIndex(const std::string& name, size_t  value)
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		if (trace_data_map.at(n).trace_data_size - 1 >= value)
+		{
+			//trace_data_map.at(n).mean_stop_index = value;
+			trace_data_map.at(n).mean_start_stop.second = value;
+			if (trace_data_map.at(n).mean_start_stop.first <= trace_data_map.at(n).mean_start_stop.second)
+			{
+				trace_data_map.at(n).stop_minus_start = trace_data_map.at(n).mean_start_stop.second - trace_data_map.at(n).mean_start_stop.first;
+			}
+			trace_data_map.at(n).mean_start_stop_time.second = getTime(trace_data_map.at(n).mean_start_stop.second);
+			return true;
+		}
+	}
+	//message(name," NOT FOUND!");
+	return false;
+}
+//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getMeanStartTime(const std::string& name)const
+{
+	return getTime(getMeanStartIndex(name));
+}
+//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getMeanStopTime(const std::string& name)const
+{
+	return getTime(getMeanStopIndex(name));
+}
+//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getCutMean(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).trace_cut_mean;
+	}
+	return GlobalConstants::double_min;
+}
+
+void LLRF::updateTraceCutMeans()
+{
+	messenger.printDebugMessage("updateTraceCutMeans");
+	for (auto& it : trace_data_map)
+	{
+		calculateTraceCutMean(it.second);
+	}
+}
+void LLRF::calculateTraceCutMean(TraceData& trace)
+{
+	/*
+		The trace cut mean is the mean value between two indices on a trace
+	*/
+	if(trace.mean_start_stop.first == trace.mean_start_stop.second)
+	{
+		trace.trace_cut_mean = trace.trace_data_buffer.back().second[trace.mean_start_stop.first];
+	}
+	else if(trace.mean_start_stop.second > trace.mean_start_stop.first)
+	{
+		trace.trace_cut_mean =
+			std::accumulate(
+				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_stop.first,
+				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_stop.second,
+				//GlobalConstants::zero_double) / (trace.mean_stop_index - trace.mean_start_index);
+				GlobalConstants::zero_double) / trace.stop_minus_start;
+	}
+	messenger.printDebugMessage(trace.name + " New Cut mean = ", trace.trace_cut_mean);
+}
+
+
+
+
+
 
 
 void LLRF::setMachineArea(const TYPE area)
@@ -378,51 +600,6 @@ void LLRF::scaleDummyTrace(const std::string& trace_name, const std::vector<doub
 	//}
 }
 
-//
-//void LLRF::scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace)
-//{
-//	messenger.printDebugMessage("Scaling " + trace_data.name);
-//	//messenger.printDebugMessage("dummy_trace.size() = ", dummy_trace.size());
-//	std::pair<epicsTimeStamp, std::vector<double>> dummy_trace_item;
-//	dummy_trace_item.first = epicsTimeStamp();
-//	dummy_trace_item.second = dummy_trace;
-//	double scale_factor = amp_MW.second * 1000000.0;
-//	for(auto& i : dummy_trace_item.second)
-//	{
-//		i = i * scale_factor;
-//	}
-//	//messenger.printDebugMessage("dummy_trace_item.second.size() =  ", dummy_trace_item.second.size());
-//
-//	trace_data.trace_data_buffer.push_back(dummy_trace_item);
-//	messenger.printDebugMessage("trace_data.trace_data_buffer.size() =  ", trace_data.trace_data_buffer.size());
-//
-//	if (trace_data.name == "KLYSTRON_FORWARD_POWER")
-//	{
-//		messenger.printDebugMessage("Printing new scaled KFP data");
-//		messenger.printDebugMessage("Size = ", trace_data.trace_data_buffer.back().second.size());
-//
-//		for (auto&& tb : trace_data.trace_data_buffer)
-//		{
-//			messenger.printDebugMessage("NEW TB");
-//			int jj = 0;
-//			for (auto&& it : tb.second)
-//			{
-//				messenger.printDebugMessage(it);
-//				jj += 1;
-//				if (jj == 10)
-//				{
-//					break;
-//				}
-//			}
-//		}
-//	}
-//
-//}
-//
-//
-
-
-
 size_t LLRF::getIndex(const double time) const
 {
 	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
@@ -440,114 +617,7 @@ double LLRF::getTime(const size_t index) const
 }
 
 
-//-------------------------------------------------------------------------------------------------------------------
-bool LLRF::setMeanStartEndTime(const double start, const double end, const std::string& name)
-{
-	bool a = setMeanStartIndex(name, getIndex(start));
-	if (a)
-	{
-		a = setMeanStopIndex(name, getIndex(end));
-	}
-	return a;
-}
-//-------------------------------------------------------------------------------------------------------------------
-bool LLRF::setMeanStartIndex(const std::string& name, size_t  value)
-{
-	const std::string n = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, n))
-	{
-		if (trace_data_map.at(n).trace_data_size - 1 >= value)
-		{
-			trace_data_map.at(n).mean_start_index = value;
-			return true;
-		}
-	}
-	//    else
-	//        message(name," NOT FOUND!");
-	return false;
-}
-//-------------------------------------------------------------------------------------------------------------------
-size_t LLRF::getMeanStopIndex(const std::string& name)const
-{
-	const std::string n = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, n))
-	{
-		return trace_data_map.at(n).mean_stop_index;
-	}
-	return GlobalConstants::double_min;
-}
-//-------------------------------------------------------------------------------------------------------------------
-size_t LLRF::getMeanStartIndex(const std::string& name)const
-{
-	const std::string n = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, n))
-	{
-		return trace_data_map.at(n).mean_start_index;
-	}
-	return GlobalConstants::double_min;
-}
-//-------------------------------------------------------------------------------------------------------------------
-bool LLRF::setMeanStopIndex(const std::string& name, size_t  value)
-{
-	const std::string n = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, n))
-	{
-		if (trace_data_map.at(n).trace_data_size - 1 >= value)
-		{
-			trace_data_map.at(n).mean_stop_index = value;
-			return true;
-		}
-	}
-	//message(name," NOT FOUND!");
-	return false;
-}
-//-------------------------------------------------------------------------------------------------------------------
-double LLRF::getMeanStartTime(const std::string& name)const
-{
-	return getTime(getMeanStartIndex(name));
-}
-//-------------------------------------------------------------------------------------------------------------------
-double LLRF::getMeanStopTime(const std::string& name)const
-{
-	return getTime(getMeanStopIndex(name));
-}
-//-------------------------------------------------------------------------------------------------------------------
-double LLRF::getCutMean(const std::string& name)const
-{
-	const std::string n = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, n))
-	{
-		return trace_data_map.at(n).trace_cut_mean;
-	}
-	return GlobalConstants::double_min;
-}
 
-void LLRF::updateTraceCutMeans()
-{
-	messenger.printDebugMessage("updateTraceCutMeans");
-	for (auto& it : trace_data_map)
-	{
-		calculateTraceCutMean(it.second);
-	}
-}
-void LLRF::calculateTraceCutMean(TraceData& trace)
-{
-	/*
-		The trace cut mean is the mean value between two indices on a trace
-	*/
-	if (trace.mean_stop_index == trace.mean_start_index)
-	{
-		trace.trace_cut_mean = trace.trace_data_buffer.back().second[trace.mean_start_index];
-	}
-	else if (trace.mean_stop_index > trace.mean_start_index)
-	{
-		trace.trace_cut_mean = 
-			std::accumulate(
-				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_index,
-				trace.trace_data_buffer.back().second.cbegin() + trace.mean_stop_index,
-				GlobalConstants::zero_double) / (trace.mean_stop_index - trace.mean_start_index);
-	}
-}
 
 void LLRF::setTraceDataMap()
 {
