@@ -164,16 +164,7 @@ void LLRF::setDefaultPowerTraceMeanTimes()
 }
 
 
-bool LLRF::setAmp(double value)
-{
-	amp_sp.second = value;
-	return true;
-}
-bool LLRF::setPhi(double value)
-{
-	phi_sp.second = value;
-	return true;
-}
+
 bool LLRF::setAmpMW(double value)
 {
 	// atm we are going to fake power traces
@@ -181,23 +172,54 @@ bool LLRF::setAmpMW(double value)
 	scaleAllDummyTraces();
 	return true;
 }
-bool LLRF::setPhiDEG(double value)
+bool LLRF::setAmp(double value)
 {
-	phi_degrees.second = value;
+	amp_sp.second = value;
 	return true;
 }
-
 double LLRF::getAmp()const
 {
 	return amp_sp.second;
+}
+double LLRF::getAmpMW()const
+{
+	return amp_MW.second;
+}
+
+bool LLRF::setPhi(double value)
+{
+	phi_sp.second = value;
+	return true;
+}
+bool LLRF::setPhiDEG(double value)
+{
+	phi_degrees.second = value;
+	operating_phase = phi_degrees.second - crest_phase;
+	return true;
+}
+bool LLRF::setCrestPhase(double value)
+{
+	crest_phase = value;
+	return true;
+}
+bool LLRF::setOperatingPhase(double value)
+{
+	operating_phase = value;
+	phi_sp.second = crest_phase + operating_phase;
+	phi_sp.first = epicsTimeStamp();
+	return true;
 }
 double LLRF::getPhi()const
 {
 	return phi_sp.second;
 }
-double LLRF::getAmpMW()const
+double LLRF::getCrestPhase()const
 {
-	return amp_MW.second;
+	return crest_phase;
+}
+double LLRF::getOperatingPhase()const
+{
+	return operating_phase;
 }
 double LLRF::getPhiDEG()const
 {

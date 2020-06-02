@@ -74,15 +74,22 @@ public:
 	std::map<std::string, std::string> LLRFParamMap;
 
 
-
-	bool setPhi(double value);
+	// amplitude 
 	bool setAmp(double value);
 	bool setAmpMW(double value);
-	bool setPhiDEG(double value);
-	double getPhi()const;
 	double getAmp()const;
 	double getAmpMW()const;
+
+	// phases 
+	bool setPhi(double value);
+	bool setPhiDEG(double value);
+	bool setCrestPhase(double value);
+	bool setOperatingPhase(double value);
+	double getPhi()const;
 	double getPhiDEG()const;
+	double getCrestPhase()const;
+	double getOperatingPhase()const;
+
 
 	/*! get the name alises for this LLRF
 	@param[out] names, vector containing  all the alias names */
