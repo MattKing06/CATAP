@@ -179,11 +179,14 @@ private:
 	void calculateTraceCutMean(TraceData& trace);
 
 	void scaleAllDummyTraces();
-	void scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace);
+	//void scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace);
+	void scaleDummyTrace(const std::string& trace_name, const std::vector<double>& dummy_trace);
 
 	std::string fullLLRFTraceName(const std::string& name_in)const;
 
 	void addDummyTraces(const std::map<std::string, std::string>& paramMap);
+	void addDummyTrace(const std::map<std::string, std::string>& paramMap, 
+		const std::string& trace_name, std::vector< double>& trace_to_update);
 
 	std::vector<double> time_vector;
 	

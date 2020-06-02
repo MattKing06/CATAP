@@ -125,11 +125,9 @@ bool LLRF::setPhi(double value)
 }
 bool LLRF::setAmpMW(double value)
 {
-	messenger.printDebugMessage("setAmpMW");
 	// atm we are going to fake power traces
 	amp_MW.second = value;
 	scaleAllDummyTraces();
-	messenger.printDebugMessage("fin");
 	return true;
 }
 bool LLRF::setPhiDEG(double value)
@@ -177,6 +175,7 @@ std::pair<std::string, std::vector<double>> LLRF::getTraceData(const std::string
 std::vector<double> LLRF::getTraceValues(const std::string& name)const
 {
 	const std::string n = fullLLRFTraceName(name);
+	//messenger.printDebugMessage("getTraceValues trace " + n);
 	if (GlobalFunctions::entryExists(trace_data_map, n))
 	{
 		return trace_data_map.at(n).trace_data_buffer.back().second;
@@ -199,6 +198,20 @@ std::vector<double> LLRF::getKlyRevPwr()const
 }
 std::vector<double> LLRF::getKlyFwdPwr()const
 {
+	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_data_buffer)
+	//{
+	//	messenger.printDebugMessage("getKlyFwdPwr NEW TB");
+	//	int jj = 0;
+	//	for (auto&& it : tb.second)
+	//	{
+	//		messenger.printDebugMessage(it);
+	//		jj += 1;
+	//		if (jj == 10)
+	//		{
+	//			break;
+	//		}
+	//	}
+	//}
 	return getTraceValues(GlobalConstants::KLYSTRON_FORWARD_POWER);
 }
 std::vector<double> LLRF::getCavRevPha()const
@@ -282,10 +295,6 @@ boost::python::list LLRF::getProbePwr_Py()const
 }
 
 
-
-
-
-
 std::vector<std::string> LLRF::getAliases() const
 {
 	return aliases;
@@ -296,34 +305,6 @@ boost::python::list LLRF::getAliases_Py() const
 }
 
 
-
-void LLRF::debugMessagesOff()
-{
-	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
-	messenger.debugMessagesOff();
-	epicsInterface->debugMessagesOff();
-}
-
-void LLRF::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
-	epicsInterface->debugMessagesOn();
-}
-
-void LLRF::messagesOff()
-{
-	messenger.printMessage(hardwareName, " - MESSAGES OFF");
-	messenger.messagesOff();
-	epicsInterface->messagesOff();
-}
-
-void LLRF::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage(hardwareName, " - MESSAGES ON");
-	epicsInterface->messagesOn();
-}
 
 
 
@@ -337,37 +318,108 @@ void LLRF::setMachineArea(const TYPE area)
 
 void  LLRF::scaleAllDummyTraces()
 {
-	messenger.printDebugMessage("scaleAllDummyTraces()  ");
+	//messenger.printDebugMessage("scaleAllDummyTraces()  ");
 	using namespace GlobalConstants;
-	messenger.printDebugMessage("KLYSTRON_FORWARD_POWER");
-	scaleDummyTrace(trace_data_map.at(KLYSTRON_FORWARD_POWER), kfpow_dummy_trace);
-	messenger.printDebugMessage("KLYSTRON_REVERSE_POWER");
-	scaleDummyTrace(trace_data_map.at(KLYSTRON_REVERSE_POWER), krpow_dummy_trace);
-	messenger.printDebugMessage("CAVITY_FORWARD_POWER");
-	messenger.printDebugMessage(fullLLRFTraceName(CAVITY_FORWARD_POWER));
-	scaleDummyTrace(trace_data_map.at(fullLLRFTraceName(CAVITY_FORWARD_POWER)), cfpow_dummy_trace);
-	messenger.printDebugMessage("CAVITY_REVERSE_POWER");
-	scaleDummyTrace(trace_data_map.at(fullLLRFTraceName(CAVITY_REVERSE_POWER)), crpow_dummy_trace);
-	messenger.printDebugMessage("calling updateTraceCutMeans");
-	updateTraceCutMeans();
+	scaleDummyTrace(KLYSTRON_FORWARD_POWER, kfpow_dummy_trace);
+	//messenger.printDebugMessage("KLYSTRON_FORWARD_POWER AFTER SCALING");
+	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_data_buffer)
+	//{
+	//	messenger.printDebugMessage("scaleAllDummyTraces NEW TB");
+	//	int jj = 0;
+	//	for (auto&& it : tb.second)
+	//	{
+	//		messenger.printDebugMessage(it);
+	//		jj += 1;
+	//		if (jj == 10)
+	//		{
+	//			break;
+	//		}
+	//	}
+	//}
+	//messenger.printDebugMessage("KLYSTRON_REVERSE_POWER");
+	scaleDummyTrace(KLYSTRON_REVERSE_POWER, krpow_dummy_trace);
+	//messenger.printDebugMessage("CAVITY_FORWARD_POWER");
+	//messenger.printDebugMessage(fullLLRFTraceName(CAVITY_FORWARD_POWER));
+	scaleDummyTrace(fullLLRFTraceName(CAVITY_FORWARD_POWER), cfpow_dummy_trace);
+	//messenger.printDebugMessage("CAVITY_REVERSE_POWER");
+	scaleDummyTrace(fullLLRFTraceName(CAVITY_REVERSE_POWER), crpow_dummy_trace);
+	//messenger.printDebugMessage("calling updateTraceCutMeans");
+	//updateTraceCutMeans();
 }
 
-
-void LLRF::scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace)
+void LLRF::scaleDummyTrace(const std::string& trace_name, const std::vector<double>& dummy_trace)
 {
+	//messenger.printDebugMessage("Scaling " + trace_name);
+	//messenger.printDebugMessage("dummy_trace.size() = ", dummy_trace.size());
 	std::pair<epicsTimeStamp, std::vector<double>> dummy_trace_item;
 	dummy_trace_item.first = epicsTimeStamp();
 	dummy_trace_item.second = dummy_trace;
-
 	double scale_factor = amp_MW.second * 1000000.0;
 	for (auto& i : dummy_trace_item.second)
 	{
 		i = i * scale_factor;
 	}
-	trace_data.trace_data_buffer.push_back(dummy_trace_item);
+	// assumes trace_name exists
+	trace_data_map.at(trace_name).trace_data_buffer.push_back(dummy_trace_item);
+	//messenger.printDebugMessage("scaleDummyTrace AFTER SCALING");
+	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_data_buffer)
+	//{
+	//	messenger.printDebugMessage("scaleDummyTrace NEW TB");
+	//	int jj = 0;
+	//	for (auto&& it : tb.second)
+	//	{
+	//		messenger.printDebugMessage(it);
+	//		jj += 1;
+	//		if (jj == 10)
+	//		{
+	//			break;
+	//		}
+	//	}
+	//}
 }
 
-
+//
+//void LLRF::scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace)
+//{
+//	messenger.printDebugMessage("Scaling " + trace_data.name);
+//	//messenger.printDebugMessage("dummy_trace.size() = ", dummy_trace.size());
+//	std::pair<epicsTimeStamp, std::vector<double>> dummy_trace_item;
+//	dummy_trace_item.first = epicsTimeStamp();
+//	dummy_trace_item.second = dummy_trace;
+//	double scale_factor = amp_MW.second * 1000000.0;
+//	for(auto& i : dummy_trace_item.second)
+//	{
+//		i = i * scale_factor;
+//	}
+//	//messenger.printDebugMessage("dummy_trace_item.second.size() =  ", dummy_trace_item.second.size());
+//
+//	trace_data.trace_data_buffer.push_back(dummy_trace_item);
+//	messenger.printDebugMessage("trace_data.trace_data_buffer.size() =  ", trace_data.trace_data_buffer.size());
+//
+//	if (trace_data.name == "KLYSTRON_FORWARD_POWER")
+//	{
+//		messenger.printDebugMessage("Printing new scaled KFP data");
+//		messenger.printDebugMessage("Size = ", trace_data.trace_data_buffer.back().second.size());
+//
+//		for (auto&& tb : trace_data.trace_data_buffer)
+//		{
+//			messenger.printDebugMessage("NEW TB");
+//			int jj = 0;
+//			for (auto&& it : tb.second)
+//			{
+//				messenger.printDebugMessage(it);
+//				jj += 1;
+//				if (jj == 10)
+//				{
+//					break;
+//				}
+//			}
+//		}
+//	}
+//
+//}
+//
+//
 
 
 
@@ -499,7 +551,7 @@ void LLRF::calculateTraceCutMean(TraceData& trace)
 
 void LLRF::setTraceDataMap()
 {
-	messenger.printDebugMessage(getHardwareName() + ", Settign the Trace Data Map");
+	messenger.printDebugMessage(getHardwareName() + ", Setting the Trace Data Map");
 	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_POWER);
 	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_PHASE);
 	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_POWER);
@@ -522,12 +574,12 @@ void LLRF::setTraceDataMap()
 	}
 	else if(machine_area == TYPE::L01)
 	{
-		addToTraceDataMap(GlobalConstants::CAVITY_FORWARD_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_FORWARD_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_REVERSE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_REVERSE_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_REVERSE_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_PROBE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_PROBE_PHASE);// = TraceData();
 	}
 	std::stringstream ss;
 	ss << "Added trace names: ";
@@ -544,6 +596,7 @@ void LLRF::addToTraceDataMap(const std::string& name)
 {
 	trace_data_map[name];
 	auto& td = trace_data_map.at(name);
+	td.name = name;
 	setTraceDataBufferSize(td, td.trace_data_buffer_size);
 }
 
@@ -571,133 +624,101 @@ bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size
 
 void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
 {
-	std::vector<std::string> dummy_trace_string;
-	if (GlobalFunctions::entryExists(paramMap, "kfpow_dummy_trace"))
-	{
-		boost::split(dummy_trace_string, paramMap.find("kfpow_dummy_trace")->second, [](char c) {return c == ','; });
-		for (auto value : dummy_trace_string)
-		{
-			//messenger.printDebugMessage(value);
-			kfpow_dummy_trace.push_back(std::stof(value));
-		}
-	}
-	if (GlobalFunctions::entryExists(paramMap, "krpow_dummy_trace"))
-	{
-		boost::split(dummy_trace_string, paramMap.find("krpow_dummy_trace")->second, [](char c) {return c == ','; });
-		for (auto value : dummy_trace_string)
-		{
-			//messenger.printDebugMessage(value);
-			krpow_dummy_trace.push_back(std::stof(value));
-		}
-	}
-	if (GlobalFunctions::entryExists(paramMap, "kfpha_dummy_trace"))
-	{
-		boost::split(dummy_trace_string, paramMap.find("kfpha_dummy_trace")->second, [](char c) {return c == ','; });
-		for (auto value : dummy_trace_string)
-		{
-			//messenger.printDebugMessage(value);
-			kfpha_dummy_trace.push_back(std::stof(value));
-		}
-	}
-	if (GlobalFunctions::entryExists(paramMap, "krpha_dummy_trace"))
-	{
-		boost::split(dummy_trace_string, paramMap.find("krpha_dummy_trace")->second, [](char c) {return c == ','; });
-		for (auto value : dummy_trace_string)
-		{
-			//messenger.printDebugMessage(value);
-			krpha_dummy_trace.push_back(std::stof(value));
-		}
-	}
+	// for each cavity there are dummy traces,
+	// they have been given specific names in the config for each cavity 
+	
 	if (machine_area == TYPE::LRRG_GUN)
 	{
-		if (GlobalFunctions::entryExists(paramMap, "lrrg_cfpow_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("lrrg_cfpow_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				cfpow_dummy_trace.push_back(std::stof(value));
-			}
-		}
-		if (GlobalFunctions::entryExists(paramMap, "lrrg_crpow_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("lrrg_crpow_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				crpow_dummy_trace.push_back(std::stof(value));
-			}
-		}
-		if (GlobalFunctions::entryExists(paramMap, "lrrg_cfpha_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("lrrg_cfpha_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				cfpha_dummy_trace.push_back(std::stof(value));
-			}
-		}
-		if (GlobalFunctions::entryExists(paramMap, "lrrg_crpha_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("lrrg_crpha_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				crpha_dummy_trace.push_back(std::stof(value));
-			}
-		}
+		messenger.printDebugMessage("Adding dummy traces for LRRG");
+		addDummyTrace(paramMap, "kfpow_dummy_trace", kfpow_dummy_trace);
+		addDummyTrace(paramMap, "krpow_dummy_trace", krpow_dummy_trace);
+		addDummyTrace(paramMap, "kfpha_dummy_trace", kfpha_dummy_trace);
+		addDummyTrace(paramMap, "krpha_dummy_trace", krpha_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_cfpow_dummy_trace", cfpow_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_crpow_dummy_trace", crpow_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_cfpha_dummy_trace", cfpha_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_crpha_dummy_trace", crpha_dummy_trace);
+		messenger.printDebugMessage("Added Dummy traces ");
+		messenger.printDebugMessage("kfpow_dummy_trace", kfpow_dummy_trace.size());
+		messenger.printDebugMessage("krpow_dummy_trace", krpow_dummy_trace.size());
+		messenger.printDebugMessage("kfpha_dummy_trace", kfpha_dummy_trace.size());
+		messenger.printDebugMessage("krpha_dummy_trace", krpha_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_cfpow_dummy_trace", cfpow_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_crpow_dummy_trace", crpow_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_cfpha_dummy_trace", cfpha_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_crpha_dummy_trace", crpha_dummy_trace.size());
 	}
-	else if (machine_area == TYPE::HRRG_GUN)
+	if (machine_area == TYPE::HRRG_GUN)
+	{
+		messenger.printDebugMessage("Adding dummy traces for HRRG");
+		addDummyTrace(paramMap, "kfpow_dummy_trace", kfpow_dummy_trace);
+		addDummyTrace(paramMap, "krpow_dummy_trace", krpow_dummy_trace);
+		addDummyTrace(paramMap, "kfpha_dummy_trace", kfpha_dummy_trace);
+		addDummyTrace(paramMap, "krpha_dummy_trace", krpha_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_cfpow_dummy_trace", cfpow_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_crpow_dummy_trace", crpow_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_cfpha_dummy_trace", cfpha_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_crpha_dummy_trace", crpha_dummy_trace);
+		messenger.printDebugMessage("Added Dummy traces ");
+		messenger.printDebugMessage("kfpow_dummy_trace",kfpow_dummy_trace.size());
+		messenger.printDebugMessage("krpow_dummy_trace", krpow_dummy_trace.size());
+		messenger.printDebugMessage("kfpha_dummy_trace", kfpha_dummy_trace.size());
+		messenger.printDebugMessage("krpha_dummy_trace", krpha_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_cfpow_dummy_trace", cfpow_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_crpow_dummy_trace", crpow_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_cfpha_dummy_trace", cfpha_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_crpha_dummy_trace", crpha_dummy_trace.size());
+	}
+	if (machine_area == TYPE::L01)
+	{
+		messenger.printDebugMessage("Adding dummy traces for L01");
+		addDummyTrace(paramMap, "l01_kfpow_dummy_trace", kfpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_krpow_dummy_trace", krpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_kfpha_dummy_trace", kfpha_dummy_trace);
+		addDummyTrace(paramMap, "l01_krpha_dummy_trace", krpha_dummy_trace);
+		addDummyTrace(paramMap, "l01_cfpow_dummy_trace", cfpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_crpow_dummy_trace", crpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_cfpha_dummy_trace", cfpha_dummy_trace);
+		addDummyTrace(paramMap, "l01_crpha_dummy_trace", crpha_dummy_trace);
 
-	{
-		if (GlobalFunctions::entryExists(paramMap, "hrrg_cfpow_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("hrrg_cfpow_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				cfpow_dummy_trace.push_back(std::stof(value));
-			}
-		}
-		if (GlobalFunctions::entryExists(paramMap, "hrrg_crpow_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("hrrg_crpow_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				crpow_dummy_trace.push_back(std::stof(value));
-			}
-		}
-		if (GlobalFunctions::entryExists(paramMap, "hrrg_cfpha_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("hrrg_cfpha_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				cfpha_dummy_trace.push_back(std::stof(value));
-			}
-		}
-		if (GlobalFunctions::entryExists(paramMap, "hrrg_crpha_dummy_trace"))
-		{
-			boost::split(dummy_trace_string, paramMap.find("hrrg_crpha_dummy_trace")->second, [](char c) {return c == ','; });
-			for (auto value : dummy_trace_string)
-			{
-				//messenger.printDebugMessage(value);
-				crpha_dummy_trace.push_back(std::stof(value));
-			}
-		}
+		messenger.printDebugMessage("Added Dummy traces ");
+		messenger.printDebugMessage("l01_kfpow_dummy_trace", kfpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_krpow_dummy_trace", krpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_kfpha_dummy_trace", kfpha_dummy_trace.size());
+		messenger.printDebugMessage("l01_krpha_dummy_trace", krpha_dummy_trace.size());
+		messenger.printDebugMessage("l01_cfpow_dummy_trace", cfpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_crpow_dummy_trace", crpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_cfpha_dummy_trace", cfpha_dummy_trace.size());
+		messenger.printDebugMessage("l01_crpha_dummy_trace", crpha_dummy_trace.size());
 	}
-	if (GlobalFunctions::entryExists(paramMap, "time_vector"))
-	{
-		boost::split(dummy_trace_string, paramMap.find("time_vector")->second, [](char c) {return c == ','; });
-		for (auto value : dummy_trace_string)
-		{
-			//messenger.printDebugMessage(value);
-			time_vector.push_back(std::stof(value));
-		}
-	}
+	addDummyTrace(paramMap, "time_vector", time_vector);
+
+
+
+
 }
 
+
+void LLRF::addDummyTrace(const std::map<std::string, std::string>& paramMap, const std::string& trace_name, std::vector< double>& trace_to_update)
+{
+	std::vector<std::string> dummy_trace_string;
+	if (GlobalFunctions::entryExists(paramMap, trace_name))
+	{
+		boost::split(dummy_trace_string, paramMap.find(trace_name)->second, [](char c) {return c == ','; });
+		for (auto value : dummy_trace_string)
+		{	//messenger.printDebugMessage(value);
+			//if(trace_name == "l01_kfpow_dummy_trace")
+			//{
+			//	messenger.printDebugMessage(value);
+			//}
+			trace_to_update.push_back(std::stof(value));
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage("!!ERROR!! can't find " + trace_name);
+	}
+}
 
 
 
@@ -806,4 +827,32 @@ std::string LLRF::fullLLRFTraceName(const std::string& name_in)const
 	}
 
 	return name;
+}
+
+void LLRF::debugMessagesOff()
+{
+	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
+	messenger.debugMessagesOff();
+	epicsInterface->debugMessagesOff();
+}
+
+void LLRF::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
+	epicsInterface->debugMessagesOn();
+}
+
+void LLRF::messagesOff()
+{
+	messenger.printMessage(hardwareName, " - MESSAGES OFF");
+	messenger.messagesOff();
+	epicsInterface->messagesOff();
+}
+
+void LLRF::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage(hardwareName, " - MESSAGES ON");
+	epicsInterface->messagesOn();
 }
