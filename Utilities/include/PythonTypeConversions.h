@@ -1,13 +1,20 @@
-#ifndef PYTHON_TYPE_COnVERSIONS_H_
-#define PYTHON_TYPE_COnVERSIONS_H_
+#ifndef PYTHON_TYPE_CONVERSIONS_H_
+#define PYTHON_TYPE_CONVERSIONS_H_
+
+
 
 #include <boost/python.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <boost/python/tuple.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/iterator/zip_iterator.hpp>
 #include <vector>
 #include <map>
+#include <utility>
+
+
+
 
 /*! @addtogroup utils*/
 /*!@{*/
@@ -43,6 +50,18 @@ boost::python::list to_py_list(const boost::circular_buffer<typeOfVectorToCOnver
 	}
 	return newList;
 }
+
+template<class value1, class value2>
+inline
+boost::python::list to_py_list(const std::pair<value1, value2>& pair)
+{
+	//typename boost::circular_buffer<typeOfVectorToCOnvert>::iterator iter;
+	boost::python::list newList;
+	newList.append(pair.first);
+	newList.append(pair.second);
+	return newList;
+}
+
 template<class key, class value>
 inline
 boost::python::dict to_py_dict(const std::map<key, value>& map)
@@ -56,18 +75,76 @@ boost::python::dict to_py_dict(const std::map<key, value>& map)
 	return newDictiOnary;
 }
 
-//template<typename key, typename value>
+
+
+template<class key, class value>
+inline
+boost::python::dict to_py_dict_pair(const std::map<key, std::pair<value, value>>& map)
+{
+	//typename std::map<key, value>::iterator iter;
+	boost::python::dict newDictiOnary;
+	for (auto&& iter : map)
+	{
+		boost::python::list newList;
+		newList.append(iter.second.first);
+		newList.append(iter.second.second);
+		newDictiOnary[iter.first] = newList;
+	}
+	return newDictiOnary;
+}
+//template<class key, class value>
 //inline
-//boost::python::dict to_py_dict(std::map<key, value>& map)
+//boost::python::dict to_py_dict_pair(const std::map<key, std::pair<value, value>>& map)
 //{
-//	typename std::map<key, value>::iterator iter;
+//	//typename std::map<key, value>::iterator iter;
 //	boost::python::dict newDictiOnary;
-//	for (iter = map.begin(); iter != map.end(); ++iter)
+//	for (auto&& iter : map)
 //	{
-//		newDictiOnary[iter->first] = iter->second;
+//		boost::python::list newList;
+//		newList.append(iter.second.first);
+//		newList.append(iter.second.second);
+//		newDictiOnary[iter.first] = newList;
 //	}
 //	return newDictiOnary;
 //}
+
+
+template<class key, class value1, class value2>
+inline
+boost::python::dict to_py_dict(const std::map<key, std::pair<value1, value2>>& map)
+{
+	boost::python::dict newDictiOnary;
+	for (auto&& iter : map)
+	{
+		newDictiOnary[iter.first] = to_py_list<value1,value2>(iter.second);
+	}
+	return newDictiOnary;
+}
+template<class key, class value>
+inline
+std::map<key, std::pair<value, value>> to_std_map_pair(const boost::python::dict& dict)
+{	// TODO this is well dodgy 
+	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
+	std::map<key, std::pair<value, value>> r;
+	boost::python::list keys = boost::python::list(dict.keys());
+	for (int i = 0; i < len(keys); ++i) 
+	{
+		boost::python::extract<std::string> extractor(keys[i]);
+		if (extractor.check()) 
+		{
+			std::string key = extractor();
+			boost::python::list l = boost::python::list(dict[key]);
+			if (len(l) == 2)
+			{
+				std::vector<value> v = to_std_vector<value>(l);
+				std::pair<value, value> p( v[0], v[1]);
+				r[key] = p;
+			}
+		}
+	}
+	return r;
+}
+
 //template<class key, std::vector<class value>>
 template<class key, class value>
 inline
@@ -81,6 +158,25 @@ boost::python::dict to_py_dict(const std::map<key, std::vector<value>>& map)
 	}
 	return newDictiOnary;
 }
+
+template<class key, class value>
+inline
+boost::python::dict to_py_dict(const std::pair<key, std::vector<value>>& pair)
+{
+	boost::python::dict newDictiOnary;
+	newDictiOnary[pair.first] = to_py_list<value>(pair.second);
+	return newDictiOnary;
+}
+
+template<class value>
+inline
+boost::python::dict to_py_dict(const std::pair<std::string, std::vector<value>>& pair)
+{
+	boost::python::dict newDictiOnary;
+	newDictiOnary[pair.first] = to_py_list<value>(pair.second);
+	return newDictiOnary;
+}
+
 template<typename key, typename value>
 std::map<key, value> to_std_map(const boost::python::dict& map_in)
 {
@@ -98,4 +194,5 @@ std::map<key, value> to_std_map(const boost::python::dict& map_in)
 	return r;
 }
 /*!@}*/
-#endif
+
+#endif //PYTHON_TYPE_CONVERSIONS_H_

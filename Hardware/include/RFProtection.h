@@ -11,7 +11,7 @@ class EPICSRFProtectionInterface;
 
 typedef boost::shared_ptr<EPICSRFProtectionInterface> EPICSRFProtectionInterface_sptr;
 
-class RFProtection : Hardware
+class RFProtection : public Hardware
 {
 public:
 	RFProtection();

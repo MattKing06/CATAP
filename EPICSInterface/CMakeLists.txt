@@ -11,6 +11,7 @@ set( SOURCE_FILES
     source/EPICSLaserMirrorInterface.cpp
     source/EPICSLEDInterface.cpp
     source/EPICSLightingInterface.cpp
+    source/EPICSLLRFInterface.cpp
     source/EPICSRFHeartbeatInterface.cpp
     source/EPICSRFModulatorInterface.cpp
     source/EPICSRFProtectionInterface.cpp
@@ -30,6 +31,7 @@ set( INCLUDE_FILES
     include/EPICSLaserMirrorInterface.h
     include/EPICSLEDInterface.h
     include/EPICSLightingInterface.h
+    include/EPICSLLRFInterface.h
     include/EPICSRFHeartbeatInterface.h
     include/EPICSRFModulatorInterface.h
     include/EPICSRFProtectionInterface.h
@@ -50,6 +52,7 @@ set( TEST_FILES
     EPICSLaserMirrorInterfaceTest.cpp
     EPICSLEDInterfaceTest.cpp
     EPICSLightingInterfaceTest.cpp
+    EPICSLLRFInterfaceTest.cpp
     EPICSRFHeartbeatInterfaceTest.cpp
     EPICSRFModulatorInterfaceTest.cpp
     EPICSRFProtectionInterfaceTest.cpp

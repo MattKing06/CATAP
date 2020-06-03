@@ -11,7 +11,7 @@ class EPICSShutterInterface;
 
 typedef boost::shared_ptr<EPICSShutterInterface> EPICSShutterInterface_sptr;
 
-class Shutter : Hardware
+class Shutter : public Hardware
 {
 public:
 	Shutter();

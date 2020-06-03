@@ -7,7 +7,6 @@
 #include "GlobalTypeEnums.h"
 #include "GlobalStateEnums.h"
 
-
 // where i sthe best to put this ??
 // http://forums.codeguru.com/showthread.php?369447-can-t-assign-numeric_limits-lt-double-gt-max()
 #ifdef max
@@ -40,6 +39,7 @@ namespace GlobalConstants
 				{ENUM_TO_STRING(TYPE::CLARA_GUN), TYPE::CLARA_GUN},
 				{ENUM_TO_STRING(TYPE::HRRG_GUN), TYPE::HRRG_GUN},
 				{ENUM_TO_STRING(TYPE::LRRG_GUN), TYPE::LRRG_GUN},
+				{ENUM_TO_STRING(TYPE::GUN), TYPE::GUN},
 				{ENUM_TO_STRING(TYPE::L01), TYPE::L01},
 				{ENUM_TO_STRING(TYPE::S01), TYPE::S01},
 				{ENUM_TO_STRING(TYPE::S02), TYPE::S02},
@@ -48,9 +48,37 @@ namespace GlobalConstants
 				{ENUM_TO_STRING(TYPE::CLARA_PH1), TYPE::CLARA_PH1},
 				{ENUM_TO_STRING(TYPE::CLARA_2_BA1), TYPE::CLARA_2_BA1},
 				{ENUM_TO_STRING(TYPE::CLARA_2_BA1_BA2), TYPE::CLARA_2_BA1_BA2},
+				{"Magnet", TYPE::MAGNET},
+		
 				{ENUM_TO_STRING(TYPE::MAGNET), TYPE::MAGNET},
 				{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},
 				{ENUM_TO_STRING(TYPE::DIPOLE), TYPE::DIPOLE},
+				{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},
+				{ENUM_TO_STRING(TYPE::DIPOLE), TYPE::DIPOLE},
+				
+				{ENUM_TO_STRING(TYPE::LAS), TYPE::LAS},
+
+
+								
+
+				{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
+				{"Valve", TYPE::VALVE},
+
+				{ENUM_TO_STRING(TYPE::BPM_TYPE), TYPE::BPM_TYPE},
+				{"BPM", TYPE::BPM_TYPE},
+				
+				{"IMG", TYPE::IMG_TYPE},
+				{ENUM_TO_STRING(TYPE::IMG_TYPE), TYPE::IMG_TYPE},
+				
+				{"Charge", TYPE::CHARGE},
+				{ENUM_TO_STRING(TYPE::CHARGE), TYPE::CHARGE},
+			
+				{"Screen", TYPE::SCREEN},
+				{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
+				
+				{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
+				{"LLRF", TYPE::LLRF_TYPE},
+				
 				//{ENUM_TO_STRING(TYPE::HVCOR), TYPE::HVCOR},
 				{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
 				{ENUM_TO_STRING(TYPE::HORIZONTAL_CORRECTOR), TYPE::HORIZONTAL_CORRECTOR},
@@ -68,7 +96,7 @@ namespace GlobalConstants
 				{ENUM_TO_STRING(TYPE::CLARA_PNEUMATIC), TYPE::CLARA_PNEUMATIC},
 				{ENUM_TO_STRING(TYPE::PNEUMATIC), TYPE::PNEUMATIC},
 				{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE}
-		};
+	};
 
 	const std::map<std::string, STATE> stringToSateMap =
 	{
@@ -110,7 +138,7 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::YAG), STATE::YAG},
 			{ENUM_TO_STRING(STATE::RF), STATE::RF},
 	};
-	
+
 	/*! Minimum possible value of a double */
 	const double double_min = std::numeric_limits<double>::min();
 	/*! Maximum possible value of a double */
@@ -142,7 +170,14 @@ namespace GlobalConstants
 	const size_t zero_sizet = 0;
 	/*! Unsigned Integer-type for 1 */
 	const size_t one_sizet = 1;
+	/*! Unsigned Integer-type for 2 */
+	const size_t two_sizet = 2;
+	/*! Unsigned Integer-type for 80 */
 	const size_t eighty_sizet = 80;
+	/*! Unsigned Integer-type for 999999 */
+	const size_t nine99999 = 999999;
+
+
 
 	/*! Unsigned Short-type to represent ACTIVATE to EPICS */
 	const unsigned short EPICS_ACTIVATE = 1;
@@ -182,12 +217,54 @@ namespace GlobalConstants
 	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
-	// when calling setup for a factory we pass "version" variable, 
-	// so far this is not used practically, but we are keeping it  in case fo futre need
 	const std::string nominal = "nominal";
 
-	// passed to config reader, should be a TYPE
-	const std::string Magnet = "Magnet";
+
+	const std::string LRRG_CAVITY_REVERSE_PHASE = "LRRG_CAVITY_REVERSE_PHASE";
+	const std::string HRRG_CAVITY_REVERSE_PHASE = "HRRG_CAVITY_REVERSE_PHASE";
+	const std::string L01_CAVITY_REVERSE_PHASE = "L01_CAVITY_REVERSE_PHASE";
+	const std::string CAVITY_REVERSE_PHASE = "CAVITY_REVERSE_PHASE";
+
+	const std::string LRRG_CAVITY_FORWARD_PHASE = "LRRG_CAVITY_FORWARD_PHASE";
+	const std::string HRRG_CAVITY_FORWARD_PHASE = "HRRG_CAVITY_FORWARD_PHASE";
+	const std::string L01_CAVITY_FORWARD_PHASE = "L01_CAVITY_FORWARD_PHASE";
+	const std::string CAVITY_FORWARD_PHASE = "CAVITY_FORWARD_PHASE";
+
+	const std::string LRRG_CAVITY_REVERSE_POWER = "LRRG_CAVITY_REVERSE_POWER";
+	const std::string HRRG_CAVITY_REVERSE_POWER = "HRRG_CAVITY_REVERSE_POWER";
+	const std::string L01_CAVITY_REVERSE_POWER = "L01_CAVITY_REVERSE_POWER";
+	const std::string CAVITY_REVERSE_POWER = "CAVITY_REVERSE_POWER";
+
+	const std::string LRRG_CAVITY_FORWARD_POWER = "LRRG_CAVITY_FORWARD_POWER";
+	const std::string HRRG_CAVITY_FORWARD_POWER = "HRRG_CAVITY_FORWARD_POWER";
+	const std::string L01_CAVITY_FORWARD_POWER = "L01_CAVITY_FORWARD_POWER";
+	const std::string CAVITY_FORWARD_POWER = "CAVITY_FORWARD_POWER";
+
+	const std::string CAVITY_PROBE_POWER = "CAVITY_PROBE_POWER";
+	const std::string HRRG_CAVITY_PROBE_POWER = "HRRG_CAVITY_PROBE_POWER";
+	const std::string L01_CAVITY_PROBE_POWER = "L01_CAVITY_PROBE_POWER";
+
+	const std::string CAVITY_PROBE_PHASE = "CAVITY_PROBE_PHASE";
+	const std::string HRRG_CAVITY_PROBE_PHASE = "HRRG_CAVITY_PROBE_PHASE";
+	const std::string L01_CAVITY_PROBE_PHASE = "L01_CAVITY_PROBE_PHASE";
+
+	const std::string KLYSTRON_REVERSE_PHASE = "KLYSTRON_REVERSE_PHASE";
+	const std::string KLYSTRON_REVERSE_POWER = "KLYSTRON_REVERSE_POWER";
+	const std::string KLYSTRON_FORWARD_PHASE = "KLYSTRON_FORWARD_PHASE";
+	const std::string KLYSTRON_FORWARD_POWER = "KLYSTRON_FORWARD_POWER";
+
+
+	const std::string  KRPOW = "KRPOW";
+	const std::string  KRPHA = "KRPHA";
+	const std::string  KFPOW = "KFPOW";
+	const std::string  KFPHA = "KFPHA";
+	const std::string  CRPOW = "CRPOW";
+	const std::string  CRPHA = "CRPHA";
+	const std::string  CPPOW = "CPPOW";
+	const std::string  CPPHA = "CPPHA";
+	const std::string  CFPOW = "CFPOW";
+	const std::string  CFPHA = "CFPHA";
+
 
 }
 /*! @}*/

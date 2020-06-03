@@ -11,7 +11,7 @@ class EPICSIMGInterface;
 
 typedef boost::shared_ptr<EPICSIMGInterface> EPICSIMGInterface_sptr;
 
-class IMG : Hardware
+class IMG : public Hardware
 {
 public:
 	IMG();

@@ -19,7 +19,7 @@ properties:
   magnetic_length: 414.409
   manufacturer: Scanditronix
   name: EBT-INJ-MAG-DIP-03
-  name_alias: INJ-DIP03,INJ-DIP03
+  name_alias: INJ-DIP03,INJ-DIP-03
   num_degauss_steps: 11
   position: 17.859
   ri_tolerance: 0.001

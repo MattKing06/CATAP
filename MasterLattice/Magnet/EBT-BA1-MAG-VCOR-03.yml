@@ -12,7 +12,7 @@ properties:
   degauss_tolerance: 0.1
   degauss_values: "7.0,-7.0,4.5,-4.5,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
   field_integral_coefficients: "0.0,0.0"
-  hardware_type: MAGNET
+  hardware_type: Magnet
   machine_area: BA1
   mag_set_max_wait_time: 45.0
   mag_type: VERTICAL_CORRECTOR

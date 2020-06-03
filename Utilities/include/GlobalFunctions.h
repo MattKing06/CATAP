@@ -25,20 +25,20 @@
 
 namespace GlobalFunctions {
 
-	/*
-			We often check if entries exist in maps,
-			use these functiOns to do it safely
-			be careful to pick the correct One!
-		*/
-	template<class T>
-	bool entryExists(const std::map<std::string, T>& m, const std::string& name)
-	{
-		bool ret = false;
-		auto it = m.find(name);
-		if (it != m.end())
-			ret = true;
-		return ret;
-	}
+    /*
+            We often check if entries exist in maps,
+            use these functiOns to do it safely
+            be careful to pick the correct One!
+        */
+    template<class T>
+    bool entryExists(const std::map<std::string, T>& m, const std::string& name)
+    {
+        bool ret = false;
+        auto it = m.find(name);
+        if (it != m.end())
+            ret = true;
+        return ret;
+    }
 
 	template<class T>
 	bool entryExists(const std::vector<T>& v, const T& item)
@@ -52,15 +52,6 @@ namespace GlobalFunctions {
 			return false;
 		}
 	}
-    //template<class T>
-    //bool entryExists(const std::map<std::string, T>& m, std::string& name)
-    //{
-    //    bool ret = false;
-    //    auto it = m.find(name);
-    //    if (it != m.end())
-    //        ret = true;
-    //    return ret;
-    //}
 
 	template<typename T = int>
 	bool areSame(const std::vector<T> a, const std::vector<T> b, const T epsilon = 0) 
@@ -182,10 +173,8 @@ namespace GlobalFunctions {
 
 	// isInMahineArea
 
-
-
-
 	extern bool isInMachineArea(TYPE testArea, TYPE area);
+
 
 }
 /*! @}*/

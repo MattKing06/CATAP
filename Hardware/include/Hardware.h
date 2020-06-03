@@ -29,13 +29,11 @@ public:
 	Hardware(const Hardware& copyHardware);
 
 	
-	std::string getMachineAreaString() const;
-	std::string getHardwareTypeString() const;
-	
+	std::string getMachineAreaStr() const;
 	TYPE getMachineArea() const;
+	std::string getHardwareTypeStr() const;
 	TYPE getHardwareType() const;
 
-	
 	std::string getHardwareName() const;
 
 
@@ -60,13 +58,14 @@ public:
 	bool isMessagingOn();
 	bool isDebugOn();
 
-
 	std::string hardwareName;
 	
 	// need to sort out private/protected access for these variables
-	// need to sort out private/protected access for these variables
-	TYPE machineArea;
-	TYPE hardwareType;
+	// TODOD THESE SHOULD NOT BE STRINGS, they are TYPE enums
+	std::string machine_area_str;
+	std::string hardware_type_str;
+	TYPE machine_area;
+	TYPE hardware_type;
 
 	std::map<std::string, pvStruct> pvStructs;
 	
@@ -78,7 +77,17 @@ public:
 
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
+// <<<<<<< HEAD
 
+// =======
+	// static std::map<std::string, TYPE> create_map()
+	// {
+		// std::map<std::string, TYPE> m;
+		// m["Magnet"] = TYPE::MAGNET;
+		// return m;
+	// }
+	// static const std::map<std::string, TYPE> string_to_hardware_type_map;
+// >>>>>>> 57_magnet_llrf_cam_bug_fix_fro_sim-frame_integration
 };
 /** @}*/
 #endif //HARDWARE_H_

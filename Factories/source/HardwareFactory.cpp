@@ -1,5 +1,6 @@
 #include "HardwareFactory.h"
 #include "PythonTypeConversions.h"
+#include "GlobalFunctions.h"
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -15,6 +16,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	chargeFactory(ChargeFactory(mode)),
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
+	llrffactory(LLRFFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -24,6 +26,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
+	// TODO these TYPES should be the type ENUM
 	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
@@ -62,7 +65,36 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	return setup;
 }
 
+// YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
+LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
+{
+	return getLLRFFactory(std::vector<TYPE>{machineArea});
+}
+LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machineAreas)
+{
+	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
+}
 
+LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
+{
+	messenger.printMessage("getLLRFFactory Called");
+	if (!llrffactory.hasBeenSetup)
+	{
+		bool setup = llrffactory.setup("nominal", machineAreas);
+		if (setup)
+		{
+			return llrffactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup LLRFFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		return llrffactory;
+	}
+}
 
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
@@ -82,6 +114,10 @@ MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machin
 	{
 		messenger.printMessage("magnetFactory is being setup");
 		bool setup = magnetFactory.setup(GlobalConstants::nominal, machineAreas);
+// =======
+		// messenger.printMessage("Setup magnet Factory Nominal");
+		// bool setup = magnetFactory.setup("nominal");
+// >>>>>>> 57_magnet_llrf_cam_bug_fix_fro_sim-frame_integration
 		if(setup)
 		{
 			messenger.printMessage("magnetFactory setup complete");

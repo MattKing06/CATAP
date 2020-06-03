@@ -278,7 +278,9 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 			}
 			else
 			{
-				messenger.printMessage(magnet.first, " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(magnet.first, ":", pv.second.pvRecord, " CANNOT CONNECT TO EPICS");
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
 		int status = EPICSInterface::caFlushIO("ca_create_subscription");

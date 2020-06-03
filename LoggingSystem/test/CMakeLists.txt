@@ -13,6 +13,7 @@ if ( Boost_FOUND )
 		target_link_libraries(${testName} PRIVATE ${Boost_LIBRARIES})
 		#move testing binaries to separate folder
 		set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/testBin)
+		set_property(TARGET ${testName} PROPERTY FOLDER "UnitTests")
 		#now add the test
 		add_test(NAME ${testName}
 			 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/testBin

@@ -19,7 +19,7 @@ properties:
   magnetic_length: 163.0
   manufacturer: Danfysik
   name: CLA-S02-MAG-HCOR-03
-  name_alias: S02-HCOR3,S02-HCOR3
+  name_alias: S02-HCOR03,S02-HCOR-03
   num_degauss_steps: 11
   position: 3.448080313
   ri_tolerance: 0.1

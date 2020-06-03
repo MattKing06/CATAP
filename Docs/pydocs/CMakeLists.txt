@@ -1,9 +1,17 @@
+
+
 if(UNIX)
   set(CMAKE_MODULE_PATH "/usr/share/cmake-3.10/Modules")
   set(SPHINX_DIR = "/usr/bin")
 endif(UNIX)
 
+if (WIN32)
+  set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/Docs/pydocs;${CMAKE_MODULE_PATH}")
+  message("ADDED MODULE PATH: " ${CMAKE_MODULE_PATH})
+endif(WIN32)
+
 find_package(Sphinx)
+
 if(NOT DEFINED SPHINX_THEME)
   set(SPHINX_THEME default)
 endif()
@@ -36,3 +44,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in
 
 add_custom_target(CATAPPyDocs ALL
 ${SPHINX_EXECUTABLE} -q -b html -c ${BINARY_BUILD_DIR} -d ${SPHINX_CACHE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SPHINX_HTML_DIR} COMMENT "Building HTML docs with Sphinx")
+message("LIB NAMES: ${LIBNAMES}")
+add_dependencies(CATAPPyDocs ${LIBNAMES})
+
+set_property(TARGET CATAPPyDocs PROPERTY FOLDER "Docs")

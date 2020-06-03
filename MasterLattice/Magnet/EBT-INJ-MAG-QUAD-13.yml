@@ -12,7 +12,7 @@ properties:
   degauss_tolerance: 0.1
   degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
   field_integral_coefficients: "-2.87186700627592E-05,0.000391071197622624,0.103186587329201,0.00109631338038853"
-  hardware_type: MAGNET
+  hardware_type: Magnet
   machine_area: INJ
   mag_set_max_wait_time: 45.0
   mag_type: QUADRUPOLE

@@ -13,8 +13,16 @@ public:
 	IMGFactory(const IMGFactory& copyFactory);
 	~IMGFactory();
 	void setup(std::string version);
+	LoggingSystem messenger;
+	ConfigReader reader;
 	bool hasBeenSetup;
 	std::map<std::string, IMG> IMGMap;
+	void debugMessagesOn();
+	void debugMessagesOff();
+	void messagesOn();
+	void messagesOff();
+	bool isDebugOn();
+	bool isMessagingOn();
 };
 
 #endif // IMG_FACTORY_H_

@@ -11,7 +11,7 @@ class EPICSStageInterface;
 
 typedef boost::shared_ptr<EPICSStageInterface> EPICSStageInterface_sptr;
 
-class Stage : Hardware
+class Stage : public Hardware
 {
 public:
 	Stage();

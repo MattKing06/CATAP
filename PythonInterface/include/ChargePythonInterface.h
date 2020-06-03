@@ -11,7 +11,8 @@
 namespace BOOST_PYTHON_CHARGE_INCLUDE
 {
 	void expose_charge_object() {
-
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Charge>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<Charge, boost::python::bases<Hardware>, boost::noncopyable>("Charge", boost::python::no_init)
 			.add_property("name", &Charge::getName)
 			.add_property("charge_type", &Charge::getChargeDiagnosticType)
@@ -40,6 +41,8 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 	
 	void expose_charge_factory_object() {
 
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ChargeFactory>())->to_python_target_type());
+		if (is_registered) return;
 		//charge Factory Exposure
 		boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())

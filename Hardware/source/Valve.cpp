@@ -3,10 +3,13 @@
 
 Valve::Valve() {}
 
-Valve::Valve(const std::map<std::string, std::string>& paramMap, STATE mode) : Hardware(paramMap, mode),
-valveState(std::make_pair<epicsTimeStamp,STATE>(epicsTimeStamp(), STATE::ERR))
+Valve::Valve(const std::map<std::string, std::string>& paramMap, STATE mode) : 
+	Hardware(paramMap, mode),
+	valveState(std::make_pair<epicsTimeStamp,STATE>(epicsTimeStamp(), STATE::ERR))
 {
+	messenger.printDebugMessage("Valve Constructor called ");
 	setPVStructs();
+	messenger.printDebugMessage("setPVStructs set");
 	epicsInterface = boost::make_shared<EPICSValveInterface>(EPICSValveInterface());
 	epicsInterface->ownerName = hardwareName;
 	messenger = LoggingSystem(true, true);

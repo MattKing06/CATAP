@@ -12,8 +12,9 @@ properties:
   degauss_tolerance: 2.0
   degauss_values: "250.0,-250.0,150.0,-150.0,100.0,-100.0,50.0,-50.0,25.0,-25.0,0.0"
   field_integral_coefficients: "2.17321571,-0.858179277,0.172127130,-0.0171033399,6.70371530e-04,-3.53922E-08,1.53138E-05,0.167819191,0.0"
-  hardware_type: MAGNET
+  hardware_type: Magnet
   machine_area: UNDEFINED
+  machine_area: GUN
   mag_set_max_wait_time: 45.0
   mag_type: SOLENOID
   magnetic_length: 139.5

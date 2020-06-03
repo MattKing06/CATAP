@@ -19,7 +19,7 @@ properties:
   magnetic_length: 12.5
   manufacturer: Danfysik
   name: CLA-LRG1-MAG-SOL-01
-  name_alias: LRG-BSOL-02,LRG-BSOL-02
+  name_alias: LRG-SOL-01,LRG-SOL01,LRG-BSOL-01,LRG-BSOL01
   num_degauss_steps: 11
   position: -0.072
   ri_tolerance: 0.1

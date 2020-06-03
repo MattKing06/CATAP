@@ -11,7 +11,7 @@ class EPICSRFModulatorInterface;
 
 typedef boost::shared_ptr<EPICSRFModulatorInterface> EPICSRFModulatorInterface_sptr;
 
-class RFModulator : Hardware
+class RFModulator : public Hardware
 {
 public:
 	RFModulator();

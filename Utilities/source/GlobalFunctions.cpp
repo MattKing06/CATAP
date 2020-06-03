@@ -123,7 +123,6 @@ namespace GlobalFunctions {
 		return TYPE::UNKNOWN_TYPE;
 	}
 
-
 	bool isInMachineArea(TYPE testArea, TYPE area)
 	{
 		// we will have multiple, overlapping machine areas, 

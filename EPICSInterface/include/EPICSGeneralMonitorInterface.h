@@ -2,7 +2,7 @@
 #define EPICS_GENERAL_MONITOR_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSGeneralMonitorInterface : EPICSInterface
+class EPICSGeneralMonitorInterface : public EPICSInterface
 {
 public:
 	EPICSGeneralMonitorInterface();
@@ -11,3 +11,6 @@ public:
 };
 
 #endif //EPICS_GENERAL_MONITOR_INTERFACE_H_
+
+
+

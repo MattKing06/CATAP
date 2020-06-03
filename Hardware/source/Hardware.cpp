@@ -6,34 +6,42 @@
 #include "GlobalTypeEnums.h"
 
 
-Hardware::Hardware() :
-machineArea(TYPE::UNKNOWN_AREA),
-hardwareType(TYPE::UNKNOWN_AREA)
-{
-}
+// map to convert yaml file strings to magnet TYPE enums
+//const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
 
-//Hardware::Hardware(const std::string& name):
-//hardwareName(name) 
-//{
-//}
+Hardware::Hardware() :
+	machine_area(TYPE::UNKNOWN_TYPE),
+	hardware_type(TYPE::UNKNOWN_TYPE),
+	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
+{
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+}
 
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
-//machineArea(specificValueMap.find("machine_area")->second),
-//hardwareType(specificValueMap.find("hardware_type")->second),
+// TODO exceptions?? should be more robust, 
+// TODO we DONT need the string verions machine_area  and hardware_type they are ENUMS
+// TODO is hardware type and machine area in al hardware files ?? 
+machine_area_str(specificValueMap.find("machine_area")->second),
 // this will NOT be set correctly if your machine_area type is not defined in GlobalTypeEnums AND in GlobalFunctions::stringToType
-machineArea(GlobalFunctions::stringToType(specificValueMap.find("machine_area")->second)),
-// this will NOT be set correctly if your hardware_type type is not defined in GlobalTypeEnums AND in GlobalFunctions::stringToType
-hardwareType(GlobalFunctions::stringToType(specificValueMap.find("hardware_type")->second)),
+machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
+hardware_type_str(specificValueMap.find("hardware_type")->second),
+hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second)
 {
-	//messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 	// equal_range returns a variable containing start (first) and end (second)
 	// iterators for items in the multimap corresponding to pv records.
-
-
+	//if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
+	//{
+	//	if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
+	//	{
+	//		hardware_type = string_to_hardware_type_map.at("Magnet");
+	//	}
+	//}
 /* 	if (hardwareType.compare("Magnet") != 0)
 	{
 		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS TRUE");
@@ -62,28 +70,34 @@ hardwareName(specificValueMap.find("name")->second)
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
-	messenger(copyHardware.messenger), hardwareType(copyHardware.hardwareType),
-	machineArea(copyHardware.machineArea), mode(copyHardware.mode)
+	messenger(copyHardware.messenger), 
+	hardware_type(copyHardware.hardware_type),
+	machine_area(copyHardware.machine_area), 
+	mode(copyHardware.mode), 
+	hardwareName(copyHardware.hardwareName),
+	hardware_type_str(copyHardware.hardware_type_str),
+	machine_area_str(copyHardware.machine_area_str)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
 }
 
-std::string Hardware::getMachineAreaString() const
+std::string Hardware::getMachineAreaStr() const
 {
-	return ENUM_TO_STRING(machineArea);
+	return machine_area_str;
 }
-std::string Hardware::getHardwareTypeString() const
-{
-	return ENUM_TO_STRING(hardwareType);
-}
+
 TYPE Hardware::getMachineArea() const
 {
-	return machineArea;
+	return machine_area;
+}
+std::string Hardware::getHardwareTypeStr() const
+{
+	return hardware_type_str;
 }
 TYPE Hardware::getHardwareType() const
 {
-	return hardwareType;
+	return hardware_type;
 }
 std::string Hardware::getHardwareName() const
 {

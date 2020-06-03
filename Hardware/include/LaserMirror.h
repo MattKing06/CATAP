@@ -11,7 +11,7 @@ class EPICSLaserMirrorInterface;
 
 typedef boost::shared_ptr<EPICSLaserMirrorInterface> EPICSLaserMirrorInterface_sptr;
 
-class LaserMirror : Hardware
+class LaserMirror : public Hardware
 {
 public:
 	LaserMirror();
