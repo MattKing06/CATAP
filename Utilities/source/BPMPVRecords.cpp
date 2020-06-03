@@ -18,5 +18,6 @@ std::string const BPMRecords::DATA = "DATA";
 namespace BPMRecords
 {
 	std::vector<std::string> bpmRecordList = { X,Y,RA1,RA2,RD1,RD2,SA1,SA2,SD1,SD2,AWAK,RDY,DATA };
+	std::vector<std::string> bpmRecordListVirtual = { X,Y,RA1,RA2,RD1,RD2,SA1,SA2,SD1,SD2,DATA };
 }
 

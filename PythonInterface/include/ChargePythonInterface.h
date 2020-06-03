@@ -38,7 +38,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 
 
 
-	
+
 	void expose_charge_factory_object() {
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ChargeFactory>())->to_python_target_type());
@@ -51,6 +51,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
 			.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
+			.def("getAllChargeDiagnosticNames", &ChargeFactory::getAllChargeDiagnosticNames_Py)
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots)
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
 			.def("ismonitoring", &ChargeFactory::ismonitoring)

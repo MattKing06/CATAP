@@ -41,7 +41,7 @@ public:
 		as any subscriptions that are needed for monitoring.
 		@param[in] version NOT IN USE
 		@param[out] hasBeenSetup false if no YAML config files to parse, true otherwise.*/
-	bool setup(const std::string &VERSION);
+	bool setup(const std::string& VERSION);
 	/*! Used to print messages both normal and debug, also sets the On/Off flags for debug and normal messages*/
 	LoggingSystem messenger;
 	/*! ConfigReader to parse YAML config files and create associated Charge objects*/
@@ -82,6 +82,9 @@ public:
 	/*!sets the buffer size of the given charge object.
 	@param[in] name: sets the size of charge buffers.
 	@param[in] value: sets the size of charge buffers.*/
+	/*!gets all names of the Charge objects.
+	@param[out] names : the names of the charge objects.*/
+	std::vector< std::string > getAllChargeDiagnosticNames();
 	void setBufferSize(const std::string& name, const size_t& value);
 	/*!sets the buffer size of all charge objects
 	@param[in] value: sets the size of charge buffers.*/
@@ -97,7 +100,7 @@ public:
 	/*!records charge in vectors for all objects (accessible directly through the Charge hardware objects, or the getQVector functions).
 	@param[in] value: the number of shots to record.*/
 	void monitorAllForNShots(const size_t& value);
-		
+
 	STATE mode;
 	/*!is charge being monitored?
 	@param[in] name: the Charge object name.
@@ -127,11 +130,11 @@ public:
 	/*!get vector of charge values for multiple devices (after using monitorForNShots)
 	@param[out] names: the names of the Charge objects.
 	@param[out] values: map of vectors of charge values, keyed by name.*/
-	std::map < std::string, std::vector< double > > getQVectors(const std::vector<std::string> & names);
+	std::map < std::string, std::vector< double > > getQVectors(const std::vector<std::string>& names);
 	/*!get buffer of charge values for multiple devices
 	@param[in]: names: the names of the Charge objects
 	@param[out] values: map of buffers of charge values, keyed by name.*/
-	std::map < std::string, boost::circular_buffer< double > > getQBuffers(const std::vector<std::string> & names);
+	std::map < std::string, boost::circular_buffer< double > > getQBuffers(const std::vector<std::string>& names);
 	/*!get buffer of charge values for all devices
 	@param[out] values: map of buffers of charge values, keyed by name.*/
 	std::map < std::string, boost::circular_buffer< double > > getAllQBuffer();
@@ -178,6 +181,9 @@ public:
 	/*returns a Python dict of buffers of charge values
 	@param[out] dict: charge buffers, keyed by name.*/
 	boost::python::dict getQBuffers_Py(boost::python::list names);
+	/*returns a Python list of all charge diagnostic names.
+	@param[out] names: charge names vector.*/
+	boost::python::list getAllChargeDiagnosticNames_Py();
 	/*returns a Python dict of buffers of charge values
 	@param[out] dict: charge buffers, keyed by name.*/
 	boost::python::dict getAllQBuffer_Py();

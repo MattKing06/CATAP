@@ -27,7 +27,7 @@ public:
 	@param[in] mode The type of BPMFactory we wish to create.
 	PHYSICAL BPMFactory will perform operations on CLARA/VELA BPMs.
 	VIRTUAL BPMFactory will perform operations of Virtual BPMs.
-	OFFLINE BPMFactory will perform operations on Offline BPMs.*/	
+	OFFLINE BPMFactory will perform operations on Offline BPMs.*/
 	BPMFactory(STATE mode);
 	/*! Copy constructor for BPMFactory (used for = operator)
 	@param[in] copyBPMFactory: the BPMFactory we want to copy over.*/
@@ -46,7 +46,7 @@ public:
 	BPM hardware objects when they are created by ConfigReader*/
 	STATE mode;
 	/*! Used to print messages both normal and debug, also sets the On/Off flags for debug and normal messages*/
-    LoggingSystem messenger;
+	LoggingSystem messenger;
 	/*! ConfigReader to parse YAML config files and create associated BPM objects*/
 	ConfigReader reader;
 	/*! Map containing all BPMs created from ConfigReader, keyed by harwdare name*/
