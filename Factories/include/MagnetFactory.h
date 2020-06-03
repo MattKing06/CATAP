@@ -685,7 +685,7 @@ private:
 		std::map<std::string, Magnet> magnetMap;
 
 
-		/*! setup the EPCIS channels
+		/*! setup the EPCIS channels */
 		void setupChannels();
 
 		/*! Write a dburt file to disk, private function that does the actual writing

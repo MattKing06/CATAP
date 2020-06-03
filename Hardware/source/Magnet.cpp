@@ -52,12 +52,17 @@ is_degaussing(false)
 	epicsInterface->ownerName = hardwareName;
 	setPVStructs();
 	//convert list of degauss values from strings to floats
-	std::vector<std::string> degaussValuesStrVec;
+	std::vector<std::string> degaussValuesStrVec, field_integral_coefficients_STR;
 	messenger.debugMessagesOn();
 	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
+	boost::split(field_integral_coefficients_STR, paramsMap.find("field_integral_coefficients")->second, [](char c){return c == ','; });
 	for (auto value : degaussValuesStrVec) 
 	{ 
 		degaussValues.push_back(std::stof(value)); 
+	}
+	for (auto value : field_integral_coefficients_STR)
+	{
+		field_integral_coefficients.push_back(std::stof(value));
 	}
 	// set the magnet_type
 	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
@@ -260,6 +265,17 @@ double Magnet::setDegaussTolerance(const double value)
 	degaussTolerance = value;
 	return degaussTolerance;
 }
+
+std::vector<double> Magnet::getFieldIntegralCoefficients() const
+{
+	return field_integral_coefficients;
+}
+
+boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
+{
+	return to_py_list(getFieldIntegralCoefficients());
+}
+
 
 
 double Magnet::getMagneticLength() const

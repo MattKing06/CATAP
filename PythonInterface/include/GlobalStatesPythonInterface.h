@@ -15,7 +15,10 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 		boost::python::enum_<STATE>("STATE", "Global Enums used for displaying States")
 			.value("On", STATE::ON)
 			.value("OFF", STATE::OFF)
+			.value("ON", STATE::ON) // TODO should we just overload upper and lower case versions of these ?? 
+			.value("OFF", STATE::OFF)
 			.value("ERROR", STATE::ERR)
+			.value("ERR", STATE::ERR)
 			.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
 			.value("SUCCESS", STATE::SUCCESS)
 			.value("FAIL", STATE::FAIL)
@@ -49,7 +52,7 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("VSLIT1", STATE::VSLIT1)
 			.value("RETRACTED", STATE::RETRACTED)
 			.value("YAG", STATE::YAG)
-			.value("RF", STATE::RF)
+			.value("RF", STATE::RF) // TODO IS THIS A GOOD NAME, could it cause confusion? 
 			;
 	}
 }

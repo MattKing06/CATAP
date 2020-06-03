@@ -146,6 +146,12 @@ class Magnet : public Hardware
 		double getMinI()const;
 	/*! get the maximum I value that can be set for this magnet,  defined in the master lattice yaml file*/
 		double getMaxI()const;
+	/*! Get the field integral coefficents, defined in the master lattice yaml file
+		@param[out] result  */
+		std::vector<double> getFieldIntegralCoefficients() const;
+	/*! Get the field integral coefficents, defined in the master lattice yaml file (Python version)
+		@param[out] result  */
+		boost::python::list getFieldIntegralCoefficients_Py() const;
 
 		/*! set the values used during degaussing
 		@param[out] new value sthat will be used */
@@ -267,6 +273,9 @@ class Magnet : public Hardware
 		double min_i;
 	/*! magnet maximum SETI value that can be passed, defined in the master lattice yaml file	*/
 		double max_i;
+
+	/*! measured field itnegral cooefficients */
+		std::vector<double> field_integral_coefficients;
 
 
 		//std::string magRevType;

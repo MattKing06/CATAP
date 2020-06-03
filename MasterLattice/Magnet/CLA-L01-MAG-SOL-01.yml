@@ -12,7 +12,6 @@ properties:
   degauss_tolerance: 0.5
   degauss_values: "150.0,-150.0,100.0,-100.0,66.0,-66.0,30.0,-30.0,10.0,-10.0,0.0"
   field_integral_coefficients: "0.911580969,-0.0374385376,0.00106926073,-1.64644381e-05,1.01769629e-07,0,0,0.37651102,0.12171419"
-  hardware_type: Magnet HEAD
   hardware_type: Magnet
   machine_area: L01
   mag_set_max_wait_time: 45.0

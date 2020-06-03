@@ -7,7 +7,7 @@
 #include "GlobalTypeEnums.h"
 #include "GlobalStateEnums.h"
 
-// where i sthe best to put this ??
+// where is the best to put this ??
 // http://forums.codeguru.com/showthread.php?369447-can-t-assign-numeric_limits-lt-double-gt-max()
 #ifdef max
 #undef max
