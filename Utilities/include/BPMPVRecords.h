@@ -25,6 +25,7 @@ namespace BPMRecords
 	extern std::string const DATA; // = "DATA:B2V.VALA";
 
 	extern std::vector<std::string> bpmRecordList;
+	extern std::vector<std::string> bpmRecordListVirtual;
 }
 
 namespace BPMState

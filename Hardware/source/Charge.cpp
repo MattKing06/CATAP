@@ -127,6 +127,20 @@ boost::circular_buffer< double > Charge::getQBuffer() const
 	return this->qBuffer;
 }
 
+bool Charge::setQVirtual(const double& value)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		epicsInterface->setQ(value, pvStructs.at(ChargeRecords::Q));
+		setQ(value);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool Charge::setQ(const double& value)
 {
 	q.second = value;

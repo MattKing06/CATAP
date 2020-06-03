@@ -12,70 +12,74 @@
 
 BPM::BPM()
 {}
-BPM::BPM(const std::map<std::string, std::string> & paramsMap, STATE mode) :
-Hardware(paramsMap, mode),
-bpmType(paramsMap.find("bpm_type")->second),
-name(paramsMap.find("name")->second),
-att1cal(std::stol(paramsMap.find("att1cal")->second)),
-att2cal(std::stol(paramsMap.find("att2cal")->second)),
-v1cal(std::stod(paramsMap.find("v1cal")->second)),
-v2cal(std::stod(paramsMap.find("v2cal")->second)),
-qcal(std::stod(paramsMap.find("qcal")->second)),
-mn(std::stod(paramsMap.find("mn")->second)),
-position(std::stod(paramsMap.find("position")->second))
+BPM::BPM(const std::map<std::string, std::string>& paramsMap, STATE mode) :
+	Hardware(paramsMap, mode),
+	bpmType(paramsMap.find("bpm_type")->second),
+	name(paramsMap.find("name")->second),
+	att1cal(std::stol(paramsMap.find("att1cal")->second)),
+	att2cal(std::stol(paramsMap.find("att2cal")->second)),
+	v1cal(std::stod(paramsMap.find("v1cal")->second)),
+	v2cal(std::stod(paramsMap.find("v2cal")->second)),
+	qcal(std::stod(paramsMap.find("qcal")->second)),
+	mn(std::stod(paramsMap.find("mn")->second)),
+	position(std::stod(paramsMap.find("position")->second))
 {
-messenger.printDebugMessage("constructor");
-setPVStructs();
-bufferSize = 10;
-xpvshots = 0;
-ypvshots = 0;
-datashots = 0;
-qshots = 0;
-monitoringxpv = false;
-monitoringypv = false;
-monitoringdata = false;
-epicsInterface = boost::make_shared<EPICSBPMInterface>(EPICSBPMInterface());
-epicsInterface->ownerName = hardwareName;
-xBuffer.resize(bufferSize);
-xPVBuffer.resize(bufferSize);
-yBuffer.resize(bufferSize);
-yPVBuffer.resize(bufferSize);
-qBuffer.resize(bufferSize);
-dataBuffer.resize(bufferSize);
-statusBuffer.resize(bufferSize);
-for (auto&& it : dataBuffer)
-{
-	it.resize(9);
+	messenger.printDebugMessage("constructor");
+	setPVStructs(mode);
+	bufferSize = 10;
+	xpvshots = 0;
+	ypvshots = 0;
+	datashots = 0;
+	qshots = 0;
+	monitoringxpv = false;
+	monitoringypv = false;
+	monitoringdata = false;
+	epicsInterface = boost::make_shared<EPICSBPMInterface>(EPICSBPMInterface());
+	epicsInterface->ownerName = hardwareName;
+	xBuffer.resize(bufferSize);
+	xPVBuffer.resize(bufferSize);
+	yBuffer.resize(bufferSize);
+	yPVBuffer.resize(bufferSize);
+	qBuffer.resize(bufferSize);
+	dataBuffer.resize(bufferSize);
+	statusBuffer.resize(bufferSize);
+	for (auto&& it : dataBuffer)
+	{
+		it.resize(9);
+	}
+	pu1Buffer.resize(bufferSize);
+	pu2Buffer.resize(bufferSize);
+	pu3Buffer.resize(bufferSize);
+	pu4Buffer.resize(bufferSize);
+	c1Buffer.resize(bufferSize);
+	c2Buffer.resize(bufferSize);
+	p1Buffer.resize(bufferSize);
+	p2Buffer.resize(bufferSize);
 }
-pu1Buffer.resize(bufferSize);
-pu2Buffer.resize(bufferSize);
-pu3Buffer.resize(bufferSize);
-pu4Buffer.resize(bufferSize);
-c1Buffer.resize(bufferSize);
-c2Buffer.resize(bufferSize);
-p1Buffer.resize(bufferSize);
-p2Buffer.resize(bufferSize);
-}
-BPM::BPM(const BPM & copyBPM) :
-Hardware(copyBPM),
-bpmType(copyBPM.bpmType),
-name(copyBPM.name),
-att1cal(copyBPM.att1cal),
-att2cal(copyBPM.att2cal),
-v1cal(copyBPM.v1cal),
-v2cal(copyBPM.v2cal),
-qcal(copyBPM.qcal),
-mn(copyBPM.mn),
-position(copyBPM.position),
-epicsInterface(copyBPM.epicsInterface)
+BPM::BPM(const BPM& copyBPM) :
+	Hardware(copyBPM),
+	bpmType(copyBPM.bpmType),
+	name(copyBPM.name),
+	att1cal(copyBPM.att1cal),
+	att2cal(copyBPM.att2cal),
+	v1cal(copyBPM.v1cal),
+	v2cal(copyBPM.v2cal),
+	qcal(copyBPM.qcal),
+	mn(copyBPM.mn),
+	position(copyBPM.position),
+	epicsInterface(copyBPM.epicsInterface)
 {
 }
 
-void BPM::setPVStructs()
+void BPM::setPVStructs(STATE mode)
 {
 	messenger.printDebugMessage("in setPVstructs");
-
-	for (auto&& record : BPMRecords::bpmRecordList)
+	std::vector<std::string> recordlist = BPMRecords::bpmRecordList;
+	if (mode == STATE::VIRTUAL)
+	{
+		recordlist = BPMRecords::bpmRecordListVirtual;
+	}
+	for (auto&& record : recordlist)
 	{
 		messenger.printDebugMessage("in loop");
 		pvStructs[record] = pvStruct();
@@ -329,6 +333,26 @@ long BPM::getRD1() const
 long BPM::getRD2() const
 {
 	return this->rd2.second;
+}
+
+bool BPM::setXPVVirtual(const double& value)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		epicsInterface->setX(value, pvStructs.at(BPMRecords::X));
+		setXPV(value);
+	}
+	return true;
+}
+
+bool BPM::setYPVVirtual(const double& value)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		epicsInterface->setY(value, pvStructs.at(BPMRecords::Y));
+		setYPV(value);
+	}
+	return true;
 }
 
 bool BPM::setXPV(const double& value)
@@ -591,7 +615,7 @@ bool BPM::checkBuffer(boost::circular_buffer< double >& buf)
 {
 	if (buf[buf.size() - 1] == buf[buf.size()])
 	{
-		return true;	
+		return true;
 	}
 	return false;
 }
@@ -619,26 +643,26 @@ void BPM::checkStatus()
 		statusBuffer.push_back(status);
 	}
 	else if (xpvshots > 0 && ypvshots > 0)
-		if(isnan(xPVBuffer.back()) || isnan(yPVBuffer.back()))
+		if (isnan(xPVBuffer.back()) || isnan(yPVBuffer.back()))
 		{
 			status = STATE::BAD;
 			statusBuffer.push_back(status);
 		}
-	else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
-	{
-		status = STATE::NONLINEAR;
-		statusBuffer.push_back(status);
-	}
-	else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
-	{
-		status = STATE::GOOD;
-		statusBuffer.push_back(status);
-	}
-	else
-	{
-		status = STATE::UNKNOWN;
-		statusBuffer.push_back(status);
-	}
+		else if (abs(pu1Buffer.back()) > 1.0 || abs(pu2Buffer.back()) > 1.0 || abs(pu3Buffer.back()) > 1.0 || abs(pu4Buffer.back()) > 1.0)
+		{
+			status = STATE::NONLINEAR;
+			statusBuffer.push_back(status);
+		}
+		else if (abs(pu1Buffer.back()) < 1.0 || abs(pu2Buffer.back()) < 1.0 || abs(pu3Buffer.back()) < 1.0 || abs(pu4Buffer.back()) < 1.0)
+		{
+			status = STATE::GOOD;
+			statusBuffer.push_back(status);
+		}
+		else
+		{
+			status = STATE::UNKNOWN;
+			statusBuffer.push_back(status);
+		}
 	if (ismonitoring())
 	{
 		statusVector.push_back(status);
