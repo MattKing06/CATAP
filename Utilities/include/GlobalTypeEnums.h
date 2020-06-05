@@ -33,8 +33,11 @@
 
 
 /*
-		 **************** README *********************
-		 IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
+						**************** README *********************
+	
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
+		 
+	IF ADDING A MACHINE_AREA THAT IS AN AGGREGATE OF MANY AREAS UPDATE  GlobalfUNCTIONS::isInMachineArea
 */
 DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
 	(UNKNOWN_TYPE)
@@ -59,7 +62,9 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(CLARA_GUN)
 	(HRRG_GUN)
 	(LRRG_GUN)
-	(LAS)
+	(LAS) // TODO change to laser or laser transport ??? 
+	(VELA_LASER)
+	(CLARA_LASER)
 	(L01)
 	(BA1)
 	(BA2)
@@ -69,8 +74,11 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(S01)
 	(S02)
 	(C2V)
+	(VELA_INJ)
 	(CLARA_PH1)
+	(VELA_2_BA1)
 	(CLARA_2_BA1)
+	(VELA_2_BA1_BA2)
 	(CLARA_2_BA1_BA2)
 	// M
 	// screen stuff
@@ -91,6 +99,7 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VALVE)
 	(IMG_TYPE)
 	(LLRF_TYPE)
+	(CAMERA_TYPE)
 
 )
 

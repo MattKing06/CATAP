@@ -146,7 +146,7 @@ void LLRFFactory::populateLLRFMap()
 	messenger.printDebugMessage("LLRFFactory is populating the LLRF object map");
 	if (!reader.hasMoreFilesToParse())
 	{
-		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, "
+		throw std::runtime_error("Did not receive LLRF configuration parameters from ConfigReader, "
 			"please contact support");
 	}
 	while (reader.hasMoreFilesToParse())

@@ -169,11 +169,13 @@ namespace GlobalFunctions {
 	void pause_1()   ;
 
 
+
 	extern TYPE stringToType(const std::string& string_to_compare);
 
 	// isInMahineArea
 
 	extern bool isInMachineArea(TYPE testArea, TYPE area);
+
 
 
 }

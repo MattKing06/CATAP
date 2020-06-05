@@ -1,0 +1,30 @@
+added new machine areas:
+
+VELA_LASER
+CLARA_LASER
+
+These are for items in the laser trasnpsort system specifc to 
+the vela and clara lines
+
+
+Hardware 
+You **cannot** have a virtual_cathode camera from  VELA and CLARA 
+one One or NONE
+
+
+screen_names for cam also count as alias_names
+
+camera machine areas are defeind by where their screen is, 
+not their PV root 
+
+added some debugging print statements 
+when parsing master_lattice files in function:
+ConfigReader::compareFileWithTemplate()
+
+there can be subtle errors in formatting the config files 
+    SCREEN_NAME : VIRTUAL_CATHODE, VC # which screen is the camera looking at 
+
+
+some subtleties with spaces beign copied into names ?? 
+need to remove all scapes from names?
+and set that as a design choice

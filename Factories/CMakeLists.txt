@@ -4,6 +4,7 @@ set( SOURCE_FILES
     source/MagnetFactory.cpp
     source/BPMFactory.cpp
     source/ChargeFactory.cpp
+    source/CameraFactory.cpp
     source/ScreenFactory.cpp
     source/ValveFactory.cpp
     source/GeneralMonitorFactory.cpp
@@ -24,6 +25,7 @@ set( INCLUDE_FILES
     include/MagnetFactory.h
     include/BPMFactory.h
     include/ChargeFactory.h
+    include/CameraFactory.h
     include/ScreenFactory.h
     include/ValveFactory.h
     include/GeneralMonitorFactory.h
@@ -43,6 +45,7 @@ set( TEST_FILES
     FactoryTestHelper.cpp
     HardwareFactoryTest.cpp
     MagnetFactoryTest.cpp
+    CameraFactoryTest.cpp
     BPMFactoryTest.cpp
     ChargeFactoryTest.cpp
     ScreenFactoryTest.cpp

@@ -13,7 +13,9 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "CHA", "Charge" },
 	{ "SCR", "Screen" },
 	{ "YAG", "Screen" },
-	{ "LLRF", "LLRF" } // ??? 
+	{ "IMG", "IMG" },
+	{ "LLRF", "LLRF"  }, // ??? 
+	{ "CAM", "Camera" }
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
@@ -36,7 +38,7 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	// TODO hardwareType should be TYPE ENUM not a string 
 	hardwareFolder(hardwareType)
 {
-	messenger.printDebugMessage("ConfigReader(const std::string &hardwareType, const STATE& mode) Constructor called");
+	messenger.printDebugMessage("ConfigReader( " + hardwareType + ", " + ENUM_TO_STRING(mode) + ") Constructor called");
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 	initialiseFilenameAndParsedStatusMap();
 }
@@ -72,7 +74,9 @@ std::vector<std::string> ConfigReader::findYAMLFilesInDirectory(const std::strin
 				|| i->path().extension() == ".yaml"
 				|| i->path().extension() == ".yml")
 			{
+				
 				filenames.push_back(i->path().filename().string());
+				messenger.printDebugMessage("ConfigReader found: " + filenames.back());
 				if (i->path().filename().string() != hardwareFolder)
 				{
 					numberOfParsesExpected++;
@@ -106,6 +110,9 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 {
 	// this vector will contain any keys from the template that are not present in the config file.
 	std::vector<std::string> missingEntries;
+	// flags so if an error is found print info from file to help fix it 
+	bool print_properties = false;
+	bool print_ctrlsinfo = false;
 	for (const auto& keyAndValuePair : hardwareTemplate["properties"])
 	{
 		if (!hardwareComponent["properties"][keyAndValuePair.first.as<std::string>()])
@@ -113,6 +120,7 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 			messenger.printDebugMessage("Error missing property: " + keyAndValuePair.first.as<std::string>());
 			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
 			//return false;
+			print_properties = true;
 		}
 	}
 	for (const auto& keyAndValuePair : hardwareTemplate["controls_information"])
@@ -120,9 +128,30 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 		if (!hardwareComponent["controls_information"][keyAndValuePair.first.as<std::string>()])
 		{
 			missingEntries.push_back(keyAndValuePair.first.as<std::string>());
+			print_ctrlsinfo = true;
 			//return false;
 		}
 	}
+
+	if (print_properties)
+	{
+		messenger.printDebugMessage("property Errors found, printing all discovered properties ");		
+		for (const auto& keyAndValuePair : hardwareComponent["properties"])
+		{
+			messenger.printDebugMessage(keyAndValuePair.first.as<std::string>() + " = " +
+				keyAndValuePair.second.as<std::string>());
+		}
+	}
+	if (print_ctrlsinfo)
+	{
+		messenger.printDebugMessage("controls_information Errors found, printing all discovered controls_information ");
+		for (const auto& keyAndValuePair : hardwareComponent["controls_information"])
+		{
+			messenger.printDebugMessage(keyAndValuePair.first.as<std::string>() + " = " +
+				keyAndValuePair.second.as<std::string>());
+		}
+	}
+
 	return missingEntries;
 }
 
@@ -183,6 +212,11 @@ const std::map<std::string, std::string> ConfigReader::extractRecordsIntoMap(con
 {
 	auto controlsInformationNode = configInformationNode["controls_information"];
 	std::map<std::string, std::string> pvRecordMap = controlsInformationNode["pv_record_map"].as<std::map<std::string, std::string> >();
+	// for debugging print data in file 
+	//for (auto&& it : pvRecordMap)
+	//{
+	//	messenger.printDebugMessage(it.first + " = " + it.second);
+	//}
 	return pvRecordMap;
 }
 
@@ -210,6 +244,11 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 		}
 
 	}
+	// for debugging print data in file 
+	//for (auto&& it : hardwarePropertyAndValueVector)
+	//{
+	//	messenger.printDebugMessage(it.first + " = " + it.second);
+	//}
 	return hardwarePropertyAndValueVector;
 }
 
@@ -237,6 +276,10 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		//{
 		//	mode = STATE::OFFLINE;
 		//}
+
+
+
+
 		return pvAndRecordPair;
 	}
 	else

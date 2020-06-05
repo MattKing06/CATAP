@@ -34,7 +34,7 @@ endif(UNIX)
 
 set_property(GLOBAL PROPERTY DEBUG_COnFIGURATIOnS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_COnFIGURATIOnS "Release;MinSizeRel")
-find_package(PythonLibs ${PY_VERSION})
+find_package(PythonLibs ${PY_VERSION} REQUIRED)
 find_package(Boost 1.63.0)
 message("Finding Boost...")
 
@@ -70,5 +70,3 @@ add_subdirectory(PV)
 add_subdirectory(EPICSInterface)
 add_subdirectory(Utilities)
 add_subdirectory(Docs)
-
-

@@ -14,6 +14,7 @@
 #include <boost/python/list.hpp>
 #include <boost/filesystem.hpp>
 
+
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
 /// one-stop shop for magnet state

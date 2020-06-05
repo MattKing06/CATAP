@@ -22,16 +22,16 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 		MagnetFactory&(HardwareFactory::*getMagnetFactory_oneArea)(const TYPE)= &HardwareFactory::getMagnetFactory;
 		MagnetFactory&(HardwareFactory::*getMagnetFactory_listOfAreas)(const boost::python::list&)= &HardwareFactory::getMagnetFactory;
 
-
-
 		// Hardware Factory Exposure
 		boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"), boost::python::args("mode"))))
 			.def("setup", &HardwareFactory::setup, (boost::python::args("self"), boost::python::arg("hardwareType"), boost::python::args("version")))
-			//.def("getLLRFFactory", getLLRFFactory_oneArea, boost::python::arg("self"), boost::python::arg("machine_area"), boost::python::return_value_policy<boost::python::reference_existing_object>())
-			
+			.add_property("llrfFactory", &HardwareFactory::llrffactory)
 			.def("getLLRFFactory", &HardwareFactory::getLLRFFactory_Single, boost::python::arg("self"), boost::python::arg("machine_area"), boost::python::return_value_policy<boost::python::reference_existing_object>())
-
 			.def("getLLRFFactory", &HardwareFactory::getLLRFFactory_Py, boost::python::arg("self"), boost::python::arg("machine_areas"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+
+			.add_property("cameraFactory", &HardwareFactory::magnetFactory)
+			.def("getCameraFactory", &HardwareFactory::getCameraFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+
 			.add_property("magnetFactory", &HardwareFactory::magnetFactory)
 
 

@@ -1,0 +1,11 @@
+controls_information:
+    PV: true,false
+    pv_record_map:
+        Sta: UNDEFINED
+        P: UNDEFINED
+properties:
+    machine_area: UNDEFINED
+    hardware_type: IMG
+    name: UNDEFINED
+    virtual_name: UNDEFINED
+    name_alias: UNDEFINED
