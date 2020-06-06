@@ -169,7 +169,7 @@ bool LLRF::setAmpMW(double value)
 {
 	// atm we are going to fake power traces
 	amp_MW.second = value;
-	scaleAllDummyTraces();
+	//scaleAllDummyTraces();
 	return true;
 }
 bool LLRF::setAmp(double value)

@@ -42,6 +42,7 @@ degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
 min_i(std::stof(paramsMap.find("min_i")->second)),
 max_i(std::stof(paramsMap.find("max_i")->second)),
+position(std::stof(paramsMap.find("position")->second)),
 GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
@@ -214,6 +215,10 @@ std::string Magnet::getManufacturer() const
 std::string Magnet::getSerialNumber() const
 {
 	return this->serialNumber;
+}
+double Magnet::getPosition() const
+{
+	return this->position;
 }
 TYPE Magnet::getMagnetType() const
 {

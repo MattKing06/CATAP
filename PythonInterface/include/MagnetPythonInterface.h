@@ -66,6 +66,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.add_property("min_i", &Magnet::getMinI)
 			.add_property("max_i", &Magnet::getMaxI)
 			.add_property("is_degaussing", &Magnet::isDegaussing)
+			.add_property("position", &Magnet::getPosition)
+			.add_property("magnetic_length", &Magnet::getMagneticLength)
 			//.add_property("epicsInterface", &Magnet::epicsInterface)
 			.def("switchOff", &Magnet::switchOff)
 			.def("switchOn", &Magnet::switchOn)

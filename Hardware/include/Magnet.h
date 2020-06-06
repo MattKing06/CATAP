@@ -163,6 +163,9 @@ class Magnet : public Hardware
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
+	/*! get the magnet lattice position, defined in the master lattice yaml file
+		@param[out] result  */
+		double getPosition() const;
 	/*! get the current READI 
 		@param[out] result  */
 		double getREADI() const;
@@ -273,6 +276,8 @@ class Magnet : public Hardware
 		double min_i;
 	/*! magnet maximum SETI value that can be passed, defined in the master lattice yaml file	*/
 		double max_i;
+	/*! magnet beamline position	*/
+		double position;
 
 	/*! measured field itnegral cooefficients */
 		std::vector<double> field_integral_coefficients;

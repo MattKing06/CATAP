@@ -1,8 +1,8 @@
 #include "BPMPVRecords.h"
 
 
-std::string const BPMRecords::X= "X";
-std::string const BPMRecords::Y= "Y";
+std::string const BPMRecords::X = "X";
+std::string const BPMRecords::Y = "Y";
 std::string const BPMRecords::RA1 = "RA1";
 std::string const BPMRecords::RA2 = "RA2";
 std::string const BPMRecords::RD1 = "RD1";
