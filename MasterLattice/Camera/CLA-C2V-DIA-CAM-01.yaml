@@ -77,7 +77,7 @@ properties:
     hardware_type : Camera
     machine_area : C2V # Set by where the camera physically *IS* 
     name : CLA-C2V-DIA-CAM-01
-    name_alias: C2V-CAM-01, C2V-CAM1  # include screen names here as well 
+    name_alias: CLA-C2V-DIA-CAM-01, C2V-CAM1  # include screen names here as well 
     CAM_TYPE : CLARA_CAM 
     SCREEN_NAME : C2V-SCR-01, C2V-YAG-01 # which screen is the camera looking at 
     IP_ADDRESS_STREAM : "" 
