@@ -62,9 +62,9 @@ boost::python::list to_py_list(const std::pair<value1, value2>& pair)
 	return newList;
 }
 
-template<class key, class value>
+template<class mapkey, class mapvalue>
 inline
-boost::python::dict to_py_dict(const std::map<key, value>& map)
+boost::python::dict to_py_dict(const std::map<mapkey, mapvalue>& map)
 {
 	//typename std::map<key, value>::iterator iter;
 	boost::python::dict newDictiOnary;
@@ -77,9 +77,9 @@ boost::python::dict to_py_dict(const std::map<key, value>& map)
 
 
 
-template<class key, class value>
+template<class mapkey, class mapvalue>
 inline
-boost::python::dict to_py_dict_pair(const std::map<key, std::pair<value, value>>& map)
+boost::python::dict to_py_dict_pair(const std::map<mapkey, std::pair<mapvalue, mapvalue>>& map)
 {
 	//typename std::map<key, value>::iterator iter;
 	boost::python::dict newDictiOnary;
@@ -109,9 +109,9 @@ boost::python::dict to_py_dict_pair(const std::map<key, std::pair<value, value>>
 //}
 
 
-template<class key, class value1, class value2>
+template<class mapkey, class value1, class value2>
 inline
-boost::python::dict to_py_dict(const std::map<key, std::pair<value1, value2>>& map)
+boost::python::dict to_py_dict(const std::map<mapkey, std::pair<value1, value2>>& map)
 {
 	boost::python::dict newDictiOnary;
 	for (auto&& iter : map)
@@ -120,25 +120,25 @@ boost::python::dict to_py_dict(const std::map<key, std::pair<value1, value2>>& m
 	}
 	return newDictiOnary;
 }
-template<class key, class value>
+template<class mapkey, class mapvalue>
 inline
-std::map<key, std::pair<value, value>> to_std_map_pair(const boost::python::dict& dict)
+std::map<mapkey, std::pair<mapvalue, mapvalue>> to_std_map_pair(const boost::python::dict& dict)
 {	// TODO this is well dodgy 
 	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
-	std::map<key, std::pair<value, value>> r;
+	std::map<mapkey, std::pair<mapvalue, mapvalue>> r;
 	boost::python::list keys = boost::python::list(dict.keys());
 	for (int i = 0; i < len(keys); ++i) 
 	{
 		boost::python::extract<std::string> extractor(keys[i]);
 		if (extractor.check()) 
 		{
-			std::string key = extractor();
-			boost::python::list l = boost::python::list(dict[key]);
+			std::string mapkey = extractor();
+			boost::python::list l = boost::python::list(dict[mapkey]);
 			if (len(l) == 2)
 			{
-				std::vector<value> v = to_std_vector<value>(l);
-				std::pair<value, value> p( v[0], v[1]);
-				r[key] = p;
+				std::vector<mapvalue> v = to_std_vector<mapvalue>(l);
+				std::pair<mapvalue, mapvalue> p( v[0], v[1]);
+				r[mapkey] = p;
 			}
 		}
 	}
@@ -146,43 +146,43 @@ std::map<key, std::pair<value, value>> to_std_map_pair(const boost::python::dict
 }
 
 //template<class key, std::vector<class value>>
-template<class key, class value>
+template<class mapkey, class mapvalue>
 inline
-boost::python::dict to_py_dict(const std::map<key, std::vector<value>>& map)
+boost::python::dict to_py_dict(const std::map<mapkey, std::vector<mapvalue>>& map)
 {
 	//typename std::map<key, std::vector<class value>>::iterator iter;
 	boost::python::dict newDictiOnary;
 	for (auto&& iter = map.begin(); iter != map.end(); ++iter)
 	{
-		newDictiOnary[iter->first] = to_py_list<value>(iter->second);
+		newDictiOnary[iter->first] = to_py_list<mapvalue>(iter->second);
 	}
 	return newDictiOnary;
 }
 
-template<class key, class value>
+template<class mapkey, class mapvalue>
 inline
-boost::python::dict to_py_dict(const std::pair<key, std::vector<value>>& pair)
+boost::python::dict to_py_dict(const std::pair<mapkey, std::vector<mapvalue>>& pair)
 {
 	boost::python::dict newDictiOnary;
-	newDictiOnary[pair.first] = to_py_list<value>(pair.second);
+	newDictiOnary[pair.first] = to_py_list<mapvalue>(pair.second);
 	return newDictiOnary;
 }
 
-template<class value>
+template<class mapvalue>
 inline
-boost::python::dict to_py_dict(const std::pair<std::string, std::vector<value>>& pair)
+boost::python::dict to_py_dict(const std::pair<std::string, std::vector<mapvalue>>& pair)
 {
 	boost::python::dict newDictiOnary;
-	newDictiOnary[pair.first] = to_py_list<value>(pair.second);
+	newDictiOnary[pair.first] = to_py_list<mapvalue>(pair.second);
 	return newDictiOnary;
 }
 
-template<typename key, typename value>
-std::map<key, value> to_std_map(const boost::python::dict& map_in)
+template<typename mapkey, typename mapvalue>
+std::map<mapkey, mapvalue> to_std_map(const boost::python::dict& map_in)
 {
-	std::map<key, value> r;
-	std::vector<key> map_keys = to_std_vector<key>(map_in.keys());
-	std::vector < value > map_values = to_std_vector<value>(map_in.values());
+	std::map<mapkey, mapvalue> r;
+	std::vector<mapkey> map_keys = to_std_vector<mapkey>(map_in.keys());
+	std::vector < mapvalue > map_values = to_std_vector<mapvalue>(map_in.values());
 	auto key_i = map_keys.begin();
 	auto val_i = map_values.begin();
 	while (key_i != map_keys.end() && val_i != map_values.end())
