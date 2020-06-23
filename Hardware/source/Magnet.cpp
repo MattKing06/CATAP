@@ -18,36 +18,36 @@
 
 
 Degauss::Degauss() :
-magnet(nullptr), 
-degauss_thread(nullptr),
-current_step(GlobalConstants::zero_sizet),
-resetToZero(true),
-degaussTolerance(GlobalConstants::zero_point_one_double),
-wait_time(GlobalConstants::TIMET_45)
+	magnet(nullptr),
+	degauss_thread(nullptr),
+	current_step(GlobalConstants::zero_sizet),
+	resetToZero(true),
+	degaussTolerance(GlobalConstants::zero_point_one_double),
+	wait_time(GlobalConstants::TIMET_45)
 {}
 
 Magnet::Magnet()
 {}
 
-Magnet::Magnet(const std::map<std::string, std::string> &paramsMap, STATE mode) :
-Hardware(paramsMap, mode),
-epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
-// Assumes all these find succeed ? 
-manufacturer(paramsMap.find("manufacturer")->second),
-serialNumber(paramsMap.find("serial_number")->second.data()),
-//magType(paramsMap.find("mag_type")->second),
-RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
-numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
-degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
-magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
-min_i(std::stof(paramsMap.find("min_i")->second)),
-max_i(std::stof(paramsMap.find("max_i")->second)),
-position(std::stof(paramsMap.find("position")->second)),
-GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
-READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
-psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
-ilkState(std::make_pair(epicsTimeStamp(), STATE::ERR) ),
-is_degaussing(false)
+Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) :
+	Hardware(paramsMap, mode),
+	epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
+	// Assumes all these find succeed ? 
+	manufacturer(paramsMap.find("manufacturer")->second),
+	serialNumber(paramsMap.find("serial_number")->second.data()),
+	//magType(paramsMap.find("mag_type")->second),
+	RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
+	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
+	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
+	magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+	min_i(std::stof(paramsMap.find("min_i")->second)),
+	max_i(std::stof(paramsMap.find("max_i")->second)),
+	position(std::stof(paramsMap.find("position")->second)),
+	GETSETI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	READI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	psuState(std::make_pair(epicsTimeStamp(), STATE::ERR)),
+	ilkState(std::make_pair(epicsTimeStamp(), STATE::ERR)),
+	is_degaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
 	epicsInterface->ownerName = hardwareName;
@@ -55,20 +55,20 @@ is_degaussing(false)
 	//convert list of degauss values from strings to floats
 	std::vector<std::string> degaussValuesStrVec, field_integral_coefficients_STR;
 	messenger.debugMessagesOn();
-	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c){return c == ','; });
-	boost::split(field_integral_coefficients_STR, paramsMap.find("field_integral_coefficients")->second, [](char c){return c == ','; });
-	for (auto value : degaussValuesStrVec) 
-	{ 
-		degaussValues.push_back(std::stof(value)); 
+	boost::split(degaussValuesStrVec, paramsMap.find("degauss_values")->second, [](char c) {return c == ','; });
+	boost::split(field_integral_coefficients_STR, paramsMap.find("field_integral_coefficients")->second, [](char c) {return c == ','; });
+	for (auto value : degaussValuesStrVec)
+	{
+		degaussValues.push_back(std::stof(value));
 	}
 	for (auto value : field_integral_coefficients_STR)
 	{
 		field_integral_coefficients.push_back(std::stof(value));
 	}
 	// set the magnet_type
-	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
+	if (GlobalFunctions::entryExists(paramsMap, "mag_type"))
 	{
-		if(GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramsMap.at("mag_type")))
+		if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramsMap.at("mag_type")))
 		{
 			magType = GlobalConstants::stringToTypeMap.at(paramsMap.at("mag_type"));
 		}
@@ -84,20 +84,20 @@ is_degaussing(false)
 	// convert yaml mag_type strings to CATAP.TYPE enum
 	// epicsInterface = boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface());
 }
-Magnet::Magnet(const Magnet& copyMagnet) : 
+Magnet::Magnet(const Magnet& copyMagnet) :
 	Hardware(copyMagnet),
-	manufacturer(copyMagnet.manufacturer), 
+	manufacturer(copyMagnet.manufacturer),
 	serialNumber(copyMagnet.serialNumber),
-	magType(copyMagnet.magType), 
-	magRevType(copyMagnet.magRevType), 
+	magType(copyMagnet.magType),
+	magRevType(copyMagnet.magRevType),
 	READI_tolerance(copyMagnet.READI_tolerance),
-	numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps), 
+	numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps),
 	degaussValues(copyMagnet.degaussValues),
-	fullPSUName(copyMagnet.fullPSUName), 
+	fullPSUName(copyMagnet.fullPSUName),
 	measurementDataLocation(copyMagnet.measurementDataLocation),
 	aliases(copyMagnet.aliases),
 	RI_tolerance(copyMagnet.RI_tolerance),
-	magneticLength(copyMagnet.magneticLength), 
+	magneticLength(copyMagnet.magneticLength),
 	epicsInterface(copyMagnet.epicsInterface)
 {
 }
@@ -117,7 +117,7 @@ void Magnet::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-		
+
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
@@ -127,7 +127,7 @@ void Magnet::setPVStructs()
 		  This should be put into some general function: generateVirtualPV(PV) or something...
 		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
 		  The config reader level if that is the case.
-		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix??? 
+		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
 		  */
 		if (mode == STATE::VIRTUAL)
 		{
@@ -310,26 +310,26 @@ bool Magnet::degauss(const bool reset_to_zero)
 	}
 	else
 	{
-		#ifdef _WIN32
-			//std::cout << hardwareName << " is NOT DEGAUSSING!! " << std::endl;
-			if (degausser.degauss_thread)
-			{
-				//std::cout << hardwareName << " Kill degauss thread " << std::endl;
-				degausser.degauss_thread->join();
-				delete degausser.degauss_thread;
-				degausser.degauss_thread = nullptr;
-			}
-			is_degaussing = true;
-			degausser.degauss_values = degaussValues;
-			degausser.current_step = GlobalConstants::zero_sizet;
-			degausser.resetToZero = reset_to_zero;
-			degausser.degaussTolerance = degaussTolerance;
-			degausser.magnet = this;
-			//degausser.wait_time = this; set on constructor for now 
-			//std::cout << hardwareName << " START NEW degauss thread " << std::endl;
-			degausser.degauss_thread = new std::thread(staticEntryDeGauss, std::ref(degausser));
-			return true;
-		#endif //WIN32
+#ifdef _WIN32
+		//std::cout << hardwareName << " is NOT DEGAUSSING!! " << std::endl;
+		if (degausser.degauss_thread)
+		{
+			//std::cout << hardwareName << " Kill degauss thread " << std::endl;
+			degausser.degauss_thread->join();
+			delete degausser.degauss_thread;
+			degausser.degauss_thread = nullptr;
+		}
+		is_degaussing = true;
+		degausser.degauss_values = degaussValues;
+		degausser.current_step = GlobalConstants::zero_sizet;
+		degausser.resetToZero = reset_to_zero;
+		degausser.degaussTolerance = degaussTolerance;
+		degausser.magnet = this;
+		//degausser.wait_time = this; set on constructor for now 
+		//std::cout << hardwareName << " START NEW degauss thread " << std::endl;
+		degausser.degauss_thread = new std::thread(staticEntryDeGauss, std::ref(degausser));
+		return true;
+#endif //WIN32
 	}
 	return false;
 }
@@ -342,13 +342,13 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 	bool degauss_success = true;
 	bool seti_success;
 	ds.magnet->current_degauss_step = GlobalConstants::zero_sizet;
-	for(auto&& next_value: ds.magnet->degaussValues)
+	for (auto&& next_value : ds.magnet->degaussValues)
 	{
-		seti_success = ds.magnet->SETIZero(); 
-		if(ds.magnet->waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
+		seti_success = ds.magnet->SETIZero();
+		if (ds.magnet->waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
 		{
-			seti_success = ds.magnet->SETI(next_value ); // expposed to PYTHON
-			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time) )
+			seti_success = ds.magnet->SETI(next_value); // expposed to PYTHON
+			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
 			{
 			}
 			else
@@ -360,7 +360,7 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 		}
 		ds.magnet->current_degauss_step += GlobalConstants::one_sizet;
 	}
-	if(ds.resetToZero)
+	if (ds.resetToZero)
 	{
 		ds.magnet->SETIZero();
 	}
@@ -370,13 +370,13 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 }
 
 
-bool Magnet::isREADIequalValue(const double value, const double tolerance ) const
+bool Magnet::isREADIequalValue(const double value, const double tolerance) const
 {
 	return GlobalFunctions::areSame(value, READI.second, tolerance);
 }
 
 
-bool Magnet::waitForMagnetToSettle(const double value,	const double tolerance,	const time_t waitTime) const
+bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime) const
 {
 	/*
 		This is surprisingly complicated.
@@ -411,26 +411,26 @@ bool Magnet::waitForMagnetToSettle(const double value,	const double tolerance,	c
 		bool shouldBreak = false;
 		messenger.printDebugMessage("currentRIValue = ", currentRIValue, " oldRIValue = ", oldRIValue, " has_READI_settled = ", has_READI_settled, " is_READI_zero ", is_READI_zero);
 		// The acid test! is if READI is equal value
-		if(isREADIequalValue(value, tolerance) )
+		if (isREADIequalValue(value, tolerance))
 		{
 			// Complete , we are where we want to be
 			shouldBreak = true;
 		}
 		else if (settingZero) // We are supposed to be setting zero....
 		{
-			if(has_READI_settled)
+			if (has_READI_settled)
 			{
-				messenger.printDebugMessage(hardwareName +  " is setting 0.0 and READI_new == READI_old. SETTLED = True ");
+				messenger.printDebugMessage(hardwareName + " is setting 0.0 and READI_new == READI_old. SETTLED = True ");
 				shouldBreak = true;
 			}
 		}
 		else // we are not setting zero...
 		{
 			/*
-				If we are not setting zero, and going through a polarity change then sometimes the magnet stays 
-				at zero for some time whilst the "polarity flipping happens" we have to check for this 
+				If we are not setting zero, and going through a polarity change then sometimes the magnet stays
+				at zero for some time whilst the "polarity flipping happens" we have to check for this
 			*/
-			if(has_READI_settled && is_READI_zero )
+			if (has_READI_settled && is_READI_zero)
 			{
 				/*
 					READI is not changing and it's at zero, but zero isn't the final READI value we expect.
@@ -449,16 +449,16 @@ bool Magnet::waitForMagnetToSettle(const double value,	const double tolerance,	c
 			}
 		}
 		/* check if time ran out */
-		if( GlobalFunctions::timeNow() - timeStart > waitTime)
+		if (GlobalFunctions::timeNow() - timeStart > waitTime)
 		{
-			messenger.printDebugMessage("!!WARNING!! " + hardwareName + " has timed out waiting for READI to reach ", 
+			messenger.printDebugMessage("!!WARNING!! " + hardwareName + " has timed out waiting for READI to reach ",
 				value, " with tolerance =  ", tolerance, ", READI = ", READI.second);
 			timed_out = true;
 			break;
 		}
-		if(shouldBreak)
+		if (shouldBreak)
 		{
-			messenger.printDebugMessage(hardwareName + " setting READI = ", value, " with tolerance =  ", 
+			messenger.printDebugMessage(hardwareName + " setting READI = ", value, " with tolerance =  ",
 				tolerance, ", has probably settled, READI = ", READI.second);
 			break;
 		}
@@ -471,7 +471,7 @@ bool Magnet::waitForMagnetToSettle(const double value,	const double tolerance,	c
 	} /// while
 
 	return !timed_out;
-	
+
 }
 
 
@@ -481,16 +481,16 @@ bool Magnet::waitForMagnetToSettle(const double value,	const double tolerance,	c
 // PYTHON users call this function, then we decide what to do 
 bool Magnet::SETI(const double value)
 {
-	switch(mode)
+	switch (mode)
 	{
-		case STATE::PHYSICAL: 	
-			return epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
-			break;
-		case STATE::VIRTUAL: 	
-			return epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
-			break;
-		default: 
-			offlineSETI(value);
+	case STATE::PHYSICAL:
+		return epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
+		break;
+	case STATE::VIRTUAL:
+		return epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
+		break;
+	default:
+		offlineSETI(value);
 	}
 	return true;
 }
@@ -560,35 +560,35 @@ bool Magnet::setPSUState(const STATE value)
 bool Magnet::offlineSetPSUState(const STATE value)
 {
 	epicsTimeGetCurrent(&psuState.first);
-	switch(value)
+	switch (value)
 	{
-		case STATE::ON:		
-			psuState.second = value;		
-			break;
-		case STATE::OFF:	
-			psuState.second = value;
-			break;
-		default: 
-			psuState.second = STATE::ERR;
+	case STATE::ON:
+		psuState.second = value;
+		break;
+	case STATE::OFF:
+		psuState.second = value;
+		break;
+	default:
+		psuState.second = STATE::ERR;
 	}
 	return true;
 }
 
 bool Magnet::offlineSetILKState(const STATE value)
 {
-	if( mode == STATE::OFFLINE)
+	if (mode == STATE::OFFLINE)
 	{
 		epicsTimeGetCurrent(&ilkState.first);
 		switch (value)
 		{
-			case STATE::GOOD:
-				ilkState.second = value;
-				break;
-			case STATE::BAD:
-				ilkState.second = value;
-				break;
-			default:
-				psuState.second = STATE::ERR;
+		case STATE::GOOD:
+			ilkState.second = value;
+			break;
+		case STATE::BAD:
+			ilkState.second = value;
+			break;
+		default:
+			psuState.second = STATE::ERR;
 		}
 		return true;
 	}
