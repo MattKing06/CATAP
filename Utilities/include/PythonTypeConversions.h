@@ -120,25 +120,25 @@ boost::python::dict to_py_dict(const std::map<mapkey, std::pair<value1, value2>>
 	}
 	return newDictiOnary;
 }
-template<class mapkey, class mapvalue>
+template<class strin, class value>
 inline
-std::map<std::string, std::pair<mapvalue, mapvalue>> to_std_map_pair(const boost::python::dict& dict)
-{	// TODO this is well dodgy 
+std::map<strin, std::pair<value, value>> to_std_map_pair(const boost::python::dict& dict)
+{    // TODO this is well dodgy
 	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
-	std::map<mapkey, std::pair<mapvalue, mapvalue>> r;
+	std::map<strin, std::pair<value, value>> r;
 	boost::python::list keys = boost::python::list(dict.keys());
-	for (int i = 0; i < len(keys); ++i) 
+	for (int i = 0; i < len(keys); ++i)
 	{
 		boost::python::extract<std::string> extractor(keys[i]);
-		if (extractor.check()) 
+		if (extractor.check())
 		{
-			std::string mapkey = extractor();
-			boost::python::list l = boost::python::list(dict[mapkey]);
+			std::string key = extractor();
+			boost::python::list l = boost::python::list(dict[key]);
 			if (len(l) == 2)
 			{
-				std::vector<mapvalue> v = to_std_vector<mapvalue>(l);
-				std::pair<mapvalue, mapvalue> p( v[0], v[1]);
-				r[mapkey] = p;
+				std::vector<value> v = to_std_vector<value>(l);
+				std::pair<value, value> p(v[0], v[1]);
+				r[key] = p;
 			}
 		}
 	}
