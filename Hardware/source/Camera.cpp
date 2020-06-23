@@ -3,6 +3,10 @@
 #include "PythonTypeConversions.h"
 #include "boost/algorithm/string/split.hpp"
 #include <algorithm>
+#include "boost/algorithm/string/split.hpp"
+#include <boost/make_shared.hpp>
+#include "GlobalConstants.h"
+
 
 Camera::Camera():
 Hardware()
@@ -11,6 +15,7 @@ Hardware()
 
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
+epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
 pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),
 pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),
 x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -24,7 +29,8 @@ sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 {
-
+	messenger.printDebugMessage("Camera Constructor hardwareName = ", hardwareName);
+	//epicsInterface->ownerName = hardwareName;
 	// TODO name_alias should be in harwdare constructor?? 
 	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
 	boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
@@ -41,6 +47,12 @@ sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 		messenger.printDebugMessage(hardwareName, " added aliase " + name);
 	}
 
+	// TODO causes crash 
+	messenger.printDebugMessage("epicsInterface set ownerName ");
+	epicsInterface->ownerName = hardwareName;
+
+	setPVStructs();
+
 }
 
 Camera::Camera(const Camera& copyCamera):
@@ -54,8 +66,40 @@ Camera::~Camera()
 
 void Camera::setPVStructs()
 {
-}
+	for (auto&& record : CameraRecords::cameraRecordList)
+	{
+		pvStructs[record] = pvStruct();
+		pvStructs[record].pvRecord = record;
 
+
+
+		// TODO NO ERROR CHECKING! (we assume config file is good??? 
+		std::string PV = specificHardwareParameters.find(record)->second.data();
+		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+		messenger.printDebugMessage("Constructing PV information for ", record);
+
+		/*TODO
+		  This should be put into some general function: generateVirtualPV(PV) or something...
+		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+		  The config reader level if that is the case.
+		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
+		  */
+		if (mode == STATE::VIRTUAL)
+		{
+			pvStructs[record].fullPVName = "VM-" + PV;
+			messenger.printDebugMessage(record, " record, Virtual Camera PV " + pvStructs[record].fullPVName);
+		}
+		else
+		{
+			pvStructs[record].fullPVName = PV;
+			messenger.printDebugMessage(record, " record, Physical Camera PV " + pvStructs[record].fullPVName);
+		}
+		//pv.pvRecord = record;
+		//chid, count, mask, chtype are left undefined for now.
+		//pvStructs[pv.pvRecord] = pv;
+	}
+
+}
 
 
 

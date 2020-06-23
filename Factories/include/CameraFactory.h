@@ -130,7 +130,12 @@ private:
 	void populateCameraMap();
 
 	std::map<std::string, Camera> camera_map;
+	
 
+	/* defines whether a PV is montiored or now */
+	void setMonitorStatus(pvStruct& pvStruct);
+
+	void setupChannels();
 
 	std::vector<TYPE> machineAreas;
 	void cutLHarwdareMapByMachineAreas();

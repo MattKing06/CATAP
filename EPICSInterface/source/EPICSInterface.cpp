@@ -85,29 +85,34 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 {
 	try
 	{
-		int status;
-		//chid CHID;
-		// This should be defeind in the hardware objst, so that we can handle non-standrd PV names
-		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
-		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
-		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
-			pvStruct.fullPVName.find("VALV") != std::string::npos ||
-			pvStruct.fullPVName.find("BPM") != std::string::npos ||
-			pvStruct.fullPVName.find("WCM") != std::string::npos ||
-			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
-			pvStruct.fullPVName.find("SCR") != std::string::npos ||
-			pvStruct.fullPVName.find("YAG") != std::string::npos ||
-			pvStruct.fullPVName.find("IMG") != std::string::npos )
-		{
-			pv = pvStruct.fullPVName;
-		}
-		if (pvStruct.fullPVName.find("VALV") != std::string::npos)
-		{
-			pv = pvStruct.fullPVName;
-		}
+		int status = ca_create_channel(pvStruct.fullPVName.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, 
+			&pvStruct.CHID);
+		messenger.printDebugMessage("ca_create_channel to  ", pvStruct.fullPVName, " = ", status);
 
-		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
-		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
+		//int status;
+		////chid CHID;
+		//// This should be defeind in the hardware objst, so that we can handle non-standrd PV names
+		//// TODO Dwe are getting rid of this consturction??? 
+		//std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
+		///*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
+		//if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
+		//	pvStruct.fullPVName.find("VALV") != std::string::npos ||
+		//	pvStruct.fullPVName.find("BPM") != std::string::npos ||
+		//	pvStruct.fullPVName.find("WCM") != std::string::npos ||
+		//	pvStruct.fullPVName.find("FCUP") != std::string::npos ||
+		//	pvStruct.fullPVName.find("SCR") != std::string::npos ||
+		//	pvStruct.fullPVName.find("YAG") != std::string::npos ||
+		//	pvStruct.fullPVName.find("IMG") != std::string::npos )
+		//{
+		//	pv = pvStruct.fullPVName;
+		//}
+		//if (pvStruct.fullPVName.find("VALV") != std::string::npos)
+		//{
+		//	pv = pvStruct.fullPVName;
+		//}
+
+		//status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
+		//messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		

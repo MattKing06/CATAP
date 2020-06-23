@@ -124,10 +124,7 @@ void MagnetFactory::cutMagnetMapByMachineAreas()
 			}
 			else
 			{
-
 			}
-
-		
 		}
 		// if should_erase is still true, erase object from  magnetMap
 		if (should_erase)
@@ -143,6 +140,7 @@ void MagnetFactory::cutMagnetMapByMachineAreas()
 }
 
 
+// TODO move to  MagnetRecords 
 void MagnetFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	if (pvStruct.pvRecord == MagnetRecords::GETSETI ||

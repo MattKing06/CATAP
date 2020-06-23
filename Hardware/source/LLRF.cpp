@@ -473,7 +473,7 @@ void LLRF::setTraceMeanTimes(const std::map<std::string, std::pair<double, doubl
 }
 void LLRF::setTraceMeanIndices_Py(const boost::python::dict& settings)
 {
-	setTraceMeanIndices(to_std_map_pair<std::string, size_t>(settings));
+	setTraceMeanIndices(to_std_map_pair<std::string,size_t>(settings));
 }
 void LLRF::setTraceMeanTimes_Py(const boost::python::dict& settings)
 {

@@ -2,18 +2,23 @@
 #define CAMERA_H_
 
 #include <vector>
-#include <Hardware.h>
-#include <EPICSCameraInterface.h>
-#include <GlobalConstants.h>
-#include <GlobalStateEnums.h>
+#ifndef HARDWARE_H_
+#include "Hardware.h"
+#endif //HARDWARE_H_
+
+#ifndef EPICS_CAMERA_INTERFACE_H_ // TODO why do we need an include gaurd here??? 
+#include "EPICSCameraInterface.h"
+#endif //EPICS_CAMERA_INTERFACE_H_
+#include <boost/shared_ptr.hpp>
+#include <vector>
+#include "GlobalConstants.h"
+#include "GlobalTypeEnums.h"
+
+#include "CameraPVRecords.h"
 #include <boost/make_shared.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
-
-
-
-
-
+#include <boost/shared_ptr.hpp>
 
 class EPICSCameraInterface;
 

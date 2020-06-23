@@ -3,6 +3,7 @@
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
+#include "CameraPVRecords.h"
 
 CameraFactory::CameraFactory()
 {
@@ -32,8 +33,6 @@ CameraFactory::~CameraFactory()
 {
 }
 
-
-
 bool CameraFactory::setup()
 {
 	return setup(GlobalConstants::nominal, machineAreas);
@@ -62,6 +61,29 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 {
 	return setup(version, to_std_vector<TYPE>(machineAreas));
 }
+
+// TODO SHOULD WE SET WHAT IS MONITORED IN THE CONFIG .YAML FILE??? 
+void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
+{
+	if (pvStruct.pvRecord == CameraRecords::ANA_X_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_Y_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_SigmaX_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_SigmaY_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_CovXY_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_AvgIntensity_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_XPix_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_YPix_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_SigmaXPix_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_SigmaYPix_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_CovXYPix_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_AvgIntensity_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_Intensity_RBV ||
+		pvStruct.pvRecord == CameraRecords::ANA_PixMM_RBV)
+	{
+		pvStruct.monitor = true;
+	}
+}
+
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	messenger.printDebugMessage("called Camera Factory setup ");
@@ -85,43 +107,92 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	}
 	cutLHarwdareMapByMachineAreas();
 
-	//setupChannels();
+	setupChannels();
 	//EPICSInterface::sendToEPICS();
 
-
-	for (auto& item : camera_map)
+	for (auto& cam : camera_map)
 	{
 		// update aliases for valve in map
-		updateAliasNameMap(item.second);
-		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
-		//	for (auto& pv : pvstruct)
-		//	{
-		//		// sets the monitor state in the pvstruict to true or false
-		//		if (ca_state(pv.second.CHID) == cs_conn)
-		//		{
-		//			retrieveMonitorStatus(pv.second);
-		//			valve.second.epicsInterface->retrieveCHTYPE(pv.second);
-		//			valve.second.epicsInterface->retrieveCOUNT(pv.second);
-		//			valve.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-		//			//// not sure how to set the mask from EPICS yet.
-		//			pv.second.MASK = DBE_VALUE;
-		//			messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-		//				"write", std::to_string(ca_write_access(pv.second.CHID)),
-		//				"state", std::to_string(ca_state(pv.second.CHID)));
-		//			if (pv.second.monitor)
-		//			{
-		//				valve.second.epicsInterface->createSubscription(valve.second, pv.second);
-		//				EPICSInterface::sendToEPICS();
-		//			}
-		//		}
-		//		else
-		//		{
-		//			messenger.printMessage(valve.first, " CANNOT CONNECT TO EPICS");
-		//		}
-		//	}
+		updateAliasNameMap(cam.second);
+		std::map<std::string, pvStruct>& pvstruct = cam.second.getPVStructs();
+		for (auto& pv : pvstruct)
+		{
+			// sets the monitor state in the pvstruict to true or false
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				setMonitorStatus(pv.second);
+				cam.second.epicsInterface->retrieveCHTYPE(pv.second);
+				cam.second.epicsInterface->retrieveCOUNT(pv.second);
+				cam.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
+				//// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.fullPVName, ": read = ",
+					std::to_string(ca_read_access(pv.second.CHID)),
+					" write = ", std::to_string(ca_write_access(pv.second.CHID)),
+					" state = ", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					messenger.printMessage(pv.second.fullPVName, " createSubscription");
+					cam.second.epicsInterface->createSubscription(cam.second, pv.second);
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
+			}
+		}
+		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
+}
+
+void CameraFactory::setupChannels()
+{
+	for (auto& cam : camera_map)
+	{
+		messenger.printMessage(cam.second.getHardwareName()," getting pvStructs.");
+		std::map<std::string, pvStruct>& pvStructs = cam.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			// thsi is connecting to a CHID
+			cam.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+	EPICSInterface::sendToEPICS();
+	size_t count = 0;
+	size_t error_count = 0;
+	for (auto& cam : camera_map)
+	{
+		std::map<std::string, pvStruct>& pvStructs = cam.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			++count;
+			++error_count;
+			// this is connecting to a CHID
+			channel_state state = ca_state(pv.second.CHID);
+			switch (state)
+			{
+			case cs_never_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_never_conn");
+				break;
+			case cs_prev_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_prev_conn");
+				break;
+			case cs_conn:
+				--error_count;
+				//messenger.printMessage(pv.second.fullPVName, " cs_conn");
+				break;
+			case cs_closed:
+				messenger.printMessage(pv.second.fullPVName, " cs_closed");
+				break;
+			default:
+				messenger.printMessage("!!! Unexpected error while searching ca_state: ");
+			}
+		}
+	}
+	messenger.printMessage("Checking CHID state for connection errors... Found ", error_count, 
+		" / ", count, " errors.");
 }
 
 

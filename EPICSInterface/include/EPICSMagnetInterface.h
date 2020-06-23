@@ -22,6 +22,7 @@ public:
 
 	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 
+	// setters
 	bool setNewCurrent(const double &value, const pvStruct& pv) const;
 	bool setNewPSUState(const STATE value, const pvStruct& pv) const;
 

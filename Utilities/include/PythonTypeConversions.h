@@ -120,30 +120,56 @@ boost::python::dict to_py_dict(const std::map<key, std::pair<value1, value2>>& m
 	}
 	return newDictiOnary;
 }
-template<class key, class value>
+//template<class value>
+//inline
+//std::map<std::string, std::pair<value, value>> to_std_map_pair(const boost::python::dict& dict)
+//{	// TODO this is well dodgy 
+//	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
+//	std::map<std::string, std::pair<value, value>> r;
+//	boost::python::list keys = boost::python::list(dict.keys());
+//	for (int i = 0; i < len(keys); ++i) 
+//	{
+//		boost::python::extract<std::string> extractor(keys[i]);
+//		if (extractor.check()) 
+//		{
+//			std::string key1 = extractor();
+//			boost::python::list l = boost::python::list(dict[key1]);
+//			if (len(l) == 2)
+//			{
+//				std::vector<value> v = to_std_vector<value>(l);
+//				std::pair<value, value> p( v[0], v[1]);
+//				r[key1] = p;
+//			}
+//		}
+//	}
+//	return r;
+//}
+template<class strin, class value>
 inline
-std::map<key, std::pair<value, value>> to_std_map_pair(const boost::python::dict& dict)
-{	// TODO this is well dodgy 
+std::map<strin, std::pair<value, value>> to_std_map_pair(const boost::python::dict& dict)
+{    // TODO this is well dodgy
 	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
-	std::map<key, std::pair<value, value>> r;
+	std::map<strin, std::pair<value, value>> r;
 	boost::python::list keys = boost::python::list(dict.keys());
-	for (int i = 0; i < len(keys); ++i) 
+	for (int i = 0; i < len(keys); ++i)
 	{
 		boost::python::extract<std::string> extractor(keys[i]);
-		if (extractor.check()) 
+		if (extractor.check())
 		{
 			std::string key = extractor();
 			boost::python::list l = boost::python::list(dict[key]);
 			if (len(l) == 2)
 			{
 				std::vector<value> v = to_std_vector<value>(l);
-				std::pair<value, value> p( v[0], v[1]);
+				std::pair<value, value> p(v[0], v[1]);
 				r[key] = p;
 			}
 		}
 	}
 	return r;
 }
+
+
 
 //template<class key, std::vector<class value>>
 template<class key, class value>

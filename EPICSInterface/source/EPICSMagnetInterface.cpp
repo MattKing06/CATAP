@@ -2,8 +2,6 @@
 
 LoggingSystem EPICSMagnetInterface::messenger;
 
-
-
 EPICSMagnetInterface::EPICSMagnetInterface() : 
 EPICSInterface()
 {
