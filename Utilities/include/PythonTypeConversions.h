@@ -122,7 +122,7 @@ boost::python::dict to_py_dict(const std::map<mapkey, std::pair<value1, value2>>
 }
 template<class mapkey, class mapvalue>
 inline
-std::map<mapkey, std::pair<mapvalue, mapvalue>> to_std_map_pair(const boost::python::dict& dict)
+std::map<std::string, std::pair<mapvalue, mapvalue>> to_std_map_pair(const boost::python::dict& dict)
 {	// TODO this is well dodgy 
 	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
 	std::map<mapkey, std::pair<mapvalue, mapvalue>> r;
