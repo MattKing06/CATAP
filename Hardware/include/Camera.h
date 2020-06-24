@@ -60,7 +60,6 @@ public:
 	double setpix2mmX(double value);
 	double setpix2mmY(double value);
 
-
 	double getX()const;
 	double getY()const;
 	double getSigX()const;
@@ -94,7 +93,7 @@ public:
 	void messagesOff();
 
 	
-	friend class EPICSLLRFInterface;
+	friend class EPICSCameraInterface;
 	friend class CameraFactory;
 protected:
 
@@ -103,7 +102,6 @@ protected:
 
 	// special aase for the HRRG_GUN and LRRG_GUN
 	void setMachineArea(const TYPE area);
-
 
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
@@ -131,7 +129,8 @@ protected:
 	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > avg_intensity;
 
-
+	/*! conversion of pixels to mm */
+	std::pair<epicsTimeStamp, double > pix2mm;
 private:
 
 	/*! alternative names for the magnet (usually shorter thna the full PV root),
