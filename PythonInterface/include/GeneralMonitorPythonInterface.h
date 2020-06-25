@@ -5,7 +5,7 @@
 #include <GeneralMonitorFactory.h>
 #include <PythonTypeConversions.h>
 #include <boost/python.hpp>
-
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 namespace BOOST_PYTHON_GENERAL_MONITOR_INCLUDE
 {
@@ -14,7 +14,8 @@ namespace BOOST_PYTHON_GENERAL_MONITOR_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<GeneralMonitor>())->to_python_target_type());
 		if (is_registered) return;
-		boost::python::class_<GeneralMonitor, boost::python::bases<Hardware>, boost::noncopyable>("GeneralMonitor", boost::python::no_init)
+		boost::python::class_<GeneralMonitor, boost::python::bases<Hardware>, boost::noncopyable>("GeneralMonitor")
+			.def("monitor", &GeneralMonitor::monitor_Py)
 			.def("debugMessagesOn", &GeneralMonitor::debugMessagesOn)
 			.def("debugMessagesOff", &GeneralMonitor::debugMessagesOff)
 			.def("messagesOn", &GeneralMonitor::messagesOn)

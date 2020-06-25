@@ -1,5 +1,6 @@
 #include <GeneralMonitorPythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
+#include <HardwarePythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
 BOOST_PYTHON_MODULE(_GeneralMonitor)
 {
@@ -8,6 +9,7 @@ BOOST_PYTHON_MODULE(_GeneralMonitor)
 	CATAP_docstring_options.disable_cpp_signatures();
 	BOOST_PYTHON_STATES_INCLUDE::expose_global_state_enums();
 	BOOST_PYTHON_TYPES_INCLUDE::expose_global_type_enums();
+	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
 	BOOST_PYTHON_GENERAL_MONITOR_INCLUDE::expose_general_monitor_object();
 	BOOST_PYTHON_GENERAL_MONITOR_INCLUDE::expose_general_monitor_factory_object();
 }

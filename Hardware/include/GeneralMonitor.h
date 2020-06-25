@@ -4,8 +4,10 @@
 #include <Hardware.h>
 #include <EPICSGeneralMonitorInterface.h>
 #include <GlobalConstants.h>
+#include <PythonTypeConversions.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
+#include <boost/python.hpp>
 
 class EPICSGeneralMonitorInterface;
 
@@ -18,8 +20,10 @@ public:
 	GeneralMonitor(const std::map<std::string, std::string>& paramMap, STATE mode);
 	GeneralMonitor(const GeneralMonitor& copyGeneralMonitor);
 	~GeneralMonitor();
+	void monitor(std::vector<std::string> pvList);
+	void monitor_Py(boost::python::list pvList);
 	void setPVStructs();
-	EPICSGeneralMonitorInterface_sptr epicsInterface;
+	//EPICSGeneralMonitorInterface_sptr epicsInterface;
 	std::map<std::string, std::string> generalMonitorParamMap;
 	void debugMessagesOn();
 	void debugMessagesOff();
