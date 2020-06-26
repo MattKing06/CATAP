@@ -1,12 +1,12 @@
 #include <boost/test/unit_test.hpp>
 #include <string>
-#include <EPICSGeneralMonitorInterface.h>
+#include <EPICSToolsInterface.h>
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
 #endif
 
-BOOST_AUTO_TEST_CASE(start_epics_general_monitor_interface_tests)
+BOOST_AUTO_TEST_CASE(start_epics_tools_interface_tests)
 {
-	BOOST_TEST_MESSAGE("------	RUNNING EPICS GENERAL MONITOR INTERFACE TESTS	------");
+	BOOST_TEST_MESSAGE("------	RUNNING EPICS TOOLS INTERFACE TESTS	------");
 }
