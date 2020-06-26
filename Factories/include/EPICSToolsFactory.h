@@ -2,22 +2,24 @@
 #define GENERAL_MONITOR_FACTORY_H_
 
 #include <ConfigReader.h>
-#include <GeneralMonitor.h>
+#include <EPICSTools.h>
 #include <GlobalStateEnums.h>
 #include <LoggingSystem.h>
 #include <vector>
-class GeneralMonitorFactory
+class EPICSToolsFactory
 {
 public:
-	GeneralMonitorFactory();
-	GeneralMonitorFactory(STATE mode);
-	GeneralMonitorFactory(const GeneralMonitorFactory& copyFactory);
-	~GeneralMonitorFactory();
+	EPICSToolsFactory();
+	EPICSToolsFactory(STATE mode);
+	EPICSToolsFactory(const EPICSToolsFactory& copyFactory);
+	~EPICSToolsFactory();
+	STATE mode;
 	LoggingSystem messenger;
 	ConfigReader reader;
-	void setup(std::vector<std::string> pvListToMonitor);
+	void monitor(std::vector<std::string> pvListToMonitor);
+	void monitor_Py(boost::python::list pvListToMonitor);
 	bool hasBeenSetup;
-	std::map<std::string, GeneralMonitor> generalMonitorMap;
+	std::map<std::string, EPICSTools> generalMonitorMap;
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

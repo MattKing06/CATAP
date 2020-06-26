@@ -8,7 +8,7 @@ set( SOURCE_FILES
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/ScreenPythonInterface.cpp 
-    source/GeneralMonitorPythonInterface.cpp
+    source/EPICSToolsPythonInterface.cpp
 	source/GlobalStatesPythonInterface.cpp
 	source/GlobalTypesPythonInterface.cpp
     source/HardwareFactoryPythonInterface.cpp
@@ -37,7 +37,7 @@ set( INCLUDE_FILES
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
     include/ScreenPythonInterface.h 
-    include/GeneralMonitorPythonInterface.h
+    include/EPICSToolsPythonInterface.h
 	include/GlobalStatesPythonInterface.h
 	include/GlobalTypesPythonInterface.h
     include/HardwareFactoryPythonInterface.h

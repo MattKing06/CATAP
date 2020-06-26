@@ -2,11 +2,11 @@
 #define EPICS_GENERAL_MONITOR_INTERFACE_H_
 #include <EPICSInterface.h>
 
-class EPICSGeneralMonitorInterface : public EPICSInterface
+class EPICSToolsInterface : public EPICSInterface
 {
 public:
-	EPICSGeneralMonitorInterface();
-	~EPICSGeneralMonitorInterface();
+	EPICSToolsInterface();
+	~EPICSToolsInterface();
 	std::string ownerName;
 };
 

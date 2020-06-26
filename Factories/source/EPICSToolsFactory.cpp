@@ -1,26 +1,39 @@
-#include <GeneralMonitorFactory.h>
+#include <EPICSToolsFactory.h>
 
-GeneralMonitorFactory::GeneralMonitorFactory()
+EPICSToolsFactory::EPICSToolsFactory()
 {
 }
 
-GeneralMonitorFactory::GeneralMonitorFactory(STATE mode)
+EPICSToolsFactory::EPICSToolsFactory(STATE mode) :
+	mode(mode)
 {
 }
 
-GeneralMonitorFactory::GeneralMonitorFactory(const GeneralMonitorFactory& copyFactory)
+EPICSToolsFactory::EPICSToolsFactory(const EPICSToolsFactory& copyFactory)
 {
 }
 
-GeneralMonitorFactory::~GeneralMonitorFactory()
+EPICSToolsFactory::~EPICSToolsFactory()
 {
 }
 
-void GeneralMonitorFactory::setup(std::vector<std::string> pvListToMonitor)
+void EPICSToolsFactory::monitor(std::vector<std::string> pvListToMonitor)
 {
+	// should we pass the pv's straight through to EPICSTools object??
+	for (auto& pv : pvListToMonitor)
+	{
+		generalMonitorMap[pv] = EPICSTools(mode, pv);
+		generalMonitorMap[pv].monitor();
+	}
 }
 
-void GeneralMonitorFactory::debugMessagesOn() 
+void EPICSToolsFactory::monitor_Py(boost::python::list pvListToMonitor)
+{
+	std::vector<std::string> pvVec = to_std_vector<std::string>(pvListToMonitor);
+	monitor(pvVec);
+}
+
+void EPICSToolsFactory::debugMessagesOn() 
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("General Monitor Factory - DEBUG ON");
@@ -29,7 +42,7 @@ void GeneralMonitorFactory::debugMessagesOn()
 		generalMonitor.second.debugMessagesOn();
 	}
 }
-void GeneralMonitorFactory::debugMessagesOff() 
+void EPICSToolsFactory::debugMessagesOff() 
 {
 	messenger.printDebugMessage("General Monitor Factory - DEBUG OFF");
 	messenger.debugMessagesOff();
@@ -39,7 +52,7 @@ void GeneralMonitorFactory::debugMessagesOff()
 		generalMonitor.second.debugMessagesOff();
 	}
 }
-void GeneralMonitorFactory::messagesOn() 
+void EPICSToolsFactory::messagesOn() 
 {
 	messenger.messagesOn();
 	messenger.printMessage("General Monitor Factory - MESSAGES ON");
@@ -49,7 +62,7 @@ void GeneralMonitorFactory::messagesOn()
 		generalMonitor.second.messagesOn();
 	}
 }
-void GeneralMonitorFactory::messagesOff()
+void EPICSToolsFactory::messagesOff()
 {
 	messenger.printMessage("General Monitor Factory - MESSAGES OFF");
 	messenger.messagesOff();
@@ -60,12 +73,12 @@ void GeneralMonitorFactory::messagesOff()
 	}
 }
 
-bool GeneralMonitorFactory::isDebugOn()
+bool EPICSToolsFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
 
-bool GeneralMonitorFactory::isMessagingOn()
+bool EPICSToolsFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }

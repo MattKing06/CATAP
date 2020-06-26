@@ -1,8 +1,8 @@
-#include <GeneralMonitorPythonInterface.h>
+#include <EPICSToolsPythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
 #include <HardwarePythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
-BOOST_PYTHON_MODULE(_GeneralMonitor)
+BOOST_PYTHON_MODULE(_EPICSTools)
 {
 	boost::python::docstring_options CATAP_docstring_options;//(true, true, false);
 	CATAP_docstring_options.enable_all();
@@ -10,6 +10,6 @@ BOOST_PYTHON_MODULE(_GeneralMonitor)
 	BOOST_PYTHON_STATES_INCLUDE::expose_global_state_enums();
 	BOOST_PYTHON_TYPES_INCLUDE::expose_global_type_enums();
 	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
-	BOOST_PYTHON_GENERAL_MONITOR_INCLUDE::expose_general_monitor_object();
-	BOOST_PYTHON_GENERAL_MONITOR_INCLUDE::expose_general_monitor_factory_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_factory_object();
 }
