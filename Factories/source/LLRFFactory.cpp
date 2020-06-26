@@ -75,7 +75,6 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG_GUN), machineAreas.end());
 		}
 	}
-
 	messenger.printDebugMessage("called LLRF Factory  setup ");
 	if (hasBeenSetup)
 	{
@@ -97,8 +96,8 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	}
 	cutLLRFMapByMachineAreas();
 
-	//setupChannels();
-	//EPICSInterface::sendToEPICS();
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 
 
 	for (auto& llrf : LLRFMap)
@@ -221,6 +220,8 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 
 }
 
+
+
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {
 	// first add in the magnet full name
@@ -251,6 +252,54 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 	}
 }
 
+
+void LLRFFactory::setupChannels()
+{
+	for (auto& device : LLRFMap)
+	{
+		messenger.printMessage(device.second.getHardwareName(), " getting pvStructs.");
+		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			// thsi is connecting to a CHID
+			device.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+	EPICSInterface::sendToEPICS();
+	size_t count = 0;
+	size_t error_count = 0;
+	for (auto& device : LLRFMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			++count;
+			++error_count;
+			// this is connecting to a CHID
+			channel_state state = ca_state(pv.second.CHID);
+			switch (state)
+			{
+			case cs_never_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_never_conn");
+				break;
+			case cs_prev_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_prev_conn");
+				break;
+			case cs_conn:
+				--error_count;
+				//messenger.printMessage(pv.second.fullPVName, " cs_conn");
+				break;
+			case cs_closed:
+				messenger.printMessage(pv.second.fullPVName, " cs_closed");
+				break;
+			default:
+				messenger.printMessage("!!! Unexpected error while searching ca_state: ");
+			}
+		}
+	}
+	messenger.printMessage("Checking CHID state for connection errors... Found ", error_count,
+		" / ", count, " errors.");
+}
 
 
 std::vector<std::string> LLRFFactory::getLLRFNames()

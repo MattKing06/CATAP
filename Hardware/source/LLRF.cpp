@@ -50,7 +50,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	crest_phase(std::stof(paramMap.find("crest_phase")->second)),
 	trace_data_size(1017),
 	// calls copy constructor and destroys 
-	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))
+	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("LLRF Constructor");
@@ -74,6 +74,8 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 		power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_PROBE_POWER));
 	}
 
+	messenger.printDebugMessage("epicsInterface set ownerName ");
+	epicsInterface->ownerName = hardwareName;
 
 
 }

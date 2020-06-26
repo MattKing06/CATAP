@@ -1,6 +1,7 @@
 #include <EPICSCameraInterface.h>
 #include <iostream>
 
+
 LoggingSystem EPICSCameraInterface::messenger;
 EPICSCameraInterface::EPICSCameraInterface()
 	: EPICSInterface()

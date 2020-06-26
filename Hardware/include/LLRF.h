@@ -10,10 +10,10 @@
 #include <boost/python/list.hpp>
 #include <boost/circular_buffer.hpp>
 #include <utility> 
+#include <boost/shared_ptr.hpp>
 
 class EPICSLLRFInterface;
 typedef boost::shared_ptr<EPICSLLRFInterface> EPICSLLRFInterface_sptr;
-
 
 class TraceData
 {

@@ -47,7 +47,6 @@ sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 		messenger.printDebugMessage(hardwareName, " added aliase " + name);
 	}
 
-	// TODO causes crash 
 	messenger.printDebugMessage("epicsInterface set ownerName ");
 	epicsInterface->ownerName = hardwareName;
 

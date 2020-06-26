@@ -155,6 +155,9 @@ private:
 	void cutLLRFMapByMachineAreas();
 
 	void updateAliasNameMap(const LLRF& llrf);
+
+	void setupChannels();
+
 	std::map<std::string, std::string> alias_name_map;
 
 	std::map<std::string, LLRF> LLRFMap;

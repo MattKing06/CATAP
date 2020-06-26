@@ -21,7 +21,6 @@
 #include <boost/shared_ptr.hpp>
 
 class EPICSCameraInterface;
-
 typedef boost::shared_ptr<EPICSCameraInterface> EPICSCameraInterface_sptr;
 
 class Camera : public Hardware
