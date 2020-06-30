@@ -8,6 +8,7 @@
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
+#include <boost/any.hpp>
 
 class EPICSToolsInterface;
 
@@ -21,7 +22,10 @@ public:
 	EPICSTools(const EPICSTools& copyEPICSTools);
 	~EPICSTools();
 	void monitor();
-	void setPVStructs();
+	void setValue(boost::any valueToSet);
+	boost::any getValue();
+	void setPVStruct(const std::string& pv);
+	boost::any value;
 	EPICSToolsInterface_sptr epicsInterface;
 	std::map<std::string, std::string> generalMonitorParamMap;
 	void debugMessagesOn();

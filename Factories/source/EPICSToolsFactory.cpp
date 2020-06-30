@@ -17,20 +17,60 @@ EPICSToolsFactory::~EPICSToolsFactory()
 {
 }
 
-void EPICSToolsFactory::monitor(std::vector<std::string> pvListToMonitor)
+void EPICSToolsFactory::monitor(std::string pv)
 {
-	// should we pass the pv's straight through to EPICSTools object??
-	for (auto& pv : pvListToMonitor)
+	if (GlobalFunctions::entryExists(generalMonitorMap, pv))
+	{
+		generalMonitorMap[pv].monitor();
+	}
+	else
 	{
 		generalMonitorMap[pv] = EPICSTools(mode, pv);
 		generalMonitorMap[pv].monitor();
 	}
 }
 
-void EPICSToolsFactory::monitor_Py(boost::python::list pvListToMonitor)
+void EPICSToolsFactory::monitor(const std::vector<std::string>& pvListToMonitor)
+{
+	// should we pass the pv's straight through to EPICSTools object??
+	for (auto& pv : pvListToMonitor)
+	{
+		monitor(pv);
+	}
+}
+
+void EPICSToolsFactory::monitor_Py(const boost::python::list& pvListToMonitor)
 {
 	std::vector<std::string> pvVec = to_std_vector<std::string>(pvListToMonitor);
 	monitor(pvVec);
+}
+
+void EPICSToolsFactory::get(const std::string& pv)
+{
+}
+
+void EPICSToolsFactory::get(const std::vector<std::string>& pvListToGet)
+{
+}
+
+void EPICSToolsFactory::get(const boost::python::list& pvListToGet)
+{
+}
+
+void EPICSToolsFactory::put(const boost::python::dict pvValueMap)
+{
+}
+
+void EPICSToolsFactory::info(const std::string& pv)
+{
+}
+
+void EPICSToolsFactory::info(const std::vector<std::string> pvList)
+{
+}
+
+void EPICSToolsFactory::info(const boost::python::list pvList)
+{
 }
 
 void EPICSToolsFactory::debugMessagesOn() 
@@ -66,7 +106,6 @@ void EPICSToolsFactory::messagesOff()
 {
 	messenger.printMessage("General Monitor Factory - MESSAGES OFF");
 	messenger.messagesOff();
-	// reader.messagesOff();
 	for (auto generalMonitor : generalMonitorMap)
 	{
 		generalMonitor.second.messagesOff();

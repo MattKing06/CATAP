@@ -26,8 +26,10 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<EPICSToolsFactory>())->to_python_target_type());
 		if (is_registered) return;
+		void(EPICSToolsFactory::* monitorSingle)(std::string) = &EPICSToolsFactory::monitor;
 		boost::python::class_<EPICSToolsFactory, boost::noncopyable>("EPICSToolsFactory", boost::python::init<STATE>((boost::python::args("self"), boost::python::args("mode"))))
 			.def("monitor", &EPICSToolsFactory::monitor_Py)
+			.def("monitor", monitorSingle)
 			.def("debugMessagesOn", &EPICSToolsFactory::debugMessagesOn)
 			.def("debugMessagesOff", &EPICSToolsFactory::debugMessagesOff)
 			.def("messagesOn", &EPICSToolsFactory::messagesOn)
