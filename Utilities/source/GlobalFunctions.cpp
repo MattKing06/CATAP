@@ -46,6 +46,14 @@ namespace GlobalFunctions {
 
 
 
+	bool stringIsSubString(const std::string& stringToCheck, const std::string& stringToLookFor) 
+	{
+		return stringToCheck.find(stringToLookFor) != std::string::npos;
+	}
+
+
+
+
 	std::string getTimeAndDateString()
 	{
 		auto t = std::time(nullptr);

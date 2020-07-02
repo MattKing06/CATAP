@@ -146,6 +146,11 @@ public:
     static void update_CH8_AMP_DER_SCAN(const struct event_handler_args args);
     static void update_CH8_PHASE_DER_SCAN(const struct event_handler_args args);
     static void update_CH8_PWR_LOC_SCAN(const struct event_handler_args args);
+    
+
+    static std::map<std::string, STATE> interlock_status_map;
+    static std::map<std::string, STATE> interlock_enable_map;
+
 
     static LoggingSystem messenger;
 

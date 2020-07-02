@@ -15,16 +15,25 @@
 class EPICSLLRFInterface;
 typedef boost::shared_ptr<EPICSLLRFInterface> EPICSLLRFInterface_sptr;
 
+
+class LLRFInterlock
+{
+public:
+	LLRFInterlock();
+	LLRFInterlock(const LLRFInterlock& copy_trace_data);
+	~LLRFInterlock();
+	double u_level, p_level, pdbm_level;
+	bool status, enable;
+};
+
 class TraceData
 {
 	public:
 		TraceData();
 		TraceData(const TraceData& copy_trace_data);
 		~TraceData();
-
 		// name of trace, e.g. LRRG_KLYSTRON_FORWARD_POWER
 		std::string name;
-
 		/*   __   __                    __                ___  __        __   ___  __
 		    |__) /  \ |    |    | |\ | / _`     /\  \  / |__  |__)  /\  / _` |__  /__`
 			|  \ \__/ |___ |___ | | \| \__>    /~~\  \/  |___ |  \ /~~\ \__> |___ .__/
@@ -37,7 +46,6 @@ class TraceData
 		//size_t rolling_average_size, rolling_average_count;
 		//std::vector<double> rolling_average, rolling_sum, rolling_max, rolling_min, rolling_sd;
 		//std::vector<std::vector<double>> average_trace_values;
-
 		/*
 			all the trace data goes here (online data)
 		*/
@@ -59,7 +67,12 @@ class TraceData
 
 		// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor 
 		size_t  trace_data_size;
+		// the state of the scan and acqm 
+		STATE scan, acqm;
+		LLRFInterlock interlock;
 };
+
+
 
 
 class LLRF : public Hardware
@@ -74,7 +87,6 @@ public:
 	// TODO private ?? 
 	EPICSLLRFInterface_sptr epicsInterface;
 	std::map<std::string, std::string> LLRFParamMap;
-
 
 	// amplitude 
 	bool setAmp(double value);
@@ -91,7 +103,6 @@ public:
 	double getPhiDEG()const;
 	double getCrestPhase()const;
 	double getOperatingPhase()const;
-
 
 	/*! get the name alises for this LLRF
 	@param[out] names, vector containing  all the alias names */
@@ -194,10 +205,14 @@ protected:
 
 	/*! latest amp_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > amp_sp;
+	/*! latest amp_ff value and epicstimestamp 	*/
+	std::pair<epicsTimeStamp, double > amp_ff;
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_sp;
+	/*! latest phi_ff value and epicstimestamp 	*/
+	std::pair<epicsTimeStamp, double > phi_ff;
 
-	/*! latest amp_sp value and epicstimestamp 	*/
+	/*! latest amp_MW value and epicstimestamp (should be Klystron Fowrad Power in MW at beam time in pulse */
 	std::pair<epicsTimeStamp, double > amp_MW;
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
@@ -219,8 +234,13 @@ private:
 	std::vector<std::string> aliases;
 		
 
-
+	// we have some maps to store the trace_data and ACQM and SCAN states  
+	// the ACQM and SCAN have many more traces than we ever typically use here, that is why they 
+	// are not part of the trace_data class
 	std::map<std::string, TraceData> trace_data_map;
+	std::map<std::string, STATE> trace_ACQM_map;
+	std::map<std::string, STATE> trace_SCAN_map;
+
 
 	void setTraceDataMap();
 	void addToTraceDataMap(const std::string& name);
@@ -256,6 +276,37 @@ private:
 	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor ??? 
 	size_t trace_data_size;
 	void setTraceDataBufferSize(const size_t new_size);
+
+	// here we keep all the traces acqm and scan STATEs
+	// actual usable traces also have their own version of this in their trace_data 
+	std::map<std::string, STATE> all_trace_acqm;
+	std::map<std::string, STATE> all_trace_scan;
+
+	// eahc channel has a set of interlocks values and STATEs
+	std::map<std::string, LLRFInterlock> all_trace_interlocks;
+
+	void setupInterlocks();
+	void setupAllTraceACQM();
+	void setupAllTraceSCAN();
+
+	void updateInterLockStatus(const std::string& ch, const struct event_handler_args& args);
+	void updateInterLockEnable(const std::string& ch, const struct event_handler_args& args);
+	void updateInterLockU(const std::string& ch, const struct event_handler_args& args);
+	void updateInterLockP(const std::string& ch, const struct event_handler_args& args);
+	void updateInterLockPDBM(const std::string& ch, const struct event_handler_args& args);
+
+	void updateSCAN(const std::string& ch, const struct event_handler_args& args);
+	void updateACQM(const std::string& ch, const struct event_handler_args& args);
+
+
+	void buildChannelToTraceSourceMap(const std::map<std::string, std::string>& paramMap);
+	std::map<std::string, std::string> channel_to_tracesource_map;
+	std::string getTraceFromChannelData(const std::string& channel_data) const;
+
+	//std::string getTraceFromTracePVKey(const std::string& trace)const;
+
+
+
 
 
 

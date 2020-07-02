@@ -134,6 +134,9 @@ namespace GlobalFunctions {
 
 	extern std::string toString(const std::vector<TYPE>& vec);
 
+	extern bool stringIsSubString(const std::string& stringToCheck, 
+		const std::string& stringToLookFor);
+
 	extern time_t timeNow();// { return time(nullptr); }
 
 	extern std::string getTimeAndDateString();

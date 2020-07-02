@@ -109,31 +109,31 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 
 
 		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
-	//	for (auto& pv : pvstruct)
-	//	{
-	//		// sets the monitor state in the pvstruict to true or false
-	//		if (ca_state(pv.second.CHID) == cs_conn)
-	//		{
-	//			retrieveMonitorStatus(pv.second);
-	//			valve.second.epicsInterface->retrieveCHTYPE(pv.second);
-	//			valve.second.epicsInterface->retrieveCOUNT(pv.second);
-	//			valve.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-	//			//// not sure how to set the mask from EPICS yet.
-	//			pv.second.MASK = DBE_VALUE;
-	//			messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-	//				"write", std::to_string(ca_write_access(pv.second.CHID)),
-	//				"state", std::to_string(ca_state(pv.second.CHID)));
-	//			if (pv.second.monitor)
-	//			{
-	//				valve.second.epicsInterface->createSubscription(valve.second, pv.second);
-	//				EPICSInterface::sendToEPICS();
-	//			}
-	//		}
-	//		else
-	//		{
-	//			messenger.printMessage(valve.first, " CANNOT CONNECT TO EPICS");
-	//		}
-	//	}
+		for (auto& pv : pvstruct)
+		{
+			// sets the monitor state in the pvstruict to true or false
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				retrieveMonitorStatus(pv.second);
+				llrf.second.epicsInterface->retrieveCHTYPE(pv.second);
+				llrf.second.epicsInterface->retrieveCOUNT(pv.second);
+				llrf.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
+				//// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.pvRecord, ": read = ", std::to_string(ca_read_access(pv.second.CHID)),
+					", write = ", std::to_string(ca_write_access(pv.second.CHID)),
+					", state = ", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					llrf.second.epicsInterface->createSubscription(llrf.second, pv.second);
+					EPICSInterface::sendToEPICS();
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
+			}
+		}
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
@@ -217,10 +217,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 	}
 	size_t end_size = LLRFMap.size();
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas LLRFMap.size() went from ", start_size," to ", end_size);
-
 }
-
-
 
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {
@@ -251,7 +248,6 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 		}
 	}
 }
-
 
 void LLRFFactory::setupChannels()
 {
@@ -734,7 +730,19 @@ bool LLRFFactory::setTraceDataBufferSize(const std::string& llrf_name, const std
 
 
 
+void LLRFFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+{
+	if (GlobalFunctions::entryExists(pv_to_monitor, pvStruct.pvRecord))
+	{
+		messenger.printMessage("Monitor ", pvStruct.pvRecord);
+		pvStruct.monitor = true;
+	}
+	else
+	{
+		pvStruct.monitor = false;
+	}
 
+}
 
 void LLRFFactory::debugMessagesOn()
 {
