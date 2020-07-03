@@ -1,13 +1,19 @@
 #ifndef EPICS_INTERFACE_H
 #define EPICS_INTERFACE_H
 #include <LoggingSystem.h>
+#ifndef LISTENER_H
+/* if we are using EPICSTools/Listener, then 
+/* we don't want to include Hardware as it is
+/* unnecessary for EPICSTools/Listener */
 #include <Hardware.h>
+#endif // LISTENER_H
 #include <functional>
 #include <vector>
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
 #include <epicsTime.h>
+#include <GlobalStateEnums.h>
 //#include <pyconfig.h>
 #endif
 #ifndef PV_H_
@@ -34,7 +40,7 @@
 	*up connections and subscriptions for PVs as well as general functions that are needed by all child EPICS Interfaces, i.e. putValve.
 @{*/
 class PV;
-#define CA_PEND_IO_TIMEOUT 5.0
+#define CA_PEND_IO_TIMEOUT 10.0
 class EPICSInterface
 {
 
@@ -81,7 +87,16 @@ public:
 	/*! Sets up a monitor to a PV which provides EPICS a callback function for updating the hardware object we pass in.
 	* @param[in] hardware : The hardware object that is passed to our callback function to update
 	* @param[in] pvStruct : Used to tell EPICS which PV to monitor and which callback function to use when the PV changes*/
-	void createSubscription(Hardware& hardware, pvStruct& pvStruct) const;
+	template<typename SubscriptionType>
+	void createSubscription(SubscriptionType& returnObject, pvStruct& pvStruct) const
+	{
+		int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
+			pvStruct.CHID, pvStruct.MASK,
+			pvStruct.updateFunction,
+			(void*)&returnObject,
+			&pvStruct.EVID);
+		MY_SEVCHK(status);
+	}
 	/*! Removes the monitor for a given PV
 	* @param[in] pv : The PV we want to remove the monitor for.*/
 	void removeSubscription(pvStruct& pv);
@@ -228,5 +243,6 @@ protected:
 	// some other stuff might be needed here, need to check interface.h from VELA-CLARA COntrollers
 };
 /** @}*/
+
 #endif
 
