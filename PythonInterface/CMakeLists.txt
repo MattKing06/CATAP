@@ -120,6 +120,7 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSTools/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
 	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
 						 ${Boost_LIBRARIES}
@@ -127,6 +128,7 @@ foreach(FILE ${SOURCE_FILES})
 						 PRIVATE
 						 Factories
 						 Hardware
+						 EPICSTools
 						 ConfigReader
 						 Utilities)
 	if (UNIX)

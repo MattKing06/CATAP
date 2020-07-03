@@ -9,7 +9,6 @@ BOOST_PYTHON_MODULE(_EPICSTools)
 	CATAP_docstring_options.disable_cpp_signatures();
 	BOOST_PYTHON_STATES_INCLUDE::expose_global_state_enums();
 	BOOST_PYTHON_TYPES_INCLUDE::expose_global_type_enums();
-	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_listener_object();
 	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
-	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_factory_object();
 }
