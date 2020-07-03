@@ -1,0 +1,7 @@
+
+
+class Getter
+{
+public:
+	Getter();
+};

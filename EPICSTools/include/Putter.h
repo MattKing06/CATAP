@@ -1,0 +1,7 @@
+
+
+class Putter
+{
+public:
+	Putter();
+};
