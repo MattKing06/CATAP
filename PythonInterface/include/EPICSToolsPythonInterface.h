@@ -22,10 +22,12 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id <EPICSTools>())->to_python_target_type());
 		if (is_registered) return;
+		void(EPICSTools:: * monitor_single)(const std::string&) = &EPICSTools::monitor;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
 			.def(boost::python::init<>())
 			.def(boost::python::init<STATE>())
 			.def("monitor", &EPICSTools::monitor_Py)
+			.def("monitor", monitor_single)
 			.def("getMonitor", &EPICSTools::getMonitor, boost::python::return_value_policy<boost::python::reference_existing_object>());
 	}
 

@@ -38,7 +38,7 @@ Listener& EPICSTools::getMonitor(std::string name)
 	}
 }
 
-void EPICSTools::monitor(std::string pv)
+void EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv);
 	listenerMap[pv].epicsInterface->createSubscription(listenerMap[pv], listenerMap[pv].pv);

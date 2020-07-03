@@ -18,7 +18,7 @@ public:
 	EPICSTools();
 	EPICSTools(STATE mode);
 	EPICSTools(const EPICSTools& copyEPICSTools);
-	void monitor(std::string pv);
+	void monitor(const std::string& pv);
 	void monitor(std::vector<std::string> pvList);
 	void monitor_Py(boost::python::list pvList);
 	Listener& getMonitor(std::string pv);
