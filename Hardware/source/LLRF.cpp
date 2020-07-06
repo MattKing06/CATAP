@@ -24,6 +24,7 @@ acqm(STATE::UNKNOWN)
 
 }
 
+
 TraceData::TraceData(const TraceData& copy_trace_data) :
 trace_data_size(copy_trace_data.trace_data_size),
 name(copy_trace_data.name),
