@@ -38,6 +38,31 @@ Listener& EPICSTools::getMonitor(std::string name)
 	}
 }
 
+std::map<std::string, Listener&> EPICSTools::getMonitors(std::vector<std::string> names)
+{
+	std::map<std::string, Listener> listenerMapToReturn;
+	for (auto& name : names)
+	{
+		listenerMapToReturn[name] = getMonitor(name);
+	}
+}
+
+std::vector<std::string> EPICSTools::getAllMonitorNames()
+{
+	std::vector<std::string> monitorNames;
+	for (auto& listener : listenerMap)
+	{
+		monitorNames.push_back(listener.first);
+	}
+	return monitorNames;
+}
+
+boost::python::list EPICSTools::getAllMonitorNames_Py()
+{
+	boost::python::list listenerNames = to_py_list(getAllMonitorNames());
+	return listenerNames;
+}
+
 void EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv);

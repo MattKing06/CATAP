@@ -22,8 +22,10 @@ public:
 	void monitor(std::vector<std::string> pvList);
 	void monitor_Py(boost::python::list pvList);
 	Listener& getMonitor(std::string pv);
+	std::map<std::string, Listener&> getMonitors(std::vector<std::string> names);
+	std::vector<std::string> getAllMonitorNames();
+	boost::python::list getAllMonitorNames_Py();
 	STATE mode;
-	void setupSubscription(Listener listener);
 	std::map<std::string, Listener> listenerMap;
 	std::map<std::string, Getter> getterMap;
 	std::map<std::string, Putter> putterMap;

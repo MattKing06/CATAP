@@ -49,17 +49,8 @@ void Listener::setupChannels()
 	std::cout << "MON TYPE: " << pv.monitorCHTYPE  << "  CH TYPE: " << pv.CHTYPE << std::endl;
 	epicsInterface->retrieveCOUNT(pv);
 	pv.MASK = DBE_VALUE;
-	pv.updateFunction = updateFunctions.updateDoubleValue;
+	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
 	EPICSInterface::sendToEPICS();
 }
 
-void Listener::setValue(double newValue)
-{
-	std::cout << "NEW VALUE TO SET: " << newValue << std::endl;
-	value = newValue;
-}
 
-double Listener::getValue()
-{
-	return value;
-}

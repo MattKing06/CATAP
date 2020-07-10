@@ -26,14 +26,31 @@ public:
 	Listener(const Listener& listener);
 	UpdateFunctionHolder updateFunctions;
 	void setupChannels();
-	void setValue(double value);
-	double getValue();
+	template<typename T>
+	void setValue(T value);
+	template<typename T>
+	T getValue();
 	EPICSInterface_sptr epicsInterface;
 	STATE mode;
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToMonitor;
-	double value;
+	boost::any value;
 };
 
+
+
+
 #endif //LISTENER_H
+
+template<typename T>
+inline void Listener::setValue(T value)
+{
+	this->value = value;
+}
+
+template<typename T>
+inline T Listener::getValue()
+{
+	return boost::any_cast<T>(value);
+}
