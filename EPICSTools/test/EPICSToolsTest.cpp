@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_simple_test)
 	if (ca_state(epicsTools.listenerMap[pv].pv.CHID) == cs_conn)
 	{
 		Listener monitor = epicsTools.getMonitor(pv);
-		std::cout << monitor.pv.fullPVName << " = " << monitor.getValue() << std::endl;
+		std::cout << monitor.pv.fullPVName << " = " << monitor.getValue<double>() << std::endl;
 	}
 	else
 	{
