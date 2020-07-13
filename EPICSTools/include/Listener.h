@@ -9,7 +9,8 @@
 #include <UpdateFunctions.h>
 #include <string>
 #include <vector>
-#include <boost/any.hpp>
+#include <boost/variant.hpp>
+#include <boost/python.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -30,27 +31,35 @@ public:
 	void setValue(T value);
 	template<typename T>
 	T getValue();
+	boost::python::object getValue_Py();
 	EPICSInterface_sptr epicsInterface;
 	STATE mode;
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToMonitor;
-	boost::any value;
+	boost::variant<double,float,int,STATE,std::string> currentValue;
+	boost::python::object pyValue;
 };
 
 
 
-
-#endif //LISTENER_H
-
 template<typename T>
 inline void Listener::setValue(T value)
 {
-	this->value = value;
+	currentValue = value;
+	pyValue = static_cast<boost::python::object>(value);
 }
 
 template<typename T>
 inline T Listener::getValue()
 {
-	return boost::any_cast<T>(value);
+	std::cout << "VALUE: " << currentValue << std::endl;
+	//T returnValue = boost::get<T>(value);
+	//std::cout << "AFTER CAST: " << returnValue << std::endl;
+	return boost::get<T>(currentValue);
+
 }
+
+
+#endif //LISTENER_H
+

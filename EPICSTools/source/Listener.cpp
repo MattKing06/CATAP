@@ -8,7 +8,7 @@ Listener::Listener()
 Listener::Listener(std::string pvStr) 
 	: pvToMonitor(pvStr),
 	mode(STATE::UNKNOWN),
-	value(GlobalConstants::double_min),
+	currentValue(GlobalConstants::double_min),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder())
 {
@@ -18,7 +18,7 @@ Listener::Listener(std::string pvStr)
 Listener::Listener(std::string pvStr, STATE mode)
 	: pvToMonitor(pvStr),
 	 mode(mode),
-	 value(GlobalConstants::double_min),
+	 currentValue(GlobalConstants::double_min),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder())
 {
@@ -29,7 +29,7 @@ Listener::Listener(const Listener& copyListener)
 	: pvToMonitor(copyListener.pvToMonitor),
 	mode(copyListener.mode),
 	pv(copyListener.pv),
-	value(copyListener.value),
+	currentValue(copyListener.currentValue),
 	messenger(copyListener.messenger),
 	epicsInterface(copyListener.epicsInterface),
 	updateFunctions(copyListener.updateFunctions)
@@ -53,4 +53,7 @@ void Listener::setupChannels()
 	EPICSInterface::sendToEPICS();
 }
 
-
+boost::python::object Listener::getValue_Py()
+{
+	return pyValue;
+}

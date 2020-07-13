@@ -8,16 +8,14 @@
 
 namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 {
-
 	void expose_listener_object()
 	{
 		//need to define individual methods for getValue types..
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Listener>())->to_python_target_type());
 		if (is_registered) return;
-		double(Listener:: * getDoubleValue)() = &Listener::getValue<double>;
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
-			.add_property("PV", &Listener::pvToMonitor)
-			.add_property("value", getDoubleValue);
+		.add_property("PV", &Listener::pvToMonitor)
+		.def("getValue", &Listener::getValue_Py);
 
 	}
 	void expose_epics_tools_object() 

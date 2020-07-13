@@ -12,6 +12,7 @@ public:
 	UpdateFunctionHolder(const UpdateFunctionHolder& copyUpdateFunctionHolder);
 	UpdateFunctionPtr findUpdateFunction(pvStruct& pv);
 	static void updateDoubleValue(const struct event_handler_args args);
+	static void updateIntegerValue(const struct event_handler_args args);
 };
 
 

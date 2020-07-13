@@ -17,6 +17,12 @@ UpdateFunctionPtr UpdateFunctionHolder::findUpdateFunction(pvStruct& pv)
 	case(DBR_DOUBLE):
 		return updateDoubleValue;
 		break;
+	case(DBR_ENUM):
+		return updateIntegerValue;
+		break;
+	case(DBR_TIME_ENUM):
+		return updateIntegerValue;
+		break;
 	}
 }
 
@@ -28,4 +34,12 @@ void UpdateFunctionHolder::updateDoubleValue(const struct event_handler_args arg
 	std::pair<epicsTime, double> pairToUpdate = recastListener->epicsInterface->getTimeStampDoublePair(args);
 	recastListener->setValue<double>(pairToUpdate.second);
 	std::cout << "LISTENER VALUE: " << recastListener->getValue<double>() << std::endl;
+}
+
+void UpdateFunctionHolder::updateIntegerValue(const struct event_handler_args args)
+{
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	std::pair<epicsTime, int> pairToUpdate = recastListener->epicsInterface->getTimeStampEnumPair(args);
+	recastListener->setValue<int>(pairToUpdate.second);
+	std::cout << "LISTENER VALUE: " << recastListener->getValue<int>() << std::endl;
 }
