@@ -112,7 +112,6 @@ public:
 	boost::python::list getAliases_Py() const;
 
 
-
 	size_t getIndex(const double time) const;
 	double getTime(const size_t index) const;
 
