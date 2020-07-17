@@ -10,6 +10,9 @@
 #include <vector>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+/** @addtogroup factories
+ @{*/
+ /*! A class to store, setup, and perform operations on multiple IMG objects*/
 
 class IMGFactory
 {
@@ -74,7 +77,7 @@ public:
 	std::vector<std::string> getAllIMGNames() const;
 	/*! gets the IMG state of a particular IMG
 	 * @param[in] name :The full-name or alias of the IMG
-	 * @param[out] pressure :The state the IMG is currently in (OPEN,CLOSED,ERR)*/
+	 * @param[out] pressure :The state the IMG is currently in (OK, ERR)*/
 	boost::python::list getAllIMGNames_Py()const;
 	double getIMGPressure(const std::string& name) const;
 	/*! gets IMG Pressure for multiple IMGs
@@ -106,5 +109,5 @@ private:
 	IMG dummyIMG;
 	/*access IMG functionality without crashing out when we cannot connect to EPICS.*/
 };
-
+/** @}*/
 #endif // IMG_FACTORY_H_
