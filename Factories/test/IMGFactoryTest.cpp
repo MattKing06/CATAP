@@ -14,14 +14,12 @@ struct fixture {
 		imgFac = IMGFactory(STATE::VIRTUAL);
 		imgFac.messagesOn();
 		imgFac.debugMessagesOff();
-		std::string testIMGName = "EBT-INJ-VAC-IMG-01";
 		BOOST_TEST_MESSAGE("setup fixture");
 		status = imgFac.setup("nominal");
 	}
 	~fixture() { BOOST_TEST_MESSAGE("teardown fixture"); }
 
 	IMGFactory imgFac;
-	std::string testIMGName;
 	bool status;
 	pvStruct setPV;
 
@@ -35,9 +33,11 @@ BOOST_AUTO_TEST_CASE(start_test)
 BOOST_AUTO_TEST_CASE(img_factory_check_values_on_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: CHECK VALUES ON PRESSURE	------");
+	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
 	if (status)
 	{
-		if (ca_state(imgFac.getIMG(testIMGName).pvStructs.at("P").CHID) == cs_conn)
+		IMG test_IMG = imgFac.getIMG(testIMGName);
+		if (ca_state(test_IMG.pvStructs.at("P").CHID) == cs_conn)
 		{
 			BOOST_CHECK(isnan(imgFac.getIMGPressure(testIMGName)) != true);
 			std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -92,9 +92,11 @@ BOOST_AUTO_TEST_CASE(img_factory_check_all_names_test)
 BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL OF PRESSURES OF THE MAP	------");
+	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
 	if (status)
 	{
-		if (ca_state(imgFac.getIMG(testIMGName).pvStructs.at("P").CHID) == cs_conn)
+		IMG testIMG = imgFac.getIMG(testIMGName);
+		if (ca_state(testIMG.pvStructs.at("P").CHID) == cs_conn)
 		{
 			std::map<std::string, double> allPressures = imgFac.getAllIMGPressure();
 			BOOST_CHECK(isnan(allPressures.at(testIMGName)) != true);
@@ -111,26 +113,26 @@ BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test)
 BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test_several_times)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL OF PRESSURES OF THE MAP	------");
-	std::map<std::string, double> allPressures = imgFac.getAllIMGPressure();
-	int i = 1;
 	if (status)
 	{
-		if (ca_state(imgFac.getIMG(testIMGName).pvStructs.at("P").CHID) == cs_conn)
+		auto allIMGNames = imgFac.getAllIMGNames();
+		
+		for (auto imgName : allIMGNames)
 		{
-			while (i < 1000)
+			IMG test_IMG = imgFac.getIMG(imgName);
+			int i = 1;
+			if (ca_state(test_IMG.pvStructs.at("P").CHID) == cs_conn)
 			{
-				auto namesMap = imgFac.getAllIMGNames();
-				for (auto&& item : namesMap)
+				while (i < 1000)
 				{
-					BOOST_CHECK(allPressures.at(item) != GlobalConstants::double_min);
-					BOOST_CHECK(imgFac.getIMGPressure(item) != GlobalConstants::double_min);
+					BOOST_CHECK(test_IMG.getIMGPressure() != GlobalConstants::double_min);
+					i++;
 				}
-				i++;
 			}
-		}
-		else
-		{
-			imgFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+			else
+			{
+				imgFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+			}
 		}
 	}
 	imgFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");
