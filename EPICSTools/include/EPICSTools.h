@@ -25,11 +25,30 @@ public:
 	std::map<std::string, Listener&> getMonitors(std::vector<std::string> names);
 	std::vector<std::string> getAllMonitorNames();
 	boost::python::list getAllMonitorNames_Py();
+	void get(const std::string& pv);
+	void get(std::vector<std::string> pvList);
+	void get_Py(boost::python::list pvList);
+	boost::python::object caget_Py(const std::string& pv);
+	template <typename T>
+	T caget(const std::string& pv);
 	STATE mode;
 	std::map<std::string, Listener> listenerMap;
 	std::map<std::string, Getter> getterMap;
 	std::map<std::string, Putter> putterMap;
 };
 
+template<typename T>
+inline T EPICSTools::caget(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return boost::get<T>(getterMap.at(pv).value);
+	}
+	else
+	{
+		get(pv);
+		return boost::get<T>(getterMap.at(pv).value);
+	}
+}
 
 #endif //EPICS_TOOLS_H

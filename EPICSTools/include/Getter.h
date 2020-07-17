@@ -8,9 +8,10 @@
 #include <PV.h>
 #include <string>
 #include <vector>
-#include <boost/any.hpp>
+#include <boost/variant.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/python.hpp>
 
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
@@ -22,13 +23,20 @@ public:
 	Getter(const std::string& pvStr);
 	Getter(const std::string& pvStr, const STATE& mode);
 	Getter(const Getter& getter);
+	void setupChannels();
 	EPICSInterface_sptr epicsInterface;
+	double getValue();
+	boost::python::object getValue_Py();
 	STATE mode;
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToGet;
+	//boost::variant<int, double, float, STATE, std::string> value;
 	double value;
+	boost::python::object pyValue;
 
 };
+
+
 
 #endif // GETTER_H

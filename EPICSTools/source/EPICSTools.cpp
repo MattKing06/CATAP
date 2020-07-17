@@ -86,3 +86,37 @@ void EPICSTools::monitor_Py(boost::python::list pvList)
 	monitor(pvVec);
 }
 
+void EPICSTools::get(const std::string& pv)
+{
+	getterMap[pv] = Getter(pv);
+	EPICSInterface::sendToEPICS();
+	std::cout << "GETTER VALUE: " << getterMap[pv].value << std::endl;
+}
+
+void EPICSTools::get(std::vector<std::string> pvList)
+{
+	for (auto& pv : pvList)
+	{
+		get(pv);
+	}
+}
+
+void EPICSTools::get_Py(boost::python::list pvList)
+{
+	std::vector<std::string> pvVec = to_std_vector<std::string>(pvList);
+	get(pvVec);
+}
+
+boost::python::object EPICSTools::caget_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap.at(pv).pyValue;
+	}
+	else
+	{
+		get(pv);
+		return getterMap.at(pv).pyValue;
+	}
+}
+
