@@ -86,37 +86,39 @@ void EPICSTools::monitor_Py(boost::python::list pvList)
 	monitor(pvVec);
 }
 
-void EPICSTools::get(const std::string& pv)
-{
-	getterMap[pv] = Getter(pv);
-	EPICSInterface::sendToEPICS();
-	std::cout << "GETTER VALUE: " << getterMap[pv].value << std::endl;
-}
 
-void EPICSTools::get(std::vector<std::string> pvList)
-{
-	for (auto& pv : pvList)
-	{
-		get(pv);
-	}
-}
 
-void EPICSTools::get_Py(boost::python::list pvList)
+boost::python::dict EPICSTools::get_Py(boost::python::list pvList)
 {
 	std::vector<std::string> pvVec = to_std_vector<std::string>(pvList);
-	get(pvVec);
+	std::map<std::string, boost::python::object> nameAndValueMap;
+	for (auto pv : pvVec)
+	{
+		if (GlobalFunctions::entryExists(getterMap, pv))
+		{
+			nameAndValueMap[pv] = getterMap[pv].getValue_Py();
+		}
+		else
+		{
+			getterMap[pv] = Getter(pv);
+			EPICSInterface::sendToEPICS();
+			nameAndValueMap[pv] = getterMap[pv].getValue_Py();
+		}
+	}
+	return to_py_dict(nameAndValueMap);
 }
 
-boost::python::object EPICSTools::caget_Py(const std::string& pv)
+boost::python::object EPICSTools::get_Py(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(getterMap, pv))
 	{
-		return getterMap.at(pv).pyValue;
+		return getterMap[pv].getValue_Py();
 	}
 	else
 	{
-		get(pv);
-		return getterMap.at(pv).pyValue;
+		getterMap[pv] = Getter(pv);
+		EPICSInterface::sendToEPICS();
+		return getterMap[pv].getValue_Py();
 	}
-}
 
+}

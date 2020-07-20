@@ -14,6 +14,7 @@ Getter::Getter(const std::string& pvStr) :
 	setupChannels();
 	ca_get(pv.CHTYPE, pv.CHID, &value);
 	EPICSInterface::sendToEPICS();
+	pyValue = static_cast<boost::python::object>(value);
 	std::cout << "GETTER VALUE: " << value << std::endl;
 }
 
@@ -44,12 +45,4 @@ Getter::Getter(const Getter& getter)
 boost::python::object Getter::getValue_Py()
 {
 	return pyValue;
-}
-
-double Getter::getValue()
-{
-	ca_get(pv.CHTYPE, pv.CHID, &value);
-	EPICSInterface::sendToEPICS();
-	pyValue = static_cast<boost::python::object>(value);
-	return value;
 }

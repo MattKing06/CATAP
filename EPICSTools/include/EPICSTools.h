@@ -25,12 +25,12 @@ public:
 	std::map<std::string, Listener&> getMonitors(std::vector<std::string> names);
 	std::vector<std::string> getAllMonitorNames();
 	boost::python::list getAllMonitorNames_Py();
-	void get(const std::string& pv);
-	void get(std::vector<std::string> pvList);
-	void get_Py(boost::python::list pvList);
-	boost::python::object caget_Py(const std::string& pv);
 	template <typename T>
-	T caget(const std::string& pv);
+	T get(const std::string& pv);
+	template <typename T>
+	std::map<std::string, T> get(const std::vector<std::string>& pvList);
+	boost::python::object get_Py(const std::string& pv);
+	boost::python::dict get_Py(boost::python::list pvList);
 	STATE mode;
 	std::map<std::string, Listener> listenerMap;
 	std::map<std::string, Getter> getterMap;
@@ -38,17 +38,33 @@ public:
 };
 
 template<typename T>
-inline T EPICSTools::caget(const std::string& pv)
+inline T EPICSTools::get(const std::string & pv)
 {
 	if (GlobalFunctions::entryExists(getterMap, pv))
 	{
-		return boost::get<T>(getterMap.at(pv).value);
+		return getterMap[pv].getValue<T>();
 	}
 	else
 	{
-		get(pv);
-		return boost::get<T>(getterMap.at(pv).value);
+		getterMap[pv] = Getter(pv);
+		EPICSInterface::sendToEPICS();
+		std::cout << "GETTER VALUE: " << getterMap[pv].value << std::endl;
+		return getterMap[pv].getValue<T>();
 	}
+
+	
 }
+
+template<typename T>
+inline std::map<std::string, T> EPICSTools::get(const std::vector<std::string>& pvList)
+{
+	std::map<std::string, T> nameAndValueMap();
+	for (auto& pv : pvList)
+	{
+		nameAndValueMap[pv] = get(pv);
+	}
+	return nameAndValueMap;
+}
+
 
 #endif //EPICS_TOOLS_H

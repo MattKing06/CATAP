@@ -23,6 +23,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id <EPICSTools>())->to_python_target_type());
 		if (is_registered) return;
 		void(EPICSTools:: * monitor_single)(const std::string&) = &EPICSTools::monitor;
+		boost::python::object(EPICSTools:: * get_single)(const std::string&) = &EPICSTools::get_Py;
+		boost::python::dict(EPICSTools:: * get_multiple)(boost::python::list) = &EPICSTools::get_Py;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
 			.def(boost::python::init<>())
 			.def(boost::python::init<STATE>())
@@ -30,7 +32,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("monitor", monitor_single)
 			.def("getMonitor", &EPICSTools::getMonitor, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllMonitorNames", &EPICSTools::getAllMonitorNames_Py)
-			.def("get", &EPICSTools::caget_Py);
+			.def("get", get_single)
+			.def("get", get_multiple);
 	}
 
 
