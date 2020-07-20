@@ -8,13 +8,19 @@
 #include <PV.h>
 #include <string>
 #include <vector>
-#include <boost/variant.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
+
+//union ValueHolder
+//{
+//	double double_value;
+//	int int_value;
+//	unsigned short ushort_value;
+//	std::string str_value;
+//};
 
 class Getter
 {
@@ -25,28 +31,19 @@ public:
 	Getter(const std::string& pvStr);
 	Getter(const std::string& pvStr, const STATE& mode);
 	Getter(const Getter& getter);
+	void getPythonTypeFromEPICS();
 	void setupChannels();
+	//ValueHolder currentValue;
 	EPICSInterface_sptr epicsInterface;
-	template <typename T>
-	T getValue();
 	boost::python::object getValue_Py();
 	STATE mode;
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToGet;
-	boost::variant<int, double, float, STATE, std::string> value;
 	boost::python::object pyValue;
 
 };
 
-template <typename T>
-inline T Getter::getValue()
-{
-	ca_get(pv.CHTYPE, pv.CHID, &value);
-	EPICSInterface::sendToEPICS();
-	pyValue = static_cast<boost::python::object>(boost::get<T>(value));
-	return boost::get<T>(value);
-}
 
 
 
