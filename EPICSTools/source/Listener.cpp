@@ -10,7 +10,9 @@ Listener::Listener(std::string pvStr)
 	mode(STATE::UNKNOWN),
 	currentValue(GlobalConstants::double_min),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
-	updateFunctions(UpdateFunctionHolder())
+	updateFunctions(UpdateFunctionHolder()),
+	callCount(0),
+	messenger(LoggingSystem(false,true))
 {
 	setupChannels();
 }
@@ -20,7 +22,8 @@ Listener::Listener(std::string pvStr, STATE mode)
 	 mode(mode),
 	 currentValue(GlobalConstants::double_min),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
-	updateFunctions(UpdateFunctionHolder())
+	updateFunctions(UpdateFunctionHolder()),
+	callCount(0)
 {
 	setupChannels();
 }
@@ -32,7 +35,8 @@ Listener::Listener(const Listener& copyListener)
 	currentValue(copyListener.currentValue),
 	messenger(copyListener.messenger),
 	epicsInterface(copyListener.epicsInterface),
-	updateFunctions(copyListener.updateFunctions)
+	updateFunctions(copyListener.updateFunctions),
+	callCount(copyListener.callCount)
 {
 }
 
@@ -46,7 +50,6 @@ void Listener::setupChannels()
 	epicsInterface->retrieveCHID(pv);
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
-	std::cout << "MON TYPE: " << pv.monitorCHTYPE  << "  CH TYPE: " << pv.CHTYPE << std::endl;
 	epicsInterface->retrieveCOUNT(pv);
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);

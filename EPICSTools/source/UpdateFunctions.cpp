@@ -31,15 +31,17 @@ UpdateFunctionPtr UpdateFunctionHolder::findUpdateFunction(pvStruct& pv)
 void UpdateFunctionHolder::updateDoubleValue(const struct event_handler_args args)
 {
 	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
 	std::pair<epicsTime, double> pairToUpdate = recastListener->epicsInterface->getTimeStampDoublePair(args);
 	recastListener->setValue<double>(pairToUpdate.second);
-	std::cout << "LISTENER VALUE: " << recastListener->getValue<double>() << std::endl;
+	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<double>());
 }
 
 void UpdateFunctionHolder::updateIntegerValue(const struct event_handler_args args)
 {
 	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
 	std::pair<epicsTime, int> pairToUpdate = recastListener->epicsInterface->getTimeStampEnumPair(args);
 	recastListener->setValue<int>(pairToUpdate.second);
-	std::cout << "LISTENER VALUE: " << recastListener->getValue<int>() << std::endl;
+	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<int>());
 }

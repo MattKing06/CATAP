@@ -39,6 +39,7 @@ public:
 	std::string pvToMonitor;
 	boost::variant<double,float,int,STATE,std::string> currentValue;
 	boost::python::object pyValue;
+	int callCount;
 };
 
 
@@ -53,9 +54,6 @@ inline void Listener::setValue(T value)
 template<typename T>
 inline T Listener::getValue()
 {
-	std::cout << "VALUE: " << currentValue << std::endl;
-	//T returnValue = boost::get<T>(value);
-	//std::cout << "AFTER CAST: " << returnValue << std::endl;
 	pyValue = static_cast<boost::python::object>(boost::get<T>(currentValue));
 	return boost::get<T>(currentValue);
 
