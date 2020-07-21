@@ -14,7 +14,8 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 	if (ca_state(epicsTools.listenerMap[pv].pv.CHID) == cs_conn)
 	{
 		Listener& monitor = epicsTools.getMonitor(pv);
-		boost::detail::Sleep(unsigned long(1.0));
+		unsigned long waitTime(1.0);
+		boost::detail::Sleep(waitTime);
 		BOOST_CHECK_NE(monitor.getValue<double>(), GlobalConstants::double_min);
 	}
 	else
