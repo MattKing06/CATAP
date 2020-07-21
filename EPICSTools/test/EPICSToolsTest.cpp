@@ -28,8 +28,15 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 {
 	std::string pv = "VM-CLA-C2V-MAG-HCOR-01:RILK";
 	EPICSTools epicsTools = EPICSTools();
-	auto value = epicsTools.get<unsigned short>(pv);
-	BOOST_CHECK_EQUAL(value, unsigned short(0));
+	if (ca_state(epicsTools.getterMap[pv].pv.CHID) == cs_conn)
+	{
+		auto value = epicsTools.get<unsigned short>(pv);
+		BOOST_CHECK_EQUAL(value, unsigned short(0));
+	}
+	else
+	{
+		std::cout << pv << " COULD NOT CONNECT TO EPICS." << std::endl;
+	}
 
 }
 
