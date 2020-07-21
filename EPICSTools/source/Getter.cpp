@@ -9,7 +9,7 @@ Getter::Getter(const std::string& pvStr) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	pvToGet(pvStr),
 	mode(STATE::UNKNOWN),
-	currentValue(boost::variant<double, int, float, unsigned short, std::string>())
+	currentValue(boost::variant<double, int, float, unsigned short, std::string>(NULL))
 {
 	//fill in constructor to setup epicsInterface
 	setupChannels();

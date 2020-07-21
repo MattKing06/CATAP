@@ -28,10 +28,11 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 {
 	std::string pv = "VM-CLA-C2V-MAG-HCOR-01:RILK";
 	EPICSTools epicsTools = EPICSTools();
+	auto value = epicsTools.get<unsigned short>(pv);
 	if (ca_state(epicsTools.getterMap[pv].pv.CHID) == cs_conn)
 	{
-		auto value = epicsTools.get<unsigned short>(pv);
-		BOOST_CHECK_EQUAL(value, unsigned short(0));
+		unsigned short checkValue(0);
+		BOOST_CHECK_EQUAL(value, checkValue);
 	}
 	else
 	{

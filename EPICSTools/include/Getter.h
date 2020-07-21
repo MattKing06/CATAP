@@ -43,8 +43,6 @@ public:
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToGet;
-	//boost::python::object pyValue;
-
 };
 
 template <typename T>
