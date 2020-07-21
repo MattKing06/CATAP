@@ -38,13 +38,14 @@ Listener& EPICSTools::getMonitor(std::string name)
 	}
 }
 
-std::map<std::string, Listener&> EPICSTools::getMonitors(std::vector<std::string> names)
+std::map<std::string, Listener> EPICSTools::getMonitors(std::vector<std::string> names)
 {
 	std::map<std::string, Listener> listenerMapToReturn;
 	for (auto& name : names)
 	{
 		listenerMapToReturn[name] = getMonitor(name);
 	}
+	return listenerMapToReturn;
 }
 
 std::vector<std::string> EPICSTools::getAllMonitorNames()

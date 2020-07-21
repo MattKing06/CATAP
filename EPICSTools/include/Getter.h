@@ -10,17 +10,11 @@
 #include <vector>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
+#include <boost/variant.hpp>
+#include <boost/core/typeinfo.hpp>
 
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
-
-//union ValueHolder
-//{
-//	double double_value;
-//	int int_value;
-//	unsigned short ushort_value;
-//	std::string str_value;
-//};
 
 class Getter
 {
@@ -31,20 +25,37 @@ public:
 	Getter(const std::string& pvStr);
 	Getter(const std::string& pvStr, const STATE& mode);
 	Getter(const Getter& getter);
-	void getPythonTypeFromEPICS();
 	void setupChannels();
-	//ValueHolder currentValue;
+	void setValueFromEPICS();
+	template <typename T>
+	T getValue();
+	// need to move these over EPICSTools
+	// and use them with PV arguments.
+	bool isDouble();
+	bool isInt();
+	bool isEnum();
+	bool isString();
+	bool isFloat();
+	boost::variant<double,int,float,unsigned short,std::string> currentValue;
 	EPICSInterface_sptr epicsInterface;
 	boost::python::object getValue_Py();
 	STATE mode;
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToGet;
-	boost::python::object pyValue;
+	//boost::python::object pyValue;
 
 };
 
-
+template <typename T>
+inline T Getter::getValue()
+{
+	//add try catch here to deal with bad_cast exceptions
+	// from boost::variant.
+	setValueFromEPICS();
+	std::cout << "GOT VALUE FROM EPICS " << std::endl;
+	return boost::get<T>(currentValue);
+}
 
 
 #endif // GETTER_H

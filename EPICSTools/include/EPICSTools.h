@@ -22,9 +22,11 @@ public:
 	void monitor(std::vector<std::string> pvList);
 	void monitor_Py(boost::python::list pvList);
 	Listener& getMonitor(std::string pv);
-	std::map<std::string, Listener&> getMonitors(std::vector<std::string> names);
+	std::map<std::string, Listener> getMonitors(std::vector<std::string> names);
 	std::vector<std::string> getAllMonitorNames();
 	boost::python::list getAllMonitorNames_Py();
+	template <typename T>
+	T get(const std::string& pv);
 	boost::python::object get_Py(const std::string& pv);
 	boost::python::dict get_Py(boost::python::list pvList);
 	STATE mode;
@@ -33,5 +35,20 @@ public:
 	std::map<std::string, Putter> putterMap;
 };
 
+
+
+template<typename T>
+inline T EPICSTools::get(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getValue<T>();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv);
+		return getterMap[pv].getValue<T>();
+	}
+}
 
 #endif //EPICS_TOOLS_H
