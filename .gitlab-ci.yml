@@ -56,7 +56,7 @@ tests:
   - ./HardwareTests
   - ./FactoryTests
   - ./EPICSInterfaceTests
-
+  - ./EPICSToolsTests
 doxygen: 
   stage: doxygen
   cache:
