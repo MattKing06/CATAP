@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 	}
 	else
 	{
-		std::cout << pv << " COULD NOT CONNECT TO EPICS." << std::endl;
+		std::cout << pvStr << " COULD NOT CONNECT TO EPICS." << std::endl;
 	}
 
 }
