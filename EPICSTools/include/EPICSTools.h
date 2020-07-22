@@ -27,6 +27,8 @@ public:
 	boost::python::list getAllMonitorNames_Py();
 	template <typename T>
 	T get(const std::string& pv);
+	template <typename T>
+	void put(const std::string& pv, T value);
 	boost::python::object get_Py(const std::string& pv);
 	boost::python::dict get_Py(boost::python::list pvList);
 	STATE mode;
@@ -48,6 +50,20 @@ inline T EPICSTools::get(const std::string& pv)
 	{
 		getterMap[pv] = Getter(pv);
 		return getterMap[pv].getValue<T>();
+	}
+}
+
+template<typename T>
+inline void EPICSTools::put(const std::string& pv, T value)
+{
+	if (GlobalFunctions::entryExists(putterMap, pv))
+	{
+		putterMap[pv].put<T>(value);
+	}
+	else
+	{
+		putterMap[pv] = Putter(pv);
+		putterMap[pv].put<T>(value);
 	}
 }
 
