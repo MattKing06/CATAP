@@ -31,11 +31,20 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 
 BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 {
-	std::string pv = "VM-CLA-C2V-MAG-HCOR-01:RILK";
+	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:RILK";
 	EPICSTools epicsTools = EPICSTools();
-	auto value = epicsTools.get<unsigned short>(pv);
-	if (ca_state(epicsTools.getterMap[pv].pv.CHID) == cs_conn)
+	// creating CHID to check ca_state as .get function
+	// sets up channels AND retrieves EPICS value which
+	// will throw a bad_get exception if not connected to EPICS.
+	pvStruct pv = pvStruct();
+	pv.fullPVName = pvStr;
+	pv.monitor = false;
+	ca_create_channel(pvStr.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pv.CHID);
+	EPICSInterface::sendToEPICS();
+	// need to check CHID state without constructing get...
+	if (ca_state(pv.CHID) == cs_conn)
 	{
+		auto value = epicsTools.get<unsigned short>(pvStr);
 		unsigned short checkValue(0);
 		BOOST_CHECK_EQUAL(value, checkValue);
 	}
