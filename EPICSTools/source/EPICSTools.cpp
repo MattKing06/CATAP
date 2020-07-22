@@ -67,8 +67,16 @@ boost::python::list EPICSTools::getAllMonitorNames_Py()
 void EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv);
-	listenerMap[pv].epicsInterface->createSubscription(listenerMap[pv], listenerMap[pv].pv);
-	EPICSInterface::sendToEPICS();
+	if (ca_state(listenerMap[pv].pv.CHID) == cs_conn)
+	{
+		listenerMap[pv].epicsInterface->createSubscription(listenerMap[pv], listenerMap[pv].pv);
+		EPICSInterface::sendToEPICS();
+	}
+	else
+	{
+		std::cout << pv << " COULD NOT CONNECT TO EPICS " << std::endl;
+	}
+
 
 
 }
