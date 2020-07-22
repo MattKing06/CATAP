@@ -12,20 +12,20 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 	// need to find a way to slow down the construction maybe?
 	// if i put a while loop (0 < i < 10000000) then I get the right
 	// value returned. otherwise the value variable isn't set fast enough..
-	//if (ca_state(epicsTools.listenerMap[pv].pv.CHID) == cs_conn)
-	//{
-	//	Listener& monitor = epicsTools.getMonitor(pv);
-	//	//TRY TO USE BOOST/STD THREAD SLEEP
-	//	// IF THAT FAILS, TRY #IF WIN32 #IF UNIX STYLE.
-	//	unsigned long waitTime(1.0);
-	//	std::chrono::milliseconds timespan(waitTime);
-	//	std::this_thread::sleep_for(timespan);
-	//	BOOST_CHECK_NE(monitor.getValue<double>(), GlobalConstants::double_min);
-	//}
-	//else
-	//{
-	//	std::cout << pv << " COULD NOT CONNECT TO EPICS." << std::endl;
-	//}
+	if (ca_state(epicsTools.listenerMap[pv].pv.CHID) == cs_conn)
+	{
+		Listener& monitor = epicsTools.getMonitor(pv);
+		//TRY TO USE BOOST/STD THREAD SLEEP
+		// IF THAT FAILS, TRY #IF WIN32 #IF UNIX STYLE.
+		unsigned long waitTime(1.0);
+		std::chrono::milliseconds timespan(waitTime);
+		std::this_thread::sleep_for(timespan);
+		BOOST_CHECK_NE(monitor.getValue<double>(), GlobalConstants::double_min);
+	}
+	else
+	{
+		std::cout << pv << " COULD NOT CONNECT TO EPICS." << std::endl;
+	}
 
 }
 
