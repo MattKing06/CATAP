@@ -1,6 +1,7 @@
 #include <EPICSTools.h>
 #include <boost/test/unit_test.hpp>
-
+#include <chrono>
+#include <thread>
 BOOST_AUTO_TEST_SUITE(EPICSToolTests)
 
 BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
@@ -14,8 +15,11 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 	if (ca_state(epicsTools.listenerMap[pv].pv.CHID) == cs_conn)
 	{
 		Listener& monitor = epicsTools.getMonitor(pv);
+		//TRY TO USE BOOST/STD THREAD SLEEP
+		// IF THAT FAILS, TRY #IF WIN32 #IF UNIX STYLE.
 		unsigned long waitTime(1.0);
-		boost::detail::Sleep(waitTime);
+		std::chrono::milliseconds timespan(waitTime);
+		std::this_thread::sleep_for(timespan);
 		BOOST_CHECK_NE(monitor.getValue<double>(), GlobalConstants::double_min);
 	}
 	else
