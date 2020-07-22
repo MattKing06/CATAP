@@ -51,7 +51,6 @@ inline T Getter::getValue()
 	//add try catch here to deal with bad_cast exceptions
 	// from boost::variant.
 	setValueFromEPICS();
-	std::cout << "GOT VALUE FROM EPICS " << std::endl;
 	return boost::get<T>(currentValue);
 }
 

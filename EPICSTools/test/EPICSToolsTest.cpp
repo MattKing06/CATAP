@@ -6,6 +6,7 @@ BOOST_AUTO_TEST_SUITE(EPICSToolTests)
 
 BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 {
+	std::cout << "*** RUNNING LISTENER TEST ***" << std::endl;
 	std::string pv = "VM-CLA-C2V-MAG-HCOR-01:GETSETI";
 	EPICSTools epicsTools = EPICSTools();
 	epicsTools.monitor(pv);
@@ -31,7 +32,9 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 
 BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
 {
+	std::cout << "*** RUNNING PUTTER TEST ***" << std::endl;
 	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:SETI";
+	std::string checkPvStr = "VM-CLA-C2V-MAG-HCOR-01:GETSETI";
 	EPICSTools epicsTools = EPICSTools();
 	pvStruct pv = pvStruct();
 	pv.fullPVName = pvStr;
@@ -40,7 +43,9 @@ BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
 	EPICSInterface::sendToEPICS();
 	if (ca_state(pv.CHID) == cs_conn)
 	{
-		epicsTools.put<double>(pvStr, 10.0);
+		double setCurrent = 10.0;
+		epicsTools.put<double>(pvStr, setCurrent);
+		BOOST_CHECK_EQUAL(epicsTools.get<double>(checkPvStr), setCurrent);
 	}
 	else
 	{
@@ -50,6 +55,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
 
 BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 {
+	std::cout << "*** RUNNING GETTER TEST ***" << std::endl;
 	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:RILK";
 	EPICSTools epicsTools = EPICSTools();
 	// creating CHID to check ca_state as .get function
