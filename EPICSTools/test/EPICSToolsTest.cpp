@@ -29,6 +29,25 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 
 }
 
+BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
+{
+	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:SETI";
+	EPICSTools epicsTools = EPICSTools();
+	pvStruct pv = pvStruct();
+	pv.fullPVName = pvStr;
+	pv.monitor = false;
+	ca_create_channel(pvStr.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pv.CHID);
+	EPICSInterface::sendToEPICS();
+	if (ca_state(pv.CHID) == cs_conn)
+	{
+		epicsTools.put<double>(pvStr, 10.0);
+	}
+	else
+	{
+		std::cout << pvStr << " COULD NOT CONNECT TO EPICS." << std::endl;
+	}
+}
+
 BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 {
 	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:RILK";
