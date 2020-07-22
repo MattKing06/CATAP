@@ -31,6 +31,8 @@ public:
 	void put(const std::string& pv, T value);
 	boost::python::object get_Py(const std::string& pv);
 	boost::python::dict get_Py(boost::python::list pvList);
+	void put_Py(const std::string& pv, boost::python::object value);
+	void put_Py(boost::python::dict pvAndValueDict);
 	STATE mode;
 	std::map<std::string, Listener> listenerMap;
 	std::map<std::string, Getter> getterMap;

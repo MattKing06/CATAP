@@ -117,6 +117,39 @@ boost::python::dict EPICSTools::get_Py(boost::python::list pvList)
 	return to_py_dict(nameAndValueMap);
 }
 
+void EPICSTools::put_Py(boost::python::dict pvAndValueDict)
+{
+	std::map<std::string, boost::python::object> pvAndValueMap = to_std_map<std::string, boost::python::object>(pvAndValueDict);
+	for (auto& entry : pvAndValueMap)
+	{
+		if (GlobalFunctions::entryExists(putterMap, entry.first))
+		{
+			putterMap[entry.first].put_Py(entry.second);
+		}
+		else
+		{
+			putterMap[entry.first] = Putter(entry.first);
+			putterMap[entry.first].put_Py(entry.second);
+		}
+	}
+
+}
+
+void EPICSTools::put_Py(const std::string& pv, boost::python::object value)
+{
+	if (GlobalFunctions::entryExists(putterMap, pv))
+	{
+		putterMap[pv].put_Py(value);
+	}
+	else
+	{
+		putterMap[pv] = Putter(pv);
+		EPICSInterface::sendToEPICS();
+		return putterMap[pv].put_Py(value);
+	}
+
+}
+
 boost::python::object EPICSTools::get_Py(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(getterMap, pv))
