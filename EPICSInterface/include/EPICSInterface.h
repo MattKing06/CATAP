@@ -203,10 +203,17 @@ public:
 	{
 		if (ca_state(pvStruct.CHID) == cs_conn)
 		{
-			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
-			MY_SEVCHK(status);
-			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-			MY_SEVCHK(status);
+			if (ca_write_access(pvStruct.CHID))
+			{
+				int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+			}
+			else
+			{
+				messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
+			}
 		}
 	}
 
