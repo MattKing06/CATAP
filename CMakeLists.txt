@@ -5,6 +5,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CXX_STANDARD 17)
 set(PY_VERSION 3)
 
+
 if (WIN32)
   message(STATUS "WIN32 BUILD")
   set(Boost_DIR "C:/boost/boost_1_63_0")
