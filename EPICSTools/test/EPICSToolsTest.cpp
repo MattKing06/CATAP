@@ -1,7 +1,7 @@
 #include <EPICSTools.h>
 #include <boost/test/unit_test.hpp>
-#include <chrono>
-#include <thread>
+#include <boost/chrono.hpp>
+#include <boost/thread/thread.hpp>
 BOOST_AUTO_TEST_SUITE(EPICSToolTests)
 
 BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
@@ -18,9 +18,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 		Listener& monitor = epicsTools.getMonitor(pv);
 		//TRY TO USE BOOST/STD THREAD SLEEP
 		// IF THAT FAILS, TRY #IF WIN32 #IF UNIX STYLE.
-		unsigned long waitTime(1.0);
-		std::chrono::milliseconds timespan(waitTime);
-		std::this_thread::sleep_for(timespan);
+		boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
 		BOOST_CHECK_NE(monitor.getValue<double>(), GlobalConstants::double_min);
 	}
 	else
@@ -28,6 +26,23 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 		std::cout << pv << " COULD NOT CONNECT TO EPICS." << std::endl;
 	}
 
+}
+
+BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
+{
+	std::cout << "*** RUNNING LISTENER BUFFER TEST ***" << std::endl;
+	std::string monPV = "VM-CLA-C2V-MAG-HCOR-01:READI";
+	std::string powerPV = "VM-CLA-C2V-MAG-HCOR-01:SPOWER";
+	std::string setPV = "VM-CLA-C2V-MAG-HCOR-01:SETI";
+	EPICSTools epicsTools = EPICSTools();
+	epicsTools.monitor(monPV);
+	epicsTools.put(setPV, 10.0);
+	epicsTools.put(powerPV, 1);
+	Listener& monitor = epicsTools.getMonitor(monPV);
+	for (auto& item : monitor.currentBuffer)
+	{
+		BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+	}
 }
 
 BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
