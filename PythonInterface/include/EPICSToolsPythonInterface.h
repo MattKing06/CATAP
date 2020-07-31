@@ -15,7 +15,9 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
 		.add_property("PV", &Listener::pvToMonitor)
-		.def("getValue", &Listener::getValue_Py);
+		.def("getValue", &Listener::getValue_Py)
+		.def("setBufferSize", &Listener::setBufferSize)
+		.def("getBuffer", &Listener::getBuffer_Py);
 
 	}
 	void expose_epics_tools_object() 
