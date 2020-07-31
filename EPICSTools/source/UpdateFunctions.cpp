@@ -34,6 +34,7 @@ void UpdateFunctionHolder::updateDoubleValue(const struct event_handler_args arg
 	recastListener->callCount++;
 	std::pair<epicsTime, double> pairToUpdate = recastListener->epicsInterface->getTimeStampDoublePair(args);
 	recastListener->setValue<double>(pairToUpdate.second);
+	recastListener->currentBuffer.push_back(pairToUpdate.second);
 	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<double>());
 }
 
@@ -43,5 +44,6 @@ void UpdateFunctionHolder::updateIntegerValue(const struct event_handler_args ar
 	recastListener->callCount++;
 	std::pair<epicsTime, int> pairToUpdate = recastListener->epicsInterface->getTimeStampEnumPair(args);
 	recastListener->setValue<int>(pairToUpdate.second);
+	recastListener->currentBuffer.push_back(pairToUpdate.second);
 	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<int>());
 }
