@@ -7,8 +7,10 @@
 #include <LoggingSystem.h>
 #include <PV.h>
 #include <UpdateFunctions.h>
+#include <PythonTypeConversions.h>
 #include <string>
 #include <vector>
+#include <boost/circular_buffer.hpp>
 #include <boost/variant.hpp>
 #include <boost/python.hpp>
 #include <boost/shared_ptr.hpp>
@@ -37,7 +39,17 @@ public:
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToMonitor;
-	boost::variant<double,float,int,STATE,std::string> currentValue;
+	boost::variant<double,float,int,unsigned short,std::string> currentValue;
+	boost::circular_buffer<boost::variant<double, float, int, unsigned short, std::string> > currentBuffer;
+	void setBufferSize(int size);
+	template<typename T>
+	boost::circular_buffer<T> getBuffer();
+	boost::python::list getBuffer_Py();
+	bool isDoubleBuffer();
+	bool isIntBuffer();
+	bool isEnumBuffer();
+	bool isStringBuffer();
+	bool isFloatBuffer();
 	boost::python::object pyValue;
 	int callCount;
 };
@@ -57,6 +69,13 @@ inline T Listener::getValue()
 	pyValue = static_cast<boost::python::object>(boost::get<T>(currentValue));
 	return boost::get<T>(currentValue);
 
+}
+
+template<typename T>
+inline boost::circular_buffer<T> Listener::getBuffer()
+{
+	auto returnBuffer = boost::get<boost::circular_buffer<T>>(currentBuffer);
+	return returnBuffer;
 }
 
 
