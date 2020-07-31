@@ -29,6 +29,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		boost::python::dict(EPICSTools:: * get_multiple)(boost::python::list) = &EPICSTools::get_Py;
 		void(EPICSTools:: * put_single)(const std::string&, boost::python::object) = &EPICSTools::put_Py;
 		void(EPICSTools:: * put_multiple)(boost::python::dict) = &EPICSTools::put_Py;
+		boost::python::list(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
+		boost::python::dict(EPICSTools:: * getBuffer_multiple)(boost::python::list) = &EPICSTools::getBuffer_Py;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
 			.def(boost::python::init<>())
 			.def(boost::python::init<STATE>())
@@ -40,6 +42,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("get", get_multiple)
 			.def("put", put_single)
 			.def("put", put_multiple)
+			.def("getBuffer", getBuffer_single)
+			.def("getBuffer", getBuffer_multiple)
 			;
 	}
 

@@ -64,6 +64,30 @@ boost::python::list EPICSTools::getAllMonitorNames_Py()
 	return listenerNames;
 }
 
+boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		return listenerMap[pv].getBuffer_Py();
+	}
+	else
+	{
+		listenerMap[pv] = Listener(pv);
+		return listenerMap[pv].getBuffer_Py();
+	}
+}
+
+boost::python::dict EPICSTools::getBuffer_Py(boost::python::list pvList)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
+	std::map<std::string, boost::python::list> pvBufferMap;
+	for (auto& pv : namesVec)
+	{
+		pvBufferMap[pv] = getBuffer_Py(pv);
+	}
+	return to_py_dict(pvBufferMap);
+}
+
 void EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv);
@@ -76,9 +100,6 @@ void EPICSTools::monitor(const std::string& pv)
 	{
 		std::cout << pv << " COULD NOT CONNECT TO EPICS " << std::endl;
 	}
-
-
-
 }
 
 void EPICSTools::monitor(std::vector<std::string> pvList)
