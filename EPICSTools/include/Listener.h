@@ -39,14 +39,15 @@ public:
 	LoggingSystem messenger;
 	pvStruct pv;
 	std::string pvToMonitor;
-	boost::variant<double,float,int,unsigned short,std::string> currentValue;
-	boost::circular_buffer<boost::variant<double, float, int, unsigned short, std::string> > currentBuffer;
+	boost::variant<double,float,long,int,unsigned short,std::string> currentValue;
+	boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> > currentBuffer;
 	void setBufferSize(int size);
 	template<typename T>
 	boost::circular_buffer<T> getBuffer();
 	boost::python::list getBuffer_Py();
 	bool isDoubleBuffer();
 	bool isIntBuffer();
+	bool isLongBuffer();
 	bool isEnumBuffer();
 	bool isStringBuffer();
 	bool isFloatBuffer();

@@ -262,6 +262,22 @@ void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& ar
 	pairToUpdate.second = tv->value;
 }
 
+void EPICSInterface::updateTimeStampStringPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, std::string>& pairToUpdate)
+{
+	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampFloatPair(const struct event_handler_args& args,
+	std::pair < epicsTimeStamp, float>& pairToUpdate)
+{
+	const struct dbr_time_float* tv = (const struct dbr_time_float*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
 void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
 {
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);

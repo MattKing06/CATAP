@@ -9,7 +9,7 @@ Listener::Listener(std::string pvStr)
 	: pvToMonitor(pvStr),
 	mode(STATE::UNKNOWN),
 	currentValue(GlobalConstants::double_min),
-	currentBuffer(boost::circular_buffer<boost::variant<double, float, int, unsigned short, std::string> >(10)),
+	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0),
@@ -22,7 +22,7 @@ Listener::Listener(std::string pvStr, STATE mode)
 	: pvToMonitor(pvStr),
 	 mode(mode),
 	 currentValue(GlobalConstants::double_min),
-	currentBuffer(boost::circular_buffer<boost::variant<double, float, int, unsigned short, std::string> >(10)),
+	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0)
@@ -143,4 +143,9 @@ bool Listener::isStringBuffer()
 bool Listener::isFloatBuffer()
 {
 	return (currentBuffer.at(0).type() == typeid(float));
+}
+
+bool Listener::isLongBuffer()
+{
+	return(currentBuffer.at(0).type() == typeid(long));
 }

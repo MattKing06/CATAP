@@ -183,7 +183,8 @@ public:
 
 	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size);
 	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
-
+	static void updateTimeStampStringPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::string>& pairToUpdate);
+	static void updateTimeStampFloatPair(const struct event_handler_args& args, std::pair < epicsTimeStamp, float>& pairToUpdate);
 	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and returns the pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
