@@ -29,6 +29,13 @@ Charge Class
    :undoc-members:
 
 ===========================
+IMG Class
+===========================
+.. automodule:: IMG
+   :members: IMG
+   :undoc-members:
+
+===========================
 Magnet Class
 ===========================
 .. automodule:: Magnet
