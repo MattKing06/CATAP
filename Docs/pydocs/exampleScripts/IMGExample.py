@@ -1,11 +1,4 @@
-import os
-import sys
-import subprocess
 import time
-import numpy as np
-from copy import copy, deepcopy
-from paramiko import *
-
 print('Importing CATAP HW Factory and IMG HW successfully')
 from CATAP.HardwareFactory import *
 from CATAP.IMG import *
