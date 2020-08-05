@@ -16,3 +16,11 @@ Vacuum Valve and Valve Factory
 .. literalinclude:: exampleScripts/valveExample.py
    :language: python
    :linenos:
+
+==============================
+IMG and IMG Factory
+==============================
+
+.. literalinclude:: exampleScripts/IMGExample.py
+   :language: python
+   :linenos:

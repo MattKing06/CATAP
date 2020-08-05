@@ -255,6 +255,39 @@ boost::python::dict IMGFactory::getAllIMGPressure_Py() const
 {
 	return to_py_dict<std::string, double>(getAllIMGPressure());
 }
+
+STATE IMGFactory::getIMGState(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	return IMGMap.at(fullName).getIMGState();
+}
+
+std::map<std::string, STATE> IMGFactory::getIMGStates(const std::vector<std::string>& names) const
+{
+	std::map<std::string, STATE> stateMap;
+	for (auto& name : names)
+	{
+		stateMap[name] = getIMGState(name);
+	}
+
+	return stateMap;
+}
+
+boost::python::dict IMGFactory::getIMGStates_Py(const boost::python::list& names) const
+{
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	return to_py_dict(getIMGStates(namesVector));
+}
+
+std::map<std::string, STATE> IMGFactory::getAllIMGStates() const
+{
+	return getIMGStates(getAllIMGNames());
+}
+
+boost::python::dict IMGFactory::getAllIMGStates_Py() const
+{
+	return to_py_dict(getAllIMGStates());
+}
 void IMGFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
