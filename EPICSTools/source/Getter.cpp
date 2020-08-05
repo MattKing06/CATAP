@@ -128,6 +128,7 @@ void Getter::setupChannels()
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
 	std::cout << pvToGet << " CHANNEL TYPE: " << pv.CHTYPE << std::endl;
+	// can use the channel count to decide whether to use ca_array_get or ca_get.
 	epicsInterface->retrieveCOUNT(pv);
 	pv.MASK = DBE_VALUE;
 	EPICSInterface::sendToEPICS();
