@@ -37,12 +37,44 @@ void Getter::setValueFromEPICS()
 			currentValue = d_value;
 			break;
 		}
+		case(DBR_FLOAT):
+		{
+			float f_value;
+			ca_get(pv.CHTYPE, pv.CHID, &f_value);
+			EPICSInterface::sendToEPICS();
+			currentValue = f_value;
+			break;
+		}
+		case(DBR_INT):
+		{
+			int i_value;
+			ca_get(pv.CHTYPE, pv.CHID, &i_value);
+			EPICSInterface::sendToEPICS();
+			currentValue = i_value;
+			break;
+		}
+		case(DBR_STRING):
+		{
+			std::string s_value;
+			ca_get(pv.CHTYPE, pv.CHID, &s_value);
+			EPICSInterface::sendToEPICS();
+			currentValue = s_value;
+			break;
+		}
 		case(DBR_ENUM):
 		{
 			unsigned short us_value;
 			ca_get(pv.CHTYPE, pv.CHID, &us_value);
 			EPICSInterface::sendToEPICS();
 			currentValue = us_value;
+			break;
+		}
+		case(DBR_LONG):
+		{
+			long l_value;
+			ca_get(pv.CHTYPE, pv.CHID, &l_value);
+			EPICSInterface::sendToEPICS();
+			currentValue = l_value;
 			break;
 		}
 		default:
@@ -54,6 +86,11 @@ void Getter::setValueFromEPICS()
 			break;
 		}
 	};
+}
+
+bool Getter::isLong()
+{
+	return (currentValue.type() == typeid(long));
 }
 
 bool Getter::isDouble()

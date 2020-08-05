@@ -31,12 +31,13 @@ public:
 	T getValue();
 	// need to move these over EPICSTools
 	// and use them with PV arguments.
+	bool isLong();
 	bool isDouble();
 	bool isInt();
 	bool isEnum();
 	bool isString();
 	bool isFloat();
-	boost::variant<double,int,float,unsigned short,std::string> currentValue;
+	boost::variant<double,int,long,float,unsigned short,std::string> currentValue;
 	EPICSInterface_sptr epicsInterface;
 	boost::python::object getValue_Py();
 	STATE mode;
