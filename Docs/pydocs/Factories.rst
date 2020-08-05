@@ -30,6 +30,14 @@ ChargeFactory
    :show-inheritance:
 
 ===========================
+IMGFactory
+===========================
+.. automodule:: IMG
+   :members: IMGFactory
+   :undoc-members:
+   :show-inheritance:
+
+===========================
 MagnetFactory
 ===========================
 .. automodule:: Magnet

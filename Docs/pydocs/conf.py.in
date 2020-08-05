@@ -21,6 +21,7 @@ print(sys.path)
 from CATAP.GlobalStates import *
 from CATAP.GlobalTypes import *
 from CATAP.BPM import *
+from CATAP.IMG import *
 from CATAP.Charge import *
 from CATAP.Magnet import *
 from CATAP.Valve import *
