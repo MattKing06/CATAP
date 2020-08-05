@@ -119,6 +119,24 @@ boost::python::list Listener::getBuffer_Py()
 	}
 }
 
+double Listener::getBufferAverage()
+{
+	if (!isStringBuffer() && !isEnumBuffer())
+	{
+		double total;
+		for (auto& item : currentBuffer)
+		{
+			total += boost::get<double>(item);
+		}
+		return (total / currentBuffer.size());
+	}
+	else
+	{
+		messenger.printMessage("Cannot perform average on String or Enum types.");
+	}
+
+}
+
 
 bool Listener::isDoubleBuffer()
 {

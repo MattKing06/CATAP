@@ -88,6 +88,30 @@ boost::python::dict EPICSTools::getBuffer_Py(boost::python::list pvList)
 	return to_py_dict(pvBufferMap);
 }
 
+double EPICSTools::getBufferAverage_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		return listenerMap[pv].getBufferAverage();
+	}
+	else
+	{
+		listenerMap[pv] = Listener(pv);
+		return listenerMap[pv].getBufferAverage();
+	}
+}
+
+boost::python::dict EPICSTools::getBufferAverage_Py(boost::python::list pvList)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
+	std::map<std::string, double> pvBufferAverageMap;
+	for (auto& pv : namesVec)
+	{
+		pvBufferAverageMap[pv] = getBufferAverage_Py(pv);
+	}
+	return to_py_dict(pvBufferAverageMap);
+}
+
 void EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv);

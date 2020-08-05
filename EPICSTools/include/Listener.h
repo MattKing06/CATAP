@@ -45,6 +45,7 @@ public:
 	template<typename T>
 	boost::circular_buffer<T> getBuffer();
 	boost::python::list getBuffer_Py();
+	double getBufferAverage();
 	bool isDoubleBuffer();
 	bool isIntBuffer();
 	bool isLongBuffer();

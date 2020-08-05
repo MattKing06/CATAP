@@ -27,6 +27,8 @@ public:
 	boost::python::list getAllMonitorNames_Py();
 	boost::python::list getBuffer_Py(const std::string& pv);
 	boost::python::dict getBuffer_Py(boost::python::list pvList);
+	double getBufferAverage_Py(const std::string& pv);
+	boost::python::dict getBufferAverage_Py(boost::python::list pvList);
 	template <typename T>
 	T get(const std::string& pv);
 	template <typename T>

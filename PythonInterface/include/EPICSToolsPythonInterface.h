@@ -17,7 +17,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		.add_property("PV", &Listener::pvToMonitor)
 		.def("getValue", &Listener::getValue_Py)
 		.def("setBufferSize", &Listener::setBufferSize)
-		.def("getBuffer", &Listener::getBuffer_Py);
+		.def("getBuffer", &Listener::getBuffer_Py)
+		.def("getBufferAverage", &Listener::getBufferAverage);
 
 	}
 	void expose_epics_tools_object() 
@@ -31,6 +32,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		void(EPICSTools:: * put_multiple)(boost::python::dict) = &EPICSTools::put_Py;
 		boost::python::list(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
 		boost::python::dict(EPICSTools:: * getBuffer_multiple)(boost::python::list) = &EPICSTools::getBuffer_Py;
+		double(EPICSTools:: * getBufferAverage_single)(const std::string&) = &EPICSTools::getBufferAverage_Py;
+		boost::python::dict(EPICSTools:: * getBufferAverage_multiple)(boost::python::list) = &EPICSTools::getBufferAverage_Py;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
 			.def(boost::python::init<>())
 			.def(boost::python::init<STATE>())
@@ -44,6 +47,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("put", put_multiple)
 			.def("getBuffer", getBuffer_single)
 			.def("getBuffer", getBuffer_multiple)
+			.def("getBufferAverage", getBufferAverage_single)
+			.def("getBufferAverage", getBufferAverage_multiple)
 			;
 	}
 
