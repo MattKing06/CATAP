@@ -209,3 +209,18 @@ boost::python::object EPICSTools::get_Py(const std::string& pv)
 	}
 
 }
+
+boost::python::list EPICSTools::getArray_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getArray_Py();
+	}
+	else
+	{
+		std::cout << "creating getter for: " << pv << std::endl;
+		getterMap[pv] = Getter(pv);
+		std::cout << "created getter" << std::endl;
+		return getterMap[pv].getArray_Py();
+	}
+}
