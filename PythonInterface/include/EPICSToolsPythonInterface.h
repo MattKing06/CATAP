@@ -43,6 +43,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getAllMonitorNames", &EPICSTools::getAllMonitorNames_Py)
 			.def("get", get_single)
 			.def("get", get_multiple)
+			.def("getArray", &EPICSTools::getArray_Py)
 			.def("put", put_single)
 			.def("put", put_multiple)
 			.def("getBuffer", getBuffer_single)
