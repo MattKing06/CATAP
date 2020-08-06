@@ -57,7 +57,8 @@ void EPICSInterface::detachFromContext()
 
 void EPICSInterface::sendToEPICS()
 {
-	ca_pend_io(CA_PEND_IO_TIMEOUT);
+	int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+	SEVCHK(status, "ca_pend_io return status: " + status);
 }
 
 void EPICSInterface::attachTo_thisCaContext()
