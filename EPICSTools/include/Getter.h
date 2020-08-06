@@ -29,6 +29,8 @@ public:
 	void setValueFromEPICS();
 	template <typename T>
 	T getValue();
+	template <typename T>
+	std::vector<T> getArray();
 	// need to move these over EPICSTools
 	// and use them with PV arguments.
 	bool isLong();
@@ -37,9 +39,17 @@ public:
 	bool isEnum();
 	bool isString();
 	bool isFloat();
+	bool isLongArray();
+	bool isDoubleArray();
+	bool isIntArray();
+	bool isEnumArray();
+	bool isStringArray();
+	bool isFloatArray();
 	boost::variant<double,int,long,float,unsigned short,std::string> currentValue;
+	std::vector<boost::variant<double, int, long, float, unsigned short, std::string> > currentArray;
 	EPICSInterface_sptr epicsInterface;
 	boost::python::object getValue_Py();
+	boost::python::list getArray_Py();
 	STATE mode;
 	LoggingSystem messenger;
 	pvStruct pv;
@@ -52,8 +62,26 @@ inline T Getter::getValue()
 	//add try catch here to deal with bad_cast exceptions
 	// from boost::variant.
 	setValueFromEPICS();
-	return boost::get<T>(currentValue);
+	if (pv.COUNT == 1)
+	{
+		return boost::get<T>(currentValue);
+	}
+
 }
 
+template<typename T>
+inline std::vector<T> Getter::getArray()
+{
+	setValueFromEPICS();
+	if (pv.COUNT > 1)
+	{
+		std::vector<T> returnVector;
+		for (auto& item : currentArray)
+		{
+			returnVector.push_back(boost::get<T>(item));
+		}
+		return returnVector;
+	}
+}
 
 #endif // GETTER_H
