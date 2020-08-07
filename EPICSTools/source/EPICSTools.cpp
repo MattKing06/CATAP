@@ -140,6 +140,37 @@ void EPICSTools::monitor_Py(boost::python::list pvList)
 	monitor(pvVec);
 }
 
+void EPICSTools::stopMonitoring(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		listenerMap[pv].stopListening();
+		std::cout << "removed monitor for " << pv << std::endl;
+	}
+	else
+	{
+		std::cout << "no monitor set up for " << pv << std::endl;
+	}
+}
+
+void EPICSTools::restartMonitoring(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		listenerMap[pv].startListening();
+		if (ca_state(listenerMap[pv].pv.CHID) == cs_conn)
+		{
+			listenerMap[pv].epicsInterface->createSubscription(listenerMap[pv], listenerMap[pv].pv);
+			EPICSInterface::sendToEPICS();
+		}
+		std::cout << "restarted monitor for " << pv << std::endl;
+	}
+	else
+	{
+		std::cout << "no monitor set up for " << pv << std::endl;
+	}
+}
+
 
 
 boost::python::dict EPICSTools::get_Py(boost::python::list pvList)

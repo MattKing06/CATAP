@@ -21,6 +21,8 @@ public:
 	void monitor(const std::string& pv);
 	void monitor(std::vector<std::string> pvList);
 	void monitor_Py(boost::python::list pvList);
+	void stopMonitoring(const std::string& pv);
+	void restartMonitoring(const std::string& pv);
 	Listener& getMonitor(std::string pv);
 	std::map<std::string, Listener> getMonitors(std::vector<std::string> names);
 	std::vector<std::string> getAllMonitorNames();
