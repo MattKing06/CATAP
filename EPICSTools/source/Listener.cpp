@@ -59,6 +59,38 @@ void Listener::setupChannels()
 	EPICSInterface::sendToEPICS();
 }
 
+void Listener::stopListening()
+{
+	if (pv.monitor)
+	{
+		if (pv.EVID)
+		{
+			epicsInterface->removeSubscription(pv);
+			ca_flush_io();
+			pv.monitor = false;
+		}
+	}
+	if (pv.CHID)
+	{
+		epicsInterface->removeChannel(pv);
+		EPICSInterface::sendToEPICS();
+	}
+
+}
+
+void Listener::startListening()
+{
+	if (!pv.monitor)
+	{
+		std::cout << "setting up channels" << std::endl;
+		setupChannels();
+	}
+	else
+	{
+		std::cout << "already monitoring " << pv << std::endl;
+	}
+}
+
 boost::python::object Listener::getValue_Py()
 {
 	return pyValue;

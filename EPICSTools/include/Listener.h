@@ -29,6 +29,8 @@ public:
 	Listener(const Listener& listener);
 	UpdateFunctionHolder updateFunctions;
 	void setupChannels();
+	void stopListening();
+	void startListening();
 	template<typename T>
 	void setValue(T value);
 	template<typename T>
