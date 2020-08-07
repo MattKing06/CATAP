@@ -39,6 +39,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def(boost::python::init<STATE>())
 			.def("monitor", &EPICSTools::monitor_Py)
 			.def("monitor", monitor_single)
+			.def("stopMonitoring", &EPICSTools::stopMonitoring)
+			.def("restartMonitoring", &EPICSTools::restartMonitoring)
 			.def("getMonitor", &EPICSTools::getMonitor, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllMonitorNames", &EPICSTools::getAllMonitorNames_Py)
 			.def("get", get_single)
