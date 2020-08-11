@@ -16,7 +16,13 @@ public:
 	static void updateEnumValue(const struct event_handler_args args);
 	static void updateFloatValue(const struct event_handler_args args);
 	static void updateLongValue(const struct event_handler_args args);
-	static void updateStringValue(const struct event_handler_args);
+	static void updateStringValue(const struct event_handler_args args);
+	static void updateDoubleArray(const struct event_handler_args args);
+	static void updateIntegerArray(const struct event_handler_args args);
+	static void updateEnumArray(const struct event_handler_args args);
+	static void updateFloatArray(const struct event_handler_args args);
+	static void updateLongArray(const struct event_handler_args args);
+	static void updateStringArray(const struct event_handler_args args);
 };
 
 

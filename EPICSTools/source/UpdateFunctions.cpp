@@ -13,40 +13,124 @@ UpdateFunctionPtr UpdateFunctionHolder::findUpdateFunction(pvStruct& pv)
 	switch (ca_field_type(pv.CHID))
 	{
 	case(DBR_TIME_DOUBLE):
-		return updateDoubleValue;
+		if (pv.COUNT > 1)
+		{
+			return updateDoubleArray;
+		}
+		else
+		{
+			return updateDoubleValue;
+		}
 		break;
 	case(DBR_DOUBLE):
-		return updateDoubleValue;
+		if (pv.COUNT > 1)
+		{
+			return updateDoubleArray;
+		}
+		else
+		{
+			return updateDoubleValue;
+		}
 		break;
 	case(DBR_TIME_INT):
-		return updateIntegerValue;
+		if (pv.COUNT > 1)
+		{
+			return updateIntegerArray;
+		}
+		else
+		{
+			return updateIntegerValue;
+		}
 		break;
 	case(DBR_INT):
-		return updateIntegerValue;
+		if (pv.COUNT > 1)
+		{
+			return updateIntegerArray;
+		}
+		else
+		{
+			return updateIntegerValue;
+		}
 		break;
 	case(DBR_TIME_ENUM):
-		return updateEnumValue;
+		if (pv.COUNT > 1)
+		{
+			return updateEnumArray;
+		}
+		else
+		{
+			return updateEnumValue;
+		}
 		break;
 	case(DBR_ENUM):
-		return updateEnumValue;
+		if (pv.COUNT > 1)
+		{
+			return updateEnumArray;
+		}
+		else
+		{
+			return updateEnumValue;
+		}
 		break;
 	case(DBR_TIME_LONG):
-		return updateLongValue;
+		if (pv.COUNT > 1)
+		{
+			return updateLongArray;
+		}
+		else
+		{
+			return updateLongValue;
+		}
 		break;
 	case(DBR_LONG):
-		return updateLongValue;
+		if (pv.COUNT > 1)
+		{
+			return updateLongArray;
+		}
+		else
+		{
+			return updateLongValue;
+		}
 		break;
 	case(DBR_TIME_FLOAT):
-		return updateFloatValue;
+		if (pv.COUNT > 1)
+		{
+			return updateFloatArray;
+		}
+		else
+		{
+			return updateFloatValue;
+		}
 		break;
 	case(DBR_FLOAT):
-		return updateFloatValue;
+		if (pv.COUNT > 1)
+		{
+			return updateFloatArray;
+		}
+		else
+		{
+			return updateFloatValue;
+		}
 		break;
 	case(DBR_TIME_STRING):
-		return updateStringValue;
+		if (pv.COUNT > 1)
+		{
+			return updateStringArray;
+		}
+		else
+		{
+			return updateStringValue;
+		}
 		break;
 	case(DBR_STRING):
-		return updateStringValue;
+		if (pv.COUNT > 1)
+		{
+			return updateStringArray;
+		}
+		else
+		{
+			return updateStringValue;
+		}
 		break;
 	}
 }
@@ -60,7 +144,7 @@ void UpdateFunctionHolder::updateDoubleValue(const struct event_handler_args arg
 	std::pair<epicsTimeStamp, double> pairToUpdate = recastListener->epicsInterface->getTimeStampDoublePair(args);
 	recastListener->setValue<double>(pairToUpdate.second);
 	recastListener->currentBuffer.push_back(pairToUpdate.second);
-	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<double>());
+	recastListener->messenger.printMessage("LISTENER DBL VALUE: ", recastListener->getValue<double>());
 }
 
 void UpdateFunctionHolder::updateIntegerValue(const struct event_handler_args args)
@@ -114,4 +198,35 @@ void UpdateFunctionHolder::updateStringValue(const event_handler_args args)
 	recastListener->setValue<std::string>(pairToUpdate.second);
 	recastListener->currentBuffer.push_back(pairToUpdate.second);
 	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<std::string>());
+}
+
+void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
+{
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
+	std::pair<epicsTimeStamp, std::vector<double>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampDoubleVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	std::cout << "SETTING ARRAY" << std::endl;
+	recastListener->setArray(pairToUpdate.second);
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED: ", recastListener->currentArray.size());
+}
+
+void UpdateFunctionHolder::updateIntegerArray(const event_handler_args args)
+{
+}
+
+void UpdateFunctionHolder::updateEnumArray(const event_handler_args args)
+{
+}
+
+void UpdateFunctionHolder::updateFloatArray(const event_handler_args args)
+{
+}
+
+void UpdateFunctionHolder::updateLongArray(const event_handler_args args)
+{
+}
+
+void UpdateFunctionHolder::updateStringArray(const event_handler_args args)
+{
 }
