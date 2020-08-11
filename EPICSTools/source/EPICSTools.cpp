@@ -15,9 +15,7 @@ EPICSTools::EPICSTools(STATE mode) :
 	listenerMap(std::map<std::string, Listener>()),
 	getterMap(std::map<std::string, Getter>()),
 	putterMap(std::map<std::string, Putter>())
-{
-
-}
+{}
 
 EPICSTools::EPICSTools(const EPICSTools& copyEPICSTools)
 {
