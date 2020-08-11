@@ -16,6 +16,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
 		.add_property("PV", &Listener::pvToMonitor)
 		.def("getValue", &Listener::getValue_Py)
+		.def("getArray", &Listener::getArray_Py)
 		.def("setBufferSize", &Listener::setBufferSize)
 		.def("getBuffer", &Listener::getBuffer_Py)
 		.def("getBufferAverage", &Listener::getBufferAverage);
