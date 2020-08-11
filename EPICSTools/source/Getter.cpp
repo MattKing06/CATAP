@@ -47,14 +47,15 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				double* d_array = new double [pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, d_array);
+				
+				std::vector<double> d_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &d_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				std::cout << "ARRAY SIZE: " << d_array.size() << std::endl;
+				for (auto& item : d_array)
 				{
-					currentArray.push_back(d_array[i]);
+					currentArray.push_back(item);
 				}
-				delete[] d_array;
 			}
 			break;
 		}
@@ -69,14 +70,14 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				float* f_array = new float[pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, f_array);
+				std::vector<float> f_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &f_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				std::cout << "ARRAY SIZE: " << f_array.size() << std::endl;
+				for (auto& item : f_array)
 				{
-					currentArray.push_back(f_array[i]);
+					currentArray.push_back(item);
 				}
-				delete[] f_array;
 			}
 			break;
 		}
@@ -91,14 +92,14 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				int* i_array = new int[pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, i_array);
+				std::vector<int> i_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &i_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				std::cout << "ARRAY SIZE: " << i_array.size() << std::endl;
+				for (auto& item : i_array)
 				{
-					currentArray.push_back(i_array[i]);
+					currentArray.push_back(item);
 				}
-				delete[] i_array;
 			}
 			break;
 		}
@@ -113,14 +114,14 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				std::string* str_array = new std::string[pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, str_array);
+				std::vector<std::string> s_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &s_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				std::cout << "ARRAY SIZE: " << s_array.size() << std::endl;
+				for (auto& item : s_array)
 				{
-					currentArray.push_back(str_array[i]);
+					currentArray.push_back(item);
 				}
-				delete[] str_array;
 			}
 			break;
 		}
@@ -135,14 +136,14 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				unsigned short* us_array = new unsigned short[pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, us_array);
+				//unsigned short* us_array = new unsigned short[pv.COUNT];
+				std::vector<unsigned short> us_array;
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &us_array[0]);
 				EPICSInterface::sendToEPICS();
 				for (int i = 0; i < pv.COUNT; i++)
 				{
 					currentArray.push_back(us_array[i]);
 				}
-				delete[] us_array;
 			}
 			break;
 		}
@@ -157,14 +158,14 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				long* l_array = new long[pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, l_array);
+				std::vector<long> l_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &l_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				std::cout << "ARRAY SIZE: " << l_array.size() << std::endl;
+				for (auto& item : l_array)
 				{
-					currentArray.push_back(l_array[i]);
+					currentArray.push_back(item);
 				}
-				delete[] l_array;
 			}
 			break;
 		}
@@ -179,14 +180,14 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				double* d_array = new double[pv.COUNT];
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, d_array);
+				std::vector<double> d_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &d_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				std::cout << "ARRAY SIZE: " << d_array.size() << std::endl;
+				for (auto& item : d_array)
 				{
-					currentArray.push_back(d_array[i]);
+					currentArray.push_back(item);
 				}
-				delete[] d_array;
 			}
 			break;
 		}
