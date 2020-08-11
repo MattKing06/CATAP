@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE(EPICSToolTests)
 BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 {
 	std::cout << "*** RUNNING LISTENER TEST ***" << std::endl;
-	std::string pv = "VM-CLA-C2V-MAG-HCOR-01:GETSETI";
+	const std::string pv = "VM-CLA-C2V-MAG-HCOR-01:GETSETI";
 	EPICSTools epicsTools = EPICSTools();
 	epicsTools.monitor(pv);
 	// need to find a way to slow down the construction maybe?
@@ -28,6 +28,22 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 
 }
 
+BOOST_AUTO_TEST_CASE(epics_tools_listener_array_test)
+{
+	std::cout << "*** RUNNING LISTENER ARRAY TEST ***" << std::endl;
+	EPICSTools ET = EPICSTools();
+	const std::string pv = "VM-CLA-GUN-LRF-CTRL-01:app:time_vector";
+	ET.monitor(pv);
+	Listener& monitor = ET.getMonitor(pv);
+	boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
+	std::vector<double> data = monitor.getArray<double>();
+	BOOST_CHECK_EQUAL(data.size(), monitor.pv.COUNT);
+	for (auto& value : data)
+	{
+		BOOST_CHECK_NE(value, GlobalConstants::double_min);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 {
 	std::cout << "*** RUNNING LISTENER BUFFER TEST ***" << std::endl;
@@ -38,6 +54,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 	epicsTools.monitor(monPV);
 	epicsTools.put(setPV, 10.0);
 	epicsTools.put(powerPV, 1);
+	boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
 	Listener& monitor = epicsTools.getMonitor(monPV);
 	for (auto& item : monitor.currentBuffer)
 	{
