@@ -31,8 +31,6 @@ Getter::Getter(const Getter& copyGetter) :
 
 void Getter::setValueFromEPICS()
 {
-	// needs to have a c++ counterpart for each DBR type.
-	// also need to do array-types as well.
 	switch (pv.CHTYPE)
 	{
 		currentArray.clear();
@@ -140,9 +138,9 @@ void Getter::setValueFromEPICS()
 				std::vector<unsigned short> us_array;
 				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &us_array[0]);
 				EPICSInterface::sendToEPICS();
-				for (int i = 0; i < pv.COUNT; i++)
+				for (auto& item : us_array)
 				{
-					currentArray.push_back(us_array[i]);
+					currentArray.push_back(item);
 				}
 			}
 			break;
@@ -302,6 +300,11 @@ boost::python::object Getter::getValue_Py()
 	{
 		return static_cast<boost::python::object>(boost::get<long>(currentValue));
 	}
+	else
+	{
+		messenger.printMessage("Could not convert EPICS PV type into PyObject. Please contact support.");
+		return boost::python::object();
+	}
 }
 
 boost::python::list Getter::getArray_Py()
@@ -361,5 +364,10 @@ boost::python::list Getter::getArray_Py()
 			l_vec.push_back(boost::get<long>(item));
 		}
 		return to_py_list(l_vec);
+	}
+	else
+	{
+		messenger.printMessage("Could not convert EPICS PV type into PyObject. Please contact support.");
+		return boost::python::list();
 	}
 }

@@ -66,6 +66,11 @@ inline T Getter::getValue()
 	{
 		return boost::get<T>(currentValue);
 	}
+	else
+	{
+		messenger.printMessage(pvToGet, " count is more than one. Try calling getArray.");
+		return T();
+	}
 
 }
 
