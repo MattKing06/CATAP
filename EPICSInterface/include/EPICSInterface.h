@@ -57,7 +57,6 @@ public:
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of 
 	* the associated hardware object.*/
 	std::string ownerName;
-	
 	// We also need to create a STATIC messenger in derived epicsinterface claases, 
 	LoggingSystem messenger;
 	/*! turns debug messaging on for this EPICSInterface instance*/
@@ -124,13 +123,6 @@ public:
 		return static_cast<hardwareType*>(args.usr);
 	}
 
-
-
-
-	// functiOns to return a pair<timestamp, TYPE > for simple types 
-	//static std::pair<epicsTimeStamp, int>    returnTSVFromArgsInt(const struct event_handler_args& args);
-	//static std::pair<epicsTimeStamp, double> (const struct event_handler_args& args);
-
 	/*! Casts the value from EPICS (in args object) to a double
 	* @param[in] args : The object returned by EPICS containing the new PV value
 	* @param[out] value : The value from EPICS cast as a double.*/
@@ -142,7 +134,7 @@ public:
 	/*! Casts the value from EPICS (in args object) to a long
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a long.*/
-	static long returnValueFromArgsAslong(const struct event_handler_args args);
+	static long returnValueFromArgsAsLong(const struct event_handler_args args);
 	/*! Casts the value from EPICS (in args object) to a float
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a float.*/
@@ -191,37 +183,58 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
-
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, int pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
-
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampUShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, unsigned short>& pairToUpdate);
-	// sometimes you have to return a pair<timestamp,int> and then choose a STAT based On the int
-	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, long pair and sets the Hardware parameter to that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, std::string pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampStringPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::string>& pairToUpdate);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, float pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampFloatPair(const struct event_handler_args& args, std::pair < epicsTimeStamp, float>& pairToUpdate);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
-
-	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size);
-	static void updateTimeStampIntegerVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size);
-	static void updateTimeStampLongVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<long>>& pairToUpdate, long size);
-	static void updateTimeStampFloatVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<float>>& pairToUpdate, long size);
-	static void updateTimeStampEnumVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<unsigned short>>& pairToUpdate, long size);
-	static void updateTimeStampStringVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<std::string>>& pairToUpdate, long size);
-	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
-	static void updateTimeStampStringPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::string>& pairToUpdate);
-	static void updateTimeStampFloatPair(const struct event_handler_args& args, std::pair < epicsTimeStamp, float>& pairToUpdate);
 	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<double> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<int> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampIntegerVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<long> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampLongVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<long>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<float> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampFloatVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<float>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<unsigned short> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampEnumVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<unsigned short>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<std::string> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampStringVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<std::string>>& pairToUpdate, long size);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and returns the pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	 * @param[out] pair : The value and timestamp from EPICS cast as a epicsTimeStamp, short pair. */
 	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair (enum) and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short (enum) value returned from EPICS */
 	static std::pair<epicsTimeStamp, int> getTimeStampEnumPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the double value returned from EPICS */
 	static std::pair<epicsTimeStamp, double> getTimeStampDoublePair(const struct event_handler_args& args);
-	// Add in some more for vectors as we need them ... 
-
-
-	// TODO: what should this functiOn return? and how should that get passed to PYTHON users???
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
+	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
 	/*! Send a value to an EPICS PV over Channel Access using ca_put. 
 	* @param[in] pvStruct : Contains the PV we want to put a value to. 
 	* @param[in] value : The value we want to ca_put.*/

@@ -417,7 +417,7 @@ double EPICSInterface::returnValueFromArgsAsDouble(const event_handler_args args
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_double*)(args.dbr);
 	return double(timeObject->value);
@@ -427,17 +427,17 @@ STATE EPICSInterface::returnValueFromArgsAsState(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_enum*)(args.dbr);
 	return STATE(timeObject->value);
 }
 
-long EPICSInterface::returnValueFromArgsAslong(const event_handler_args args)
+long EPICSInterface::returnValueFromArgsAsLong(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_long*)(args.dbr);
 	return long(timeObject->value);
@@ -447,7 +447,7 @@ float EPICSInterface::returnValueFromArgsAsFloat(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_float*)(args.dbr);
 	return float(timeObject->value);
@@ -457,18 +457,18 @@ std::vector<double> EPICSInterface::returnValueFromArgsAsDoubleVector(const stru
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_double*)(args.dbr);
 	size_t i = 0;
 	auto elementCount = ca_element_count(args.chid);
-	std::vector<double> rawVectorCOntainer(elementCount);
-	for (auto&& it : rawVectorCOntainer)
+	std::vector<double> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
 	{
 		it = *(&timeObject->value + i);
 		++i;
 	}
-	return rawVectorCOntainer;
+	return rawVectorContainer;
 }
 
 std::vector<int> EPICSInterface::returnValueFromArgsAsIntVector(const event_handler_args args)
