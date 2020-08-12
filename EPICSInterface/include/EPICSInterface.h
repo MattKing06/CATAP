@@ -151,6 +151,27 @@ public:
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a vector of doubles.*/
 	static std::vector<double> returnValueFromArgsAsDoubleVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of integers
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of integers.*/
+	static std::vector<int> returnValueFromArgsAsIntVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of floats
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of floats.*/
+	static std::vector<float> returnValueFromArgsAsFloatVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of longs
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of longs.*/
+	static std::vector<long> returnValueFromArgsAsLongVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of unsigned shorts
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of unsigned shorts.*/
+	static std::vector<unsigned short> returnValueFromArgsAsEnumVector(const struct event_handler_args);
+	/*! Casts the value from EPICS (in args object) to a vector of std::strings
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of std::strings.*/
+	static std::vector<std::string> returnValueFromArgsAsStringVector(const struct event_handler_args);
+
 	/*! Casts the value from EPICS (in args object) to a std::string
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a std::string.*/
@@ -181,7 +202,12 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 
-	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size);
+	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size);
+	static void updateTimeStampIntegerVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size);
+	static void updateTimeStampLongVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<long>>& pairToUpdate, long size);
+	static void updateTimeStampFloatVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<float>>& pairToUpdate, long size);
+	static void updateTimeStampEnumVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<unsigned short>>& pairToUpdate, long size);
+	static void updateTimeStampStringVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<std::string>>& pairToUpdate, long size);
 	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
 	static void updateTimeStampStringPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::string>& pairToUpdate);
 	static void updateTimeStampFloatPair(const struct event_handler_args& args, std::pair < epicsTimeStamp, float>& pairToUpdate);
