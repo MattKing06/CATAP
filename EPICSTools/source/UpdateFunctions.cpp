@@ -206,27 +206,59 @@ void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
 	recastListener->callCount++;
 	std::pair<epicsTimeStamp, std::vector<double>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampDoubleVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
-	std::cout << "SETTING ARRAY" << std::endl;
 	recastListener->setArray(pairToUpdate.second);
-	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED: ", recastListener->currentArray.size());
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
 void UpdateFunctionHolder::updateIntegerArray(const event_handler_args args)
 {
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
+	std::pair<epicsTimeStamp, std::vector<int>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampIntegerVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	recastListener->setArray(pairToUpdate.second);
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
 void UpdateFunctionHolder::updateEnumArray(const event_handler_args args)
 {
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
+	std::pair<epicsTimeStamp, std::vector<unsigned short>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampEnumVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	recastListener->setArray(pairToUpdate.second);
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
+
 }
 
 void UpdateFunctionHolder::updateFloatArray(const event_handler_args args)
 {
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
+	std::pair<epicsTimeStamp, std::vector<float>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampFloatVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	recastListener->setArray(pairToUpdate.second);
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
+
 }
 
 void UpdateFunctionHolder::updateLongArray(const event_handler_args args)
 {
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
+	std::pair<epicsTimeStamp, std::vector<long>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampLongVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	recastListener->setArray(pairToUpdate.second);
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
 void UpdateFunctionHolder::updateStringArray(const event_handler_args args)
 {
+	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+	recastListener->callCount++;
+	std::pair<epicsTimeStamp, std::vector<std::string>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampStringVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	recastListener->setArray(pairToUpdate.second);
+	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
+
 }
