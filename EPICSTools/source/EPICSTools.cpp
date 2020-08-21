@@ -209,6 +209,20 @@ void EPICSTools::put_Py(boost::python::dict pvAndValueDict)
 
 }
 
+void EPICSTools::putArray_Py(const std::string& pv, boost::python::list py_Array)
+{
+	if (GlobalFunctions::entryExists(putterMap, pv))
+	{
+		putterMap[pv].putArray_Py(py_Array);
+	}
+	else
+	{
+		putterMap[pv] = Putter(pv);
+		EPICSInterface::sendToEPICS();
+		return putterMap[pv].putArray_Py(py_Array);
+	}
+}
+
 void EPICSTools::put_Py(const std::string& pv, boost::python::object value)
 {
 	if (GlobalFunctions::entryExists(putterMap, pv))
