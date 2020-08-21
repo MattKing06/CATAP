@@ -27,9 +27,12 @@ public:
 	//and use appropriate boost::python::Extract template to put value
 	//from a python object..
 
-	void put_Py(boost::python::object value);
+	void put_Py(boost::python::object pyValue);
+	void putArray_Py(boost::python::list pyValue);
 	template <typename T>
 	void put(T value);
+	template <typename T>
+	void put(std::vector<T> value);
 	EPICSInterface_sptr epicsInterface;
 	STATE mode;
 	LoggingSystem messenger;
@@ -41,6 +44,12 @@ template<typename T>
 inline void Putter::put(T value)
 {
 	epicsInterface->putValue<T>(pv, value);
+}
+
+template<typename T>
+inline void Putter::put(std::vector<T> value)
+{
+	epicsInterface->putArray<T>(pv, value);
 }
 
 #endif //PUTTER_H
