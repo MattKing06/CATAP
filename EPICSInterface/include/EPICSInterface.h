@@ -239,6 +239,28 @@ public:
 	* @param[in] pvStruct : Contains the PV we want to put a value to. 
 	* @param[in] value : The value we want to ca_put.*/
 	template<typename T>
+	void putArray(const pvStruct& pvStruct, const std::vector<T>& value) const
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			if (ca_write_access(pvStruct.CHID))
+			{
+				int status = ca_array_put(pvStruct.CHTYPE, pvStruct.COUNT, pvStruct.CHID, &value[0]);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+			}
+			else
+			{
+				messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
+			}
+		}
+		else
+		{
+			messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
+		}
+	}
+	template<typename T>
 	void putValue(const pvStruct& pvStruct, const T& value) const
 	{
 		if (ca_state(pvStruct.CHID) == cs_conn)
@@ -254,6 +276,10 @@ public:
 			{
 				messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
 			}
+		}
+		else
+		{
+			messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
 		}
 	}
 
