@@ -48,7 +48,6 @@ controls_information:
         HDF_FileNumber    : EBT-INJ-DIA-CAM-02:HDF:FileNumber
         HDF_WriteFile    : EBT-INJ-DIA-CAM-02:HDF:WriteFile
         CAM_Acquire    : EBT-INJ-DIA-CAM-02:CAM:Acquire
-        CAM_Acquire    : EBT-INJ-DIA-CAM-02:CAM:Acquire
         HDF_Capture    : EBT-INJ-DIA-CAM-02:HDF:Capture
         HDF_NumCapture    : EBT-INJ-DIA-CAM-02:HDF:NumCapture
         MAGICK_FileName    : EBT-INJ-DIA-CAM-02:MAGICK:FileName

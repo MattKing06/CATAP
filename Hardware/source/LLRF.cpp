@@ -1165,6 +1165,40 @@ std::string LLRF::getTraceFromChannelData(const std::string& channel_data) const
 
 
 
+std::map<std::string, std::string> LLRF::getLLRFStateMap()const
+{
+	std::map<std::string, std::string> r;
+	std::map<std::string, std::string> temp;
+
+
+	
+	for (auto&& trace : trace_data_map)
+	{
+		getMeanStartIndex(trace);
+
+
+	}
+
+
+
+
+
+	return r;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

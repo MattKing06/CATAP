@@ -132,7 +132,6 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 			//return false;
 		}
 	}
-
 	if (print_properties)
 	{
 		messenger.printDebugMessage("property Errors found, printing all discovered properties ");		
@@ -151,7 +150,6 @@ std::vector<std::string> ConfigReader::compareFileWithTemplate(const YAML::Node&
 				keyAndValuePair.second.as<std::string>());
 		}
 	}
-
 	return missingEntries;
 }
 
@@ -276,10 +274,6 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		//{
 		//	mode = STATE::OFFLINE;
 		//}
-
-
-
-
 		return pvAndRecordPair;
 	}
 	else
@@ -289,7 +283,6 @@ const std::pair<std::string, std::string> ConfigReader::extractControlsInformati
 		// but should really be handled better maybe??
 		return std::pair<std::string, std::string>();
 	}
-
 }
 
 

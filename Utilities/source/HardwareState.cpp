@@ -12,6 +12,11 @@ HardwareState::~HardwareState()
 {
 }
 
+
+
+
+
+
 std::map<std::string, std::string> HardwareState::readStateFromYaml()
 {
 	return std::map<std::string, std::string>();

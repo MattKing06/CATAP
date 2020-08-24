@@ -183,11 +183,7 @@ public:
 	double getMeanStartTime(const std::string& name)const;
 	double getMeanStopTime(const std::string& name)const;
 
-
-
-
-
-
+	std::map<std::string, std::string> getLLRFStateMap()const;
 
 	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
 
@@ -224,14 +220,11 @@ protected:
 
 
 private:
-	
 	double crest_phase;
 	double operating_phase;
-
 	/*! alternative names for the magnet (usually shorter thna the full PV root), 
 		defined in the master lattice yaml file	*/
 	std::vector<std::string> aliases;
-		
 
 	// we have some maps to store the trace_data and ACQM and SCAN states  
 	// the ACQM and SCAN have many more traces than we ever typically use here, that is why they 
