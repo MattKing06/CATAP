@@ -223,6 +223,166 @@ void EPICSTools::putArray_Py(const std::string& pv, boost::python::list py_Array
 	}
 }
 
+int EPICSTools::getCount(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return int(getterMap[pv].pv.COUNT);
+	}
+	else if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		return int(listenerMap[pv].pv.COUNT);
+	}
+	else if (GlobalFunctions::entryExists(putterMap, pv))
+	{
+		return int(putterMap[pv].pv.COUNT);
+	}
+}
+
+std::string EPICSTools::getType(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		switch (getterMap[pv].pv.CHTYPE)
+		{
+			case(DBR_DOUBLE):
+				return std::string("DBR_DOUBLE");
+				break;
+			case(DBR_INT):
+				return std::string("DBR_INT");
+				break;
+			case(DBR_FLOAT):
+				return std::string("DBR_FLOAT");
+				break;
+			case(DBR_LONG):
+				return std::string("DBR_LONG");
+				break;
+			case(DBR_ENUM):
+				return std::string("DBR_ENUM");
+				break;
+			case(DBR_CHAR):
+				return std::string("DBR_CHAR");
+				break;
+			case(DBR_STRING):
+				return std::string("DBR_STRING");
+				break;
+			default:
+				return std::string("UNKNOWN TYPE");
+				break;
+		}
+	}
+	else if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		switch (listenerMap[pv].pv.CHTYPE)
+		{
+		case(DBR_DOUBLE):
+			return std::string("DBR_DOUBLE");
+			break;
+		case(DBR_INT):
+			return std::string("DBR_INT");
+			break;
+		case(DBR_FLOAT):
+			return std::string("DBR_FLOAT");
+			break;
+		case(DBR_LONG):
+			return std::string("DBR_LONG");
+			break;
+		case(DBR_ENUM):
+			return std::string("DBR_ENUM");
+			break;
+		case(DBR_CHAR):
+			return std::string("DBR_CHAR");
+			break;
+		case(DBR_STRING):
+			return std::string("DBR_STRING");
+			break;
+		default:
+			return std::string("UNKNOWN TYPE");
+			break;
+		}
+	}
+	else if (GlobalFunctions::entryExists(putterMap, pv))
+	{
+		switch (putterMap[pv].pv.CHTYPE)
+		{
+		case(DBR_DOUBLE):
+			return std::string("DBR_DOUBLE");
+			break;
+		case(DBR_INT):
+			return std::string("DBR_INT");
+			break;
+		case(DBR_FLOAT):
+			return std::string("DBR_FLOAT");
+			break;
+		case(DBR_LONG):
+			return std::string("DBR_LONG");
+			break;
+		case(DBR_ENUM):
+			return std::string("DBR_ENUM");
+			break;
+		case(DBR_CHAR):
+			return std::string("DBR_CHAR");
+			break;
+		case(DBR_STRING):
+			return std::string("DBR_STRING");
+			break;
+		default:
+			return std::string("UNKNOWN TYPE");
+			break;
+		}
+	}
+}
+
+std::string EPICSTools::getMonitorType(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		switch (listenerMap[pv].pv.monitorCHTYPE)
+		{
+		case(DBR_TIME_DOUBLE):
+			return std::string("DBR_TIME_DOUBLE");
+			break;
+		case(DBR_TIME_INT):
+			return std::string("DBR_TIME_INT");
+			break;
+		case(DBR_TIME_FLOAT):
+			return std::string("DBR_TIME_FLOAT");
+			break;
+		case(DBR_TIME_LONG):
+			return std::string("DBR_TIME_LONG");
+			break;
+		case(DBR_TIME_ENUM):
+			return std::string("DBR_TIME_ENUM");
+			break;
+		case(DBR_TIME_CHAR):
+			return std::string("DBR_TIME_CHAR");
+			break;
+		case(DBR_TIME_STRING):
+			return std::string("DBR_TIME_STRING");
+			break;
+		default:
+			return std::string("UNKNOWN TYPE");
+			break;
+		}
+	}
+}
+
+boost::python::dict EPICSTools::getEPICSInfo(const std::string& pv)
+{
+	boost::python::dict returnDict;
+	returnDict["NAME"] = pv;
+	returnDict["COUNT"] = getCount(pv);
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		returnDict["MONITOR_TYPE"] = getMonitorType(pv);
+	}
+	else
+	{
+		returnDict["TYPE"] = getType(pv);
+	}
+	return returnDict;
+}
+
 void EPICSTools::put_Py(const std::string& pv, boost::python::object value)
 {
 	if (GlobalFunctions::entryExists(putterMap, pv))

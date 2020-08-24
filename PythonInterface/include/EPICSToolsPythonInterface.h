@@ -54,6 +54,9 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getBuffer", getBuffer_multiple)
 			.def("getBufferAverage", getBufferAverage_single)
 			.def("getBufferAverage", getBufferAverage_multiple)
+			.def("getCount", &EPICSTools::getCount)
+			.def("getType", &EPICSTools::getType)
+			.def("getEPICSInfo", &EPICSTools::getEPICSInfo)
 			;
 	}
 

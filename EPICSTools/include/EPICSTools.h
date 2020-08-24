@@ -41,6 +41,10 @@ public:
 	void put_Py(const std::string& pv, boost::python::object value);
 	void put_Py(boost::python::dict pvAndValueDict);
 	void putArray_Py(const std::string& pv, boost::python::list py_Array);
+	int getCount(const std::string& pv);
+	std::string getType(const std::string& pv);
+	std::string getMonitorType(const std::string& pv);
+	boost::python::dict getEPICSInfo(const std::string& pv);
 	STATE mode;
 	std::map<std::string, Listener> listenerMap;
 	std::map<std::string, Getter> getterMap;
