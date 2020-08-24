@@ -30,6 +30,8 @@ public:
 	boost::python::list getBuffer_Py(const std::string& pv);
 	boost::python::dict getBuffer_Py(boost::python::list pvList);
 	double getBufferAverage_Py(const std::string& pv);
+	double getBufferStdDeviation(const std::string& pv);
+	boost::python::dict getBufferStdDeviation_Py(boost::python::list pvList);
 	boost::python::dict getBufferAverage_Py(boost::python::list pvList);
 	template <typename T>
 	T get(const std::string& pv);

@@ -99,6 +99,37 @@ double EPICSTools::getBufferAverage_Py(const std::string& pv)
 	}
 }
 
+double EPICSTools::getBufferStdDeviation(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		return listenerMap[pv].getBufferStdDeviation();
+	}
+	else
+	{
+		listenerMap[pv] = Listener(pv);
+		return listenerMap[pv].getBufferStdDeviation();
+	}
+}
+
+boost::python::dict EPICSTools::getBufferStdDeviation_Py(boost::python::list pvList)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
+	std::map<std::string, double> pvStdDeviationMap;
+	for (auto& pv : namesVec)
+	{
+		if (GlobalFunctions::entryExists(listenerMap, pv))
+		{
+			pvStdDeviationMap[pv] = getBufferStdDeviation(pv);
+		}
+		else
+		{
+			pvStdDeviationMap[pv] = std::numeric_limits<double>::min();
+		}
+	}
+	return to_py_dict(pvStdDeviationMap);
+}
+
 boost::python::dict EPICSTools::getBufferAverage_Py(boost::python::list pvList)
 {
 	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);

@@ -35,6 +35,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		boost::python::dict(EPICSTools:: * getBuffer_multiple)(boost::python::list) = &EPICSTools::getBuffer_Py;
 		double(EPICSTools:: * getBufferAverage_single)(const std::string&) = &EPICSTools::getBufferAverage_Py;
 		boost::python::dict(EPICSTools:: * getBufferAverage_multiple)(boost::python::list) = &EPICSTools::getBufferAverage_Py;
+		double(EPICSTools:: * getBufferStdDeviation_single)(const std::string&) = &EPICSTools::getBufferStdDeviation;
+		boost::python::dict(EPICSTools:: * getBufferStdDeviation_multiple)(boost::python::list) = &EPICSTools::getBufferStdDeviation_Py;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
 			.def(boost::python::init<>())
 			.def(boost::python::init<STATE>())
@@ -54,6 +56,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getBuffer", getBuffer_multiple)
 			.def("getBufferAverage", getBufferAverage_single)
 			.def("getBufferAverage", getBufferAverage_multiple)
+			.def("getBufferStdDev", getBufferStdDeviation_single)
+			.def("getBufferStdDev", getBufferStdDeviation_multiple)
 			.def("getCount", &EPICSTools::getCount)
 			.def("getType", &EPICSTools::getType)
 			.def("getEPICSInfo", &EPICSTools::getEPICSInfo)

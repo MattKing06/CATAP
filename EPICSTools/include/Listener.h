@@ -54,6 +54,7 @@ public:
 	boost::circular_buffer<T> getBuffer();
 	boost::python::list getBuffer_Py();
 	double getBufferAverage();
+	double getBufferStdDeviation();
 	bool isLong();
 	bool isDouble();
 	bool isInt();

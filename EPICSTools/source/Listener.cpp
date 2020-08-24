@@ -256,6 +256,25 @@ double Listener::getBufferAverage()
 
 }
 
+double Listener::getBufferStdDeviation()
+{
+	if (!isStringBuffer() && !isEnumBuffer())
+	{
+		double mean = getBufferAverage();
+		double sum = 0.0;
+		for (auto& item : currentBuffer)
+		{
+			sum += std::pow((boost::get<double>(item) - mean),2);
+		}
+		return std::sqrt((sum / currentBuffer.size()));
+	}
+	else
+	{
+		messenger.printMessage("Cannot perform average on String or Enum types.");
+	}
+
+}
+
 bool Listener::isLong()
 {
 	return (currentValue.type() == typeid(long));
