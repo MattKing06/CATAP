@@ -28,6 +28,7 @@ public:
 	std::vector<std::string> getAllMonitorNames();
 	boost::python::list getAllMonitorNames_Py();
 	boost::python::list getBuffer_Py(const std::string& pv);
+	boost::python::list getArrayBuffer_Py(const std::string& pv);
 	boost::python::dict getBuffer_Py(boost::python::list pvList);
 	double getBufferAverage_Py(const std::string& pv);
 	double getBufferStdDeviation(const std::string& pv);

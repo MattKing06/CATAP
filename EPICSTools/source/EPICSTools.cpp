@@ -75,6 +75,14 @@ boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
 	}
 }
 
+boost::python::list EPICSTools::getArrayBuffer_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		return listenerMap[pv].getArrayBuffer_Py();
+	}
+}
+
 boost::python::dict EPICSTools::getBuffer_Py(boost::python::list pvList)
 {
 	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
