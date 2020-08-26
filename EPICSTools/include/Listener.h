@@ -49,10 +49,15 @@ public:
 	boost::variant<double,float,long,int,unsigned short,std::string> currentValue;
 	std::vector<boost::variant<double, float, long, int, unsigned short, std::string> > currentArray;
 	boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> > currentBuffer;
+	boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>> currentArrayBuffer;
 	void setBufferSize(int size);
+	void setArrayBufferSize(int size);
 	template<typename T>
 	boost::circular_buffer<T> getBuffer();
 	boost::python::list getBuffer_Py();
+	template<typename T>
+	boost::circular_buffer<std::vector<T>> getArrayBuffer();
+	boost::python::list getArrayBuffer_Py();
 	double getBufferAverage();
 	double getBufferStdDeviation();
 	bool isLong();
@@ -73,6 +78,12 @@ public:
 	bool isEnumBuffer();
 	bool isStringBuffer();
 	bool isFloatBuffer();
+	bool isDoubleArrayBuffer();
+	bool isIntArrayBuffer();
+	bool isLongArrayBuffer();
+	bool isEnumArrayBuffer();
+	bool isStringArrayBuffer();
+	bool isFloatArrayBuffer();
 	int callCount;
 };
 
@@ -121,6 +132,12 @@ inline boost::circular_buffer<T> Listener::getBuffer()
 {
 	auto returnBuffer = boost::get<boost::circular_buffer<T>>(currentBuffer);
 	return returnBuffer;
+}
+
+template<typename T>
+inline boost::circular_buffer<std::vector<T>> Listener::getArrayBuffer()
+{
+	return boost::circular_buffer<std::vector<T>>(currentArrayBuffer);
 }
 
 

@@ -207,6 +207,13 @@ void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<double>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampDoubleVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
+	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	for (auto& item : pairToUpdate.second)
+	{
+		bufferVec.push_back(item);
+	}
+	recastListener->currentArrayBuffer.push_back(bufferVec);
+	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
@@ -217,6 +224,13 @@ void UpdateFunctionHolder::updateIntegerArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<int>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampIntegerVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
+	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	for (auto& item : pairToUpdate.second)
+	{
+		bufferVec.push_back(item);
+	}
+	recastListener->currentArrayBuffer.push_back(bufferVec);
+	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
@@ -238,6 +252,13 @@ void UpdateFunctionHolder::updateFloatArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<float>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampFloatVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
+	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	for (auto& item : pairToUpdate.second)
+	{
+		bufferVec.push_back(item);
+	}
+	recastListener->currentArrayBuffer.push_back(bufferVec);
+	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 
 }
@@ -249,6 +270,13 @@ void UpdateFunctionHolder::updateLongArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<long>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampLongVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
+	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	for (auto& item : pairToUpdate.second)
+	{
+		bufferVec.push_back(item);
+	}
+	recastListener->currentArrayBuffer.push_back(bufferVec);
+	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 

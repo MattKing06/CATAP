@@ -11,6 +11,7 @@ Listener::Listener(std::string pvStr)
 	currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
 	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
+	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>(10)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0),
@@ -25,6 +26,7 @@ Listener::Listener(std::string pvStr, STATE mode)
 	 currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
 	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
+	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>()),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0)
@@ -39,6 +41,7 @@ Listener::Listener(const Listener& copyListener)
 	currentValue(copyListener.currentValue),
 	currentArray(copyListener.currentArray),
 	currentBuffer(copyListener.currentBuffer),
+	currentArrayBuffer(copyListener.currentArrayBuffer),
 	messenger(copyListener.messenger),
 	epicsInterface(copyListener.epicsInterface),
 	updateFunctions(copyListener.updateFunctions),
@@ -160,6 +163,12 @@ void Listener::setBufferSize(int size)
 	messenger.printMessage("size of buffer is now: ", currentBuffer.capacity());
 }
 
+void Listener::setArrayBufferSize(int size)
+{
+	currentArrayBuffer.resize(size);
+	messenger.printMessage("size of array buffer is now: ", currentArrayBuffer.capacity());
+}
+
 boost::python::object Listener::getValue_Py()
 {
 	if (isDouble())
@@ -235,6 +244,85 @@ boost::python::list Listener::getBuffer_Py()
 			fltBuff.push_back(boost::get<float>(item));
 		}
 		return to_py_list(fltBuff);
+	}
+}
+
+boost::python::list Listener::getArrayBuffer_Py()
+{
+	if (isDoubleArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<double>> dblBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<double> bufferVec;
+			for (auto& item : vector)
+			{
+				bufferVec.push_back(boost::get<double>(item));
+			}
+			dblBuff.push_back(bufferVec);
+		}
+		return to_py_list(dblBuff);
+	}
+	else if (isIntArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<int>> intBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<int> bufferVec;
+			for (auto& item : vector)
+			{
+				bufferVec.push_back(boost::get<int>(item));
+			}
+			intBuff.push_back(bufferVec);
+		}
+		return to_py_list(intBuff);
+	}
+	else if (isEnumArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<unsigned short>> usBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<unsigned short> bufferVec;
+			for (auto& item : vector)
+			{
+				bufferVec.push_back(boost::get<unsigned short>(item));
+			}
+			usBuff.push_back(bufferVec);
+		}
+		return to_py_list(usBuff);
+	}
+	else if (isStringArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<std::string>> strBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<std::string> bufferVec;
+			for (auto& item : vector)
+			{
+				bufferVec.push_back(boost::get<std::string>(item));
+			}
+			strBuff.push_back(bufferVec);
+		}
+		return to_py_list(strBuff);
+	}
+	else if (isFloatArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<float>> floatBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<float> bufferVec;
+			for (auto& item : vector)
+			{
+				bufferVec.push_back(boost::get<float>(item));
+			}
+			floatBuff.push_back(bufferVec);
+		}
+		return to_py_list(floatBuff);
 	}
 }
 
@@ -364,4 +452,54 @@ bool Listener::isFloatBuffer()
 bool Listener::isLongBuffer()
 {
 	return(currentBuffer.at(0).type() == typeid(long));
+}
+
+bool Listener::isDoubleArrayBuffer()
+{
+	if (currentArrayBuffer.size() != 0)
+	{
+		std::cout << "IS DOUBLE BUFFER" << std::endl;
+		std::cout << "ARRAY BUFFER SIZE: " << currentArrayBuffer.size() << std::endl;
+		return(currentArrayBuffer.at(0).at(0).type() == typeid(double));
+	}
+}
+
+bool Listener::isLongArrayBuffer()
+{
+	if (currentArrayBuffer.size() != 0)
+	{
+		return(currentArrayBuffer.at(0).at(0).type() == typeid(long));
+	}
+}
+
+bool Listener::isFloatArrayBuffer()
+{
+	if (currentArrayBuffer.size() != 0)
+	{
+		return(currentArrayBuffer.at(0).at(0).type() == typeid(float));
+	}
+}
+
+bool Listener::isIntArrayBuffer()
+{
+	if (currentArrayBuffer.size() != 0)
+	{
+		return(currentArrayBuffer.at(0).at(0).type() == typeid(int));
+	}
+}
+
+bool Listener::isEnumArrayBuffer()
+{
+	if (currentArrayBuffer.size() != 0)
+	{
+		return(currentArrayBuffer.at(0).at(0).type() == typeid(unsigned short));
+	}
+}
+
+bool Listener::isStringArrayBuffer()
+{
+	if (currentArrayBuffer.size() != 0)
+	{
+		return(currentArrayBuffer.at(0).at(0).type() == typeid(std::string));
+	}
 }
