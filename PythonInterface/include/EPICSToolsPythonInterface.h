@@ -14,12 +14,14 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Listener>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
-		.add_property("PV", &Listener::pvToMonitor)
-		.def("getValue", &Listener::getValue_Py)
-		.def("getArray", &Listener::getArray_Py)
-		.def("setBufferSize", &Listener::setBufferSize)
-		.def("getBuffer", &Listener::getBuffer_Py)
-		.def("getBufferAverage", &Listener::getBufferAverage);
+			.add_property("PV", &Listener::pvToMonitor)
+			.def("getValue", &Listener::getValue_Py)
+			.def("getArray", &Listener::getArray_Py)
+			.def("setBufferSize", &Listener::setBufferSize)
+			.def("setArrayBufferSize", &Listener::setArrayBufferSize)
+			.def("getBuffer", &Listener::getBuffer_Py)
+			.def("getBufferAverage", &Listener::getBufferAverage)
+			.def("getArrayBuffer", &Listener::getArrayBuffer_Py);
 
 	}
 	void expose_epics_tools_object() 
@@ -54,6 +56,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("putArray", &EPICSTools::putArray_Py)
 			.def("getBuffer", getBuffer_single)
 			.def("getBuffer", getBuffer_multiple)
+			.def("getArrayBuffer", &EPICSTools::getArrayBuffer_Py)
 			.def("getBufferAverage", getBufferAverage_single)
 			.def("getBufferAverage", getBufferAverage_multiple)
 			.def("getBufferStdDev", getBufferStdDeviation_single)
