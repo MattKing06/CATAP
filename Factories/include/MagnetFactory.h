@@ -682,7 +682,7 @@ class MagnetFactory
 
 		LoggingSystem messenger;
 private:
-	// private surely! 
+
 		std::map<std::string, Magnet> magnetMap;
 
 

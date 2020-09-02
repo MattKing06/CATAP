@@ -1171,13 +1171,12 @@ std::map<std::string, std::string> LLRF::getLLRFStateMap()const
 	std::map<std::string, std::string> temp;
 
 
-	
-	for (auto&& trace : trace_data_map)
-	{
-		getMeanStartIndex(trace);
+	//for (auto&& trace : trace_data_map)
+	//{
+	//	getMeanStartIndex(trace);
 
 
-	}
+	//}
 
 
 
