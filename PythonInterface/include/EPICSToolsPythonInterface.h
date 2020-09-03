@@ -21,7 +21,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("setArrayBufferSize", &Listener::setArrayBufferSize)
 			.def("getBuffer", &Listener::getBuffer_Py)
 			.def("getBufferAverage", &Listener::getBufferAverage)
-			.def("getArrayBuffer", &Listener::getArrayBuffer_Py);
+			.def("getArrayBuffer", &Listener::getArrayBuffer_Py)
+			.def("getArrayBufferAverage", &Listener::getArrayBufferAverageArray_Py);
 
 	}
 	void expose_epics_tools_object() 
