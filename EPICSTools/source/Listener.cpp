@@ -5,9 +5,9 @@ Listener::Listener()
 {
 }
 
-Listener::Listener(std::string pvStr) 
-	: pvToMonitor(pvStr),
-	mode(STATE::UNKNOWN),
+Listener::Listener(const std::string& pvStr) 
+	:
+	mode(STATE::VIRTUAL),
 	currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
 	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
@@ -17,12 +17,12 @@ Listener::Listener(std::string pvStr)
 	callCount(0),
 	messenger(LoggingSystem(false,true))
 {
+	pvToMonitor = getEPICSPVName(pvStr);
 	setupChannels();
 }
 
-Listener::Listener(std::string pvStr, STATE mode)
-	: pvToMonitor(pvStr),
-	 mode(mode),
+Listener::Listener(const std::string& pvStr, const STATE& mode)
+	: mode(mode),
 	 currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
 	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
@@ -31,6 +31,7 @@ Listener::Listener(std::string pvStr, STATE mode)
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0)
 {
+	pvToMonitor = getEPICSPVName(pvStr);
 	setupChannels();
 }
 
@@ -65,6 +66,26 @@ void Listener::setupChannels()
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
 	EPICSInterface::sendToEPICS();
+}
+
+std::string Listener::getEPICSPVName(const std::string& pv)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		if (pv.find("VM-") != std::string::npos)
+		{
+			return pv;
+		}
+		else
+		{
+			std::string virtualName = "VM-" + pv;
+			return virtualName;
+		}
+	}
+	else
+	{
+		return pv;
+	}
 }
 
 void Listener::stopListening()
@@ -168,6 +189,32 @@ void Listener::setArrayBufferSize(int size)
 	currentArrayBuffer.resize(size);
 	messenger.printMessage("size of array buffer is now: ", currentArrayBuffer.capacity());
 }
+
+std::vector<double> Listener::getArrayBufferAverageArray()
+{
+	if (!isStringArrayBuffer() && !isEnumArrayBuffer())
+	{
+		std::vector<double> bufferAverageVector(pv.COUNT);
+		for (int i = 0; i < pv.COUNT; i++)
+		{
+			for (auto& vector : currentArrayBuffer)
+			{
+				bufferAverageVector.at(i) += boost::get<double>(vector.at(i));
+			}
+			bufferAverageVector.at(i) /= currentArrayBuffer.size();
+		}
+		return bufferAverageVector;
+	}
+}
+
+boost::python::list Listener::getArrayBufferAverageArray_Py()
+{
+	std::vector<double> bufferAverageVector = getArrayBufferAverageArray();
+	boost::python::list bufferAverageList = to_py_list(bufferAverageVector);
+	return bufferAverageList;
+}
+
+
 
 boost::python::object Listener::getValue_Py()
 {
@@ -325,6 +372,8 @@ boost::python::list Listener::getArrayBuffer_Py()
 		return to_py_list(floatBuff);
 	}
 }
+
+
 
 double Listener::getBufferAverage()
 {

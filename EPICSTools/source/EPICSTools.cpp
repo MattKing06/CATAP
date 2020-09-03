@@ -1,9 +1,7 @@
 #include <EPICSTools.h>
 
 EPICSTools::EPICSTools() :
-	listenerMap(std::map<std::string,Listener>()),
-	getterMap(std::map<std::string, Getter>()),
-	putterMap(std::map<std::string, Putter>())
+EPICSTools(STATE::VIRTUAL)
 {
 	//setup the ca_client_context to actually connect
 	// to EPICS server.., may need to be passed through
@@ -70,7 +68,7 @@ boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
 	}
 	else
 	{
-		listenerMap[pv] = Listener(pv);
+		listenerMap[pv] = Listener(pv, mode);
 		return listenerMap[pv].getBuffer_Py();
 	}
 }

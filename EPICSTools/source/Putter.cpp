@@ -8,19 +8,19 @@ Putter::Putter()
 
 Putter::Putter(const std::string& pv) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
-	pvToPut(pv),
-	mode(STATE::UNKNOWN),
+	mode(STATE::VIRTUAL),
 	messenger(LoggingSystem(false, true))
 {
+	pvToPut = getEPICSPVName(pv);
 	setupChannels();
 }
 
-Putter::Putter(STATE mode, const std::string& pv) :
+Putter::Putter(const std::string& pv, const STATE& mode) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
-	pvToPut(pv),
 	mode(mode),
 	messenger(LoggingSystem(false, true))
 {
+	pvToPut = getEPICSPVName(pv);
 	setupChannels();
 }
 
@@ -47,6 +47,27 @@ void Putter::setupChannels()
 	pv.MASK = DBE_VALUE;
 	EPICSInterface::sendToEPICS();
 }
+
+std::string Putter::getEPICSPVName(const std::string& pv)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		if (pv.find("VM-") != std::string::npos)
+		{
+			return pv;
+		}
+		else
+		{
+			std::string virtualName = "VM-" + pv;
+			return virtualName;
+		}
+	}
+	else
+	{
+		return pv;
+	}
+}
+
 
 void Putter::putArray_Py(boost::python::list pyValue)
 {

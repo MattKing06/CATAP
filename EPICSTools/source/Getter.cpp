@@ -8,10 +8,25 @@ Getter::Getter()
 
 Getter::Getter(const std::string& pvStr) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
-	pvToGet(pvStr),
-	mode(STATE::UNKNOWN),
+	mode(STATE::VIRTUAL),
 	currentValue(boost::variant<double, int, float, long, unsigned short, std::string>())
 {
+	pvToGet = getEPICSPVName(pvStr);
+	//fill in constructor to setup epicsInterface
+	std::cout << "creating getter" << std::endl;
+	currentArray = std::vector<boost::variant<double, int, long, float, unsigned short, std::string>>();
+	setupChannels();
+	std::cout << "channels setup" << std::endl;
+	setValueFromEPICS();
+	std::cout << "setting EPICS value" << std::endl;
+}
+
+Getter::Getter(const std::string& pvStr, const STATE& mode) :
+	epicsInterface(boost::make_shared<EPICSInterface>()),
+	mode(mode),
+	currentValue(boost::variant<double, int, float, long, unsigned short, std::string>())
+{
+	pvToGet = getEPICSPVName(pvStr);
 	//fill in constructor to setup epicsInterface
 	std::cout << "creating getter" << std::endl;
 	currentArray = std::vector<boost::variant<double, int, long, float, unsigned short, std::string>>();
@@ -27,6 +42,26 @@ Getter::Getter(const Getter& copyGetter) :
 	currentValue(copyGetter.currentValue),
 	currentArray(copyGetter.currentArray)
 {
+}
+
+std::string Getter::getEPICSPVName(const std::string& pv)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		if (pv.find("VM-") != std::string::npos)
+		{
+			return pv;
+		}
+		else
+		{
+			std::string virtualName = "VM-" + pv;
+			return virtualName;
+		}
+	}
+	else
+	{
+		return pv;
+	}
 }
 
 void Getter::setValueFromEPICS()
@@ -267,10 +302,6 @@ void Getter::setupChannels()
 	pv.MASK = DBE_VALUE;
 	EPICSInterface::sendToEPICS();
 
-}
-
-Getter::Getter(const std::string& pvStr, const STATE& mode)
-{
 }
 
 boost::python::object Getter::getValue_Py()

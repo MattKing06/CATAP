@@ -13,6 +13,11 @@
 #include <boost/variant.hpp>
 #include <boost/core/typeinfo.hpp>
 
+/** @addtogroup epicsTools
+ *@{*/
+ /*! Getter
+ */
+
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 
@@ -26,6 +31,10 @@ public:
 	Getter(const std::string& pvStr, const STATE& mode);
 	Getter(const Getter& getter);
 	void setupChannels();
+	/*! Prepends VM- to the given pv
+		@param[in] pv : The name of the PV to virtualize
+		@param[out] virtualPV : pv with VM- prepended to it*/
+	std::string getEPICSPVName(const std::string& pv);
 	void setValueFromEPICS();
 	template <typename T>
 	T getValue();
@@ -90,3 +99,5 @@ inline std::vector<T> Getter::getArray()
 }
 
 #endif // GETTER_H
+
+/**@}*/

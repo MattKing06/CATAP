@@ -17,6 +17,11 @@
 #include <boost/make_shared.hpp>
 
 
+/** @addtogroup epicsTools
+ *@{*/
+ /*! Listener
+ */
+
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 
@@ -24,11 +29,15 @@ class Listener
 {
 public:
 	Listener();
-	Listener(std::string pvStr);
-	Listener(std::string pvStr, STATE mode);
+	Listener(const std::string& pvStr);
+	Listener(const std::string& pvStr, const STATE& mode);
 	Listener(const Listener& listener);
 	UpdateFunctionHolder updateFunctions;
 	void setupChannels();
+	/*! Prepends VM- to the given pv
+		@param[in] pv : The name of the PV to virtualize
+		@param[out] virtualPV : pv with VM- prepended to it*/
+	std::string getEPICSPVName(const std::string& pv);
 	void stopListening();
 	void startListening();
 	template<typename T>
@@ -52,6 +61,8 @@ public:
 	boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>> currentArrayBuffer;
 	void setBufferSize(int size);
 	void setArrayBufferSize(int size);
+	std::vector<double> getArrayBufferAverageArray();
+	boost::python::list getArrayBufferAverageArray_Py();
 	template<typename T>
 	boost::circular_buffer<T> getBuffer();
 	boost::python::list getBuffer_Py();
@@ -140,6 +151,5 @@ inline boost::circular_buffer<std::vector<T>> Listener::getArrayBuffer()
 	return boost::circular_buffer<std::vector<T>>(currentArrayBuffer);
 }
 
-
 #endif //LISTENER_H
-
+/**@}*/

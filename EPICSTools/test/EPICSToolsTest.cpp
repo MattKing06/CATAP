@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE(EPICSToolTests)
 BOOST_AUTO_TEST_CASE(epics_tools_listener_test)
 {
 	std::cout << "*** RUNNING LISTENER TEST ***" << std::endl;
-	const std::string pv = "VM-CLA-C2V-MAG-HCOR-01:GETSETI";
+	const std::string pv = "CLA-C2V-MAG-HCOR-01:GETSETI";
 	EPICSTools epicsTools = EPICSTools();
 	epicsTools.monitor(pv);
 	// need to find a way to slow down the construction maybe?
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_array_test)
 {
 	std::cout << "*** RUNNING LISTENER ARRAY TEST ***" << std::endl;
 	EPICSTools ET = EPICSTools();
-	const std::string pv = "VM-CLA-GUN-LRF-CTRL-01:app:time_vector";
+	const std::string pv = "CLA-GUN-LRF-CTRL-01:app:time_vector";
 	ET.monitor(pv);
 	Listener& monitor = ET.getMonitor(pv);
 	boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
@@ -47,9 +47,9 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_array_test)
 BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 {
 	std::cout << "*** RUNNING LISTENER BUFFER TEST ***" << std::endl;
-	std::string monPV = "VM-CLA-C2V-MAG-HCOR-01:READI";
-	std::string powerPV = "VM-CLA-C2V-MAG-HCOR-01:SPOWER";
-	std::string setPV = "VM-CLA-C2V-MAG-HCOR-01:SETI";
+	std::string monPV = "CLA-C2V-MAG-HCOR-01:READI";
+	std::string powerPV = "CLA-C2V-MAG-HCOR-01:SPOWER";
+	std::string setPV = "CLA-C2V-MAG-HCOR-01:SETI";
 	EPICSTools epicsTools = EPICSTools();
 	epicsTools.monitor(monPV);
 	epicsTools.put(setPV, 10.0);
@@ -65,13 +65,13 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
 {
 	std::cout << "*** RUNNING PUTTER TEST ***" << std::endl;
-	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:SETI";
-	std::string checkPvStr = "VM-CLA-C2V-MAG-HCOR-01:GETSETI";
+	std::string pvStr = "CLA-C2V-MAG-HCOR-01:SETI";
+	std::string checkPvStr = "CLA-C2V-MAG-HCOR-01:GETSETI";
 	EPICSTools epicsTools = EPICSTools();
 	pvStruct pv = pvStruct();
 	pv.fullPVName = pvStr;
 	pv.monitor = false;
-	ca_create_channel(pvStr.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pv.CHID);
+	ca_create_channel(std::string("VM-").append(pvStr.c_str()).c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pv.CHID);
 	EPICSInterface::sendToEPICS();
 	if (ca_state(pv.CHID) == cs_conn)
 	{
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
 BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 {
 	std::cout << "*** RUNNING GETTER TEST ***" << std::endl;
-	std::string pvStr = "VM-CLA-C2V-MAG-HCOR-01:RILK";
+	std::string pvStr = "CLA-C2V-MAG-HCOR-01:RILK";
 	EPICSTools epicsTools = EPICSTools();
 	// creating CHID to check ca_state as .get function
 	// sets up channels AND retrieves EPICS value which
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 	pvStruct pv = pvStruct();
 	pv.fullPVName = pvStr;
 	pv.monitor = false;
-	ca_create_channel(pvStr.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pv.CHID);
+	ca_create_channel(std::string("VM-").append(pvStr.c_str()).c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pv.CHID);
 	EPICSInterface::sendToEPICS();
 	// need to check CHID state without constructing get...
 	if (ca_state(pv.CHID) == cs_conn)
