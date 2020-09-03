@@ -19,8 +19,9 @@
 
 /** @addtogroup epicsTools
  *@{*/
- /*! Listener
- */
+/*! Listener
+   @brief A class for monitoring the value stored in the records of EPICS PVs.
+*/
 
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;

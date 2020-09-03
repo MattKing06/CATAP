@@ -16,6 +16,7 @@
 /** @addtogroup epicsTools
  *@{*/
  /*! Getter
+	@brief A class for getting the value stored in the records of EPICS PVs.
  */
 
 class EPICSInterface;
@@ -24,8 +25,6 @@ typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 class Getter
 {
 public:
-	//may need to add a function that explicitly says what type to return
-	// based on the EPICS CHTYPE when we do setupChannels()....
 	Getter();
 	Getter(const std::string& pvStr);
 	Getter(const std::string& pvStr, const STATE& mode);

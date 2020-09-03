@@ -100,7 +100,7 @@ double EPICSTools::getBufferAverage_Py(const std::string& pv)
 	}
 	else
 	{
-		listenerMap[pv] = Listener(pv);
+		listenerMap[pv] = Listener(pv, mode);
 		return listenerMap[pv].getBufferAverage();
 	}
 }
@@ -113,7 +113,7 @@ double EPICSTools::getBufferStdDeviation(const std::string& pv)
 	}
 	else
 	{
-		listenerMap[pv] = Listener(pv);
+		listenerMap[pv] = Listener(pv, mode);
 		return listenerMap[pv].getBufferStdDeviation();
 	}
 }
@@ -149,7 +149,7 @@ boost::python::dict EPICSTools::getBufferAverage_Py(boost::python::list pvList)
 
 void EPICSTools::monitor(const std::string& pv)
 {
-	listenerMap[pv] = Listener(pv);
+	listenerMap[pv] = Listener(pv, mode);
 	if (ca_state(listenerMap[pv].pv.CHID) == cs_conn)
 	{
 		listenerMap[pv].epicsInterface->createSubscription(listenerMap[pv], listenerMap[pv].pv);
@@ -220,7 +220,7 @@ boost::python::dict EPICSTools::get_Py(boost::python::list pvList)
 		}
 		else
 		{
-			getterMap[pv] = Getter(pv);
+			getterMap[pv] = Getter(pv, mode);
 			EPICSInterface::sendToEPICS();
 			nameAndValueMap[pv] = getterMap[pv].getValue_Py();
 		}
@@ -239,7 +239,7 @@ void EPICSTools::put_Py(boost::python::dict pvAndValueDict)
 		}
 		else
 		{
-			putterMap[entry.first] = Putter(entry.first);
+			putterMap[entry.first] = Putter(entry.first, mode);
 			putterMap[entry.first].put_Py(entry.second);
 		}
 	}
@@ -254,7 +254,7 @@ void EPICSTools::putArray_Py(const std::string& pv, boost::python::list py_Array
 	}
 	else
 	{
-		putterMap[pv] = Putter(pv);
+		putterMap[pv] = Putter(pv, mode);
 		EPICSInterface::sendToEPICS();
 		return putterMap[pv].putArray_Py(py_Array);
 	}
@@ -428,7 +428,7 @@ void EPICSTools::put_Py(const std::string& pv, boost::python::object value)
 	}
 	else
 	{
-		putterMap[pv] = Putter(pv);
+		putterMap[pv] = Putter(pv, mode);
 		EPICSInterface::sendToEPICS();
 		return putterMap[pv].put_Py(value);
 	}
@@ -443,7 +443,7 @@ boost::python::object EPICSTools::get_Py(const std::string& pv)
 	}
 	else
 	{
-		getterMap[pv] = Getter(pv);
+		getterMap[pv] = Getter(pv, mode);
 		EPICSInterface::sendToEPICS();
 		return getterMap[pv].getValue_Py();
 	}
@@ -459,7 +459,7 @@ boost::python::list EPICSTools::getArray_Py(const std::string& pv)
 	else
 	{
 		std::cout << "creating getter for: " << pv << std::endl;
-		getterMap[pv] = Getter(pv);
+		getterMap[pv] = Getter(pv, mode);
 		std::cout << "created getter" << std::endl;
 		return getterMap[pv].getArray_Py();
 	}

@@ -235,9 +235,9 @@ public:
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
 	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
-	/*! Send a value to an EPICS PV over Channel Access using ca_put. 
+	/*! Send an array to an EPICS PV over Channel Access using ca_put_array. 
 	* @param[in] pvStruct : Contains the PV we want to put a value to. 
-	* @param[in] value : The value we want to ca_put.*/
+	* @param[in] value : The array we want to ca_put_array with.*/
 	template<typename T>
 	void putArray(const pvStruct& pvStruct, const std::vector<T>& value) const
 	{
@@ -260,6 +260,9 @@ public:
 			messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
 		}
 	}
+	/*! Send an value to an EPICS PV over Channel Access using ca_put.
+	 * @param[in] pvStruct : Contains the PV we want to put a value to.
+	 * @param[in] value : The value we want to ca_put.*/
 	template<typename T>
 	void putValue(const pvStruct& pvStruct, const T& value) const
 	{

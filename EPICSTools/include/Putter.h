@@ -14,6 +14,7 @@
 /** @addtogroup epicsTools
  *@{*/
  /*! Putter
+	@brief A class for setting the value stored in the records of EPICS PVs.
  */
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
@@ -21,7 +22,9 @@ typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 class Putter
 {
 public:
+	/*! Default constructor: not used.*/
 	Putter();
+	/*! Custom constructor : */
 	Putter(const std::string& pv);
 	Putter(const std::string& pv, const STATE& mode);
 	Putter(const Putter& copyPutter);
