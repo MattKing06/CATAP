@@ -541,6 +541,50 @@ class MagnetFactory
 		@param[out] python::dict of magnet maximum SETIs keyed by the magnet names */
 		boost::python::dict getAllMaxI_Py() const;
   
+		double getKDipP(const std::string& name)const;
+		std::map<std::string, double> getKDipPs(const std::vector<std::string>& names) const;
+		boost::python::dict getKDipPs_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllKDipP() const;
+		boost::python::dict getAllKDipP_Py() const;
+
+
+		double getIntStr_mm(const std::string& name)const;
+		std::map<std::string, double> getIntStr_mms(const std::vector<std::string>& names) const;
+		boost::python::dict getIntStr_mms_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllIntStr_mm() const;
+		boost::python::dict getAllIntStr_mm_Py() const;
+
+
+		double getIntStr(const std::string& name)const;
+		std::map<std::string, double> getIntStrs(const std::vector<std::string>& names) const;
+		boost::python::dict getIntStrs_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllIntStr() const;
+		boost::python::dict getAllIntStr_Py() const;
+
+		double getKSetP(const std::string& name)const;
+		std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
+		boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllKSetP() const;
+		boost::python::dict getAllKSetP_Py() const;
+
+		double getKAng(const std::string& name)const;
+		std::map<std::string, double> getKAngs(const std::vector<std::string>& names) const;
+		boost::python::dict getKAngs_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllKAng() const;
+		boost::python::dict getAllKAng_Py() const;
+
+		double getKmrad(const std::string& name)const;
+		std::map<std::string, double> getKmrads(const std::vector<std::string>& names) const;
+		boost::python::dict getKmrad_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllKmrad() const;
+		boost::python::dict getAllKmrad_Py() const;
+
+
+		double getKVal(const std::string& name)const;
+		std::map<std::string, double> getKVals(const std::vector<std::string>& names) const;
+		boost::python::dict getKVals_Py(const boost::python::list& names) const;
+		std::map<std::string, double> getAllKVal() const;
+		boost::python::dict getAllKVal_Py() const;
 
 		   		 
 		/*! Check if a magnet is a particular TYPE

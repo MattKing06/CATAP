@@ -113,16 +113,14 @@ boost::python::list Magnet::getAliases_Py() const
 
 void Magnet::setPVStructs()
 {
-	for (auto&& record : MagnetRecords::magnetRecordList)
+	for(auto&& record : MagnetRecords::magnetRecordList)
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		//messenger.printDebugMessage("Constructing PV information for ", record);
-
 		/*TODO
 		  This should be put into some general function: generateVirtualPV(PV) or something...
 		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
@@ -528,6 +526,36 @@ STATE Magnet::getPSUState()const
 {
 	// get PSU STATE
 	return psuState.second;
+}
+
+double Magnet::getKDipP() const
+{
+	return K_DIP_P.second;
+}
+double Magnet::getIntStr_mm() const
+{
+	return INT_STR_MM.second;
+}
+double Magnet::getIntStr() const
+{
+	return INT_STR.second;
+}
+
+double Magnet::getKSetP() const
+{
+	return K_SET_P.second;
+}
+double Magnet::getKAng() const
+{
+	return K_ANG.second;
+}
+double Magnet::getKmrad() const
+{
+	return K_MRAD.second;
+}
+double Magnet::getKVal() const
+{
+	return K_VAL.second;
 }
 
 

@@ -27,11 +27,20 @@ public:
 	bool setNewPSUState(const STATE value, const pvStruct& pv) const;
 
 
-	// EPICS calls these functiOns to update a variable
+	// EPICS calls these functions to update a variable
 	static void updatePSUState(const struct event_handler_args args);
 	static void updateGETSETI(const struct event_handler_args args);
 	static void updateREADI(const struct event_handler_args args);
 	static void updateRILK(const struct event_handler_args args);
+
+
+	static void updateKDipP(const struct event_handler_args args);
+	static void updateIntStr_mm(const struct event_handler_args args);
+	static void updateIntStr(const struct event_handler_args args);
+	static void updateKSetP(const struct event_handler_args args);
+	static void updateKAng(const struct event_handler_args args);
+	static void updateKVal(const struct event_handler_args args);
+	static void updateKmrad(const struct event_handler_args args);
 
 
 	// We need to a STATIC messenger so that the static call back functions can use it to print messages 

@@ -12,9 +12,9 @@
 #include "MagnetPVRecords.h"
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
-
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+
 
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
@@ -25,17 +25,28 @@ typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
 
 
 struct magnetState
-{   // proviude a default constructor
+{   // provide a default constructor
 	magnetState() :
 		name(GlobalConstants::DUMMY_NAME),
 		psuState(STATE::ERR),
 		ilkState(STATE::ERR),
 		seti(GlobalConstants::double_min),
-		readi(GlobalConstants::double_min)
+		readi(GlobalConstants::double_min),
+		k_dip_p(GlobalConstants::double_min),
+		int_str_mm(GlobalConstants::double_min),
+		k_set_p(GlobalConstants::double_min),
+		int_str(GlobalConstants::double_min),
+		k_ang(GlobalConstants::double_min),
+		k_mrad(GlobalConstants::double_min),
+		k_val(GlobalConstants::double_min)
 	{};
 	std::string name;
 	STATE psuState, ilkState;
 	double seti, readi;
+	// physics units (not all types of magnets have all tehse values 
+	double k_dip_p, int_str_mm;
+	double k_set_p, int_str;
+	double k_ang, k_val, k_mrad;
 };
 
 #include <thread>
@@ -43,7 +54,7 @@ struct magnetState
 class Degauss
 {   
 	public:
-		// proviude a default constructor
+		// provide a default constructor
 		Degauss();
 		Magnet* magnet;
 		std::vector<double>  degauss_values;
@@ -67,7 +78,6 @@ class Magnet : public Hardware
 		//should need a magnet name (full PV root, or alias can be given)
 		//Magnet(Hardware hardware); // this should be possible, but isn't useful right now.
 		//Magnet(std::string knownNameOfMagnet);
-		
 	/*! Custom constructor for Magnet object
 		@param[in] magnetParametersAndValuesMap strings defining parameters extracted from YAML config files
 		@param[in] mode Defines the STATE of Magnet we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)			*/
@@ -75,7 +85,6 @@ class Magnet : public Hardware
 	/*! Copy constructor for Magnet object
 		@param[in] copyMagnet references to magnet to be copied					*/
 		Magnet(const Magnet& copyMagnet);
-
 	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilkstate and psustae
 		@param[out] magnetState structured data									*/
 		magnetState getMagnetState()const;
@@ -152,8 +161,7 @@ class Magnet : public Hardware
 	/*! Get the field integral coefficents, defined in the master lattice yaml file (Python version)
 		@param[out] result  */
 		boost::python::list getFieldIntegralCoefficients_Py() const;
-
-		/*! set the values used during degaussing
+	/*! set the values used during degaussing
 		@param[out] new value sthat will be used */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
 	/*! set the values used during degaussing (Python version)
@@ -178,10 +186,29 @@ class Magnet : public Hardware
 	/*! get the current state of the PSU 
 		@param[out] result  */
 		STATE getPSUState() const;
-
+	/*! The beam momentum can be found by setting the dipoles to bend the beam at 45 degrees and reading getKDipP
+		@param[out] result  */
+		double getKDipP() const;
+	/*! Integrated strength, this is in T for quads and T/mm for correctors, solenoids and dipoles
+		@param[out] result  */
+		double getIntStr_mm() const;
+	/*! ntegrated strength, this is in T for all magnet types 
+		@param[out] result  */
+		double getIntStr() const;
+	/*! Assumed beam momentum here (MeV/c) used for magnet
+		@param[out] result  */
+		double getKSetP() const;
+	/*! The bend angle for the dipole in degrees
+		@param[out] result  */
+		double getKAng() const;
+	/*! The bend angle for the correctors in milliradians
+		@param[out] result  */
+		double getKmrad() const;
+	/*! The K factor for the Quads in 1/m2
+		@param[out] result  */
+		double getKVal() const;
 	/*! returns TRUE if the magnet is performing a degauss procedure*/
 		bool isDegaussing()const;
-		
 	/*! set the current to value
 		@param[in] value			
 		@param[out] bool, if the command got sent to epics (not if setting that current was successfull!) 	*/
@@ -226,6 +253,21 @@ class Magnet : public Hardware
 		std::pair<epicsTimeStamp, STATE > psuState;
 	/*! latest interlock state value and epicstimestamp 	*/
 		std::pair<epicsTimeStamp, STATE > ilkState;
+	/*! latest K_DIP_P value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_DIP_P;
+	/*! latest INT_STR_MM value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > INT_STR_MM;
+	/*! latest INT_STR value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > INT_STR;
+	/*! latest K_SET_P value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_SET_P;
+	/*! latest k_ang value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_ANG;
+	/*! latest k_val value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_VAL;
+	/*! latest k_mrad value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_MRAD;
+
 	private:
 	/*! map containing all the magnet objects				*/
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
@@ -276,6 +318,8 @@ class Magnet : public Hardware
 		double min_i;
 	/*! magnet maximum SETI value that can be passed, defined in the master lattice yaml file	*/
 		double max_i;
+
+	
 	/*! magnet beamline position	*/
 		double position;
 

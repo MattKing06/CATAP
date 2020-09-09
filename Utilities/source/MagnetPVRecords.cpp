@@ -8,9 +8,16 @@ namespace MagnetRecords
 	std::string const RPOWER = "RPOWER";
 	std::string const SETI = "SETI";
 	std::string const SPOWER = "SPOWER";
+	std::string const K_DIP_P = "K_DIP_P"; 
+	std::string const INT_STR_MM = "INT_STR_MM"; 
+	std::string const INT_STR = "INT_STR"; 
+	std::string const K_SET_P = "K_SET_P"; 
+	std::string const K_ANG = "K_ANG"; 
+	std::string const K_MRAD = "K_MRAD"; 
+	std::string const K_VAL = "K_VAL"; 
 
-
-	std::vector<std::string> magnetRecordList = { GETSETI,READI,RILK,RPOWER,SETI,SPOWER };
+	std::vector<std::string> magnetRecordList = { GETSETI,READI,RILK,RPOWER,SETI,SPOWER,
+		K_DIP_P,INT_STR_MM,INT_STR,K_SET_P,K_ANG,K_MRAD,K_VAL};
 }
 
 namespace MagnetPSUValueToState

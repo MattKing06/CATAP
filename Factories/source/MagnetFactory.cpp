@@ -487,6 +487,255 @@ boost::python::dict MagnetFactory::getAllMaxI_Py() const
 	return to_py_dict<std::string, double>(getAllMaxI());
 }
 
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+
+double MagnetFactory::getKDipP(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getKDipP();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getKDipPs(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getKDipP(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getKDipPs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKDipPs(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllKDipP() const
+{
+	return getKDipPs(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllKDipP_Py() const
+{
+	return to_py_dict<std::string, double>(getAllKDipP());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+double MagnetFactory::getIntStr_mm(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getIntStr_mm();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getIntStr_mms(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getIntStr_mm(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getIntStr_mms_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getIntStr_mms(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllIntStr_mm() const
+{
+	return getIntStr_mms(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllIntStr_mm_Py() const
+{
+	return to_py_dict<std::string, double>(getAllIntStr_mm());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+double MagnetFactory::getIntStr(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getIntStr();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getIntStrs(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getIntStr(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getIntStrs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getIntStrs(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllIntStr() const
+{
+	return getIntStrs(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllIntStr_Py() const
+{
+	return to_py_dict<std::string, double>(getAllIntStr());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+
+double MagnetFactory::getKSetP(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getKSetP();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getKSetPs(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getKSetP(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getKSetPs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKSetPs(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllKSetP() const
+{
+	return getKSetPs(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllKSetP_Py() const
+{
+	return to_py_dict<std::string, double>(getAllKSetP());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+
+double MagnetFactory::getKAng(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getKAng();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getKAngs(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getKAng(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getKAngs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKAngs(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllKAng() const
+{
+	return getKAngs(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllKAng_Py() const
+{
+	return to_py_dict<std::string, double>(getAllKAng());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+
+double MagnetFactory::getKmrad(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getKmrad();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getKmrads(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getKmrad(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getKmrad_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKmrads(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllKmrad() const
+{
+	return getKmrads(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllKmrad());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+
+
+double MagnetFactory::getKVal(const std::string& name)const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getKVal();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> MagnetFactory::getKVals(const std::vector<std::string>& names) const
+{
+	std::map<std::string, double> return_map;
+	for (auto&& name : names)
+	{
+		return_map[name] = getKVal(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getKVals_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKVals(to_std_vector<std::string>(names)));
+}
+std::map<std::string, double> MagnetFactory::getAllKVal() const
+{
+	return getKVals(getAllMagnetNames());
+}
+boost::python::dict MagnetFactory::getAllKVal_Py() const
+{
+	return to_py_dict<std::string, double>(getAllKVal());
+}
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------
 
 // GET MAGNET OBJECT  FUNCTIONS
 //
@@ -725,6 +974,14 @@ boost::python::dict MagnetFactory::getManufacturer_Py(const boost::python::list&
 {
 	return to_py_dict<std::string, std::string>(getManufacturer(to_std_vector<std::string>(names)));
 }
+
+
+
+
+
+
+
+
 
 
 //// TODO Should be string
@@ -1066,8 +1323,6 @@ boost::python::dict MagnetFactory::getAllILKState_Py() const
 {
 	return to_py_dict<std::string, STATE>(getAllILKState());
 }
-
-
 STATE MagnetFactory::SETI(const std::string& name, const double& value)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
@@ -1106,8 +1361,6 @@ boost::python::dict MagnetFactory::SETIAllZero_Py()
 {
 	return to_py_dict<std::string, STATE>(SETIAllZero());
 }
-
-
 STATE MagnetFactory::switchOn(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))

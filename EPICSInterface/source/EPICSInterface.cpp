@@ -293,10 +293,10 @@ std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUShortPair
 	std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	dbr_enum_t a = tv->value;
-	std::cout << "tv->value  = " << a << " sizeof(a) " << sizeof(a) << std::endl;
+	//std::cout << "tv->value  = " << a << " sizeof(a) " << sizeof(a) << std::endl;
 	r.first  = tv->stamp;
 	r.second = (unsigned short)a;
-	std::cout << "r.second   = " << r.second  << " sizeof(r.second ) " << sizeof(r.second ) << std::endl;
+	//std::cout << "r.second   = " << r.second  << " sizeof(r.second ) " << sizeof(r.second ) << std::endl;
 
 /* 
 	std::pair<epicsTimeStamp, short> r;
