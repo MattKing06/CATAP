@@ -29,9 +29,9 @@ public:
 	Putter(const std::string& pv);
 	/*! Custom constructor : Sets up EPICS connections using the given mode for the given pv.
 		@param[in] pv : The PV that will be used for ca_put calls. 
-		@param[in] mode : VIRTUAL (prepends VM- to given pv), PHYSICAL (uses given pv), OFFLINE (no connection to EPICS)*/
+		@param[in] mode : VIRTUAL (prepends VM- to given pv), PHYSICAL (uses given pv)*/
 	Putter(const std::string& pv, const STATE& mode);
-	/*! Copy construct : copies content of provided putter object to current instance
+	/*! Copy constructor : copies content of provided putter object to current instance
 		@param[in] copyPutter : the putter object to copy from*/
 	Putter(const Putter& copyPutter);
 	/*! Creates a CHID for the PV associated with the Putter. The CHID is then used to set the CHTYPE, COUNT, etc.*/

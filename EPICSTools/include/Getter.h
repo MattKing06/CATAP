@@ -32,9 +32,9 @@ public:
 	Getter(const std::string& pvStr);
 	/*! Custom constructor : Sets up EPICS connections using the given mode for the given pv.
 			@param[in] pv : The PV that will be used for ca_get calls.
-			@param[in] mode : VIRTUAL (prepends VM- to given pv), PHYSICAL (uses given pv), OFFLINE (no connection to EPICS)*/
+			@param[in] mode : VIRTUAL (prepends VM- to given pv), PHYSICAL (uses given pv)*/
 	Getter(const std::string& pvStr, const STATE& mode);
-	/*! Copy construct : copies content of provided getter object to current instance
+	/*! Copy constructor : copies content of provided getter object to current instance
 		@param[in] copyGetter : the getter object to copy from*/
 	Getter(const Getter& copyGetter);
 	/*! Creates a CHID for the PV associated with the Getter. The CHID is then used to set the CHTYPE, COUNT, etc.*/
@@ -84,7 +84,7 @@ public:
 	boost::python::list getArray_Py();
 	/*! stores the current value in the single-valued EPICS record associated with getter */
 	boost::variant<double,int,long,float,unsigned short,std::string> currentValue;
-	/*! stores the current value in the single-valued EPICS record associated with getter */
+	/*! stores the current array in the EPICS record associated with getter */
 	std::vector<boost::variant<double, int, long, float, unsigned short, std::string> > currentArray;
 	/*! For Accessing common EPICS-related functionality*/
 	EPICSInterface_sptr epicsInterface;
