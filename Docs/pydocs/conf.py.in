@@ -27,6 +27,7 @@ from CATAP.Magnet import *
 from CATAP.Valve import *
 from CATAP.Screen import *
 from CATAP.HardwareFactory import *
+from CATAP.EPICSTools import *
 
 # -- Project information -----------------------------------------------------
 
