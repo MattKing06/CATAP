@@ -25,42 +25,77 @@ typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 class Getter
 {
 public:
+	/*! Default constructor: not used.*/
 	Getter();
+	/*! Custom constructor : Sets up EPICS connections using VIRTUAL mode for the given pv.
+		@param[in] pv : The PV that will be used for ca_get calls. */
 	Getter(const std::string& pvStr);
+	/*! Custom constructor : Sets up EPICS connections using the given mode for the given pv.
+			@param[in] pv : The PV that will be used for ca_get calls.
+			@param[in] mode : VIRTUAL (prepends VM- to given pv), PHYSICAL (uses given pv), OFFLINE (no connection to EPICS)*/
 	Getter(const std::string& pvStr, const STATE& mode);
-	Getter(const Getter& getter);
+	/*! Copy construct : copies content of provided getter object to current instance
+		@param[in] copyGetter : the getter object to copy from*/
+	Getter(const Getter& copyGetter);
+	/*! Creates a CHID for the PV associated with the Getter. The CHID is then used to set the CHTYPE, COUNT, etc.*/
 	void setupChannels();
 	/*! Prepends VM- to the given pv
 		@param[in] pv : The name of the PV to virtualize
 		@param[out] virtualPV : pv with VM- prepended to it*/
 	std::string getEPICSPVName(const std::string& pv);
+	/*! Gets the current value stored in EPICS for the associated PV. currentValue is then set to the value retrieved 
+		from EPICS using ca_get.*/
 	void setValueFromEPICS();
+	/*! Calls setValueFromEPICS and then returns the value stored in currentValue
+		@param[out] value : The value stored in the EPICS record*/
 	template <typename T>
 	T getValue();
+	/*! Calls setValueFromEPICS and then returns the array stored in currentArray
+		@param[out] array : The array stored in the EPICS array record*/
 	template <typename T>
 	std::vector<T> getArray();
-	// need to move these over EPICSTools
-	// and use them with PV arguments.
+	/*! Returns true if currentValue is of type long */
 	bool isLong();
+	/*! Returns true if currentValue is of type double */
 	bool isDouble();
+	/*! Returns true if currentValue is of type int */
 	bool isInt();
+	/*! Returns true if currentValue is of type unsigned short */
 	bool isEnum();
+	/*! Returns true if currentValue is of type std::string */
 	bool isString();
+	/*! Returns true if currentValue is of type float */
 	bool isFloat();
+	/*! Returns true if currentArray is of type long */
 	bool isLongArray();
+	/*! Returns true if currentArray is of type double */
 	bool isDoubleArray();
+	/*! Returns true if currentArray is of type int */
 	bool isIntArray();
+	/*! Returns true if currentArray is of type unsigned short */
 	bool isEnumArray();
+	/*! Returns true if currentArray is of type std::string */
 	bool isStringArray();
+	/*! Returns true if currentArray is of type float */
 	bool isFloatArray();
-	boost::variant<double,int,long,float,unsigned short,std::string> currentValue;
-	std::vector<boost::variant<double, int, long, float, unsigned short, std::string> > currentArray;
-	EPICSInterface_sptr epicsInterface;
+	/*! returns the value stored in currentValue as a python object */
 	boost::python::object getValue_Py();
+	/*! returns the array stored in currentArray as a python list */
 	boost::python::list getArray_Py();
+	/*! stores the current value in the single-valued EPICS record associated with getter */
+	boost::variant<double,int,long,float,unsigned short,std::string> currentValue;
+	/*! stores the current value in the single-valued EPICS record associated with getter */
+	std::vector<boost::variant<double, int, long, float, unsigned short, std::string> > currentArray;
+	/*! For Accessing common EPICS-related functionality*/
+	EPICSInterface_sptr epicsInterface;
+	/*! Tells us whether to use the CLARA control system (PHYSICAL),
+		Virtual Machine EPICS (VIRTUAL)*/
 	STATE mode;
+	/*! For printing messages and debug messages to stdout*/
 	LoggingSystem messenger;
+	/*! The PVStruct used for all EPICS-related functions, holds all EPICS information (CHID, CHTYPE, etc.)*/
 	pvStruct pv;
+	/*! The PV associated to this instance of Getter */
 	std::string pvToGet;
 };
 

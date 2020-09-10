@@ -34,6 +34,7 @@ public:
 	/*! Copy construct : copies content of provided putter object to current instance
 		@param[in] copyPutter : the putter object to copy from*/
 	Putter(const Putter& copyPutter);
+	/*! Creates a CHID for the PV associated with the Putter. The CHID is then used to set the CHTYPE, COUNT, etc.*/
 	void setupChannels();
 	/*! Prepends VM- to the given pv if mode is VIRTUAL (if VM is already prepended by user, pv is not changed).
 		If mode is PHYSICAL the pv is left unchanged.
@@ -62,8 +63,7 @@ public:
 	/*! For Accessing common EPICS-related functionality*/
 	EPICSInterface_sptr epicsInterface;
 	/*! Tells us whether to use the CLARA control system (PHYSICAL), 
-		Virtual Machine EPICS (VIRTUAL),
-		or not connect to EPICS (OFFLINE)*/
+		Virtual Machine EPICS (VIRTUAL)*/
 	STATE mode;
 	/*! For printing messages and debug messages to stdout*/
 	LoggingSystem messenger;
