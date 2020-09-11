@@ -39,12 +39,7 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 	magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
-	machineArea(GlobalFunctions::stringToTypeMap(paramsMap.find("machine_area")->second)),
-
-
-
 	
-
 	min_i(std::stof(paramsMap.find("min_i")->second)),
 	max_i(std::stof(paramsMap.find("max_i")->second)),
 	position(std::stof(paramsMap.find("position")->second)),
@@ -568,12 +563,6 @@ double Magnet::getKVal() const
 {
 	return K_VAL.second;
 }
-
-TYPE Magnet::getArea()
-{
-	return area;
-}
-
 
 bool Magnet::setKSetP(const double value)
 {

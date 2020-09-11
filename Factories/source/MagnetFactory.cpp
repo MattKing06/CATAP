@@ -1398,7 +1398,10 @@ std::map<std::string, STATE> MagnetFactory::setKSetP(const TYPE area, const doub
 {
 	return setKSetP(getNamesInArea(area), value);
 }
-
+boost::python::dict MagnetFactory::setKSetP_area_Py(TYPE area, const double value)
+{
+	return to_py_dict<std::string, STATE>(setKSetP(area, value));
+}
 std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<TYPE>& areas, const double value)
 {
 	return setKSetP(getNamesInAreas(areas), value);
@@ -1406,7 +1409,7 @@ std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<TYPE>& ar
 
 boost::python::dict  MagnetFactory::setKSetP_Areas_py(const boost::python::list& areas, const double value)
 {
-	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(names), value));
+	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(areas), value));
 }
 
 
@@ -1695,7 +1698,7 @@ std::vector<std::string> MagnetFactory::getNamesInAreas(const std::vector<TYPE>&
 }
 boost::python::list MagnetFactory::getNamesInAreas_Py(const boost::python::list& areas) const
 {
-	return to_py_list<std::string>(getNamesInAreas(areas));
+	return to_py_list<std::string>(getNamesInAreas(to_std_vector<TYPE>(areas)));
 }
 
 

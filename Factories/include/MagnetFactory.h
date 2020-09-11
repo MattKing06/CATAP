@@ -236,19 +236,23 @@ class MagnetFactory
 		@param[in] area, machine area to apply settings to 
 		@param[in] value, new momentum value
 		@param[out] result  */
-		STATE setKSetP(const TYPE area, const double value);
-
+		std::map<std::string, STATE> setKSetP(const TYPE area, const double value);
+		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations for magnets in a machine area (python version)
+		@param[in] area, machine area to apply settings to
+		@param[in] value, new momentum value
+		@param[out] result  */
+		boost::python::dict setKSetP_area_Py(TYPE area, const double value);
 		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations for magnets in a vector of machine areas
 		@param[in] area, machine areas to apply settings to
 		@param[in] value, new momentum value
 		@param[out] result  */
-		STATE setKSetP(const std::vector<TYPE>& areas, const double value);
+		std::map<std::string, STATE> setKSetP(const std::vector<TYPE>& areas, const double value);
 
 		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations for magnets in a python list of machine areas
 		@param[in] area, machine areas to apply settings to
 		@param[in] value, new momentum value
 		@param[out] result  */
-		STATE setKSetP_Area_py(const boost::python::list& areas, const double value);
+		boost::python::dict setKSetP_Areas_py(const boost::python::list& areas, const double value);
 
 
 
@@ -581,37 +585,136 @@ class MagnetFactory
 		@param[out] python::dict of magnet maximum SETIs keyed by the magnet names */
 		boost::python::dict getAllMaxI_Py() const;
   
+		/*! Get the momementum based on dipole current (?) I THINK - TO BE TESTED.
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
 		double getKDipP(const std::string& name)const;
+		/*! Get the momementum based on dipole current (?) I THINK - TO BE TESTED.
+		@param[in] names, full-name or name-alias of magnet objects
+		@param[out] momenta*/
 		std::map<std::string, double> getKDipPs(const std::vector<std::string>& names) const;
+		/*! Get the momementum based on dipole current (?) I THINK - TO BE TESTED. Python version
+		@param[in] names, full-name or name-alias of magnet objects
+		@param[out] momenta*/
 		boost::python::dict getKDipPs_Py(const boost::python::list& names) const;
+		/*! Get the momementum based on dipole current for each dipole (?) I THINK - TO BE TESTED.
+		@param[in] names, full-name or name-alias of magnet objects
+		@param[out] momenta*/
 		std::map<std::string, double> getAllKDipP() const;
+		/*! Get the momementum based on dipole current for each dipole (?) I THINK - TO BE TESTED. Python version
+		@param[in] names, full-name or name-alias of magnet objects
+		@param[out] momenta*/
 		boost::python::dict getAllKDipP_Py() const;
 
 
+		/*! Get the integrated strength. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		double getIntStr_mm(const std::string& name)const;
+		/*! Get the integrated strength for multiple magnets. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		std::map<std::string, double> getIntStr_mms(const std::vector<std::string>& names) const;
+		/*! Get the integrated strength for multiple magnets Python version. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getIntStr_mms_Py(const boost::python::list& names) const;
+		/*! Get the integrated strength for all magnets. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		std::map<std::string, double> getAllIntStr_mm() const;
+		/*! Get the integrated strength for all magnets Python version. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getAllIntStr_mm_Py() const;
 
 
+		/*! Get the integrated strength. In T 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		double getIntStr(const std::string& name)const;
+		/*! Get the integrated strength for multiple magnets. In T 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		std::map<std::string, double> getIntStrs(const std::vector<std::string>& names) const;
-		boost::python::dict getIntStrs_Py(const boost::python::list& names) const;
+		/*! Get the integrated strength for multiple magnets In T, Python version
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		boost::python::dict getIntStr_mms_Py(const boost::python::list& names) const;
+		/*! Get the integrated strength for all magnets. In T 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		std::map<std::string, double> getAllIntStr() const;
+		/*! Get the integrated strength for all magnets, In T. Python version. 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getAllIntStr_Py() const;
 
+
+		/*! Get the momentum used to calculate various 'K' parameters 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
 		double getKSetP(const std::string& name)const;
+		/*! Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
 		std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
+		/*!  Get the momentum used to calculate various 'K' parameters, Python version
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
+		/*!  Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		std::map<std::string, double> getAllKSetP() const;
+		/*!  Get the momentum used to calculate various 'K' parameters, Python version.
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getAllKSetP_Py() const;
 
+		/*! Get the bend angle from a dipole, or coorector 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
 		double getKAng(const std::string& name)const;
+		/*! Get the bean angle from a dipole, or coorector 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
 		std::map<std::string, double> getKAngs(const std::vector<std::string>& names) const;
+		/*! Get the bend angle from a dipole, or coorector  Python version
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getKAngs_Py(const boost::python::list& names) const;
+		/*!  Get the bend angle from a dipole, or coorector 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		std::map<std::string, double> getAllKAng() const;
+		/*!  Get the bend angle from a dipole, or coorector , Python version.
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
 		boost::python::dict getAllKAng_Py() const;
+
+
+
+		/*! Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
+		double getKSetP(const std::string& name)const;
+		/*! Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
+		std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
+		/*!  Get the momentum used to calculate various 'K' parameters, Python version
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
+		/*!  Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		std::map<std::string, double> getAllKSetP() const;
+		/*!  Get the momentum used to calculate various 'K' parameters, Python version.
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		boost::python::dict getAllKSetP_Py() const;
 
 		double getKmrad(const std::string& name)const;
 		std::map<std::string, double> getKmrads(const std::vector<std::string>& names) const;
@@ -620,6 +723,27 @@ class MagnetFactory
 		boost::python::dict getAllKmrad_Py() const;
 
 
+
+		/*! Get the momentum used to calculate various 'K' parameters
+@param[in] name, full-name or name-alias of magnet object
+@param[out] momentum*/
+		double getKSetP(const std::string& name)const;
+		/*! Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] momentum*/
+		std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
+		/*!  Get the momentum used to calculate various 'K' parameters, Python version
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
+		/*!  Get the momentum used to calculate various 'K' parameters
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		std::map<std::string, double> getAllKSetP() const;
+		/*!  Get the momentum used to calculate various 'K' parameters, Python version.
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		boost::python::dict getAllKSetP_Py() const;
 		double getKVal(const std::string& name)const;
 		std::map<std::string, double> getKVals(const std::vector<std::string>& names) const;
 		boost::python::dict getKVals_Py(const boost::python::list& names) const;

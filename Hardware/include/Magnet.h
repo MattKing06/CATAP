@@ -207,9 +207,6 @@ class Magnet : public Hardware
 	/*! The K factor for the Quads in 1/m2
 		@param[out] result  */
 		double getKVal() const;
-		/*! Get the area the magnet is in (e.g. S02, INJ, BA1 etc, defined in cofig) 
-			@param[out] result  */
-		TYPE getArea();
 
 
 	/*! returns TRUE if the magnet is performing a degauss procedure*/

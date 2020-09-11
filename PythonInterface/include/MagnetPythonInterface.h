@@ -58,6 +58,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			// Note some variables are exposed as properties and with functions 
 			// TODO make these complete 
 			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
+			.add_property("K_SET_P", &Magnet::getKSetP, &Magnet::setKSetP)
 			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
 			.add_property("READI", &Magnet::getREADI)
 			.add_property("name", &Magnet::getHardwareName)
@@ -103,7 +104,18 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getAliases", &Magnet::getAliases_Py)
 			.def("messagesOn", &Magnet::messagesOn)
 			.def("messagesOff", &Magnet::messagesOff)
+			
+			
+			.def("K_DIP_P", &Magnet::getKDipP)
+			.def("INT_STR_MM", &Magnet::getIntStr_mm)
+			.def("INT_STR", &Magnet::getIntStr)
 
+			.def("K_ANG", &Magnet::getKAng)
+			.def("K_VAL", &Magnet::getKVal)
+			.def("K_MRAD", &Magnet::getKmrad)
+
+
+	
 
 			;
 
@@ -174,8 +186,17 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		bool (MagnetFactory::* applyDBURTQuadOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
 		bool (MagnetFactory::* applyDBURTCorOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTCorOnly;
 
+
+		// woot fuctcion pointers 
+		STATE(MagnetFactory:: * setKSetP_name)(const std::string & name, const double value) = &MagnetFactory::setKSetP;
+		//STATE(MagnetFactory:: * setKSetP_names)(const std::vector<std::string> & names, const double value) = &MagnetFactory::setKSetP;
+		//STATE MagnetFactory::setKSetP(const std::string & name, const double value)
+		//std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<std::string> & names, const double value)
+
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
+
+
 
 
 		boost::python::class_<MagnetFactory, boost::noncopyable>("MagnetFactory", boost::python::no_init)
@@ -193,6 +214,45 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			// NO you can't do this is you can't create a map of Magnet references 
 			//.def("getMagnets", &MagnetFactory::getMagnets_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			
+			.def("setKSetP",setKSetP_name)
+			.def("setKSetP",&MagnetFactory::setKSetP_Py)
+			.def("setKSetP",&MagnetFactory::setKSetP_area_Py)
+			.def("setKSetP",&MagnetFactory::setKSetP_Areas_py)
+
+
+			.def("getKDipP", &MagnetFactory::getKDipP)
+			.def("getKDipP", &MagnetFactory::getKDipPs_Py)
+			.def("getKDipP", &MagnetFactory::getAllKDipP_Py)
+
+			.def("getIntStr_mm", &MagnetFactory::getIntStr_mm)
+			.def("getIntStr_mm", &MagnetFactory::getIntStr_mms_Py)
+			.def("getIntStr_mm", &MagnetFactory::getAllIntStr_mm_Py)
+
+			.def("getIntStr", &MagnetFactory::getIntStr)
+			.def("getIntStr", &MagnetFactory::getIntStrs_Py)
+			.def("getIntStr", &MagnetFactory::getAllIntStr_Py)
+
+
+			.def("getKSetP", &MagnetFactory::getKSetP)
+			.def("getKSetP", &MagnetFactory::getKSetPs_Py)
+			.def("getKSetP", &MagnetFactory::getAllKSetP_Py)
+
+			.def("getKAng", &MagnetFactory::getKAng)
+			.def("getKAng", &MagnetFactory::getKAngs_Py)
+			.def("getKAng", &MagnetFactory::getAllKAng_Py)
+
+
+
+			.def("getKmrad", &MagnetFactory::getKmrad)
+			.def("getKmrad", &MagnetFactory::getKmrad_Py)
+			.def("getKmrad", &MagnetFactory::getAllKmrad_Py)
+
+
+			.def("getKVal", &MagnetFactory::getKVal)
+			.def("getKVal", &MagnetFactory::getKVals_Py)
+			.def("getKVal", &MagnetFactory::getAllKVal_Py)
+
+
 			.def("getAllMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
 
 			// for backwards compatability with VC_Controllers
