@@ -15,12 +15,13 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
 			.add_property("PV", &Listener::pvToMonitor)
-			.def("getValue", &Listener::getValue_Py, boost::python::arg("self"), "get current value of the monitor")
+			.def("getValue", &Listener::getValue_Py, (boost::python::arg("self")), "get current value of the monitor")
 			.def("getArray", &Listener::getArray_Py, boost::python::arg("self"), "get current array of the monitor")
 			.def("setBufferSize", &Listener::setBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the buffer (default size is 10)")
 			.def("setArrayBufferSize", &Listener::setArrayBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the array buffer (default size is 10)")
 			.def("getBuffer", &Listener::getBuffer_Py, boost::python::arg("self"), "get the buffer of past values from EPICS")
 			.def("getBufferAverage", &Listener::getBufferAverage, boost::python::arg("self"), "get the mean of the values in buffer")
+			.def("getBufferStdDev", &Listener::getBufferStdDeviation, boost::python::args("self"), "get the standard deviation of the values in buffer")
 			.def("getArrayBuffer", &Listener::getArrayBuffer_Py, boost::python::arg("self"), "get the buffer of past arrays from EPICS")
 			.def("getArrayBufferAverage", &Listener::getArrayBufferAverageArray_Py, boost::python::arg("self"), "get the mean array of arrays in buffer");
 

@@ -24,3 +24,12 @@ IMG and IMG Factory
 .. literalinclude:: exampleScripts/IMGExample.py
    :language: python
    :linenos:
+
+
+==============================
+EPICSTools
+==============================
+
+.. literalinclude:: exampleScripts/EPICSToolsExample.py
+   :language: python
+   :linenos:
