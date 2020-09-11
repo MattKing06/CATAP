@@ -12,7 +12,6 @@
 #include "PythonTypeConversions.h"
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
-
 // map to convert yaml file strings to magnet TYPE enums
 //const std::map<std::string, TYPE> Magnet::magnet_string_to_type_map = Magnet::create_map();
 
@@ -113,12 +112,18 @@ boost::python::list Magnet::getAliases_Py() const
 
 void Magnet::setPVStructs()
 {
+	std::string PV = specificHardwareParameters.find(record)->second.data();
+
+
 	for(auto&& record : MagnetRecords::magnetRecordList)
 	{
+		std::string PV = specificHardwareParameters.find(record)->second.data();
+
+		std::cout << "FOUND PV  = " + PV << std::endl;
+
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
-		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		//messenger.printDebugMessage("Constructing PV information for ", record);
 		/*TODO

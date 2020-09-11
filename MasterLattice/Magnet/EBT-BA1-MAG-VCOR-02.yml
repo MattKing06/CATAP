@@ -13,8 +13,9 @@ controls_information:
     K_SET_P:    EBT-BA1-MAG-VCOR-02:K_SET_P
     K_ANG:      EBT-BA1-MAG-VCOR-02:K_ANG
     K_MRAD:     EBT-BA1-MAG-VCOR-02:K_MRAD
-    K_VAL:      EBT-BA1-MAG-VCOR-02:K_VAL
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
+    #K_VAL:      EBT-BA1-MAG-VCOR-02:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD
+  #, K_VAL
 properties:
   degauss_tolerance: 0.1
   degauss_values: "7.0,-7.0,4.5,-4.5,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"

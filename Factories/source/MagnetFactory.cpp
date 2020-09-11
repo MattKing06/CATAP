@@ -146,11 +146,20 @@ void MagnetFactory::setMonitorStatus(pvStruct& pvStruct)
 	if (pvStruct.pvRecord == MagnetRecords::GETSETI ||
 		pvStruct.pvRecord == MagnetRecords::RPOWER ||
 		pvStruct.pvRecord == MagnetRecords::READI ||
+		pvStruct.pvRecord == MagnetRecords::K_DIP_P ||
+		pvStruct.pvRecord == MagnetRecords::INT_STR_MM ||
+		pvStruct.pvRecord == MagnetRecords::INT_STR ||
+		pvStruct.pvRecord == MagnetRecords::K_SET_P ||
+		pvStruct.pvRecord == MagnetRecords::K_ANG ||
+		pvStruct.pvRecord == MagnetRecords::K_MRAD ||
+		pvStruct.pvRecord == MagnetRecords::K_VAL ||
 		pvStruct.pvRecord == MagnetRecords::RILK)
 	{
 		pvStruct.monitor = true;
 	}
 }
+
+
 
 void MagnetFactory::setupChannels()
 {
@@ -378,10 +387,6 @@ std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 	//std::cout << name_to_check << " NOT found " << std::endl;
 	return dummy_magnet.getHardwareName();
 }
-
-
-
-
 
 bool MagnetFactory::isAType(const std::string& name, const TYPE type)const
 {
