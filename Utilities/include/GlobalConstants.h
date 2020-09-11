@@ -122,7 +122,7 @@ namespace GlobalConstants
 				{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE}
 	};
 
-	const std::map<std::string, STATE> stringToSateMap =
+	const std::map<std::string, STATE> stringToStateMap =
 	{
 			{ENUM_TO_STRING(STATE::OFF), STATE::OFF},
 			{ENUM_TO_STRING(STATE::UNKNOWN_NAME), STATE::UNKNOWN_NAME},

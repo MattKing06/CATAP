@@ -24,6 +24,7 @@ public:
 
 	// setters
 	bool setNewCurrent(const double &value, const pvStruct& pv) const;
+	bool setNewKSetP(const double &value, const pvStruct& pv) const;
 	bool setNewPSUState(const STATE value, const pvStruct& pv) const;
 
 

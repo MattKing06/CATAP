@@ -204,13 +204,53 @@ class MagnetFactory
 		/*! Set the current for a python::dict of multiple magnets and values
 		@param[in] namesAndCurrentsMap, map of new magnet currents keyed by the magnet object full-name or name-alias
 		@param[out] python::dict of return states for each magnet, keyed by the passed names */
-		boost::python::dict SETI_Py(boost::python::dict& namesAndCurrentsMap);
+		boost::python::dict SETI_Py(const boost::python::dict& namesAndCurrentsMap);
 		/*! Set the current for all magnets in the magnetFactory to zero  (c++ version)
 		@param[out] python::dict of return states for each magnet, keyed by their full-name*/
 		std::map<std::string, STATE> SETIAllZero();
 		/*! Set the current for all magnets in the magnetFactory to zero (python version)
 		@param[out] python::dict of return states from each magnet, keyed by their full-name*/
 		boost::python::dict SETIAllZero_Py();
+
+
+
+		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations
+		@param[in] name, full-name or name-alias of magnet object
+		@param[in] value, new momentum value
+		@param[out] result  */
+		STATE setKSetP(const std::string& name, const double value);
+
+		/*! Set the assumed beam momentum (MeV/c) used magnet field strength / bend angle calculations for a vector of magnets
+		@param[in] names, vector of magnet full-names or name-aliases of magnet object
+		@param[in] value, new momentum value
+		@param[out] result  */
+		std::map<std::string, STATE> setKSetP(const std::vector<std::string>& names, const double value);
+
+		/*! Set the assumed beam momentum (MeV/c) used magnet field strength / bend angle calculations for a list of magnets
+		@param[in] names, list of magnet full-names or name-aliases of magnet object
+		@param[in] value, new momentum value
+		@param[out] result  */
+		boost::python::dict  setKSetP_Py(const boost::python::list& names, const double value);
+
+		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations for magnets in a machine area
+		@param[in] area, machine area to apply settings to 
+		@param[in] value, new momentum value
+		@param[out] result  */
+		STATE setKSetP(const TYPE area, const double value);
+
+		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations for magnets in a vector of machine areas
+		@param[in] area, machine areas to apply settings to
+		@param[in] value, new momentum value
+		@param[out] result  */
+		STATE setKSetP(const std::vector<TYPE>& areas, const double value);
+
+		/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations for magnets in a python list of machine areas
+		@param[in] area, machine areas to apply settings to
+		@param[in] value, new momentum value
+		@param[out] result  */
+		STATE setKSetP_Area_py(const boost::python::list& areas, const double value);
+
+
 
 		/*! Switch ON the PSU for a magnet 
 		@param[in] name, full-name or name-alias of magnet object
@@ -635,11 +675,29 @@ class MagnetFactory
 		bool setMagnetState(const magnetState& ms) ;
 
 		/*! Set the magnet states for all magnets defined in the magnetstate object, that are of a TYPE passed 
-		@param[in] magnetsates to be applied
+		@param[in] magnet states to be applied
 		@param[in] types, std::vector of magnet TYPE that a magnetstate will be applied to 
 		@param[out] magnetsate */
 		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types);
 							   
+
+		/*! Get the names of the magnets that are in an area 
+		@param[in] TYPE, area 
+		@param[out] std::vector<std::string>, names of magnets found in area  */
+		std::vector<std::string> getNamesInArea(TYPE area) const;
+		/*! Get the names of the magnets that are in an area
+		@param[in] TYPE, area
+		@param[out] boost::python::list, names of magnets found in area  */
+		boost::python::list getNamesInArea_Py(TYPE area) const;
+		/*! Get the names of the magnets that are in multiple areas
+		@param[in] std::vector<TYPE>, areas
+		@param[out] std::vector<std::string>, names of magnets found in area  */
+		std::vector<std::string> getNamesInAreas(const std::vector<TYPE>& areas) const;
+		/*! Get the names of the magnets that are  in multiple areas
+		@param[in] TYPE, area
+		@param[out] boost::python::list, names of magnets found in area  */
+		boost::python::list getNamesInAreas_Py(const boost::python::list& areas) const;
+
 
 		/*! Write a DBURT file to the default location 
 		@param[in] DBURT filename to write

@@ -40,7 +40,7 @@
 	**************** README *********************
 	**************** README *********************
 	**************** README *********************
-	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToSateMap in GlobalConstants.h			
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToStateMap in GlobalConstants.h			
 */
 /*! @addtogroup utils*/
 /*!@{*/

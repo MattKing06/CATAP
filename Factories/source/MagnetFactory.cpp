@@ -1349,7 +1349,7 @@ std::map<std::string, STATE> MagnetFactory::SETI(const std::map<std::string, dou
 	}
 	return r;
 }
-boost::python::dict MagnetFactory::SETI_Py(boost::python::dict& namesAndCurrentsDict)
+boost::python::dict MagnetFactory::SETI_Py(const boost::python::dict& namesAndCurrentsDict)
 {
 	return to_py_dict<std::string, STATE>(SETI(to_std_map<std::string, double>(namesAndCurrentsDict)));
 }
@@ -1366,6 +1366,51 @@ boost::python::dict MagnetFactory::SETIAllZero_Py()
 {
 	return to_py_dict<std::string, STATE>(SETIAllZero());
 }
+
+STATE MagnetFactory::setKSetP(const std::string& name, const double value)
+{
+	if (GlobalFunctions::entryExists(magnetMap, name))
+	{
+		if (magnetMap.at(name).setKSetP(value))
+		{
+			return STATE::SUCCESS;
+		}
+		return STATE::FAIL;
+	}
+	return STATE::UNKNOWN_NAME;
+}
+
+
+std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<std::string>& names, const double value)
+{
+	std::map<std::string, STATE> r;
+	for (const auto& entry : names)
+	{
+		r[entry] = setKSetP(entry, value);
+	}
+	return r;
+}
+boost::python::dict  MagnetFactory::setKSetP_Py(const boost::python::list& names, const double value)
+{
+	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(names), value));
+}
+std::map<std::string, STATE> MagnetFactory::setKSetP(const TYPE area, const double value)
+{
+	return setKSetP(getNamesInArea(area), value);
+}
+
+std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<TYPE>& areas, const double value)
+{
+	return setKSetP(getNamesInAreas(areas), value);
+}
+
+boost::python::dict  MagnetFactory::setKSetP_Areas_py(const boost::python::list& areas, const double value)
+{
+	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(names), value));
+}
+
+
+
 STATE MagnetFactory::switchOn(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
@@ -1620,6 +1665,38 @@ std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& 
 	return r;
 }
 
+
+std::vector<std::string> MagnetFactory::getNamesInArea(TYPE area) const
+{
+	std::vector<std::string> r;
+	for (auto&& mag : magnetMap)
+	{
+		if (mag.second.getMachineArea() == area)
+		{
+			r.push_back(mag.first);
+		}
+	}
+	return r;
+}
+boost::python::list MagnetFactory::getNamesInArea_Py(TYPE area) const
+{
+	return to_py_list<std::string>(getNamesInArea(area));
+}
+std::vector<std::string> MagnetFactory::getNamesInAreas(const std::vector<TYPE>& areas)const 
+{
+	std::vector<std::string> r;
+	for (auto&& area : areas)
+	{
+		auto b = getNamesInArea(area);
+		r.insert(r.end(), b.begin(), b.end());
+		
+	}
+	return r;
+}
+boost::python::list MagnetFactory::getNamesInAreas_Py(const boost::python::list& areas) const
+{
+	return to_py_list<std::string>(getNamesInAreas(areas));
+}
 
 
 magnetState MagnetFactory::getMagnetState(const std::string& name)const

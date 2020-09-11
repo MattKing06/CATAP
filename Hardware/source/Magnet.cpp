@@ -39,6 +39,12 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 	magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+	machineArea(GlobalFunctions::stringToTypeMap(paramsMap.find("machine_area")->second)),
+
+
+
+	
+
 	min_i(std::stof(paramsMap.find("min_i")->second)),
 	max_i(std::stof(paramsMap.find("max_i")->second)),
 	position(std::stof(paramsMap.find("position")->second)),
@@ -49,6 +55,11 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	is_degaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
+	for (auto&& item : paramsMap)
+	{
+		std::cout << item.first << " = " << item.second << std::endl;
+	}
+
 	epicsInterface->ownerName = hardwareName;
 	setPVStructs();
 	//convert list of degauss values from strings to floats
@@ -112,15 +123,11 @@ boost::python::list Magnet::getAliases_Py() const
 
 void Magnet::setPVStructs()
 {
-	std::string PV = specificHardwareParameters.find(record)->second.data();
-
-
+	//std::string PV = specificHardwareParameters.find(record)->second.data();
 	for(auto&& record : MagnetRecords::magnetRecordList)
 	{
 		std::string PV = specificHardwareParameters.find(record)->second.data();
-
 		std::cout << "FOUND PV  = " + PV << std::endl;
-
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
@@ -146,7 +153,6 @@ void Magnet::setPVStructs()
 		//chid, count, mask, chtype are left undefined for now.
 		//pvStructs[pv.pvRecord] = pv;
 	}
-
 }
 
 magnetState Magnet::getMagnetState()const
@@ -563,6 +569,26 @@ double Magnet::getKVal() const
 	return K_VAL.second;
 }
 
+TYPE Magnet::getArea()
+{
+	return area;
+}
+
+
+bool Magnet::setKSetP(const double value)
+{
+	switch (mode)
+	{
+	case STATE::PHYSICAL:
+		return epicsInterface->setNewKSetP(value, pvStructs.at(MagnetRecords::K_SET_P));
+		break;
+	case STATE::VIRTUAL:
+		return epicsInterface->setNewKSetP(value, pvStructs.at(MagnetRecords::K_SET_P));
+		break;
+	default:
+		offlineSETI(value);
+	}
+}
 
 // apply new state, 
 bool Magnet::switchOn()

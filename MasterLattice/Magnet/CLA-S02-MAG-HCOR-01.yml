@@ -14,7 +14,7 @@ controls_information:
     K_ANG:      CLA-S02-MAG-HCOR-01:K_ANG
     K_MRAD:     CLA-S02-MAG-HCOR-01:K_MRAD
     #K_VAL:      CLA-S02-MAG-HCOR-01:K_VAL
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD
+  # records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD
   #, K_VAL
 properties:
   degauss_tolerance: 0.1

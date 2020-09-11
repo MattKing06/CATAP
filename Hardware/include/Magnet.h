@@ -207,6 +207,11 @@ class Magnet : public Hardware
 	/*! The K factor for the Quads in 1/m2
 		@param[out] result  */
 		double getKVal() const;
+		/*! Get the area the magnet is in (e.g. S02, INJ, BA1 etc, defined in cofig) 
+			@param[out] result  */
+		TYPE getArea();
+
+
 	/*! returns TRUE if the magnet is performing a degauss procedure*/
 		bool isDegaussing()const;
 	/*! set the current to value
@@ -216,6 +221,9 @@ class Magnet : public Hardware
 	/*! set the current to zero	
 		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool SETIZero(); 	
+	/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations
+		@param[out] result  */
+		bool setKSetP(const double value);
 	/*! switch the magnet PSU on	
 		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool switchOn();
@@ -238,6 +246,8 @@ class Magnet : public Hardware
 		void messagesOn();
 	/*! disable messages for this magnet		*/
 		void messagesOff();
+
+		
 
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;

@@ -146,6 +146,13 @@ bool EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv
 	return putValue2(pv, value);
 }
 
+bool EPICSMagnetInterface::setNewKSetP(const double& value, const pvStruct& pv) const
+{
+	//we have checked that pvRecord is SETI before reaching here.
+	return putValue2(pv, value);
+}
+
+
 
 void EPICSMagnetInterface::updateKDipP(const struct event_handler_args args)
 {
