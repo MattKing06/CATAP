@@ -7,7 +7,7 @@ EPICSTools
 EPICSTools
 ===========================
 .. automodule:: EPICSTools
-   :members: EPICSTools 
+   :members: EPICSTools
    :undoc-members:
 
 

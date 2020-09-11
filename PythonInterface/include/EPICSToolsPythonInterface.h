@@ -15,14 +15,14 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
 			.add_property("PV", &Listener::pvToMonitor)
-			.def("getValue", &Listener::getValue_Py, "get current value of the monitor")
-			.def("getArray", &Listener::getArray_Py, "get current array of the monitor")
-			.def("setBufferSize", &Listener::setBufferSize, "set the size of the buffer (default size is 10)")
-			.def("setArrayBufferSize", &Listener::setArrayBufferSize, "set the size of the array buffer (default size is 10)")
-			.def("getBuffer", &Listener::getBuffer_Py, "get the buffer of past values from EPICS")
-			.def("getBufferAverage", &Listener::getBufferAverage, "get the mean of the values in buffer")
-			.def("getArrayBuffer", &Listener::getArrayBuffer_Py, "get the buffer of past arrays from EPICS")
-			.def("getArrayBufferAverage", &Listener::getArrayBufferAverageArray_Py, "get the mean array of arrays in buffer");
+			.def("getValue", &Listener::getValue_Py, boost::python::arg("self"), "get current value of the monitor")
+			.def("getArray", &Listener::getArray_Py, boost::python::arg("self"), "get current array of the monitor")
+			.def("setBufferSize", &Listener::setBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the buffer (default size is 10)")
+			.def("setArrayBufferSize", &Listener::setArrayBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the array buffer (default size is 10)")
+			.def("getBuffer", &Listener::getBuffer_Py, boost::python::arg("self"), "get the buffer of past values from EPICS")
+			.def("getBufferAverage", &Listener::getBufferAverage, boost::python::arg("self"), "get the mean of the values in buffer")
+			.def("getArrayBuffer", &Listener::getArrayBuffer_Py, boost::python::arg("self"), "get the buffer of past arrays from EPICS")
+			.def("getArrayBufferAverage", &Listener::getArrayBufferAverageArray_Py, boost::python::arg("self"), "get the mean array of arrays in buffer");
 
 	}
 	void expose_epics_tools_object() 
@@ -41,8 +41,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id <EPICSTools>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
-			.def(boost::python::init<>())
-			.def(boost::python::init<STATE>())
+			.def(boost::python::init<>(boost::python::arg("self"),"self"))
+			.def(boost::python::init<STATE>(boost::python::arg("self")))
 			.def("monitor", &EPICSTools::monitor_Py, "begin monitoring")
 			.def("monitor", monitor_single)
 			.def("stopMonitoring", &EPICSTools::stopMonitoring)
