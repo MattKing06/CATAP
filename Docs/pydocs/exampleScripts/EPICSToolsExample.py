@@ -27,8 +27,11 @@ getseti_pv = "CLA-C2V-MAG-HCOR-01:GETSETI"
 ET.get(getseti_pv)
 
 # Example of using monitor, put, and get:
+
+# Turn on HCOR-01
 spower_pv = "CLA-C2V-MAG-HCOR-01:SPOWER"
 ET.put(spower_pv, 1)
+# Wait for HCOR-01 READI value to reach SETI
 while(readi_monitor.getValue() != ET.get(getseti_pv)):
     print("READI VALUE: ", readi_monitor.getValue())
     time.sleep(0.1)

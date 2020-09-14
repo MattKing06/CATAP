@@ -30,6 +30,16 @@ IMG and IMG Factory
 EPICSTools
 ==============================
 
+Single Value Example
+********************
+
 .. literalinclude:: exampleScripts/EPICSToolsExample.py
+   :language: python
+   :linenos:
+   
+Array Value Example
+*******************
+
+.. literalinclude:: exampleScripts/EPICSToolsArrayExample.py
    :language: python
    :linenos:
