@@ -213,7 +213,6 @@ void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
 		bufferVec.push_back(item);
 	}
 	recastListener->currentArrayBuffer.push_back(bufferVec);
-	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
@@ -230,7 +229,6 @@ void UpdateFunctionHolder::updateIntegerArray(const event_handler_args args)
 		bufferVec.push_back(item);
 	}
 	recastListener->currentArrayBuffer.push_back(bufferVec);
-	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
@@ -258,7 +256,6 @@ void UpdateFunctionHolder::updateFloatArray(const event_handler_args args)
 		bufferVec.push_back(item);
 	}
 	recastListener->currentArrayBuffer.push_back(bufferVec);
-	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 
 }
@@ -276,7 +273,6 @@ void UpdateFunctionHolder::updateLongArray(const event_handler_args args)
 		bufferVec.push_back(item);
 	}
 	recastListener->currentArrayBuffer.push_back(bufferVec);
-	std::cout << "NEW BUFFER SIZE: " << recastListener->currentArrayBuffer.size() << std::endl;
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
