@@ -42,7 +42,6 @@ void Putter::setupChannels()
 	epicsInterface->retrieveCHID(pv);
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
-	std::cout << pvToPut << " CHANNEL TYPE: " << pv.CHTYPE << std::endl;
 	epicsInterface->retrieveCOUNT(pv);
 	pv.MASK = DBE_VALUE;
 	EPICSInterface::sendToEPICS();

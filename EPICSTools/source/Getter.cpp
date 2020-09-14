@@ -13,12 +13,9 @@ Getter::Getter(const std::string& pvStr) :
 {
 	pvToGet = getEPICSPVName(pvStr);
 	//fill in constructor to setup epicsInterface
-	std::cout << "creating getter" << std::endl;
 	currentArray = std::vector<boost::variant<double, int, long, float, unsigned short, std::string>>();
 	setupChannels();
-	std::cout << "channels setup" << std::endl;
 	setValueFromEPICS();
-	std::cout << "setting EPICS value" << std::endl;
 }
 
 Getter::Getter(const std::string& pvStr, const STATE& mode) :
@@ -27,13 +24,9 @@ Getter::Getter(const std::string& pvStr, const STATE& mode) :
 	currentValue(boost::variant<double, int, float, long, unsigned short, std::string>())
 {
 	pvToGet = getEPICSPVName(pvStr);
-	//fill in constructor to setup epicsInterface
-	std::cout << "creating getter" << std::endl;
 	currentArray = std::vector<boost::variant<double, int, long, float, unsigned short, std::string>>();
 	setupChannels();
-	std::cout << "channels setup" << std::endl;
 	setValueFromEPICS();
-	std::cout << "setting EPICS value" << std::endl;
 }
 Getter::Getter(const Getter& copyGetter) :
 	epicsInterface(copyGetter.epicsInterface),
@@ -296,7 +289,6 @@ void Getter::setupChannels()
 	epicsInterface->retrieveCHID(pv);
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
-	std::cout << pvToGet << " CHANNEL TYPE: " << pv.CHTYPE << std::endl;
 	// can use the channel count to decide whether to use ca_array_get or ca_get.
 	epicsInterface->retrieveCOUNT(pv);
 	pv.MASK = DBE_VALUE;

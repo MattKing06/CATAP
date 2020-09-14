@@ -60,9 +60,7 @@ void Listener::setupChannels()
 	epicsInterface->retrieveCHID(pv);
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
-	std::cout << pvToMonitor << " CHANNEL TYPE: " << pv.CHTYPE << std::endl;
 	epicsInterface->retrieveCOUNT(pv);
-	std::cout << pvToMonitor << " COUNT: " << pv.COUNT << std::endl;
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
 	EPICSInterface::sendToEPICS();

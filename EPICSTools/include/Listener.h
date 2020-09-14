@@ -205,7 +205,6 @@ inline void Listener::setArray(const std::vector<T>& valueArray)
 template<typename T>
 inline T Listener::getValue()
 {
-	std::cout << "VALUE TYPE: " << currentValue.type().name() << std::endl;
 	return boost::get<T>(currentValue);
 }
 
