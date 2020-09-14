@@ -473,40 +473,56 @@ bool Listener::isStringArray()
 
 bool Listener::isDoubleBuffer()
 {
-	return (currentBuffer.at(0).type() == typeid(double));
+	if (currentBuffer.size() != 0)
+	{
+		return(currentBuffer.at(0).type() == typeid(double));
+	}
 }
 
 bool Listener::isIntBuffer()
 {
-	return (currentBuffer.at(0).type() == typeid(int));
+	if (currentBuffer.size() != 0)
+	{
+		return(currentBuffer.at(0).type() == typeid(int));
+	}
 }
 
 bool Listener::isEnumBuffer()
 {
-	return (currentBuffer.at(0).type() == typeid(unsigned short));
+	if (currentBuffer.size() != 0)
+	{
+		return(currentBuffer.at(0).type() == typeid(unsigned short));
+	}
 }
 
 bool Listener::isStringBuffer()
 {
-	return (currentBuffer.at(0).type() == typeid(std::string));
+	if (currentBuffer.size() != 0)
+	{
+		return(currentBuffer.at(0).type() == typeid(std::string));
+	}
 }
 
 bool Listener::isFloatBuffer()
 {
-	return (currentBuffer.at(0).type() == typeid(float));
+	if (currentBuffer.size() != 0)
+	{
+		return(currentBuffer.at(0).type() == typeid(float));
+	}
 }
 
 bool Listener::isLongBuffer()
 {
-	return(currentBuffer.at(0).type() == typeid(long));
+	if (currentBuffer.size() != 0)
+	{
+		return(currentBuffer.at(0).type() == typeid(long));
+	}
 }
 
 bool Listener::isDoubleArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		std::cout << "IS DOUBLE BUFFER" << std::endl;
-		std::cout << "ARRAY BUFFER SIZE: " << currentArrayBuffer.size() << std::endl;
 		return(currentArrayBuffer.at(0).at(0).type() == typeid(double));
 	}
 }
