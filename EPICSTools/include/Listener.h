@@ -16,6 +16,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
+#define DEFAULT_BUFFER_SIZE 10
 
 /** @addtogroup epicsTools
  *@{*/

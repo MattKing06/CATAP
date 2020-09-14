@@ -9,9 +9,9 @@ Listener::Listener(const std::string& pvStr)
 	:
 	mode(STATE::VIRTUAL),
 	currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
-	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
+	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(DEFAULT_BUFFER_SIZE)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
-	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>(10)),
+	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>(DEFAULT_BUFFER_SIZE)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0),
@@ -24,9 +24,9 @@ Listener::Listener(const std::string& pvStr)
 Listener::Listener(const std::string& pvStr, const STATE& mode)
 	: mode(mode),
 	 currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
-	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(10)),
+	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(DEFAULT_BUFFER_SIZE)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
-	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>()),
+	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>(DEFAULT_BUFFER_SIZE)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0)
