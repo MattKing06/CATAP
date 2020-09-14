@@ -716,10 +716,25 @@ class MagnetFactory
 		@param[out] integrated strength*/
 		boost::python::dict getAllKSetP_Py() const;
 
+		/*! Get the bend angle in mrad (valid on correctors only?)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] bend angle, mrad*/
 		double getKmrad(const std::string& name)const;
+		/*! Get the bend angle in mrad for mulitple magnets (valid on correctors only?)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] map of magnets names and bend angles, mrad*/
 		std::map<std::string, double> getKmrads(const std::vector<std::string>& names) const;
+		/*! Get the bend angle in mrad for mulitple magnets, python version (valid on correctors only?)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] dict of magnets names and bend angles, mrad*/
 		boost::python::dict getKmrad_Py(const boost::python::list& names) const;
+		/*! Get the bend angles in mrad for all magnets, (valid on correctors only?)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] map of magnets names and bend angles, mrad*/
 		std::map<std::string, double> getAllKmrad() const;
+		/*! Get the bend angles in mrad for all magnets, Python version (valid on correctors only?)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] dict of magnets names and bend angles, mrad*/
 		boost::python::dict getAllKmrad_Py() const;
 
 

@@ -34,7 +34,7 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	// Assumes all these find succeed ? 
 	manufacturer(paramsMap.find("manufacturer")->second),
 	serialNumber(paramsMap.find("serial_number")->second.data()),
-	//magType(paramsMap.find("mag_type")->second),
+	//mag_type(paramsMap.find("mag_type")->second),
 	RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
 	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
@@ -75,11 +75,11 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	{
 		if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramsMap.at("mag_type")))
 		{
-			magType = GlobalConstants::stringToTypeMap.at(paramsMap.at("mag_type"));
+			mag_type = GlobalConstants::stringToTypeMap.at(paramsMap.at("mag_type"));
 		}
 		else
 		{
-			magType = TYPE::UNKNOWN_TYPE;
+			mag_type = TYPE::UNKNOWN_TYPE;
 		}
 
 	}
@@ -93,7 +93,7 @@ Magnet::Magnet(const Magnet& copyMagnet) :
 	Hardware(copyMagnet),
 	manufacturer(copyMagnet.manufacturer),
 	serialNumber(copyMagnet.serialNumber),
-	magType(copyMagnet.magType),
+	mag_type(copyMagnet.mag_type),
 	magRevType(copyMagnet.magRevType),
 	READI_tolerance(copyMagnet.READI_tolerance),
 	numberOfDegaussSteps(copyMagnet.numberOfDegaussSteps),
@@ -158,8 +158,20 @@ magnetState Magnet::getMagnetState()const
 	r.ilkState = getILKState();
 	r.psuState = getPSUState();
 	r.name = getHardwareName();
+	r.k_dip_p = getKDipP();
+	r.int_str_mm = getIntStr_mm();
+	r.int_str_mm = getIntStr();
+	r.k_set_p = getHardwagetKSetPreName();
+	r.k_ang = getKAng();
+	r.k_mrad = getKmrad();
+	r.k_val = getKVal();
+	r.k_val = getKVal();
+
+	state;
+
 	return r;
 }
+
 
 bool Magnet::setMagnetState(const magnetState& ms)
 {
@@ -220,13 +232,17 @@ std::string Magnet::getSerialNumber() const
 {
 	return this->serialNumber;
 }
+TYPE Magnet::getMagType() const
+{
+	return this->mag_type;
+}
 double Magnet::getPosition() const
 {
 	return this->position;
 }
 TYPE Magnet::getMagnetType() const
 {
-	return magType;
+	return mag_type;
 }
 std::string Magnet::getMagnetRevType() const
 {

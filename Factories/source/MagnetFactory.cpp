@@ -1398,6 +1398,7 @@ std::map<std::string, STATE> MagnetFactory::setKSetP(const TYPE area, const doub
 {
 	return setKSetP(getNamesInArea(area), value);
 }
+
 boost::python::dict MagnetFactory::setKSetP_area_Py(TYPE area, const double value)
 {
 	return to_py_dict<std::string, STATE>(setKSetP(area, value));

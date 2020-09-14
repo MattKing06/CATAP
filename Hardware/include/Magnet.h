@@ -41,12 +41,17 @@ struct magnetState
 		k_val(GlobalConstants::double_min)
 	{};
 	std::string name;
+	TYPE type;
 	STATE psuState, ilkState;
 	double seti, readi;
 	// physics units (not all types of magnets have all tehse values 
 	double k_dip_p, int_str_mm;
 	double k_set_p, int_str;
 	double k_ang, k_val, k_mrad;
+	
+	// preprocessor ifdefine guards for non-python apps??? 
+	boost::python::dict state;
+
 };
 
 #include <thread>
@@ -171,7 +176,12 @@ class Magnet : public Hardware
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
-	/*! get the magnet lattice position, defined in the master lattice yaml file
+
+	/*! get the magnet TYPE (quadrupole, dipole, correctoer, solenoid, etc.)
+		@param[out] result  */
+		TYPE getMagType() const;
+
+		/*! get the magnet lattice position, defined in the master lattice yaml file
 		@param[out] result  */
 		double getPosition() const;
 	/*! get the current READI 
