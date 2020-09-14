@@ -30,6 +30,8 @@ IMG and IMG Factory
 EPICSTools
 ==============================
 
+The list of functions for EPICSTools can be found here: :doc:`./EPICSTools`
+
 Single Value Example
 ********************
 
