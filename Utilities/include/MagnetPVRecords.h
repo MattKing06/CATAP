@@ -32,18 +32,11 @@ namespace MagnetRecords
 namespace MagnetPSUValueToState
 {
 	// add a converter here 
-	
 	extern std::map<std::string, STATE> magnetPSUStrToSTATE;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
-
-	
-
 	extern std::map<int, STATE> magnetPSUIntToSTATE;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
 }
 
-
-
-
-namespace MagnetState
+namespace MagnetState /* TODO THIS IS ALSO DEFINE IN TH EMAGNET CLASS :(  */ 
 {
 	struct magnetStateStruct
 	{   // proviude a default constructor

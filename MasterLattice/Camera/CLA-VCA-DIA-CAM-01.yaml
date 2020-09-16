@@ -48,7 +48,6 @@ controls_information:
         HDF_FileNumber    : CLA-VCA-DIA-CAM-01:HDF:FileNumber
         HDF_WriteFile    : CLA-VCA-DIA-CAM-01:HDF:WriteFile
         CAM_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Acquire
-        CAM_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Acquire
         HDF_Capture    : CLA-VCA-DIA-CAM-01:HDF:Capture
         HDF_NumCapture    : CLA-VCA-DIA-CAM-01:HDF:NumCapture
         MAGICK_FileName    : CLA-VCA-DIA-CAM-01:MAGICK:FileName
@@ -60,7 +59,6 @@ controls_information:
         ANA_StepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
         ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
         ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
-        ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
         ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint
         CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
         ANA_MaskXCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter

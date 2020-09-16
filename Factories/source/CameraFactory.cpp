@@ -1,4 +1,5 @@
-#include <CameraFactory.h>
+#include "CameraFactory.h"
+#include "CameraPVRecords.h"
 #include "GlobalStateEnums.h"
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
@@ -9,22 +10,22 @@ CameraFactory::CameraFactory()
 }
 
 CameraFactory::CameraFactory(STATE mode) :
-mode(mode),
-hasBeenSetup(false),
-reader(ConfigReader("Camera", mode)),
-messenger(LoggingSystem(true, true)),
-machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
-dummy_cam(Camera())
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("Camera", mode)),
+	messenger(LoggingSystem(true, true)),
+	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
+	dummy_cam(Camera())
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
 
 CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
-hasBeenSetup(copyFactory.hasBeenSetup),
-mode(copyFactory.mode),
-messenger(copyFactory.messenger),
-reader(copyFactory.reader),
-machineAreas(machineAreas)
+	hasBeenSetup(copyFactory.hasBeenSetup),
+	mode(copyFactory.mode),
+	messenger(copyFactory.messenger),
+	reader(copyFactory.reader),
+	machineAreas(machineAreas)
 {
 }
 
@@ -85,43 +86,104 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	}
 	cutLHarwdareMapByMachineAreas();
 
-	//setupChannels();
-	//EPICSInterface::sendToEPICS();
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 
 
+	
 	for (auto& item : camera_map)
 	{
-		// update aliases for valve in map
+		messenger.printDebugMessage("setting up, " + item.first);
+		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
+		
+		follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
-		//	for (auto& pv : pvstruct)
-		//	{
-		//		// sets the monitor state in the pvstruict to true or false
-		//		if (ca_state(pv.second.CHID) == cs_conn)
-		//		{
-		//			retrieveMonitorStatus(pv.second);
-		//			valve.second.epicsInterface->retrieveCHTYPE(pv.second);
-		//			valve.second.epicsInterface->retrieveCOUNT(pv.second);
-		//			valve.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-		//			//// not sure how to set the mask from EPICS yet.
-		//			pv.second.MASK = DBE_VALUE;
-		//			messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-		//				"write", std::to_string(ca_write_access(pv.second.CHID)),
-		//				"state", std::to_string(ca_state(pv.second.CHID)));
-		//			if (pv.second.monitor)
-		//			{
-		//				valve.second.epicsInterface->createSubscription(valve.second, pv.second);
-		//				EPICSInterface::sendToEPICS();
-		//			}
-		//		}
-		//		else
-		//		{
-		//			messenger.printMessage(valve.first, " CANNOT CONNECT TO EPICS");
-		//		}
-		//	}
+
+
+		for (auto& pv : pvstruct)
+		{
+			// sets the monitor state in the pvstruict to true or false
+			messenger.printDebugMessage("PV sub, " + item.first);
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				setMonitorStatus(pv.second);
+				item.second.epicsInterface->retrieveCHTYPE(pv.second);
+				item.second.epicsInterface->retrieveCOUNT(pv.second);
+				item.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
+				//// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					item.second.epicsInterface->createSubscription(item.second, pv.second);
+					EPICSInterface::sendToEPICS();
+				}
+			}
+			else
+			{
+				messenger.printMessage(item.first, " CANNOT CONNECT TO EPICS");
+			}
+		}
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
+}
+
+void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
+{
+	using namespace CameraRecords;
+	std::vector<std::string> cam_monitor_records{ HDF_WriteFile_RBV,
+		HDF_WriteStatus,
+		HDF_WriteMessage,
+		HDF_NumCaptured_RBV,
+		HDF_Capture_RBV,
+		CAM_Acquire_RBV,
+		HDF_NumCapture_RBV,
+		MAGICK_NumCaptured_RBV,
+		MAGICK_WriteFile_RBV,
+		MAGICK_WriteStatus,
+		MAGICK_WriteMessage,
+		MAGICK_Capture_RBV,
+		MAGICK_NumCapture_RBV,
+		ANA_StepSize_RBV,
+		ANA_EnableCallbacks_RBV,
+		ANA_X_RBV,
+		ANA_Y_RBV,
+		ANA_SigmaX_RBV,
+		ANA_SigmaY_RBV,
+		ANA_CovXY_RBV,
+		ANA_AvgIntensity_RBV,
+		ANA_Intensity_RBV,
+		ANA_XPix_RBV,
+		ANA_YPix_RBV,
+		ANA_SigmaXPix_RBV,
+		ANA_SigmaYPix_RBV,
+		ANA_CovXYPix_RBV,
+		ANA_PixelResults_RBV,
+		ANA_MaskXCenter_RBV,
+		ANA_MaskYCenter_RBV,
+		ANA_MaskXRad_RBV,
+		ANA_MaskYRad_RBV,
+		ANA_CenterX_RBV,
+		ANA_CenterY_RBV,
+		ANA_PixMM_RBV,
+		CAM_AcquireTime_RBV,
+		CAM_AcquirePeriod_RBV,
+		CAM_ArrayRate_RBV,
+		CAM_Temperature_RBV,
+		ANA_UseNPoint };
+
+	if (std::find(cam_monitor_records.begin(), cam_monitor_records.end(), pvStruct.pvRecord) != cam_monitor_records.end())
+	{
+		pvStruct.monitor = true;
+	}
+	else
+	{
+		pvStruct.monitor = false;
+	}
 }
 
 
@@ -141,6 +203,19 @@ void CameraFactory::populateCameraMap()
 	messenger.printDebugMessage("CameraFactory has finished populating "
 		"the Camera MAP, found ", camera_map.size(), " Camera  objects");
 }
+void CameraFactory::setupChannels()
+{
+	for (auto& cam : camera_map)
+	{
+		//std::map<std::string, pvStruct>& pvStructs = cam.second.getPVStructs();
+		for (auto& pv : cam.second.getPVStructs())
+		{
+			cam.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
+
 
 double CameraFactory::pix2mmX(const std::string& name, double value)const
 {
@@ -539,7 +614,7 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 	// now add in the aliases, for cameras we have name_alias and screen_name to include 
 	std::vector<std::string> name_aliases = camera.getAliases();
 	std::vector<std::string> screen_aliases = camera.getScreenNames();
-	std::vector<std::string> aliases; 
+	std::vector<std::string> aliases;
 	aliases.reserve(name_aliases.size() + screen_aliases.size());
 	aliases.insert(aliases.end(), name_aliases.begin(), name_aliases.end());
 	aliases.insert(aliases.end(), screen_aliases.begin(), screen_aliases.end());
@@ -597,8 +672,8 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 	}
 	// a bit of cancer below ...
 	// now check if there are two virtual_cathdoe cameras, if so remove thje VELA one (arbitrary decision, but meh)
-	auto it_vela = camera_map.end();  
-	auto it_clara = camera_map.end();  
+	auto it_vela = camera_map.end();
+	auto it_clara = camera_map.end();
 	for (auto it = camera_map.begin(); it != camera_map.end() /* not hoisted */; /* no increment */)
 	{
 		if (it->second.getMachineArea() == TYPE::VELA_LASER)

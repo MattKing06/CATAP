@@ -126,14 +126,19 @@ private:
 	STATE mode;
 	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
 	ConfigReader reader;
-	
+	/*! Fill camera_map with camera objects */
 	void populateCameraMap();
-
+	/*! Cut cameras from camera_map that are not in the requested machine area */
+	void cutLHarwdareMapByMachineAreas();
+	/*! set up connections to epics */
+	void setupChannels();
+	/* sets the pvStruct monitor flag to true if the record is hardcoded as a record to monitor */
+	void setMonitorStatus(pvStruct& pvStruct);
+		
 	std::map<std::string, Camera> camera_map;
 
 
 	std::vector<TYPE> machineAreas;
-	void cutLHarwdareMapByMachineAreas();
 
 	void updateAliasNameMap(const Camera& camera);
 	std::map<std::string, std::string> alias_name_map;
