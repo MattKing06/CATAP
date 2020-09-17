@@ -97,14 +97,13 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
 		
-		follow this through it seems to be empty! 
+		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
 
 
 		for (auto& pv : pvstruct)
 		{
 			// sets the monitor state in the pvstruict to true or false
-			messenger.printDebugMessage("PV sub, " + item.first);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				setMonitorStatus(pv.second);
@@ -113,13 +112,18 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				item.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-					"write", std::to_string(ca_write_access(pv.second.CHID)),
-					"state", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": read = ", std::to_string(ca_read_access(pv.second.CHID)),
+					"write = ", std::to_string(ca_write_access(pv.second.CHID)),
+					"state = ", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
+					messenger.printDebugMessage("createSubscription");
 					item.second.epicsInterface->createSubscription(item.second, pv.second);
 					EPICSInterface::sendToEPICS();
+				}
+				else
+				{
+					messenger.printDebugMessage("NO createSubscription");
 				}
 			}
 			else
@@ -207,9 +211,10 @@ void CameraFactory::setupChannels()
 {
 	for (auto& cam : camera_map)
 	{
-		//std::map<std::string, pvStruct>& pvStructs = cam.second.getPVStructs();
-		for (auto& pv : cam.second.getPVStructs())
+		std::map<std::string, pvStruct>& pvStructs = cam.second.getPVStructs();
+		for (auto& pv : pvStructs)
 		{
+			messenger.printMessage(cam.first,", retrieveCHID ", pv.first);
 			cam.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}

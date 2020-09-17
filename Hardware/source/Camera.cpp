@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "GlobalFunctions.h"
+#include "CameraPVRecords.h"
 #include "PythonTypeConversions.h"
 #include "boost/algorithm/string/split.hpp"
 #include <algorithm>
@@ -11,6 +12,7 @@ Hardware()
 
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
+epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
 pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),
 pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),
 x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -22,13 +24,15 @@ x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
+sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+cam_type(TYPE::UNKNOWN_TYPE)
 {
+
+	setPVStructs();
 
 	// TODO name_alias should be in harwdare constructor?? 
 	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
 	boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
-
 	// REMOVE SPACES FROM THE NAME
 	for (auto& name : screen_names)
 	{
@@ -40,6 +44,13 @@ sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
 		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
 		messenger.printDebugMessage(hardwareName, " added aliase " + name);
 	}
+
+	// add cmaera type 
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramMap.at("CAM_TYPE")))
+	{
+		cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
+	}
+
 
 }
 
@@ -54,10 +65,45 @@ Camera::~Camera()
 
 void Camera::setPVStructs()
 {
+	for (auto&& record : CameraRecords::cameraRecordList)
+	{
+		pvStructs[record] = pvStruct();
+		pvStructs[record].pvRecord = record;
+
+		// TODO NO ERROR CHECKING! (we assum config file is good??? 
+		std::string PV = specificHardwareParameters.find(record)->second.data();
+		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+		//messenger.printDebugMessage("Constructing PV information for ", record);
+
+		/*TODO
+		  This should be put into some general function: generateVirtualPV(PV) or something...
+		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+		  The config reader level if that is the case.
+		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
+		  */
+		if (mode == STATE::VIRTUAL)
+		{
+			pvStructs[record].fullPVName = "VM-" + PV;
+			std::cout << "Virtual Camera PV " + pvStructs[record].fullPVName << std::endl;
+		}
+		else
+		{
+			pvStructs[record].fullPVName = PV;
+			std::cout << "Physical Camera PV " + pvStructs[record].fullPVName << std::endl;
+		}
+		//pv.pvRecord = record;
+		//chid, count, mask, chtype are left undefined for now.
+		//pvStructs[pv.pvRecord] = pv;
+	}
+
 }
 
 
 
+TYPE Camera::getCamType()const
+{
+	return cam_type;
+}
 
 
 

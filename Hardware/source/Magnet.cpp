@@ -66,6 +66,7 @@ isDegaussing(false)
 		degaussValues.push_back(std::stof(value)); 
 	}
 	// set the magnet_type
+	// TODO THIS HAS NOW BEEN REPLACED BY A GLOBALCONSTANT FOR ALL HARDWARE TYPES
 	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
 	{
 		if(GlobalFunctions::entryExists( magnet_string_to_type_map, paramsMap.at("mag_type")))

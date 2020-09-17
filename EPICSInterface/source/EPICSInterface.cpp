@@ -80,13 +80,19 @@ void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) 
 
 void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 {
+	messenger.printDebugMessage("try2 ", pvStruct.fullPVName);
 	try
 	{
+
 		int status;
 		//chid CHID;
-		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
+		// This should be defined in the hardware objst, so that we can handle non-standrd PV names
 		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
+
+
+
 		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
+		// TODO SURELY THIS IS NUTS AND A LEGACY FROM SOME OLD VERSION
 		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
 			pvStruct.fullPVName.find("VALV") != std::string::npos ||
 			pvStruct.fullPVName.find("BPM") != std::string::npos ||
@@ -94,7 +100,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
 			pvStruct.fullPVName.find("SCR") != std::string::npos ||
 			pvStruct.fullPVName.find("YAG") != std::string::npos ||
-			pvStruct.fullPVName.find("IMG") != std::string::npos )
+			pvStruct.fullPVName.find("CAM") != std::string::npos )
 		{
 			pv = pvStruct.fullPVName;
 		}

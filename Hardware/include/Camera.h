@@ -44,6 +44,9 @@ public:
 	@param[out] name, */
 	std::string getScreen()const;
 
+	/*! get the type of the camera (e.g. vela_camera, clara_camera 
+	@param[out] type */
+	TYPE getCamType()const;
 
 	double pix2mmX(double value)const;
 	double pix2mmY(double value)const;
@@ -89,17 +92,14 @@ public:
 	void messagesOff();
 
 	
-	friend class EPICSLLRFInterface;
+	friend class EPICSCameraInterface;
 	friend class CameraFactory;
 protected:
 
 	/* In general put data that comes beack from EPCIS into a timestamp, data pair */
 	//std::pair<epicsTimeStamp, double > some_data;
 
-	// special aase for the HRRG_GUN and LRRG_GUN
-	void setMachineArea(const TYPE area);
-
-
+	
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
 	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
@@ -129,6 +129,9 @@ protected:
 
 private:
 
+	TYPE cam_type;
+
+
 	/*! alternative names for the magnet (usually shorter thna the full PV root),
 	defined in the master lattice yaml file	*/
 	std::vector<std::string> aliases;
@@ -144,6 +147,8 @@ private:
 
 	EPICSCameraInterface_sptr epicsInterface;
 	std::map<std::string, std::string> CameraParamMap;
+
+
 
 };
 

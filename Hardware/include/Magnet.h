@@ -279,17 +279,19 @@ class Magnet : public Hardware
 		@param[in] waitTime, maximum time to wait before returning false
 		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
 		bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
+		
 
+		/* magnet types are stored as strings the master-lattice */
 		static std::map<std::string, TYPE> create_map()
 		{
 			std::map<std::string, TYPE> m;
 			m["Magnet"] = TYPE::MAGNET;
 			m["QUADRUPOLE"] = TYPE::QUADRUPOLE;
-			//m["DIPOLE"] = TYPE::DIPOLE;
-			////m["HVCOR"] = TYPE::HVCOR;
-			//m["VCOR"] = TYPE::VCOR;
-			//m["HCOR"] = TYPE::HCOR;
-			//m["SOLENOID"] = TYPE::SOLENOID;
+			m["DIPOLE"] = TYPE::DIPOLE;
+			//m["HVCOR"] = TYPE::	(VERTICAL_CORRECTOR)
+			m["VCOR"] = TYPE::VERTICAL_CORRECTOR;
+			m["HCOR"] = TYPE::HORIZONTAL_CORRECTOR;
+			m["SOLENOID"] = TYPE::SOLENOID;
 			return m;
 		}
 		static const std::map<std::string, TYPE> magnet_string_to_type_map;

@@ -7,7 +7,7 @@
 #include "GlobalTypeEnums.h"
 #include "GlobalStateEnums.h"
 
-// where i sthe best to put this ??
+// where is the best to put this ??
 // http://forums.codeguru.com/showthread.php?369447-can-t-assign-numeric_limits-lt-double-gt-max()
 #ifdef max
 #undef max
@@ -60,10 +60,21 @@ namespace GlobalConstants
 		{"Magnet", TYPE::MAGNET},
 		{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
 		{"Valve", TYPE::VALVE},
+
+		// camera stuff 
 		{ENUM_TO_STRING(TYPE::CAMERA_TYPE), TYPE::CAMERA_TYPE},
 		{"Camera", TYPE::CAMERA_TYPE},
 		{"CAMERA", TYPE::CAMERA_TYPE},
 		{"camera", TYPE::CAMERA_TYPE},
+		{ENUM_TO_STRING(TYPE::CLARA_CAMERA), TYPE::CLARA_CAMERA},
+		{ENUM_TO_STRING(TYPE::VELA_CAMERA), TYPE::VELA_CAMERA},
+		{"CLARA_CAM", TYPE::CLARA_CAMERA},
+		{"CLARA_CAM", TYPE::VELA_CAMERA},
+		{"clara_cam", TYPE::CLARA_CAMERA},
+		{"clara_cam", TYPE::VELA_CAMERA},
+
+
+
 
 		{ENUM_TO_STRING(TYPE::BPM_TYPE), TYPE::BPM_TYPE},
 		{"BPM", TYPE::BPM_TYPE},

@@ -36,19 +36,19 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	}
 	else if (pvStruct.pvRecord == HDF_NumCaptured_RBV)
 	{
-	pvStruct.updateFunction = this->update_HDF_NumCaptured_RBV;
+		pvStruct.updateFunction = this->update_HDF_NumCaptured_RBV;
 	}
 	else if (pvStruct.pvRecord == HDF_Capture_RBV)
 	{
-	pvStruct.updateFunction = this->update_HDF_Capture_RBV;
+		pvStruct.updateFunction = this->update_HDF_Capture_RBV;
 	}
 	else if (pvStruct.pvRecord == CAM_Acquire_RBV)
 	{
-	pvStruct.updateFunction = this->update_CAM_Acquire_RBV;
+		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;
 	}
 	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)
 	{
-	pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;
+		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;
 	}
 	else if (pvStruct.pvRecord == MAGICK_NumCaptured_RBV)
 	{
@@ -60,128 +60,128 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	}
 	else if (pvStruct.pvRecord == MAGICK_WriteStatus)
 	{
-	pvStruct.updateFunction = this->update_MAGICK_WriteStatus;
+		pvStruct.updateFunction = this->update_MAGICK_WriteStatus;
 	}
 	else if (pvStruct.pvRecord == MAGICK_WriteMessage)
 	{
-	pvStruct.updateFunction = this->update_MAGICK_WriteMessage;
+		pvStruct.updateFunction = this->update_MAGICK_WriteMessage;
 	}
 	else if (pvStruct.pvRecord == MAGICK_Capture_RBV)
 	{
-	pvStruct.updateFunction = this->update_MAGICK_Capture_RBV;
+		pvStruct.updateFunction = this->update_MAGICK_Capture_RBV;
 	}
 	else if (pvStruct.pvRecord == MAGICK_NumCapture_RBV)
 	{
-	pvStruct.updateFunction = this->update_MAGICK_NumCapture_RBV;
+		pvStruct.updateFunction = this->update_MAGICK_NumCapture_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_StepSize_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_StepSize_RBV;
+		pvStruct.updateFunction = this->update_ANA_StepSize_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_EnableCallbacks_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_EnableCallbacks_RBV;
+		pvStruct.updateFunction = this->update_ANA_EnableCallbacks_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_X_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_X_RBV;
+		pvStruct.updateFunction = this->update_ANA_X_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_Y_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_Y_RBV;
+		pvStruct.updateFunction = this->update_ANA_Y_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_SigmaX_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_SigmaX_RBV;
+		pvStruct.updateFunction = this->update_ANA_SigmaX_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_SigmaY_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_SigmaY_RBV;
+		pvStruct.updateFunction = this->update_ANA_SigmaY_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_CovXY_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_CovXY_RBV;
+		pvStruct.updateFunction = this->update_ANA_CovXY_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_AvgIntensity_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_AvgIntensity_RBV;
+		pvStruct.updateFunction = this->update_ANA_AvgIntensity_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_Intensity_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_Intensity_RBV;
+		pvStruct.updateFunction = this->update_ANA_Intensity_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_XPix_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_XPix_RBV;
+		pvStruct.updateFunction = this->update_ANA_XPix_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_YPix_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_YPix_RBV;
+		pvStruct.updateFunction = this->update_ANA_YPix_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_SigmaXPix_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_SigmaXPix_RBV;
+		pvStruct.updateFunction = this->update_ANA_SigmaXPix_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_SigmaYPix_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_SigmaYPix_RBV;
+		pvStruct.updateFunction = this->update_ANA_SigmaYPix_RBV;
 		}
 	else if (pvStruct.pvRecord == ANA_CovXYPix_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;
+		pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;
 		}
 	else if (pvStruct.pvRecord == ANA_PixelResults_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_PixelResults_RBV;
+		pvStruct.updateFunction = this->update_ANA_PixelResults_RBV;
 		}
 	else if (pvStruct.pvRecord == ANA_MaskXCenter_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_MaskXCenter_RBV;
+		pvStruct.updateFunction = this->update_ANA_MaskXCenter_RBV;
 		}
 	else if (pvStruct.pvRecord == ANA_MaskYCenter_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_MaskYCenter_RBV;
+		pvStruct.updateFunction = this->update_ANA_MaskYCenter_RBV;
 			}
 	else if (pvStruct.pvRecord == ANA_MaskXRad_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;
-			}
+		pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;
+	}
 	else if (pvStruct.pvRecord == ANA_MaskYRad_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_MaskYRad_RBV;
+		pvStruct.updateFunction = this->update_ANA_MaskYRad_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_CenterX_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_CenterX_RBV;
-		}
+		pvStruct.updateFunction = this->update_ANA_CenterX_RBV;
+	}
 	else if (pvStruct.pvRecord == ANA_CenterY_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_CenterY_RBV;
-				}
+		pvStruct.updateFunction = this->update_ANA_CenterY_RBV;
+	}
 	else if (pvStruct.pvRecord == ANA_PixMM_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_PixMM_RBV;
-			}
+		pvStruct.updateFunction = this->update_ANA_PixMM_RBV;
+	}
 	else if (pvStruct.pvRecord == CAM_AcquireTime_RBV)
 	{
-	pvStruct.updateFunction = this->update_CAM_AcquireTime_RBV;
-			}
+		pvStruct.updateFunction = this->update_CAM_AcquireTime_RBV;
+	}
 	else if (pvStruct.pvRecord == CAM_AcquirePeriod_RBV)
 	{
-	pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;
+		pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;
 	}
 	else if (pvStruct.pvRecord == CAM_ArrayRate_RBV)
 	{
-	pvStruct.updateFunction = this->update_CAM_ArrayRate_RBV;
-			}
+		pvStruct.updateFunction = this->update_CAM_ArrayRate_RBV;
+	}
 	else if (pvStruct.pvRecord == CAM_Temperature_RBV)
 	{
-	pvStruct.updateFunction = this->update_CAM_Temperature_RBV;
-			}
+		pvStruct.updateFunction = this->update_CAM_Temperature_RBV;
+	}
 	else if (pvStruct.pvRecord == ANA_UseNPoint)
 	{
-	pvStruct.updateFunction = this->update_ANA_UseNPoint;
-			}
+		pvStruct.updateFunction = this->update_ANA_UseNPoint;
+	}
 	else
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
@@ -191,143 +191,144 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 
 void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_WriteStatus ");
+	//messenger.printDebugMessage("update_HDF_WriteStatus ");
 }
 void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_WriteMessage ");
+	//messenger.printDebugMessage("update_HDF_WriteMessage ");
 }
 void EPICSCameraInterface::update_HDF_NumCaptured_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
+	//messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
 }
 void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_Capture_RBV ");
+	//messenger.printDebugMessage("update_HDF_Capture_RBV ");
 }
 void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_CAM_Acquire_RBV ");
+	//messenger.printDebugMessage("update_CAM_Acquire_RBV ");
 }
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
+	//messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
 }
 void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
+	//messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
 }
-void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args) 
+{
+	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_MAGICK_WriteMessage ");
+	//messenger.printDebugMessage("update_MAGICK_WriteMessage ");
 }
 
 void EPICSCameraInterface::update_MAGICK_Capture_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
+	//messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_NumCapture_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
+	//messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
 }
 void EPICSCameraInterface::update_ANA_StepSize_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_StepSize_RBV ");
+	//messenger.printDebugMessage("update_ANA_StepSize_RBV ");
 }
 void EPICSCameraInterface::update_ANA_EnableCallbacks_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_EnableCallbacks_RBV ");
+	//messenger.printDebugMessage("update_ANA_EnableCallbacks_RBV ");
 }
 void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_ANA_X_RBV ");
+	//messenger.printDebugMessage("update_ANA_X_RBV ");
 }
 void EPICSCameraInterface::update_ANA_Y_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_Y_RBV ");
+	//messenger.printDebugMessage("update_ANA_Y_RBV ");
 }
 void EPICSCameraInterface::update_ANA_SigmaX_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_SigmaX_RBV ");
+	//messenger.printDebugMessage("update_ANA_SigmaX_RBV ");
 }
 void EPICSCameraInterface::update_ANA_SigmaY_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 void EPICSCameraInterface::update_ANA_CovXY_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_ANA_CovXY_RBV ");
+	//messenger.printDebugMessage("update_ANA_CovXY_RBV ");
 }
 void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_AvgIntensity_RBV ");
+	//messenger.printDebugMessage("update_ANA_AvgIntensity_RBV ");
 }
 void EPICSCameraInterface::update_ANA_Intensity_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_Intensity_RBV ");
+	//messenger.printDebugMessage("update_ANA_Intensity_RBV ");
 }
 void EPICSCameraInterface::update_ANA_XPix_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_XPix_RBV ");
+	//messenger.printDebugMessage("update_ANA_XPix_RBV ");
 }
 void EPICSCameraInterface::update_ANA_YPix_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_YPix_RBV ");
+	//messenger.printDebugMessage("update_ANA_YPix_RBV ");
 }
 void EPICSCameraInterface::update_ANA_SigmaXPix_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_SigmaXPix_RBV ");
+	//messenger.printDebugMessage("update_ANA_SigmaXPix_RBV ");
 }
 void EPICSCameraInterface::update_ANA_SigmaYPix_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_SigmaYPix_RBV ");
+	//messenger.printDebugMessage("update_ANA_SigmaYPix_RBV ");
 }
 void EPICSCameraInterface::update_ANA_CovXYPix_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_CovXYPix_RBV ");
+	//messenger.printDebugMessage("update_ANA_CovXYPix_RBV ");
 }
 void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_PixelResults_RBV ");
+	//messenger.printDebugMessage("update_ANA_PixelResults_RBV ");
 }
 void EPICSCameraInterface::update_ANA_MaskXCenter_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_MaskXCenter_RBV ");
+	//messenger.printDebugMessage("update_ANA_MaskXCenter_RBV ");
 }
 void EPICSCameraInterface::update_ANA_MaskYCenter_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_MaskYCenter_RBV ");
+	//messenger.printDebugMessage("update_ANA_MaskYCenter_RBV ");
 }
 void EPICSCameraInterface::update_ANA_MaskXRad_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_MaskXRad_RBV");
+	//messenger.printDebugMessage("update_ANA_MaskXRad_RBV");
 }
 void EPICSCameraInterface::update_ANA_MaskYRad_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_MaskYRad_RBV");
+	//messenger.printDebugMessage("update_ANA_MaskYRad_RBV");
 }
 void EPICSCameraInterface::update_ANA_CenterX_RBV(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_ANA_CenterX_RBV");
+	//messenger.printDebugMessage("update_ANA_CenterX_RBV");
 }
 void EPICSCameraInterface::update_ANA_CenterY_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_ANA_CenterY_RBV");
+	//messenger.printDebugMessage("update_ANA_CenterY_RBV");
 }
 void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_ANA_PixMM_RBV");
+	//messenger.printDebugMessage("update_ANA_PixMM_RBV");
 }
 void EPICSCameraInterface::update_CAM_AcquireTime_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_CAM_AcquireTime_RBV");
+	//messenger.printDebugMessage("update_CAM_AcquireTime_RBV");
 }
 void EPICSCameraInterface::update_CAM_AcquirePeriod_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_CAM_AcquirePeriod_RBV");
+	///messenger.printDebugMessage("update_CAM_AcquirePeriod_RBV");
 }
 void EPICSCameraInterface::update_CAM_ArrayRate_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_CAM_ArrayRate_RBV");
+	//messenger.printDebugMessage("update_CAM_ArrayRate_RBV");
 }
 void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_CAM_Temperature_RBV");
+	//messenger.printDebugMessage("update_CAM_Temperature_RBV");
 }
 void EPICSCameraInterface::update_ANA_UseNPoint(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_ANA_UseNPoint");
+	//messenger.printDebugMessage("update_ANA_UseNPoint");
 }
 

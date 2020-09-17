@@ -1,6 +1,16 @@
 #ifndef EPICS_CAMERA_INTERFACE_H_
 #define EPICS_CAMERA_INTERFACE_H_
-#include <EPICSInterface.h>
+#ifndef EPICS_INTERFACE_H_
+#include "EPICSInterface.h"
+#endif 
+#include "Camera.h"
+#include <iostream>
+#include <GlobalStateEnums.h>
+
+// forward declaratiOn of Magnet class
+// tells compiler that we will use this class.
+class Camera;
+typedef void(*updateFunctionPtr)(struct event_handler_args args);
 
 class EPICSCameraInterface : public EPICSInterface
 {

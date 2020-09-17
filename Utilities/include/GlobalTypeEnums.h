@@ -37,6 +37,10 @@
 
 /*
 						**************** README *********************
+						**************** README *********************
+						**************** README *********************
+						**************** README *********************
+						**************** README *********************
 	
 	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
 		 
@@ -102,7 +106,10 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VALVE)
 	(IMG_TYPE)
 	(LLRF_TYPE)
+	//
 	(CAMERA_TYPE)
+	(CLARA_CAMERA)
+	(VELA_CAMERA)
 
 )
 
