@@ -5,6 +5,15 @@
 #include <GlobalStateEnums.h>
 
 
+
+/*
+  ___ ___   _   ___  __  __ ___ 
+ | _ \ __| /_\ |   \|  \/  | __|
+ |   / _| / _ \| |) | |\/| | _| 
+ |_|_\___/_/ \_\___/|_|  |_|___|
+                                
+	THE ENTRIES IN HERE SHOULD BE THE SAME AS IN GlobalStateEnums.h
+*/
 namespace BOOST_PYTHON_STATES_INCLUDE
 {
 	void expose_global_state_enums()
@@ -12,19 +21,23 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 		//Global State Enum exposure
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<STATE>())->to_python_target_type());
 		if (is_registered) return;
+
+
+
 		boost::python::enum_<STATE>("STATE", "Global Enums used for displaying States")
 			.value("On", STATE::ON)
 			.value("OFF", STATE::OFF)
 			.value("ON", STATE::ON) // TODO should we just overload upper and lower case versions of these ?? 
 			.value("OFF", STATE::OFF)
-			.value("ERROR", STATE::ERR)
-			.value("ERR", STATE::ERR)
 			.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
 			.value("SUCCESS", STATE::SUCCESS)
 			.value("FAIL", STATE::FAIL)
+			.value("TIMING", STATE::TIMING)
 			.value("OFFLINE", STATE::OFFLINE)
 			.value("PHYSICAL", STATE::PHYSICAL)
 			.value("VIRTUAL", STATE::VIRTUAL)
+			.value("ERROR", STATE::ERR)
+			.value("ERR", STATE::ERR)
 			.value("GOOD", STATE::GOOD)
 			.value("BAD", STATE::BAD)
 			.value("OK", STATE::OK)
@@ -52,7 +65,21 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("VSLIT1", STATE::VSLIT1)
 			.value("RETRACTED", STATE::RETRACTED)
 			.value("YAG", STATE::YAG)
-			.value("RF", STATE::RF) // TODO IS THIS A GOOD NAME, could it cause confusion? 
+			.value("RF", STATE::RF) // TODO IS THIS A GOOD NAME, could it cause confusion (its for a screen i tinhk)? 
+			.value("PASSIVE", STATE::PASSIVE)
+			.value("EVENT", STATE::EVENT)
+			.value("IO_INTR", STATE::IO_INTR)
+			.value("TEN", STATE::TEN)    
+			.value("FIVE", STATE::FIVE)
+			.value("TWO", STATE::TWO)
+			.value("ONE", STATE::ONE)
+			.value("ZERO_POINT_FIVE", STATE::ZERO_POINT_FIVE)
+			.value("ZERO_POINT_TWO", STATE::ZERO_POINT_TWO)   
+			.value("ZERO_POINT_ONE", STATE::ZERO_POINT_ONE)    
+			.value("ZERO_POINT_ZERO_FIVE", STATE::ZERO_POINT_ZERO_FIVE)
+			.value("NOW", STATE::NOW)		    
+			.value("EXTERNAL", STATE::EXTERNAL)
+			.value("INTERNAL", STATE::INTERNAL)  
 			;
 	}
 }

@@ -34,13 +34,17 @@
 #define X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE(r, data, elem)  case elem : return BOOST_PP_STRINGIZE(elem);
 #define DEFINE_ENUM_WITH_STRING_COnVERSIONS(name, enumerators) enum name {BOOST_PP_SEQ_ENUM(enumerators)};inline  std::string ENUM_TO_STRING(name v){switch(v){BOOST_PP_SEQ_FOR_EACH(X_DEFINE_ENUM_WITH_STRING_COnVERSIONS_TOSTRING_CASE,name,enumerators)default: return "[Unknown " BOOST_PP_STRINGIZE(name) "]";}}
 
-
-
 /*
+  ___ ___   _   ___  __  __ ___
+ | _ \ __| /_\ |   \|  \/  | __|
+ |   / _| / _ \| |) | |\/| | _|
+ |_|_\___/_/ \_\___/|_|  |_|___|
+
 	**************** README *********************
 	**************** README *********************
 	**************** README *********************
 	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToStateMap in GlobalConstants.h			
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  GlobalStatesPythonInterface.h
 */
 /*! @addtogroup utils*/
 /*!@{*/
@@ -84,9 +88,7 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE,
 (RETRACTED)
 (YAG)
 (RF)
-
-// LLRF SCAN States
-(PASSIVE)   // 0
+(PASSIVE)   // 0 // LLRF SCAN States
 (EVENT)     // 1
 (IO_INTR)   // 2
 (TEN)       // 3
@@ -97,8 +99,7 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE,
 (ZERO_POINT_TWO)  // 8
 (ZERO_POINT_ONE)  // 9
 (ZERO_POINT_ZERO_FIVE)   // 10
-// LLRF ACQM STATES, MORE CAN BE ADDED
-(NOW)    // 1
+(NOW)    // 1 // LLRF ACQM STATES, MORE CAN BE ADDED
 // (EVENT) // 2, already exists
 // LLRF TRIGGER STATES
 (EXTERNAL)

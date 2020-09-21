@@ -19,8 +19,13 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		boost::python::class_<magnetState>
 			("magnetStateStruct", "magnetStateStruct Doc String")
 			.add_property("name", &magnetState::name)
-			.add_property("psuState", &magnetState::psuState)
-			.add_property("ilkState", &magnetState::ilkState)
+			.add_property("psu_state", &magnetState::psu_state)
+			.add_property("ilk_state", &magnetState::ilk_state)
+			
+			// TODO old naming style, get rid 
+			.add_property("psuState", &magnetState::psu_state)
+			.add_property("ilkState", &magnetState::ilk_state)
+
 			.add_property("seti", &magnetState::seti)
 			.add_property("readi", &magnetState::readi)
 			;
@@ -31,8 +36,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<magnetStates>
 			("dburt", "dburt Doc String")
-			.add_property("numMags", &magnetStates::numMags)
-			.add_property("magnetStateMap_Py", &magnetStates::magnetStateMap_Py)
+			.add_property("numMags", &magnetStates::magnet_count)
+			.add_property("magnetStateMap_Py", &magnetStates::magnet_states_map)
 			;
 	};
 
@@ -59,6 +64,14 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			// TODO make these complete 
 			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
 			.add_property("K_SET_P", &Magnet::getKSetP, &Magnet::setKSetP)
+
+			.def("K_DIP_P", &Magnet::getKDipP)
+			.def("INT_STR_MM", &Magnet::getIntStr_mm)
+			.def("INT_STR", &Magnet::getIntStr)
+			.def("K_ANG", &Magnet::getKAng)
+			.def("K_VAL", &Magnet::getKVal)
+			.def("K_MRAD", &Magnet::getKmrad)
+
 			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
 			.add_property("READI", &Magnet::getREADI)
 			.add_property("name", &Magnet::getHardwareName)
@@ -75,6 +88,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("switchOn", &Magnet::switchOn)
 			.def("setPSUState", &Magnet::setPSUState)
 			.def("getSETI", &Magnet::getSETI)
+			//.def("SETI", &Magnet::SETI)
 			.def("SETIZero", &Magnet::SETIZero)
 			.def("getREADI", &Magnet::getREADI)
 			.def("getREADITolerance", &Magnet::getREADITolerance)
@@ -89,7 +103,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("setDegaussValues", &Magnet::setDegaussValues_Py)
 			.def("setDegaussTolerance", &Magnet::setDegaussTolerance)
 			.def("setREADITolerance", &Magnet::setREADITolerance)
-			.def("offlineSetILKState", &Magnet::offlineSetILKState)
+			.def("offlineSetILKState", &Magnet::offlineSetIlkState)
 			.def("offlineSetILKState", &Magnet::getFullPSUName)
 			.def("getMagnetType", &Magnet::getMagnetType)
 			.def("getFullPSUName", &Magnet::getFullPSUName)
@@ -101,22 +115,10 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getManufacturer", &Magnet::getManufacturer)
 			.def("getMagneticLength", &Magnet::getMagneticLength)
 			.def("getMagneticLength", &Magnet::getMagneticLength)
+			
 			.def("getAliases", &Magnet::getAliases_Py)
 			.def("messagesOn", &Magnet::messagesOn)
 			.def("messagesOff", &Magnet::messagesOff)
-			
-			
-			.def("K_DIP_P", &Magnet::getKDipP)
-			.def("INT_STR_MM", &Magnet::getIntStr_mm)
-			.def("INT_STR", &Magnet::getIntStr)
-
-			.def("K_ANG", &Magnet::getKAng)
-			.def("K_VAL", &Magnet::getKVal)
-			.def("K_MRAD", &Magnet::getKmrad)
-
-
-	
-
 			;
 
 	}
@@ -152,7 +154,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 
 		std::string(MagnetFactory::*getManufacturer_single)(const std::string&)const = &MagnetFactory::getManufacturer;
-		//int(MagnetFactory::*getSerialNumber_single)(const std::string&)const = &MagnetFactory::getSerialNumber;
+		//int(MagnetFactory::*getserial_number_single)(const std::string&)const = &MagnetFactory::getserial_number;
 		TYPE(MagnetFactory::*getMagnetType_single)(const std::string&)const = &MagnetFactory::getMagnetType;
 		std::string(MagnetFactory::*getMagnetRevType_single)(const std::string&)const = &MagnetFactory::getMagnetRevType;
 		std::string(MagnetFactory::*getFullPSUName_single)(const std::string&)const = &MagnetFactory::getFullPSUName;
@@ -225,7 +227,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getKDipP", &MagnetFactory::getAllKDipP_Py)
 
 			.def("getIntStr_mm", &MagnetFactory::getIntStr_mm)
-			.def("getIntStr_mm", &MagnetFactory::getIntStr_mms_Py)
+			.def("getIntStr_mm", &MagnetFactory::getIntStrs_mm_Py)
 			.def("getIntStr_mm", &MagnetFactory::getAllIntStr_mm_Py)
 
 			.def("getIntStr", &MagnetFactory::getIntStr)
@@ -240,20 +242,32 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getKAng", &MagnetFactory::getKAng)
 			.def("getKAng", &MagnetFactory::getKAngs_Py)
 			.def("getKAng", &MagnetFactory::getAllKAng_Py)
+			.def("getAllDipoleKAng", &MagnetFactory::getAllDipoleKAng_Py)
 
 
 
 			.def("getKmrad", &MagnetFactory::getKmrad)
 			.def("getKmrad", &MagnetFactory::getKmrad_Py)
 			.def("getKmrad", &MagnetFactory::getAllKmrad_Py)
+			.def("getAllCorrectorKmrad", &MagnetFactory::getAllCorrectorKmrad_Py)
+			.def("getAllHCorrectorKmrad", &MagnetFactory::getAllHCorrKmrad_Py)
+			.def("getAllVCorrectorKmrad", &MagnetFactory::getAllVCorrKmrad_Py)
 
 
 			.def("getKVal", &MagnetFactory::getKVal)
 			.def("getKVal", &MagnetFactory::getKVals_Py)
 			.def("getKVal", &MagnetFactory::getAllKVal_Py)
+			.def("getAllQuadKVals", &MagnetFactory::getAllQuadKVals_Py)
 
 
 			.def("getAllMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
+			.def("getAllVCorrectorNames",&MagnetFactory::getAllVCorrectorNames_Py)
+			.def("getAllHCorrectorNames",&MagnetFactory::getAllHCorrectorNames_Py)
+			.def("getAllCorrectorNames",&MagnetFactory::getAllCorrectorNames_Py)
+			.def("getAllQuadNames",&MagnetFactory::getAllQuadNames_Py)
+			.def("getAllSolNames",&MagnetFactory::getAllSolNames_Py)
+			.def("getAllDipoleNames",&MagnetFactory::getAllDipoleNames_Py)
+
 
 			// for backwards compatability with VC_Controllers
 			.def("getMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
@@ -298,8 +312,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getManufacturer", getManufacturer_single)
 			.def("getManufacturer_Py", &MagnetFactory::getManufacturer_Py)
 
-			//.def("getSerialNumber", getSerialNumber_single)
-			//.def("getSerialNumber", &MagnetFactory::getSerialNumber_Py)
+			//.def("getserial_number", getserial_number_single)
+			//.def("getserial_number", &MagnetFactory::getserial_number_Py)
 
 			.def("getMagnetType", getMagnetType_single)
 			.def("getMagnetType", &MagnetFactory::getMagnetType_Py)
@@ -324,6 +338,10 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("isAVCor", &MagnetFactory::isAVCor)
 			.def("isAHCor", &MagnetFactory::isAHCor)
 			.def("isACor", &MagnetFactory::isACor)
+			
+
+			.def("getMagnetState", & MagnetFactory::getMagnetState_Py)
+			.def("getAllMagnetState", & MagnetFactory::getAllMagnetState_Py)
 
 
 		//boost::python::dict getNumberOfDegaussSteps_Py(const boost::python::list & name) const;
