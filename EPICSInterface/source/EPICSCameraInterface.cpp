@@ -191,55 +191,55 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 
 void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_HDF_WriteStatus ");
+	messenger.printDebugMessage("update_HDF_WriteStatus ");
 }
 void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_HDF_WriteMessage ");
+	messenger.printDebugMessage("update_HDF_WriteMessage ");
 }
 void EPICSCameraInterface::update_HDF_NumCaptured_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
+	messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
 }
 void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_HDF_Capture_RBV ");
+	messenger.printDebugMessage("update_HDF_Capture_RBV ");
 }
 void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CAM_Acquire_RBV ");
+	messenger.printDebugMessage("update_CAM_Acquire_RBV ");
 }
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
+	messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
 }
 void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
+	messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
 }
 void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args) 
 {
-	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_MAGICK_WriteMessage ");
+	messenger.printDebugMessage("update_MAGICK_WriteMessage ");
 }
 
 void EPICSCameraInterface::update_MAGICK_Capture_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
+	messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_NumCapture_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
+	messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
 }
 void EPICSCameraInterface::update_ANA_StepSize_RBV(const struct event_handler_args args) {
 	//messenger.printDebugMessage("update_ANA_StepSize_RBV ");
@@ -317,18 +317,19 @@ void EPICSCameraInterface::update_CAM_AcquireTime_RBV(const struct event_handler
 }
 void EPICSCameraInterface::update_CAM_AcquirePeriod_RBV(const struct event_handler_args args)
 {
-	///messenger.printDebugMessage("update_CAM_AcquirePeriod_RBV");
+	//messenger.printDebugMessage("update_CAM_AcquirePeriod_RBV");
 }
 void EPICSCameraInterface::update_CAM_ArrayRate_RBV(const struct event_handler_args args)
 {
+	std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	//messenger.printDebugMessage("update_CAM_ArrayRate_RBV");
 }
 void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CAM_Temperature_RBV");
+	messenger.printDebugMessage("update_CAM_Temperature_RBV");
 }
 void EPICSCameraInterface::update_ANA_UseNPoint(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_ANA_UseNPoint");
+	messenger.printDebugMessage("update_ANA_UseNPoint");
 }
 
