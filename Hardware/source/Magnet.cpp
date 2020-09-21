@@ -33,20 +33,20 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
 	// Assumes all these find succeed ? 
 	manufacturer(paramsMap.find("manufacturer")->second),
-	serialNumber(paramsMap.find("serial_number")->second.data()),
+	serial_number(paramsMap.find("serial_number")->second.data()),
 	//mag_type(paramsMap.find("mag_type")->second),
 	RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
 	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
-	magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+	magnetic_length(std::stof(paramsMap.find("magnetic_length")->second)),
 	
 	min_i(std::stof(paramsMap.find("min_i")->second)),
 	max_i(std::stof(paramsMap.find("max_i")->second)),
 	position(std::stof(paramsMap.find("position")->second)),
 	GETSETI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	READI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-	psuState(std::make_pair(epicsTimeStamp(), STATE::ERR)),
-	ilkState(std::make_pair(epicsTimeStamp(), STATE::ERR)),
+	psu_state(std::make_pair(epicsTimeStamp(), STATE::ERR)),
+	ilk_state(std::make_pair(epicsTimeStamp(), STATE::ERR)),
 	is_degaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
@@ -92,7 +92,7 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 Magnet::Magnet(const Magnet& copyMagnet) :
 	Hardware(copyMagnet),
 	manufacturer(copyMagnet.manufacturer),
-	serialNumber(copyMagnet.serialNumber),
+	serial_number(copyMagnet.serial_number),
 	mag_type(copyMagnet.mag_type),
 	magRevType(copyMagnet.magRevType),
 	READI_tolerance(copyMagnet.READI_tolerance),
@@ -102,7 +102,7 @@ Magnet::Magnet(const Magnet& copyMagnet) :
 	measurementDataLocation(copyMagnet.measurementDataLocation),
 	aliases(copyMagnet.aliases),
 	RI_tolerance(copyMagnet.RI_tolerance),
-	magneticLength(copyMagnet.magneticLength),
+	magnetic_length(copyMagnet.magnetic_length),
 	epicsInterface(copyMagnet.epicsInterface)
 {
 }
@@ -155,19 +155,35 @@ magnetState Magnet::getMagnetState()const
 	magnetState r;
 	r.readi = getREADI();
 	r.seti = getSETI();
-	r.ilkState = getILKState();
-	r.psuState = getPSUState();
+	r.ilk_state= getIlkState();
+	r.psu_state = getPSUState();
 	r.name = getHardwareName();
 	r.k_dip_p = getKDipP();
 	r.int_str_mm = getIntStr_mm();
-	r.int_str_mm = getIntStr();
-	r.k_set_p = getHardwagetKSetPreName();
+	r.int_str = getIntStr();
+	r.k_set_p = getKSetP();
 	r.k_ang = getKAng();
 	r.k_mrad = getKmrad();
 	r.k_val = getKVal();
-	r.k_val = getKVal();
 
-	state;
+	r.field_integral_coefficients = getFieldIntegralCoefficients();
+	r.magnetic_length = getMagneticLength();
+
+	boost::python::dict d;
+	r.state_dict["readi"] =       r.readi;
+	r.state_dict["seti"] = 		  r.seti;
+	r.state_dict["ilkState"] =	  r.ilk_state;
+	r.state_dict["psu_state"] =	  r.psu_state;
+	r.state_dict["name"] =		  r.name;
+	r.state_dict["k_dip_p"] =	  r.k_dip_p;
+	r.state_dict["int_str_mm"] =  r.int_str_mm;
+	r.state_dict["int_str"] =	  r.int_str;
+	r.state_dict["k_set_p"] =	  r.k_set_p;
+	r.state_dict["k_ang"] =		  r.k_ang;
+	r.state_dict["k_mrad"] =	  r.k_mrad;
+	r.state_dict["k_val"] =		  r.k_val;
+	r.state_dict["field_integral_coefficients"] = getFieldIntegralCoefficients_Py();
+	r.state_dict["magnetic_length"] = r.magnetic_length;
 
 	return r;
 }
@@ -177,7 +193,7 @@ bool Magnet::setMagnetState(const magnetState& ms)
 {
 	bool seti_sent = SETI(ms.seti);
 	GlobalFunctions::pause_50;
-	bool psu_sent = setPSUState(ms.psuState);
+	bool psu_sent = setPSUState(ms.psu_state);
 	if (seti_sent && psu_sent)
 	{
 		return true;
@@ -191,9 +207,9 @@ bool Magnet::isInState(const magnetState& ms)const
 	{
 		if (ms.seti == getSETI())
 		{
-			if (ms.psuState == getPSUState())
+			if (ms.psu_state == getPSUState())
 			{
-				if (ms.psuState == getILKState())
+				if (ms.psu_state == getIlkState())
 				{
 					return true;
 				}
@@ -207,7 +223,7 @@ bool Magnet::isInSETIandPSUState(const magnetState& ms)const
 {
 	if (ms.seti == getSETI())
 	{
-		if (ms.psuState == getPSUState())
+		if (ms.psu_state == getPSUState())
 		{
 			return true;
 		}
@@ -217,28 +233,28 @@ bool Magnet::isInSETIandPSUState(const magnetState& ms)const
 
 double Magnet::getMinI()const
 {
-	return this->min_i;
+	return min_i;
 }
 double Magnet::getMaxI()const
 {
-	return this->max_i;
+	return max_i;
 }
 
 std::string Magnet::getManufacturer() const
 {
-	return this->manufacturer;
+	return manufacturer;
 }
 std::string Magnet::getSerialNumber() const
 {
-	return this->serialNumber;
+	return serial_number;
 }
 TYPE Magnet::getMagType() const
 {
-	return this->mag_type;
+	return mag_type;
 }
 double Magnet::getPosition() const
 {
-	return this->position;
+	return position;
 }
 TYPE Magnet::getMagnetType() const
 {
@@ -246,7 +262,7 @@ TYPE Magnet::getMagnetType() const
 }
 std::string Magnet::getMagnetRevType() const
 {
-	return this->magRevType;
+	return magRevType;
 }
 double Magnet::getREADITolerance() const
 {
@@ -306,7 +322,7 @@ boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
 
 double Magnet::getMagneticLength() const
 {
-	return magneticLength;
+	return magnetic_length;
 }
 std::string Magnet::getFullPSUName() const
 {
@@ -540,14 +556,14 @@ double Magnet::getREADI() const
 {
 	return READI.second;
 }
-STATE Magnet::getILKState() const
+STATE Magnet::getIlkState() const
 {
-	return ilkState.second;
+	return ilk_state.second;
 }
 STATE Magnet::getPSUState()const
 {
 	// get PSU STATE
-	return psuState.second;
+	return psu_state.second;
 }
 
 double Magnet::getKDipP() const
@@ -623,36 +639,36 @@ bool Magnet::setPSUState(const STATE value)
 }
 bool Magnet::offlineSetPSUState(const STATE value)
 {
-	epicsTimeGetCurrent(&psuState.first);
+	epicsTimeGetCurrent(&psu_state.first);
 	switch (value)
 	{
 	case STATE::ON:
-		psuState.second = value;
+		psu_state.second = value;
 		break;
 	case STATE::OFF:
-		psuState.second = value;
+		psu_state.second = value;
 		break;
 	default:
-		psuState.second = STATE::ERR;
+		psu_state.second = STATE::ERR;
 	}
 	return true;
 }
 
-bool Magnet::offlineSetILKState(const STATE value)
+bool Magnet::offlineSetIlkState(const STATE value)
 {
 	if (mode == STATE::OFFLINE)
 	{
-		epicsTimeGetCurrent(&ilkState.first);
+		epicsTimeGetCurrent(&ilk_state.first);
 		switch (value)
 		{
 		case STATE::GOOD:
-			ilkState.second = value;
+			ilk_state.second = value;
 			break;
 		case STATE::BAD:
-			ilkState.second = value;
+			ilk_state.second = value;
 			break;
 		default:
-			psuState.second = STATE::ERR;
+			ilk_state.second = STATE::ERR;
 		}
 		return true;
 	}

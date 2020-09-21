@@ -540,7 +540,7 @@ double MagnetFactory::getIntStr_mm(const std::string& name)const
 	std::cout << "!!ERROR!! MagnetFactory::getKDipP cannot find magnet with name = " << name << std::endl;
 	return GlobalConstants::double_min;
 }
-std::map<std::string, double> MagnetFactory::getIntStr_mms(const std::vector<std::string>& names) const
+std::map<std::string, double> MagnetFactory::getIntStrs_mm(const std::vector<std::string>& names) const
 {
 	std::map<std::string, double> return_map;
 	for (auto&& name : names)
@@ -549,13 +549,13 @@ std::map<std::string, double> MagnetFactory::getIntStr_mms(const std::vector<std
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getIntStr_mms_Py(const boost::python::list& names) const
+boost::python::dict MagnetFactory::getIntStrs_mm_Py(const boost::python::list& names) const
 {
-	return to_py_dict<std::string, double>(getIntStr_mms(to_std_vector<std::string>(names)));
+	return to_py_dict<std::string, double>(getIntStrs_mm(to_std_vector<std::string>(names)));
 }
 std::map<std::string, double> MagnetFactory::getAllIntStr_mm() const
 {
-	return getIntStr_mms(getAllMagnetNames());
+	return getIntStrs_mm(getAllMagnetNames());
 }
 boost::python::dict MagnetFactory::getAllIntStr_mm_Py() const
 {
@@ -666,6 +666,17 @@ boost::python::dict MagnetFactory::getAllKAng_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKAng());
 }
+
+
+std::map<std::string, double> MagnetFactory::getAllDipoleKAng() const
+{
+	return getKAngs(getAllDipoleNames());
+}
+boost::python::dict MagnetFactory::getAllDipoleKAng_Py() const
+{
+	return to_py_dict<std::string, double>(getAllDipoleKAng());
+}
+
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -701,6 +712,32 @@ boost::python::dict MagnetFactory::getAllKmrad_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKmrad());
 }
+
+std::map<std::string, double> MagnetFactory::getAllCorrectorKmrad() const
+{
+	return getKmrads(getAllCorrectorNames());
+}
+boost::python::dict MagnetFactory::getAllCorrectorKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllCorrectorKmrad());
+}
+std::map<std::string, double> MagnetFactory::getAllHCorrKmrad() const
+{
+	return getKmrads(getAllHCorrectorNames());
+}
+boost::python::dict MagnetFactory::getAllHCorrKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllHCorrKmrad());
+}
+std::map<std::string, double> MagnetFactory::getAllVCorrKmrad() const
+{
+	return getKmrads(getAllVCorrectorNames());
+}
+boost::python::dict MagnetFactory::getAllVCorrKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllVCorrKmrad());
+}
+
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -737,6 +774,18 @@ boost::python::dict MagnetFactory::getAllKVal_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKVal());
 }
+
+
+std::map<std::string, double> MagnetFactory::getAllQuadKVals() const
+{
+	return getKVals(getAllQuadNames());
+}
+boost::python::dict MagnetFactory::getAllQuadKVals_Py() const
+{
+	return to_py_dict<std::string, double>(getAllQuadKVals());
+}
+
+
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -766,8 +815,120 @@ std::vector<std::string> MagnetFactory::getAllMagnetNames()const
 }
 boost::python::list MagnetFactory::getAllMagnetNames_Py()const
 {
-	return to_py_list(getAllMagnetNames());
+	return to_py_list<std::string>(getAllMagnetNames());
 }
+
+
+std::vector<std::string> MagnetFactory::getAllDipoleNames()const
+{
+	std::vector<std::string> return_names;
+	for (auto&& item : magnetMap)
+	{
+		if(isADip(item.first))
+		{
+			return_names.push_back(item.first);
+		}
+	}
+	return return_names;
+}
+boost::python::list MagnetFactory::getAllDipoleNames_Py()const
+{
+	return to_py_list<std::string>(getAllDipoleNames());
+}
+std::vector<std::string> MagnetFactory::getAllQuadNames()const
+{
+	std::vector<std::string> return_names;
+	for (auto&& item : magnetMap)
+	{
+		if (isADip(item.first))
+		{
+		return_names.push_back(item.first);
+		}
+	}
+	return return_names;
+}
+boost::python::list MagnetFactory::getAllQuadNames_Py()const
+{
+	return to_py_list<std::string>(getAllQuadNames());
+}
+std::vector<std::string> MagnetFactory::getAllSolNames()const
+{
+	std::vector<std::string> return_names;
+	for (auto&& item : magnetMap)
+	{
+		if (isADip(item.first))
+		{
+			return_names.push_back(item.first);
+		}
+	}
+	return return_names;
+}
+boost::python::list MagnetFactory::getAllSolNames_Py()const
+{
+	return to_py_list<std::string>(getAllSolNames());
+}
+std::vector<std::string> MagnetFactory::getAllCorrectorNames()const
+{
+	std::vector<std::string> return_names;
+	for (auto&& item : magnetMap)
+	{
+		if (isACor(item.first))
+		{
+			return_names.push_back(item.first);
+		}
+	}
+	return return_names;
+}
+boost::python::list MagnetFactory::getAllCorrectorNames_Py()const
+{
+	return to_py_list<std::string>(getAllCorrectorNames());
+}
+std::vector<std::string> MagnetFactory::getAllHCorrectorNames()const
+{
+	std::vector<std::string> return_names;
+	for (auto&& item : magnetMap)
+	{
+		if (isAHCor(item.first))
+		{
+			return_names.push_back(item.first);
+		}
+	}
+	return return_names;
+}
+boost::python::list MagnetFactory::getAllHCorrectorNames_Py()const
+{
+	return to_py_list<std::string>(getAllHCorrectorNames());
+}
+std::vector<std::string> MagnetFactory::getAllVCorrectorNames()const
+{
+	std::vector<std::string> return_names;
+	for (auto&& item : magnetMap)
+	{
+		if (isAVCor(item.first))
+		{
+			return_names.push_back(item.first);
+		}
+	}
+	return return_names;
+}
+boost::python::list MagnetFactory::getAllVCorrectorNames_Py()const
+{
+	return to_py_list<std::string>(getAllVCorrectorNames());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1297,7 +1458,7 @@ STATE MagnetFactory::getILKState(const std::string& name) const
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
-		return magnetMap.at(fullName).getILKState();
+		return magnetMap.at(fullName).getIlkState();
 	}
 	std::cout << "!!ERROR!! MagnetFactory::getILKState cannot find magnet with name = " << name << std::endl;
 	return STATE::UNKNOWN_NAME;
@@ -1320,7 +1481,7 @@ std::map<std::string, STATE>  MagnetFactory::getAllILKState() const
 	std::map<std::string, STATE> return_map;
 	for (auto&& magnet : magnetMap)
 	{
-		return_map[magnet.first] = magnet.second.getILKState();
+		return_map[magnet.first] = magnet.second.getIlkState();
 	}
 	return return_map;
 }
@@ -1520,7 +1681,7 @@ bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, c
 
 	//std::map<std::string, magnetState>::iterator magnetStatesMap_it = dburt_to_write.magnetstates.magnetStatesMap.begin();
 
-	for (auto&& mag_state : dburt_to_write.magnetstates.magnetStatesMap)
+	for (auto&& mag_state : dburt_to_write.magnetstates.magnet_states_map)
 	{
 		magnet_data.clear();
 		
@@ -1531,7 +1692,7 @@ bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, c
 
 		magnet_data[MagnetRecords::SETI] = stream.str();;
 		magnet_data[MagnetRecords::READI] = std::to_string(mag_state.second.readi);
-		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psuState);
+		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psu_state);
 		magnet_data_to_write[mag_state.first] = magnet_data;
 	}
 	YAML::Node data_node(magnet_data_to_write);
@@ -1624,18 +1785,18 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 					if (val == "ON")
 					{
 						//std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
-						mag_state_to_fill.psuState = STATE::ON;
+						mag_state_to_fill.psu_state = STATE::ON;
 					}
 					else
 					{
-						mag_state_to_fill.psuState = STATE::OFF;
+						mag_state_to_fill.psu_state = STATE::OFF;
 					}
 				}
 			}
 			// update the magnetStatesMap with the magnetState for this magnet 
-			read_dburt.magnetstates.magnetStatesMap[mag_state_to_fill.name] = mag_state_to_fill;
+			read_dburt.magnetstates.magnet_states_map[mag_state_to_fill.name] = mag_state_to_fill;
 			std::cout << "added " << mag_state_to_fill.name << " to magnetStatesMap" << std::endl;
-			std::cout << ENUM_TO_STRING(mag_state_to_fill.psuState) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
+			std::cout << ENUM_TO_STRING(mag_state_to_fill.psu_state) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
 		}
 	}
 	/*read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
@@ -1716,11 +1877,32 @@ magnetStates MagnetFactory::getMagnetStates()const
 	magnetStates ms;
 	for (auto&& magnet : getAllMagnetNames())
 	{
-		ms.magnetStatesMap[magnet] = getMagnetState(magnet);
+		ms.magnet_states_map[magnet] = getMagnetState(magnet);
 	}
-	ms.numMags = ms.magnetStatesMap.size();
+	ms.magnet_count = ms.magnet_states_map.size();
 	return ms;
 }
+boost::python::dict MagnetFactory::getMagnetState_Py(const std::string& name)const
+{
+	magnetState r = getMagnetState(name);
+	return r.state_dict;
+}
+/*! Return magnetState for all magnets in the factory,
+@param[out] python dictionary version of a magnetStates */
+boost::python::dict MagnetFactory::getAllMagnetState_Py() const
+{
+	magnetStates s = getMagnetStates();
+	boost::python::dict r;
+	// do we need this - i don't think so  ... 
+	//r["magnet_count"] = s.magnet_count;
+	for (auto&& item : s.magnet_states_map)
+	{
+		r[item.first] = item.second.state_dict;
+	}
+	return r;
+}
+
+
 bool MagnetFactory::setMagnetState(const magnetState& ms)
 {
 	if (GlobalFunctions::entryExists(magnetMap, ms.name))
@@ -1734,7 +1916,7 @@ std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates&
 {
 	std::cout << "applyMagnetStates " << std::endl;
 	std::map<std::string, bool> r;
-	for (auto&& mag_state : ms.magnetStatesMap)
+	for (auto&& mag_state : ms.magnet_states_map)
 	{
 		if (GlobalFunctions::entryExists(types, getMagnetType(mag_state.second.name)))
 		{

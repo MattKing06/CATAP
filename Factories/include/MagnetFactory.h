@@ -22,11 +22,11 @@ struct magnetStates
 {   
 	/*! Default constructor call for magnetStates */
 	magnetStates():
-		numMags(GlobalConstants::zero_sizet) 
+		magnet_count(GlobalConstants::zero_sizet)
 		{};
-	size_t numMags;
-	std::map<std::string, magnetState> magnetStatesMap;
-	boost::python::dict magnetStateMap_Py;
+	size_t magnet_count;
+	std::map<std::string, magnetState> magnet_states_map;
+	boost::python::dict magnet_states_dict;
 };
 /// DBURTs are magnet-states plus comment and timestamp 
 struct dburt
@@ -103,6 +103,50 @@ class MagnetFactory
 		/*! Get the full name of every magnet in the factory (python version)
 		@param[out] python::list of magnet names*/
 		boost::python::list getAllMagnetNames_Py()const;
+
+		/*! Get the full name of every dipole magnet in the factory (c++ version)
+		@param[out] vector of magnet names*/
+		std::vector<std::string> getAllDipoleNames()const;
+		/*! Get the full name of every quad magnet in the factory (python version)
+		@param[out] python::list of magnet names*/
+		boost::python::list getAllDipoleNames_Py()const;
+
+		/*! Get the full name of every quad magnet in the factory (c++ version)
+		@param[out] vector of magnet names*/
+		std::vector<std::string> getAllQuadNames()const;
+		/*! Get the full name of every quad magnet in the factory (python version)
+		@param[out] python::list of magnet names*/
+		boost::python::list getAllQuadNames_Py()const;
+
+		/*! Get the full name of every solenoid magnet in the factory (c++ version)
+		@param[out] vector of magnet names*/
+		std::vector<std::string> getAllSolNames()const;
+		/*! Get the full name of every solenoid magnet in the factory (python version)
+		@param[out] python::list of magnet names*/
+		boost::python::list getAllSolNames_Py()const;
+
+		/*! Get the full name of every corrector magnet in the factory (c++ version)
+		@param[out] vector of magnet names*/
+		std::vector<std::string> getAllCorrectorNames()const;
+		/*! Get the full name of every corrector magnet in the factory (python version)
+		@param[out] python::list of magnet names*/
+		boost::python::list getAllCorrectorNames_Py()const;
+
+		/*! Get the full name of every horizontal corrector magnet in the factory (c++ version)
+		@param[out] vector of magnet names*/
+		std::vector<std::string> getAllHCorrectorNames()const;
+		/*! Get the full name of every horizontal corrector magnet in the factory (python version)
+		@param[out] python::list of magnet names*/
+		boost::python::list getAllHCorrectorNames_Py()const;
+
+		/*! Get the full name of every vertical corrector magnet in the factory (c++ version)
+		@param[out] vector of magnet names*/
+		std::vector<std::string> getAllVCorrectorNames()const;
+		/*! Get the full name of every vertical corrector magnet in the factory (python version)
+		@param[out] python::list of magnet names*/
+		boost::python::list getAllVCorrectorNames_Py()const;
+
+
 
 		/*! Returns the GETSETI value for a magnet. GETSETI is the requested set current.  
 		@param[in] name, full-name or name-alias of magnet object 
@@ -430,7 +474,7 @@ class MagnetFactory
 		// TODO Should be string
 		int getSerialNumber(const std::string& name) const;
 		std::map<std::string, int> getSerialNumber(const std::vector<std::string>& name) const;
-		boost::python::dict getSerialNumber_Py(const boost::python::list& name) const;
+		boost::python::dict getserial_number_Py(const boost::python::list& name) const;
 		
 		/*! Get magnet TYPE 
 		@param[in] name, full-name or name-alias of magnet object
@@ -614,11 +658,11 @@ class MagnetFactory
 		/*! Get the integrated strength for multiple magnets. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] integrated strength*/
-		std::map<std::string, double> getIntStr_mms(const std::vector<std::string>& names) const;
+		std::map<std::string, double> getIntStrs_mm(const std::vector<std::string>& names) const;
 		/*! Get the integrated strength for multiple magnets Python version. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] integrated strength*/
-		boost::python::dict getIntStr_mms_Py(const boost::python::list& names) const;
+		boost::python::dict getIntStrs_mm_Py(const boost::python::list& names) const;
 		/*! Get the integrated strength for all magnets. returns different unit: T for quads and T/mm for correctors, solenoids and dipoles
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] integrated strength*/
@@ -640,7 +684,7 @@ class MagnetFactory
 		/*! Get the integrated strength for multiple magnets In T, Python version
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] integrated strength*/
-		boost::python::dict getIntStr_mms_Py(const boost::python::list& names) const;
+		boost::python::dict getIntStrs_Py(const boost::python::list& names) const;
 		/*! Get the integrated strength for all magnets. In T 
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] integrated strength*/
@@ -651,26 +695,26 @@ class MagnetFactory
 		boost::python::dict getAllIntStr_Py() const;
 
 
-		/*! Get the momentum used to calculate various 'K' parameters 
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] momentum*/
-		double getKSetP(const std::string& name)const;
-		/*! Get the momentum used to calculate various 'K' parameters
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] momentum*/
-		std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
-		/*!  Get the momentum used to calculate various 'K' parameters, Python version
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] integrated strength*/
-		boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
-		/*!  Get the momentum used to calculate various 'K' parameters
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] integrated strength*/
-		std::map<std::string, double> getAllKSetP() const;
-		/*!  Get the momentum used to calculate various 'K' parameters, Python version.
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] integrated strength*/
-		boost::python::dict getAllKSetP_Py() const;
+		///*! Get the momentum used to calculate various 'K' parameters 
+		//@param[in] name, full-name or name-alias of magnet object
+		//@param[out] momentum*/
+		//double getKSetP(const std::string& name)const;
+		///*! Get the momentum used to calculate various 'K' parameters
+		//@param[in] name, full-name or name-alias of magnet object
+		//@param[out] momentum*/
+		//std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
+		///*!  Get the momentum used to calculate various 'K' parameters, Python version
+		//@param[in] name, full-name or name-alias of magnet object
+		//@param[out] integrated strength*/
+		//boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
+		///*!  Get the momentum used to calculate various 'K' parameters
+		//@param[in] name, full-name or name-alias of magnet object
+		//@param[out] integrated strength*/
+		//std::map<std::string, double> getAllKSetP() const;
+		///*!  Get the momentum used to calculate various 'K' parameters, Python version.
+		//@param[in] name, full-name or name-alias of magnet object
+		//@param[out] integrated strength*/
+		//boost::python::dict getAllKSetP_Py() const;
 
 		/*! Get the bend angle from a dipole, or coorector 
 		@param[in] name, full-name or name-alias of magnet object
@@ -692,7 +736,14 @@ class MagnetFactory
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] integrated strength*/
 		boost::python::dict getAllKAng_Py() const;
-
+		/*!  Get the bend angle from a dipole, or coorector
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		std::map<std::string, double> getAllDipoleKAng() const;
+		/*!  Get the bend angle from a dipole, or coorector , Python version.
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] integrated strength*/
+		boost::python::dict getAllDipoleKAng_Py() const;
 
 
 		/*! Get the momentum used to calculate various 'K' parameters
@@ -729,41 +780,56 @@ class MagnetFactory
 		@param[out] dict of magnets names and bend angles, mrad*/
 		boost::python::dict getKmrad_Py(const boost::python::list& names) const;
 		/*! Get the bend angles in mrad for all magnets, (valid on correctors only?)
-		@param[in] name, full-name or name-alias of magnet object
 		@param[out] map of magnets names and bend angles, mrad*/
 		std::map<std::string, double> getAllKmrad() const;
 		/*! Get the bend angles in mrad for all magnets, Python version (valid on correctors only?)
-		@param[in] name, full-name or name-alias of magnet object
 		@param[out] dict of magnets names and bend angles, mrad*/
 		boost::python::dict getAllKmrad_Py() const;
+		/*! Get the bend angles in mrad for all corrector magnets, 
+		@param[out] dict of magnets names and bend angles, mrad*/
+		std::map<std::string, double> getAllCorrectorKmrad() const;
+		/*! Get the bend angles in mrad for all corrector magnets, (Python version)
+		@param[out] dict of magnets names and bend angles, mrad*/
+		boost::python::dict getAllCorrectorKmrad_Py() const;
+		/*! Get the bend angles in mrad for all corrector magnets,
+		@param[out] dict of magnets names and bend angles, mrad*/
+		std::map<std::string, double> getAllHCorrKmrad() const;
+		/*! Get the bend angles in mrad for all horizontal corrector magnets, (Python version)
+			@param[out] dict of magnets names and bend angles, mrad*/
+		boost::python::dict getAllHCorrKmrad_Py() const;
+		/*! Get the bend angles in mrad for all vertical corrector magnets,
+		@param[out] dict of magnets names and bend angles, mrad*/
+		std::map<std::string, double> getAllVCorrKmrad() const;
+		/*! Get the bend angles in mrad for all vertical  corrector magnets,(Python version)
+		@param[out] dict of magnets names and bend angles, mrad*/
+		boost::python::dict getAllVCorrKmrad_Py() const;
 
 
-
-		/*! Get the momentum used to calculate various 'K' parameters
-@param[in] name, full-name or name-alias of magnet object
-@param[out] momentum*/
-		double getKSetP(const std::string& name)const;
-		/*! Get the momentum used to calculate various 'K' parameters
+		/*! Get the K factor  in m^(-2) (only really valid for Quads ??)
 		@param[in] name, full-name or name-alias of magnet object
-		@param[out] momentum*/
-		std::map<std::string, double> getKSetPs(const std::vector<std::string>& names) const;
-		/*!  Get the momentum used to calculate various 'K' parameters, Python version
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] integrated strength*/
-		boost::python::dict getKSetPs_Py(const boost::python::list& names) const;
-		/*!  Get the momentum used to calculate various 'K' parameters
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] integrated strength*/
-		std::map<std::string, double> getAllKSetP() const;
-		/*!  Get the momentum used to calculate various 'K' parameters, Python version.
-		@param[in] name, full-name or name-alias of magnet object
-		@param[out] integrated strength*/
-		boost::python::dict getAllKSetP_Py() const;
+		@param[out] K  m^(-2)*/
 		double getKVal(const std::string& name)const;
+		/*! Get the K factor in m^(-2) for multiple magnets (only really valid for Quads)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] map of magnet names, K  m^(-2)*/
 		std::map<std::string, double> getKVals(const std::vector<std::string>& names) const;
+		/*! Get the K factor in m^(-2) for multiple magnets (only really valid for Quads), Python version  
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] dict of magnet names, K  m^(-2)*/
 		boost::python::dict getKVals_Py(const boost::python::list& names) const;
+		/*! Get the K factor for all magnets in m^(-2) for multiple magnets (only really valid for Quads), Python version
+		@param[out] dict of magnet names, K  m^(-2)*/
 		std::map<std::string, double> getAllKVal() const;
+		/*! Get the K factor for all magnets in m^(-2) for multiple magnets (only really valid for Quads), Python version
+		@param[out] dict of magnet names, K  m^(-2)*/
 		boost::python::dict getAllKVal_Py() const;
+
+		/*! Get the K factor  in m^(-2) for each quadrupole in the magnet factory 
+		@param[out] map of magnet names and K  m^(-2)*/
+		std::map<std::string, double> getAllQuadKVals() const;
+		/*! Get the K factor  in m^(-2) for each quadrupole in the magnet factory (Python version)
+		@param[out] dict of magnet names and K  m^(-2)*/
+		boost::python::dict getAllQuadKVals_Py() const;
 
 		   		 
 		/*! Check if a magnet is a particular TYPE
@@ -808,6 +874,16 @@ class MagnetFactory
 		/*! Return a magnetStates object for all magnets in the factory, a magnetStates has the magnetState for multiple magnets 
 		@param[out] magnetsates */
 		magnetStates getMagnetStates() const;
+
+		/*! Return a magnetState as a python dictrionary  
+		@param[in] name of magnet to get state for  
+		@param[out] magnetState as pythjon dict  */
+		boost::python::dict getMagnetState_Py(const std::string& name)const;
+		/*! Return magnetState for all magnets in the factory, 
+		@param[out] python dictionary version of a magnetStates */
+		boost::python::dict getAllMagnetState_Py() const;
+
+
 		/*! Set the magnet states for a magnet 
 		@param[in] magnetsate to be applied  
 		@param[out] bool, TRUE if magnet could be found in Factory and magnet.setMagnetState returns TRUE, otherwise FALSE */
@@ -903,6 +979,10 @@ class MagnetFactory
 		@param[in] name to lookup 
 		@param[out] fullname of magnet, or dummy magnet name if passed name does not exist*/
 		std::string getFullName(const std::string& name_to_check) const;
+
+
+
+
 
 
 		// private

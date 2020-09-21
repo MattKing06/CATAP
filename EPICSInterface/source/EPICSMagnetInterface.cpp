@@ -92,18 +92,18 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
 	// we get the value and then manually convert to a STATE 
 	std::pair<epicsTimeStamp, unsigned short> pairToUpdate = getTimeStampUShortPair(args);
-	recastMagnet->psuState.first = pairToUpdate.first;
+	recastMagnet->psu_state.first = pairToUpdate.first;
 	switch(pairToUpdate.second)
 	{
-		case GlobalConstants::zero_ushort: recastMagnet->psuState.second = STATE::OFF; break;
-		case GlobalConstants::one_ushort:  recastMagnet->psuState.second = STATE::ON; break;
+		case GlobalConstants::zero_ushort: recastMagnet->psu_state.second = STATE::OFF; break;
+		case GlobalConstants::one_ushort:  recastMagnet->psu_state.second = STATE::ON; break;
 		// TODO: WTF is going on here, thsi is from the virtual machine, but is only visiible in CATAP  ??
-		case 256:  recastMagnet->psuState.second = STATE::ON; break;
-		default: recastMagnet->psuState.second = STATE::ERR;
+		case 256:  recastMagnet->psu_state.second = STATE::ON; break;
+		default: recastMagnet->psu_state.second = STATE::ERR;
 		//messenger.printDebugMessage("!!WARNING!! EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ",a);
 	}
 	messenger.printDebugMessage("EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ", 
-								 pairToUpdate.second, " = " + ENUM_TO_STRING(recastMagnet->psuState.second));
+								 pairToUpdate.second, " = " + ENUM_TO_STRING(recastMagnet->psu_state.second));
 }
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
@@ -125,19 +125,19 @@ void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 {
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
-	recastMagnet->ilkState.first = pairToUpdate.first;
+	recastMagnet->ilk_state.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
-	case GlobalConstants::zero_int: recastMagnet->ilkState.second = STATE::OK; break;
-	case GlobalConstants::one_int:  recastMagnet->ilkState.second = STATE::ERR; break;
+	case GlobalConstants::zero_int: recastMagnet->ilk_state.second = STATE::OK; break;
+	case GlobalConstants::one_int:  recastMagnet->ilk_state.second = STATE::ERR; break;
 	default:
-		recastMagnet->ilkState.second = STATE::ERR;
+		recastMagnet->ilk_state.second = STATE::ERR;
 	}
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("RILK"), args);
 	//STATE value = returnValueFromArgsAsState(args);
-	//recastMagnet->setILKState(value);
+	//recastMagnet->setilk_state(value);
 	//messenger.printDebugMessage("EPICS_UPDATE RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
-	//							+ ENUM_TO_STRING(recastMagnet->ilkState.second));
+	//							+ ENUM_TO_STRING(recastMagnet->ilk_state.second));
 }
 // TODO rename 
 bool EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv) const

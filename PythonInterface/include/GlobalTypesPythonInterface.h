@@ -62,6 +62,10 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("CLARA_2_BA1", TYPE::CLARA_2_BA1)
 			.value("CLARA_2_BA1_BA2", TYPE::CLARA_2_BA1_BA2)
 
+
+
+
+
 			;
 	}
 }
