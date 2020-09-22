@@ -91,6 +91,56 @@ public:
 	void messagesOn();
 	void messagesOff();
 
+
+	double getMaskXCenter()const;
+	double getMaskYCenter()const;
+	double getMaskXRadius()const;
+	double getMaskYRadius()const;
+
+	bool setMaskXCenter(double val);
+	bool setMaskYCenter(double val);
+	bool setMaskXRadius(double val);
+	bool setMaskYRadius(double val);
+	
+	double getPix2mm()double;
+	bool setPix2mm(double val);
+
+
+	double getSigXY()const;
+	double getXPix()const;
+	double getYPix()const;
+	double getSigXPix()const;
+	double getSigYPix()const;
+	double getSigXYPix()const;
+
+	/*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, int > mask_x_center;
+	/*! analaysis mask center y position (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, int > mask_y_center;
+	/*! analaysis mask center x radius (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, int > mask_x_radius;
+	/*! analaysis mask center y radius (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, int > mask_y_radius;
+	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, int > x_center;
+	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, int > y_center;
+	/*! conversion factor fro pixels to mm. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > pix_to_mm;
+
+	/*! Camera acquire time. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > acquire_time;
+	/*! Camera acquire period. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > acquire_period;
+	/*! Camera array rate. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > array_rate;
+	/*! Camera temperature. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > temperature;
+	/*! LED status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> led_status;
+	/*! LED status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> acquire_status;
+
 	
 	friend class EPICSCameraInterface;
 	friend class CameraFactory;
@@ -125,6 +175,34 @@ protected:
 	std::pair<epicsTimeStamp, double > sum_intensity;
 	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > avg_intensity;
+
+	/*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > mask_x_center;
+	/*! analaysis mask center y position (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > mask_y_center;
+	/*! analaysis mask center x radius (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > mask_x_radius;
+	/*! analaysis mask center y radius (pixels). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > mask_y_radius;
+	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > x_center;
+	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > y_center;
+	/*! conversion factor fro pixels to mm. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > pix_to_mm;
+
+	/*! Camera acquire time. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > acquire_time;
+	/*! Camera acquire period. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > acquire_period;
+	/*! Camera array rate. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > array_rate;
+	/*! Camera temperature. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > temperature;
+	/*! LED status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> led_status;
+	/*! LED status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> acquire_status;
 
 
 private:
