@@ -93,12 +93,15 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	
 	for (auto& item : camera_map)
 	{
-		messenger.printDebugMessage("setting up, " + item.first);
+		messenger.printDebugMessage("setting up, " + item.first, item.second.getHardwareName());
 		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
 		
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
+
+
+		
 
 
 		for (auto& pv : pvstruct)

@@ -210,7 +210,13 @@ void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_arg
 }
 void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_CAM_Acquire_RBV ");
+  
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+
+	std::cout << "update_CAM_Acquire_RBV, cam = " << recastCamera->getHardwareName() << std::endl;
+	std::cout << "value = " << tv->value << std::endl;
 }
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
@@ -251,35 +257,34 @@ void EPICSCameraInterface::update_ANA_EnableCallbacks_RBV(const struct event_han
 void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args)
 {
 	//messenger.printDebugMessage("update_ANA_X_RBV ");
-	std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_mm);
 
-	std::pair<epicsTimeStamp, double > x_pix;
-	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > y_pix;
-	/*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_x_pix;
-	/*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_y_pix;
-	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_xy_pix;
-	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > x_mm;
-	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > y_mm;
-	/*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_x_mm;
-	/*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_y_mm;
-	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_xy_mm;
+	//std::pair<epicsTimeStamp, double > x_pix;
+	///*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > y_pix;
+	///*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sigma_x_pix;
+	///*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sigma_y_pix;
+	///*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sigma_xy_pix;
+	///*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > x_mm;
+	///*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > y_mm;
+	///*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sigma_x_mm;
+	///*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sigma_y_mm;
+	///*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sigma_xy_mm;
 
-	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sum_intensity;
-	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > avg_intensity;
+	///*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > sum_intensity;
+	///*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
+	//std::pair<epicsTimeStamp, double > avg_intensity;
 
 }
 void EPICSCameraInterface::update_ANA_Y_RBV(const struct event_handler_args args) {
