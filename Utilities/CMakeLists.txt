@@ -44,7 +44,6 @@ set( INCLUDE_FILES
      include/RFProtectionPVRecords.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
-     include/RunningStats.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)

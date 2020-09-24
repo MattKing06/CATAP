@@ -70,6 +70,13 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("stopAcquiring", &Camera::stopAcquiring)
 
 
+
+			.def("getBufferSize", &Camera::getBufferSize)
+			.def("setBufferSize", &Camera::setBufferSize)
+			.def("clearBuffers", &Camera::clearBuffers)
+			.def("getRunningStats", &Camera::getRunningStats)
+
+
 			.def("getScreen", &Camera::getScreen)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 			.def("getAliases", &Camera::getAliases_Py)

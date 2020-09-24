@@ -119,26 +119,19 @@ bool MagnetFactory::setup(const std::string& version)
 		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
 		return true;
 	}
-
 	//std::cout << "populateMagnetMap()" << std::endl;
 	populateMagnetMap();
-
 	//std::cout << "populateMagnetMap() fin" << std::endl;;
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
-
 	// 
 	//convertConfigStringsToGlobalTypeEnums();
-
-
 	setupChannels();
 	EPICSInterface::sendToEPICS();
-
 	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
-
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
 	*/
@@ -233,9 +226,6 @@ std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 	return dummy_magnet.getHardwareName();
 }
 
-
-
-
 // GET MAGNET OBJECT  FUNCTIONS
 //
 Magnet& MagnetFactory::getMagnet(const std::string& fullMagnetName)
@@ -262,9 +252,6 @@ boost::python::list MagnetFactory::getAllMagnetNames_Py()const
 {
 	return to_py_list(getAllMagnetNames());
 }
-
-
-
 double MagnetFactory::getSETI(const std::string& name)  const
 {
 	std::string fullName = getFullName(name);

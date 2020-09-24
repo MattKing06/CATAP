@@ -363,6 +363,56 @@ unsigned short Camera::setMaskYRadius(unsigned short val)
 
 
 
+boost::python::dict Camera::getRunningStats()
+{
+	boost::python::dict r;
+	r["x_pix"] = x_pix_rs.getRunningStats();
+	r["y_pix"] = y_pix_rs.getRunningStats();
+	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();
+	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();
+	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();
+	r["x_mm"] = x_mm_rs.getRunningStats();
+	r["y_mm"] = y_mm_rs.getRunningStats();
+	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();
+	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();
+	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();
+	return r;
+}
+
+size_t Camera::getBufferSize()const
+{
+	return running_stats_buffer_size;
+}
+
+void Camera::setBufferSize(size_t v)
+{
+	x_pix_rs.setBufferSize(v);
+	y_pix_rs.setBufferSize(v);
+	sigma_x_pix_rs.setBufferSize(v);
+	sigma_y_pix_rs.setBufferSize(v);
+	sigma_xy_pix_rs.setBufferSize(v);
+	x_mm_rs.setBufferSize(v);
+	y_mm_rs.setBufferSize(v);
+	sigma_x_mm_rs.setBufferSize(v);
+	sigma_y_mm_rs.setBufferSize(v);
+	sigma_xy_mm_rs.setBufferSize(v);
+	running_stats_buffer_size = v;
+}
+void Camera::clearBuffers()
+{
+	x_pix_rs.clearBuffer();
+	y_pix_rs.clearBuffer();
+	sigma_x_pix_rs.clearBuffer();
+	sigma_y_pix_rs.clearBuffer();
+	sigma_xy_pix_rs.clearBuffer();
+	x_mm_rs.clearBuffer();
+	y_mm_rs.clearBuffer();
+	sigma_x_mm_rs.clearBuffer();
+	sigma_y_mm_rs.clearBuffer();
+	sigma_xy_mm_rs.clearBuffer();
+}
+
+
 
 bool Camera::startAcquiring()
 {
