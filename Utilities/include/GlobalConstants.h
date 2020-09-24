@@ -163,6 +163,11 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::RETRACTED), STATE::RETRACTED},
 			{ENUM_TO_STRING(STATE::YAG), STATE::YAG},
 			{ENUM_TO_STRING(STATE::RF), STATE::RF},
+
+			{ENUM_TO_STRING(STATE::ACQUIRING), STATE::ACQUIRING},
+			{ENUM_TO_STRING(STATE::NOT_ACQUIRING), STATE::NOT_ACQUIRING},
+			{ENUM_TO_STRING(STATE::ANALYSING), STATE::ANALYSING},
+			{ENUM_TO_STRING(STATE::NOT_ANALYSING), STATE::NOT_ANALYSING}
 	};
 
 	/*! Minimum possible value of a double */
@@ -181,6 +186,11 @@ namespace GlobalConstants
 	const unsigned short zero_ushort = 0;
 	/*! Unsigned short-type variable for 1 */
 	const unsigned short one_ushort = 1;
+
+	/*! Minimum possible value of a double */
+	const unsigned short ushort_min = std::numeric_limits<unsigned short>::min();
+	/*! Maximum possible value of a double */
+	const unsigned short ushort_max = std::numeric_limits<unsigned short>::max();
 
 	/*! Integer-type variable for 0 */
 	const int zero_int= 0;

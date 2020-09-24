@@ -117,6 +117,12 @@ public:
 	bool isMessagingOn();
 
 
+	bool stopAcquiring(const std::string& cam_name);
+	bool stopAllAcquiring();
+	bool stopAllAcquiringExceptVC();
+	bool startAcquiring(const std::string& cam_name, bool stop_all = true);
+
+
 
 	/*! Flag to say whether the LLRFFactory setup function has been completed successfully.*/
 	bool hasBeenSetup; // PUBLIC as it is used by hardwarefactory, could make it a friend

@@ -519,6 +519,70 @@ bool CameraFactory::setAvgIntensity(const std::string& name, double value)
 	return false;
 }
 
+bool CameraFactory::stopAcquiring(const std::string& cam_name)
+{
+	std::string full_name = getFullName(cam_name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).stopAcquiring();
+	}
+	return false;
+}
+
+bool CameraFactory::stopAllAcquiringExceptVC()
+{
+	bool r = true;
+	for (auto&& cam : camera_map)
+	{
+		if (GlobalFunctions::entryExists<std::string>(cam.second.getScreenNames(), "VIRTUAL_CATHODE")) // MAGIC STRING
+		{
+		}
+		else
+		{
+			bool t = cam.second.stopAcquiring();
+			if (!t)
+			{
+				r = false;
+			}
+		}
+	}
+	return r;
+}
+
+bool CameraFactory::stopAllAcquiring()
+{
+	bool r = true;
+	for (auto&& cam : camera_map)
+	{
+		bool t = cam.second.stopAcquiring();
+		if (!t)
+		{
+			r = false;
+		}
+	}
+	return r;
+}
+bool CameraFactory::startAcquiring(const std::string& cam_name, bool stop_all )
+{
+	bool r = false;
+	std::string full_name = getFullName(cam_name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		if (stop_all)
+		{
+			r = stopAllAcquiringExceptVC();
+			if (r)
+			{
+				r = camera_map.at(full_name).startAcquiring();
+			}
+		}
+		else
+		{
+			r = camera_map.at(full_name).startAcquiring();
+		}
+	}
+	return r;
+}
 
 
 
@@ -626,6 +690,13 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 	aliases.reserve(name_aliases.size() + screen_aliases.size());
 	aliases.insert(aliases.end(), name_aliases.begin(), name_aliases.end());
 	aliases.insert(aliases.end(), screen_aliases.begin(), screen_aliases.end());
+	
+	const char* const delim = ", ";
+
+	std::ostringstream imploded;
+	std::copy(aliases.begin(), aliases.end(),std::ostream_iterator<std::string>(imploded, delim));
+
+	messenger.printMessage("Aliases = ", imploded.str());
 
 
 	for (auto&& next_alias : aliases)

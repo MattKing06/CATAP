@@ -13,8 +13,8 @@ Hardware()
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
 epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
-pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),
-pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),
+pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC TSRING
+pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC TSRING
 x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -25,6 +25,19 @@ y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+led_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+acquire_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+analysis_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 cam_type(TYPE::UNKNOWN_TYPE)
 {
 
@@ -312,6 +325,91 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
+
+
+unsigned short Camera::getMaskXCenter()const
+{
+	return mask_x_center.second;
+}
+unsigned short Camera::getMaskYCenter()const
+{
+	return mask_y_center.second;
+}
+unsigned short Camera::getMaskXRadius()const
+{
+	return mask_x_radius.second;
+}
+unsigned short Camera::getMaskYRadius()const
+{
+	return mask_y_radius.second;
+}
+
+unsigned short Camera::setMaskXCenter(unsigned short val)
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskXCenter), val);
+}
+unsigned short Camera::setMaskYCenter(unsigned short val)
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskYCenter), val);
+}
+unsigned short Camera::setMaskXRadius(unsigned short val)
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskXRad), val);
+}
+unsigned short Camera::setMaskYRadius(unsigned short val)
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
+}
+
+
+
+
+bool Camera::startAcquiring()
+{
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Acquire), GlobalConstants::one_ushort);
+}
+bool Camera::stopAcquiring()
+{
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Acquire), GlobalConstants::zero_ushort);
+}
+bool Camera::isAcquiring()const
+{
+	return getAcquireState() == STATE::ACQUIRING;
+}
+bool Camera::isNotAcquiring() const
+{
+	return getAcquireState() == STATE::NOT_ACQUIRING;
+}
+STATE Camera::getAcquireState()const
+{
+	return acquire_status.second;
+}
+
+
+bool Camera::startAnalysing()
+{
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
+}
+bool Camera::stopAnalysing()
+{
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::zero_ushort);
+}
+bool Camera::isAnalysing()const
+{
+	return getAcquireState() == STATE::ANALYSING;
+}
+bool Camera::isNotAnalysing() const
+{
+	return getAcquireState() == STATE::NOT_ANALYSING;
+}
+STATE Camera::getAnalysisState( )const
+{
+	return analysis_status.second;
+}
+
+
+
+
 
 
 std::vector<std::string> Camera::getAliases() const

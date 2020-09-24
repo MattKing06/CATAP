@@ -176,6 +176,7 @@ public:
 	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);
 	static std::pair<epicsTimeStamp, int> getTimeStampEnumPair(const struct event_handler_args& args);
 	static std::pair<epicsTimeStamp, double> getTimeStampDoublePair(const struct event_handler_args& args);
+	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUnsignedShortPair(const struct event_handler_args& args);
 	// Add in some more for vectors as we need them ... 
 
 

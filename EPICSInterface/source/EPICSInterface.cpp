@@ -328,6 +328,14 @@ std::pair<epicsTimeStamp, double> EPICSInterface::getTimeStampDoublePair(const s
 	return r;
 }
 
+std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUnsignedShortPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, unsigned short> r;
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = ( unsigned short)tv->value;
+	return r;
+}
 
 
 std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)

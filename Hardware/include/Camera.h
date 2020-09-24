@@ -9,6 +9,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include "RunningStats.h"
 
 
 
@@ -104,17 +105,28 @@ public:
 	void messagesOff();
 
 
-	//double getMaskXCenter()const;
-	//double getMaskYCenter()const;
-	//double getMaskXRadius()const;
-	//double getMaskYRadius()const;
+	unsigned short getMaskXCenter()const;
+	unsigned short getMaskYCenter()const;
+	unsigned short getMaskXRadius()const;
+	unsigned short getMaskYRadius()const;
 
-	//bool setMaskXCenter(double val);
-	//bool setMaskYCenter(double val);
-	//bool setMaskXRadius(double val);
-	//bool setMaskYRadius(double val);
+	unsigned short setMaskXCenter(unsigned short val);
+	unsigned short setMaskYCenter(unsigned short val);
+	unsigned short setMaskXRadius(unsigned short val);
+	unsigned short setMaskYRadius(unsigned short val);
 	
 	
+	bool startAcquiring();
+	bool stopAcquiring();
+	bool isAcquiring()const;
+	bool isNotAcquiring() const;
+	STATE getAcquireState()const;
+
+	bool startAnalysing();
+	bool stopAnalysing();
+	bool isAnalysing()const;
+	bool isNotAnalysing() const;
+	STATE getAnalysisState()const;
 
 
 	///*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
@@ -129,7 +141,7 @@ public:
 	//std::pair<epicsTimeStamp, int > x_center;
 	///*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
 	//std::pair<epicsTimeStamp, int > y_center;
-	///*! conversion factor fro pixels to mm. Value and epicstimestamp.	*/
+	///*! conversion factor for pixels to mm. Value and epicstimestamp.	*/
 	//std::pair<epicsTimeStamp, double > pix_to_mm;
 
 	///*! Camera acquire time. Value and epicstimestamp.	*/
@@ -175,19 +187,36 @@ protected:
 	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > sigma_xy_mm;
 
+	 
+
+	size_t running_stats_buffer_size
+
+	RunningStats x_pix_rs;
+	RunningStats y_pix_rs;
+	RunningStats sigma_x_pix_rs;
+	RunningStats sigma_y_pix_rs;
+	RunningStats sigma_xy_pix_rs;
+	RunningStats x_mm_rs;
+	RunningStats y_mm_rs;
+	RunningStats sigma_x_mm_rs;
+	RunningStats sigma_y_mm_rs;
+	RunningStats sigma_xy_mm_rs;
+
+
+
 	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > sum_intensity;
 	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > avg_intensity;
 
 	/*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > mask_x_center;
+	std::pair<epicsTimeStamp, unsigned short > mask_x_center;
 	/*! analaysis mask center y position (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > mask_y_center;
+	std::pair<epicsTimeStamp, unsigned short > mask_y_center;
 	/*! analaysis mask center x radius (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > mask_x_radius;
+	std::pair<epicsTimeStamp, unsigned short > mask_x_radius;
 	/*! analaysis mask center y radius (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > mask_y_radius;
+	std::pair<epicsTimeStamp, unsigned short > mask_y_radius;
 	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_center;
 	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
@@ -207,6 +236,8 @@ protected:
 	std::pair<epicsTimeStamp, STATE> led_status;
 	/*! LED status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> acquire_status;
+	/*! Analysis status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> analysis_status;
 
 
 private:

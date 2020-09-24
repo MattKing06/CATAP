@@ -1,4 +1,4 @@
-# REMEMBER you need  "key  : value" the __space__ either side of : is required !!! 
+    # REMEMBER you need  "key  : value" the __space__ either side of : is required !!! 
 controls_information:
     PV: true
     pv_record_map:
@@ -78,7 +78,7 @@ properties:
     hardware_type: Camera
     machine_area : INJ   # Set by where the camera physically *IS* 
     name : EBT-INJ-DIA-CAM-09 
-    name_alias: INJ-CAM-00, INJ-CAM9  # include screen names here as well 
+    name_alias: INJ-CAM-09, INJ-CAM9  # include screen names here as well 
     CAM_TYPE : VELA_CAM 
     SCREEN_NAME : ELECTRON_DIFFRACTION # which screen is the camera looking at 
     IP_ADDRESS_STREAM : "" 

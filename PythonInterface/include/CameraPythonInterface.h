@@ -52,6 +52,24 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAvgIntensity", &Camera::getAvgIntensity)
 			.def("setSumIntensity", &Camera::setSumIntensity)
 			.def("setAvgIntensity", &Camera::setAvgIntensity)
+
+			.def("getMaskXCenter", &Camera::getMaskXCenter)
+			.def("getMaskYCenter", &Camera::getMaskYCenter)
+			.def("getMaskXRadius", &Camera::getMaskXRadius)
+			.def("getMaskYRadius", &Camera::getMaskYRadius)
+
+
+			.def("setMaskXCenter", &Camera::setMaskXCenter)
+			.def("setMaskYCenter", &Camera::setMaskYCenter)
+			.def("setMaskXRadius", &Camera::setMaskXRadius)
+			.def("setMaskYRadius", &Camera::setMaskYRadius)
+
+
+
+			.def("startAcquiring", &Camera::startAcquiring)
+			.def("stopAcquiring", &Camera::stopAcquiring)
+
+
 			.def("getScreen", &Camera::getScreen)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 			.def("getAliases", &Camera::getAliases_Py)
@@ -107,6 +125,15 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)
 			.def("setAvgIntensity", &CameraFactory::setAvgIntensity)
+
+
+
+			.def("stopAcquiring", &CameraFactory::stopAcquiring)
+			.def("stopAllAcquiring", &CameraFactory::stopAllAcquiring)
+			.def("stopAllAcquiringExceptVC", &CameraFactory::stopAllAcquiringExceptVC)
+			.def("startAcquiring", &CameraFactory::startAcquiring)
+
+
 
 			.def("debugMessagesOn", &CameraFactory::debugMessagesOn)
 			.def("debugMessagesOff", &CameraFactory::debugMessagesOff)
