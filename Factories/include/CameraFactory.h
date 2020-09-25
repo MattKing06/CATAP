@@ -79,6 +79,10 @@ public:
 	double getSigYPix(const std::string& name)const;
 	double getSigXYPix(const std::string& name)const;
 
+
+	boost::python::dict getRunningStats(const std::string& name)const;
+	boost::python::dict getAllRunningStats()const;
+
 	bool setX(const std::string& name, double value);
 	bool setY(const std::string& name, double value);
 	bool setSigX(const std::string& name, double value);
@@ -95,7 +99,38 @@ public:
 	bool setSumIntensity(const std::string& name, double value);
 	bool setAvgIntensity(const std::string& name, double value);
 
-	
+	unsigned short getMaskXCenter(const std::string& name)const;
+	unsigned short getMaskYCenter(const std::string& name)const;
+	unsigned short getMaskXRadius(const std::string& name)const;
+	unsigned short getMaskYRadius(const std::string& name)const;
+
+	unsigned short setMaskXCenter(const std::string& name, unsigned short val);
+	unsigned short setMaskYCenter(const std::string& name, unsigned short val);
+	unsigned short setMaskXRadius(const std::string& name, unsigned short val);
+	unsigned short setMaskYRadius(const std::string& name, unsigned short val);
+
+
+	bool stopAcquiring(const std::string& cam_name);
+	bool stopAllAcquiring();
+	bool stopAllAcquiringExceptVC();
+	bool startAcquiring(const std::string& cam_name, bool stop_all = true);
+	std::map<std::string, STATE> getAllAcquireStates()const;
+	boost::python::dict getAllAcquireStates_Py()const;
+
+	bool isAcquiring(const std::string& name)const;
+	bool isNotAcquiring(const std::string& name) const;
+	STATE getAcquireState(const std::string& name)const;
+
+	bool startAnalysing(const std::string& name);
+	bool stopAnalysing(const std::string& name);
+	bool isAnalysing(const std::string& name)const;
+	bool isNotAnalysing(const std::string& name) const;
+	STATE getAnalysisState(const std::string& name)const;
+	std::map<std::string, STATE> getAllAnalysisState()const;
+	boost::python::dict getAllAnalysisState_Py()const;
+
+
+
 	std::string getFullName(const std::string& name_to_check) const;
 
 	/*! get the name alises for this 
@@ -117,10 +152,6 @@ public:
 	bool isMessagingOn();
 
 
-	bool stopAcquiring(const std::string& cam_name);
-	bool stopAllAcquiring();
-	bool stopAllAcquiringExceptVC();
-	bool startAcquiring(const std::string& cam_name, bool stop_all = true);
 
 
 

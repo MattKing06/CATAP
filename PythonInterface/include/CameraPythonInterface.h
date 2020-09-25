@@ -68,6 +68,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 			.def("startAcquiring", &Camera::startAcquiring)
 			.def("stopAcquiring", &Camera::stopAcquiring)
+			
+			.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
 
 
 
@@ -133,12 +135,39 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)
 			.def("setAvgIntensity", &CameraFactory::setAvgIntensity)
 
-
-
 			.def("stopAcquiring", &CameraFactory::stopAcquiring)
 			.def("stopAllAcquiring", &CameraFactory::stopAllAcquiring)
 			.def("stopAllAcquiringExceptVC", &CameraFactory::stopAllAcquiringExceptVC)
 			.def("startAcquiring", &CameraFactory::startAcquiring)
+			.def("getAllAcquireStates", &CameraFactory::getAllAcquireStates_Py)
+			.def("isAcquiring", &CameraFactory::isAcquiring)
+			.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
+			.def("getAcquireState", &CameraFactory::getAcquireState)
+
+
+
+			.def("getRunningStats", &CameraFactory::getRunningStats)
+			.def("getAllRunningStats", &CameraFactory::getAllRunningStats)
+
+
+
+			.def("getMaskXCenter", &CameraFactory::getMaskXCenter)
+			.def("getMaskYCenter", &CameraFactory::getMaskYCenter)
+			.def("getMaskXRadius", &CameraFactory::getMaskXRadius)
+			.def("getMaskYRadius", &CameraFactory::getMaskYRadius)
+
+			.def("setMaskXCenter", &CameraFactory::setMaskXCenter)
+			.def("setMaskYCenter", &CameraFactory::setMaskYCenter)
+			.def("setMaskXRadius", &CameraFactory::setMaskXRadius)
+			.def("setMaskYRadius", &CameraFactory::setMaskYRadius)
+
+			.def("startAnalysing", &CameraFactory::startAnalysing)
+			.def("stopAnalysing", &CameraFactory::stopAnalysing)
+			.def("isAnalysing", &CameraFactory::isAnalysing)
+			.def("isNotAnalysing", &CameraFactory::isNotAnalysing)
+
+			.def("getAnalysisState", &CameraFactory::getAnalysisState)
+			.def("getAllAnalysisState", &CameraFactory::getAllAnalysisState_Py)
 
 
 

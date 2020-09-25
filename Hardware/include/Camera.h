@@ -10,6 +10,7 @@
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 #include "RunningStats.h"
+#include <thread>
 
 #ifndef _RUNNING_STATS_H_
 #define _RUNNING_STATS_H_
@@ -26,7 +27,9 @@ public:
 		m_n(0),
 		max_n(0),
 		rs_complete(false)
-	{}
+	{
+		setBufferSize(10); // MAGIC
+	}
 	/*! Clear the running stats values */
 	void Clear()
 	{
@@ -107,11 +110,11 @@ public:
 	}
 
 
-	std::vector<double> Buffer()
+	std::vector<double> Buffer()const
 	{
 		return buffer;
 	}
-	boost::python::list Buffer_Py()
+	boost::python::list Buffer_Py()const
 	{
 		return to_py_list<double>(buffer);
 	}
@@ -120,7 +123,7 @@ public:
 	  get/set the current settings, so that you can prime the running-stat with
 		some known values
 	*/
-	boost::python::dict getRunningStats()
+	boost::python::dict getRunningStats()const
 	{
 		boost::python::dict r;
 		r["NumDataValues"] = NumDataValues();
@@ -128,7 +131,7 @@ public:
 		r["Variance"] = Variance();
 		r["StandardDeviation"] = StandardDeviation();
 		r["Full"] = Full();
-		r["Buffer"] = Buffer_Py;
+		r["Buffer"] = Buffer_Py();
 		return r;
 	}
 
@@ -136,6 +139,12 @@ public:
 	{
 		clearBuffer();
 		buffer.resize(s);
+		return getBuferSize();
+	}
+
+	size_t getBuferSize()const
+	{
+		return buffer.size();
 	}
 
 	void clearBuffer()
@@ -173,8 +182,12 @@ private:
 
 	void bufferPush(double value)
 	{
-		buffer[buffer_n] = value;
-		buffer_n += 1; //MAGIC
+		if (buffer_n < getBuferSize())
+		{
+			buffer[buffer_n] = value;
+			buffer_n += 1; //MAGIC
+		}
+
 	}
 
 
@@ -208,6 +221,32 @@ private:
 
 
 
+
+
+class Camera;
+/*
+	Image collection and saving happens in a new thread,
+	this struct is passed to the new thread function
+*/
+class ImageCollector
+{
+	ImageCollector() :
+		//camInterface(nullptr),
+		thread(nullptr),
+		isBusy(false),
+		success(false),
+		numShots(0)
+	{}
+	/*
+		https://stackoverflow.com/questions/4937180/a-base-class-pointer-can-point-to-a-derived-class-object-why-is-the-vice-versa
+	*/
+	//cameraBase* camInterface;
+	Camera* cam;
+	std::thread*   thread;
+	size_t       numShots;
+	bool           isBusy;
+	bool           success;
+};
 
 class EPICSCameraInterface;
 
@@ -321,42 +360,22 @@ public:
 	bool isNotAnalysing() const;
 	STATE getAnalysisState()const;
 
-
-	///*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, int > mask_x_center;
-	///*! analaysis mask center y position (pixels). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, int > mask_y_center;
-	///*! analaysis mask center x radius (pixels). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, int > mask_x_radius;
-	///*! analaysis mask center y radius (pixels). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, int > mask_y_radius;
-	///*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, int > x_center;
-	///*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, int > y_center;
-	///*! conversion factor for pixels to mm. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > pix_to_mm;
-
-	///*! Camera acquire time. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > acquire_time;
-	///*! Camera acquire period. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > acquire_period;
-	///*! Camera array rate. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > array_rate;
-	///*! Camera temperature. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > temperature;
-	///*! LED status. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, STATE> led_status;
-	///*! LED status. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, STATE> acquire_status;
+	bool captureAndSave(size_t num_shots);
+		
+	STATE getCaptureState()const;
+	bool isCapturing()const;
 	
+
+
+	bool makeANewDirectoryAndName(size_t numbOfShots);
+
 	size_t getBufferSize()const;
 
 	
 	void setBufferSize(size_t v);
 	void clearBuffers();
 
-	boost::python::dict getRunningStats();
+	boost::python::dict getRunningStats()const;
 
 	friend class EPICSCameraInterface;
 	friend class CameraFactory;
@@ -439,6 +458,9 @@ protected:
 	/*! Analysis status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> analysis_status;
 
+	/*! Capture status (is the Cmaera "busy" capturing images). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> capture_state;
+
 
 private:
 
@@ -448,15 +470,20 @@ private:
 	/*! alternative names for the magnet (usually shorter thna the full PV root),
 	defined in the master lattice yaml file	*/
 	std::vector<std::string> aliases;
+	std::vector<std::string> screen_names;
 
 
 	double pix2mmX_ratio;
 	double pix2mmY_ratio;
 
 
-	std::vector<std::string> screen_names;
+	size_t max_shots_number;
 
-	
+
+	// collect and save stuff 
+
+	bool setNumberOfShotsToCapture(size_t num);
+	bool collect();
 
 	EPICSCameraInterface_sptr epicsInterface;
 	std::map<std::string, std::string> CameraParamMap;

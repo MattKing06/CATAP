@@ -10,6 +10,8 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <sstream>
+#include <iomanip> 
 #include "GlobalConstants.h"
 
 
@@ -147,6 +149,36 @@ namespace GlobalFunctions{
 
 
 	//extern std::pair<bool, std::string> findSubstringInStringvector(const std::vector<std::string>& stringvector, const std::string& substring);
+
+
+	inline std::string time_iso_8601() {
+
+		std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+
+		// convert to time_t which will represent the number of
+		// seconds since the epoch, 
+		auto epoch_seconds = std::chrono::system_clock::to_time_t(p);
+
+		// Format this as date time to seconds resolution
+		// e.g. 2016-08-30-08:18:51
+		std::stringstream stream;
+		stream << std::put_time(gmtime(&epoch_seconds), "%F_%T");
+
+		// If we now convert back to a time_point we will get the time truncated
+		// to whole seconds 
+		//auto truncated = std::chrono::system_clock::from_time_t(epoch_seconds);
+
+		// Now we subtract this seconds count from the original time to
+		// get the number of extra microseconds..
+		//auto delta_us = std::chrono::duration_cast<std::chrono::microseconds>(t - truncated).count();
+
+		// And append this to the output stream as fractional seconds
+		// e.g. 2016-08-30T08:18:51.867479
+		//stream << "." << std::fixed << std::setw(2) << std::setfill('0') << delta_us;
+
+		return stream.str();
+	}
+
 
 
 	extern void pause_x(std::chrono::milliseconds x);

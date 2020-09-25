@@ -13,8 +13,9 @@ Hardware()
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
 epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
-pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC TSRING
-pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC TSRING
+pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC STRING
+pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC STRING
+max_shots_number((size_t)std::stoi(paramMap.find("MAX_SHOTS_NUMBER")->second)),  // MAGIC STRING
 x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -360,10 +361,7 @@ unsigned short Camera::setMaskYRadius(unsigned short val)
 {
 	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
 }
-
-
-
-boost::python::dict Camera::getRunningStats()
+boost::python::dict Camera::getRunningStats()const
 {
 	boost::python::dict r;
 	r["x_pix"] = x_pix_rs.getRunningStats();
@@ -383,7 +381,6 @@ size_t Camera::getBufferSize()const
 {
 	return running_stats_buffer_size;
 }
-
 void Camera::setBufferSize(size_t v)
 {
 	x_pix_rs.setBufferSize(v);
@@ -434,8 +431,6 @@ STATE Camera::getAcquireState()const
 {
 	return acquire_status.second;
 }
-
-
 bool Camera::startAnalysing()
 {
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
@@ -458,8 +453,142 @@ STATE Camera::getAnalysisState( )const
 }
 
 
+//
+//  __   __             ___  __  ___               __      __             ___                  __   ___
+// /  ` /  \ |    |    |__  /  `  |      /\  |\ | |  \    /__`  /\  \  / |__     |  |\/|  /\  / _` |__
+// \__, \__/ |___ |___ |___ \__,  |     /~~\ | \| |__/    .__/ /~~\  \/  |___    |  |  | /~~\ \__> |___
+//
+//
+//-------------------------------------------------------------------------------------------------------
+//
+//
+bool Camera::captureAndSave(size_t num_shots)
+{
+	if (setNumberOfShotsToCapture(num_shots))
+	{
+		messenger.printDebugMessage(hardwareName, " Set number of shots success");
+		if (collect())
+		{
+			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
+			GlobalFunctions::pause_500();
+
+			// add a time out here
+
+			while (isCapturing())   //wait until collecting is done...
+			{
+				GlobalFunctions::pause_50(); //MAGIC_NUMBER
+				messenger.printDebugMessage(hardwareName, " isCapturing is TRUE");
+			}
+
+			if (makeANewDirectoryAndName(num_shots))
+			{
+
+			}
+
+		}
+	}
+}
+//-------------------------------------------------------------------------------------------------------
+bool Camera::setNumberOfShotsToCapture(size_t num)
+{
+	if (num <= max_shots_number)
+	{
+		return epicsInterface->putValue2<int>(pvStructs.at(CameraRecords::HDF_Capture), (int)num);
+	}
+	return false;
+}
+bool Camera::collect()
+{
+	bool ans = false;
+	if (isAcquiring())
+	{
+		ans = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::one_ushort);
+		messenger.printDebugMessage("Capture set to 1 on camera ", hardwareName);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " is not acquiring");
+	}
+	return ans;
+}
 
 
+//-------------------------------------------------------------------------------------------------------
+bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
+{
+	bool ans = false;
+	
+	//std::string time_now = GlobalFunctions::time_iso_8601();
+	
+	// this sets up the directory structure, based on year, month date
+	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+	std::time_t t = std::chrono::system_clock::to_time_t(p);
+	tm local_tm = *localtime(&t);
+	//struct tm local_tm;
+	localtime_s(&local_tm, &t);
+	char  newPath[256] = "/CameraImages/";
+	std::string strPath = "/CameraImages/" +
+		std::to_string(local_tm.tm_year + 1900) +
+		"/" + std::to_string(local_tm.tm_mon + 1) +
+		"/" + std::to_string(local_tm.tm_mday) + "/";
+	strcpy(newPath, strPath.c_str());
+
+	char  newName[256] = "defaultname";
+	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
+	strcpy(newName, strName.c_str());
+	messenger.printDebugMessage("File Directory would be: ",newPath);
+	messenger.printDebugMessage("File name is: ", newName);
+
+	//ca_array_put(camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHTYPE,
+	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).COUNT,
+	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHID,
+	//	&newName);
+	//ca_array_put(camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_PATH).CHTYPE,
+	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_PATH).COUNT,
+	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_PATH).CHID,
+	//	&newPath);
+
+	//int status = sendToEpics("ca_put", "", "Timeout trying to send new file path state.");
+	//if (status == ECA_NORMAL)
+	//{
+	//	ans = true;
+	//	camera.daq.latestDirectory = newPath;
+	//	camera.daq.latestFilename = newName;
+
+	//	allCamData.at(camera.name).daq.latestDirectory = newPath;
+	//	allCamData.at(camera.name).daq.latestFilename = newName;
+
+	//	message("New latestDirectory set to ", newPath, " on ", camera.name, " camera.");
+	//	message("New latestFilename set to  ", newName, " on ", camera.name, " camera.");
+	//}
+
+	return ans;
+}
+
+
+
+
+
+
+
+
+STATE Camera::getCaptureState()const
+{
+	return capture_state.second;
+}
+//---------------------------------------------------------------------------------
+bool Camera::isCapturing()const
+{
+	if (getCaptureState() == STATE::CAPTURING)
+	{
+		messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
+	}
+	else
+	{
+		messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
+	}
+	return getCaptureState() == STATE::NOT_CAPTURING;
+}
 
 
 std::vector<std::string> Camera::getAliases() const

@@ -436,6 +436,30 @@ bool CameraFactory::setSigXY(const std::string& name, double value)
 	}
 	return false;
 }
+
+
+boost::python::dict CameraFactory::getRunningStats(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getRunningStats();
+	}
+	boost::python::dict r;
+	return r;
+}
+
+boost::python::dict CameraFactory::getAllRunningStats()const
+{
+	boost::python::dict r;
+	for (auto&& cam : camera_map)
+	{
+		r[cam.first] = cam.second.getRunningStats();
+	}
+	return r;
+}
+
+
 //bool CameraFactory::setXPix(const std::string& name, double value)
 //{
 //	std::string full_name = getFullName(name);
@@ -528,7 +552,6 @@ bool CameraFactory::stopAcquiring(const std::string& cam_name)
 	}
 	return false;
 }
-
 bool CameraFactory::stopAllAcquiringExceptVC()
 {
 	bool r = true;
@@ -548,7 +571,6 @@ bool CameraFactory::stopAllAcquiringExceptVC()
 	}
 	return r;
 }
-
 bool CameraFactory::stopAllAcquiring()
 {
 	bool r = true;
@@ -583,8 +605,182 @@ bool CameraFactory::startAcquiring(const std::string& cam_name, bool stop_all )
 	}
 	return r;
 }
+STATE CameraFactory::getAcquireState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAcquireState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+std::map<std::string, STATE> CameraFactory::getAllAcquireStates()const
+{
+	std::map<std::string, STATE> r;
+	for(auto&& cam : camera_map)
+	{
+		r[cam.first] = cam.second.getAcquireState();
+	}
+	return r;
+}
+boost::python::dict CameraFactory::getAllAcquireStates_Py()const
+{
+	return to_py_dict<std::string, STATE>(getAllAcquireStates());
+}
+
+bool CameraFactory::isAcquiring(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isAcquiring();
+	}
+	return false;
+}
+bool CameraFactory::isNotAcquiring(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isNotAcquiring();
+	}
+	return true; //Hmmm what to do about no-existent existential quantification? relly need ternary state, meh meh meh 
+}
 
 
+unsigned short CameraFactory::getMaskXCenter(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getMaskXCenter();
+	}
+	return GlobalConstants::ushort_min;
+}
+unsigned short CameraFactory::getMaskYCenter(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getMaskYCenter();
+	}
+	return GlobalConstants::ushort_min;
+}
+unsigned short CameraFactory::getMaskXRadius(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getMaskXRadius();
+	}
+	return GlobalConstants::ushort_min;
+}
+unsigned short CameraFactory::getMaskYRadius(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getMaskYRadius();
+	}
+	return GlobalConstants::ushort_min;
+}
+
+unsigned short CameraFactory::setMaskXCenter(const std::string& name, unsigned short val)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setMaskXCenter(val);
+	}
+	return GlobalConstants::ushort_min;
+}
+unsigned short CameraFactory::setMaskYCenter(const std::string& name, unsigned short val)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setMaskYCenter(val);
+	}
+	return GlobalConstants::ushort_min;
+}
+unsigned short CameraFactory::setMaskXRadius(const std::string& name, unsigned short val)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setMaskXRadius(val);
+	}
+	return GlobalConstants::ushort_min;
+}
+unsigned short CameraFactory::setMaskYRadius(const std::string& name, unsigned short val)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setMaskYRadius(val);
+	}
+	return GlobalConstants::ushort_min;
+}
+bool CameraFactory::startAnalysing(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).startAnalysing();
+	}
+	return false;
+}
+
+bool CameraFactory::stopAnalysing(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).stopAnalysing();
+	}
+	return false;
+}
+
+bool CameraFactory::isAnalysing(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isAnalysing();
+	}
+	return false;
+}
+bool CameraFactory::isNotAnalysing(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isNotAnalysing();
+	}
+	return true;
+}
+STATE CameraFactory::getAnalysisState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAnalysisState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+std::map<std::string, STATE> CameraFactory::getAllAnalysisState()const
+{
+	std::map<std::string, STATE> r;
+	for (auto&& cam : camera_map)
+	{
+		r[cam.first] = cam.second.getAnalysisState();
+	}
+	return r;
+}
+boost::python::dict CameraFactory::getAllAnalysisState_Py()const
+{
+	return to_py_dict<std::string, STATE>(getAllAnalysisState());
+}
 
 
 
@@ -779,6 +975,7 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 	size_t end_size = camera_map.size();
 	messenger.printDebugMessage("cutLHarwdareMapByMachineAreas camera_map.size() went from ", start_size, " to ", end_size);
 }
+
 
 
 
