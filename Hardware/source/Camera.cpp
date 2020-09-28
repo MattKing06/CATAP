@@ -462,12 +462,28 @@ STATE Camera::getAnalysisState( )const
 //-------------------------------------------------------------------------------------------------------
 //
 //
+
 bool Camera::captureAndSave(size_t num_shots)
+{
+
+
+}
+
+void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
+{
+	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
+	ic.cam->epicsInterface->attachTo_thisCAContext();
+	ic.cam->imageCaptureAndSave(ics.num_shots);
+	ic.cam->epicsInterface->detachFrom_thisCAContext();
+	ic.cam->message("staticEntryImageCollectAndSave complete");
+}
+
+void Camera::imageCaptureAndSave(size_t num_shots)
 {
 	if (setNumberOfShotsToCapture(num_shots))
 	{
 		messenger.printDebugMessage(hardwareName, " Set number of shots success");
-		if (collect())
+		if (capture())
 		{
 			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
 			GlobalFunctions::pause_500();
@@ -482,9 +498,33 @@ bool Camera::captureAndSave(size_t num_shots)
 
 			if (makeANewDirectoryAndName(num_shots))
 			{
-
+				GlobalFunctions::pause_500();
+				GlobalFunctions::pause_500();
+				messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
+				if (write())
+				{
+					//message("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
+					while (isWriting())   //wait until saving is done...
+					{
+						GlobalFunctions::pause_50(); //MAGIC_NUMBER
+					}
+					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
+					// pause and wait for EPICS to UPDATE
+					GlobalFunctions::pause_500();
+					GlobalFunctions::pause_500();
+					///check status of save/write
+					if (write_state_check.second == STATE::WRITE_CHECK_OK)
+					{
+						last_capture_and_save_success = true;//this->message("Successful wrote image to disk.");
+					}
+					else
+					{
+						messenger.printDebugMessage("!!SAVE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
+						last_capture_and_save_success = false;
+					}
+					busy = false;
+				}
 			}
-
 		}
 	}
 }
@@ -497,7 +537,7 @@ bool Camera::setNumberOfShotsToCapture(size_t num)
 	}
 	return false;
 }
-bool Camera::collect()
+bool Camera::capture()
 {
 	bool ans = false;
 	if (isAcquiring())
@@ -512,6 +552,23 @@ bool Camera::collect()
 	return ans;
 }
 
+bool Camera::write()
+{
+	bool ans = false;
+	int startNumber(1);// MAGIC_NUMBER should this be a one or a zero?
+	// WHAT IS THIS DOING????
+	//setStartFileNumberJPG(startNumber);
+	if (isNotCapturing())
+	{
+		ans = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::one_ushort);
+		messenger.printDebugMessage("WriteFile set to 1 on camera = ", hardwareName);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " still collecting images when write function was called.");
+	}
+	return ans;
+}
 
 //-------------------------------------------------------------------------------------------------------
 bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
@@ -566,6 +623,14 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 }
 
 
+bool Camera::isWriting()const
+{
+	return write_state.second == STATE::WRITING;
+}
+bool Camera::isNotWriting()const
+{
+	return write_state.second == STATE::NOT_WRITING;
+}
 
 
 
@@ -587,9 +652,20 @@ bool Camera::isCapturing()const
 	{
 		messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
 	}
+	return getCaptureState() == STATE::CAPTURING;
+}
+bool Camera::isNotCapturing()const
+{
+	if (getCaptureState() == STATE::NOT_CAPTURING)
+	{
+		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is TRUE");
+	}
+	else
+	{
+		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is FALSE");
+	}
 	return getCaptureState() == STATE::NOT_CAPTURING;
 }
-
 
 std::vector<std::string> Camera::getAliases() const
 {

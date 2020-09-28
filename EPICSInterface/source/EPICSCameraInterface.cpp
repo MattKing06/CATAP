@@ -190,15 +190,49 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 
 void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->write_state_check.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->write_state_check.second = STATE::WRITE_CHECK_OK; break;
+	case GlobalConstants::one_ushort:  recastCamera->write_state_check.second = STATE::WRITE_CHECK_ERROR; break;
+	default:
+		recastCamera->write_state_check.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteFile_RBV = " + ENUM_TO_STRING(recastCamera->write_state_check.second));
 }
 void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_WriteStatus ");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->write_state.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->write_state.second = STATE::WRITE_CHECK_OK; break;
+	case GlobalConstants::one_ushort:  recastCamera->write_state.second = STATE::WRITE_CHECK_ERROR; break;
+	default:
+		recastCamera->write_state.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteStatus = " + ENUM_TO_STRING(recastCamera->write_state.second));
 }
 void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_HDF_WriteMessage ");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
+	recastCamera->write_error_message.first = new_data->stamp;
+	const dbr_char_t* value;
+	value = &new_data->value;
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	// char array must have a const size (defined at compile time (or we use an array on the heap with new and delete)
+	char dummy_char[256]; // MAGIC NUMBER
+	for(int i = 0; i != 256; ++i)
+	{
+		dummy_char[i] = value[i];
+	}
+	std::string dummy_string(dummy_char);
+	recastCamera->write_error_message.second = dummy_string;
+	messenger.printDebugMessage(recastCamera->hardwareName, "update_HDF_WriteMessage (write_error_message) = ", recastCamera->write_error_message.second);
 }
 void EPICSCameraInterface::update_HDF_NumCaptured_RBV(const struct event_handler_args args)
 {
@@ -216,7 +250,7 @@ void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_arg
 	default:
 		recastCamera->capture_state.second = STATE::ERR;
 	}
-	messenger.printDebugMessage("update_HDF_Capture_RBV = " + ENUM_TO_STRING(recastCamera->capture_state.second));
+	messenger.printDebugMessage(recastCamera->getHardwareName()," update_HDF_Capture_RBV = " + ENUM_TO_STRING(recastCamera->capture_state.second));
 }
 void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_args args)
 {
@@ -230,10 +264,7 @@ void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_arg
 	default:
 		recastCamera->acquire_status.second = STATE::ERR;
 	}
-
 	std::cout << recastCamera->getHardwareName() << " new acquire state = " << ENUM_TO_STRING(recastCamera->acquire_status.second) << std::endl;
-
-
 }
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
@@ -245,11 +276,11 @@ void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_hand
 }
 void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args) 
 {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	messenger.printDebugMessage("update_MAGICK_WriteFile_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
-	messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	messenger.printDebugMessage("update_MAGICK_WriteStatus ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
@@ -329,7 +360,7 @@ void EPICSCameraInterface::update_ANA_SigmaX_RBV(const struct event_handler_args
 	recastCamera->sigma_x_mm_rs.Push(recastCamera->sigma_x_mm.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaY_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_HDF_WriteFile_RBV ");
+	//messenger.printDebugMessage("update_ANA_SigmaY_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_y_mm);
 	//std::cout << "update_ANA_Y_RBV " << recastCamera->getHardwareName() << std::endl;

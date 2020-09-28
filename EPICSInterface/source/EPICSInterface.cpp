@@ -333,7 +333,7 @@ std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUnsignedSh
 	std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
 	r.first = tv->stamp;
-	r.second = ( unsigned short)tv->value;
+	r.second = (unsigned short)tv->value;
 	return r;
 }
 
