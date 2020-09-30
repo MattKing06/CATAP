@@ -13,6 +13,7 @@
 #include <IMGPVRecords.h>
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
+#include <GlobalTypeEnums.h>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 
@@ -43,6 +44,8 @@ public:
 	~IMG();
 	std::pair<epicsTimeStamp, double> pressure;
 	std::pair<epicsTimeStamp, STATE> state;
+	TYPE imgtype;
+	std::string imgType;
 	void setPVStructs();
 	/*! EPICSIMGInterface for IMG-specifc calls to EPICS, includes setting OK/ERR state and monitoring gauge pressures*/
 	EPICSIMGInterface_sptr epicsInterface;
