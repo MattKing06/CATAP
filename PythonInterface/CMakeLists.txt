@@ -8,7 +8,7 @@ set( SOURCE_FILES
     source/BPMPythonInterface.cpp 
     source/ChargePythonInterface.cpp 
     source/ScreenPythonInterface.cpp 
-    source/GeneralMonitorPythonInterface.cpp
+    source/EPICSToolsPythonInterface.cpp
 	source/GlobalStatesPythonInterface.cpp
 	source/GlobalTypesPythonInterface.cpp
     source/HardwareFactoryPythonInterface.cpp
@@ -37,7 +37,7 @@ set( INCLUDE_FILES
     include/BPMPythonInterface.h 
     include/ChargePythonInterface.h 
     include/ScreenPythonInterface.h 
-    include/GeneralMonitorPythonInterface.h
+    include/EPICSToolsPythonInterface.h
 	include/GlobalStatesPythonInterface.h
 	include/GlobalTypesPythonInterface.h
     include/HardwareFactoryPythonInterface.h
@@ -120,6 +120,7 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSTools/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
 	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
 						 ${Boost_LIBRARIES}
@@ -127,6 +128,7 @@ foreach(FILE ${SOURCE_FILES})
 						 PRIVATE
 						 Factories
 						 Hardware
+						 EPICSTools
 						 ConfigReader
 						 Utilities)
 	if (UNIX)

@@ -57,7 +57,8 @@ void EPICSInterface::detachFromContext()
 
 void EPICSInterface::sendToEPICS()
 {
-	ca_pend_io(CA_PEND_IO_TIMEOUT);
+	int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+	SEVCHK(status, "ca_pend_io return status: " + status);
 }
 
 void EPICSInterface::attachTo_thisCaContext()
@@ -68,15 +69,7 @@ void EPICSInterface::attachTo_thisCaContext()
 	}
 }
 
-void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
-{
-	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
-										pvStruct.CHID, pvStruct.MASK,
-										pvStruct.updateFunction,
-										(void*)&hardware, 
-										&pvStruct.EVID);
-	MY_SEVCHK(status);
-}
+
 
 void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 {
@@ -85,24 +78,24 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		int status;
 		//chid CHID;
 		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
-		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
-		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
-		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
-			pvStruct.fullPVName.find("VALV") != std::string::npos ||
-			pvStruct.fullPVName.find("BPM") != std::string::npos ||
-			pvStruct.fullPVName.find("WCM") != std::string::npos ||
-			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
-			pvStruct.fullPVName.find("SCR") != std::string::npos ||
-			pvStruct.fullPVName.find("YAG") != std::string::npos ||
-			pvStruct.fullPVName.find("IMG") != std::string::npos )
-		{
-			pv = pvStruct.fullPVName;
-		}
-		if (pvStruct.fullPVName.find("VALV") != std::string::npos)
-		{
-			pv = pvStruct.fullPVName;
-		}
-
+		//std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
+		///*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
+		//if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
+		//	pvStruct.fullPVName.find("VALV") != std::string::npos ||
+		//	pvStruct.fullPVName.find("BPM") != std::string::npos ||
+		//	pvStruct.fullPVName.find("WCM") != std::string::npos ||
+		//	pvStruct.fullPVName.find("FCUP") != std::string::npos ||
+		//	pvStruct.fullPVName.find("SCR") != std::string::npos ||
+		//	pvStruct.fullPVName.find("YAG") != std::string::npos ||
+		//	pvStruct.fullPVName.find("IMG") != std::string::npos )
+		//{
+		//	pv = pvStruct.fullPVName;
+		//}
+		//if (pvStruct.fullPVName.find("VALV") != std::string::npos)
+		//{
+		//	pv = pvStruct.fullPVName;
+		//}
+		std::string pv = pvStruct.fullPVName;
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		
@@ -237,6 +230,76 @@ void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_
 	pairToUpdate.second = vec;
 }
 
+void EPICSInterface::updateTimeStampIntegerVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<int> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
+void EPICSInterface::updateTimeStampLongVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<long>>& pairToUpdate, long size)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<long> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
+void EPICSInterface::updateTimeStampFloatVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<float>>& pairToUpdate, long size)
+{
+	const struct dbr_time_float* tv = (const struct dbr_time_float*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<float> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
+void EPICSInterface::updateTimeStampEnumVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<unsigned short>>& pairToUpdate, long size)
+{
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<unsigned short> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
+void EPICSInterface::updateTimeStampStringVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<std::string>>& pairToUpdate, long size)
+{
+	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<std::string> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
 void EPICSInterface::updateTimeStampIntPair(const struct event_handler_args& args,
 	std::pair<epicsTimeStamp, int>& pairToUpdate)
 {
@@ -266,6 +329,22 @@ void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& ar
 	std::pair<epicsTimeStamp, long>& pairToUpdate)
 {
 	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampStringPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, std::string>& pairToUpdate)
+{
+	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampFloatPair(const struct event_handler_args& args,
+	std::pair < epicsTimeStamp, float>& pairToUpdate)
+{
+	const struct dbr_time_float* tv = (const struct dbr_time_float*)(args.dbr);
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = tv->value;
 }
@@ -338,7 +417,7 @@ double EPICSInterface::returnValueFromArgsAsDouble(const event_handler_args args
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_double*)(args.dbr);
 	return double(timeObject->value);
@@ -348,17 +427,17 @@ STATE EPICSInterface::returnValueFromArgsAsState(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_enum*)(args.dbr);
 	return STATE(timeObject->value);
 }
 
-long EPICSInterface::returnValueFromArgsAslong(const event_handler_args args)
+long EPICSInterface::returnValueFromArgsAsLong(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_long*)(args.dbr);
 	return long(timeObject->value);
@@ -368,7 +447,7 @@ float EPICSInterface::returnValueFromArgsAsFloat(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_float*)(args.dbr);
 	return float(timeObject->value);
@@ -378,16 +457,106 @@ std::vector<double> EPICSInterface::returnValueFromArgsAsDoubleVector(const stru
 {
 	if (args.status != ECA_NORMAL)
 	{
-		std::cout << "Something went wrOng with the update functiOn!" << std::endl;
+		std::cout << "Something went wrong with the update function!" << std::endl;
 	}
 	auto timeObject = (const struct dbr_time_double*)(args.dbr);
 	size_t i = 0;
 	auto elementCount = ca_element_count(args.chid);
-	std::vector<double> rawVectorCOntainer(elementCount);
-	for (auto&& it : rawVectorCOntainer)
+	std::vector<double> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
 	{
 		it = *(&timeObject->value + i);
 		++i;
 	}
-	return rawVectorCOntainer;
+	return rawVectorContainer;
+}
+
+std::vector<int> EPICSInterface::returnValueFromArgsAsIntVector(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_long*)(args.dbr);
+	size_t i = 0;
+	auto elementCount = ca_element_count(args.chid);
+	std::vector<int> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
+	{
+		it = *(&timeObject->value + i);
+		++i;
+	}
+	return rawVectorContainer;
+}
+
+std::vector<float> EPICSInterface::returnValueFromArgsAsFloatVector(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_float*)(args.dbr);
+	size_t i = 0;
+	auto elementCount = ca_element_count(args.chid);
+	std::vector<float> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
+	{
+		it = *(&timeObject->value + i);
+		++i;
+	}
+	return rawVectorContainer;
+}
+
+std::vector<long> EPICSInterface::returnValueFromArgsAsLongVector(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_long*)(args.dbr);
+	size_t i = 0;
+	auto elementCount = ca_element_count(args.chid);
+	std::vector<long> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
+	{
+		it = *(&timeObject->value + i);
+		++i;
+	}
+	return rawVectorContainer;
+}
+
+std::vector<unsigned short> EPICSInterface::returnValueFromArgsAsEnumVector(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_enum*)(args.dbr);
+	size_t i = 0;
+	auto elementCount = ca_element_count(args.chid);
+	std::vector<unsigned short> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
+	{
+		it = *(&timeObject->value + i);
+		++i;
+	}
+	return rawVectorContainer;
+}
+
+std::vector<std::string> EPICSInterface::returnValueFromArgsAsStringVector(const event_handler_args args)
+{
+	if (args.status != ECA_NORMAL)
+	{
+		std::cout << "Something went wrong with the update function!" << std::endl;
+	}
+	auto timeObject = (const struct dbr_time_string*)(args.dbr);
+	size_t i = 0;
+	auto elementCount = ca_element_count(args.chid);
+	std::vector<std::string> rawVectorContainer(elementCount);
+	for (auto&& it : rawVectorContainer)
+	{
+		it = *(&timeObject->value + i);
+		++i;
+	}
+	return rawVectorContainer;
 }

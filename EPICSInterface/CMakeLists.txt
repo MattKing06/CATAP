@@ -7,7 +7,6 @@ set( SOURCE_FILES
     source/EPICSCameraInterface.cpp
     source/EPICSScreenInterface.cpp
     source/EPICSValveInterface.cpp
-    source/EPICSGeneralMonitorInterface.cpp
     source/EPICSIMGInterface.cpp
     source/EPICSLaserMirrorInterface.cpp
     source/EPICSLEDInterface.cpp
@@ -28,7 +27,6 @@ set( INCLUDE_FILES
     include/EPICSCameraInterface.h 
     include/EPICSScreenInterface.h 
     include/EPICSValveInterface.h
-    include/EPICSGeneralMonitorInterface.h
     include/EPICSIMGInterface.h
     include/EPICSLaserMirrorInterface.h
     include/EPICSLEDInterface.h
@@ -50,7 +48,6 @@ set( TEST_FILES
     EPICSScreenInterfaceTest.cpp
     EPICSCameraInterfaceTest.cpp
     EPICSValveInterfaceTest.cpp
-    EPICSGeneralMonitorInterfaceTest.cpp
     EPICSIMGInterfaceTest.cpp
     EPICSLaserMirrorInterfaceTest.cpp
     EPICSLEDInterfaceTest.cpp

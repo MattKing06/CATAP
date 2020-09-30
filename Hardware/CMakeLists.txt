@@ -7,7 +7,6 @@ set( SOURCE_FILES
     source/Camera.cpp
     source/Screen.cpp
     source/Valve.cpp
-    source/GeneralMonitor.cpp
     source/IMG.cpp
     source/LaserMirror.cpp
     source/LED.cpp
@@ -28,7 +27,6 @@ set( INCLUDE_FILES
     include/Camera.h
     include/Screen.h
     include/Valve.h
-    include/GeneralMonitor.h
     include/IMG.h
     include/LaserMirror.h
     include/LED.h
@@ -50,7 +48,6 @@ set( TEST_FILES
 	ChargeTest.cpp
 	ScreenTest.cpp
     ValveTest.cpp
-    GeneralMonitorTest.cpp
     IMGTest.cpp
     LaserMirrorTest.cpp
     LEDTest.cpp
