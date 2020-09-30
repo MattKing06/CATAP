@@ -14,7 +14,7 @@ before_script:
   - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
   - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   - ls
-  - sh ~/start_vm.sh
+  - script /dev/null && sh ~/start_vm.sh
 cmake:
   stage: cmake
   cache:
