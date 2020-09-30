@@ -46,7 +46,7 @@ tests:
     paths: 
       - build/*
   script:
-  - ~/start_vm.script
+  - /bin/bash ~/start_vm.script
   - cd build  
   - cd testBin
   - echo 'Running Tests..'
