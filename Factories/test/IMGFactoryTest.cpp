@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(start_test)
 BOOST_AUTO_TEST_CASE(img_factory_check_values_on_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: CHECK VALUES ON PRESSURE	------");
-	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
+	std::string testIMGName = "EBT-INJ-VAC-IMG-03";
 	if (status)
 	{
 		IMG test_IMG = imgFac.getIMG(testIMGName);

@@ -13,8 +13,8 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_get_pressure_test)
 	BOOST_TEST_MESSAGE("------	IMG INTERFACE: GET PRESSURE TEST	------");
 	EPICSIMGInterface epicsInterface = EPICSIMGInterface();
 	pvStruct setPV;
-	setPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
-	setPV.pvRecord = "P";
+	setPV.fullPVName = "VM-EBT-LLV-VAC-IMG-01";
+	setPV.pvRecord = "PRES";
 	epicsInterface.retrieveCHID(setPV);
 	epicsInterface.retrieveCHTYPE(setPV);
 	epicsInterface.retrieveCOUNT(setPV);
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	BOOST_TEST_MESSAGE("------	IMG INTERFACE: MONITOR CHANNEL TYPE TEST	------");
 	EPICSIMGInterface epicsInterface = EPICSIMGInterface();
 	pvStruct getPPV;
-	getPPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
+	getPPV.fullPVName = "VM-EBT-INJ-VAC-IMG-03";
 	getPPV.pvRecord = "P";
 	getPPV.monitor = true;
 	epicsInterface.retrieveCHID(getPPV);
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	epicsInterface.retrieveCOUNT(getPPV);
 
 	pvStruct getStaPV;
-	getStaPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
+	getStaPV.fullPVName = "VM-EBT-INJ-VAC-IMG-03";
 	getStaPV.pvRecord = "Sta";
 	getStaPV.monitor = true;
 	epicsInterface.retrieveCHID(getStaPV);
