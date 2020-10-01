@@ -154,4 +154,19 @@ namespace GlobalFunctions {
 		return false;
 	}
 
+
+	std::string replaceStrChar(std::string str, const std::string& replace, char ch)
+	{
+		// set our locator equal to the first appearance of any character in replace
+		size_t found = str.find_first_of(replace);
+
+		while (found != std::string::npos) // While our position in the sting is in range.
+		{
+			str[found] = ch; // Change the character at position.
+			found = str.find_first_of(replace, found + 1); // Relocate again.
+		}
+		return str; // return our new string.
+	}
+
+
 }

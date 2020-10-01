@@ -67,7 +67,10 @@ void EPICSInterface::attachTo_thisCaContext()
 		ca_attach_context(thisCaContext);
 	}
 }
-
+void EPICSInterface::detachFrom_thisCaContext()
+{
+	ca_detach_context();
+}
 void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
 {
 	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
@@ -158,6 +161,10 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		else if (ca_field_type(pvStruct.CHID) == DBR_INT)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_INT;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_CHAR)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_CHAR;
 		}
 		else
 		{

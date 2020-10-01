@@ -219,6 +219,23 @@ public:
 		return false;
 	}
 
+
+	template<typename T>
+	static bool putArrayValue(const pvStruct& pvStruct, const T& value)
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			int status = ca_array_put(pvStruct.CHTYPE, pvStruct.COUNT, pvStruct.CHID, &value);
+			MY_SEVCHK(status);
+			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			MY_SEVCHK(status);
+			return true;
+
+			// we should return true here if the put commadn got sent correctly 
+		}
+		return false;
+	}
+
 #endif
 protected:
 	/*! NOT IN USE */

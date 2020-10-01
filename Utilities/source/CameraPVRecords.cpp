@@ -45,6 +45,8 @@ namespace CameraRecords
 	std::string const CAM_Temperature_RBV = "CAM_Temperature_RBV";
 	std::string const HDF_FilePath = "HDF_FilePath";
 	std::string const HDF_FileName = "HDF_FileName";
+	std::string const HDF_FilePath_RBV = "HDF_FilePath_RBV";
+	std::string const HDF_FileName_RBV = "HDF_FileName_RBV";
 	std::string const HDF_FileNumber = "HDF_FileNumber";
 	std::string const HDF_WriteFile = "HDF_WriteFile";
 	std::string const CAM_Acquire = "CAM_Acquire";
@@ -118,6 +120,8 @@ CAM_Temperature_RBV,
 HDF_FilePath,
 HDF_FileName ,
 HDF_FileNumber,
+HDF_FileName_RBV ,
+HDF_FilePath_RBV,
 HDF_WriteFile ,
 CAM_Acquire ,
 HDF_Capture ,

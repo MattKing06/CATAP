@@ -58,14 +58,11 @@ cam_type(TYPE::UNKNOWN_TYPE)
 		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
 		messenger.printDebugMessage(hardwareName, " added aliase " + name);
 	}
-
 	// add cmaera type 
 	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramMap.at("CAM_TYPE")))
 	{
 		cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
 	}
-
-
 }
 
 Camera::Camera(const Camera& copyCamera):
@@ -83,12 +80,10 @@ void Camera::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		//messenger.printDebugMessage("Constructing PV information for ", record);
-
 		/*TODO
 		  This should be put into some general function: generateVirtualPV(PV) or something...
 		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
@@ -465,21 +460,91 @@ STATE Camera::getAnalysisState( )const
 
 bool Camera::captureAndSave(size_t num_shots)
 {
+	if (isNotAcquiring())
+	{
+		return false;
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " collectAndSave passed num_shots = ", num_shots);
+		/*
+			kill any finished threads
+		*/
+		killFinishedImageCollectThread();
+		messenger.printDebugMessage("killFinishedImageCollectThreads fin");
 
+		messenger.printDebugMessage(" exists in imageCollectStructs");
 
+		if (image_capture.thread == nullptr)
+		{
+			messenger.printDebugMessage(" is not busy");
+
+			if (num_shots <= max_shots_number)
+			{
+				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
+
+				image_capture.is_busy= true;
+				image_capture.status = STATE::CAPTURING;
+				image_capture.num_shots = num_shots;
+				image_capture.cam = this;
+				image_capture.thread
+					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
+				GlobalFunctions::pause_500();
+				messenger.printDebugMessage("new imageCollectStruct created and running");
+
+				return true;
+			}
+			else
+			{
+				messenger.printDebugMessage("!!ERROR!! Requested number of camera images too large. Please set to be less than or equal to ",
+					max_shots_number);
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " imageCollectStructs is busy ");
+		}
+	}
+	return false;
+}
+
+void Camera::killFinishedImageCollectThread()
+{
+	messenger.printDebugMessage("killFinishedImageCollectThreads");
+	if (image_capture.is_busy)
+	{
+		messenger.printDebugMessage(hardwareName, " ImageCapture is busy");
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " ImageCapture is NOT busy");
+		if (image_capture.thread)
+		{
+			messenger.printDebugMessage(hardwareName, " thread is not nullptr, can delete");
+			/*
+				join before deleting...
+				http://stackoverflow.com/questions/25397874/deleting-stdthread-pointer-raises-exception-libcabi-dylib-terminating
+			*/
+			image_capture.thread->join();
+			delete image_capture.thread;
+			image_capture.thread = nullptr;
+		}
+	}
 }
 
 void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
 {
 	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
-	ic.cam->epicsInterface->attachTo_thisCAContext();
-	ic.cam->imageCaptureAndSave(ics.num_shots);
-	ic.cam->epicsInterface->detachFrom_thisCAContext();
-	ic.cam->message("staticEntryImageCollectAndSave complete");
+	ic.cam->epicsInterface->attachTo_thisCaContext();
+	ic.cam->imageCaptureAndSave(ic.num_shots);
+	ic.cam->epicsInterface->detachFrom_thisCaContext();
+	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
 }
 
 void Camera::imageCaptureAndSave(size_t num_shots)
 {
+	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
+	bool timed_out = false;
 	if (setNumberOfShotsToCapture(num_shots))
 	{
 		messenger.printDebugMessage(hardwareName, " Set number of shots success");
@@ -487,46 +552,76 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 		{
 			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
 			GlobalFunctions::pause_500();
-
 			// add a time out here
-
+			time_t wait_time = num_shots * 10 + 5; // MAGIC numbers 
+			time_t time_start = GlobalFunctions::timeNow();
 			while (isCapturing())   //wait until collecting is done...
 			{
 				GlobalFunctions::pause_50(); //MAGIC_NUMBER
 				messenger.printDebugMessage(hardwareName, " isCapturing is TRUE");
-			}
-
-			if (makeANewDirectoryAndName(num_shots))
-			{
-				GlobalFunctions::pause_500();
-				GlobalFunctions::pause_500();
-				messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
-				if (write())
+				/* check if time ran out */
+				if (GlobalFunctions::timeNow() - time_start > wait_time)
 				{
-					//message("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
-					while (isWriting())   //wait until saving is done...
-					{
-						GlobalFunctions::pause_50(); //MAGIC_NUMBER
-					}
-					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
-					// pause and wait for EPICS to UPDATE
+					timed_out = true;
+				}
+			}
+			if (timed_out)
+			{
+				messenger.printDebugMessage(hardwareName," timed out during capture");
+				image_capture.status = STATE::TIMEOUT;
+				image_capture.is_busy = false;
+			}
+			else
+			{
+				if (makeANewDirectoryAndName(num_shots))
+				{
 					GlobalFunctions::pause_500();
 					GlobalFunctions::pause_500();
-					///check status of save/write
-					if (write_state_check.second == STATE::WRITE_CHECK_OK)
+					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
+					if (write())
 					{
-						last_capture_and_save_success = true;//this->message("Successful wrote image to disk.");
+						//message("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
+						while (isWriting())   //wait until saving is done...
+						{
+							GlobalFunctions::pause_50(); //MAGIC_NUMBER
+						}
+						messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
+						// pause and wait for EPICS to UPDATE
+						GlobalFunctions::pause_500();
+						GlobalFunctions::pause_500();
+						///check status of save/write
+						if (write_state_check.second == STATE::WRITE_CHECK_OK)
+						{
+							last_capture_and_save_success = true;//this->message("Successful wrote image to disk.");
+							image_capture.status = STATE::SUCCESS;
+						}
+						else
+						{
+							messenger.printDebugMessage("!!SAVE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
+							last_capture_and_save_success = false;
+							image_capture.status = STATE::WRITE_CHECK_ERROR;
+						}
+						busy = false;
+						image_capture.is_busy = false;
 					}
 					else
 					{
-						messenger.printDebugMessage("!!SAVE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
-						last_capture_and_save_success = false;
+						messenger.printDebugMessage(hardwareName, " write returned false.");
 					}
-					busy = false;
+				}
+				else
+				{
+					messenger.printDebugMessage(hardwareName, " makeANewDirectoryAndName returned false.");
 				}
 			}
+
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " setNumberOfShotsToCapture returned false."); 
+	}
+
 }
 //-------------------------------------------------------------------------------------------------------
 bool Camera::setNumberOfShotsToCapture(size_t num)
@@ -592,11 +687,35 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 
 	char  newName[256] = "defaultname";
 	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
-	strcpy(newName, strName.c_str());
+	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
+	//strcpy(newName, strName.c_str()); 
 	messenger.printDebugMessage("File Directory would be: ",newPath);
 	messenger.printDebugMessage("File name is: ", newName);
 
-	//ca_array_put(camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHTYPE,
+
+	//ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FileName), newName);
+	//if (ans)
+	//{
+		ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FilePath), newPath);
+
+		if (ans)
+		{
+			requested_directory = newPath;
+			requested_filename  = newName;
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " Failed to send new filepath");
+		}
+
+
+	//}
+	//else
+	//{
+	//	messenger.printDebugMessage(hardwareName," Failed to send new filename");
+	//}
+
+	//putArrayValue(camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHTYPE,
 	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).COUNT,
 	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHID,
 	//	&newName);
@@ -615,8 +734,8 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	//	allCamData.at(camera.name).daq.latestDirectory = newPath;
 	//	allCamData.at(camera.name).daq.latestFilename = newName;
 
-	//	message("New latestDirectory set to ", newPath, " on ", camera.name, " camera.");
-	//	message("New latestFilename set to  ", newName, " on ", camera.name, " camera.");
+	//message("New latestDirectory set to ", latest_directory, " on ", camera.name, " camera.");
+	//message("New latestFilename set to  ", latest_filename, " on ", camera.name, " camera.");
 	//}
 
 	return ans;

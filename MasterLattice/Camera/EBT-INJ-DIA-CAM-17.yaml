@@ -46,6 +46,8 @@ controls_information:
         HDF_FilePath    : EBT-INJ-DIA-CAM-17:HDF:FilePath
         HDF_FileName    : EBT-INJ-DIA-CAM-17:HDF:FileName
         HDF_FileNumber    : EBT-INJ-DIA-CAM-17:HDF:FileNumber
+        HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-17:HDF:FilePath_RBV
+        HDF_FileName_RBV    : EBT-INJ-DIA-CAM-17:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-17:HDF:WriteFile
         CAM_Acquire    : EBT-INJ-DIA-CAM-17:CAM:Acquire
         CAM_Acquire    : EBT-INJ-DIA-CAM-17:CAM:Acquire

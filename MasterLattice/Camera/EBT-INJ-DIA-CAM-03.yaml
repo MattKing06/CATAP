@@ -45,6 +45,8 @@ controls_information:
         CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-03:CAM:Temperature_RBV
         HDF_FilePath    : EBT-INJ-DIA-CAM-03:HDF:FilePath
         HDF_FileName    : EBT-INJ-DIA-CAM-03:HDF:FileName
+        HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-03:HDF:FilePath_RBV
+        HDF_FileName_RBV    : EBT-INJ-DIA-CAM-03:HDF:FileName_RBV
         HDF_FileNumber    : EBT-INJ-DIA-CAM-03:HDF:FileNumber
         HDF_WriteFile    : EBT-INJ-DIA-CAM-03:HDF:WriteFile
         CAM_Acquire    : EBT-INJ-DIA-CAM-03:CAM:Acquire

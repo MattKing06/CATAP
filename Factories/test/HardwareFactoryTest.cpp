@@ -69,5 +69,16 @@ BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)
 	hardwareFactory.debugMessagesOn();
 }
 
+BOOST_AUTO_TEST_CASE(setting_up_camera_factory_print_names)
+{
+	HardwareFactory hardwareFactory(STATE::PHYSICAL);
+
+	CameraFactory& camFactory = hardwareFactory.getCameraFactory();
+
+	for (auto&& item : camFactory.getCameraNames())
+	{
+		camFactory.messenger.printDebugMessage("Camera Object name : " + item);
+	}
+}
 
 

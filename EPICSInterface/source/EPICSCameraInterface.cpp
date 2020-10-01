@@ -34,6 +34,14 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 		pvStruct.updateFunction = this->update_HDF_WriteMessage;
 	}
+	else if (pvStruct.pvRecord == HDF_FileName_RBV)
+	{
+		pvStruct.updateFunction = this->update_HDF_FileName_RBV;
+	}
+	else if (pvStruct.pvRecord == HDF_FilePath_RBV)
+	{
+		pvStruct.updateFunction = this->update_HDF_FilePath_RBV;
+	}
 	else if (pvStruct.pvRecord == HDF_NumCaptured_RBV)
 	{
 		pvStruct.updateFunction = this->update_HDF_NumCaptured_RBV;
@@ -229,13 +237,15 @@ void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_ar
 	for(int i = 0; i != 256; ++i)
 	{
 		dummy_char[i] = value[i];
+		//std::cout << (int)value[i] << std::endl;
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->write_error_message.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, "update_HDF_WriteMessage (write_error_message) = ", recastCamera->write_error_message.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteMessage (write_error_message) = ", recastCamera->write_error_message.second);
 }
 void EPICSCameraInterface::update_HDF_NumCaptured_RBV(const struct event_handler_args args)
 {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
 }
 void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_args args)
@@ -268,33 +278,43 @@ void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_arg
 }
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
 }
 void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
 {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
 }
 void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args) 
 {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_MAGICK_WriteFile_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_MAGICK_WriteStatus ");
 }
 
 void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_MAGICK_WriteMessage ");
 }
 
 void EPICSCameraInterface::update_MAGICK_Capture_RBV(const struct event_handler_args args) {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
 }
 
 void EPICSCameraInterface::update_MAGICK_NumCapture_RBV(const struct event_handler_args args) {
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
 }
 void EPICSCameraInterface::update_ANA_StepSize_RBV(const struct event_handler_args args) {
+
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
 	//messenger.printDebugMessage("update_ANA_StepSize_RBV ");
 	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 }
@@ -476,3 +496,43 @@ void EPICSCameraInterface::update_ANA_UseNPoint(const struct event_handler_args 
 	messenger.printDebugMessage("update_ANA_UseNPoint");
 }
 
+void EPICSCameraInterface::update_HDF_FilePath_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FilePath_RBV");
+	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
+	recastCamera->save_filepath.first = new_data->stamp;
+	const dbr_char_t* value;
+	value = &new_data->value;
+	//std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	// char array must have a const size (defined at compile time (or we use an array on the heap with new and delete)
+	char dummy_char[256]; // MAGIC NUMBER
+	for (int i = 0; i != 256; ++i)
+	{
+		dummy_char[i] = (char)value[i];
+		//std::cout << (int)value[i] << std::endl;
+	}
+	std::string dummy_string(dummy_char);
+	recastCamera->save_filepath.second = dummy_string;
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FilePath_RBV = ", recastCamera->save_filepath.second);
+}
+
+void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
+	recastCamera->save_filename.first = new_data->stamp;
+	const dbr_char_t* value;
+	value = &new_data->value;
+	//std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	// char array must have a const size (defined at compile time (or we use an array on the heap with new and delete)
+	char dummy_char[256]; // MAGIC NUMBER
+	for (int i = 0; i != 256; ++i)
+	{
+		dummy_char[i] = (char)value[i];
+	}
+	std::string dummy_string(dummy_char);
+	recastCamera->save_filename.second = dummy_string;
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ", recastCamera->save_filename.second);
+}

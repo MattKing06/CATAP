@@ -4,6 +4,7 @@
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
+#include <algorithm>
 
 CameraFactory::CameraFactory()
 {
@@ -15,7 +16,49 @@ CameraFactory::CameraFactory(STATE mode) :
 	reader(ConfigReader("Camera", mode)),
 	messenger(LoggingSystem(true, true)),
 	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
-	dummy_cam(Camera())
+	dummy_cam(Camera()),
+	cam_monitor_records{ CameraRecords::HDF_WriteFile_RBV,
+		CameraRecords::HDF_WriteStatus,
+		CameraRecords::HDF_WriteMessage,
+		CameraRecords::HDF_FilePath_RBV,
+		CameraRecords::HDF_FileName_RBV,
+		CameraRecords::HDF_NumCaptured_RBV,
+		CameraRecords::HDF_Capture_RBV,
+		CameraRecords::CAM_Acquire_RBV,
+		CameraRecords::HDF_NumCapture_RBV,
+		CameraRecords::MAGICK_NumCaptured_RBV,
+		CameraRecords::MAGICK_WriteFile_RBV,
+		CameraRecords::MAGICK_WriteStatus,
+		CameraRecords::MAGICK_WriteMessage,
+		CameraRecords::MAGICK_Capture_RBV,
+		CameraRecords::MAGICK_NumCapture_RBV,
+		CameraRecords::ANA_StepSize_RBV,
+		CameraRecords::ANA_EnableCallbacks_RBV,
+		CameraRecords::ANA_X_RBV,
+		CameraRecords::ANA_Y_RBV,
+		CameraRecords::ANA_SigmaX_RBV,
+		CameraRecords::ANA_SigmaY_RBV,
+		CameraRecords::ANA_CovXY_RBV,
+		CameraRecords::ANA_AvgIntensity_RBV,
+		CameraRecords::ANA_Intensity_RBV,
+		CameraRecords::ANA_XPix_RBV,
+		CameraRecords::ANA_YPix_RBV,
+		CameraRecords::ANA_SigmaXPix_RBV,
+		CameraRecords::ANA_SigmaYPix_RBV,
+		CameraRecords::ANA_CovXYPix_RBV,
+		CameraRecords::ANA_PixelResults_RBV,
+		CameraRecords::ANA_MaskXCenter_RBV,
+		CameraRecords::ANA_MaskYCenter_RBV,
+		CameraRecords::ANA_MaskXRad_RBV,
+		CameraRecords::ANA_MaskYRad_RBV,
+		CameraRecords::ANA_CenterX_RBV,
+		CameraRecords::ANA_CenterY_RBV,
+		CameraRecords::ANA_PixMM_RBV,
+		CameraRecords::CAM_AcquireTime_RBV,
+		CameraRecords::CAM_AcquirePeriod_RBV,
+		CameraRecords::CAM_ArrayRate_RBV,
+		CameraRecords::CAM_Temperature_RBV,
+		CameraRecords::ANA_UseNPoint }
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
@@ -93,17 +136,14 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	
 	for (auto& item : camera_map)
 	{
-		messenger.printDebugMessage("setting up, " + item.first, item.second.getHardwareName());
+		std::string name(item.second.getHardwareName());
+		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
 		
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
-
-
 		
-
-
 		for (auto& pv : pvstruct)
 		{
 			// sets the monitor state in the pvstruict to true or false
@@ -115,14 +155,13 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				item.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read = ", std::to_string(ca_read_access(pv.second.CHID)),
-					"write = ", std::to_string(ca_write_access(pv.second.CHID)),
-					"state = ", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(item.second.getHardwareName()),
+				messenger.printDebugMessage(pv.second.pvRecord, ": r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
+					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
 					messenger.printDebugMessage("createSubscription");
 					item.second.epicsInterface->createSubscription(item.second, pv.second);
-					EPICSInterface::sendToEPICS();
 				}
 				else
 				{
@@ -134,6 +173,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				messenger.printMessage(item.first, " CANNOT CONNECT TO EPICS");
 			}
 		}
+		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
@@ -141,55 +181,15 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
-	using namespace CameraRecords;
-	std::vector<std::string> cam_monitor_records{ HDF_WriteFile_RBV,
-		HDF_WriteStatus,
-		HDF_WriteMessage,
-		HDF_NumCaptured_RBV,
-		HDF_Capture_RBV,
-		CAM_Acquire_RBV,
-		HDF_NumCapture_RBV,
-		MAGICK_NumCaptured_RBV,
-		MAGICK_WriteFile_RBV,
-		MAGICK_WriteStatus,
-		MAGICK_WriteMessage,
-		MAGICK_Capture_RBV,
-		MAGICK_NumCapture_RBV,
-		ANA_StepSize_RBV,
-		ANA_EnableCallbacks_RBV,
-		ANA_X_RBV,
-		ANA_Y_RBV,
-		ANA_SigmaX_RBV,
-		ANA_SigmaY_RBV,
-		ANA_CovXY_RBV,
-		ANA_AvgIntensity_RBV,
-		ANA_Intensity_RBV,
-		ANA_XPix_RBV,
-		ANA_YPix_RBV,
-		ANA_SigmaXPix_RBV,
-		ANA_SigmaYPix_RBV,
-		ANA_CovXYPix_RBV,
-		ANA_PixelResults_RBV,
-		ANA_MaskXCenter_RBV,
-		ANA_MaskYCenter_RBV,
-		ANA_MaskXRad_RBV,
-		ANA_MaskYRad_RBV,
-		ANA_CenterX_RBV,
-		ANA_CenterY_RBV,
-		ANA_PixMM_RBV,
-		CAM_AcquireTime_RBV,
-		CAM_AcquirePeriod_RBV,
-		CAM_ArrayRate_RBV,
-		CAM_Temperature_RBV,
-		ANA_UseNPoint };
-
 	if (std::find(cam_monitor_records.begin(), cam_monitor_records.end(), pvStruct.pvRecord) != cam_monitor_records.end())
 	{
 		pvStruct.monitor = true;
+		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = true");
 	}
 	else
 	{
 		pvStruct.monitor = false;
+		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = false ");
 	}
 }
 
@@ -931,7 +931,6 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 			}
 			else
 			{
-
 			}
 		}
 		// if should_erase is still true, erase object from  magnetMap

@@ -15,25 +15,31 @@
 
 
 class Camera;
+class ImageCapture;
 /*
 	Image collection and saving happens in a new thread,
 	this struct is passed to the new thread function
 */
 class ImageCapture
 {
-	ImageCapture() :
-		//camInterface(nullptr),
-		cam(nullptr),
-		thread(nullptr),
-		num_shots(0)
-	{}
-	/*
-		https://stackoverflow.com/questions/4937180/a-base-class-pointer-can-point-to-a-derived-class-object-why-is-the-vice-versa
-	*/
-	//cameraBase* camInterface;
-	Camera* cam;
-	std::thread*   thread;
-	size_t       num_shots;
+	public: 
+		ImageCapture() :
+			//camInterface(nullptr),
+			cam(nullptr),
+			thread(nullptr),
+			num_shots(0),
+			is_busy(false),
+			status(STATE::ERR)
+		{}
+		/*
+			https://stackoverflow.com/questions/4937180/a-base-class-pointer-can-point-to-a-derived-class-object-why-is-the-vice-versa
+		*/
+		//cameraBase* camInterface;
+		Camera* cam;
+		std::thread*   thread;
+		size_t       num_shots;
+		bool is_busy;
+		STATE status;
 };
 
 class EPICSCameraInterface;
@@ -265,6 +271,12 @@ protected:
 	///*! Write status check (did the last write operation succesfully complete). Value and epicstimestamp.	*/
 	//std::pair<epicsTimeStamp, STATE> write_error_message;
 
+	/*! Latest directory to write image data to. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::string> save_filepath;
+
+	/*! Latest filename to write image data to. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::string> save_filename;
+
 
 private:
 
@@ -277,7 +289,7 @@ private:
 
 
 	void imageCaptureAndSave(size_t num_shots);
-
+	void killFinishedImageCollectThread();
 
 	static void staticEntryImageCollectAndSave(ImageCapture& ic);
 
@@ -285,6 +297,12 @@ private:
 	double pix2mmY_ratio;
 
 	size_t max_shots_number;
+
+	ImageCapture image_capture;
+
+	std::string requested_directory;
+	std::string requested_filename;
+
 
 	// collect and save stuff 
 	//void captureAndSaveStaticEntry(size_t num_images);

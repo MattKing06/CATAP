@@ -29,7 +29,7 @@ namespace GlobalFunctions{
             We often check if entries exist in maps,
             use these functiOns to do it safely
             be careful to pick the correct One!
-        */
+    */
     template<class T>
     bool entryExists(const std::map<std::string, T>& m, const std::string& name)
     {
@@ -74,13 +74,11 @@ namespace GlobalFunctions{
 		{
 			if (std::abs(it1 - it2) < epsilon)
 			{
-
 			}
 			else
 			{
 				return false;
 			}
-
 		}
 		return true;
 	}
@@ -126,8 +124,8 @@ namespace GlobalFunctions{
 	//	double p = pow(UTL::TEN_DOUBLE, (double)n);
 	//	return std::round(a * p) / p;
 	//}
-
-	extern time_t timeNow();// { return time(nullptr); }
+	/* what time is is? */
+	extern time_t timeNow();
 
 	extern std::string getTimeAndDateString();
 
@@ -179,6 +177,7 @@ namespace GlobalFunctions{
 		return stream.str();
 	}
 
+	extern std::string replaceStrChar(std::string str, const std::string& replace, char ch);
 
 
 	extern void pause_x(std::chrono::milliseconds x);

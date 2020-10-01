@@ -45,6 +45,8 @@ controls_information:
         CAM_Temperature_RBV    : CLA-S01-DIA-CAM-01:CAM:Temperature_RBV
         HDF_FilePath    : CLA-S01-DIA-CAM-01:HDF:FilePath
         HDF_FileName    : CLA-S01-DIA-CAM-01:HDF:FileName
+        HDF_FilePath_RBV    : CLA-S01-DIA-CAM-01:HDF:FilePath_RBV
+        HDF_FileName_RBV    : CLA-S01-DIA-CAM-01:HDF:FileName_RBV
         HDF_FileNumber    : CLA-S01-DIA-CAM-01:HDF:FileNumber
         HDF_WriteFile    : CLA-S01-DIA-CAM-01:HDF:WriteFile
         CAM_Acquire    : CLA-S01-DIA-CAM-01:CAM:Acquire

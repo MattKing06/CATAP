@@ -152,9 +152,6 @@ public:
 	bool isMessagingOn();
 
 
-
-
-
 	/*! Flag to say whether the LLRFFactory setup function has been completed successfully.*/
 	bool hasBeenSetup; // PUBLIC as it is used by hardwarefactory, could make it a friend
 private:
@@ -174,7 +171,6 @@ private:
 		
 	std::map<std::string, Camera> camera_map;
 
-
 	std::vector<TYPE> machineAreas;
 
 	void updateAliasNameMap(const Camera& camera);
@@ -182,6 +178,8 @@ private:
 
 	// used when we need to return values from a requested camera name that does not exist 
 	Camera dummy_cam;
+
+	const std::vector<std::string> cam_monitor_records;
 
 };
 

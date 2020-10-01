@@ -66,6 +66,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 
 
+			.def("captureAndSave", &Camera::captureAndSave)
+
+
 			.def("startAcquiring", &Camera::startAcquiring)
 			.def("stopAcquiring", &Camera::stopAcquiring)
 			
