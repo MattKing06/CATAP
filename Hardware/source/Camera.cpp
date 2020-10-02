@@ -41,9 +41,7 @@ temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 cam_type(TYPE::UNKNOWN_TYPE)
 {
-
 	setPVStructs();
-
 	// TODO name_alias should be in harwdare constructor?? 
 	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
 	boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
@@ -62,6 +60,10 @@ cam_type(TYPE::UNKNOWN_TYPE)
 	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramMap.at("CAM_TYPE")))
 	{
 		cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!ERROR!! config file CAM_TYPE = ", paramMap.at("CAM_TYPE"));
 	}
 }
 
@@ -670,6 +672,11 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 {
 	bool ans = false;
 	
+	messenger.printDebugMessage("char: ", sizeof(char));
+	messenger.printDebugMessage("char: ", sizeof(char));
+	messenger.printDebugMessage("char: ", sizeof(char));
+	
+
 	//std::string time_now = GlobalFunctions::time_iso_8601();
 	
 	// this sets up the directory structure, based on year, month date
@@ -678,35 +685,96 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	tm local_tm = *localtime(&t);
 	//struct tm local_tm;
 	localtime_s(&local_tm, &t);
-	char  newPath[256] = "/CameraImages/";
+	char newPath[256] = "/CameraImages/";
 	std::string strPath = "/CameraImages/" +
 		std::to_string(local_tm.tm_year + 1900) +
 		"/" + std::to_string(local_tm.tm_mon + 1) +
 		"/" + std::to_string(local_tm.tm_mday) + "/";
 	strcpy(newPath, strPath.c_str());
 
-	char  newName[256] = "defaultname";
+	char newName[256] = "defaultname";
 	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
 	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
-	//strcpy(newName, strName.c_str()); 
+	strcpy(newName, strName.c_str()); 
 	messenger.printDebugMessage("File Directory would be: ",newPath);
 	messenger.printDebugMessage("File name is: ", newName);
+
+	std::stringstream s;
+	for (auto&& t: newPath)
+	{
+		s << static_cast<unsigned>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	s.clear();
+	for (auto&& t : newPath)
+	{
+		s << static_cast<signed>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+
+	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
+	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
+
+	if (ca_state(pvStructs.at(CameraRecords::HDF_FileName).CHID) == cs_conn)
+	{
+		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FileName).CHID, newName);
+		MY_SEVCHK(status);
+		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK(status);
+
+		if (status == ECA_NORMAL)
+		{
+
+			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
+			{
+				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FilePath).CHID, newPath);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+				if (status == ECA_NORMAL)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				messenger.printDebugMessage(hardwareName, " HDF_FilePath is not connected");
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
+		}
+
+
+	}
+	else
+	{ 
+		messenger.printDebugMessage(hardwareName, " HDF_FileName is not connected");
+	}
+
 
 
 	//ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FileName), newName);
 	//if (ans)
 	//{
-		ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FilePath), newPath);
-
-		if (ans)
-		{
-			requested_directory = newPath;
-			requested_filename  = newName;
-		}
-		else
-		{
-			messenger.printDebugMessage(hardwareName, " Failed to send new filepath");
-		}
+	//	ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FilePath), newPath);
+	//	if (ans)
+	//	{
+	//		requested_directory = newPath;
+	//		requested_filename = newName;
+	//	}
+	//	else
+	//	{
+	//		messenger.printDebugMessage(hardwareName, " Failed to send new filepath");
+	//	}
+	//}
+	//else
+	//{
+	//	messenger.printDebugMessage(hardwareName, " Failed to send new filename");
+	//}
 
 
 	//}
@@ -738,6 +806,7 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	//message("New latestFilename set to  ", latest_filename, " on ", camera.name, " camera.");
 	//}
 
+	//return true;
 	return ans;
 }
 
@@ -750,6 +819,8 @@ bool Camera::isNotWriting()const
 {
 	return write_state.second == STATE::NOT_WRITING;
 }
+
+
 
 
 
@@ -786,13 +857,13 @@ bool Camera::isNotCapturing()const
 	return getCaptureState() == STATE::NOT_CAPTURING;
 }
 
-std::vector<std::string> Camera::getAliases() const
+std::vector<std::string> Camera::getNameAliases() const
 {
 	return aliases;
 }
-boost::python::list Camera::getAliases_Py() const
+boost::python::list Camera::getNameAliases_Py() const
 {
-	return to_py_list<std::string>(getAliases());
+	return to_py_list<std::string>(getNameAliases());
 }
 
 std::string Camera::getScreen()const

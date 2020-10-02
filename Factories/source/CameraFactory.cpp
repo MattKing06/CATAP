@@ -836,20 +836,20 @@ boost::python::list CameraFactory::getScreenNames_Py(const std::string cam_name)
 }
 
 
-std::vector<std::string> CameraFactory::getAliases(const std::string cam_name) const
+std::vector<std::string> CameraFactory::getNameAliases(const std::string cam_name) const
 {
 	std::string full_name = getFullName(cam_name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getAliases();
+		return camera_map.at(full_name).getNameAliases();
 	}
 	return std::vector<std::string>{dummy_cam.getHardwareName()};
 }
 /*! get the name alises for this LLRF (python version)
 	@param[ou	return to_py_list<std::string>(getAliases(cam_name));t] names, python list containing all the alias names */
-boost::python::list CameraFactory::getAliases_Py(const std::string cam_name) const
+boost::python::list CameraFactory::getNameAliases_Py(const std::string cam_name) const
 {
-	return to_py_list<std::string>(getAliases(cam_name));
+	return to_py_list<std::string>(getNameAliases(cam_name));
 }
 
 

@@ -57,10 +57,10 @@ public:
 
 	/*! get the name alises for this Camera
 	@param[out] names, vector containing  all the alias names */
-	std::vector<std::string> getAliases() const;
+	std::vector<std::string> getNameAliases() const;
 	/*! get the name alises for this Camera (python version)
 		@param[out] names, python list containing all the alias names */
-	boost::python::list getAliases_Py() const;
+	boost::python::list getNameAliases_Py() const;
 	/*! get the screen name (and aliases) the camera is attached to 
 	@param[out] names, vector containing  all the screen names (and their aliases) */
 	std::vector<std::string> getScreenNames() const;
@@ -96,6 +96,7 @@ public:
 	double getpix2mmY()const;
 	double setpix2mmX(double value);
 	double setpix2mmY(double value);
+
 
 
 	double getX()const;
@@ -163,7 +164,7 @@ public:
 	bool isWriting()const;
 	bool isNotWriting()const;
 
-
+	/* after debugging move this to private */
 	bool makeANewDirectoryAndName(size_t numbOfShots);
 
 	size_t getBufferSize()const;

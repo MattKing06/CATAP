@@ -135,10 +135,10 @@ public:
 
 	/*! get the name alises for this 
 	@param[out] names, vector containing  all the alias names */
-	std::vector<std::string> getAliases(const std::string cam_name) const;
+	std::vector<std::string> getNameAliases(const std::string cam_name) const;
 	/*! get the name alises for this LLRF (python version)
 		@param[out] names, python list containing all the alias names */
-	boost::python::list getAliases_Py(const std::string cam_name) const;
+	boost::python::list getNameAliases_Py(const std::string cam_name) const;
 	
 	std::string getScreen(const std::string cam_name) const;
 	std::vector<std::string> getScreenNames(const std::string cam_name) const;

@@ -73,6 +73,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("stopAcquiring", &Camera::stopAcquiring)
 			
 			.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
+	
+			.def("getNameAliases", &Camera::getNameAliases_Py)
+			.def("getScreenNames", &Camera::getScreenNames_Py)
 
 
 
@@ -83,8 +86,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 
 			.def("getScreen", &Camera::getScreen)
-			.def("getScreenNames", &Camera::getScreenNames_Py)
-			.def("getAliases", &Camera::getAliases_Py)
 			.def("debugMessagesOff", &Camera::debugMessagesOff)
 			.def("messagesOn", &Camera::messagesOn)
 			.def("messagesOff", &Camera::messagesOff)
