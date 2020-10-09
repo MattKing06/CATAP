@@ -68,6 +68,9 @@ public:
     static void update_CAM_Temperature_RBV(const struct event_handler_args args);
     static void update_ANA_UseNPoint(const struct event_handler_args args);
 
+    static void update_HDFB_Buffer_FilePath(const struct event_handler_args args);
+
+
 
 
    //     void cameraBase::updateCamValue(const CAM_PV_TYPE pv, const std::string& objName,

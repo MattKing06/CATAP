@@ -857,13 +857,13 @@ bool Camera::isNotCapturing()const
 	return getCaptureState() == STATE::NOT_CAPTURING;
 }
 
-std::vector<std::string> Camera::getNameAliases() const
+std::vector<std::string> Camera::getAliases() const
 {
 	return aliases;
 }
-boost::python::list Camera::getNameAliases_Py() const
+boost::python::list Camera::getAliases_Py() const
 {
-	return to_py_list<std::string>(getNameAliases());
+	return to_py_list<std::string>(getAliases());
 }
 
 std::string Camera::getScreen()const

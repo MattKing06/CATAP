@@ -74,7 +74,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			
 			.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
 	
-			.def("getNameAliases", &Camera::getNameAliases_Py)
+			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 
 

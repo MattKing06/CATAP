@@ -841,7 +841,7 @@ std::vector<std::string> CameraFactory::getNameAliases(const std::string cam_nam
 	std::string full_name = getFullName(cam_name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getNameAliases();
+		return camera_map.at(full_name).getAliases();
 	}
 	return std::vector<std::string>{dummy_cam.getHardwareName()};
 }

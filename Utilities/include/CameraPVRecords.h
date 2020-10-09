@@ -9,6 +9,35 @@
 
 namespace CameraRecords
 {
+	extern std::string const HDFB_Buffer_Trigger;
+	extern std::string const HDFB_Buffer_FilePath;
+	extern std::string const HDFB_Buffer_FileName;
+	extern std::string const HDFB_Buffer_FileNumber;
+	extern std::string const ROI1_MinX_RBV;
+	extern std::string const ROI1_MinY_RBV;
+	extern std::string const ROI1_MinX;
+	extern std::string const ROI1_MinY;
+	extern std::string const ROI1_SizeX_RBV;
+	extern std::string const ROI1_SizeY_RBV;
+	extern std::string const ROI1_SizeX;
+	extern std::string const ROI1_SizeY;
+	extern std::string const ROI1_ImageData_RBV;
+	extern std::string const ROIandMask_SetX;
+	extern std::string const ROIandMask_SetY;
+	extern std::string const ROIandMask_SetXrad;
+	extern std::string const ROIandMask_SetYrad;
+	extern std::string const ANA_MaskXRad_RBV;
+	extern std::string const ANA_MaskYRad_RBV;
+	extern std::string const ANA_UseFloor;
+	extern std::string const ANA_FloorLevel;
+	extern std::string const ANA_FlooredPoints_RBV;
+	extern std::string const ANA_FlooredPercent_RBV;
+	extern std::string const ANA_CPU_RBV;
+	extern std::string const ANA_CPU_CropSubMask_RBV;
+	extern std::string const ANA_CPU_Npoint_RBV;
+	extern std::string const ANA_CPU_Dot_RBV;
+	extern std::string const ANA_PixW_RBV;
+	extern std::string const ANA_PixH_RBV;
 	extern std::string const HDF_WriteFile_RBV;
 	extern std::string const HDF_WriteStatus;
 	extern std::string const HDF_WriteMessage;
@@ -84,6 +113,9 @@ namespace CameraRecords
 	extern std::string const LED_On;
 
 	extern std::vector<std::string> cameraRecordList;
+
+	extern std::vector<std::string> cameraMonitorRecordsList;
+
 }
 
 namespace CameraState

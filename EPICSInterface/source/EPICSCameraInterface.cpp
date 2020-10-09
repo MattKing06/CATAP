@@ -484,7 +484,6 @@ void EPICSCameraInterface::update_CAM_AcquirePeriod_RBV(const struct event_handl
 void EPICSCameraInterface::update_CAM_ArrayRate_RBV(const struct event_handler_args args)
 {
 	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
-	
 	//messenger.printDebugMessage("update_CAM_ArrayRate_RBV");
 }
 void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler_args args)

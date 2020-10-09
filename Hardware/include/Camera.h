@@ -57,10 +57,10 @@ public:
 
 	/*! get the name alises for this Camera
 	@param[out] names, vector containing  all the alias names */
-	std::vector<std::string> getNameAliases() const;
+	std::vector<std::string> getAliases() const;
 	/*! get the name alises for this Camera (python version)
 		@param[out] names, python list containing all the alias names */
-	boost::python::list getNameAliases_Py() const;
+	boost::python::list getAliases_Py() const;
 	/*! get the screen name (and aliases) the camera is attached to 
 	@param[out] names, vector containing  all the screen names (and their aliases) */
 	std::vector<std::string> getScreenNames() const;

@@ -3,6 +3,36 @@
 
 namespace CameraRecords
 {
+	std::string const HDFB_Buffer_Trigger		  = "HDFB_Buffer_Trigger";
+	std::string const HDFB_Buffer_FilePath = "HDFB_Buffer_FilePath";
+	std::string const HDFB_Buffer_FileName = "HDFB_Buffer_FileName";
+	std::string const HDFB_Buffer_FileNumber = "HDFB_Buffer_FileNumber";
+	std::string const ROI1_MinX_RBV = "ROI1_MinX_RBV";
+	std::string const ROI1_MinY_RBV = "ROI1_MinY_RBV";
+	std::string const ROI1_MinX = "ROI1_MinX";
+	std::string const ROI1_MinY = "ROI1_MinY";
+	std::string const ROI1_SizeX_RBV = "ROI1_SizeX_RBV";
+	std::string const ROI1_SizeY_RBV = "ROI1_SizeY_RBV";
+	std::string const ROI1_SizeX = "ROI1_SizeX";
+	std::string const ROI1_SizeY = "ROI1_SizeY";
+	std::string const ROI1_ImageData_RBV = "ROI1_ImageData_RBV";
+	std::string const ROIandMask_SetX = "ROIandMask_SetX";
+	std::string const ROIandMask_SetY = "ROIandMask_SetY";
+	std::string const ROIandMask_SetXrad = "ROIandMask_SetXrad";
+	std::string const ROIandMask_SetYrad = "ROIandMask_SetYrad";
+	std::string const ANA_MaskXRad_RBV = "ANA_MaskXRad_RBV";
+	std::string const ANA_MaskYRad_RBV = "ANA_MaskYRad_RBV";
+	std::string const ANA_UseFloor = "ANA_UseFloor";
+	std::string const ANA_FloorLevel = "ANA_FloorLevel";
+	std::string const ANA_FlooredPoints_RBV = "ANA_FlooredPoints_RBV";
+	std::string const ANA_FlooredPercent_RBV = "ANA_FlooredPercent_RBV";
+	std::string const ANA_CPU_RBV = "ANA_CPU_RBV";
+	std::string const ANA_CPU_CropSubMask_RBV = "ANA_CPU_CropSubMask_RBV";
+	std::string const ANA_CPU_Npoint_RBV = "ANA_CPU_Npoint_RBV";
+	std::string const ANA_CPU_Dot_RBV = "ANA_CPU_Dot_RBV";
+	std::string const ANA_PixW_RBV = "ANA_PixW_RBV";
+	std::string const ANA_PixH_RBV = "ANA_PixH_RBV";
+
 	std::string const HDF_WriteFile_RBV = "HDF_WriteFile_RBV";
 	std::string const HDF_WriteStatus = "HDF_WriteStatus";
 	std::string const HDF_WriteMessage = "HDF_WriteMessage";
@@ -76,77 +106,155 @@ namespace CameraRecords
 	std::string const LED_On = "LED_On";
 
 	std::vector<std::string> cameraRecordList = { 
-HDF_WriteFile_RBV,
-HDF_WriteStatus,
-HDF_WriteMessage,
-HDF_NumCaptured_RBV,
-HDF_Capture_RBV,
-CAM_Acquire_RBV,
-HDF_NumCapture_RBV,
-MAGICK_NumCaptured_RBV,
-MAGICK_WriteFile_RBV,
-MAGICK_WriteStatus,
-MAGICK_WriteMessage,
-MAGICK_Capture_RBV,
-MAGICK_NumCapture_RBV,
-ANA_StepSize_RBV,
-ANA_EnableCallbacks_RBV,
-ANA_UseBkgrnd,
-ANA_UseNPoint,
-ANA_X_RBV,
-ANA_Y_RBV ,
-ANA_SigmaX_RBV,
-ANA_SigmaY_RBV,
-ANA_CovXY_RBV,
-ANA_AvgIntensity_RBV,
-ANA_Intensity_RBV,
-ANA_XPix_RBV,
-ANA_YPix_RBV,
-ANA_SigmaXPix_RBV,
-ANA_SigmaYPix_RBV,
-ANA_CovXYPix_RBV,
-ANA_PixelResults_RBV,
-ANA_MaskXCenter_RBV ,
-ANA_MaskYCenter_RBV ,
-ANA_MaskXRad_RBV,
-ANA_MaskYRad_RBV,
-ANA_CenterX_RBV ,
-ANA_CenterY_RBV,
-ANA_PixMM_RBV ,
-CAM_AcquireTime_RBV,
-CAM_AcquirePeriod_RBV,
-CAM_ArrayRate_RBV ,
-CAM_Temperature_RBV,
-HDF_FilePath,
-HDF_FileName ,
-HDF_FileNumber,
-HDF_FileName_RBV ,
-HDF_FilePath_RBV,
-HDF_WriteFile ,
-CAM_Acquire ,
-HDF_Capture ,
-HDF_NumCapture  ,
-MAGICK_FileName,
-MAGICK_FilePath,
-MAGICK_FileNumber,
-MAGICK_Capture  ,
-MAGICK_WriteFile ,
-MAGICK_NumCapture ,
-ANA_StepSize ,
-ANA_EnableCallbacks,
-ANA_NewBkgrnd ,
-ANA_UseNPoint ,
-CAM2_ArrayData ,
-ANA_MaskXCenter,
-ANA_MaskYCenter,
-ANA_MaskXRad,
-ANA_MaskYRad,
-ANA_CenterX ,
-ANA_CenterY ,
-ANA_PixMM ,
-LED_Sta,
-LED_Off,
-LED_On };                  
+	HDFB_Buffer_Trigger,
+	HDFB_Buffer_FilePath,
+	HDFB_Buffer_FileName,	
+	HDFB_Buffer_FileNumber,
+	ROI1_MinX_RBV,
+	ROI1_MinY_RBV,
+	ROI1_MinX,
+	ROI1_MinY,
+	ROI1_SizeX_RBV,
+	ROI1_SizeY_RBV,
+	ROI1_SizeX,
+	ROI1_SizeY,
+	ROI1_ImageData_RBV,
+	ROIandMask_SetX,
+	ROIandMask_SetY,
+	ROIandMask_SetXrad,
+	ROIandMask_SetYrad,
+	ANA_MaskXRad_RBV,
+	ANA_MaskYRad_RBV,
+	ANA_UseFloor, 
+	ANA_FloorLevel,
+	ANA_FlooredPoints_RBV,
+	ANA_FlooredPercent_RBV,
+	ANA_CPU_RBV,
+	ANA_CPU_CropSubMask_RBV,
+	ANA_CPU_Npoint_RBV,
+	ANA_CPU_Dot_RBV,
+	ANA_PixW_RBV,
+	ANA_PixH_RBV,
+	HDF_WriteFile_RBV,
+	HDF_WriteStatus,
+	HDF_WriteMessage,
+	HDF_NumCaptured_RBV,
+	HDF_Capture_RBV,
+	CAM_Acquire_RBV,
+	HDF_NumCapture_RBV,
+	MAGICK_NumCaptured_RBV,
+	MAGICK_WriteFile_RBV,
+	MAGICK_WriteStatus,
+	MAGICK_WriteMessage,
+	MAGICK_Capture_RBV,
+	MAGICK_NumCapture_RBV,
+	ANA_StepSize_RBV,
+	ANA_EnableCallbacks_RBV,
+	ANA_UseBkgrnd,
+	ANA_UseNPoint,
+	ANA_X_RBV,
+	ANA_Y_RBV ,
+	ANA_SigmaX_RBV,
+	ANA_SigmaY_RBV,
+	ANA_CovXY_RBV,
+	ANA_AvgIntensity_RBV,
+	ANA_Intensity_RBV,
+	ANA_XPix_RBV,
+	ANA_YPix_RBV,
+	ANA_SigmaXPix_RBV,
+	ANA_SigmaYPix_RBV,
+	ANA_CovXYPix_RBV,
+	ANA_PixelResults_RBV,
+	ANA_MaskXCenter_RBV ,
+	ANA_MaskYCenter_RBV ,
+	ANA_MaskXRad_RBV,
+	ANA_MaskYRad_RBV,
+	ANA_CenterX_RBV ,
+	ANA_CenterY_RBV,
+	ANA_PixMM_RBV ,
+	CAM_AcquireTime_RBV,
+	CAM_AcquirePeriod_RBV,
+	CAM_ArrayRate_RBV ,
+	CAM_Temperature_RBV,
+	HDF_FilePath,
+	HDF_FileName ,
+	HDF_FileNumber,
+	HDF_FileName_RBV ,
+	HDF_FilePath_RBV,
+	HDF_WriteFile ,
+	CAM_Acquire ,
+	HDF_Capture ,
+	HDF_NumCapture  ,
+	MAGICK_FileName,
+	MAGICK_FilePath,
+	MAGICK_FileNumber,
+	MAGICK_Capture  ,
+	MAGICK_WriteFile ,
+	MAGICK_NumCapture ,
+	ANA_StepSize ,
+	ANA_EnableCallbacks,
+	ANA_NewBkgrnd ,
+	ANA_UseNPoint ,
+	CAM2_ArrayData ,
+	ANA_MaskXCenter,
+	ANA_MaskYCenter,
+	ANA_MaskXRad,
+	ANA_MaskYRad,
+	ANA_CenterX ,
+	ANA_CenterY ,
+	ANA_PixMM ,
+	LED_Sta,
+	LED_Off,
+	LED_On };                  
+
+
+	std::vector<std::string> cameraMonitorRecordsList
+	{
+		HDF_WriteFile_RBV,
+		HDF_WriteStatus,
+		HDF_WriteMessage,
+		HDF_FilePath_RBV,
+		HDF_FileName_RBV,
+		HDF_NumCaptured_RBV,
+		HDF_Capture_RBV,
+		CAM_Acquire_RBV,
+		HDF_NumCapture_RBV,
+		MAGICK_NumCaptured_RBV,
+		MAGICK_WriteFile_RBV,
+		MAGICK_WriteStatus,
+		MAGICK_WriteMessage,
+		MAGICK_Capture_RBV,
+		MAGICK_NumCapture_RBV,
+		ANA_StepSize_RBV,
+		ANA_EnableCallbacks_RBV,
+		ANA_X_RBV,
+		ANA_Y_RBV,
+		ANA_SigmaX_RBV,
+		ANA_SigmaY_RBV,
+		ANA_CovXY_RBV,
+		ANA_AvgIntensity_RBV,
+		ANA_Intensity_RBV,
+		ANA_XPix_RBV,
+		ANA_YPix_RBV,
+		ANA_SigmaXPix_RBV,
+		ANA_SigmaYPix_RBV,
+		ANA_CovXYPix_RBV,
+		ANA_PixelResults_RBV,
+		ANA_MaskXCenter_RBV,
+		ANA_MaskYCenter_RBV,
+		ANA_MaskXRad_RBV,
+		ANA_MaskYRad_RBV,
+		ANA_CenterX_RBV,
+		ANA_CenterY_RBV,
+		ANA_PixMM_RBV,
+		CAM_AcquireTime_RBV,
+		CAM_AcquirePeriod_RBV,
+		CAM_ArrayRate_RBV,
+		CAM_Temperature_RBV,
+		ANA_UseNPoint
+
+
+	};
 
 };
 
