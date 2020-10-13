@@ -224,11 +224,36 @@ ScreenFactory& HardwareFactory::getScreenFactory()
 }
 
 
+
+
+
 CameraFactory& HardwareFactory::getCameraFactory()
 {
+	return getCameraFactory_Single(TYPE::ALL_VELA_CLARA);
+}
+CameraFactory& HardwareFactory::getCameraFactory_Single(const TYPE machineArea)
+{
+	const std::vector<TYPE> machineAreas{ machineArea };
+	return getCameraFactory_Mulitple(machineAreas);
+}
+CameraFactory& HardwareFactory::getCameraFactory_Mulitple_Py(const boost::python::list& machineAreas)
+{
+	return getCameraFactory_Mulitple(to_std_vector<TYPE>(machineAreas));
+}
+CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas)
+{
+	//messenger.printDebugMessage("");
+	//std::stringstream ss;
+	//ss << "getCameraFactory_Mulitple  passed machine areas = ";
+	//for (auto&& area : machineAreas)
+	//{
+	//	ss << ENUM_TO_STRING(area);
+	//	ss << ", ";
+	//}
+	//messenger.printDebugMessage(ss.str());
 	if (!cameraFactory.hasBeenSetup)
 	{
-		bool setup = cameraFactory.setup("nominal");
+		bool setup = cameraFactory.setup("nominal", machineAreas);
 		if (setup)
 		{
 			messenger.printMessage("getCameraFactory Complete");
@@ -241,6 +266,9 @@ CameraFactory& HardwareFactory::getCameraFactory()
 	}
 	return cameraFactory;
 }
+
+
+
 
 void HardwareFactory::debugMessagesOn()
 {

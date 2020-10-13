@@ -15,50 +15,8 @@ CameraFactory::CameraFactory(STATE mode) :
 	hasBeenSetup(false),
 	reader(ConfigReader("Camera", mode)),
 	messenger(LoggingSystem(true, true)),
-	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
-	dummy_cam(Camera()),
-	cam_monitor_records{ CameraRecords::HDF_WriteFile_RBV,
-		CameraRecords::HDF_WriteStatus,
-		CameraRecords::HDF_WriteMessage,
-		CameraRecords::HDF_FilePath_RBV,
-		CameraRecords::HDF_FileName_RBV,
-		CameraRecords::HDF_NumCaptured_RBV,
-		CameraRecords::HDF_Capture_RBV,
-		CameraRecords::CAM_Acquire_RBV,
-		CameraRecords::HDF_NumCapture_RBV,
-		CameraRecords::MAGICK_NumCaptured_RBV,
-		CameraRecords::MAGICK_WriteFile_RBV,
-		CameraRecords::MAGICK_WriteStatus,
-		CameraRecords::MAGICK_WriteMessage,
-		CameraRecords::MAGICK_Capture_RBV,
-		CameraRecords::MAGICK_NumCapture_RBV,
-		CameraRecords::ANA_StepSize_RBV,
-		CameraRecords::ANA_EnableCallbacks_RBV,
-		CameraRecords::ANA_X_RBV,
-		CameraRecords::ANA_Y_RBV,
-		CameraRecords::ANA_SigmaX_RBV,
-		CameraRecords::ANA_SigmaY_RBV,
-		CameraRecords::ANA_CovXY_RBV,
-		CameraRecords::ANA_AvgIntensity_RBV,
-		CameraRecords::ANA_Intensity_RBV,
-		CameraRecords::ANA_XPix_RBV,
-		CameraRecords::ANA_YPix_RBV,
-		CameraRecords::ANA_SigmaXPix_RBV,
-		CameraRecords::ANA_SigmaYPix_RBV,
-		CameraRecords::ANA_CovXYPix_RBV,
-		CameraRecords::ANA_PixelResults_RBV,
-		CameraRecords::ANA_MaskXCenter_RBV,
-		CameraRecords::ANA_MaskYCenter_RBV,
-		CameraRecords::ANA_MaskXRad_RBV,
-		CameraRecords::ANA_MaskYRad_RBV,
-		CameraRecords::ANA_CenterX_RBV,
-		CameraRecords::ANA_CenterY_RBV,
-		CameraRecords::ANA_PixMM_RBV,
-		CameraRecords::CAM_AcquireTime_RBV,
-		CameraRecords::CAM_AcquirePeriod_RBV,
-		CameraRecords::CAM_ArrayRate_RBV,
-		CameraRecords::CAM_Temperature_RBV,
-		CameraRecords::ANA_UseNPoint }
+	machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
+	dummy_cam(Camera())
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
@@ -68,7 +26,7 @@ CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
 	mode(copyFactory.mode),
 	messenger(copyFactory.messenger),
 	reader(copyFactory.reader),
-	machineAreas(machineAreas)
+	machineAreas(copyFactory.machineAreas)
 {
 }
 
@@ -80,15 +38,15 @@ CameraFactory::~CameraFactory()
 
 bool CameraFactory::setup()
 {
-	return setup(GlobalConstants::nominal, machineAreas);
+	return setup(GlobalConstants::nominal);
 }
 bool CameraFactory::setup(const std::string& version)
 {
-	return setup(version, machineAreas);
+	return setup(version);
 }
 bool CameraFactory::setup(TYPE machineArea)
 {
-	return setup(GlobalConstants::nominal, machineAreas);
+	return setup(GlobalConstants::nominal, machineArea);
 }
 bool CameraFactory::setup(const std::string& version, TYPE machineArea)
 {
@@ -108,7 +66,18 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
-	messenger.printDebugMessage("called Camera Factory setup ");
+	//machineAreas = machineAreas_IN;
+	//messenger.printDebugMessage("called Camera Factory setup  ");
+	//std::stringstream ss;
+	//ss << "machineAreas = ";
+	//for (auto&& area : machineAreas)
+	//{
+	//	ss << ENUM_TO_STRING(area);
+	//	ss << ", ";
+	//}
+	//messenger.printDebugMessage(ss.str());
+	//GlobalFunctions::pause_2000();
+
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
@@ -128,12 +97,9 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		return hasBeenSetup;
 	}
 	cutLHarwdareMapByMachineAreas();
-
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 
-
-	
 	for (auto& item : camera_map)
 	{
 		std::string name(item.second.getHardwareName());
@@ -155,12 +121,12 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				item.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(item.second.getHardwareName()),
+				//messenger.printDebugMessage(item.second.getHardwareName()),
 				messenger.printDebugMessage(pv.second.pvRecord, ": r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
 					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
-					messenger.printDebugMessage("createSubscription");
+					//messenger.printDebugMessage("createSubscription");
 					item.second.epicsInterface->createSubscription(item.second, pv.second);
 				}
 				else
@@ -178,10 +144,9 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
-
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
-	if (std::find(cam_monitor_records.begin(), cam_monitor_records.end(), pvStruct.pvRecord) != cam_monitor_records.end())
+	if (std::find(CameraRecords::cameraMonitorRecordsList.begin(), CameraRecords::cameraMonitorRecordsList.end(), pvStruct.pvRecord) != CameraRecords::cameraMonitorRecordsList.end())
 	{
 		pvStruct.monitor = true;
 		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = true");
@@ -192,8 +157,6 @@ void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = false ");
 	}
 }
-
-
 void CameraFactory::populateCameraMap()
 {
 	messenger.printDebugMessage("CameraFactory is populating the Camera object map");
@@ -204,7 +167,7 @@ void CameraFactory::populateCameraMap()
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		messenger.printDebugMessage("CameraFactory calling parseNextYamlFile");
+		//messenger.printDebugMessage("CameraFactory calling parseNextYamlFile");
 		reader.parseNextYamlFile(camera_map);
 	}
 	messenger.printDebugMessage("CameraFactory has finished populating "
@@ -222,9 +185,6 @@ void CameraFactory::setupChannels()
 		}
 	}
 }
-
-
-
 double CameraFactory::pix2mmX(const std::string& name, double value)const
 {
 	std::string full_name = getFullName(name);
@@ -298,8 +258,6 @@ double CameraFactory::setpix2mmY(const std::string& name, double value)
 	}
 	return GlobalConstants::double_min;
 }
-
-
 double CameraFactory::getX(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -648,7 +606,7 @@ bool CameraFactory::isNotAcquiring(const std::string& name) const
 }
 
 
-unsigned short CameraFactory::getMaskXCenter(const std::string& name)const
+long CameraFactory::getMaskXCenter(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -657,7 +615,7 @@ unsigned short CameraFactory::getMaskXCenter(const std::string& name)const
 	}
 	return GlobalConstants::ushort_min;
 }
-unsigned short CameraFactory::getMaskYCenter(const std::string& name)const
+long CameraFactory::getMaskYCenter(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -666,7 +624,7 @@ unsigned short CameraFactory::getMaskYCenter(const std::string& name)const
 	}
 	return GlobalConstants::ushort_min;
 }
-unsigned short CameraFactory::getMaskXRadius(const std::string& name)const
+long CameraFactory::getMaskXRadius(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -675,7 +633,7 @@ unsigned short CameraFactory::getMaskXRadius(const std::string& name)const
 	}
 	return GlobalConstants::ushort_min;
 }
-unsigned short CameraFactory::getMaskYRadius(const std::string& name)const
+long CameraFactory::getMaskYRadius(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -685,7 +643,7 @@ unsigned short CameraFactory::getMaskYRadius(const std::string& name)const
 	return GlobalConstants::ushort_min;
 }
 
-unsigned short CameraFactory::setMaskXCenter(const std::string& name, unsigned short val)
+long CameraFactory::setMaskXCenter(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -694,7 +652,7 @@ unsigned short CameraFactory::setMaskXCenter(const std::string& name, unsigned s
 	}
 	return GlobalConstants::ushort_min;
 }
-unsigned short CameraFactory::setMaskYCenter(const std::string& name, unsigned short val)
+long CameraFactory::setMaskYCenter(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -703,7 +661,7 @@ unsigned short CameraFactory::setMaskYCenter(const std::string& name, unsigned s
 	}
 	return GlobalConstants::ushort_min;
 }
-unsigned short CameraFactory::setMaskXRadius(const std::string& name, unsigned short val)
+long CameraFactory::setMaskXRadius(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -712,7 +670,7 @@ unsigned short CameraFactory::setMaskXRadius(const std::string& name, unsigned s
 	}
 	return GlobalConstants::ushort_min;
 }
-unsigned short CameraFactory::setMaskYRadius(const std::string& name, unsigned short val)
+long CameraFactory::setMaskYRadius(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
@@ -730,7 +688,6 @@ bool CameraFactory::startAnalysing(const std::string& name)
 	}
 	return false;
 }
-
 bool CameraFactory::stopAnalysing(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -740,7 +697,6 @@ bool CameraFactory::stopAnalysing(const std::string& name)
 	}
 	return false;
 }
-
 bool CameraFactory::isAnalysing(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -886,15 +842,10 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 	aliases.reserve(name_aliases.size() + screen_aliases.size());
 	aliases.insert(aliases.end(), name_aliases.begin(), name_aliases.end());
 	aliases.insert(aliases.end(), screen_aliases.begin(), screen_aliases.end());
-	
 	const char* const delim = ", ";
-
 	std::ostringstream imploded;
 	std::copy(aliases.begin(), aliases.end(),std::ostream_iterator<std::string>(imploded, delim));
-
 	messenger.printMessage("Aliases = ", imploded.str());
-
-
 	for (auto&& next_alias : aliases)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
@@ -911,6 +862,15 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 
 void CameraFactory::cutLHarwdareMapByMachineAreas()
 {
+	//std::stringstream ss;
+	//ss << "Cutting to areas in ";
+	//for(auto&& area : machineAreas)
+	//{
+	//	ss << ENUM_TO_STRING(area);
+	//	ss << ", ";
+	//}
+	//messenger.printDebugMessage(ss.str());
+		
 	size_t start_size = camera_map.size();
 	// loop over each magnet
 	for (auto it = camera_map.begin(); it != camera_map.end() /* not hoisted */; /* no increment */)
@@ -918,9 +878,7 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 		// flag for if we should erase this entry, default to true 
 		bool should_erase = true;
 		// now we loop over every area in machineAreas and checl against isInMachineArea
-
 		messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
-
 		for (auto&& machineArea : machineAreas)
 		{
 			// if this returns true then we should keep the LLRF and can break out the for loop 
@@ -973,6 +931,9 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 
 	size_t end_size = camera_map.size();
 	messenger.printDebugMessage("cutLHarwdareMapByMachineAreas camera_map.size() went from ", start_size, " to ", end_size);
+
+	GlobalFunctions::pause_2000();
+
 }
 
 

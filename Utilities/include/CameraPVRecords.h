@@ -11,8 +11,11 @@ namespace CameraRecords
 {
 	extern std::string const HDFB_Buffer_Trigger;
 	extern std::string const HDFB_Buffer_FilePath;
+	extern std::string const HDFB_Buffer_FilePath_RBV;
 	extern std::string const HDFB_Buffer_FileName;
+	extern std::string const HDFB_Buffer_FileName_RBV;
 	extern std::string const HDFB_Buffer_FileNumber;
+	extern std::string const HDFB_Buffer_FileNumber_RBV;
 	extern std::string const ROI1_MinX_RBV;
 	extern std::string const ROI1_MinY_RBV;
 	extern std::string const ROI1_MinX;
@@ -29,7 +32,9 @@ namespace CameraRecords
 	extern std::string const ANA_MaskXRad_RBV;
 	extern std::string const ANA_MaskYRad_RBV;
 	extern std::string const ANA_UseFloor;
+	extern std::string const ANA_UseFloor_RBV;
 	extern std::string const ANA_FloorLevel;
+	extern std::string const ANA_FloorLevel_RBV;
 	extern std::string const ANA_FlooredPoints_RBV;
 	extern std::string const ANA_FlooredPercent_RBV;
 	extern std::string const ANA_CPU_RBV;

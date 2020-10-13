@@ -212,7 +212,7 @@ bool Camera::setX(double value)
 {
 	if(mode == STATE::PHYSICAL)
 	{
-		return false;
+		return  false;
 	}
 	x_mm = std::make_pair(epicsTimeStamp(), value);
 	x_pix = std::make_pair(x_mm.first, mm2pixX(value));
@@ -258,6 +258,74 @@ bool Camera::setSigXY(double value)
 	sigma_xy_pix = std::make_pair(epicsTimeStamp(), mm2pixX(value));
 	return true;
 }
+
+bool Camera::setBufferTrigger()
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		char v = 1;
+		return epicsInterface->putValue2<char>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), v);
+	}
+	return false;
+}
+bool Camera::setBufferROIminX(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinX), v);
+	}
+	return false;
+}
+bool Camera::setBufferROIminY(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinY), v);
+	}
+	return false;
+}
+bool Camera::setBufferROIsizeX(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeX), v);
+	}
+	return false;
+}
+bool Camera::setBufferROIsizeY(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeY), v);
+	}
+	return false;
+}
+bool Camera::setUseFloor()
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_FloorLevel), GlobalConstants::one_ushort);
+	}
+	return false;
+}
+bool Camera::setDoNotUseFloor()
+{
+	if(mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_FloorLevel), GlobalConstants::zero_ushort);
+	}
+	return false;
+}
+bool Camera::setFLoorLevel(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_UseFloor), v);
+	}
+	return false;
+}
+
+
 
 //bool Camera::setXPix(double value)
 //{
@@ -325,38 +393,38 @@ bool Camera::setAvgIntensity(double value)
 }
 
 
-unsigned short Camera::getMaskXCenter()const
+long Camera::getMaskXCenter()const
 {
 	return mask_x_center.second;
 }
-unsigned short Camera::getMaskYCenter()const
+long Camera::getMaskYCenter()const
 {
 	return mask_y_center.second;
 }
-unsigned short Camera::getMaskXRadius()const
+long Camera::getMaskXRadius()const
 {
 	return mask_x_radius.second;
 }
-unsigned short Camera::getMaskYRadius()const
+long Camera::getMaskYRadius()const
 {
 	return mask_y_radius.second;
 }
 
-unsigned short Camera::setMaskXCenter(unsigned short val)
+long Camera::setMaskXCenter(long val)
 {
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskXCenter), val);
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXCenter), val);
 }
-unsigned short Camera::setMaskYCenter(unsigned short val)
+long Camera::setMaskYCenter(long val)
 {
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskYCenter), val);
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYCenter), val);
 }
-unsigned short Camera::setMaskXRadius(unsigned short val)
+long Camera::setMaskXRadius(long val)
 {
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskXRad), val);
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXRad), val);
 }
-unsigned short Camera::setMaskYRadius(unsigned short val)
+long Camera::setMaskYRadius(long val)
 {
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
 }
 boost::python::dict Camera::getRunningStats()const
 {
@@ -406,8 +474,6 @@ void Camera::clearBuffers()
 	sigma_xy_mm_rs.clearBuffer();
 }
 
-
-
 bool Camera::startAcquiring()
 {
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Acquire), GlobalConstants::one_ushort);
@@ -448,8 +514,6 @@ STATE Camera::getAnalysisState( )const
 {
 	return analysis_status.second;
 }
-
-
 //
 //  __   __             ___  __  ___               __      __             ___                  __   ___
 // /  ` /  \ |    |    |__  /  `  |      /\  |\ | |  \    /__`  /\  \  / |__     |  |\/|  /\  / _` |__
@@ -459,7 +523,6 @@ STATE Camera::getAnalysisState( )const
 //-------------------------------------------------------------------------------------------------------
 //
 //
-
 bool Camera::captureAndSave(size_t num_shots)
 {
 	if (isNotAcquiring())
@@ -474,13 +537,10 @@ bool Camera::captureAndSave(size_t num_shots)
 		*/
 		killFinishedImageCollectThread();
 		messenger.printDebugMessage("killFinishedImageCollectThreads fin");
-
 		messenger.printDebugMessage(" exists in imageCollectStructs");
-
 		if (image_capture.thread == nullptr)
 		{
 			messenger.printDebugMessage(" is not busy");
-
 			if (num_shots <= max_shots_number)
 			{
 				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
@@ -493,7 +553,6 @@ bool Camera::captureAndSave(size_t num_shots)
 					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
 				GlobalFunctions::pause_500();
 				messenger.printDebugMessage("new imageCollectStruct created and running");
-
 				return true;
 			}
 			else
@@ -819,14 +878,6 @@ bool Camera::isNotWriting()const
 {
 	return write_state.second == STATE::NOT_WRITING;
 }
-
-
-
-
-
-
-
-
 STATE Camera::getCaptureState()const
 {
 	return capture_state.second;
@@ -856,7 +907,6 @@ bool Camera::isNotCapturing()const
 	}
 	return getCaptureState() == STATE::NOT_CAPTURING;
 }
-
 std::vector<std::string> Camera::getAliases() const
 {
 	return aliases;
@@ -865,7 +915,6 @@ boost::python::list Camera::getAliases_Py() const
 {
 	return to_py_list<std::string>(getAliases());
 }
-
 std::string Camera::getScreen()const
 {
 	if (screen_names.size() > 0)
@@ -874,7 +923,6 @@ std::string Camera::getScreen()const
 	}
 	return "UNKNOWN";
 }
-
 std::vector<std::string> Camera::getScreenNames() const
 {
 	return screen_names;
@@ -883,6 +931,124 @@ boost::python::list Camera::getScreenNames_Py() const
 {
 	return to_py_list<std::string>(getScreenNames());
 }
+char Camera::getBufferTrigger()const
+{
+	return buffer_trigger.second;
+}
+std::string Camera::getBufferFilePath()const
+{
+	return buffer_filepath.second;
+}
+std::string Camera::getBufferFileName()const
+{
+	return buffer_filename.second;
+}
+long Camera::getBufferFileNumber()const
+{
+	return buffer_filenumber.second;
+}
+long Camera::getBufferROIminX()const
+{
+	return roi_min_x.second;
+}
+long Camera::getBufferROIminY()const
+{
+	return roi_min_y.second;
+}
+long Camera::getBufferROIsizeX()const
+{
+	return roi_size_x.second;
+}
+long Camera::getBufferROIsizeY()const
+{
+	return roi_size_y.second;
+}
+STATE Camera::getUseFloor()const
+{
+	return use_floor.second;
+}
+bool Camera::isUsingFloor()const
+{
+	return use_floor.second == STATE::USING_FLOOR;
+}
+bool Camera::isNotUsingFloor()const
+{
+	return use_floor.second == STATE::NOT_USING_FLOOR;
+}
+long Camera::getFLoorLevel()const
+{
+	return floor_level.second;
+}
+long Camera::getFLooredPtsCount()const
+{
+	return floored_pts_count.second;
+}
+long Camera::getFLooredPtsPercent()const
+{
+	return floored_pts_percent.second;
+}
+long Camera::getCPUTotal()const
+{
+	return cpu_total.second;
+}
+long Camera::getCPUCropSubMask()const
+{
+	return cpu_crop_sub_mask.second;
+}
+long Camera::getCPUNPoint()const
+{
+	return cpu_npoint.second;
+}
+long Camera::getCPUDot()const
+{
+	return cpu_dot.second;
+}
+long Camera::getPixelWidth()const
+{
+	return pixel_width.second;
+}
+long Camera::getPixelHeight()const
+{
+	return pixel_height.second;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Camera::debugMessagesOn()
 {

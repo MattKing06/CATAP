@@ -3,12 +3,15 @@
 
 namespace CameraRecords
 {
-	std::string const HDFB_Buffer_Trigger		  = "HDFB_Buffer_Trigger";
+	std::string const HDFB_Buffer_Trigger = "HDFB_Buffer_Trigger";
 	std::string const HDFB_Buffer_FilePath = "HDFB_Buffer_FilePath";
+	std::string const HDFB_Buffer_FilePath_RBV = "HDFB_Buffer_FilePath_RBV";
 	std::string const HDFB_Buffer_FileName = "HDFB_Buffer_FileName";
+	std::string const HDFB_Buffer_FileName_RBV = "HDFB_Buffer_FileName_RBV";
 	std::string const HDFB_Buffer_FileNumber = "HDFB_Buffer_FileNumber";
-	std::string const ROI1_MinX_RBV = "ROI1_MinX_RBV";
+	std::string const HDFB_Buffer_FileNumber_RBV = "HDFB_Buffer_FileNumber_RBV";
 	std::string const ROI1_MinY_RBV = "ROI1_MinY_RBV";
+	std::string const ROI1_MinX_RBV = "ROI1_MinX_RBV";
 	std::string const ROI1_MinX = "ROI1_MinX";
 	std::string const ROI1_MinY = "ROI1_MinY";
 	std::string const ROI1_SizeX_RBV = "ROI1_SizeX_RBV";
@@ -20,10 +23,10 @@ namespace CameraRecords
 	std::string const ROIandMask_SetY = "ROIandMask_SetY";
 	std::string const ROIandMask_SetXrad = "ROIandMask_SetXrad";
 	std::string const ROIandMask_SetYrad = "ROIandMask_SetYrad";
-	std::string const ANA_MaskXRad_RBV = "ANA_MaskXRad_RBV";
-	std::string const ANA_MaskYRad_RBV = "ANA_MaskYRad_RBV";
 	std::string const ANA_UseFloor = "ANA_UseFloor";
+	std::string const ANA_UseFloor_RBV = "ANA_UseFloor_RBV";
 	std::string const ANA_FloorLevel = "ANA_FloorLevel";
+	std::string const ANA_FloorLevel_RBV = "ANA_FloorLevel_RBV";
 	std::string const ANA_FlooredPoints_RBV = "ANA_FlooredPoints_RBV";
 	std::string const ANA_FlooredPercent_RBV = "ANA_FlooredPercent_RBV";
 	std::string const ANA_CPU_RBV = "ANA_CPU_RBV";
@@ -32,7 +35,6 @@ namespace CameraRecords
 	std::string const ANA_CPU_Dot_RBV = "ANA_CPU_Dot_RBV";
 	std::string const ANA_PixW_RBV = "ANA_PixW_RBV";
 	std::string const ANA_PixH_RBV = "ANA_PixH_RBV";
-
 	std::string const HDF_WriteFile_RBV = "HDF_WriteFile_RBV";
 	std::string const HDF_WriteStatus = "HDF_WriteStatus";
 	std::string const HDF_WriteMessage = "HDF_WriteMessage";
@@ -108,8 +110,11 @@ namespace CameraRecords
 	std::vector<std::string> cameraRecordList = { 
 	HDFB_Buffer_Trigger,
 	HDFB_Buffer_FilePath,
+	HDFB_Buffer_FilePath_RBV,
 	HDFB_Buffer_FileName,	
+	HDFB_Buffer_FileName_RBV,
 	HDFB_Buffer_FileNumber,
+	HDFB_Buffer_FileNumber_RBV,
 	ROI1_MinX_RBV,
 	ROI1_MinY_RBV,
 	ROI1_MinX,
@@ -123,10 +128,8 @@ namespace CameraRecords
 	ROIandMask_SetY,
 	ROIandMask_SetXrad,
 	ROIandMask_SetYrad,
-	ANA_MaskXRad_RBV,
-	ANA_MaskYRad_RBV,
-	ANA_UseFloor, 
-	ANA_FloorLevel,
+	ANA_UseFloor_RBV,
+	ANA_FloorLevel_RBV,
 	ANA_FlooredPoints_RBV,
 	ANA_FlooredPercent_RBV,
 	ANA_CPU_RBV,
@@ -210,6 +213,29 @@ namespace CameraRecords
 
 	std::vector<std::string> cameraMonitorRecordsList
 	{
+		HDFB_Buffer_Trigger,
+		HDFB_Buffer_FilePath_RBV,
+		HDFB_Buffer_FileName_RBV,
+		HDFB_Buffer_FileNumber_RBV,
+		ROI1_MinX_RBV,
+		ROI1_MinY_RBV,
+		ROI1_SizeX_RBV,
+		ROI1_SizeY_RBV,
+		ROI1_ImageData_RBV,
+		ROIandMask_SetX,
+		ROIandMask_SetY,
+		ROIandMask_SetXrad,
+		ROIandMask_SetYrad,
+		ANA_UseFloor_RBV,
+		ANA_FloorLevel_RBV,
+		ANA_FlooredPoints_RBV,
+		ANA_FlooredPercent_RBV,
+		ANA_CPU_RBV,
+		ANA_CPU_CropSubMask_RBV,
+		ANA_CPU_Npoint_RBV,
+		ANA_CPU_Dot_RBV,
+		ANA_PixW_RBV,
+		ANA_PixH_RBV,
 		HDF_WriteFile_RBV,
 		HDF_WriteStatus,
 		HDF_WriteMessage,

@@ -110,16 +110,52 @@ public:
 	double getSigYPix()const;
 	double getSigXYPix()const;
 
+
+	char getBufferTrigger()const;
+	std::string getBufferFilePath()const;
+	std::string getBufferFileName()const;
+	long getBufferFileNumber()const;
+	long getBufferROIminX()const;
+	long getBufferROIminY()const;
+	long getBufferROIsizeX()const;
+	long getBufferROIsizeY()const;
+	STATE getUseFloor()const;
+	bool isUsingFloor()const;
+	bool isNotUsingFloor()const;
+	long getFLoorLevel()const;
+	long getFLooredPtsCount()const;
+	long getFLooredPtsPercent()const;
+	long getCPUTotal()const;
+	long getCPUCropSubMask()const;
+	long getCPUNPoint()const;
+	long getCPUDot()const;
+	long getPixelWidth()const;
+	long getPixelHeight()const;
+
+	// THESE ARE JUST FOR ANLSYIS RESULTS WHEN USING THE VIRTUAL CLARA 
 	bool setX(double value);
 	bool setY(double value);
 	bool setSigX(double value);
 	bool setSigY(double value);
 	bool setSigXY(double value);
-	//bool setXPix(double value);
-	//bool setYPix(double value);
-	//bool setSigXPix(double value);
-	//bool setSigYPix(double value);
-	//bool setSigXYPix(double value);
+
+
+	bool setBufferTrigger();
+	bool setBufferROIminX(long v);
+	bool setBufferROIminY(long v);
+	bool setBufferROIsizeX(long v);
+	bool setBufferROIsizeY(long v);
+	bool setUseFloor();
+	bool setDoNotUseFloor();
+	bool setFLoorLevel(long v);
+
+
+
+
+
+
+
+
 
 	double getSumIntensity()const;
 	double getAvgIntensity()const;
@@ -132,15 +168,15 @@ public:
 	void messagesOff();
 
 
-	unsigned short getMaskXCenter()const;
-	unsigned short getMaskYCenter()const;
-	unsigned short getMaskXRadius()const;
-	unsigned short getMaskYRadius()const;
+	long getMaskXCenter()const;
+	long getMaskYCenter()const;
+	long getMaskXRadius()const;
+	long getMaskYRadius()const;
 
-	unsigned short setMaskXCenter(unsigned short val);
-	unsigned short setMaskYCenter(unsigned short val);
-	unsigned short setMaskXRadius(unsigned short val);
-	unsigned short setMaskYRadius(unsigned short val);
+	long setMaskXCenter(long val);
+	long setMaskYCenter(long val);
+	long setMaskXRadius(long val);
+	long setMaskYRadius(long val);
 	
 	
 	bool startAcquiring();
@@ -227,13 +263,13 @@ protected:
 	std::pair<epicsTimeStamp, double > avg_intensity;
 
 	/*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, unsigned short > mask_x_center;
+	std::pair<epicsTimeStamp, long> mask_x_center;
 	/*! analaysis mask center y position (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, unsigned short > mask_y_center;
+	std::pair<epicsTimeStamp, long> mask_y_center;
 	/*! analaysis mask center x radius (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, unsigned short > mask_x_radius;
+	std::pair<epicsTimeStamp, long> mask_x_radius;
 	/*! analaysis mask center y radius (pixels). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, unsigned short > mask_y_radius;
+	std::pair<epicsTimeStamp, long> mask_y_radius;
 	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_center;
 	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
@@ -255,10 +291,8 @@ protected:
 	std::pair<epicsTimeStamp, STATE> acquire_status;
 	/*! Analysis status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> analysis_status;
-
 	/*! Capture status (is the Cmaera "busy" capturing images). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> capture_state;
-
 
 	/*! Write status (is the camera writing or not writing data to disc). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> write_state;
@@ -269,14 +303,59 @@ protected:
 	/*! Write status error message (did the last write operation succesfully complete). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::string> write_error_message;
 
-	///*! Write status check (did the last write operation succesfully complete). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, STATE> write_error_message;
-
+	
 	/*! Latest directory to write image data to. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::string> save_filepath;
 
 	/*! Latest filename to write image data to. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::string> save_filename;
+		
+	/*! Camera circular buffer trigger PROC. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, char> buffer_trigger;
+	/*! Latest filepath to write camera buffer data to. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::string> buffer_filepath;
+	/*! Latest filename to write camera buffer data to. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::string> buffer_filename;
+	/*! Latest file number for camera buffer data to. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> buffer_filenumber;
+	/*! Rectangular ROI X corner, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_min_x;
+	/*! Rectangular ROI Y corner, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_min_y;
+	/*! Rectangular ROI X size, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_size_x;
+	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_size_y;
+	/*! ROI image data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
+	/*! Rectangular ROI AND Mask X centre. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double> roi_and_mask_centre_x; // MAY NOT NEED AS MONITORS
+	/*! Rectangular ROI AND Mask Y centre. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double> roi_and_mask_centre_y; // MAY NOT NEED AS MONITORS
+	/*! Rectangular ROI AND Mask X radius. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double> roi_and_mask_radius_x;
+	/*! Rectangular ROI AND Mask Y radius. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double> roi_and_mask_radius_y;
+	/*! Image analysis is floor being used or not. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> use_floor;
+	/*! Image analysis  Floor count level. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> floor_level;
+	/*! Number of points rejected by floor. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> floored_pts_count;
+	/*! Percentage of points rejected by floor. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double> floored_pts_percent;
+	/*! Total CPU usage (units??). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> cpu_total;
+	/*! CPU use by crop, subtract and mask (units??). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> cpu_crop_sub_mask;
+	/*! CPU use by NPoint analysis (units??). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> cpu_npoint;
+	/*! CPU use by dot product (units??). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> cpu_dot;
+	/*! Full Image width in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> pixel_width;
+	/*! Full Image height in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> pixel_height;
 
 
 private:

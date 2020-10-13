@@ -34,21 +34,34 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("BIPOLAR", TYPE::BIPOLAR)
 			.value("NR_GANGED", TYPE::NR_GANGED)
 			.value("POSITIVE_ONLY", TYPE::POSITIVE_ONLY)
+
+
+			.value("UNKNOWN_AREA", TYPE::UNKNOWN_AREA)
+			.value("ALL_VELA_CLARA", TYPE::ALL_VELA_CLARA)
+			.value("VELA_LASER", TYPE::VELA_LASER)
+			.value("CLARA_LASER", TYPE::CLARA_LASER)
 			.value("BA1", TYPE::BA1)
 			.value("BA2", TYPE::BA2)
 			.value("VELA", TYPE::VELA)
+			.value("INJ", TYPE::INJ)
 			.value("GUN", TYPE::GUN)
 			.value("S01", TYPE::S01)
 			.value("S02", TYPE::S02)
 			.value("C2V", TYPE::C2V)
-			.value("S01", TYPE::S01)
 			.value("L01", TYPE::L01)
+			.value("VELA_2_BA1", TYPE::VELA_2_BA1)
+			.value("VELA_2_BA1_BA2", TYPE::VELA_2_BA1_BA2)
+			.value("VELA_INJ", TYPE::VELA_INJ)
+			.value("VELA_GUN", TYPE::VELA_GUN)
+			.value("CLARA_GUN", TYPE::CLARA_GUN)
 			.value("HRRG_GUN", TYPE::HRRG_GUN)
 			.value("LRRG_GUN", TYPE::LRRG_GUN)
 			.value("CLARA_PH1", TYPE::CLARA_PH1)
 			.value("CLARA_2_BA1", TYPE::CLARA_2_BA1)
 			.value("CLARA_2_BA1_BA2", TYPE::CLARA_2_BA1_BA2)
-
+			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE)
+			.value("CLARA_CAMERA", TYPE::CLARA_CAMERA)
+			.value("VELA_CAMERA", TYPE::VELA_CAMERA)
 			;
 	}
 }

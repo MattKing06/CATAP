@@ -41,7 +41,13 @@ public:
 	ScreenFactory& getScreenFactory();
 	ValveFactory& getValveFactory();
 	IMGFactory& getIMGFactory();
+	
 	CameraFactory& getCameraFactory();
+	CameraFactory& getCameraFactory_Single(const TYPE machineArea);
+	CameraFactory& getCameraFactory_Mulitple_Py(const boost::python::list& machineAreas);
+	CameraFactory& getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas);
+
+
 	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);

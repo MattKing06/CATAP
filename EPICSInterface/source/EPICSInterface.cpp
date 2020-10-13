@@ -235,6 +235,15 @@ void EPICSInterface::updateTimeStampDoublePair(const struct event_handler_args& 
 	pairToUpdate.second = tv->value;
 }
 
+void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, long>& pairToUpdate)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+
 void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,
 	std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size)
 {
@@ -275,13 +284,6 @@ void EPICSInterface::updateTimeStampUShortPair(const struct event_handler_args& 
 }
 
 
-void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
-	std::pair<epicsTimeStamp, long>& pairToUpdate)
-{
-	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
-	pairToUpdate.first = tv->stamp;
-	pairToUpdate.second = tv->value;
-}
 
 void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate)
 {

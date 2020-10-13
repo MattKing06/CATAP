@@ -50,10 +50,16 @@ public:
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
-
+	/*! get the names of all the cameras in Factory 
+	@param[out] vector of strings, camera names*/
 	std::vector<std::string> getCameraNames();
+	/*! get the names of all the cameras in Factory, python version
+	@param[out] python list of strings, camera names*/
 	boost::python::list getCameraNames_Py();
 
+	/*! get a reference to a camera object 
+	@param[in] cam_name, name of camera object to return 
+	@param[out] camera object*/
 	Camera& getCamera(const std::string& cam_name);
 	
 
@@ -99,15 +105,25 @@ public:
 	bool setSumIntensity(const std::string& name, double value);
 	bool setAvgIntensity(const std::string& name, double value);
 
-	unsigned short getMaskXCenter(const std::string& name)const;
-	unsigned short getMaskYCenter(const std::string& name)const;
-	unsigned short getMaskXRadius(const std::string& name)const;
-	unsigned short getMaskYRadius(const std::string& name)const;
+	//unsigned short getMaskXCenter(const std::string& name)const;
+	//unsigned short getMaskYCenter(const std::string& name)const;
+	//unsigned short getMaskXRadius(const std::string& name)const;
+	//unsigned short getMaskYRadius(const std::string& name)const;
 
-	unsigned short setMaskXCenter(const std::string& name, unsigned short val);
-	unsigned short setMaskYCenter(const std::string& name, unsigned short val);
-	unsigned short setMaskXRadius(const std::string& name, unsigned short val);
-	unsigned short setMaskYRadius(const std::string& name, unsigned short val);
+	//unsigned short setMaskXCenter(const std::string& name, unsigned short val);
+	//unsigned short setMaskYCenter(const std::string& name, unsigned short val);
+	//unsigned short setMaskXRadius(const std::string& name, unsigned short val);
+	//unsigned short setMaskYRadius(const std::string& name, unsigned short val);
+
+	long getMaskXCenter(const std::string& name)const;
+	long getMaskYCenter(const std::string& name)const;
+	long getMaskXRadius(const std::string& name)const;
+	long getMaskYRadius(const std::string& name)const;
+	
+	long setMaskXCenter(const std::string& name, long val);
+	long setMaskYCenter(const std::string& name, long val);
+	long setMaskXRadius(const std::string& name, long val);
+	long setMaskYRadius(const std::string& name, long val);
 
 
 	bool stopAcquiring(const std::string& cam_name);
@@ -179,7 +195,7 @@ private:
 	// used when we need to return values from a requested camera name that does not exist 
 	Camera dummy_cam;
 
-	const std::vector<std::string> cam_monitor_records;
+	//const std::vector<std::string> cam_monitor_records;
 
 };
 

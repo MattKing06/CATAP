@@ -69,7 +69,29 @@ public:
     static void update_ANA_UseNPoint(const struct event_handler_args args);
 
     static void update_HDFB_Buffer_FilePath(const struct event_handler_args args);
-
+    static void update_HDFB_Buffer_Trigger(const struct event_handler_args args);
+    static void update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args);
+    static void update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args);
+    static void update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args);
+    static void update_ROI1_MinX_RBV(const struct event_handler_args args);
+    static void update_ROI1_MinY_RBV(const struct event_handler_args args);
+    static void update_ROI1_SizeX_RBV(const struct event_handler_args args);
+    static void update_ROI1_SizeY_RBV(const struct event_handler_args args);
+    static void update_ROI1_ImageData_RBV(const struct event_handler_args args);
+    static void update_ROIandMask_SetX(const struct event_handler_args args);
+    static void update_ROIandMask_SetY(const struct event_handler_args args);
+    static void update_ROIandMask_SetXrad(const struct event_handler_args args);
+    static void update_ROIandMask_SetYrad(const struct event_handler_args args);
+    static void update_ANA_UseFloor_RBV(const struct event_handler_args args);
+    static void update_ANA_FloorLevel_RBV(const struct event_handler_args args);
+    static void update_ANA_FlooredPoints_RBV(const struct event_handler_args args);
+    static void update_ANA_FlooredPercent_RBV(const struct event_handler_args args);
+    static void update_ANA_CPU_RBV(const struct event_handler_args args);
+    static void update_ANA_CPU_CropSubMask_RBV(const struct event_handler_args args);
+    static void update_ANA_CPU_Npoint_RBV(const struct event_handler_args args);
+    static void update_ANA_CPU_Dot_RBV(const struct event_handler_args args);
+    static void update_ANA_PixW_RBV(const struct event_handler_args args);
+    static void update_ANA_PixH_RBV(const struct event_handler_args args);
 
 
 

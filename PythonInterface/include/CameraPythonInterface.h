@@ -52,39 +52,51 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAvgIntensity", &Camera::getAvgIntensity)
 			.def("setSumIntensity", &Camera::setSumIntensity)
 			.def("setAvgIntensity", &Camera::setAvgIntensity)
-
 			.def("getMaskXCenter", &Camera::getMaskXCenter)
 			.def("getMaskYCenter", &Camera::getMaskYCenter)
 			.def("getMaskXRadius", &Camera::getMaskXRadius)
 			.def("getMaskYRadius", &Camera::getMaskYRadius)
-
-
 			.def("setMaskXCenter", &Camera::setMaskXCenter)
 			.def("setMaskYCenter", &Camera::setMaskYCenter)
 			.def("setMaskXRadius", &Camera::setMaskXRadius)
 			.def("setMaskYRadius", &Camera::setMaskYRadius)
-
-
-
+			.def("getBufferTrigger", &Camera::getBufferTrigger)
+			.def("getBufferFilePath", &Camera::getBufferFilePath)
+			.def("getBufferFileName", &Camera::getBufferFileName)
+			.def("getBufferFileNumber", &Camera::getBufferFileNumber)
+			.def("getBufferROIminX", &Camera::getBufferROIminX)
+			.def("getBufferROIminY", &Camera::getBufferROIminY)
+			.def("getBufferROIsizeX", &Camera::getBufferROIsizeX)
+			.def("getBufferROIsizeY", &Camera::getBufferROIsizeY)
+			.def("getUseFloor", &Camera::getUseFloor)
+			.def("isUsingFloor", &Camera::isUsingFloor)
+			.def("isNotUsingFloor", &Camera::isNotUsingFloor)
+			.def("getFLoorLevel", &Camera::getFLoorLevel)
+			.def("getFLooredPtsCount", &Camera::getFLooredPtsCount)
+			.def("getFLooredPtsPercent", &Camera::getFLooredPtsPercent)
+			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
+			.def("getCPUNPoint", &Camera::getCPUNPoint)
+			.def("getCPUDot", &Camera::getCPUDot)
+			.def("getPixelWidth", &Camera::getPixelWidth)
+			.def("getPixelHeight", &Camera::getPixelHeight)
+			.def("setBufferTrigger", &Camera::setBufferTrigger)
+			.def("setBufferROIminX", &Camera::setBufferROIminX)
+			.def("setBufferROIminY", &Camera::setBufferROIminY)
+			.def("setBufferROIsizeX", &Camera::setBufferROIsizeX)
+			.def("setBufferROIsizeY", &Camera::setBufferROIsizeY)
+			.def("setUseFloor", &Camera::setUseFloor)
+			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
+			.def("setFLoorLevel", &Camera::setFLoorLevel)
 			.def("captureAndSave", &Camera::captureAndSave)
-
-
 			.def("startAcquiring", &Camera::startAcquiring)
 			.def("stopAcquiring", &Camera::stopAcquiring)
-			
 			.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
-	
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
-
-
-
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setBufferSize)
 			.def("clearBuffers", &Camera::clearBuffers)
 			.def("getRunningStats", &Camera::getRunningStats)
-
-
 			.def("getScreen", &Camera::getScreen)
 			.def("debugMessagesOff", &Camera::debugMessagesOff)
 			.def("messagesOn", &Camera::messagesOn)
@@ -148,12 +160,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
 			.def("getAcquireState", &CameraFactory::getAcquireState)
 
-
-
 			.def("getRunningStats", &CameraFactory::getRunningStats)
 			.def("getAllRunningStats", &CameraFactory::getAllRunningStats)
-
-
 
 			.def("getMaskXCenter", &CameraFactory::getMaskXCenter)
 			.def("getMaskYCenter", &CameraFactory::getMaskYCenter)
@@ -172,8 +180,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 			.def("getAnalysisState", &CameraFactory::getAnalysisState)
 			.def("getAllAnalysisState", &CameraFactory::getAllAnalysisState_Py)
-
-
 
 			.def("debugMessagesOn", &CameraFactory::debugMessagesOn)
 			.def("debugMessagesOff", &CameraFactory::debugMessagesOff)
