@@ -66,7 +66,7 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
-	//machineAreas = machineAreas_IN;
+	machineAreas = machineAreas_IN;
 	//messenger.printDebugMessage("called Camera Factory setup  ");
 	//std::stringstream ss;
 	//ss << "machineAreas = ";
@@ -78,12 +78,12 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	//messenger.printDebugMessage(ss.str());
 	//GlobalFunctions::pause_2000();
 
-	if (hasBeenSetup)
+	if(hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
 		return true;
 	}
-	if (mode == STATE::VIRTUAL)
+	if(mode == STATE::VIRTUAL)
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
@@ -862,14 +862,14 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 
 void CameraFactory::cutLHarwdareMapByMachineAreas()
 {
-	//std::stringstream ss;
-	//ss << "Cutting to areas in ";
-	//for(auto&& area : machineAreas)
-	//{
-	//	ss << ENUM_TO_STRING(area);
-	//	ss << ", ";
-	//}
-	//messenger.printDebugMessage(ss.str());
+	std::stringstream ss;
+	ss << "Cutting to areas in ";
+	for(auto&& area : machineAreas)
+	{
+		ss << ENUM_TO_STRING(area);
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
 		
 	size_t start_size = camera_map.size();
 	// loop over each magnet

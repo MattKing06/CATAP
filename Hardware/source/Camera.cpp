@@ -29,17 +29,23 @@ sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 led_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 acquire_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 analysis_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
-mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
-mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
-mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
-x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
-y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::ushort_min)),
+mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-cam_type(TYPE::UNKNOWN_TYPE)
+cam_type(TYPE::UNKNOWN_TYPE),
+mask_and_roi_keywords({"x_pos", "y_pos", "x_size", "x_size"}),  //MAGIC STRING
+mask_keywords({"mask_x", "mask_y", "mask_rad_x", "mask_rad_y"}),//MAGIC STRING 
+roi_keywords({"roi_x", "roi_y", "roi_rad_x", "roi_rad_y"})     //MAGIC STRING
+//mask_and_roi_keywords_Py(to_py_list(mask_and_roi_keywords)),
+//mask_keywords_Py(to_py_list(mask_keywords)),
+//roi_keywords_Py(to_py_list(roi_keywords))
 {
 	setPVStructs();
 	// TODO name_alias should be in harwdare constructor?? 
@@ -65,10 +71,24 @@ cam_type(TYPE::UNKNOWN_TYPE)
 	{
 		messenger.printDebugMessage(hardwareName, " !!ERROR!! config file CAM_TYPE = ", paramMap.at("CAM_TYPE"));
 	}
+
+	//mask_and_roi_keywords = std::vector<std::string>{ "x_pos", "y_pos", "x_size", "x_size" };  //MAGIC STRING
+	//mask_keywords = std::vector<std::string>{ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" };//MAGIC STRING 
+	//roi_keywords = std::vector<std::string>{ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" };     //MAGIC STRING
+	mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
+	mask_keywords_Py = to_py_list(mask_keywords);
+	roi_keywords_Py = to_py_list(roi_keywords);
+
 }
 
 Camera::Camera(const Camera& copyCamera):
-Hardware(copyCamera)
+Hardware(copyCamera),
+mask_and_roi_keywords(copyCamera.mask_and_roi_keywords),
+mask_keywords(copyCamera.mask_keywords),
+roi_keywords(copyCamera.roi_keywords)
+//mask_and_roi_keywords_Py(copyCamera.mask_and_roi_keywords_Py),
+//mask_keywords_Py(copyCamera.mask_keywords_Py),
+//roi_keywords_Py(copyCamera.roi_keywords_Py)
 {
 }
 
@@ -393,6 +413,153 @@ bool Camera::setAvgIntensity(double value)
 }
 
 
+
+
+bool Camera::setMaskXCenter(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXCenter), val);
+}
+bool Camera::setMaskYCenter(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYCenter), val);
+}
+bool Camera::setMaskXRadius(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXRad), val);
+}
+bool Camera::setMaskYRadius(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
+}
+bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
+{
+	if (setMaskXCenter(mask_x))
+	{
+		if (setMaskYCenter(mask_y))
+		{
+			if (setMaskXRadius(mask_rad_x))
+			{
+				if (setMaskYRadius(mask_rad_y))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool Camera::setMask(std::map<std::string, long> settings)
+{
+	if (GlobalFunctions::entriesExist(settings, mask_keywords))
+	{
+		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
+	}
+	return false;
+}
+bool Camera::setMask_Py(boost::python::dict settings)
+{
+	return setMask(to_std_map<std::string, long>(settings));
+
+}
+bool Camera::setROIMinX(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinX), val);
+}
+bool Camera::setROIMinY(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinY), val);
+}
+bool Camera::setROISizeX(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeX), val);
+}
+bool Camera::setROISizeY(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeY), val);
+}
+bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
+{
+	if (setMaskXCenter(roi_x))
+	{
+		if (setMaskYCenter(roi_y))
+		{
+			if (setMaskXRadius(roi_rad_x))
+			{
+				if (setMaskYRadius(roi_rad_y))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool Camera::setROI(std::map<std::string, long> settings)
+{
+	if (GlobalFunctions::entriesExist(settings, mask_keywords))
+	{
+		return setROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("roi_rad_x"), settings.at("roi_rad_y"));
+	}
+	return false;
+}
+bool Camera::setROI_Py(boost::python::dict settings)
+{
+	return setROI(to_std_map<std::string, long>(settings));
+
+}
+
+
+
+
+bool Camera::setMaskAndROIxPos(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetX), val);
+}
+bool Camera::setMaskAndROIyPos(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetY), val);
+}
+bool Camera::setMaskAndROIxSize(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), val);
+}
+bool Camera::setMaskAndROIySize(long val)
+{
+	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), val);
+}
+bool Camera::setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size)
+{
+	if(setMaskAndROIxPos(x_pos))
+	{
+		if (setMaskAndROIyPos(y_pos))
+		{
+			if (setMaskAndROIxSize(x_size))
+			{
+				if (setMaskAndROIySize(y_size))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool Camera::setMaskandROI(std::map<std::string, long> settings)
+{
+	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
+	{
+		return setMaskandROI(settings.at("x_pos"), settings.at("y_pos"), settings.at("x_size"), settings.at("y_size"));
+	}
+	return false;
+}
+bool Camera::setMaskandROI_Py(boost::python::dict settings)
+{
+	return setMaskandROI(to_std_map<std::string, long>(settings));
+}
+
+
+
+
 long Camera::getMaskXCenter()const
 {
 	return mask_x_center.second;
@@ -409,36 +576,79 @@ long Camera::getMaskYRadius()const
 {
 	return mask_y_radius.second;
 }
+std::map<std::string, long> Camera::getMask()
+{
+	std::map<std::string, long> r;
+	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
+	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
+	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
+	r["mask_rad_x"] = getMaskYRadius();// MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getMask_Py()
+{
+	return  to_py_dict<std::string, long>(getMask());
+}
 
-long Camera::setMaskXCenter(long val)
+
+long Camera::getROIMinX()const
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXCenter), val);
+	return roi_min_x.second;
 }
-long Camera::setMaskYCenter(long val)
+long Camera::getROIMinY()const
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYCenter), val);
+	return roi_min_y.second;
 }
-long Camera::setMaskXRadius(long val)
+long Camera::getROISizeX()const
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXRad), val);
+	return roi_size_x.second;
 }
-long Camera::setMaskYRadius(long val)
+long Camera::getROISizeY()const
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
+	return roi_size_y.second;
 }
+std::map<std::string, long> Camera::getROI()
+{
+	std::map<std::string, long> r;
+	r["x_pos"] = getROIMinX(); // MAGIC STRING
+	r["y_pos"] = getROIMinY(); // MAGIC STRING
+	r["x_size"] = getROISizeX();// MAGIC STRING
+	r["y_size"] = getROISizeY();// MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getROI_Py()
+{
+	return  to_py_dict<std::string, long>(getMaskandROI());
+}
+
+
+std::map<std::string, long> Camera::getMaskandROI()const
+{
+	std::map<std::string, long> r;
+	r["x_pos"] = getROIMinX(); // MAGIC STRING
+	r["y_pos"] = getROIMinY(); // MAGIC STRING
+	r["x_size"] = getROISizeX();// MAGIC STRING
+	r["y_size"] = getROISizeY();// MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getMaskandROI_Py()const
+{
+	return  to_py_dict<std::string, long>(getMaskandROI());
+}
+
 boost::python::dict Camera::getRunningStats()const
 {
 	boost::python::dict r;
-	r["x_pix"] = x_pix_rs.getRunningStats();
-	r["y_pix"] = y_pix_rs.getRunningStats();
-	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();
-	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();
-	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();
-	r["x_mm"] = x_mm_rs.getRunningStats();
-	r["y_mm"] = y_mm_rs.getRunningStats();
-	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();
-	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();
-	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();
+	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
+	r["y_pix"] = y_pix_rs.getRunningStats();  				// MAGIC STRING
+	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();    // MAGIC STRING
+	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();    // MAGIC STRING
+	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();  // MAGIC STRING
+	r["x_mm"] = x_mm_rs.getRunningStats();				    // MAGIC STRING
+	r["y_mm"] = y_mm_rs.getRunningStats();				    // MAGIC STRING
+	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();	    // MAGIC STRING
+	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();	    // MAGIC STRING
+	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
 	return r;
 }
 

@@ -127,8 +127,7 @@ public:
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-				hardwareMapToFill[freshHardware.getHardwareName()] 
-					= freshHardware;
+				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
 				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill"
 				 + " current size = ", hardwareMapToFill.size());

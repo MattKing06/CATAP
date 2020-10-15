@@ -227,22 +227,22 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 	pvStruct.updateFunction = this->update_ROI1_ImageData_RBV;
 	}
-	else if (pvStruct.pvRecord == ROIandMask_SetX)
-	{
-	pvStruct.updateFunction = this->update_ROIandMask_SetX;
-	}
-	else if (pvStruct.pvRecord == ROIandMask_SetY)
-	{
-	pvStruct.updateFunction = this->update_ROIandMask_SetY;
-	}
-	else if (pvStruct.pvRecord == ROIandMask_SetXrad)
-	{
-	pvStruct.updateFunction = this->update_ROIandMask_SetXrad;
-	}
-	else if (pvStruct.pvRecord == ROIandMask_SetYrad)
-	{
-	pvStruct.updateFunction = this->update_ROIandMask_SetYrad;
-	}
+	//else if (pvStruct.pvRecord == ROIandMask_SetX)
+	//{
+	//pvStruct.updateFunction = this->update_ROIandMask_SetX;
+	//}
+	//else if (pvStruct.pvRecord == ROIandMask_SetY)
+	//{
+	//pvStruct.updateFunction = this->update_ROIandMask_SetY;
+	//}
+	//else if (pvStruct.pvRecord == ROIandMask_SetXrad)
+	//{
+	//pvStruct.updateFunction = this->update_ROIandMask_SetXrad;
+	//}
+	//else if (pvStruct.pvRecord == ROIandMask_SetYrad)
+	//{
+	//pvStruct.updateFunction = this->update_ROIandMask_SetYrad;
+	//}
 	else if (pvStruct.pvRecord == ANA_UseFloor_RBV)
 	{
 	pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;
@@ -695,27 +695,32 @@ void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	// TODO 
 }
-void EPICSCameraInterface::update_ROIandMask_SetX(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_centre_x);
 
-}
-void EPICSCameraInterface::update_ROIandMask_SetY(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_centre_y);
-}
-void EPICSCameraInterface::update_ROIandMask_SetXrad(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_radius_x);
-}
-void EPICSCameraInterface::update_ROIandMask_SetYrad(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_radius_y);
-}
+
+// THESE DO NOT EXIST, use individual mask and ROI functions 
+//void EPICSCameraInterface::update_ROIandMask_SetX(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_centre_x);
+//
+//}
+//void EPICSCameraInterface::update_ROIandMask_SetY(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_centre_y);
+//}
+//void EPICSCameraInterface::update_ROIandMask_SetXrad(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_radius_x);
+//}
+//void EPICSCameraInterface::update_ROIandMask_SetYrad(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	updateTimeStampDoublePair(args, recastCamera->roi_and_mask_radius_y);
+//}
+
+
  void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);

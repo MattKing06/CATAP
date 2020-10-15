@@ -98,6 +98,14 @@ public:
 	double setpix2mmY(double value);
 
 
+	/*! Keywords used for setting ROI and mask together, python version (OUR PREFFERRED INTERFACE!) */
+	boost::python::list mask_and_roi_keywords_Py;
+	/*! Keywords used for setting mask, python version  (Not prefferred, use mask and ROI together) */
+	boost::python::list mask_keywords_Py;
+	/*! Keywords used for setting ROI , python version (Not preffeered, use mask and ROI together) */
+	boost::python::list roi_keywords_Py;
+
+
 
 	double getX()const;
 	double getY()const;
@@ -167,18 +175,54 @@ public:
 	void messagesOn();
 	void messagesOff();
 
-
+	// MASK and ROI 
+	bool setMaskXCenter(long val);
+	bool setMaskYCenter(long val);
+	bool setMaskXRadius(long val);
+	bool setMaskYRadius(long val);
+	bool setMask(long x_pos, long  y_pos, long x_size, long y_size);
+	bool setMask(std::map<std::string, long> settings);
+	bool setMask_Py(boost::python::dict settings);
 	long getMaskXCenter()const;
 	long getMaskYCenter()const;
 	long getMaskXRadius()const;
 	long getMaskYRadius()const;
+	std::map<std::string, long> getMask();
+	boost::python::dict getMask_Py();
 
-	long setMaskXCenter(long val);
-	long setMaskYCenter(long val);
-	long setMaskXRadius(long val);
-	long setMaskYRadius(long val);
-	
-	
+
+
+	bool setROIMinX(long val);
+	bool setROIMinY(long val);
+	bool setROISizeX(long val);
+	bool setROISizeY(long val);
+	bool setROI(long x_pos, long  y_pos, long x_size, long y_size);
+	bool setROI(std::map<std::string, long> settings);
+	bool setROI_Py(boost::python::dict settings);
+	long getROIMinX()const;
+	long getROIMinY()const;
+	long getROISizeX()const;
+	std::map<std::string, long> getROI();
+	boost::python::dict getROI_Py();
+
+
+	bool setMaskAndROIxPos(long val);
+	bool setMaskAndROIyPos(long val);
+	bool setMaskAndROIxSize(long val);
+	bool setMaskAndROIySize(long val);
+
+		
+	bool setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size);
+	bool setMaskandROI(std::map<std::string, long> settings);
+	bool setMaskandROI_Py(boost::python::dict settings);
+
+
+
+
+	std::map<std::string, long> getMaskandROI()const;
+	boost::python::dict getMaskandROI_Py()const;
+
+
 	bool startAcquiring();
 	bool stopAcquiring();
 	bool isAcquiring()const;
@@ -270,6 +314,17 @@ protected:
 	std::pair<epicsTimeStamp, long> mask_x_radius;
 	/*! analaysis mask center y radius (pixels). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> mask_y_radius;
+	/*! Rectangular ROI X corner, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_min_x;
+	/*! Rectangular ROI Y corner, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_min_y;
+	/*! Rectangular ROI X size, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_size_x;
+	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> roi_size_y;
+	/*! ROI image data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
+
 	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_center;
 	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
@@ -318,16 +373,7 @@ protected:
 	std::pair<epicsTimeStamp, std::string> buffer_filename;
 	/*! Latest file number for camera buffer data to. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> buffer_filenumber;
-	/*! Rectangular ROI X corner, ROI used to extract masked data. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long> roi_min_x;
-	/*! Rectangular ROI Y corner, ROI used to extract masked data. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long> roi_min_y;
-	/*! Rectangular ROI X size, ROI used to extract masked data. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long> roi_size_x;
-	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long> roi_size_y;
-	/*! ROI image data. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
+
 	/*! Rectangular ROI AND Mask X centre. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double> roi_and_mask_centre_x; // MAY NOT NEED AS MONITORS
 	/*! Rectangular ROI AND Mask Y centre. Value and epicstimestamp.	*/
@@ -395,6 +441,16 @@ private:
 
 	EPICSCameraInterface_sptr epicsInterface;
 	std::map<std::string, std::string> CameraParamMap;
+
+	
+	/*! Keywords used for setting ROI and mask together (OUR PREFFERRED INTERFACE!) */
+	std::vector<std::string> mask_and_roi_keywords;
+	/*! Keywords used for setting mask (Not prefferred, use mask and ROI together) */
+	std::vector<std::string> mask_keywords;
+	/*! Keywords used for setting ROI (Not preffeered, use mask and ROI together) */
+	std::vector<std::string> roi_keywords;
+
+
 
 };
 

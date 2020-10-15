@@ -193,10 +193,15 @@ namespace GlobalConstants
 	/*! Unsigned short-type variable for 1 */
 	const unsigned short one_ushort = 1;
 
-	/*! Minimum possible value of a double */
+	/*! Minimum possible value of a unsigned short */
 	const unsigned short ushort_min = std::numeric_limits<unsigned short>::min();
-	/*! Maximum possible value of a double */
+	/*! Maximum possible value of a unsigned short */
 	const unsigned short ushort_max = std::numeric_limits<unsigned short>::max();
+
+	/*! Minimum possible value of a long */
+	const long long_min = std::numeric_limits<unsigned short>::min();
+	/*! Maximum possible value of a long */
+	const long long_max = std::numeric_limits<unsigned short>::max();
 
 	/*! Integer-type variable for 0 */
 	const int zero_int= 0;

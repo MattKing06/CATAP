@@ -126,6 +126,8 @@ public:
 	long setMaskYRadius(const std::string& name, long val);
 
 
+
+
 	bool stopAcquiring(const std::string& cam_name);
 	bool stopAllAcquiring();
 	bool stopAllAcquiringExceptVC();

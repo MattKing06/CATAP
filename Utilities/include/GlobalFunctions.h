@@ -33,12 +33,29 @@ namespace GlobalFunctions{
     template<class T>
     bool entryExists(const std::map<std::string, T>& m, const std::string& name)
     {
-        bool ret = false;
         auto it = m.find(name);
         if (it != m.end())
-            ret = true;
-        return ret;
+			return true;
+        return false;
     }
+
+	template<class T>
+	bool entriesExist(const std::map<std::string, T>& m, const std::vector<std::string>& names)
+	{
+		for (auto&& item : names)
+		{
+			if (entryExists(m, item))
+			{
+
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	template<class T>
 	bool entryExists(const std::vector<T>& v, const T& item)

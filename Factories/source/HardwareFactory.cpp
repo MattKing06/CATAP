@@ -242,15 +242,15 @@ CameraFactory& HardwareFactory::getCameraFactory_Mulitple_Py(const boost::python
 }
 CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas)
 {
-	//messenger.printDebugMessage("");
-	//std::stringstream ss;
-	//ss << "getCameraFactory_Mulitple  passed machine areas = ";
-	//for (auto&& area : machineAreas)
-	//{
-	//	ss << ENUM_TO_STRING(area);
-	//	ss << ", ";
-	//}
-	//messenger.printDebugMessage(ss.str());
+	messenger.printDebugMessage("");
+	std::stringstream ss;
+	ss << "getCameraFactory_Mulitple  passed machine areas = ";
+	for (auto&& area : machineAreas)
+	{
+		ss << ENUM_TO_STRING(area);
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
 	if (!cameraFactory.hasBeenSetup)
 	{
 		bool setup = cameraFactory.setup("nominal", machineAreas);
@@ -266,9 +266,6 @@ CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE
 	}
 	return cameraFactory;
 }
-
-
-
 
 void HardwareFactory::debugMessagesOn()
 {

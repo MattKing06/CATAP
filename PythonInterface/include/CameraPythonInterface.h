@@ -9,9 +9,14 @@
 
 namespace BOOST_PYTHON_CAMERA_INCLUDE
 {
-
 	void expose_camera_object() 
 	{
+		
+		// function pointers for overloads we want to expose
+		bool(Camera:: * setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
+		bool(Camera:: * setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
+		bool(Camera:: * setMask_4PARAM)(long, long, long, long) = &Camera::setMask;
+
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Camera>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
@@ -52,14 +57,56 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAvgIntensity", &Camera::getAvgIntensity)
 			.def("setSumIntensity", &Camera::setSumIntensity)
 			.def("setAvgIntensity", &Camera::setAvgIntensity)
+		
+			
 			.def("getMaskXCenter", &Camera::getMaskXCenter)
 			.def("getMaskYCenter", &Camera::getMaskYCenter)
 			.def("getMaskXRadius", &Camera::getMaskXRadius)
 			.def("getMaskYRadius", &Camera::getMaskYRadius)
+			.def("getMask", &Camera::getMask_Py)
 			.def("setMaskXCenter", &Camera::setMaskXCenter)
 			.def("setMaskYCenter", &Camera::setMaskYCenter)
 			.def("setMaskXRadius", &Camera::setMaskXRadius)
 			.def("setMaskYRadius", &Camera::setMaskYRadius)
+			.def("setMask", setMask_4PARAM)
+			.def("setMask", &Camera::setMask_Py)
+
+
+			.def("getROIMinX(", &Camera::getROIMinX)
+			.def("getROIMinY", &Camera::getROIMinY)
+			.def("getROISizeX", &Camera::getROISizeX)
+			.def("getROISizeY", &Camera::getROISizeY)
+			.def("getROI", &Camera::getROI_Py)
+			.def("setROIMinX", &Camera::setROIMinX)
+			.def("setROIMinY", &Camera::setROIMinY)
+			.def("setROISizeX", &Camera::setROISizeX)
+			.def("setROIsizeY", &Camera::setROISizeY)
+			.def("setROI", setROI_4PARAM)
+			.def("setROI", &Camera::setROI_Py)
+			
+			.def("setMaskAndROIxPos", &Camera::setMaskAndROIxPos)
+			.def("setMaskAndROIyPos", &Camera::setMaskAndROIyPos)
+			.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
+			.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
+			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
+			.def("setMaskandROI", &Camera::setMaskandROI_Py)
+			.def("getMaskAndROIxPos",  &Camera::getMaskAndROIxPos)
+			.def("getMaskAndROIyPos",  &Camera::getMaskAndROIyPos)
+			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
+			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
+			.def("getMaskandROI", &Camera::getMaskandROI_Py)
+
+
+
+
+
+			.def_readonly("mask_and_roi_keywords", &Camera::mask_and_roi_keywords_Py)
+			.def_readonly("mask_keywords", &Camera::mask_keywords_Py)
+			.def_readonly("roi_keywords", &Camera::roi_keywords_Py)
+					
+	
+			
+			
 			.def("getBufferTrigger", &Camera::getBufferTrigger)
 			.def("getBufferFilePath", &Camera::getBufferFilePath)
 			.def("getBufferFileName", &Camera::getBufferFileName)
@@ -88,9 +135,27 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
 			.def("setFLoorLevel", &Camera::setFLoorLevel)
 			.def("captureAndSave", &Camera::captureAndSave)
+
+				
 			.def("startAcquiring", &Camera::startAcquiring)
 			.def("stopAcquiring", &Camera::stopAcquiring)
-			.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
+			.def("isAcquiring", &Camera::isAcquiring)
+			.def("isNotAcquiring", &Camera::isNotAcquiring)
+			.def("getAcquireState", &Camera::getAcquireState)
+
+			.def("startAnalysing", &Camera::startAnalysing)
+			.def("stopAnalysing", &Camera::stopAnalysing)
+			.def("isAnalysing", &Camera::isAnalysing)
+			.def("isNotAnalysing", &Camera::isNotAnalysing)
+			.def("getAnalysisState", &Camera::getAnalysisState)
+
+
+
+
+
+			// only for tetsing not 
+			//.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
+			
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 			.def("getBufferSize", &Camera::getBufferSize)
@@ -102,7 +167,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("messagesOn", &Camera::messagesOn)
 			.def("messagesOff", &Camera::messagesOff)
 			.def("isDebugOn", &Camera::isDebugOn)
-			.def("isMessagingOn", &Camera::isMessagingOn);
+			.def("isMessagingOn", &Camera::isMessagingOn)
+			;
 	}
 	void expose_camera_factory_object() 
 	{
@@ -145,12 +211,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setSigXmm", &CameraFactory::setSigX)
 			.def("setSigYmm", &CameraFactory::setSigY)
 			.def("setSigXYmm", &CameraFactory::setSigXY)
-
 			.def("getSumIntensity", &CameraFactory::getSumIntensity)
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)
 			.def("setAvgIntensity", &CameraFactory::setAvgIntensity)
-
 			.def("stopAcquiring", &CameraFactory::stopAcquiring)
 			.def("stopAllAcquiring", &CameraFactory::stopAllAcquiring)
 			.def("stopAllAcquiringExceptVC", &CameraFactory::stopAllAcquiringExceptVC)
@@ -159,28 +223,22 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isAcquiring", &CameraFactory::isAcquiring)
 			.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
 			.def("getAcquireState", &CameraFactory::getAcquireState)
-
 			.def("getRunningStats", &CameraFactory::getRunningStats)
 			.def("getAllRunningStats", &CameraFactory::getAllRunningStats)
-
 			.def("getMaskXCenter", &CameraFactory::getMaskXCenter)
 			.def("getMaskYCenter", &CameraFactory::getMaskYCenter)
 			.def("getMaskXRadius", &CameraFactory::getMaskXRadius)
 			.def("getMaskYRadius", &CameraFactory::getMaskYRadius)
-
 			.def("setMaskXCenter", &CameraFactory::setMaskXCenter)
 			.def("setMaskYCenter", &CameraFactory::setMaskYCenter)
 			.def("setMaskXRadius", &CameraFactory::setMaskXRadius)
 			.def("setMaskYRadius", &CameraFactory::setMaskYRadius)
-
 			.def("startAnalysing", &CameraFactory::startAnalysing)
 			.def("stopAnalysing", &CameraFactory::stopAnalysing)
 			.def("isAnalysing", &CameraFactory::isAnalysing)
 			.def("isNotAnalysing", &CameraFactory::isNotAnalysing)
-
 			.def("getAnalysisState", &CameraFactory::getAnalysisState)
 			.def("getAllAnalysisState", &CameraFactory::getAllAnalysisState_Py)
-
 			.def("debugMessagesOn", &CameraFactory::debugMessagesOn)
 			.def("debugMessagesOff", &CameraFactory::debugMessagesOff)
 			.def("messagesOn", &CameraFactory::messagesOn)
