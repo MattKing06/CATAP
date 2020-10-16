@@ -1,0 +1,13 @@
+controls_information:
+    PV: true
+    pv_record_map:
+        Open: EBT-INJ-LSR-SHUT-01:On
+        Close: EBT-INJ-LSR-SHUT-01:Off
+        State: EBT-INJ-LSR-SHUT-01:Sta
+        Cmi: EBT-INJ-LSR-SHUT-01:Cmi
+properties:
+    machine_area: INJ
+    hardware_type: Shutter
+    name: EBT-INJ-LSR-SHUT-01
+    virtual_name: VM-EBT-INJ-LSR-SHUT-01
+    name_alias: "INJ-SHUT-01"

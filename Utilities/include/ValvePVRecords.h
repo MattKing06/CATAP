@@ -23,7 +23,6 @@ namespace ValveRecords
 	/*! Used to search for "Sta" key in pv_record_map */
 	extern std::string const Sta;
 
-
 	extern std::vector<std::string> valveRecordList;
 }
 /*! @}*/

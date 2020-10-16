@@ -71,6 +71,32 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	return setup;
 }
 
+
+
+
+ShutterFactory& HardwareFactory::getShutterFactory()
+{
+	messenger.printMessage("getShutterFactory Called");
+	if (!shutterFactory.hasBeenSetup)
+	{
+		bool setup = shutterFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getShutterFactory Complete");
+			return shutterFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ShutterFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getShutterFactory Complete");
+		return shutterFactory;
+	}
+}
+
 // YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
 LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 {

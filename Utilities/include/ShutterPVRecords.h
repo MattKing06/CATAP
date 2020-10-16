@@ -9,7 +9,11 @@
 
 namespace ShutterRecords
 {
-
+	extern std::string const Open;
+	extern std::string const Close;
+	extern std::string const State;
+	extern std::string const Cmi;
+	extern std::vector<std::string> shutterRecordList;
 }
 
 namespace ShutterState
@@ -22,7 +26,6 @@ namespace ShutterState
 			//machineArea(HWC_ENUM::MACHINE_AREA::UNKNOWN_AREA) 
 		{};
 		size_t numShutters;
-
 	};
 }
 
