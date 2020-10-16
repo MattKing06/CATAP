@@ -210,18 +210,13 @@ public:
 	bool setMaskAndROIyPos(long val);
 	bool setMaskAndROIxSize(long val);
 	bool setMaskAndROIySize(long val);
-
-		
+			
 	bool setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size);
 	bool setMaskandROI(std::map<std::string, long> settings);
 	bool setMaskandROI_Py(boost::python::dict settings);
 
-
-
-
 	std::map<std::string, long> getMaskandROI()const;
 	boost::python::dict getMaskandROI_Py()const;
-
 
 	bool startAcquiring();
 	bool stopAcquiring();
