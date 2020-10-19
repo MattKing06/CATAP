@@ -51,6 +51,9 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_factory_object();
 
+	BOOST_PYTHON_SHUTTER_INCLUDE::expose_shutter_object();
+	BOOST_PYTHON_SHUTTER_INCLUDE::expose_shutter_factory_object();
+
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct_and_dburt();

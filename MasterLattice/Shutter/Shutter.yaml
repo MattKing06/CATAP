@@ -7,7 +7,7 @@ controls_information:
         Cmi: UNDEFINED
 properties:
     machine_area: UNDEFINED
-    hardware_type: Valve
+    hardware_type: Shutter
     name: UNDEFINED
     name_alias: UNDEFINED
     virtual_name: UNDEFINED

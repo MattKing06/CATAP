@@ -7,6 +7,11 @@ EPICSShutterInterface::EPICSShutterInterface()
 {
 }
 
+EPICSShutterInterface::EPICSShutterInterface(const EPICSShutterInterface& copyInterface)
+{
+  // I ususally just print something here but could be used to actually copy stuff..
+}
+
 EPICSShutterInterface::~EPICSShutterInterface()
 {
 }
@@ -24,7 +29,7 @@ void EPICSShutterInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) 
 		}
 		else
 		{
-			static_messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
+			//messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 		}
 	}
 }
@@ -44,8 +49,8 @@ void EPICSShutterInterface::updateShutterState(const struct event_handler_args a
 		default:
 			recastShutter->shutterState.second = STATE::ERR;
 	}
-	static_messenger.printDebugMessage("Shutter STATE FOR: " + recastShutter->getHardwareName() + ": "
-		+ ENUM_TO_STRING(recastShutter->shutterState.second));
+	//messenger.printDebugMessage("Shutter STATE FOR: " + recastShutter->getHardwareName() + ": "
+	//	+ ENUM_TO_STRING(recastShutter->shutterState.second));
 }
 void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args args)
 {
@@ -78,31 +83,34 @@ void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args arg
 
 
 }
-void EPICSShutterInterface::debugMessagesOn()
-{
-	this->static_messenger.debugMessagesOn();
-	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG On");
-}
-void EPICSShutterInterface::debugMessagesOff()
-{
-	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
-	this->static_messenger.debugMessagesOff();
-}
-void EPICSShutterInterface::messagesOn()
-{
-	this->static_messenger.messagesOn();
-	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES On");
-}
-void EPICSShutterInterface::messagesOff()
-{
-	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
-	this->static_messenger.messagesOff();
-}
-bool EPICSShutterInterface::isMessagingOn()
-{
-	return this->static_messenger.isMessagingOn();
-}
-bool EPICSShutterInterface::isDebugOn()
-{
-	return this->static_messenger.isDebugOn();
-}
+
+
+
+//void EPICSShutterInterface::debugMessagesOn()
+//{
+//	this->static_messenger.debugMessagesOn();
+//	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG On");
+//}
+//void EPICSShutterInterface::debugMessagesOff()
+//{
+//	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
+//	this->static_messenger.debugMessagesOff();
+//}
+//void EPICSShutterInterface::messagesOn()
+//{
+//	this->static_messenger.messagesOn();
+//	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES On");
+//}
+//void EPICSShutterInterface::messagesOff()
+//{
+//	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
+//	this->static_messenger.messagesOff();
+//}
+//bool EPICSShutterInterface::isMessagingOn()
+//{
+//	return this->static_messenger.isMessagingOn();
+//}
+//bool EPICSShutterInterface::isDebugOn()
+//{
+//	return this->static_messenger.isDebugOn();
+//}

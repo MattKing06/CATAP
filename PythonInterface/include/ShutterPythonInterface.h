@@ -44,7 +44,7 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<ShutterFactory, boost::noncopyable>("ShutterFactory", boost::python::no_init)
 
-			.def("isClosed", &ShutterFactory::isClosed, , boost::python::arg("name"))
+			.def("isClosed", &ShutterFactory::isClosed, boost::python::arg("name"))
 			.def("isOpen", &ShutterFactory::isOpen, boost::python::arg("name"))
 			.def("getState", &ShutterFactory::getState, boost::python::arg("name"))
 			.def("close", &ShutterFactory::close, boost::python::arg("name"))
@@ -60,6 +60,7 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 			.def("messagesOff", &ShutterFactory::messagesOff)
 			.def("isDebugOn", &ShutterFactory::isDebugOn)
 			.def("isMessagingOn", &ShutterFactory::isMessagingOn);
+			;
 	}
 
 

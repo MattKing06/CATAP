@@ -6,7 +6,11 @@ ShutterFactory::ShutterFactory()
 {
 }
 
-ShutterFactory::ShutterFactory(STATE mode)
+ShutterFactory::ShutterFactory(STATE mode):
+	messenger(LoggingSystem(true, true)),
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("Shutter", mode))
 {
 }
 
@@ -143,7 +147,7 @@ STATE ShutterFactory::getState(const std::string& name)const
 	{
 		return shutterMap.at(full_name).getState();
 	}
-	return false;
+	return STATE::UNKNOWN;
 }
 
 int ShutterFactory::getCMI(const  std::string& name)const
@@ -247,6 +251,18 @@ void ShutterFactory::setupChannels()
 	}
 }
 
+
+
+std::vector<std::string> ShutterFactory::getAliases(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, fullName))
+	{
+		return shutterMap.at(fullName).getAliases();
+	}
+	std::vector<std::string> dummy;
+	return dummy;
+}
 
 
 void ShutterFactory::debugMessagesOn()

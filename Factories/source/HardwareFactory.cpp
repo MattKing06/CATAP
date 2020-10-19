@@ -18,6 +18,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	imgFactory(IMGFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
 	cameraFactory(CameraFactory(mode)),
+	shutterFactory(ShutterFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);

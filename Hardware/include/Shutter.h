@@ -2,15 +2,15 @@
 #define SHUTTER_H_
 
 #include <Hardware.h>
-#ifndef EPICS_MAGNET_INTERFACE_H_
+
 #include "EPICSShutterInterface.h"
-#endif //EPICS_MAGNET_INTERFACE_H_
+
 
 
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
-
+#include <boost/shared_ptr.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 

@@ -232,7 +232,7 @@ class MagnetFactory
 		void setMonitorStatus(pvStruct& pvStruct);
 		// private
 		bool hasBeenSetup;
-		// offlien physical or virtual 
+		// offline physical or virtual 
 		STATE mode;
 
 

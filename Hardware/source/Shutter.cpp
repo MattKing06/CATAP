@@ -18,7 +18,7 @@ Hardware(paramsMap, mode),
 shutterState(std::make_pair(epicsTimeStamp(), STATE::ERR)),
 cmi(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
 // if you get a compile error due to something below its probably that you haven;t added hardware to the copy constructor 
-epicsInterface(boost::make_shared<EPICSShutterInterface_sptr>(EPICSShutterInterface())) // calls copy constructor and destroys 
+epicsInterface(boost::make_shared<EPICSShutterInterface>(EPICSShutterInterface())) // calls copy constructor and destroys 
 {
 	epicsInterface->ownerName = hardwareName;
 	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });

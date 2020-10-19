@@ -78,6 +78,10 @@ namespace GlobalConstants
 		{"Charge", TYPE::CHARGE},
 		{"charge", TYPE::CHARGE},
 
+		{ENUM_TO_STRING(TYPE::SHUTTER), TYPE::SHUTTER},
+		{"Shutter", TYPE::SHUTTER},
+		{"shutter", TYPE::SHUTTER},
+
 		{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},

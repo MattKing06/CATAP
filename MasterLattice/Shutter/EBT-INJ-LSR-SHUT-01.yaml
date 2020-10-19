@@ -6,7 +6,7 @@ controls_information:
         State: EBT-INJ-LSR-SHUT-01:Sta
         Cmi: EBT-INJ-LSR-SHUT-01:Cmi
 properties:
-    machine_area: INJ
+    machine_area: CLARA_LASER
     hardware_type: Shutter
     name: EBT-INJ-LSR-SHUT-01
     virtual_name: VM-EBT-INJ-LSR-SHUT-01

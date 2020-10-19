@@ -14,12 +14,15 @@ public:
 	~ShutterFactory();
 	LoggingSystem messenger;
 	bool hasBeenSetup;
+	STATE mode;
 
 
 	void populateShutterMap();
 	/*! iterates over all valves in valve map and uses their pvStructs vector to create
 		connections to EPICS if mode is PHYSICAL or VIRTUAL*/
 	void setupChannels();
+
+	bool setup(const std::string version);
 
 
 
@@ -34,8 +37,14 @@ public:
 
 	std::string getFullName(const std::string& name_to_check) const;
 
+
+	std::vector<std::string> getAliases(const std::string& name) const;
+
+//private:
 	void updateAliasNameMap(const Shutter& shutter);
 	std::map<std::string, std::string> alias_name_map;
+
+
 
 	std::map<std::string, Shutter> shutterMap;
 	void debugMessagesOn();
@@ -47,7 +56,6 @@ public:
 
 	void setMonitorStatus(pvStruct& pvStruct);
 
-	bool setup(const std::string version);
 
 	// private
 	ConfigReader reader;
