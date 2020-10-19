@@ -1,4 +1,5 @@
 #include <RFProtectionFactory.h>
+#include <RFProtectionPVRecords.h>
 
 RFProtectionFactory::RFProtectionFactory()
 {
@@ -46,6 +47,17 @@ void RFProtectionFactory::setupChannels()
 		}
 	}
 
+}
+
+void RFProtectionFactory::setMonitorStatus(pvStruct& pv)
+{
+
+		if(pv.pvRecord==RFProtectionRecords::Sta 
+			|| pv.pvRecord == RFProtectionRecords::Cmi)
+		{
+			pv.monitor = true;
+		}
+		
 }
 
 bool RFProtectionFactory::setup(const std::string& version)

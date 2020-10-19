@@ -14,6 +14,7 @@ public:
 	~RFProtectionFactory();
 	LoggingSystem messenger;
 	void setupChannels();
+	void setMonitorStatus(pvStruct& pv);
 	bool setup(const std::string& version);
 	void populateRFProtectionMap();
 	void debugMessagesOn();
