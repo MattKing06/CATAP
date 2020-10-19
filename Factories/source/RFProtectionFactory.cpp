@@ -4,7 +4,11 @@ RFProtectionFactory::RFProtectionFactory()
 {
 }
 
-RFProtectionFactory::RFProtectionFactory(STATE mode)
+RFProtectionFactory::RFProtectionFactory(STATE mode) :
+	messenger(LoggingSystem(true, true)),
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("RFProtection", mode))
 {
 }
 
@@ -16,8 +20,45 @@ RFProtectionFactory::~RFProtectionFactory()
 {
 }
 
-void RFProtectionFactory::setup(std::string version)
+void RFProtectionFactory::populateRFProtectionMap()
 {
+	messenger.printDebugMessage("MagnetFactory is populating the magnet map");
+	if (!reader.hasMoreFilesToParse())
+	{
+		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
+	}
+	while (reader.hasMoreFilesToParse())
+	{
+		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
+		reader.parseNextYamlFile<RFProtection>(RFProtectionMap);
+	}
+}
+
+
+void RFProtectionFactory::setupChannels()
+{
+	for (auto& nameAndProtectionPair : RFProtectionMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = nameAndProtectionPair.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			nameAndProtectionPair.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+
+}
+
+bool RFProtectionFactory::setup(const std::string& version)
+{
+	if (hasBeenSetup)
+	{messenger.printMessage("RF Protection Factory has already been setup"); return true;}
+	populateRFProtectionMap();
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		// Could not find any YAML files for configuration..
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 }
 
 void RFProtectionFactory::debugMessagesOn()

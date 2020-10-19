@@ -13,15 +13,20 @@ public:
 	RFProtectionFactory(const RFProtectionFactory& copyFactory);
 	~RFProtectionFactory();
 	LoggingSystem messenger;
-	void setup(std::string version);
-	bool hasBeenSetup;
-	std::map<std::string, RFProtection> RFProtectionMap;
+	void setupChannels();
+	bool setup(const std::string& version);
+	void populateRFProtectionMap();
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
 	bool isDebugOn();
 	bool isMessagingOn();
+private:
+	ConfigReader reader;
+	STATE mode;
+	bool hasBeenSetup;
+	std::map<std::string, RFProtection> RFProtectionMap;
 };
 
 #endif // RF_PROTECTION_FACTORY_H_

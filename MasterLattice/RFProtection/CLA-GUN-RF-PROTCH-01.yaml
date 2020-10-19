@@ -1,0 +1,15 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    ON: CLA-GUN-RF-PROTCH-01:On
+    OFF: CLA-GUN-RF-PROTCH-01:Off
+    RESET: CLA-GUN-RF-PROTCH-01:Rst
+    Sta: CLA-GUN-RF-PROTCH-01:Sta
+    Cmi: CLA-GUN-RF-PROTCH-01:Cmi
+properties:
+  hardware_type: RFProtection
+  machine_area: HRRG
+  prot_type: CLARA_HRRG
+  name: CLA-GUN-RF-PROTCH-01
+  name_alias: CLARA_HRRG
+
