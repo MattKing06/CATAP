@@ -49,15 +49,15 @@ bool ShutterFactory::setup(const std::string version)
 	*/
 	for (auto& shutter : shutterMap)
 	{
-		//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
+		messenger.printMessage("Set up EPICS suscriptions for " + shutter.second.getHardwareName());
 		//updateAliasNameMap(shutter.second);
-		//std::cout << "magnet.first = " << magnet.first << std::endl;
+		//std::cout << "shutter.first = " << shutter.first << std::endl;
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
 		*/
 		updateAliasNameMap(shutter.second);
-		std::map<std::string, pvStruct>& magPVStructs = shutter.second.getPVStructs();
-		for (auto& pv : magPVStructs)
+		std::map<std::string, pvStruct>& shutterPVStructs = shutter.second.getPVStructs();
+		for (auto& pv : shutterPVStructs)
 		{
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -68,9 +68,9 @@ bool ShutterFactory::setup(const std::string version)
 				shutter.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				//messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-				//	"write", std::to_string(ca_write_access(pv.second.CHID)),
-				//	"state", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": read ", std::to_string(ca_read_access(pv.second.CHID)),
+					"write ", std::to_string(ca_write_access(pv.second.CHID)),
+					"state ", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
 					shutter.second.epicsInterface->createSubscription(shutter.second, pv.second);

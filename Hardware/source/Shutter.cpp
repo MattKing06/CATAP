@@ -22,6 +22,7 @@ epicsInterface(boost::make_shared<EPICSShutterInterface>(EPICSShutterInterface()
 {
 	epicsInterface->ownerName = hardwareName;
 	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });
+	setPVStructs();
 }
 
 Shutter::Shutter(const Shutter& copyShutter):
@@ -94,6 +95,7 @@ boost::python::dict  Shutter::getCMIBitMap_Py()const
 
 void Shutter::setPVStructs()
 {
+	messenger.printDebugMessage("setPVStructs");
 	for(auto&& record : ShutterRecords::shutterRecordList)
 	{
 		pvStructs[record] = pvStruct();

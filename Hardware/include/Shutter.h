@@ -22,7 +22,12 @@ class Shutter : public Hardware
 {
 public:
 	Shutter();
+	/*! Custom constructor for Shutter object
+		@param[in] paramMap strings defining parameters extracted from YAML config files
+		@param[in] mode Defines the STATE of Shutter we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)			*/
 	Shutter(const std::map<std::string, std::string>& paramMap, STATE mode);
+
+
 	Shutter(const Shutter& copyShutter);
 	~Shutter();
 

@@ -3,6 +3,8 @@
 #include <ShutterPVRecords.h>
 #include <bitset>
 
+LoggingSystem EPICSShutterInterface::messenger;
+
 EPICSShutterInterface::EPICSShutterInterface()
 {
 }
@@ -23,13 +25,13 @@ void EPICSShutterInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) 
 		{
 			pvStruct.updateFunction = updateShutterState;
 		}
-		if (pvStruct.pvRecord == ShutterRecords::Cmi)
+		else if (pvStruct.pvRecord == ShutterRecords::Cmi)
 		{
 			pvStruct.updateFunction = updateShutterCmi;
 		}
 		else
 		{
-			//messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
+			messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 		}
 	}
 }
@@ -49,8 +51,8 @@ void EPICSShutterInterface::updateShutterState(const struct event_handler_args a
 		default:
 			recastShutter->shutterState.second = STATE::ERR;
 	}
-	//messenger.printDebugMessage("Shutter STATE FOR: " + recastShutter->getHardwareName() + ": "
-	//	+ ENUM_TO_STRING(recastShutter->shutterState.second));
+	messenger.printDebugMessage("Shutter STATE FOR: " + recastShutter->getHardwareName() + ": "
+		+ ENUM_TO_STRING(recastShutter->shutterState.second));
 }
 void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args args)
 {

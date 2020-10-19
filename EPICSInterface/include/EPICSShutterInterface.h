@@ -22,8 +22,6 @@ public:
 
 private:
 
-
-
 	/*! messenger object for EPICSValveInterface messaging. */
 	static LoggingSystem messenger;
 
