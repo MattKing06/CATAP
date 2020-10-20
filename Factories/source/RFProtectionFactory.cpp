@@ -35,6 +35,16 @@ void RFProtectionFactory::populateRFProtectionMap()
 	}
 }
 
+std::vector<std::string> RFProtectionFactory::getAllRFProtectionNames()
+{
+	std::vector<std::string> rfProtNames;
+	for (auto& rfProt : RFProtectionMap)
+	{
+		rfProtNames.push_back(rfProt.first);
+	}
+	return rfProtNames;
+}
+
 
 void RFProtectionFactory::setupChannels()
 {

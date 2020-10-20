@@ -23,6 +23,7 @@ BOOST_AUTO_TEST_CASE(get_all_rf_protection_names_from_factory_test)
 {
 	bool hasSetup = RFPFactory.setup("nominal");
 	BOOST_CHECK_NE(hasSetup, false);
+	BOOST_CHECK_NE(RFPFactory.getAllRFProtectionNames().empty(), true);
 }
 
 

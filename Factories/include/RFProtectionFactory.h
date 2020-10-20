@@ -17,6 +17,7 @@ public:
 	void setMonitorStatus(pvStruct& pv);
 	bool setup(const std::string& version);
 	void populateRFProtectionMap();
+	std::vector<std::string> getAllRFProtectionNames();
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
