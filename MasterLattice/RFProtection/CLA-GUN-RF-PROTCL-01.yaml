@@ -8,7 +8,7 @@ controls_information:
     Cmi: CLA-GUN-RF-PROTCL-01:Cmi
 properties:
   hardware_type: RFProtection
-  machine_area: LRRG
+  machine_area: LRRG_GUN
   prot_type: CLARA_LRRG
   name: CLA-GUN-RF-PROTCL-01
   name_alias: CLARA_LRRG

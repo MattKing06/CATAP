@@ -8,7 +8,7 @@ controls_information:
     Cmi: CLA-GUN-RF-PROTVH-01:Cmi
 properties:
   hardware_type: RFProtection
-  machine_area: GUN
+  machine_area: HRRG_GUN
   prot_type: VELA_HRRG
   name: CLA-GUN-RF-PROTVH-01
   name_alias: VELA_HRRG

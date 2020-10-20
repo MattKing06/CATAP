@@ -11,6 +11,7 @@
 #include <Charge.h>
 #include <Screen.h>
 #include <IMG.h>
+#include <RFProtection.h>
 #include <string>
 #include <fstream>
 #include <iostream>

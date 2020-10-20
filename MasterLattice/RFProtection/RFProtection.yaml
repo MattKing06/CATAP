@@ -8,8 +8,8 @@ controls_information:
     Cmi: CLA-GUN-RF-PROTCH-01:Cmi
 properties:
   hardware_type: RFProtection
-  machine_area: HRRG_GUN
-  prot_type: CLARA_HRRG
-  name: CLA-GUN-RF-PROTCH-01
-  name_alias: CLARA_HRRG
+  machine_area: UNDEFINED
+  prot_type: UNDEFINED
+  name: UNDEFINED
+  name_alias: UNDEFINED
 
