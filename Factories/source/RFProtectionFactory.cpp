@@ -71,6 +71,36 @@ bool RFProtectionFactory::setup(const std::string& version)
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	setupChannels();
+	EPICSInterface::sendToEPICS();
+	for (auto& nameAndProtectionPair : RFProtectionMap)
+	{
+		//updateNameAliasMap()
+		RFProtection rfProtection = nameAndProtectionPair.second;
+		std::map<std::string, pvStruct> pvStructs = rfProtection.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				setMonitorStatus(pv.second);
+				rfProtection.epicsInterface->retrieveCOUNT(pv.second);
+				rfProtection.epicsInterface->retrieveCHTYPE(pv.second);
+				rfProtection.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				pv.second.MASK = DBE_VALUE;
+				if (pv.second.monitor)
+				{
+					rfProtection.epicsInterface->createSubscription(rfProtection, pv.second);
+				}
+			}
+			else
+			{
+				messenger.printMessage(nameAndProtectionPair.first, ":", pv.first, " COULD NOT CONNECT TO EPICS.");
+			}
+		}
+		EPICSInterface::sendToEPICS();
+	}
+	hasBeenSetup = true;
+	return true;
 }
 
 void RFProtectionFactory::debugMessagesOn()
