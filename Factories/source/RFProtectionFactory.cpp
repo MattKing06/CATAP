@@ -23,14 +23,14 @@ RFProtectionFactory::~RFProtectionFactory()
 
 void RFProtectionFactory::populateRFProtectionMap()
 {
-	messenger.printDebugMessage("MagnetFactory is populating the magnet map");
+	messenger.printDebugMessage("RF Protection Factory is populating the RFProtection map");
 	if (!reader.hasMoreFilesToParse())
 	{
 		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		messenger.printDebugMessage("Magnet Factory calling parseNextYamlFile");
+		messenger.printDebugMessage("RF Protection Factory calling parseNextYamlFile");
 		reader.parseNextYamlFile<RFProtection>(RFProtectionMap);
 	}
 }

@@ -6,10 +6,11 @@ RFProtection::RFProtection()
 }
 
 RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode) :
-	Hardware(specificHardwareParameters, mode),
-	RFProtectionParamMap(specificHardwareParameters),
+	Hardware(paramMap, mode),
+	RFProtectionParamMap(paramMap),
 	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface()))
 {
+	std::cout << "constructing PV data for" << std::endl;
 	setPVStructs();
 }
 
@@ -27,6 +28,7 @@ void RFProtection::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
+		std::cout << " RECORD: " << record << std::endl;
 		std::string PV = specificHardwareParameters.find(record)->second;
 		switch (mode)
 		{
