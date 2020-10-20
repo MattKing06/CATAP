@@ -11,3 +11,4 @@ properties:
     name: UNDEFINED
     name_alias: UNDEFINED
     virtual_name: UNDEFINED
+    shutter_interlock_names : element1,element2,element3

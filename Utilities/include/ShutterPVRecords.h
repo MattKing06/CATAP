@@ -18,19 +18,22 @@ namespace ShutterRecords
 	/*! Used to search for "Cmi" key in pv_record_map */
 	extern std::string const Cmi;
 	extern std::vector<std::string> shutterRecordList;
+
+
+
 }
 
-namespace ShutterState
-{
-	struct ShutterStateStruct
-	{   // proviude a default constructor
-		ShutterStateStruct() :
-			numShutters(GlobalConstants::zero_sizet)
-			//, 
-			//machineArea(HWC_ENUM::MACHINE_AREA::UNKNOWN_AREA) 
-		{};
-		size_t numShutters;
-	};
-}
+//namespace ShutterState
+//{
+//	struct ShutterStateStruct
+//	{   // proviude a default constructor
+//		ShutterStateStruct() :
+//			numShutters(GlobalConstants::zero_sizet)
+//			//, 
+//			//machineArea(HWC_ENUM::MACHINE_AREA::UNKNOWN_AREA) 
+//		{};
+//		size_t numShutters;
+//	};
+//}
 
 #endif

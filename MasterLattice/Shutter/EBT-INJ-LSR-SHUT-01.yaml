@@ -11,3 +11,5 @@ properties:
     name: EBT-INJ-LSR-SHUT-01
     virtual_name: VM-EBT-INJ-LSR-SHUT-01
     name_alias: "INJ-SHUT-01"
+    # These interlock names **MUST** be in the same order as each bit in the interlock integer 
+    shutter_interlock_names : GLA, GLB, 24V_OP_Supply, 24V_IP_Supply, Energy_Meter, Charge_Diag

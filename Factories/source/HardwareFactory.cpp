@@ -80,6 +80,7 @@ ShutterFactory& HardwareFactory::getShutterFactory()
 	messenger.printMessage("getShutterFactory Called");
 	if (!shutterFactory.hasBeenSetup)
 	{
+		messenger.printMessage("getShutterFactory calling setup");
 		bool setup = shutterFactory.setup("nominal");
 		if (setup)
 		{

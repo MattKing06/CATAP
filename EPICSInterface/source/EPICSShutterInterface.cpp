@@ -2,6 +2,9 @@
 #include <Shutter.h>
 #include <ShutterPVRecords.h>
 #include <bitset>
+#include <iostream>
+#include <string>
+#include <algorithm>
 
 LoggingSystem EPICSShutterInterface::messenger;
 
@@ -23,10 +26,12 @@ void EPICSShutterInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) 
 	{
 		if (pvStruct.pvRecord == ShutterRecords::State)
 		{
+			messenger.printDebugMessage(pvStruct.pvRecord, " update function = updateShutterState" );
 			pvStruct.updateFunction = updateShutterState;
 		}
 		else if (pvStruct.pvRecord == ShutterRecords::Cmi)
 		{
+			messenger.printDebugMessage(pvStruct.pvRecord, " update function = updateShutterCmi");
 			pvStruct.updateFunction = updateShutterCmi;
 		}
 		else
@@ -34,36 +39,69 @@ void EPICSShutterInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) 
 			messenger.printDebugMessage("!! WARNING !! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 		}
 	}
+	else
+	{
+
+	}
 }
 void EPICSShutterInterface::updateShutterState(const struct event_handler_args args)
 {
 	Shutter* recastShutter = getHardwareFromArgs<Shutter>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
-	recastShutter->shutterState.first = pairToUpdate.first;
+	recastShutter->shutter_state.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
 		case GlobalConstants::zero_int: 
-			recastShutter->shutterState.second = STATE::CLOSED;
+			recastShutter->shutter_state.second = STATE::CLOSED;
 			break;
 		case GlobalConstants::one_int: 
-			recastShutter->shutterState.second = STATE::OPEN;
+			recastShutter->shutter_state.second = STATE::OPEN;
 			break;
 		default:
-			recastShutter->shutterState.second = STATE::ERR;
+			recastShutter->shutter_state.second = STATE::ERR;
 	}
 	messenger.printDebugMessage("Shutter STATE FOR: " + recastShutter->getHardwareName() + ": "
-		+ ENUM_TO_STRING(recastShutter->shutterState.second));
+		+ ENUM_TO_STRING(recastShutter->shutter_state.second));
 }
 void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args args)
 {
 	Shutter* recastShutter = getHardwareFromArgs<Shutter>(args);
 	updateTimeStampIntPair(args, recastShutter->cmi);
 
-	std::string binary = std::bitset<8>(recastShutter->cmi.second).to_string();
-	std::cout << "Printing CMI bit values " << binary << std::endl;
+	std::string binary_raw = std::bitset<8>(recastShutter->cmi.second).to_string(); // MAGIC NUMBER but thi shas to be hardcoded 
+	//GOTCHA WHAT ENDIAN IS THIS NUMBER ???!!!
+	std::string binary(binary_raw.rbegin(), binary_raw.rend()); //GOTCHA WHAT ENDIAN IS THIS NUMBER ???!!!
+	// std::reverse(binary); //GOTCHA WHAT ENDIAN IS THIS NUMBER ???!!!  no only in c++ 17 
+	std::cout << "Printing CMI 8 bit values " << binary_raw << std::endl;
+	std::cout << "Printing CMI 8 bit values " << binary << std::endl;
+
+	size_t counter = 0;
+	for(auto&& bit_name: recastShutter->interlock_bit_names)
+	{
+		std::string bit_string = binary.substr(counter, 1);
+		int bit_int = std::stoi(bit_string);
+
+		std::cout << "bit_name == " << bit_name << " bit_string = " << bit_string << " bit_int = " << bit_int << std::endl;
+		if( bit_int == 0)
+		{ 
+			recastShutter->cmi_bit_map.at(bit_name) = STATE::BAD;
+		}
+		else if(bit_int == 1)
+		{ 
+			recastShutter->cmi_bit_map.at(bit_name) = STATE::GOOD;
+		}
+		else
+		{
+			recastShutter->cmi_bit_map.at(bit_name) = STATE::ERR;
+		}
+		counter += 1; // meh 
+		messenger.printDebugMessage(bit_name, " value = ", recastShutter->cmi_bit_map.at(bit_name));
+	}
+
+	//recastShutter->interlock_bit_names
 
 	//size_t counter = 0;
-	//std::cout << "Printign CMI bit values " << std::endl;
+	//std::cout << "Printing CMI bit values " << std::endl;
 	//for (auto bit = 0; bit < 8; ++bit)
 	//{
 	//	(obj.cmi & (1 << bit)) >> bit
@@ -85,34 +123,3 @@ void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args arg
 
 
 }
-
-
-
-//void EPICSShutterInterface::debugMessagesOn()
-//{
-//	this->static_messenger.debugMessagesOn();
-//	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG On");
-//}
-//void EPICSShutterInterface::debugMessagesOff()
-//{
-//	this->static_messenger.printDebugMessage(ownerName, " EPICS Interface - DEBUG OFF");
-//	this->static_messenger.debugMessagesOff();
-//}
-//void EPICSShutterInterface::messagesOn()
-//{
-//	this->static_messenger.messagesOn();
-//	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES On");
-//}
-//void EPICSShutterInterface::messagesOff()
-//{
-//	this->static_messenger.printMessage(ownerName, " EPICS Interface - MESSAGES OFF");
-//	this->static_messenger.messagesOff();
-//}
-//bool EPICSShutterInterface::isMessagingOn()
-//{
-//	return this->static_messenger.isMessagingOn();
-//}
-//bool EPICSShutterInterface::isDebugOn()
-//{
-//	return this->static_messenger.isDebugOn();
-//}

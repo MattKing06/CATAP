@@ -1,6 +1,7 @@
 #include <ShutterFactory.h>
 #include <ShutterPVRecords.h>
 #include <GlobalFunctions.h>
+#include <PythonTypeConversions.h>
 
 ShutterFactory::ShutterFactory()
 {
@@ -25,10 +26,10 @@ ShutterFactory::~ShutterFactory()
 
 bool ShutterFactory::setup(const std::string version)
 {
-	messenger.printDebugMessage("called Magnet Factory  setup ");
+	messenger.printDebugMessage("called ShutterFactory setup ");
 	if (hasBeenSetup)
 	{
-		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
+		messenger.printDebugMessage("setup ShutterFactory : it has been setup");
 		return true;
 	}
 	//std::cout << "populateMagnetMap()" << std::endl;
@@ -43,38 +44,42 @@ bool ShutterFactory::setup(const std::string version)
 	//convertConfigStringsToGlobalTypeEnums();
 	setupChannels();
 	EPICSInterface::sendToEPICS();
-	messenger.printMessage("All MAGNET CHIDs setup, creating subscriptions");
+	messenger.printMessage("All Shutter CHIDs setup, getting alias names and creating subscriptions");
 	/*
 		LOOP OVER ALL MAGNETS AGAIN TO SET MORE EPICS INFO.
 	*/
 	for (auto& shutter : shutterMap)
 	{
+		updateAliasNameMap(shutter.second);
 		messenger.printMessage("Set up EPICS suscriptions for " + shutter.second.getHardwareName());
-		//updateAliasNameMap(shutter.second);
+		
 		//std::cout << "shutter.first = " << shutter.first << std::endl;
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
 		*/
-		updateAliasNameMap(shutter.second);
 		std::map<std::string, pvStruct>& shutterPVStructs = shutter.second.getPVStructs();
 		for (auto& pv : shutterPVStructs)
 		{
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				//messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
-				setMonitorStatus(pv.second);
+
 				shutter.second.epicsInterface->retrieveCHTYPE(pv.second);
 				shutter.second.epicsInterface->retrieveCOUNT(pv.second);
 				shutter.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read ", std::to_string(ca_read_access(pv.second.CHID)),
-					"write ", std::to_string(ca_write_access(pv.second.CHID)),
-					"state ", std::to_string(ca_state(pv.second.CHID)));
+
+				setMonitorStatus(pv.second);
 				if (pv.second.monitor)
 				{
+					messenger.printMessage(shutter.first, ":", pv.second.pvRecord, " should be monitored");
 					shutter.second.epicsInterface->createSubscription(shutter.second, pv.second);
 				}
+				messenger.printDebugMessage(pv.second.pvRecord, ": read/write/state = ",
+					std::to_string(ca_read_access(pv.second.CHID)),
+					std::to_string(ca_write_access(pv.second.CHID)),
+					std::to_string(ca_state(pv.second.CHID)));
 			}
 			else
 			{
@@ -159,14 +164,14 @@ int ShutterFactory::getCMI(const  std::string& name)const
 	}
 	return false;
 }
-std::map<std::string, bool> ShutterFactory::getCMIBitMap(const  std::string& name)const
+std::map<std::string, STATE> ShutterFactory::getCMIBitMap(const  std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(shutterMap, full_name))
 	{
 		return shutterMap.at(full_name).getCMIBitMap();
 	}
-	std::map<std::string, bool> dummy;
+	std::map<std::string, STATE> dummy;
 	return dummy;
 }
 
@@ -180,8 +185,76 @@ boost::python::dict ShutterFactory::getCMIBitMap_Py(const std::string& name)cons
 	boost::python::dict dummy;
 	return dummy;
 }
+// GET MAGNET OBJECT  FUNCTIONS
+//
+Shutter& ShutterFactory::getShutter(const std::string& shutter_name)
+{
+	std::string full_name = getFullName(shutter_name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name);
+	}
+	return dummy_shutter;
+}
+std::vector<std::string> ShutterFactory::getAllShutterNames() const
+{
+	std::vector<std::string> r;
+	for (auto&& shutter : shutterMap)
+	{
+		r.push_back(shutter.first);
+	}
+	return r;
+}
+boost::python::list ShutterFactory::getAllShutterNames_Py() const
+{
+	return to_py_list<std::string>(getAllShutterNames());
+}
+
+ShutterState ShutterFactory::getShutterState(const std::string& shutter_name)const
+{
+	std::string full_name = getFullName(shutter_name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).getShutterState();
+	}
+	return ShutterState();
+}
+
+std::map<std::string, ShutterState> ShutterFactory::getShutterStates()const
+{
+	std::map<std::string, ShutterState> r;
+	for (auto&& shutter : shutterMap)
+	{
+		r[shutter.first] = shutter.second.getShutterState();
+	}
+	return r;
+}
+
+boost::python::dict ShutterFactory::getShutterStates_Py()const
+{
+	return to_py_dict<std::string, ShutterState>(getShutterStates());
+}
 
 
+boost::python::dict ShutterFactory::getShutterStateDictionary(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).getShutterStateDictionary();
+	}
+	boost::python::dict r;
+	return r;
+}
+boost::python::dict ShutterFactory::getShutterStateDictionaries()const
+{
+	boost::python::dict r;
+	for (auto&& shutter : shutterMap)
+	{
+		r[shutter.first] = shutter.second.getShutterStateDictionary();
+	}
+	return r;
+}
 
 
 void ShutterFactory::updateAliasNameMap(const Shutter& shutter)
@@ -221,6 +294,10 @@ void ShutterFactory::setMonitorStatus(pvStruct& pvStruct)
 	{
 		pvStruct.monitor = true;
 	}
+	else
+	{
+		pvStruct.monitor = false;
+	}
 }
 
 
@@ -251,8 +328,6 @@ void ShutterFactory::setupChannels()
 	}
 }
 
-
-
 std::vector<std::string> ShutterFactory::getAliases(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
@@ -263,7 +338,6 @@ std::vector<std::string> ShutterFactory::getAliases(const std::string& name) con
 	std::vector<std::string> dummy;
 	return dummy;
 }
-
 
 void ShutterFactory::debugMessagesOn()
 {
