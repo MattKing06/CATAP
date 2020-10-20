@@ -1,11 +1,16 @@
 #include <RFProtection.h>
+#include <RFProtectionPVRecords.h>
 
 RFProtection::RFProtection()
 {
 }
 
-RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode)
+RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode) :
+	Hardware(specificHardwareParameters, mode),
+	RFProtectionParamMap(specificHardwareParameters),
+	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface()))
 {
+	setPVStructs();
 }
 
 RFProtection::RFProtection(const RFProtection& copyRFProtection)
@@ -18,6 +23,24 @@ RFProtection::~RFProtection()
 
 void RFProtection::setPVStructs()
 {
+	for (auto& record : RFProtectionRecords::rfProtectionRecordsList)
+	{
+		pvStructs[record] = pvStruct();
+		pvStructs[record].pvRecord = record;
+		std::string PV = specificHardwareParameters.find(record)->second;
+		switch (mode)
+		{
+		case(STATE::VIRTUAL):
+			pvStructs[record].fullPVName = "VM-" + PV;
+			break;
+		case(STATE::PHYSICAL):
+			pvStructs[record].fullPVName = PV;
+			break;
+		default:
+			pvStructs[record].fullPVName = PV;
+			break;
+		}
+	}
 }
 
 void RFProtection::debugMessagesOn()
