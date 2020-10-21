@@ -27,7 +27,9 @@ struct ShutterState
 	ShutterState() :
 		name(GlobalConstants::DUMMY_NAME),
 		state(STATE::UNKNOWN),
-		Cmi(GlobalConstants::int_min)
+		Cmi(GlobalConstants::int_min),
+		interlock_states_Py(boost::python::dict()),
+		interlock_states(std::map<std::string, STATE>())
 	{};
 	std::string name;
 	STATE state;
