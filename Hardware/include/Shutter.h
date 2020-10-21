@@ -63,9 +63,9 @@ class Shutter : public Hardware
 		@param[out] ShutterState structured data */
 		ShutterState getShutterState()const;
 
-		/*! Get the ShutterState (structured data with shutter name and latest, state, Cmi, and interlock bitmap, Python Versoin
-		@param[out] ShutterState structured data */
-		ShutterState getShutterState_Py()const;
+		///*! Get the ShutterState (structured data with shutter name and latest, state, Cmi, and interlock bitmap, Python Versoin
+		//@param[out] ShutterState structured data */
+		//ShutterState getShutterState_Py()const;
 		
 		/*! Get the ShutterState data in a python dictionary
 		@param[out] dict, dictionary of shutter state date, keyed by the name of each data type */

@@ -1,13 +1,13 @@
 message( "Processing Python Interface source files...")
 set( SOURCE_FILES
     source/DataTypesPythonInterface.cpp
- #   source/PythonInterface.cpp 
+ #   source/PythonInterface.cpp
     source/ValvePythonInterface.cpp
-    source/MagnetPythonInterface.cpp 
-	source/CameraPythonInterface.cpp 
-    source/BPMPythonInterface.cpp 
-    source/ChargePythonInterface.cpp 
-    source/ScreenPythonInterface.cpp 
+    source/MagnetPythonInterface.cpp
+	source/CameraPythonInterface.cpp
+    source/BPMPythonInterface.cpp
+    source/ChargePythonInterface.cpp
+    source/ScreenPythonInterface.cpp
     source/EPICSToolsPythonInterface.cpp
 	source/GlobalStatesPythonInterface.cpp
 	source/GlobalTypesPythonInterface.cpp
@@ -30,13 +30,13 @@ set( GENERAL_INCLUDE_FILES
 
 set( INCLUDE_FILES
     include/DataTypesPythonInterface.h
- #   include/PythonInterface.h 
-    include/MagnetPythonInterface.h 
-    include/CameraPythonInterface.h 
+ #   include/PythonInterface.h
+    include/MagnetPythonInterface.h
+    include/CameraPythonInterface.h
     include/ValvePythonInterface.h
-    include/BPMPythonInterface.h 
-    include/ChargePythonInterface.h 
-    include/ScreenPythonInterface.h 
+    include/BPMPythonInterface.h
+    include/ChargePythonInterface.h
+    include/ScreenPythonInterface.h
     include/EPICSToolsPythonInterface.h
 	include/GlobalStatesPythonInterface.h
 	include/GlobalTypesPythonInterface.h
@@ -60,7 +60,7 @@ set( TEST_FILES
 
 
 if(WIN32)
-	set(THIRD_PARTY_DEBUG_LIB_DIRS 
+	set(THIRD_PARTY_DEBUG_LIB_DIRS
 		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-gd-1_63.dll
 		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-gd-1_63.dll
 		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-gd-1_63.dll
@@ -68,7 +68,7 @@ if(WIN32)
 		${EPICS_COM_DLL}
 		${EPICS_CA_DLL}
 		)
-	set(THIRD_PARTY_RELEASE_LIB_DIRS 
+	set(THIRD_PARTY_RELEASE_LIB_DIRS
 		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-1_63.dll
 		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-1_63.dll
 		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-1_63.dll
@@ -78,7 +78,7 @@ if(WIN32)
 		)
 endif(WIN32)
 if(UNIX)
-	set(THIRD_PARTY_LIB_DIRS 
+	set(THIRD_PARTY_LIB_DIRS
 		${Boost_LIBRARY_DIRS}/libboost_filesystem.so
 		${Boost_LIBRARY_DIRS}/libboost_python3.so
 		${Boost_LIBRARY_DIRS}/libboost_python.so
@@ -137,13 +137,13 @@ foreach(FILE ${SOURCE_FILES})
 	endif(UNIX)
 
 	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
-
+	add_compile_definitions("PYTHON_DLL")
 
 	if(WIN32)
 		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")
         set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/${LIBFOLDERNAME})
         set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/${LIBFOLDERNAME})
-        
+
         set(DEBUG_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/")
         add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" ${DEBUG_TOP_LEVEL_CATAP_DIR})
         get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
@@ -152,7 +152,7 @@ foreach(FILE ${SOURCE_FILES})
 
         message("RELEASE BUILD")
         set(RELEASE_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/")
-        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" ${RELEASE_TOP_LEVEL_CATAP_DIR})       
+        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" ${RELEASE_TOP_LEVEL_CATAP_DIR})
         get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
         message("COPYING INIT TEMPLATE TO: " ${RELEASE_TOP_LEVEL_CATAP_DIR}${LIBFOLDERNAME}/__init__.py)
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${RELEASE_TOP_LEVEL_CATAP_DIR}${LIBFOLDERNAME}/__init__.py)
@@ -164,15 +164,15 @@ foreach(FILE ${SOURCE_FILES})
             add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${DEBUG_OUTPUT_DIRECTORY})
             add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${DEBUG_TOP_LEVEL_CATAP_DIR})
             message("COPIED ${LIBRARY} TO: ${DEBUG_OUTPUT_DIRECTORY}")
-            message("COPIED ${LIBRARY} TO: ${DEBUG_TOP_LEVEL_CATAP_DIR}")            
+            message("COPIED ${LIBRARY} TO: ${DEBUG_TOP_LEVEL_CATAP_DIR}")
         endforeach(LIBRARY)
 
         foreach(LIBRARY ${THIRD_PARTY_RELEASE_LIB_DIRS})
             add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${RELEASE_OUTPUT_DIRECTORY})
             add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" ${RELEASE_TOP_LEVEL_CATAP_DIR})
             message("COPIED ${LIBRARY} TO: ${RELEASE_OUTPUT_DIRECTORY}")
-            message("COPIED ${LIBRARY} TO: ${RELEASE_TOP_LEVEL_CATAP_DIR}")   
-        endforeach(LIBRARY)         
+            message("COPIED ${LIBRARY} TO: ${RELEASE_TOP_LEVEL_CATAP_DIR}")
+        endforeach(LIBRARY)
 	endif(WIN32)
 	if (UNIX)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${CMAKE_BINARY_DIR}/PythonInterface/CATAP/${LIBFOLDERNAME}/__init__.py)

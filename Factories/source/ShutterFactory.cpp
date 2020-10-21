@@ -219,15 +219,15 @@ ShutterState ShutterFactory::getShutterState(const std::string& shutter_name)con
 	}
 	return ShutterState();
 }
-ShutterState ShutterFactory::getShutterState_Py(const std::string& shutter_name)const
-{
-	std::string full_name = getFullName(shutter_name);
-	if (GlobalFunctions::entryExists(shutterMap, full_name))
-	{
-		return shutterMap.at(full_name).getShutterState_Py();
-	}
-	return ShutterState();
-}
+//ShutterState ShutterFactory::getShutterState_Py(const std::string& shutter_name)const
+//{
+//	std::string full_name = getFullName(shutter_name);
+//	if (GlobalFunctions::entryExists(shutterMap, full_name))
+//	{
+//		return shutterMap.at(full_name).getShutterState_Py();
+//	}
+//	return ShutterState();
+//}
 
 
 std::map<std::string, ShutterState> ShutterFactory::getShutterStates()const
