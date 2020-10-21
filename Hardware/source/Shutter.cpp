@@ -47,7 +47,7 @@ Shutter::~Shutter(){}
 
 ShutterState Shutter::getShutterState()const
 {
-	ShutterState r;
+	ShutterState r = ShutterState();
 	r.Cmi = getCMI();
 	r.state = getState();
 	r.name = getHardwareName();
