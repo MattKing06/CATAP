@@ -8,9 +8,10 @@ RFProtection::RFProtection()
 RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
 	RFProtectionParamMap(paramMap),
-	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface()))
+	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface())),
+	protectionType(string_to_hardware_type_map.at(paramMap.at("prot_type")))
 {
-	std::cout << "constructing PV data for" << std::endl;
+	messenger.printMessage("constructing PV data for: ", hardwareName);
 	setPVStructs();
 }
 
@@ -28,7 +29,6 @@ void RFProtection::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-		std::cout << " RECORD: " << record << std::endl;
 		std::string PV = specificHardwareParameters.find(record)->second;
 		switch (mode)
 		{
@@ -43,6 +43,16 @@ void RFProtection::setPVStructs()
 			break;
 		}
 	}
+}
+
+TYPE RFProtection::getProtectionType() const
+{
+	return protectionType;
+}
+
+std::string RFProtection::getProtectionTypeAsStr() const
+{
+	return ENUM_TO_STRING(protectionType);
 }
 
 void RFProtection::debugMessagesOn()

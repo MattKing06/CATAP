@@ -19,12 +19,16 @@ public:
 	RFProtection(const RFProtection& copyRFProtection);
 	~RFProtection();
 	void setPVStructs();
+	TYPE getProtectionType() const;
+	std::string getProtectionTypeAsStr() const;
 	EPICSRFProtectionInterface_sptr epicsInterface;
 	std::map<std::string, std::string> RFProtectionParamMap;
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+private:
+	TYPE protectionType;
 };
 
 

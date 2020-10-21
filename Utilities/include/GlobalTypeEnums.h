@@ -61,10 +61,19 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	/// machine areas  are these "types" ?? YES!!
 	(UNKNOWN_AREA)
 	(ALL_VELA_CLARA)
+	// LLRF and RFProtection Types
 	(VELA_GUN)
 	(CLARA_GUN)
+	(CLARA_HRRG)
+	(CLARA_LRRG)
+	(VELA_HRRG)
+	(VELA_LRRG)
 	(HRRG_GUN)
 	(LRRG_GUN)
+	(ENABLE)
+	(GENERAL)
+	(RESET)
+	(TEST)
 	(LAS) // TODO change to laser or laser transport ??? 
 	(VELA_LASER)
 	(CLARA_LASER)
