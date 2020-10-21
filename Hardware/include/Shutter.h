@@ -99,6 +99,28 @@ class Shutter : public Hardware
 		Shutter& getShutter();
 
 
+		/*! Compare the energy interlock to STATE::GOOD (energy interlock name is hardcoded, and should match master lattice name.) 
+			@param[out] bool, true if state is GOOD, otherwise false  */
+		bool isEnergyInterlockGood()const;
+		/*! Compare the energy interlock to STATE::BAD (energy interlock name is hardcoded, and should match master lattice name.)
+			@param[out] bool, true if state is BAD, otherwise false  */
+		bool isEnergyInterlockBad()const;
+
+		/*! Compare the charge interlock to STATE::BAD (charge interlock name is hardcoded, and should match master lattice name.)
+			@param[out] bool, true if state is GOOD, otherwise false  */
+		bool isChargeInterlockGood()const;
+		/*! Compare the charge interlock to STATE::BAD (charge interlock name is hardcoded, and should match master lattice name.)
+			@param[out] bool, true if state is BAD, otherwise false  */
+		bool isChargeInterlockBad()const;
+
+		/*! Compare both the PS GLA, GLB interlocks to STATE::GOOD (names are hardcoded, and should match master lattice name.)
+			@param[out] bool, true if both states are GOOD, otherwise false  */
+		bool isPSInterlockGood()const;
+		/*! Compare both the PS GLA, GLB interlocks to STATE::BAD (names are hardcoded, and should match master lattice name.)
+			@param[out] bool, true if either states are BAD, otherwise false  */
+		bool isPSInterlockBad()const;
+
+
 
 		/*! enable debug-messages for this shutter 	*/
 		void debugMessagesOn();

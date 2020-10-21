@@ -37,6 +37,12 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<Shutter, boost::python::bases<Hardware>, boost::noncopyable>("Shutter", boost::python::no_init)
 			
+			.def("isEnergyInterlockGood", &Shutter::isEnergyInterlockGood)
+			.def("isEnergyInterlockBad", &Shutter::isEnergyInterlockBad)
+			.def("isChargeInterlockGood", &Shutter::isChargeInterlockGood)
+			.def("isChargeInterlockBad", &Shutter::isChargeInterlockBad)
+			.def("isPSInterlockGood", &Shutter::isPSInterlockGood)
+			.def("isPSInterlockBad", &Shutter::isPSInterlockBad)
 			.def("isClosed", &Shutter::isClosed)
 			.def("isOpen",   &Shutter::isOpen)
 			.def("getState", &Shutter::getState)
@@ -60,6 +66,15 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ShutterFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<ShutterFactory, boost::noncopyable>("ShutterFactory", boost::python::no_init)
+			
+		
+			.def("isEnergyInterlockGood", &ShutterFactory::isEnergyInterlockGood, name)
+			.def("isEnergyInterlockBad", &ShutterFactory::isEnergyInterlockBad, name)
+			.def("isChargeInterlockGood", &ShutterFactory::isChargeInterlockGood, name)
+			.def("isChargeInterlockBad", &ShutterFactory::isChargeInterlockBad, name)
+			.def("isPSInterlockGood", &ShutterFactory::isPSInterlockGood, name)
+			.def("isPSInterlockBad", &ShutterFactory::isPSInterlockBad, name)
+
 			.def("isClosed", &ShutterFactory::isClosed, name)
 			.def("isOpen", &ShutterFactory::isOpen, name)
 			.def("getState", &ShutterFactory::getState, name)

@@ -107,6 +107,119 @@ boost::python::list Shutter::getAliases_Py() const
 
 
 
+bool Shutter::isEnergyInterlockGood()const
+{
+	std::string Energy_Meter = "Energy_Meter";
+	if(GlobalFunctions::entryExists<std::string>(interlock_bit_names, Energy_Meter)) //MAGIC
+	{
+		return cmi_bit_map.at(Energy_Meter) == STATE::GOOD;
+	}
+	else
+	{
+		messenger.printDebugMessage("Energy_Meter is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	return false;
+}
+bool Shutter::isEnergyInterlockBad()const
+{
+	std::string Energy_Meter = "Energy_Meter";
+	if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, Energy_Meter)) //MAGIC
+	{
+		return cmi_bit_map.at(Energy_Meter) == STATE::BAD;
+	}
+	else
+	{
+		messenger.printDebugMessage("Energy_Meter is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	return false;
+}
+
+bool Shutter::isChargeInterlockGood()const
+{
+	std::string Charge_Diag = "Charge_Diag";
+	if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, Charge_Diag)) //MAGIC
+	{
+		return cmi_bit_map.at(Charge_Diag) == STATE::GOOD;
+	}
+	else
+	{
+		messenger.printDebugMessage("Charge_Diag is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	return false;
+}
+bool Shutter::isChargeInterlockBad()const
+{
+	std::string Charge_Diag = "Charge_Diag";
+	if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, Charge_Diag)) //MAGIC
+	{
+		return cmi_bit_map.at(Charge_Diag) == STATE::BAD;
+	}
+	else
+	{
+		messenger.printDebugMessage("Charge_Diag is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	return false;
+}
+
+bool Shutter::isPSInterlockGood()const
+{
+	// THIS IS an AND combination 
+	std::string GLA = "GLA";
+	if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, GLA)) //MAGIC
+	{
+		if(cmi_bit_map.at(GLA) == STATE::GOOD) //MAGIC
+		{
+			std::string GLB = "GLB";
+			if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, GLB)) //MAGIC
+			{
+				return cmi_bit_map.at(GLB) == STATE::GOOD;
+			}
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage("GLA is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	return false;
+}
+bool Shutter::isPSInterlockBad()const
+{
+	// this is an inclusive or combination 
+	std::string GLA = "GLA";
+	if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, GLA)) //MAGIC
+	{
+		if (cmi_bit_map.at(GLA) == STATE::BAD)
+		{
+			return true;
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage("GLA is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	std::string GLB = "GLB";
+	if (GlobalFunctions::entryExists<std::string>(interlock_bit_names, GLB)) //MAGIC
+	{
+		if (cmi_bit_map.at(GLB) == STATE::BAD)
+		{
+			return true;
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage("GLB is not in interlock_bit_names, error in master lattice?? ");
+	}
+
+	return false;
+}
+
+
 
 bool Shutter::close()
 {

@@ -301,6 +301,63 @@ void ShutterFactory::setMonitorStatus(pvStruct& pvStruct)
 }
 
 
+bool ShutterFactory::isEnergyInterlockGood(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).isEnergyInterlockBad();
+	}
+	return false;
+}
+
+bool ShutterFactory::isEnergyInterlockBad(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).isEnergyInterlockBad();
+	}
+	return false;
+}
+bool ShutterFactory::isChargeInterlockGood(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).isChargeInterlockGood();
+	}
+	return false;
+}
+bool ShutterFactory::isChargeInterlockBad(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).isChargeInterlockBad();
+	}
+	return false;
+}
+bool ShutterFactory::isPSInterlockGood(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).isPSInterlockGood();
+	}
+	return false;;
+}
+bool ShutterFactory::isPSInterlockBad(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).isPSInterlockBad();
+	}
+	return false;
+}
+
+
 void ShutterFactory::populateShutterMap()
 {
 	messenger.printDebugMessage("ShutterFactory is populating Valve Map");

@@ -100,6 +100,36 @@ public:
 	@param[out] dict, dictionary of shutter state dictionaries (!), keyed by the name of each shutter */
 	boost::python::dict getShutterStateDictionaries()const;
 
+
+	/*! Compare the energy interlock to STATE::GOOD (energy interlock name is hardcoded, and should match master lattice name.)
+		@param[in] string, name of shutter to compare
+		@param[out] bool, true if state is GOOD, otherwise false  */
+	bool isEnergyInterlockGood(const std::string& name)const;
+	/*! Compare the energy interlock to STATE::BAD (energy interlock name is hardcoded, and should match master lattice name.)
+		@param[in] string, name of shutter to compare
+		@param[out] bool, true if state is BAD, otherwise false (including if passed name is not recognized)  */
+	bool isEnergyInterlockBad(const std::string& name)const;
+
+	/*! Compare the charge interlock to STATE::BAD (charge interlock name is hardcoded, and should match master lattice name.)
+		@param[in] string, name of shutter to compare
+		@param[out] bool, true if state is GOOD, otherwise false (including if passed name is not recognized)   */
+	bool isChargeInterlockGood(const std::string& name)const;
+	/*! Compare the charge interlock to STATE::BAD (charge interlock name is hardcoded, and should match master lattice name.)
+		@param[in] string, name of shutter to compare
+		@param[out] bool, true if state is BAD, otherwise false (including if passed name is not recognized)  */
+	bool isChargeInterlockBad(const std::string& name)const;
+
+	/*! Compare both the PS GLA, GLB interlocks to STATE::GOOD (names are hardcoded, and should match master lattice name.)
+		@param[in] string, name of shutter to compare
+		@param[out] bool, true if both states are GOOD, otherwise false (including if passed name is not recognized)  */
+	bool isPSInterlockGood(const std::string& name)const;
+	/*! Compare both the PS GLA, GLB interlocks to STATE::BAD (names are hardcoded, and should match master lattice name.)
+		@param[in] string, name of shutter to compare
+		@param[out] bool, true if either states are BAD, otherwise false (including if passed name is not recognized)  */
+	bool isPSInterlockBad(const std::string& name)const;
+
+
+
 	/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for valveFactory and calls same function in all valves and configReader*/
@@ -112,6 +142,8 @@ public:
 	bool isDebugOn();
 	/*! returns true if messenger messages flag is true, false otherwise*/
 	bool isMessagingOn();
+
+
 
 
 	bool setup(const std::string version);
