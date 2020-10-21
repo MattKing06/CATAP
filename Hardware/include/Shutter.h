@@ -28,14 +28,18 @@ struct ShutterState
 		name(GlobalConstants::DUMMY_NAME),
 		state(STATE::UNKNOWN),
 		Cmi(GlobalConstants::int_min),
+#ifdef PYTHON_DLL
 		interlock_states_Py(boost::python::dict()),
+#endif
 		interlock_states(std::map<std::string, STATE>())
 	{};
 	std::string name;
 	STATE state;
 	int Cmi;
 	std::map<std::string, STATE>  interlock_states;
+#ifdef PYTHON_DLL
 	boost::python::dict interlock_states_Py;
+#endif
 };
 
 
@@ -58,6 +62,10 @@ class Shutter : public Hardware
 		/*! Get the ShutterState (structured data with shutter name and latest, state, Cmi, and interlock bitmap
 		@param[out] ShutterState structured data */
 		ShutterState getShutterState()const;
+
+		/*! Get the ShutterState (structured data with shutter name and latest, state, Cmi, and interlock bitmap, Python Versoin
+		@param[out] ShutterState structured data */
+		ShutterState getShutterState_Py()const;
 		
 		/*! Get the ShutterState data in a python dictionary
 		@param[out] dict, dictionary of shutter state date, keyed by the name of each data type */

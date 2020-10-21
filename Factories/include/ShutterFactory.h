@@ -90,6 +90,11 @@ public:
 	@param[out] ShutterState, ShutterState structured data */
 	ShutterState getShutterState(const std::string& name)const;
 
+	/*! Get the ShutterState, Python version 
+	@param[in] string, name of shutter
+	@param[out] ShutterState, ShutterState structured data */
+	ShutterState getShutterState_Py(const std::string& shutter_name)const;
+
 	/*! Get the ShutterState data in a python dictionary
 	@param[in] string, name of shutter 
 	@param[out] dict, dictionary of shutter state data, keyed by the name of each data type */

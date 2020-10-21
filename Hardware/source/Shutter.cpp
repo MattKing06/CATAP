@@ -52,9 +52,24 @@ ShutterState Shutter::getShutterState()const
 	r.state = getState();
 	r.name = getHardwareName();
 	r.interlock_states = getCMIBitMap();
-	r.interlock_states_Py = getCMIBitMap_Py();
+	//r.interlock_states_Py = getCMIBitMap_Py();
 	return r;
 }
+
+ShutterState Shutter::getShutterState_Py()const
+{
+	ShutterState r = ShutterState();
+	r.Cmi = getCMI();
+	r.state = getState();
+	r.name = getHardwareName();
+	//r.interlock_states = getCMIBitMap();
+#ifdef PYTHON_DLL
+	r.interlock_states_Py = getCMIBitMap_Py();
+#endif
+	return r;
+}
+
+
 
 boost::python::dict Shutter::getShutterStateDictionary()const
 {
@@ -263,7 +278,8 @@ void Shutter::setPVStructs()
 		pvStructs[record].pvRecord = record;
 		std::string PV = specificHardwareParameters.find(record)->second.data();
 		messenger.printDebugMessage("Constructing PV information for ", PV);
-		switch (mode) {
+		switch (mode) 
+		{
 		case STATE::VIRTUAL:
 			pvStructs[record].fullPVName = "VM-" + PV;
 			break;
