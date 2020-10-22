@@ -137,9 +137,9 @@ foreach(FILE ${SOURCE_FILES})
 	endif(UNIX)
 
 	set_target_properties(${LIBNAME} PROPERTIES OUTPUT_NAME ${LIBNAME})
-    target_compile_definitions(${LIBNAME} PUBLIC "PYTHON_DLL")
-    target_compile_definitions(Hardware PUBLIC "PYTHON_DLL")
-    target_compile_definitions(Factories PUBLIC "PYTHON_DLL")
+    target_compile_definitions(${LIBNAME} PRIVATE "PYTHON_DLL")
+    target_compile_definitions(Hardware PRIVATE "PYTHON_DLL")
+    target_compile_definitions(Factories PRIVATE "PYTHON_DLL")
 
 	if(WIN32)
 		set_target_properties(${LIBNAME} PROPERTIES SUFFIX ".pyd")

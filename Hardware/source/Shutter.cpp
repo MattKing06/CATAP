@@ -54,8 +54,8 @@ ShutterState Shutter::getShutterState()const
 	r.interlock_states = getCMIBitMap();
 	std::cout << "call getCMIBitMap_Py " << std::endl;
 #ifdef PYTHON_DLL
-	std::cout << "call getCMIBitMap_Py " << std::endl;
-	r.interlock_states_Py = getCMIBitMap_Py();
+	//std::cout << "call getCMIBitMap_Py " << std::endl;
+	//r.interlock_states_Py = getCMIBitMap_Py();
 #endif
 	return r;
 }

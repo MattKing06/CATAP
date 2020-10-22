@@ -18,7 +18,7 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 			.def_readonly("name", &ShutterState::name)
 			.def_readonly("state", &ShutterState::state)
 			.def_readonly("Cmi", &ShutterState::Cmi)
-			.def_readonly("interlock_states", &ShutterState::interlock_states_Py)
+			//.def_readonly("interlock_states", &ShutterState::interlock_states_Py)
 			;
 		//std::string name;
 		//STATE state;
@@ -51,7 +51,7 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 			.def("getCMI",     &Shutter::getCMI)
 			.def("getCMIBitMap",     &Shutter::getCMIBitMap_Py)
 			.def("getAliases",     &Shutter::getAliases_Py)
-			.def("getShutterState",     &Shutter::getShutterState)
+			//.def("getShutterState",     &Shutter::getShutterState)
 			.def("getShutterStateDictionary",     &Shutter::getShutterStateDictionary)
 			.def("debugMessagesOn", &Shutter::debugMessagesOn)
 			.def("debugMessagesOff", &Shutter::debugMessagesOff)

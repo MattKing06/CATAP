@@ -29,7 +29,7 @@ struct ShutterState
 		state(STATE::UNKNOWN),
 		Cmi(GlobalConstants::int_min),
 #ifdef PYTHON_DLL
-		interlock_states_Py(boost::python::dict()),
+		//interlock_states_Py(boost::python::dict()),
 #endif
 		interlock_states(std::map<std::string, STATE>())
 	{};
@@ -38,7 +38,7 @@ struct ShutterState
 	int Cmi;
 	std::map<std::string, STATE>  interlock_states;
 #ifdef PYTHON_DLL
-	boost::python::dict interlock_states_Py;
+	//boost::python::dict interlock_states_Py;
 #endif
 };
 
