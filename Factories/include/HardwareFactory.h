@@ -8,6 +8,8 @@
 #include "IMGFactory.h"
 #include "LLRFFactory.h"
 #include "CameraFactory.h"
+#include "LaserEnergyMeterFactory.h"
+#include "LaserHWPFactory.h"
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -42,6 +44,8 @@ public:
 	ValveFactory& getValveFactory();
 	IMGFactory& getIMGFactory();
 	CameraFactory& getCameraFactory();
+	LaserEnergyMeterFactory& getLaserEnergyMeterFactory();
+	LaserHWPFactory& getLaserHWPFactory();
 	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
@@ -61,6 +65,8 @@ public:
 	LLRFFactory llrffactory;
 	BPMFactory bpmFactory;
 	CameraFactory cameraFactory;
+	LaserEnergyMeterFactory laserEnergyMeterFactory;
+	LaserHWPFactory laserHWPFactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;

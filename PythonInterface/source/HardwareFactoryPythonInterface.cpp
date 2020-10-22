@@ -19,6 +19,8 @@
 #include <ShutterPythonInterface.h>
 #include <StagePythonInterface.h>
 #include <ValvePythonInterface.h>
+#include <LaserEnergyMeterPythonInterface.h>
+#include <LaserHWPPythonInterface.h>
 
 BOOST_PYTHON_MODULE(_HardwareFactory)
 {
@@ -66,4 +68,8 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_STAGE_INCLUDE::expose_stage_factory_object();
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveObject();
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveFactoryObject();
+	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_object();
+	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_factory_object();
+	BOOST_PYTHON_LASER_HWP_INCLUDE::expose_laser_hwp_object();
+	BOOST_PYTHON_LASER_HWP_INCLUDE::expose_laser_hwp_factory_object();
 }
