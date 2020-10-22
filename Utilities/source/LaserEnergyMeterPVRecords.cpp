@@ -1,12 +1,12 @@
 #include "LaserEnergyMeterPVRecords.h"
 
-
-std::string const LaserEnergyMeterRecords::OVERRANGE = "OVERRANGE";
-std::string const LaserEnergyMeterRecords::RUNSP = "RUNSP";
-std::string const LaserEnergyMeterRecords::RANGESP = "RANGESP";
-
 namespace LaserEnergyMeterRecords
 {
+std::string const OVERRANGE = "OVERRANGE";
+std::string const RUNSP = "RUNSP";
+std::string const RANGESP = "RANGESP";
+
+
 	std::vector<std::string> laserEnergyMeterRecordList = { OVERRANGE,RANGESP,RUNSP };
 	std::map<std::string, TYPE> laserEnergyMeterList{
 		std::pair<std::string, TYPE>(OVERRANGE,TYPE::ENERGYMETER),
