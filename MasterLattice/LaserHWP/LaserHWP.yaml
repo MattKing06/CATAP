@@ -2,8 +2,8 @@ controls_information:
     PV: true, false
     records: ROT:RPOS,ROT:MABS
     pv_record_map:
-        ROT:MABS: EBT-LAS-OPT-HWP-2:ROT:MABS
-        ROT:RPOS: EBT-LAS-OPT-HWP-2:ROT:RPOS
+        "ROT:MABS": EBT-LAS-OPT-HWP-2:ROT:MABS
+        "ROT:RPOS": EBT-LAS-OPT-HWP-2:ROT:RPOS
 properties: 
     machine_area: UNDEFINED
     hardware_type: LaserHWP

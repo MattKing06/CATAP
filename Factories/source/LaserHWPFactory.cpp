@@ -92,7 +92,6 @@ void LaserHWPFactory::setupChannels()
 	for (auto& laser : laserHWPMap)
 	{
 		std::map<std::string, pvStruct>& pvStructs = laser.second.getPVStructs();
-
 		for (auto& pv : pvStructs)
 		{
 			laser.second.epicsInterface->retrieveCHID(pv.second);
