@@ -7,6 +7,7 @@
 #include "ValveFactory.h"
 #include "IMGFactory.h"
 #include "LLRFFactory.h"
+#include "ShutterFactory.h"
 #include "CameraFactory.h"
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
@@ -45,6 +46,10 @@ public:
 	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
+
+	ShutterFactory& getShutterFactory();
+
+
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -61,6 +66,7 @@ public:
 	LLRFFactory llrffactory;
 	BPMFactory bpmFactory;
 	CameraFactory cameraFactory;
+	ShutterFactory shutterFactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;

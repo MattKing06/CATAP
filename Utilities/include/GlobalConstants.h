@@ -78,6 +78,10 @@ namespace GlobalConstants
 		{"Charge", TYPE::CHARGE},
 		{"charge", TYPE::CHARGE},
 
+		{ENUM_TO_STRING(TYPE::SHUTTER), TYPE::SHUTTER},
+		{"Shutter", TYPE::SHUTTER},
+		{"shutter", TYPE::SHUTTER},
+
 		{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},
@@ -159,6 +163,12 @@ namespace GlobalConstants
 	/*! Maximum possible value of a double */
 	const double double_max = std::numeric_limits<double>::max();
 
+	/*! Minimum possible value of a int */
+	const int int_min = std::numeric_limits<int>::min();
+	/*! Maximum possible value of a int */
+	const int int_max = std::numeric_limits<int>::max();
+
+
 	/*! Double-type variable for 0.0 */
 	const double zero_double = 0.0;
 	/*! Double-type variable for 1.0 */
@@ -231,6 +241,7 @@ namespace GlobalConstants
 	const std::string nominal = "nominal";
 	
 	
+
 
 
 
