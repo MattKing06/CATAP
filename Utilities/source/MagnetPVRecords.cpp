@@ -9,7 +9,6 @@ namespace MagnetRecords
 	std::string const SETI = "SETI";
 	std::string const SPOWER = "SPOWER";
 
-
 	std::vector<std::string> magnetRecordList = { GETSETI,READI,RILK,RPOWER,SETI,SPOWER };
 }
 

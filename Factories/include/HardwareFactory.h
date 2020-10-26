@@ -7,6 +7,7 @@
 #include "ValveFactory.h"
 #include "IMGFactory.h"
 #include "LLRFFactory.h"
+#include "ShutterFactory.h"
 #include "CameraFactory.h"
 #include "LaserEnergyMeterFactory.h"
 #include "LaserHWPFactory.h"
@@ -49,6 +50,10 @@ public:
 	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
+
+	ShutterFactory& getShutterFactory();
+
+
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -67,6 +72,7 @@ public:
 	CameraFactory cameraFactory;
 	LaserEnergyMeterFactory laserEnergyMeterFactory;
 	LaserHWPFactory laserHWPFactory;
+	ShutterFactory shutterFactory;
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;

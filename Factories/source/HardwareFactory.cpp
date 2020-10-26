@@ -20,6 +20,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	cameraFactory(CameraFactory(mode)),
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
 	laserHWPFactory(LaserHWPFactory(mode)),
+	shutterFactory(ShutterFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -85,6 +86,33 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		}
 	}
 	return setup;
+}
+
+
+
+
+ShutterFactory& HardwareFactory::getShutterFactory()
+{
+	messenger.printMessage("getShutterFactory Called");
+	if (!shutterFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getShutterFactory calling setup");
+		bool setup = shutterFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getShutterFactory Complete");
+			return shutterFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ShutterFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getShutterFactory Complete");
+		return shutterFactory;
+	}
 }
 
 // YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
