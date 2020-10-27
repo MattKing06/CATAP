@@ -32,7 +32,7 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 			.add_property("laserMap", &LaserHWPFactory::laserHWPMap)
 			.def("getLaserHWP", &LaserHWPFactory::getLaserHWP, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getLaserHWPs", &LaserHWPFactory::getLaserHWPs)
-			.def("getAllLaserHWPs", &LaserHWPFactory::getAllLaserHWPs)
+			//.def("getAllLaserHWPs", &LaserHWPFactory::getAllLaserHWPs)
 			.def("setHWP", &LaserHWPFactory::setHWP)
 			.def("getHWPSet", &LaserHWPFactory::getHWPSet)
 			.def("getHWPRead", &LaserHWPFactory::getHWPRead);
