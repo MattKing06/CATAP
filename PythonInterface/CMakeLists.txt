@@ -13,6 +13,8 @@ set( SOURCE_FILES
 	source/GlobalTypesPythonInterface.cpp
     source/HardwareFactoryPythonInterface.cpp
     source/IMGPythonInterface.cpp
+    source/LaserEnergyMeterPythonInterface.cpp
+    source/LaserHWPPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
     source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
@@ -43,6 +45,8 @@ set( INCLUDE_FILES
     include/HardwareFactoryPythonInterface.h
     include/HardwarePythonInterface.h
 	include/IMGPythonInterface.h
+    include/LaserEnergyMeterPythonInterface.h
+    include/LaserHWPPythonInterface.h
     include/LaserMirrorPythonInterface.h
     include/LEDPythonInterface.h
     include/LightingPythonInterface.h

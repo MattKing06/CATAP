@@ -16,6 +16,8 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "IMG", "IMG" },
 	{ "LLRF", "LLRF"  }, // ??? 
 	{ "CAM", "Camera" },
+	{ "LEM", "LaserEnergyMeter" },
+	{ "LHW", "LaserHWP" },
 	{ "SHUT", "Shutter" }
 };
 
