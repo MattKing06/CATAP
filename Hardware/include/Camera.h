@@ -202,6 +202,7 @@ public:
 	long getROIMinX()const;
 	long getROIMinY()const;
 	long getROISizeX()const;
+	long getROISizeY()const;
 	std::map<std::string, long> getROI();
 	boost::python::dict getROI_Py();
 

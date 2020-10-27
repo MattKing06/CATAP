@@ -90,19 +90,19 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
 			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
 			.def("setMaskandROI", &Camera::setMaskandROI_Py)
-			.def("getMaskAndROIxPos",  &Camera::getMaskAndROIxPos)
-			.def("getMaskAndROIyPos",  &Camera::getMaskAndROIyPos)
-			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
-			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
+			//.def("getMaskAndROIxPos",  &Camera::getMaskAndROIxPos)
+			//.def("getMaskAndROIyPos",  &Camera::getMaskAndROIyPos)
+			//.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
+			//.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
 
 
 
 
 
-			.def_readonly("mask_and_roi_keywords", &Camera::mask_and_roi_keywords_Py)
-			.def_readonly("mask_keywords", &Camera::mask_keywords_Py)
-			.def_readonly("roi_keywords", &Camera::roi_keywords_Py)
+			//.def_readonly("mask_and_roi_keywords", &Camera::mask_and_roi_keywords_Py)
+			//.def_readonly("mask_keywords", &Camera::mask_keywords_Py)
+			//.def_readonly("roi_keywords", &Camera::roi_keywords_Py)
 					
 	
 			
