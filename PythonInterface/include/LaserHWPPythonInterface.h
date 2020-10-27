@@ -13,6 +13,8 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 	void expose_laser_hwp_object() {
 
 		// laser exposure
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LaserHWP>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<LaserHWP, boost::python::bases<Hardware>, boost::noncopyable>("LaserHWP", boost::python::no_init)
 			.add_property("name", &LaserHWP::getLaserHWPName)
 			.add_property("type", &LaserHWP::getLaserHWPType)
@@ -26,6 +28,8 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 	void expose_laser_hwp_factory_object() {
 
 		//laser Factory Exposure
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LaserHWPFactory>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<LaserHWPFactory>("LaserHWPFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
 			.def("setup", &LaserHWPFactory::setup)

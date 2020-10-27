@@ -13,6 +13,8 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 	void expose_laser_energy_meter_object() {
 
 		// laser exposure
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LaserEnergyMeter>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<LaserEnergyMeter, boost::python::bases<Hardware>, boost::noncopyable>("LaserEnergyMeter", boost::python::no_init)
 			.add_property("name", &LaserEnergyMeter::getLaserEnergyMeterName)
 			.add_property("type", &LaserEnergyMeter::getLaserEnergyMeterType)
@@ -30,6 +32,8 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 	void expose_laser_energy_meter_factory_object() {
 
 		//laser Factory Exposure
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LaserEnergyMeterFactory>())->to_python_target_type());
+		if (is_registered) return;
 		boost::python::class_<LaserEnergyMeterFactory>("LaserEnergyMeterFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
 			.def("setup", &LaserEnergyMeterFactory::setup)
