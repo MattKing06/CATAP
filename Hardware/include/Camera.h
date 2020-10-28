@@ -67,7 +67,7 @@ public:
 	/*! get the screen name (and aliases) the camera is attached to (python version)
 	@param[out] names, python list containing all the screen names (and their aliases) */
 	boost::python::list getScreenNames_Py() const;
-	/*! get the screen name the camera is attached to 
+	/*! get the screen name the camera is attached to (defined in master lattice)
 	@param[out] name, */
 	std::string getScreen()const;
 
@@ -92,9 +92,17 @@ public:
 	@param[out] length in mm*/
 	double mm2pixY(double value)const;
 
+	/*! Get the pixels to mm in x(horizontal) direction. (First set from the yaml config file) 
+	@param[out] double, value */
 	double getpix2mmX()const;
+	/*! Get the pixels to mm in y (horizontal) direction. (First set from the yaml config file)
+	@param[out] double, value */
 	double getpix2mmY()const;
+	/*! Set the pixels to mm in x(horizontal) direction. 
+	@param[in] double, new value */
 	double setpix2mmX(double value);
+	/*! Set the pixels to mm in y(horizontal) direction.
+	@param[in] double, new value */
 	double setpix2mmY(double value);
 
 
@@ -106,68 +114,226 @@ public:
 	boost::python::list roi_keywords_Py;
 
 
-
+	// THESE ARE JUST FOR ANLSYIS RESULTS WHEN USING THE VIRTUAL CLARA 
+	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
+	@param[in] double, value 
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setX(double value);
+	/*! Set the y position in mm for the online analysis (only available VIRTUAL mode).
+	@param[in] double, value
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setY(double value);
+	/*! Set the x width in mm for the online analysis (only available VIRTUAL mode).
+	@param[in] double, value
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setSigX(double value);
+	/*! Set the y width mm for the online analysis (only available VIRTUAL mode).
+	@param[in] double, value
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setSigY(double value);
+	/*! Set the x-y correlation in mm for the online analysis (only available VIRTUAL mode).
+	@param[in] double, value
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setSigXY(double value);
+	/*! Get the x position in mm from the online analysis.
+	@param[out] double, value */
 	double getX()const;
+	/*! Get the y position in mm from the online analysis.
+	@param[out] double, value */
 	double getY()const;
+	/*! Get the x width in mm from the online analysis.
+	@param[out] double, value */
 	double getSigX()const;
+	/*! Get the y width in mm from the online analysis.
+	@param[out] double, value */
 	double getSigY()const;
+	/*! Get the x-y coviariance in mm from the online analysis.
+	@param[out] double, value */
 	double getSigXY()const;
+	/*! Get the x position in pixels from the online analysis.
+	@param[out] double, value */
 	double getXPix()const;
+	/*! Get the y position in pixels from the online analysis.
+	@param[out] double, value */
 	double getYPix()const;
+	/*! Get the x width in pixels from the online analysis.
+	@param[out] double, value */
 	double getSigXPix()const;
+	/*! Get the y width in pixels from the online analysis.
+	@param[out] double, value */
 	double getSigYPix()const;
+	/*! Get the x-y coviariance in pixels from the online analysis.
+	@param[out] double, value */
 	double getSigXYPix()const;
 
 
+	/*! Get the buffer trigger value.
+	@param[out] double, value */
 	char getBufferTrigger()const;
+	/*! Get the buffer dump file-path.
+	@param[out] double, value */
 	std::string getBufferFilePath()const;
+	/*! Get the buffer dump file-name.
+	@param[out] double, value */
 	std::string getBufferFileName()const;
+	/*! Get the buffer dump file-number.
+	@param[out] double, value */
 	long getBufferFileNumber()const;
-	long getBufferROIminX()const;
-	long getBufferROIminY()const;
-	long getBufferROIsizeX()const;
-	long getBufferROIsizeY()const;
-	STATE getUseFloor()const;
-	bool isUsingFloor()const;
-	bool isNotUsingFloor()const;
-	long getFLoorLevel()const;
-	long getFLooredPtsCount()const;
-	long getFLooredPtsPercent()const;
+
+
+
+	///*! Get the buffer dump file-path.
+	//@param[out] long, value */
+	//long getBufferROIminX()const;
+	///*! Get the buffer dump file-path.
+	//@param[out] long, value */
+	//long getBufferROIminY()const;
+	///*! Get the buffer dump file-path.
+	//@param[out] long, value */
+	//long getBufferROIsizeX()const;
+	///*! Get the buffer dump file-path.
+	//@param[out] long, value */
+	//long getBufferROIsizeY()const;
+
+	/*! Get the total CPU usage of the camera.
+	@param[out] long, value */
 	long getCPUTotal()const;
+	/*! Get the CPU usage of the CropSubMask procedure.
+	@param[out] long, value */
 	long getCPUCropSubMask()const;
+	/*! Get the CPU usage of the NPoint scaling procedure.
+	@param[out] long, value */
 	long getCPUNPoint()const;
+	/*! Get the CPU usage of the dot product procedure.
+	@param[out] long, value */
 	long getCPUDot()const;
+	/*! Get the Number of pixels in the width of the (full) image.
+	@param[out] long, value */
 	long getPixelWidth()const;
+	/*! Get the Number of pixels in the height of the (full) image.
+	@param[out] long, value */
 	long getPixelHeight()const;
 
-	// THESE ARE JUST FOR ANLSYIS RESULTS WHEN USING THE VIRTUAL CLARA 
-	bool setX(double value);
-	bool setY(double value);
-	bool setSigX(double value);
-	bool setSigY(double value);
-	bool setSigXY(double value);
 
-
+	/*! Set the buffer trigger to dump the camera image buffer to disc.
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setBufferTrigger();
-	bool setBufferROIminX(long v);
-	bool setBufferROIminY(long v);
-	bool setBufferROIsizeX(long v);
-	bool setBufferROIsizeY(long v);
+
+	/*! Set the Region Of Interest minimum x pixel.
+	@param[in] long, new val
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROIMinX(long val);
+	/*! Set the Region Of Interest minimum y pixel.
+	@param[in] long, new val
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROIMinY(long val);
+	/*! Set the Region Of Interest size in x pixels.
+	@param[in] long, new val
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROISizeX(long val);
+	/*! Set the Region Of Interest size in y pixels.
+	@param[in] long, new val 
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROISizeY(long val);
+	/*! Set the 4 Region Of Interest size in y pixels.
+	@param[in] long, new x_pos value
+	@param[in] long, new y_pos value 
+	@param[in] long, new x_size value
+	@param[in] long, new y_size value
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROI(long x, long  y, long x_size, long y_size);
+	/*! Set the Region Of Interest parameters.
+	@param[in] map<std::string, long>, with new values (for keywords see roi_keywords)
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROI(std::map<std::string, long> settings);
+	/*! Set the Region Of Interest parameters. 
+	@param[in] long, dict with new values, (for keywords see roi_keywords)
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROI_Py(boost::python::dict settings);
+	/*! Get the Region Of Interest minimum x pixel.
+	@param[out] long, value*/
+	long getROIMinX()const;
+	/*! Get the Region Of Interest minimum y (pixels).
+	@param[out] long, value*/
+	long getROIMinY()const;
+	/*! Get the Region Of Interest minimum x (pixels).
+	@param[out] long, value*/
+	long getROISizeX()const;
+	/*! Get the Region Of Interest minimum y (pixels).
+	@param[out] long, value*/
+	long getROISizeY()const;
+	/*! Get the Region Of Interest values.
+	@param[out] map<std::string, long>, with new values  */
+	std::map<std::string, long> getROI();
+	/*! Get the Region Of Interest values.
+	@param[out] dict, with new values  */
+	boost::python::dict getROI_Py();
+
+	// FLOOR Set get etc ... 
+	/*! Set the using a Floor during image analysis to true .
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setUseFloor();
+	/*! Set the using a Floor during image analysis to false.
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setDoNotUseFloor();
-	bool setFLoorLevel(long v);
+	/*! Set the Floor level to use during image analysis (value below floor get set to zero).
+	@param[in] long, value to use 
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setFloorLevel(long v);
+	/*! Get the state of use_floor.
+	@param[in] long, value to use
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	STATE getUseFloor()const;
+	/*! Return true if use_floor == STATE::USING_FLOOR, otherwise false 
+	@param[out] bool, value*/
+	bool isUsingFloor()const;
+	/*! Return true if use_floor == STATE::NOT_USING_FLOOR, otherwise false
+	@param[out] bool, value*/
+	bool isNotUsingFloor()const;
+	/*! get the level of the analysis floor 
+	@param[out] long, value*/
+	long getFloorLevel()const;
+	/*! get the number of pixels that have been floored 
+	@param[out] long, value*/
+	long getFlooredPtsCount()const;
+	/*! get the percentage of pixels that have been floored
+	@param[out] long, value*/
+	double getFlooredPtsPercent()const;
 
 
+	/*! set use Npoint scaling or not 
+	@param[in] bool, true for use NPoint, False for do not use NPoint 
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool useNPoint(bool v);
+	/*! set use Npoint scaling or not
+	@param[in] bool, true for use NPoint, False for do not use NPoint
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool useBackground(bool v);
+	/*! check if analysis is using NPoint scaling
+	@param[out] bool, true if using NPoint scaling*/
+	bool isUsingNPoint()const;
+	/*! check if analysis is using a background data
+	@param[out] bool, true if using NPoint scaling*/
+	bool isUsingBackground()const;
+	/*! check if analysis is using a the floor 
+	@param[out] bool, true if using NPoint scaling*/
+	bool isUsingFloor()const;
 
-
-
-
-
-
-
+	/*! get the latest pixel sum for the image 
+	@param[out] double, value */
 	double getSumIntensity()const;
+
+	/*! get the latest pixel average for the image
+	@param[out] double, value */
 	double getAvgIntensity()const;
+
+	/*! Set the latest pixel sum for the image (Only available when NOT in PHYSICAL mode)
+	@param[in] double, value 
+	@param[out] double, value */
 	bool setSumIntensity(double value);
+	/*! Set the latest pixel average for the image (Only available when NOT in PHYSICAL mode)
+	@param[in] double, value 
+	@param[out] bool, value */
 	bool setAvgIntensity(double value);
 
 	void debugMessagesOn();
@@ -192,26 +358,19 @@ public:
 
 
 
-	bool setROIMinX(long val);
-	bool setROIMinY(long val);
-	bool setROISizeX(long val);
-	bool setROISizeY(long val);
-	bool setROI(long x_pos, long  y_pos, long x_size, long y_size);
-	bool setROI(std::map<std::string, long> settings);
-	bool setROI_Py(boost::python::dict settings);
-	long getROIMinX()const;
-	long getROIMinY()const;
-	long getROISizeX()const;
-	long getROISizeY()const;
-	std::map<std::string, long> getROI();
-	boost::python::dict getROI_Py();
+
 
 
 	bool setMaskAndROIxPos(long val);
 	bool setMaskAndROIyPos(long val);
 	bool setMaskAndROIxSize(long val);
 	bool setMaskAndROIySize(long val);
-			
+
+	long getMaskAndROIxPos()const;
+	long getMaskAndROIyPos()const;
+	long getMaskAndROIxSize()const;
+	long getMaskAndROIySize()const;
+
 	bool setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size);
 	bool setMaskandROI(std::map<std::string, long> settings);
 	bool setMaskandROI_Py(boost::python::dict settings);
@@ -236,16 +395,23 @@ public:
 	STATE getCaptureState()const;
 	bool isCapturing()const;
 	bool isNotCapturing()const;
-
 	bool isWriting()const;
 	bool isNotWriting()const;
+
+	bool LEDOn();
+	bool LEDOff();
+	bool isLEDOn()const;
+	bool isLEDOff()const;
+	bool getLEDState()const;
+
 
 	/* after debugging move this to private */
 	bool makeANewDirectoryAndName(size_t numbOfShots);
 
 	size_t getBufferSize()const;
 
-	
+	double getPix2mm()const;
+		
 	void setBufferSize(size_t v);
 	void clearBuffers();
 
@@ -296,9 +462,14 @@ protected:
 	RunningStats sigma_xy_mm_rs;
 
 
+	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, bool > use_npoint;
+	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, bool > use_background;
+
 
 	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sum_intensity;
+	std::pair<epicsTimeStamp, double > sum_intensity; // just intensity in pv name
 	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > avg_intensity;
 
@@ -399,6 +570,14 @@ protected:
 	/*! Full Image height in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> pixel_height;
 
+	/*! Full Image height in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double> pixel_to_mm;
+
+	/*! Number of images to capture. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> num_capture;
+
+	/*! LED status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> led_status;
 
 private:
 
@@ -437,7 +616,6 @@ private:
 
 	EPICSCameraInterface_sptr epicsInterface;
 	std::map<std::string, std::string> CameraParamMap;
-
 	
 	/*! Keywords used for setting ROI and mask together (OUR PREFFERRED INTERFACE!) */
 	std::vector<std::string> mask_and_roi_keywords;
@@ -445,9 +623,6 @@ private:
 	std::vector<std::string> mask_keywords;
 	/*! Keywords used for setting ROI (Not preffeered, use mask and ROI together) */
 	std::vector<std::string> roi_keywords;
-
-
-
 };
 
 

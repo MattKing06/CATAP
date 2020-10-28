@@ -126,6 +126,11 @@ public:
 	long setMaskYRadius(const std::string& name, long val);
 
 
+	bool useNPoint(const std::string& name, bool v);
+	bool useBackground(const std::string& name, bool v);
+
+	bool isUsingNPoint(const std::string& name)const;
+	bool isUsingBackground(const std::string& name)const;
 
 
 	bool stopAcquiring(const std::string& cam_name);
@@ -146,7 +151,6 @@ public:
 	STATE getAnalysisState(const std::string& name)const;
 	std::map<std::string, STATE> getAllAnalysisState()const;
 	boost::python::dict getAllAnalysisState_Py()const;
-
 
 
 	std::string getFullName(const std::string& name_to_check) const;

@@ -39,6 +39,9 @@ acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+use_npoint(std::make_pair(epicsTimeStamp(), false)),
+use_background(std::make_pair(epicsTimeStamp(), false)),
+pizel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 cam_type(TYPE::UNKNOWN_TYPE),
 mask_and_roi_keywords({"x_pos", "y_pos", "x_size", "x_size"}),  //MAGIC STRING
 mask_keywords({"mask_x", "mask_y", "mask_rad_x", "mask_rad_y"}),//MAGIC STRING 
@@ -288,38 +291,44 @@ bool Camera::setBufferTrigger()
 	}
 	return false;
 }
-bool Camera::setBufferROIminX(long v)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinX), v);
-	}
-	return false;
-}
-bool Camera::setBufferROIminY(long v)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinY), v);
-	}
-	return false;
-}
-bool Camera::setBufferROIsizeX(long v)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeX), v);
-	}
-	return false;
-}
-bool Camera::setBufferROIsizeY(long v)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeY), v);
-	}
-	return false;
-}
+
+//
+//bool Camera::setROIminX(long v)
+//{
+//	if (mode == STATE::PHYSICAL)
+//	{
+//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinX), v);
+//	}
+//	return false;
+//}
+//bool Camera::setROIminY(long v)
+//{
+//	if (mode == STATE::PHYSICAL)
+//	{
+//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinY), v);
+//	}
+//	return false;
+//}
+//bool Camera::setROIsizeX(long v)
+//{
+//	if (mode == STATE::PHYSICAL)
+//	{
+//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeX), v);
+//	}
+//	return false;
+//}
+//bool Camera::setROIsizeY(long v)
+//{
+//	if (mode == STATE::PHYSICAL)
+//	{
+//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeY), v);
+//	}
+//	return false;
+//}
+
+
+
+
 bool Camera::setUseFloor()
 {
 	if (mode == STATE::PHYSICAL)
@@ -336,7 +345,7 @@ bool Camera::setDoNotUseFloor()
 	}
 	return false;
 }
-bool Camera::setFLoorLevel(long v)
+bool Camera::setFloorLevel(long v)
 {
 	if (mode == STATE::PHYSICAL)
 	{
@@ -344,6 +353,42 @@ bool Camera::setFLoorLevel(long v)
 	}
 	return false;
 }
+
+bool Camera::LEDOn()
+{
+	// TODO move into epicsShutterInterface
+	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
+	{
+		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_SEND);
+	}
+	return false;
+}
+bool Camera::LEDOff()
+{
+	// TODO move into epicsShutterInterface
+	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_ACTIVATE))
+	{
+		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_SEND);
+	}
+	return false;
+}
+bool Camera::isLEDOn()const
+{
+	led_status.second == STATE::ON;
+}
+bool Camera::isLEDOff()const
+{
+	led_status.second == STATE::OFF;
+}
+
+bool Camera::getLEDState()const
+{
+	return led_status.second;
+}
+//--------------------------------------------------------------------------------------------------
+
+
+
 
 
 
@@ -508,7 +553,22 @@ bool Camera::setROI_Py(boost::python::dict settings)
 
 }
 
-
+long Camera::getMaskAndROIxPos()const
+{
+	return roi_and_mask_centre_x.second; // NEEDS CHECKING
+}
+long Camera::getMaskAndROIyPos()const
+{
+	return roi_and_mask_centre_y.second; // NEEDS CHECKING
+}
+long Camera::getMaskAndROIxSize()const
+{
+	return roi_and_mask_radius_x.second; // NEEDS CHECKING 
+}
+long Camera::getMaskAndROIySize()const
+{
+	return roi_and_mask_radius_y.second; // NEEDS CHECKING
+}
 
 
 bool Camera::setMaskAndROIxPos(long val)
@@ -558,6 +618,31 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 }
 
 
+bool Camera::useNPoint(bool v)
+{
+	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
+}
+bool Camera::useBackground(bool v)
+{
+	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
+}
+
+
+bool Camera::isUsingNPoint()const
+{
+	return use_npoint.second;
+}
+bool Camera::isUsingBackground()const
+{
+	return use_npoint.second;
+}
+
+double Camera::getPix2mm()const
+{
+	return pixel_to_mm.second;
+}
 
 
 long Camera::getMaskXCenter()const
@@ -811,6 +896,9 @@ void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
 	ic.cam->epicsInterface->detachFrom_thisCaContext();
 	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
 }
+
+
+
 
 void Camera::imageCaptureAndSave(size_t num_shots)
 {
@@ -1157,22 +1245,23 @@ long Camera::getBufferFileNumber()const
 {
 	return buffer_filenumber.second;
 }
-long Camera::getBufferROIminX()const
-{
-	return roi_min_x.second;
-}
-long Camera::getBufferROIminY()const
-{
-	return roi_min_y.second;
-}
-long Camera::getBufferROIsizeX()const
-{
-	return roi_size_x.second;
-}
-long Camera::getBufferROIsizeY()const
-{
-	return roi_size_y.second;
-}
+
+//long Camera::getBufferROIminX()const
+//{
+//	return roi_min_x.second;
+//}
+//long Camera::getBufferROIminY()const
+//{
+//	return roi_min_y.second;
+//}
+//long Camera::getBufferROIsizeX()const
+//{
+//	return roi_size_x.second;
+//}
+//long Camera::getBufferROIsizeY()const
+//{
+//	return roi_size_y.second;
+//}
 STATE Camera::getUseFloor()const
 {
 	return use_floor.second;
@@ -1185,15 +1274,15 @@ bool Camera::isNotUsingFloor()const
 {
 	return use_floor.second == STATE::NOT_USING_FLOOR;
 }
-long Camera::getFLoorLevel()const
+long Camera::getFloorLevel()const
 {
 	return floor_level.second;
 }
-long Camera::getFLooredPtsCount()const
+long Camera::getFlooredPtsCount()const
 {
 	return floored_pts_count.second;
 }
-long Camera::getFLooredPtsPercent()const
+double Camera::getFlooredPtsPercent()const
 {
 	return floored_pts_percent.second;
 }

@@ -281,7 +281,15 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	}
 	else if (pvStruct.pvRecord == ANA_PixH_RBV)
 	{
-	pvStruct.updateFunction = this->update_ANA_PixH_RBV;
+		pvStruct.updateFunction = this->update_ANA_PixH_RBV;
+	}
+	else if (pvStruct.pvRecord == ANA_UseBkgrnd)
+	{
+		pvStruct.updateFunction = this->update_ANA_UseBkgrnd;
+	}
+	else if (pvStruct.pvRecord == ANA_UseNPoint)
+	{
+		pvStruct.updateFunction = this->update_ANA_UseNPoint;
 	}
 	else
 	{
@@ -369,6 +377,41 @@ void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_arg
 	}
 	std::cout << recastCamera->getHardwareName() << " new acquire state = " << ENUM_TO_STRING(recastCamera->acquire_status.second) << std::endl;
 }
+
+
+void EPICSCameraInterface::update_LED_Sta(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->led_status.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->acquire_status.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->acquire_status.second = STATE::ON; break;
+	default:
+		recastCamera->acquire_status.second = STATE::ERR;
+	}
+}
+
+void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	messenger.printDebugMessage("update_ANA_UseBkgrnd  WRITE THIS!!!");
+}
+
+void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	messenger.printDebugMessage("update_ANA_UseBkgrnd  WRITE THIS!!!");
+}
+
+
+void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	updateTimeStampDoublePair(args, recastCamera->pixel_to_mm);
+}
+
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);

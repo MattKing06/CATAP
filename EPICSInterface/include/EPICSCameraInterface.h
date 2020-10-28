@@ -94,6 +94,12 @@ public:
     static void update_ANA_PixH_RBV(const struct event_handler_args args);
 
 
+    static void update_ANA_UseBkgrnd(const struct event_handler_args args);
+    static void update_ANA_UseNPoint(const struct event_handler_args args);
+    static void update_ANA_PixMM_RBV(const struct event_handler_args args);
+    static void update_LED_Sta(const struct event_handler_args args);
+
+
 
    //     void cameraBase::updateCamValue(const CAM_PV_TYPE pv, const std::string& objName,
    //         const event_handler_args& args)

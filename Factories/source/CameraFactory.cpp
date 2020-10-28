@@ -739,6 +739,48 @@ boost::python::dict CameraFactory::getAllAnalysisState_Py()const
 }
 
 
+bool CameraFactory::useNPoint(const std::string& name, bool v)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).useNPoint(v);
+	}
+	return false;
+}
+
+bool CameraFactory::useBackground(const std::string& name, bool v)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).useBackground(v);
+	}
+	return false;
+}
+
+
+bool CameraFactory::isUsingNPoint(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isUsingNPoint();
+	}
+	return false;
+}
+bool CameraFactory::isUsingBackground(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isUsingBackground();
+	}
+	return false;
+}
+
+
+
 
 
 std::vector<std::string> CameraFactory::getCameraNames()

@@ -37,9 +37,7 @@ controls_information:
         HDF_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:HDF:WriteFile_RBV
         HDF_WriteStatus    : EBT-INJ-DIA-CAM-14:HDF:WriteStatus
         HDF_WriteMessage    : EBT-INJ-DIA-CAM-14:HDF:WriteMessage
-        HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCaptured_RBV
         HDF_Capture_RBV    : EBT-INJ-DIA-CAM-14:HDF:Capture_RBV
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-14:CAM:Acquire_RBV
         HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCapture_RBV
         MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCaptured_RBV
         MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile_RBV
@@ -82,9 +80,10 @@ controls_information:
         HDF_FileName_RBV    : EBT-INJ-DIA-CAM-14:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-14:HDF:WriteFile
         CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
-        CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-14:CAM:Acquire_RBV
         HDF_Capture    : EBT-INJ-DIA-CAM-14:HDF:Capture
         HDF_NumCapture    : EBT-INJ-DIA-CAM-14:HDF:NumCapture
+        HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCaptured_RBV
         MAGICK_FileName    : EBT-INJ-DIA-CAM-14:MAGICK:FileName
         MAGICK_FilePath    : EBT-INJ-DIA-CAM-14:MAGICK:FilePath
         MAGICK_FileNumber    : EBT-INJ-DIA-CAM-14:MAGICK:FileNumber
