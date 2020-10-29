@@ -82,3 +82,13 @@ sphinx:
   only:
     - master
 
+wheel:
+  stage: wheel
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - build/*
+  script:
+  - cd build
+  - cd ./PythonInterface/CATAP/
+  - ./build_wheel.sh
