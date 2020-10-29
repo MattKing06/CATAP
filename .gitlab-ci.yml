@@ -93,3 +93,5 @@ wheel:
   - cd build
   - cd ./PythonInterface/CATAP/
   - ./build_wheel.sh
+  only:
+    - master
