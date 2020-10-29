@@ -187,10 +187,6 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 		pvStruct.updateFunction = this->update_CAM_Temperature_RBV;
 	}
-	else if (pvStruct.pvRecord == ANA_UseNPoint)
-	{
-		pvStruct.updateFunction = this->update_ANA_UseNPoint;
-	}
 	else if (pvStruct.pvRecord == HDFB_Buffer_Trigger)
 	{
 	pvStruct.updateFunction = this->update_HDFB_Buffer_Trigger;
@@ -399,11 +395,11 @@ void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args 
 	messenger.printDebugMessage("update_ANA_UseBkgrnd  WRITE THIS!!!");
 }
 
-void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_ANA_UseBkgrnd  WRITE THIS!!!");
-}
+//void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_ANA_UseBkgrnd  WRITE THIS!!!");
+//}
 
 
 void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args args)
@@ -609,11 +605,7 @@ void EPICSCameraInterface::update_ANA_CenterY_RBV(const struct event_handler_arg
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->y_center);
 }
-void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args args)
-{
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
-	//messenger.printDebugMessage("update_ANA_PixMM_RBV");
-}
+
 void EPICSCameraInterface::update_CAM_AcquireTime_RBV(const struct event_handler_args args)
 {
 	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;

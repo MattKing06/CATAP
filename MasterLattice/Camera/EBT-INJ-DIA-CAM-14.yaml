@@ -104,7 +104,7 @@ controls_information:
         ANA_CenterY    : EBT-INJ-DIA-CAM-14:ANA:CenterY
         ANA_PixMM    : EBT-INJ-DIA-CAM-14:ANA:PixMM
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :  CLA-LAS-DIA-LED-01:Off
+        LED_Off    : CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
 
 properties:

@@ -107,29 +107,29 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getBufferFilePath", &Camera::getBufferFilePath)
 			.def("getBufferFileName", &Camera::getBufferFileName)
 			.def("getBufferFileNumber", &Camera::getBufferFileNumber)
-			.def("getBufferROIminX", &Camera::getBufferROIminX)
-			.def("getBufferROIminY", &Camera::getBufferROIminY)
-			.def("getBufferROIsizeX", &Camera::getBufferROIsizeX)
-			.def("getBufferROIsizeY", &Camera::getBufferROIsizeY)
+			//.def("getBufferROIminX", &Camera::getBufferROIminX)
+			//.def("getBufferROIminY", &Camera::getBufferROIminY)
+			//.def("getBufferROIsizeX", &Camera::getBufferROIsizeX)
+			//.def("getBufferROIsizeY", &Camera::getBufferROIsizeY)
 			.def("getUseFloor", &Camera::getUseFloor)
 			.def("isUsingFloor", &Camera::isUsingFloor)
 			.def("isNotUsingFloor", &Camera::isNotUsingFloor)
-			.def("getFLoorLevel", &Camera::getFLoorLevel)
-			.def("getFLooredPtsCount", &Camera::getFLooredPtsCount)
-			.def("getFLooredPtsPercent", &Camera::getFLooredPtsPercent)
+			.def("getFLoorLevel", &Camera::getFloorLevel)
+			.def("getFLooredPtsCount", &Camera::getFlooredPtsCount)
+			.def("getFLooredPtsPercent", &Camera::getFlooredPtsPercent)
 			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
 			.def("getCPUNPoint", &Camera::getCPUNPoint)
 			.def("getCPUDot", &Camera::getCPUDot)
 			.def("getPixelWidth", &Camera::getPixelWidth)
 			.def("getPixelHeight", &Camera::getPixelHeight)
 			.def("setBufferTrigger", &Camera::setBufferTrigger)
-			.def("setBufferROIminX", &Camera::setBufferROIminX)
-			.def("setBufferROIminY", &Camera::setBufferROIminY)
-			.def("setBufferROIsizeX", &Camera::setBufferROIsizeX)
-			.def("setBufferROIsizeY", &Camera::setBufferROIsizeY)
+			//.def("setBufferROIminX", &Camera::setBufferROIminX)
+			//.def("setBufferROIminY", &Camera::setBufferROIminY)
+			//.def("setBufferROIsizeX", &Camera::setBufferROIsizeX)
+			//.def("setBufferROIsizeY", &Camera::setBufferROIsizeY)
 			.def("setUseFloor", &Camera::setUseFloor)
 			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
-			.def("setFLoorLevel", &Camera::setFLoorLevel)
+			.def("setFLoorLevel", &Camera::setFloorLevel)
 			.def("captureAndSave", &Camera::captureAndSave)
 
 				
@@ -145,9 +145,13 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isNotAnalysing", &Camera::isNotAnalysing)
 			.def("getAnalysisState", &Camera::getAnalysisState)
 
-
-
-
+			
+				
+			.def("LEDOn", &Camera::LEDOn)
+			.def("LEDOff", &Camera::LEDOff)
+			.def("isLEDOn", &Camera::isLEDOn)
+			.def("isLEDOff", &Camera::isLEDOff)
+			.def("getLEDState", &Camera::getLEDState)
 
 			// only for tetsing not 
 			//.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)

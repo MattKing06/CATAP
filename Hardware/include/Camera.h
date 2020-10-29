@@ -315,9 +315,7 @@ public:
 	/*! check if analysis is using a background data
 	@param[out] bool, true if using NPoint scaling*/
 	bool isUsingBackground()const;
-	/*! check if analysis is using a the floor 
-	@param[out] bool, true if using NPoint scaling*/
-	bool isUsingFloor()const;
+
 
 	/*! get the latest pixel sum for the image 
 	@param[out] double, value */
@@ -329,7 +327,7 @@ public:
 
 	/*! Set the latest pixel sum for the image (Only available when NOT in PHYSICAL mode)
 	@param[in] double, value 
-	@param[out] double, value */
+	@param[out] bool, value */
 	bool setSumIntensity(double value);
 	/*! Set the latest pixel average for the image (Only available when NOT in PHYSICAL mode)
 	@param[in] double, value 
@@ -355,8 +353,6 @@ public:
 	long getMaskYRadius()const;
 	std::map<std::string, long> getMask();
 	boost::python::dict getMask_Py();
-
-
 
 
 
@@ -509,7 +505,7 @@ protected:
 	std::pair<epicsTimeStamp, double > temperature;
 	/*! LED status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> led_status;
-	/*! LED status. Value and epicstimestamp.	*/
+	/*! Acquire status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> acquire_status;
 	/*! Analysis status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> analysis_status;
@@ -576,8 +572,6 @@ protected:
 	/*! Number of images to capture. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> num_capture;
 
-	/*! LED status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> led_status;
 
 private:
 

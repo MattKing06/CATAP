@@ -66,7 +66,7 @@ public:
     static void update_CAM_AcquirePeriod_RBV(const struct event_handler_args args);
     static void update_CAM_ArrayRate_RBV(const struct event_handler_args args);
     static void update_CAM_Temperature_RBV(const struct event_handler_args args);
-    static void update_ANA_UseNPoint(const struct event_handler_args args);
+   // static void update_ANA_UseNPoint(const struct event_handler_args args);
 
     static void update_HDFB_Buffer_FilePath(const struct event_handler_args args);
     static void update_HDFB_Buffer_Trigger(const struct event_handler_args args);
@@ -96,7 +96,7 @@ public:
 
     static void update_ANA_UseBkgrnd(const struct event_handler_args args);
     static void update_ANA_UseNPoint(const struct event_handler_args args);
-    static void update_ANA_PixMM_RBV(const struct event_handler_args args);
+    //static void update_ANA_PixMM_RBV(const struct event_handler_args args);
     static void update_LED_Sta(const struct event_handler_args args);
 
 

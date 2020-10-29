@@ -41,7 +41,7 @@ temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 use_npoint(std::make_pair(epicsTimeStamp(), false)),
 use_background(std::make_pair(epicsTimeStamp(), false)),
-pizel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 cam_type(TYPE::UNKNOWN_TYPE),
 mask_and_roi_keywords({"x_pos", "y_pos", "x_size", "x_size"}),  //MAGIC STRING
 mask_keywords({"mask_x", "mask_y", "mask_rad_x", "mask_rad_y"}),//MAGIC STRING 
@@ -374,11 +374,11 @@ bool Camera::LEDOff()
 }
 bool Camera::isLEDOn()const
 {
-	led_status.second == STATE::ON;
+	return led_status.second == STATE::ON;
 }
 bool Camera::isLEDOff()const
 {
-	led_status.second == STATE::OFF;
+	return led_status.second == STATE::OFF;
 }
 
 bool Camera::getLEDState()const
