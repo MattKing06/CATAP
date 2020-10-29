@@ -4,6 +4,7 @@ stages:
 - tests
 - doxygen
 - sphinx
+- wheel
 
 before_script:
   - which gcc
