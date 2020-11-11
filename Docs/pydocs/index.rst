@@ -8,7 +8,8 @@ Welcome to CATAP Python Library documentation!
 
 .. toctree::
    :maxdepth: 4
-
+   
+   Downloads.rst
    HardwareTypes.rst
    Factories.rst
    EPICSTools.rst
