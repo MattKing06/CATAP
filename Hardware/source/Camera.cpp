@@ -35,12 +35,13 @@ mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-use_npoint(std::make_pair(epicsTimeStamp(), false)),
-use_background(std::make_pair(epicsTimeStamp(), false)),
+use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 cam_type(TYPE::UNKNOWN_TYPE),
 mask_and_roi_keywords({"x_pos", "y_pos", "x_size", "x_size"}),  //MAGIC STRING
@@ -143,21 +144,21 @@ TYPE Camera::getCamType()const
 
 double Camera::pix2mmX(double value)const
 {
-	return value * pix2mmX_ratio;
+	return value / pix2mmX_ratio;
 }
 double Camera::pix2mmY(double value)const
 {
-	return value * pix2mmY_ratio;
+	return value / pix2mmY_ratio;
 }
 
 double Camera::mm2pixX(double value)const
 {
-	return value / pix2mmX_ratio;
+	return value * pix2mmX_ratio;
 }
 
 double Camera::mm2pixY(double value)const
 {
-	return value / pix2mmX_ratio;
+	return value * pix2mmX_ratio;
 }
 
 
@@ -229,6 +230,14 @@ double Camera::getAvgIntensity()const
 	return avg_intensity.second;
 }
 
+long Camera::getStepSize()const
+{
+	return step_size.second;
+}
+bool Camera::setStepSize(long val)
+{
+	return epicsInterface->putValue2<char>(pvStructs.at(CameraRecords::ANA_StepSize), val);
+}
 
 
 bool Camera::setX(double value)
@@ -356,7 +365,7 @@ bool Camera::setFloorLevel(long v)
 
 bool Camera::LEDOn()
 {
-	// TODO move into epicsShutterInterface
+	// ALSO HAVE IN SCREENS 
 	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
 	{
 		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_SEND);
@@ -365,7 +374,7 @@ bool Camera::LEDOn()
 }
 bool Camera::LEDOff()
 {
-	// TODO move into epicsShutterInterface
+	// ALSO HAVE IN SCREENS
 	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_ACTIVATE))
 	{
 		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_SEND);
@@ -462,19 +471,20 @@ bool Camera::setAvgIntensity(double value)
 
 bool Camera::setMaskXCenter(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXCenter), val);
+	messenger.printMessage("setMaskXCenter ", val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskXCenter), (dbr_long_t)val);
 }
 bool Camera::setMaskYCenter(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYCenter), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskYCenter), (dbr_long_t)val);
 }
 bool Camera::setMaskXRadius(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskXRad), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskXRad), (dbr_long_t)val);
 }
 bool Camera::setMaskYRadius(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_MaskYRad), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskYRad), (dbr_long_t)val);
 }
 bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
 {
@@ -499,6 +509,10 @@ bool Camera::setMask(std::map<std::string, long> settings)
 	{
 		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
 	}
+	else
+	{
+		messenger.printMessage("setMask passed map with incorrect keywords");
+	}
 	return false;
 }
 bool Camera::setMask_Py(boost::python::dict settings)
@@ -508,19 +522,19 @@ bool Camera::setMask_Py(boost::python::dict settings)
 }
 bool Camera::setROIMinX(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinX), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_MinX), (dbr_long_t)val);
 }
 bool Camera::setROIMinY(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinY), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_MinY), (dbr_long_t)val);
 }
 bool Camera::setROISizeX(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeX), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_SizeX), (dbr_long_t)val);
 }
 bool Camera::setROISizeY(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeY), val);
+	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_SizeY), (dbr_long_t)val);
 }
 bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
 {
@@ -632,19 +646,26 @@ bool Camera::useBackground(bool v)
 
 bool Camera::isUsingNPoint()const
 {
-	return use_npoint.second;
+	return use_npoint.second == STATE::USING_NPOINT;
 }
 bool Camera::isUsingBackground()const
 {
+	return use_background.second == STATE::USING_BACKGROUND;
+}
+STATE Camera::getNPointState()const
+{
 	return use_npoint.second;
 }
+STATE Camera::getUsingBackgroundState()const
+{
+	return use_background.second;
+}
+
 
 double Camera::getPix2mm()const
 {
 	return pixel_to_mm.second;
 }
-
-
 long Camera::getMaskXCenter()const
 {
 	return mask_x_center.second;

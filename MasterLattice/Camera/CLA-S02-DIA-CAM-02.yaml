@@ -41,12 +41,12 @@ controls_information:
         HDF_Capture_RBV    : CLA-S02-DIA-CAM-02:HDF:Capture_RBV
         CAM_Acquire_RBV    : CLA-S02-DIA-CAM-02:CAM:Acquire_RBV
         HDF_NumCapture_RBV    : CLA-S02-DIA-CAM-02:HDF:NumCapture_RBV
-        MAGICK_NumCaptured_RBV    : CLA-S02-DIA-CAM-02:MAGICK:NumCaptured_RBV
-        MAGICK_WriteFile_RBV    : CLA-S02-DIA-CAM-02:MAGICK:WriteFile_RBV
-        MAGICK_WriteStatus    : CLA-S02-DIA-CAM-02:MAGICK:WriteStatus
-        MAGICK_WriteMessage    : CLA-S02-DIA-CAM-02:MAGICK:WriteMessage
-        MAGICK_Capture_RBV    : CLA-S02-DIA-CAM-02:MAGICK:Capture_RBV
-        MAGICK_NumCapture_RBV    : CLA-S02-DIA-CAM-02:MAGICK:NumCapture_RBV
+        # MAGICK_NumCaptured_RBV    : CLA-S02-DIA-CAM-02:MAGICK:NumCaptured_RBV
+        # MAGICK_WriteFile_RBV    : CLA-S02-DIA-CAM-02:MAGICK:WriteFile_RBV
+        # MAGICK_WriteStatus    : CLA-S02-DIA-CAM-02:MAGICK:WriteStatus
+        # MAGICK_WriteMessage    : CLA-S02-DIA-CAM-02:MAGICK:WriteMessage
+        # MAGICK_Capture_RBV    : CLA-S02-DIA-CAM-02:MAGICK:Capture_RBV
+        # MAGICK_NumCapture_RBV    : CLA-S02-DIA-CAM-02:MAGICK:NumCapture_RBV
         ANA_StepSize_RBV    : CLA-S02-DIA-CAM-02:ANA:StepSize_RBV
         ANA_EnableCallbacks_RBV    : CLA-S02-DIA-CAM-02:ANA:EnableCallbacks_RBV
         ANA_UseBkgrnd    : CLA-S02-DIA-CAM-02:ANA:UseBkgrnd

@@ -28,8 +28,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getpix2mmY", &Camera::getpix2mmY		)
 			.def("setpix2mmX", &Camera::setpix2mmX		)
 			.def("setpix2mmY", &Camera::setpix2mmY		)
-			.def("getX", &Camera::getX			)
-			.def("getY", &Camera::getY			)
+			.def("getX", &Camera::getX			) // backwards compatibale, prefer to not use
+			.def("getY", &Camera::getY			) // backwards compatibale, prefer to not use
 			.def("getXmm", &Camera::getX)
 			.def("getYmm", &Camera::getY)
 			.def("getSigX", &Camera::getSigX		)
@@ -57,7 +57,11 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAvgIntensity", &Camera::getAvgIntensity)
 			.def("setSumIntensity", &Camera::setSumIntensity)
 			.def("setAvgIntensity", &Camera::setAvgIntensity)
-		
+
+
+			.def("getStepSize", &Camera::getStepSize)
+			.def("setStepSize", &Camera::setStepSize)
+
 			
 			.def("getMaskXCenter", &Camera::getMaskXCenter)
 			.def("getMaskYCenter", &Camera::getMaskYCenter)
@@ -72,7 +76,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setMask", &Camera::setMask_Py)
 
 
-			.def("getROIMinX(", &Camera::getROIMinX)
+			.def("getROIMinX", &Camera::getROIMinX)
 			.def("getROIMinY", &Camera::getROIMinY)
 			.def("getROISizeX", &Camera::getROISizeX)
 			.def("getROISizeY", &Camera::getROISizeY)
@@ -95,7 +99,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
 			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
-
 
 
 			//.def_readonly("mask_and_roi_keywords", &Camera::mask_and_roi_keywords_Py)
@@ -133,6 +136,16 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("captureAndSave", &Camera::captureAndSave)
 
 				
+			.def("useBackground", &Camera::useBackground)
+			.def("isUsingBackground", &Camera::isUsingBackground)
+			.def("getNPointState", &Camera::getNPointState)
+			.def("useNPoint", &Camera::useNPoint)
+			.def("isUsingNPoint", &Camera::isUsingNPoint)
+			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
+
+
+
+				
 			.def("startAcquiring", &Camera::startAcquiring)
 			.def("stopAcquiring", &Camera::stopAcquiring)
 			.def("isAcquiring", &Camera::isAcquiring)
@@ -144,8 +157,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isAnalysing", &Camera::isAnalysing)
 			.def("isNotAnalysing", &Camera::isNotAnalysing)
 			.def("getAnalysisState", &Camera::getAnalysisState)
-
-			
+							
 				
 			.def("LEDOn", &Camera::LEDOn)
 			.def("LEDOff", &Camera::LEDOff)
@@ -211,6 +223,21 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setSigXmm", &CameraFactory::setSigX)
 			.def("setSigYmm", &CameraFactory::setSigY)
 			.def("setSigXYmm", &CameraFactory::setSigXY)
+
+			.def("getStepSize", &CameraFactory::getStepSize)
+			.def("setStepSize", &CameraFactory::setStepSize)
+
+
+			.def("useBackground", &CameraFactory::useBackground)
+			.def("isUsingBackground", &CameraFactory::isUsingBackground)
+			.def("getUsingBackgroundState", &CameraFactory::getUsingBackgroundState)
+
+			.def("useNPoint", &CameraFactory::useNPoint)
+			.def("isUsingNPoint", &CameraFactory::isUsingNPoint)
+			.def("getNPointState", &CameraFactory::getNPointState)
+
+			
+
 			.def("getSumIntensity", &CameraFactory::getSumIntensity)
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)

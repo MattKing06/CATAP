@@ -210,11 +210,12 @@ public:
 		{
 			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
 			MY_SEVCHK(status);
-			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			//status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			status = ca_flush_io();
 			MY_SEVCHK(status);
 			return true;
 
-			// we should return true here if the put commadn got sent correctly 
+			// we should return true here if the put command got sent correctly 
 		}
 		return false;
 	}
@@ -231,7 +232,7 @@ public:
 			MY_SEVCHK(status);
 			return true;
 
-			// we should return true here if the put commadn got sent correctly 
+			// we should return true here if the put command got sent correctly 
 		}
 		return false;
 	}

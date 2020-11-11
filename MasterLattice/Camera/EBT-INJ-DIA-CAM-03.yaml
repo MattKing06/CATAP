@@ -41,12 +41,12 @@ controls_information:
         HDF_Capture_RBV    : EBT-INJ-DIA-CAM-03:HDF:Capture_RBV
         CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-03:CAM:Acquire_RBV
         HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-03:HDF:NumCapture_RBV
-        MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCaptured_RBV
-        MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:WriteFile_RBV
-        MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-03:MAGICK:WriteStatus
-        MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-03:MAGICK:WriteMessage
-        MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:Capture_RBV
-        MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCapture_RBV
+        # MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCaptured_RBV
+        # MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:WriteFile_RBV
+        # MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-03:MAGICK:WriteStatus
+        # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-03:MAGICK:WriteMessage
+        # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:Capture_RBV
+        # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCapture_RBV
         ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-03:ANA:StepSize_RBV
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-03:ANA:EnableCallbacks_RBV
         ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-03:ANA:UseBkgrnd

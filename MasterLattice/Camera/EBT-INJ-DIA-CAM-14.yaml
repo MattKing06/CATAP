@@ -37,14 +37,16 @@ controls_information:
         HDF_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:HDF:WriteFile_RBV
         HDF_WriteStatus    : EBT-INJ-DIA-CAM-14:HDF:WriteStatus
         HDF_WriteMessage    : EBT-INJ-DIA-CAM-14:HDF:WriteMessage
+        HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCaptured_RBV
         HDF_Capture_RBV    : EBT-INJ-DIA-CAM-14:HDF:Capture_RBV
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-14:CAM:Acquire_RBV
         HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCapture_RBV
-        MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCaptured_RBV
-        MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile_RBV
-        MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-14:MAGICK:WriteStatus
-        MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-14:MAGICK:WriteMessage
-        MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:Capture_RBV
-        MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture_RBV
+        # MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCaptured_RBV
+        # MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile_RBV
+        # MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-14:MAGICK:WriteStatus
+        # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-14:MAGICK:WriteMessage
+        # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:Capture_RBV
+        # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture_RBV
         ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-14:ANA:StepSize_RBV
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks_RBV
         ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
@@ -80,16 +82,14 @@ controls_information:
         HDF_FileName_RBV    : EBT-INJ-DIA-CAM-14:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-14:HDF:WriteFile
         CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-14:CAM:Acquire_RBV
         HDF_Capture    : EBT-INJ-DIA-CAM-14:HDF:Capture
         HDF_NumCapture    : EBT-INJ-DIA-CAM-14:HDF:NumCapture
-        HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCaptured_RBV
-        MAGICK_FileName    : EBT-INJ-DIA-CAM-14:MAGICK:FileName
-        MAGICK_FilePath    : EBT-INJ-DIA-CAM-14:MAGICK:FilePath
-        MAGICK_FileNumber    : EBT-INJ-DIA-CAM-14:MAGICK:FileNumber
-        MAGICK_Capture    : EBT-INJ-DIA-CAM-14:MAGICK:Capture
-        MAGICK_WriteFile    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile
-        MAGICK_NumCapture    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture
+        # MAGICK_FileName    : EBT-INJ-DIA-CAM-14:MAGICK:FileName
+        # MAGICK_FilePath    : EBT-INJ-DIA-CAM-14:MAGICK:FilePath
+        # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-14:MAGICK:FileNumber
+        # MAGICK_Capture    : EBT-INJ-DIA-CAM-14:MAGICK:Capture
+        # MAGICK_WriteFile    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile
+        # MAGICK_NumCapture    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture
         ANA_StepSize    : EBT-INJ-DIA-CAM-14:ANA:StepSize
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks
         ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:NewBkgrnd
@@ -104,7 +104,7 @@ controls_information:
         ANA_CenterY    : EBT-INJ-DIA-CAM-14:ANA:CenterY
         ANA_PixMM    : EBT-INJ-DIA-CAM-14:ANA:PixMM
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    : CLA-LAS-DIA-LED-01:Off
+        LED_Off    :    CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
 
 properties:

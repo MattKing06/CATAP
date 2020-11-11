@@ -110,7 +110,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
 		
-		for (auto& pv : pvstruct)
+		for (auto&& pv : pvstruct)
 		{
 			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
@@ -122,9 +122,9 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
 				//messenger.printDebugMessage(item.second.getHardwareName()),
-				messenger.printDebugMessage(pv.second.pvRecord, ": r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
+				messenger.printDebugMessage(pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
 					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
-				if (pv.second.monitor)
+				if(pv.second.monitor)
 				{
 					//messenger.printDebugMessage("createSubscription");
 					item.second.epicsInterface->createSubscription(item.second, pv.second);
@@ -136,7 +136,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 			}
 			else
 			{
-				messenger.printMessage(item.first, " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(item.first, ", ", pv.second.pvRecord,  " CANNOT CONNECT TO EPICS");
 			}
 		}
 		EPICSInterface::sendToEPICS();
@@ -396,6 +396,25 @@ bool CameraFactory::setSigXY(const std::string& name, double value)
 }
 
 
+long CameraFactory::getStepSize(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getStepSize();
+	}
+	return false;
+}
+bool CameraFactory::setStepSize(const std::string& name, long val)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setStepSize(val);
+	}
+	return false;
+}
+
 boost::python::dict CameraFactory::getRunningStats(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -416,6 +435,8 @@ boost::python::dict CameraFactory::getAllRunningStats()const
 	}
 	return r;
 }
+
+
 
 
 //bool CameraFactory::setXPix(const std::string& name, double value)
@@ -748,6 +769,24 @@ bool CameraFactory::useNPoint(const std::string& name, bool v)
 	}
 	return false;
 }
+bool CameraFactory::isUsingNPoint(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isUsingNPoint();
+	}
+	return false;
+}
+STATE CameraFactory::getNPointState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getNPointState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
 
 bool CameraFactory::useBackground(const std::string& name, bool v)
 {
@@ -755,17 +794,6 @@ bool CameraFactory::useBackground(const std::string& name, bool v)
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
 		return camera_map.at(full_name).useBackground(v);
-	}
-	return false;
-}
-
-
-bool CameraFactory::isUsingNPoint(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).isUsingNPoint();
 	}
 	return false;
 }
@@ -778,7 +806,15 @@ bool CameraFactory::isUsingBackground(const std::string& name)const
 	}
 	return false;
 }
-
+STATE CameraFactory::getUsingBackgroundState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getUsingBackgroundState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
 
 
 

@@ -86,6 +86,19 @@ public:
 	double getSigXYPix(const std::string& name)const;
 
 
+	/*! get the Npoint scaling stepsize
+	@param[in] const std::string, name of camera to set value for
+	@param[out] long, value */
+	long getStepSize(const std::string& name)const;
+	/*! set the Npoint scaling stepsize
+	@param[in] const std::string, name of camera to set value for
+	@param[in] long, new stepsize
+	@param[out] bool, value */
+	bool setStepSize(const std::string& name, long val);
+
+
+
+
 	boost::python::dict getRunningStats(const std::string& name)const;
 	boost::python::dict getAllRunningStats()const;
 
@@ -128,9 +141,12 @@ public:
 
 	bool useNPoint(const std::string& name, bool v);
 	bool useBackground(const std::string& name, bool v);
+	STATE getNPointState(const std::string& name)const;
 
 	bool isUsingNPoint(const std::string& name)const;
 	bool isUsingBackground(const std::string& name)const;
+	STATE getUsingBackgroundState(const std::string& name)const;
+
 
 
 	bool stopAcquiring(const std::string& cam_name);

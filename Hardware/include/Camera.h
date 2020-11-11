@@ -315,6 +315,22 @@ public:
 	/*! check if analysis is using a background data
 	@param[out] bool, true if using NPoint scaling*/
 	bool isUsingBackground()const;
+	/*! get the use Npoint scaling state 
+	@param[out] STATE, */
+	STATE getNPointState()const;
+	/*! get the use Npoint scaling state
+	@param[out] STATE, */
+	STATE getUsingBackgroundState()const;
+
+
+
+	/*! get the latest pixel sum for the image
+	@param[out] long, value */
+	long getStepSize()const;
+	/*! set the Npoint scaling stepsize 
+	@param[in] long, new stepsize
+	@param[out] bool, value */
+	bool setStepSize(long val);
 
 
 	/*! get the latest pixel sum for the image 
@@ -441,8 +457,10 @@ protected:
 	std::pair<epicsTimeStamp, double > sigma_y_mm;
 	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > sigma_xy_mm;
+		
 
-	 
+
+
 
 	size_t running_stats_buffer_size;
 
@@ -459,9 +477,12 @@ protected:
 
 
 	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, bool > use_npoint;
+	std::pair<epicsTimeStamp, STATE > use_npoint;
+	/*! latest stepsize (Npoint scaling step size). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > step_size;
+
 	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, bool > use_background;
+	std::pair<epicsTimeStamp, STATE > use_background;
 
 
 	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/

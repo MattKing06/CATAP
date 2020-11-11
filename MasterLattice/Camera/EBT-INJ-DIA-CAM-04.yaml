@@ -85,12 +85,12 @@ controls_information:
         CAM_Acquire    : EBT-INJ-DIA-CAM-04:CAM:Acquire
         HDF_Capture    : EBT-INJ-DIA-CAM-04:HDF:Capture
         HDF_NumCapture    : EBT-INJ-DIA-CAM-04:HDF:NumCapture
-        MAGICK_FileName    : EBT-INJ-DIA-CAM-04:MAGICK:FileName
-        MAGICK_FilePath    : EBT-INJ-DIA-CAM-04:MAGICK:FilePath
-        MAGICK_FileNumber    : EBT-INJ-DIA-CAM-04:MAGICK:FileNumber
-        MAGICK_Capture    : EBT-INJ-DIA-CAM-04:MAGICK:Capture
-        MAGICK_WriteFile    : EBT-INJ-DIA-CAM-04:MAGICK:WriteFile
-        MAGICK_NumCapture    : EBT-INJ-DIA-CAM-04:MAGICK:NumCapture
+        # MAGICK_FileName    : EBT-INJ-DIA-CAM-04:MAGICK:FileName
+        # MAGICK_FilePath    : EBT-INJ-DIA-CAM-04:MAGICK:FilePath
+        # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-04:MAGICK:FileNumber
+        # MAGICK_Capture    : EBT-INJ-DIA-CAM-04:MAGICK:Capture
+        # MAGICK_WriteFile    : EBT-INJ-DIA-CAM-04:MAGICK:WriteFile
+        # MAGICK_NumCapture    : EBT-INJ-DIA-CAM-04:MAGICK:NumCapture
         ANA_StepSize    : EBT-INJ-DIA-CAM-04:ANA:StepSize
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-04:ANA:EnableCallbacks
         ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-04:ANA:NewBkgrnd
