@@ -14,6 +14,7 @@ set( SOURCE_FILES
     source/HardwareFactoryPythonInterface.cpp
     source/IMGPythonInterface.cpp
     source/LaserEnergyMeterPythonInterface.cpp
+    source/LaserFeedbackPythonInterface.cpp
     source/LaserHWPPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
     source/LEDPythonInterface.cpp
@@ -46,6 +47,7 @@ set( INCLUDE_FILES
     include/HardwarePythonInterface.h
 	include/IMGPythonInterface.h
     include/LaserEnergyMeterPythonInterface.h
+	include/LaserFeedbackPythonInterface.h
     include/LaserHWPPythonInterface.h
     include/LaserMirrorPythonInterface.h
     include/LEDPythonInterface.h
@@ -126,6 +128,7 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSTools/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/HighLevelSystems/LaserFeedback/include)
 	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
 						 ${Boost_LIBRARIES}
 						 ${PYTHON_LIBRARY}
@@ -134,7 +137,8 @@ foreach(FILE ${SOURCE_FILES})
 						 Hardware
 						 EPICSTools
 						 ConfigReader
-						 Utilities)
+						 Utilities
+						 LaserFeedback)
 	if (UNIX)
 	  set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
 	  set_target_properties(${LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/${LIBFOLDERNAME}>)
