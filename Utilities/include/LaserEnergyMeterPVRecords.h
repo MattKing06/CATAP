@@ -10,9 +10,10 @@
 namespace LaserEnergyMeterRecords
 {
 	/*Defined at std::string const so that the value of the variable cannot be changed.*/
-	extern std::string const OVERRANGE; // = "X";
-	extern std::string const RANGESP; // = "Y";
-	extern std::string const RUNSP; // = "RA1";
+	extern std::string const OVERRANGE;
+	extern std::string const RANGESP;
+	extern std::string const RUNSP;
+	extern std::string const ENERGYREADBACK;
 
 	extern std::vector<std::string> laserEnergyMeterRecordList;
 	extern std::map<std::string, TYPE> laserTypeList;

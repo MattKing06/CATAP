@@ -76,7 +76,8 @@ void LaserEnergyMeterFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
 	if (pvStruct.pvRecord == LaserEnergyMeterRecords::OVERRANGE ||
 		pvStruct.pvRecord == LaserEnergyMeterRecords::RUNSP ||
-		pvStruct.pvRecord == LaserEnergyMeterRecords::RANGESP
+		pvStruct.pvRecord == LaserEnergyMeterRecords::RANGESP ||
+		pvStruct.pvRecord == LaserEnergyMeterRecords::ENERGYREADBACK
 		)
 	{
 		pvStruct.monitor = true;
@@ -193,6 +194,21 @@ std::string LaserEnergyMeterFactory::getLaserEnergyMeterName(const std::string& 
 	return "0";
 }
 
+bool LaserEnergyMeterFactory::isMonitoring(const std::string& name) const
+{
+	return laserEnergyMeterMap.find(name)->second.isMonitoring();
+}
+
+bool LaserEnergyMeterFactory::isEnergyBufferFull(const std::string& name) const
+{
+	return laserEnergyMeterMap.find(name)->second.isEnergyBufferFull();
+}
+
+bool LaserEnergyMeterFactory::isEnergyVectorFull(const std::string& name) const
+{
+	return laserEnergyMeterMap.find(name)->second.isEnergyVectorFull();
+}
+
 bool LaserEnergyMeterFactory::getAcquiring(const std::string& name) const
 {
 	return laserEnergyMeterMap.find(name)->second.getAcquiring();
@@ -221,6 +237,71 @@ int LaserEnergyMeterFactory::getOverRange(const std::string& name) const
 int LaserEnergyMeterFactory::getRange(const std::string& name) const
 {
 	return laserEnergyMeterMap.find(name)->second.getRange();
+}
+
+double LaserEnergyMeterFactory::getEnergy(const std::string& name) const
+{
+	return laserEnergyMeterMap.find(name)->second.getEnergy();
+}
+
+std::vector< double > LaserEnergyMeterFactory::getEnergyVector(const std::string& name) const
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call LaserEnergyMeterFactory.setup(VERSION)");
+	}
+	else
+	{
+		return laserEnergyMeterMap.find(name)->second.getEnergyVector();
+	}
+	std::vector<double> vector2(9, std::numeric_limits<double>::min());
+	return vector2;
+}
+
+boost::circular_buffer< double > LaserEnergyMeterFactory::getEnergyBuffer(const std::string& name) const
+{
+	if (!hasBeenSetup)
+	{
+		messenger.printDebugMessage("Please call LaserEnergyMeterFactory.setup(VERSION)");
+	}
+	else
+	{
+		return laserEnergyMeterMap.find(name)->second.getEnergyBuffer();
+	}
+	boost::circular_buffer<double> vector2(9, std::numeric_limits<double>::min());
+	return vector2;
+}
+
+boost::python::list LaserEnergyMeterFactory::getEnergyVector_Py(const std::string& name)
+{
+	std::vector< double > vec;
+	vec = getEnergyVector(name);
+	boost::python::list newPyList = to_py_list(vec);
+	return newPyList;
+}
+
+boost::python::list LaserEnergyMeterFactory::getEnergyBuffer_Py(const std::string& name)
+{
+	boost::circular_buffer< double > buf;
+	buf = getEnergyBuffer(name);
+	boost::python::list newPyList = to_py_list(buf);
+	return newPyList;
+}
+
+void LaserEnergyMeterFactory::monitorForNShots(const std::string& name, const size_t& value)
+{
+	laserEnergyMeterMap.find(name)->second.monitorForNShots(value);
+}
+
+void LaserEnergyMeterFactory::setVectorSize(const std::string& name, const size_t& value)
+{
+	laserEnergyMeterMap.find(name)->second.setVectorSize(value);
+}
+
+void LaserEnergyMeterFactory::setBufferSize(const std::string& name, const size_t& value)
+{
+	laserEnergyMeterMap.find(name)->second.setBufferSize(value);
+
 }
 
 void LaserEnergyMeterFactory::debugMessagesOn()
