@@ -24,6 +24,10 @@ void EPICSLaserEnergyMeterInterface::retrieveupdateFunctionForRecord(pvStruct& p
 	{
 		pvStruct.updateFunction = this->updateRange;
 	}
+	else if (pvStruct.pvRecord == LaserEnergyMeterRecords::ENERGYREADBACK)
+	{
+		pvStruct.updateFunction = this->updateEnergy;
+	}
 	else
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
@@ -66,9 +70,18 @@ void EPICSLaserEnergyMeterInterface::updateRange(const struct event_handler_args
 	LaserEnergyMeter* recastLaser = getHardwareFromArgs<LaserEnergyMeter>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastLaser->range.first = pairToUpdate.first;
-	recastLaser->range.second = (int)pairToUpdate.second;		
+	recastLaser->range.second = (int)pairToUpdate.second;
 	messenger.printDebugMessage("RANGE VALUE FOR: " + recastLaser->getHardwareName() + ": "
 		+ std::to_string(recastLaser->range.second));
+}
+
+void EPICSLaserEnergyMeterInterface::updateEnergy(const struct event_handler_args args)
+{
+	LaserEnergyMeter* recastLaser = getHardwareFromArgs<LaserEnergyMeter>(args);
+	updateTimeStampDoublePair(args, recastLaser->energy);
+	recastLaser->setEnergy(recastLaser->energy.second);
+	messenger.printDebugMessage("ENERGY VALUE FOR: " + recastLaser->getHardwareName() + ": "
+		+ std::to_string(recastLaser->energy.second));
 }
 
 void EPICSLaserEnergyMeterInterface::setRANGE(const int& value, const pvStruct& pv)
