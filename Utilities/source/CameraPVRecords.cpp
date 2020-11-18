@@ -277,7 +277,8 @@ namespace CameraRecords
 		CAM_AcquirePeriod_RBV,
 		CAM_ArrayRate_RBV,
 		CAM_Temperature_RBV,
-		ANA_UseNPoint
+		ANA_UseNPoint,
+		ANA_UseBkgrnd
 
 
 	};

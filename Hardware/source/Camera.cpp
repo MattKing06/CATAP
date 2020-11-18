@@ -236,7 +236,7 @@ long Camera::getStepSize()const
 }
 bool Camera::setStepSize(long val)
 {
-	return epicsInterface->putValue2<char>(pvStructs.at(CameraRecords::ANA_StepSize), val);
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_StepSize), val);
 }
 
 
@@ -587,19 +587,19 @@ long Camera::getMaskAndROIySize()const
 
 bool Camera::setMaskAndROIxPos(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetX), val);
+	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetX), (double)val);
 }
 bool Camera::setMaskAndROIyPos(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetY), val);
+	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetY), (double)val);
 }
 bool Camera::setMaskAndROIxSize(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), val);
+	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (double)val);
 }
 bool Camera::setMaskAndROIySize(long val)
 {
-	return  epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), val);
+	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (double)val);
 }
 bool Camera::setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size)
 {
@@ -640,6 +640,7 @@ bool Camera::useNPoint(bool v)
 bool Camera::useBackground(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
 }
 
@@ -820,11 +821,11 @@ bool Camera::stopAnalysing()
 }
 bool Camera::isAnalysing()const
 {
-	return getAcquireState() == STATE::ANALYSING;
+	return getAnalysisState() == STATE::ANALYSING;
 }
 bool Camera::isNotAnalysing() const
 {
-	return getAcquireState() == STATE::NOT_ANALYSING;
+	return getAnalysisState() == STATE::NOT_ANALYSING;
 }
 STATE Camera::getAnalysisState( )const
 {

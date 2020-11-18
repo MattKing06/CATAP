@@ -47,8 +47,8 @@ controls_information:
         # # MAGICK_WriteMessage    : CLA-VCA-DIA-CAM-01:MAGICK:WriteMessage
         # # MAGICK_Capture_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:Capture_RBV
         # # MAGICK_NumCapture_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:NumCapture_RBV
-        ANA_StepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
-        ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
+        ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks #### ?? 
+        ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV # ???? 
         ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
         ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint
         ANA_X_RBV    : CLA-VCA-DIA-CAM-01:ANA:X_RBV
@@ -64,24 +64,25 @@ controls_information:
         ANA_SigmaYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXYPix_RBV
         ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV
-        ANA_MaskXCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter_RBV
+        ANA_MaskYCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter
         ANA_MaskYCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter_RBV
         ANA_MaskXCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter
-        ANA_MaskYCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter
+        ANA_MaskXCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter_RBV
         ANA_MaskXRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad_RBV
         ANA_MaskYRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad_RBV
-        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
-        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
-        ANA_PixMM_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixMM_RBV
         ANA_StepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
-        ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
+        ANA_StepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV 
         ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
         ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint
         ANA_MaskXRad    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad
         ANA_MaskYRad    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad
         ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
+        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
         ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
+        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
         ANA_PixMM    : CLA-VCA-DIA-CAM-01:ANA:PixMM
+        ANA_PixMM_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixMM_RBV
+
         # CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
 
 

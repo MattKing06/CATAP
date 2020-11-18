@@ -148,7 +148,6 @@ public:
 	STATE getUsingBackgroundState(const std::string& name)const;
 
 
-
 	bool stopAcquiring(const std::string& cam_name);
 	bool stopAllAcquiring();
 	bool stopAllAcquiringExceptVC();

@@ -52,10 +52,10 @@ controls_information:
         # ROI1_SizeX : CLA-S02-DIA-CAM-03:ROI1:SizeX
         # ROI1_SizeY : CLA-S02-DIA-CAM-03:ROI1:SizeY
         # ROI1_ImageData_RBV  : CLA-S02-DIA-CAM-03:CAM3:ArrayData
-        # ROIandMask_SetX : CLA-S02-DIA-CAM-03:ANA:SetX
-        # ROIandMask_SetY : CLA-S02-DIA-CAM-03:ANA:SetY
-        # ROIandMask_SetXrad : CLA-S02-DIA-CAM-03:ANA:SetXRad
-        # ROIandMask_SetYrad : CLA-S02-DIA-CAM-03:ANA:SetYRad        
+        ROIandMask_SetX : CLA-S02-DIA-CAM-03:ANA:SetX
+        ROIandMask_SetY : CLA-S02-DIA-CAM-03:ANA:SetY
+        ROIandMask_SetXrad : CLA-S02-DIA-CAM-03:ANA:SetXRad
+        ROIandMask_SetYrad : CLA-S02-DIA-CAM-03:ANA:SetYRad        
         # ANA_UseFloor    : CLA-S02-DIA-CAM-03:ANA:UseFloor
         # ANA_UseFloor_RBV    : CLA-S02-DIA-CAM-03:ANA:UseFloor_RBV
         # ANA_FloorLevel    : CLA-S02-DIA-CAM-03:ANA:Floor
