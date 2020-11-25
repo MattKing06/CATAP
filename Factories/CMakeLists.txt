@@ -7,8 +7,9 @@ set( SOURCE_FILES
     source/CameraFactory.cpp
     source/ScreenFactory.cpp
     source/ValveFactory.cpp
-    source/GeneralMonitorFactory.cpp
     source/IMGFactory.cpp
+    source/LaserEnergyMeterFactory.cpp
+    source/LaserHWPFactory.cpp
     source/LaserMirrorFactory.cpp
     source/LEDFactory.cpp
     source/LightingFactory.cpp
@@ -28,8 +29,9 @@ set( INCLUDE_FILES
     include/CameraFactory.h
     include/ScreenFactory.h
     include/ValveFactory.h
-    include/GeneralMonitorFactory.h
     include/IMGFactory.h
+    include/LaserEnergyMeterFactory.h
+    include/LaserHWPFactory.h
     include/LaserMirrorFactory.h
     include/LEDFactory.h
     include/LLRFFactory.h
@@ -50,8 +52,9 @@ set( TEST_FILES
     ChargeFactoryTest.cpp
     ScreenFactoryTest.cpp
     ValveFactoryTest.cpp
-    GeneralMonitorFactoryTest.cpp
     IMGFactoryTest.cpp
+    LaserEnergyMeterFactoryTest.cpp
+    LaserHWPFactoryTest.cpp
     LaserMirrorFactoryTest.cpp
     LEDFactoryTest.cpp
     LightingFactoryTest.cpp

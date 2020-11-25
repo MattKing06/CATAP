@@ -10,6 +10,8 @@
 #include <BPM.h>
 #include <Charge.h>
 #include <Screen.h>
+#include <LaserEnergyMeter.h>
+#include <LaserHWP.h>
 #include <IMG.h>
 #include <string>
 #include <fstream>
@@ -122,7 +124,7 @@ public:
 				messenger.printDebugMessage("Constuct Hardware, mode = ", ENUM_TO_STRING(mode));
 
 				HardwareType freshHardware = HardwareType(parameters, mode);
-				
+
 				messenger.printDebugMessage("Add New harwdare to hardwareMapToFill");
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object

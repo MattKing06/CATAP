@@ -26,7 +26,11 @@ from CATAP.Charge import *
 from CATAP.Magnet import *
 from CATAP.Valve import *
 from CATAP.Screen import *
+from CATAP.LaserEnergyMeter import *
+from CATAP.LaserHWP import *
 from CATAP.HardwareFactory import *
+from CATAP.EPICSTools import *
+
 
 # -- Project information -----------------------------------------------------
 

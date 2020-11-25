@@ -1,0 +1,3 @@
+recursive-include CATAP *.pyd
+
+recursive-include CATAP *.dll

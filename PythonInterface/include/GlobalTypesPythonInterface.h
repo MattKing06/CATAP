@@ -62,6 +62,13 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE)
 			.value("CLARA_CAMERA", TYPE::CLARA_CAMERA)
 			.value("VELA_CAMERA", TYPE::VELA_CAMERA)
+			.value("BPM_TYPE", TYPE::BPM_TYPE)
+			.value("CHARGE", TYPE::CHARGE)
+			.value("HWP", TYPE::HWP)
+			.value("SHUTTER", TYPE::SHUTTER)
+			.value("ENERGYMETER", TYPE::ENERGYMETER)
+			.value("VALVE", TYPE::VALVE)
+			.value("CHARGE", TYPE::CHARGE)
 			;
 	}
 }

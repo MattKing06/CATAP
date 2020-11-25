@@ -25,6 +25,10 @@ public:
 
 	// for creating "proper" objects that are defeined in a yaml file 
 	Hardware(const std::map<std::string, std::string>& paramMap, STATE mode);
+	
+	// for creating hardware objects that do not have yaml files (used specifically for the EPICSTools construction)
+	Hardware(STATE mode);
+
 	// copy-cOntructor (forced by c++ standard due to passing in "const Hardware&" )
 	Hardware(const Hardware& copyHardware);
 
