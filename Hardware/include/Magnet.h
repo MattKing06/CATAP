@@ -110,6 +110,9 @@ class Magnet : public Hardware
 	/*! get the magnet reverse type, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMagnetRevType() const;
+	/*! get the magnet lattice position, defined in the master lattice yaml file
+		@param[out] result  */
+		double getPosition() const;
 	/*! get the magnetic length, defined in the master lattice yaml file
 		@param[out] result  */
 		double getMagneticLength() const;
@@ -143,6 +146,12 @@ class Magnet : public Hardware
 		@param[in] value to set READ_tolerance to
 		@param[out] READI_tolerance after setting new value */
 		double setREADITolerance(const double value);
+	/*! Get the field integral coefficents, defined in the master lattice yaml file
+		@param[out] result  */
+		std::vector<double> getFieldIntegralCoefficients() const;
+	/*! Get the field integral coefficents, defined in the master lattice yaml file (Python version)
+		@param[out] result  */
+		boost::python::list getFieldIntegralCoefficients_Py() const;
 	/*! set the values used during degaussing
 		@param[out] new value sthat will be used */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
@@ -254,6 +263,12 @@ class Magnet : public Hardware
 		double magneticLength;
 	/*! magnet serial number, defined in the master lattice yaml file	*/
 		std::string serialNumber;
+	/*! magnet beamline position */
+		double position;
+
+	/*! measured field itnegral cooefficients */
+		std::vector<double> field_integral_coefficients;
+
 
 		//std::string magRevType;
 		double RI_tolerance;
