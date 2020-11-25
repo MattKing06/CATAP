@@ -34,9 +34,9 @@ Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, S
 mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
-// TODO exceptions?? shoudl be more robut, 
-// TODO we DONT need teh string verions machine_area  and hardware_type they are ENUMS
-// TODO is hardware type and machine area in al hardware files ?? 
+// TODO exceptions?? should be more robust, 
+// TODO we DONT need the string verions machine_area  and hardware_type they are ENUMS
+// TODO is hardware type and machine area in all hardware files ?? 
 
 machine_area_str(specificValueMap.find("machine_area")->second),
 machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),

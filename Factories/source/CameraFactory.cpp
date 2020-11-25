@@ -64,6 +64,7 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 {
 	return setup(version, to_std_vector<TYPE>(machineAreas));
 }
+
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	machineAreas = machineAreas_IN;
@@ -78,12 +79,12 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	//messenger.printDebugMessage(ss.str());
 	//GlobalFunctions::pause_2000();
 
-	if(hasBeenSetup)
+	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
 		return true;
 	}
-	if(mode == STATE::VIRTUAL)
+	if (mode == STATE::VIRTUAL)
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
@@ -106,10 +107,10 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
-		
+
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
-		
+
 		for (auto&& pv : pvstruct)
 		{
 			// sets the monitor state in the pvstruict to true or false
@@ -124,7 +125,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				//messenger.printDebugMessage(item.second.getHardwareName()),
 				messenger.printDebugMessage(pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
 					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
-				if(pv.second.monitor)
+				if (pv.second.monitor)
 				{
 					//messenger.printDebugMessage("createSubscription");
 					item.second.epicsInterface->createSubscription(item.second, pv.second);
@@ -136,7 +137,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 			}
 			else
 			{
-				messenger.printMessage(item.first, ", ", pv.second.pvRecord,  " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(item.first, ", ", pv.second.pvRecord, " CANNOT CONNECT TO EPICS");
 			}
 		}
 		EPICSInterface::sendToEPICS();
@@ -144,8 +145,104 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
+
+
+
+bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
+{
+	//machineAreas = machineAreas_IN;
+	//messenger.printDebugMessage("called Camera Factory setup  ");
+	//std::stringstream ss;
+	//ss << "machineAreas = ";
+	//for (auto&& area : machineAreas)
+	//{
+	//	ss << ENUM_TO_STRING(area);
+	//	ss << ", ";
+	//}
+	//messenger.printDebugMessage(ss.str());
+	//GlobalFunctions::pause_2000();
+
+	if (hasBeenSetup)
+	{
+		messenger.printDebugMessage("setup Camera Factory: it has been setup");
+		return true;
+	}
+	if (mode == STATE::VIRTUAL)
+	{
+		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
+	}
+	// epics valve interface has been initialized in valve constructor
+	// but we have a lot of PV information to retrieve from EPICS first
+	// so we will cycle through the PV structs, and set up their values.
+	populateCameraMap();
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
+	cutLHarwdareMapByNames(names);
+	setupChannels();
+	EPICSInterface::sendToEPICS();
+
+	for (auto& item : camera_map)
+	{
+		std::string name(item.second.getHardwareName());
+		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
+		// update aliases for camera item in map
+		updateAliasNameMap(item.second);
+
+		//follow this through it seems to be empty! 
+		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
+		messenger.printDebugMessage("Start Setting up EPICS channels ");
+		for (auto&& pv : pvstruct)
+		{
+			messenger.printDebugMessage("Check CHID ");
+			// sets the monitor state in the pvstruict to true or false
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				messenger.printDebugMessage("CHID connected");
+				setMonitorStatus(pv.second);
+				messenger.printDebugMessage("CHID connected");
+
+				item.second.epicsInterface->retrieveCHTYPE(pv.second);
+				item.second.epicsInterface->retrieveCOUNT(pv.second);
+				item.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
+				//// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				//messenger.printDebugMessage(item.second.getHardwareName()),
+				messenger.printDebugMessage(pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
+					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					//messenger.printDebugMessage("createSubscription");
+					item.second.epicsInterface->createSubscription(item.second, pv.second);
+				}
+				else
+				{
+					messenger.printDebugMessage("NO createSubscription");
+				}
+			}
+			else
+			{
+				messenger.printMessage(item.first, ", ", pv.second.pvRecord, " CANNOT CONNECT TO EPICS");
+			}
+		}
+		messenger.printDebugMessage("Finished Setting up EPICS channels ");
+		EPICSInterface::sendToEPICS();
+	}
+	messenger.printDebugMessage("Finished Setting up EPICS channels ");
+	hasBeenSetup = true;
+	return hasBeenSetup;
+}
+
+
+
+
+
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
+	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
 	if (std::find(CameraRecords::cameraMonitorRecordsList.begin(), CameraRecords::cameraMonitorRecordsList.end(), pvStruct.pvRecord) != CameraRecords::cameraMonitorRecordsList.end())
 	{
 		pvStruct.monitor = true;
@@ -1010,13 +1107,84 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 	size_t end_size = camera_map.size();
 	messenger.printDebugMessage("cutLHarwdareMapByMachineAreas camera_map.size() went from ", start_size, " to ", end_size);
 
-	GlobalFunctions::pause_2000();
+	//GlobalFunctions::pause_2000();
 
 }
 
 
 
+void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names)
+{
+	std::stringstream ss;
+	ss << "Cutting to name in ";
+	for (auto&& name : names)
+	{
+		ss << name;
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
 
+	size_t start_size = camera_map.size();
+	// loop over each magnet
+	for (auto it = camera_map.begin(); it != camera_map.end() /* not hoisted */; /* no increment */)
+	{
+		// flag for if we should erase this entry, default to true 
+		bool should_erase = true;
+		// now we loop over every area in machineAreas and checl against isInMachineArea
+		//messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
+		for (auto&& name : names)
+		{
+			if (it->first == name )
+			{
+				should_erase = false;
+				break;
+			}
+			else
+			{
+			}
+		}
+		// if should_erase is still true, erase object from  magnetMap
+		if (should_erase)
+		{
+			messenger.printDebugMessage("Camera Factory erasing " + it->second.getHardwareName());
+			it = camera_map.erase(it); //  m.erase(it++);    
+		}
+		else
+		{
+			++it;
+		}
+	}
+	// a bit of cancer below ...
+	// now check if there are two virtual_cathdoe cameras, if so remove thje VELA one (arbitrary decision, but meh)
+	auto it_vela = camera_map.end();
+	auto it_clara = camera_map.end();
+	for (auto it = camera_map.begin(); it != camera_map.end() /* not hoisted */; /* no increment */)
+	{
+		if (it->second.getMachineArea() == TYPE::VELA_LASER)
+		{
+			//messenger.printDebugMessage("Found VELA Virtual Cathdoe Camera");
+			it_vela = it;
+		}
+		if (it->second.getMachineArea() == TYPE::CLARA_LASER)
+		{
+			//messenger.printDebugMessage("Found CLARA Virtual Cathdoe Camera");
+			it_clara = it;
+		}
+		++it;
+	}
+	if (it_vela != camera_map.end())
+	{
+		if (it_clara != camera_map.end())
+		{
+			camera_map.erase(it_vela);
+			messenger.printDebugMessage("Still 2 Virtual_cathode Cameras, deleteing the VELA one");
+		}
+	}
+
+	size_t end_size = camera_map.size();
+	messenger.printDebugMessage("cutLHarwdareMapByNames camera_map.size() went from ", start_size, " to ", end_size);
+	GlobalFunctions::pause_2000();
+}
 
 
 

@@ -74,47 +74,22 @@ void EPICSInterface::detachFrom_thisCaContext()
 {
 	ca_detach_context();
 }
-void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
-{
-	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
-										pvStruct.CHID, pvStruct.MASK,
-										pvStruct.updateFunction,
-										(void*)&hardware, 
-										&pvStruct.EVID);
-	MY_SEVCHK(status);
-}
+//void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
+//{
+//	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
+//										pvStruct.CHID, pvStruct.MASK,
+//										pvStruct.updateFunction,
+//										(void*)&hardware, 
+//										&pvStruct.EVID);
+//	MY_SEVCHK(status);
+//}
 
 void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 {
-	messenger.printDebugMessage("try2 ", pvStruct.fullPVName);
 	try
 	{
-
 		int status;
 		//chid CHID;
-		// This should be defined in the hardware objst, so that we can handle non-standrd PV names
-		std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
-
-
-
-		/*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
-		// TODO SURELY THIS IS NUTS AND A LEGACY FROM SOME OLD VERSION
-		if (pvStruct.fullPVName.find("MAG") != std::string::npos ||
-			pvStruct.fullPVName.find("VALV") != std::string::npos ||
-			pvStruct.fullPVName.find("BPM") != std::string::npos ||
-			pvStruct.fullPVName.find("WCM") != std::string::npos ||
-			pvStruct.fullPVName.find("FCUP") != std::string::npos ||
-			pvStruct.fullPVName.find("SCR") != std::string::npos ||
-			pvStruct.fullPVName.find("YAG") != std::string::npos ||
-			pvStruct.fullPVName.find("CAM") != std::string::npos )
-		{
-			pv = pvStruct.fullPVName;
-		}
-		if (pvStruct.fullPVName.find("VALV") != std::string::npos)
-		{
-			pv = pvStruct.fullPVName;
-		}
-
 		// This should eb defeind in the hardware objst, so that we can handle non-standrd PV names
 		//std::string pv = pvStruct.fullPVName + ":" + pvStruct.pvRecord;
 		///*CURRENTLY PV STRUCTS FOR MAGNET CONTAIN FULL PV at pvStruct.FullPVName*/
@@ -134,7 +109,6 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		//	pv = pvStruct.fullPVName;
 		//}
 		std::string pv = pvStruct.fullPVName;
-
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		

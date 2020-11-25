@@ -49,6 +49,12 @@ public:
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
+	/*! setup function using std::vector of camera names 
+		@param[in] version, (a placeholder for future extensions)
+		@param[in] names, only setup magnets that match a (fullname) in names 
+		@param[out] bool, for success or failure	*/
+	bool setup(const std::string& version, const std::vector<std::string>& names);
+
 
 	/*! get the names of all the cameras in Factory 
 	@param[out] vector of strings, camera names*/
@@ -201,6 +207,9 @@ private:
 	void populateCameraMap();
 	/*! Cut cameras from camera_map that are not in the requested machine area */
 	void cutLHarwdareMapByMachineAreas();
+	/*! Cut cameras from camera_map that do nto have a name in names 
+		@param[in] names, vector containing  all the names of cmaeras to keep 	*/
+	void cutLHarwdareMapByNames(const std::vector<std::string>& names);
 	/*! set up connections to epics */
 	void setupChannels();
 	/* sets the pvStruct monitor flag to true if the record is hardcoded as a record to monitor */

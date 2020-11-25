@@ -67,46 +67,47 @@ controls_information:
         # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-14:MAGICK:WriteMessage
         # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture_RBV
-        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-14:ANA:StepSize_RBV
-        ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks_RBV
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-14:ANA:UseNPoint
-        ANA_X_RBV    : EBT-INJ-DIA-CAM-14:ANA:X_RBV
-        ANA_Y_RBV    : EBT-INJ-DIA-CAM-14:ANA:Y_RBV
-        ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaX_RBV
-        ANA_SigmaY_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaY_RBV
-        ANA_CovXY_RBV    : EBT-INJ-DIA-CAM-14:ANA:CovXY_RBV
-        ANA_AvgIntensity_RBV    : EBT-INJ-DIA-CAM-14:ANA:AvgIntensity_RBV
-        ANA_Intensity_RBV    : EBT-INJ-DIA-CAM-14:ANA:Intensity_RBV
-        ANA_XPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:XPix_RBV
-        ANA_YPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:YPix_RBV
-        ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaXPix_RBV
-        ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaYPix_RBV
-        ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixelResults_RBV
+        # ANA_StepSize    : EBT-INJ-DIA-CAM-14:ANA:StepSize
+        # ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-14:ANA:StepSize_RBV
+        # ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks_RBV
+        # ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks
+        # ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
+        # ANA_UseNPoint    : EBT-INJ-DIA-CAM-14:ANA:UseNPoint
+        # ANA_X_RBV    : EBT-INJ-DIA-CAM-14:ANA:X_RBV
+        # ANA_Y_RBV    : EBT-INJ-DIA-CAM-14:ANA:Y_RBV
+        # ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaX_RBV
+        # ANA_SigmaY_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaY_RBV
+        # ANA_CovXY_RBV    : EBT-INJ-DIA-CAM-14:ANA:CovXY_RBV
+        # ANA_AvgIntensity_RBV    : EBT-INJ-DIA-CAM-14:ANA:AvgIntensity_RBV
+        # ANA_Intensity_RBV    : EBT-INJ-DIA-CAM-14:ANA:Intensity_RBV
+        # ANA_XPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:XPix_RBV
+        # ANA_YPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:YPix_RBV
+        # ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaXPix_RBV
+        # ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaYPix_RBV
+        # ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:CovXYPix_RBV
+        # ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixelResults_RBV
 
-        ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixMM_RBV
-        CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-14:CAM:AcquireTime_RBV
-        CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-14:CAM:AcquirePeriod_RBV
-        CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-14:CAM:ArrayRate_RBV
-        CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-14:CAM:Temperature_RBV
-        HDF_FilePath    : EBT-INJ-DIA-CAM-14:HDF:FilePath
-        HDF_FileName    : EBT-INJ-DIA-CAM-14:HDF:FileName
-        HDF_FileNumber    : EBT-INJ-DIA-CAM-14:HDF:FileNumber
-        HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-14:HDF:FilePath_RBV
-        HDF_FileName_RBV    : EBT-INJ-DIA-CAM-14:HDF:FileName_RBV
-        HDF_WriteFile    : EBT-INJ-DIA-CAM-14:HDF:WriteFile
-        CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
-        HDF_Capture    : EBT-INJ-DIA-CAM-14:HDF:Capture
-        HDF_NumCapture    : EBT-INJ-DIA-CAM-14:HDF:NumCapture
+        # ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixMM_RBV
+        # CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-14:CAM:AcquireTime_RBV
+        # CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-14:CAM:AcquirePeriod_RBV
+        # CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-14:CAM:ArrayRate_RBV
+        # CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-14:CAM:Temperature_RBV
+        # HDF_FilePath    : EBT-INJ-DIA-CAM-14:HDF:FilePath
+        # HDF_FileName    : EBT-INJ-DIA-CAM-14:HDF:FileName
+        # HDF_FileNumber    : EBT-INJ-DIA-CAM-14:HDF:FileNumber
+        # HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-14:HDF:FilePath_RBV
+        # HDF_FileName_RBV    : EBT-INJ-DIA-CAM-14:HDF:FileName_RBV
+        # HDF_WriteFile    : EBT-INJ-DIA-CAM-14:HDF:WriteFile
+        # CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
+        # HDF_Capture    : EBT-INJ-DIA-CAM-14:HDF:Capture
+        # HDF_NumCapture    : EBT-INJ-DIA-CAM-14:HDF:NumCapture
         # MAGICK_FileName    : EBT-INJ-DIA-CAM-14:MAGICK:FileName
         # MAGICK_FilePath    : EBT-INJ-DIA-CAM-14:MAGICK:FilePath
         # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-14:MAGICK:FileNumber
         # MAGICK_Capture    : EBT-INJ-DIA-CAM-14:MAGICK:Capture
         # MAGICK_WriteFile    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile
         # MAGICK_NumCapture    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture
-        ANA_StepSize    : EBT-INJ-DIA-CAM-14:ANA:StepSize
-        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks
+
         ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:NewBkgrnd
         ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
         ANA_UseNPoint    : EBT-INJ-DIA-CAM-14:ANA:UseNPoint
@@ -121,7 +122,7 @@ properties:
     machine_area : INJ  # Set by where the camera physically *IS* 
     name : EBT-INJ-DIA-CAM-14
     name_alias: INJ-CAM-14, INJ-CAM14  # include screen names here as well 
-    CAM_TYPE : VELA_CAM  # MAYBE BA1 cams are new type ??? 
+    CAM_TYPE : VELA_CAM # MAYBE BA1 cams are new type ??? 
     SCREEN_NAME : BA1-SCR-03, BA1-YAG-03, BA1-SCR-3, BA1-YAG-3  # which screen is the camera looking at 
     IP_ADDRESS_STREAM : "" 
     MAX_SHOTS_NUMBER  :	600 # max number of shots that can be taken in a single burst 
@@ -634,4 +635,3 @@ properties:
 # PV_CHTYPE      			= DBR_ENUM;
 # PV_COUNT            	= 1;
 # PV_MASK             	= DBE_VALUE;
-

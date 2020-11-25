@@ -311,6 +311,45 @@ CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE
 	return cameraFactory;
 }
 
+CameraFactory& HardwareFactory::getCameraFactory_ByName(std::string name)
+{
+	const std::vector<std::string> names{ name };
+	return getCameraFactory_ByNames(names);
+}
+CameraFactory& HardwareFactory::getCameraFactory_ByNames_Py(const boost::python::list& names)
+{
+	return getCameraFactory_ByNames(to_std_vector<std::string>(names));
+}
+CameraFactory& HardwareFactory::getCameraFactory_ByNames(const std::vector<std::string>& names)
+{
+	messenger.printDebugMessage("");
+	std::stringstream ss;
+	ss << "getCameraFactory_ByNames  passed names = ";
+	for (auto&& name : names)
+	{
+		ss << name;
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
+	if (!cameraFactory.hasBeenSetup)
+	{
+		bool setup = cameraFactory.setup("nominal", names);
+		if (setup)
+		{
+			messenger.printMessage("getCameraFactory Complete");
+			return cameraFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup cameraFactory");
+		}
+	}
+	return cameraFactory;
+}
+
+
+
+
 LaserEnergyMeterFactory& HardwareFactory::getLaserEnergyMeterFactory()
 {
 	if (!laserEnergyMeterFactory.hasBeenSetup)

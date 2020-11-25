@@ -51,6 +51,10 @@ public:
 	CameraFactory& getCameraFactory_Mulitple_Py(const boost::python::list& machineAreas);
 	CameraFactory& getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas);
 
+	CameraFactory& getCameraFactory_ByName(std::string name);
+	CameraFactory& getCameraFactory_ByNames_Py(const boost::python::list& names);
+	CameraFactory& getCameraFactory_ByNames(const std::vector<std::string>& names);
+
 
 
 	LaserEnergyMeterFactory& getLaserEnergyMeterFactory();

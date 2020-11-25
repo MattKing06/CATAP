@@ -27,6 +27,9 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getCameraFactory", &HardwareFactory::getCameraFactory_Single, boost::python::arg("self"), boost::python::arg("machine_area"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getCameraFactory", &HardwareFactory::getCameraFactory_Mulitple_Py, boost::python::arg("self"), boost::python::arg("machine_areas"),boost::python::return_value_policy<boost::python::reference_existing_object>())
 
+			.def("getCameraFactory", &HardwareFactory::getCameraFactory_ByName, boost::python::arg("self"), boost::python::arg("name"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getCameraFactory", &HardwareFactory::getCameraFactory_ByNames_Py, boost::python::arg("self"), boost::python::arg("names"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+
 			.add_property("magnetFactory", &HardwareFactory::magnetFactory)
 			.def("getMagnetFactory", &HardwareFactory::getMagnetFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("bpmFactory", &HardwareFactory::bpmFactory)

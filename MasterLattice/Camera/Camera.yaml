@@ -33,11 +33,11 @@ controls_information:
         # ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:CovXYPix_RBV
         # ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-13:ANA:PixelResults_RBV
         ANA_MaskXCenter_RBV    : value
-        ANA_MaskYCenter_RBV    : value
-        ANA_MaskXRad_RBV    : value
-        ANA_MaskYRad_RBV    : value
-        ANA_MaskXCenter    : value
-        ANA_MaskYCenter    : value
+        # ANA_MaskYCenter_RBV    : value
+        # ANA_MaskXRad_RBV    : value
+        # ANA_MaskYRad_RBV    : value
+        # ANA_MaskXCenter    : value
+        # ANA_MaskYCenter    : value
         # ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-13:ANA:CenterX_RBV
         # ANA_CenterY_RBV    : EBT-INJ-DIA-CAM-13:ANA:CenterY_RBV
         # ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-13:ANA:PixMM_RBV
