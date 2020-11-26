@@ -283,7 +283,7 @@ public:
 	/*! Get the state of use_floor.
 	@param[in] long, value to use
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	STATE getUseFloor()const;
+	STATE getUseFloorState()const;
 	/*! Return true if use_floor == STATE::USING_FLOOR, otherwise false 
 	@param[out] bool, value*/
 	bool isUsingFloor()const;
@@ -527,9 +527,9 @@ protected:
 	/*! LED status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> led_status;
 	/*! Acquire status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> acquire_status;
+	std::pair<epicsTimeStamp, STATE> acquire_state;
 	/*! Analysis status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> analysis_status;
+	std::pair<epicsTimeStamp, STATE> analysis_state;
 	/*! Capture status (is the Cmaera "busy" capturing images). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> capture_state;
 

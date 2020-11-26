@@ -2,21 +2,13 @@
 controls_information:
     PV: true
     pv_record_map:
-        # HDFB_Buffer_Trigger : EBT-INJ-DIA-CAM-14:CAM:Trigger.PROC
-        # HDFB_Buffer_FilePath : EBT-INJ-DIA-CAM-14:HDFB:FilePath
-        # HDFB_Buffer_FilePath_RBV : EBT-INJ-DIA-CAM-14:HDFB:FilePath_RBV
-        # HDFB_Buffer_FileName : EBT-INJ-DIA-CAM-14:HDFB:FileName
-        # HDFB_Buffer_FileName_RBV : EBT-INJ-DIA-CAM-14:HDFB:FileName_RBV
-        # HDFB_Buffer_FileNumber : EBT-INJ-DIA-CAM-14:HDFB:FileNumber
-        # HDFB_Buffer_FileNumber_RBV : EBT-INJ-DIA-CAM-14:HDFB:FileNumber_RBV
-
-
+        # NO _RBV versions of these PVs 
         ROIandMask_SetX : EBT-INJ-DIA-CAM-14:ANA:SetX
         ROIandMask_SetY : EBT-INJ-DIA-CAM-14:ANA:SetY
         ROIandMask_SetXrad : EBT-INJ-DIA-CAM-14:ANA:SetXRad
         ROIandMask_SetYrad : EBT-INJ-DIA-CAM-14:ANA:SetYRad 
-
         
+        # the "mask" from JW/TP implementation 
         ANA_MaskXCenter    : EBT-INJ-DIA-CAM-14:ANA:MaskXCenter
         ANA_MaskXCenter_RBV    : EBT-INJ-DIA-CAM-14:ANA:MaskXCenter_RBV
         ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-14:ANA:CenterX_RBV
@@ -29,9 +21,7 @@ controls_information:
         ANA_MaskXRad    : EBT-INJ-DIA-CAM-14:ANA:MaskXRad
         ANA_MaskYRad_RBV    : EBT-INJ-DIA-CAM-14:ANA:MaskYRad_RBV
         ANA_MaskYRad    : EBT-INJ-DIA-CAM-14:ANA:MaskYRad
-        
-        
-        
+        # ROI SK implementation  
         ROI1_MinX_RBV : EBT-INJ-DIA-CAM-14:ROI1:MinX_RBV
         ROI1_MinX : EBT-INJ-DIA-CAM-14:ROI1:MinX
         ROI1_MinY_RBV : EBT-INJ-DIA-CAM-14:ROI1:MinY_RBV
@@ -41,39 +31,40 @@ controls_information:
         ROI1_SizeY_RBV : EBT-INJ-DIA-CAM-14:ROI1:SizeY_RBV
         ROI1_SizeY : EBT-INJ-DIA-CAM-14:ROI1:SizeY
         ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-14:CAM3:ArrayData
+        # start stop acquiring images 
+        CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-14:CAM:Acquire_RBV
        
-        # ANA_UseFloor    : EBT-INJ-DIA-CAM-14:ANA:UseFloor
-        # ANA_UseFloor_RBV    : EBT-INJ-DIA-CAM-14:ANA:UseFloor_RBV
-        # ANA_FloorLevel    : EBT-INJ-DIA-CAM-14:ANA:Floor
-        # ANA_FloorLevel_RBV    : EBT-INJ-DIA-CAM-14:ANA:Floor_RBV
-        # ANA_FlooredPoints_RBV    : EBT-INJ-DIA-CAM-14:ANA:FLOORED_PTS
-        # ANA_FlooredPercent_RBV    : EBT-INJ-DIA-CAM-14:ANA:FLOORED_PCENT
+
+        #  analysis, enable callbacks is start / stop analysis 
+        ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks_RBV
+        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks
+        # the analysis can use a back groun dsubtracted image 
+        # ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:NewBkgrnd
+        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
+        # the analysis can use "n-point scaling" 
+        ANA_UseNPoint    : EBT-INJ-DIA-CAM-14:ANA:UseNPoint       
+        # The analysis can set a noise floor, pixel values below this are set to zero 
+        ANA_UseFloor    : EBT-INJ-DIA-CAM-14:ANA:UseFloor
+        ANA_UseFloor_RBV    : EBT-INJ-DIA-CAM-14:ANA:UseFloor_RBV
+        ANA_FloorLevel    : EBT-INJ-DIA-CAM-14:ANA:Floor
+        ANA_FloorLevel_RBV    : EBT-INJ-DIA-CAM-14:ANA:Floor_RBV
+        ANA_FlooredPoints_RBV    : EBT-INJ-DIA-CAM-14:ANA:FLOORED_PTS
+        ANA_FlooredPercent_RBV    : EBT-INJ-DIA-CAM-14:ANA:FLOORED_PCENT
+        # Analysis CPU metrics 
         # ANA_CPU_RBV    : EBT-INJ-DIA-CAM-14:ANA:ANA_CPU
         # ANA_CPU_CropSubMask_RBV    : EBT-INJ-DIA-CAM-14:ANA:CSM_CPU
         # ANA_CPU_Npoint_RBV    : EBT-INJ-DIA-CAM-14:ANA:NP_CPU
         # ANA_CPU_Dot_RBV    : EBT-INJ-DIA-CAM-14:ANA:DP_CPU
-        # ANA_PixW_RBV : EBT-INJ-DIA-CAM-14:ANA:PixW_RBV
-        # ANA_PixH_RBV : EBT-INJ-DIA-CAM-14:ANA:PixH_RBV
-        # HDF_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:HDF:WriteFile_RBV
-        # HDF_WriteStatus    : EBT-INJ-DIA-CAM-14:HDF:WriteStatus
-        # HDF_WriteMessage    : EBT-INJ-DIA-CAM-14:HDF:WriteMessage
-        # HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCaptured_RBV
-        # HDF_Capture_RBV    : EBT-INJ-DIA-CAM-14:HDF:Capture_RBV
-        CAM_Acquire    : EBT-INJ-DIA-CAM-14:CAM:Acquire
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-14:CAM:Acquire_RBV
-        # HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCapture_RBV
-        # MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCaptured_RBV
-        # MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile_RBV
-        # MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-14:MAGICK:WriteStatus
-        # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-14:MAGICK:WriteMessage
-        # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:Capture_RBV
-        # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture_RBV
+        
+        ANA_PixW_RBV : EBT-INJ-DIA-CAM-14:ANA:PixW_RBV
+        ANA_PixH_RBV : EBT-INJ-DIA-CAM-14:ANA:PixH_RBV
+        ANA_PixMM    : EBT-INJ-DIA-CAM-14:ANA:PixMM
+        ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixMM_RBV
+        
         ANA_StepSize    : EBT-INJ-DIA-CAM-14:ANA:StepSize
-        ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks_RBV
-        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-14:ANA:EnableCallbacks
         ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-14:ANA:StepSize_RBV
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-14:ANA:UseNPoint
+
         ANA_X_RBV    : EBT-INJ-DIA-CAM-14:ANA:X_RBV
         ANA_Y_RBV    : EBT-INJ-DIA-CAM-14:ANA:Y_RBV
         ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaX_RBV
@@ -86,13 +77,34 @@ controls_information:
         ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaXPix_RBV
         ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-14:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixelResults_RBV
+        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixelResults_RBV 
+        
+        
+        # actuall array data
+        CAM2_ArrayData    : EBT-INJ-DIA-CAM-14:CAM2:ArrayData
+        # meh LEDs, should probably go in their own factory?? 
+        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
+        LED_Off    :    CLA-LAS-DIA-LED-01:Off
+        LED_On    : CLA-LAS-DIA-LED-01:On
+       
+        # HDFB_Buffer_Trigger : EBT-INJ-DIA-CAM-14:CAM:Trigger.PROC
+        # HDFB_Buffer_FilePath : EBT-INJ-DIA-CAM-14:HDFB:FilePath
+        # HDFB_Buffer_FilePath_RBV : EBT-INJ-DIA-CAM-14:HDFB:FilePath_RBV
+        # HDFB_Buffer_FileName : EBT-INJ-DIA-CAM-14:HDFB:FileName
+        # HDFB_Buffer_FileName_RBV : EBT-INJ-DIA-CAM-14:HDFB:FileName_RBV
+        # HDFB_Buffer_FileNumber : EBT-INJ-DIA-CAM-14:HDFB:FileNumber
+        # HDFB_Buffer_FileNumber_RBV : EBT-INJ-DIA-CAM-14:HDFB:FileNumber_RBV
+       
+        # HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:HDF:NumCapture_RBV
 
-        # ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-14:ANA:PixMM_RBV
+
         # CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-14:CAM:AcquireTime_RBV
         # CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-14:CAM:AcquirePeriod_RBV
         # CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-14:CAM:ArrayRate_RBV
         # CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-14:CAM:Temperature_RBV
+        
+        # HDF_Capture    : EBT-INJ-DIA-CAM-14:HDF:Capture
+        # HDF_NumCapture    : EBT-INJ-DIA-CAM-14:HDF:NumCapture
         # HDF_FilePath    : EBT-INJ-DIA-CAM-14:HDF:FilePath
         # HDF_FileName    : EBT-INJ-DIA-CAM-14:HDF:FileName
         # HDF_FileNumber    : EBT-INJ-DIA-CAM-14:HDF:FileNumber
@@ -100,23 +112,20 @@ controls_information:
         # HDF_FileName_RBV    : EBT-INJ-DIA-CAM-14:HDF:FileName_RBV
         # HDF_WriteFile    : EBT-INJ-DIA-CAM-14:HDF:WriteFile
 
-        # HDF_Capture    : EBT-INJ-DIA-CAM-14:HDF:Capture
-        # HDF_NumCapture    : EBT-INJ-DIA-CAM-14:HDF:NumCapture
+
         # MAGICK_FileName    : EBT-INJ-DIA-CAM-14:MAGICK:FileName
         # MAGICK_FilePath    : EBT-INJ-DIA-CAM-14:MAGICK:FilePath
         # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-14:MAGICK:FileNumber
         # MAGICK_Capture    : EBT-INJ-DIA-CAM-14:MAGICK:Capture
         # MAGICK_WriteFile    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile
         # MAGICK_NumCapture    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture
+        # MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCaptured_RBV
+        # MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:WriteFile_RBV
+        # MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-14:MAGICK:WriteStatus
+        # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-14:MAGICK:WriteMessage
+        # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:Capture_RBV
+        # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture_RBV
 
-        ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:NewBkgrnd
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-14:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-14:ANA:UseNPoint
-        CAM2_ArrayData    : EBT-INJ-DIA-CAM-14:CAM2:ArrayData
-        ANA_PixMM    : EBT-INJ-DIA-CAM-14:ANA:PixMM
-        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :    CLA-LAS-DIA-LED-01:Off
-        LED_On    : CLA-LAS-DIA-LED-01:On
 
 properties:
     hardware_type: Camera

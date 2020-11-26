@@ -361,15 +361,15 @@ void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_arg
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->acquire_status.first = new_value.first;
+	recastCamera->acquire_state.first = new_value.first;
 	switch(new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->acquire_status.second = STATE::NOT_ACQUIRING; break;
-	case GlobalConstants::one_ushort:  recastCamera->acquire_status.second = STATE::ACQUIRING; break;
+	case GlobalConstants::zero_ushort: recastCamera->acquire_state.second = STATE::NOT_ACQUIRING; break;
+	case GlobalConstants::one_ushort:  recastCamera->acquire_state.second = STATE::ACQUIRING; break;
 	default:
-		recastCamera->acquire_status.second = STATE::ERR;
+		recastCamera->acquire_state.second = STATE::ERR;
 	}
-	std::cout << recastCamera->getHardwareName() << " new acquire state = " << ENUM_TO_STRING(recastCamera->acquire_status.second) << std::endl;
+	std::cout << recastCamera->getHardwareName() << " new acquire state = " << ENUM_TO_STRING(recastCamera->acquire_state.second) << std::endl;
 }
 void EPICSCameraInterface::update_LED_Sta(const struct event_handler_args args)
 {
@@ -378,10 +378,10 @@ void EPICSCameraInterface::update_LED_Sta(const struct event_handler_args args)
 	recastCamera->led_status.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->acquire_status.second = STATE::OFF; break;
-	case GlobalConstants::one_ushort:  recastCamera->acquire_status.second = STATE::ON; break;
+	case GlobalConstants::zero_ushort: recastCamera->acquire_state.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->acquire_state.second = STATE::ON; break;
 	default:
-		recastCamera->acquire_status.second = STATE::ERR;
+		recastCamera->acquire_state.second = STATE::ERR;
 	}
 }
 void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args args)
@@ -405,22 +405,22 @@ void EPICSCameraInterface::update_ANA_EnableCallbacks_RBV(const struct event_han
 	//std::cout << "update_ANA_EnableCallbacks_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->analysis_status.first = new_value.first;
+	recastCamera->analysis_state.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->analysis_status.second = STATE::NOT_ANALYSING; break;
-	case GlobalConstants::one_ushort:  recastCamera->analysis_status.second = STATE::ANALYSING; break;
+	case GlobalConstants::zero_ushort: recastCamera->analysis_state.second = STATE::NOT_ANALYSING; break;
+	case GlobalConstants::one_ushort:  recastCamera->analysis_state.second = STATE::ANALYSING; break;
 	default:
-		recastCamera->analysis_status.second = STATE::ERR;
+		recastCamera->analysis_state.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_EnableCallbacks_RBV = ", ENUM_TO_STRING(recastCamera->analysis_status.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_EnableCallbacks_RBV = ", ENUM_TO_STRING(recastCamera->analysis_state.second));
 }
 void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_mm);
 	recastCamera->x_mm_rs.Push(recastCamera->x_mm.second);
-	messenger.printDebugMessage("update_ANA_X_RBV, val =  ", recastCamera->x_mm.second);
+	//messenger.printDebugMessage("update_ANA_X_RBV, val =  ", recastCamera->x_mm.second);
 
 	//std::pair<epicsTimeStamp, double > x_pix;
 	///*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
@@ -441,8 +441,7 @@ void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args
 	//std::pair<epicsTimeStamp, double > sigma_y_mm;
 	///*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
 	//std::pair<epicsTimeStamp, double > sigma_xy_mm;
-
-	///*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
+	//*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
 	//std::pair<epicsTimeStamp, double > sum_intensity;
 	///*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
 	//std::pair<epicsTimeStamp, double > avg_intensity;
@@ -715,8 +714,17 @@ void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_
  void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, STATE> use_floor;
-	// TODO 
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	recastCamera->use_floor.first = tv->stamp;
+	switch (tv->value)
+	{
+	case 0: recastCamera->use_floor.second = STATE::NOT_USING_FLOOR; break;
+	case 1:  recastCamera->use_floor.second = STATE::USING_FLOOR; break;
+	default:
+		recastCamera->use_floor.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ", ENUM_TO_STRING(recastCamera->use_background.second));
+
 }
 void EPICSCameraInterface::update_ANA_FloorLevel_RBV(const struct event_handler_args args)
 {

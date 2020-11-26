@@ -27,8 +27,8 @@ sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 led_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-acquire_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-analysis_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -820,7 +820,7 @@ bool Camera::isNotAcquiring() const
 }
 STATE Camera::getAcquireState()const
 {
-	return acquire_status.second;
+	return acquire_state.second;
 }
 bool Camera::startAnalysing()
 {
@@ -840,7 +840,7 @@ bool Camera::isNotAnalysing() const
 }
 STATE Camera::getAnalysisState( )const
 {
-	return analysis_status.second;
+	return analysis_state.second;
 }
 //
 //  __   __             ___  __  ___               __      __             ___                  __   ___
@@ -1295,7 +1295,7 @@ long Camera::getBufferFileNumber()const
 //{
 //	return roi_size_y.second;
 //}
-STATE Camera::getUseFloor()const
+STATE Camera::getUseFloorState()const
 {
 	return use_floor.second;
 }
