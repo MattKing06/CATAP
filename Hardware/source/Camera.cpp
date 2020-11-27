@@ -26,7 +26,7 @@ y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-led_status(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -51,6 +51,14 @@ roi_keywords({"roi_x", "roi_y", "roi_rad_x", "roi_rad_y"})     //MAGIC STRING
 //mask_keywords_Py(to_py_list(mask_keywords)),
 //roi_keywords_Py(to_py_list(roi_keywords))
 {
+	
+	for (auto&& item : paramMap)
+	{
+		messenger.printDebugMessage(item.first, " = ", item.second);
+	}
+
+	
+	
 	setPVStructs();
 	// TODO name_alias should be in harwdare constructor?? 
 	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
@@ -353,7 +361,13 @@ bool Camera::setUseFloor()
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_FloorLevel), GlobalConstants::one_ushort);
+		messenger.printDebugMessage("Send ANA_UseFloor 1");
+		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		{
+			messenger.printDebugMessage("PV FOUND");
+			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+		}
+		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
 	}
 	return false;
 }
@@ -361,7 +375,12 @@ bool Camera::setDoNotUseFloor()
 {
 	if(mode == STATE::PHYSICAL)
 	{
-		return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_FloorLevel), GlobalConstants::zero_ushort);
+		messenger.printDebugMessage("Send ANA_UseFloor 0");
+		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		{
+			messenger.printDebugMessage("PV FOUND");
+			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+		}		
 	}
 	return false;
 }
@@ -369,12 +388,12 @@ bool Camera::setFloorLevel(long v)
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_UseFloor), v);
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
 	}
 	return false;
 }
 
-bool Camera::LEDOn()
+bool Camera::setLEDOn()
 {
 	// ALSO HAVE IN SCREENS 
 	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
@@ -383,10 +402,10 @@ bool Camera::LEDOn()
 	}
 	return false;
 }
-bool Camera::LEDOff()
+bool Camera::setLEDOff()
 {
 	// ALSO HAVE IN SCREENS
-	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_ACTIVATE))
+	if(epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_ACTIVATE))
 	{
 		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_SEND);
 	}
@@ -394,16 +413,15 @@ bool Camera::LEDOff()
 }
 bool Camera::isLEDOn()const
 {
-	return led_status.second == STATE::ON;
+	return led_state.second == STATE::ON;
 }
 bool Camera::isLEDOff()const
 {
-	return led_status.second == STATE::OFF;
+	return led_state.second == STATE::OFF;
 }
-
-bool Camera::getLEDState()const
+STATE Camera::getLEDState()const
 {
-	return led_status.second;
+	return led_state.second;
 }
 //--------------------------------------------------------------------------------------------------
 
@@ -648,25 +666,32 @@ bool Camera::useNPoint(bool v)
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
 }
+STATE Camera::getNPointState()const
+{
+	return use_npoint.second;
+}
+bool Camera::isUsingNPoint()const
+{
+	return use_npoint.second == STATE::USING_NPOINT;
+}
+bool Camera::isNotUsingNPoint()const
+{
+	return use_npoint.second == STATE::NOT_USING_NPOINT;
+}
+
 bool Camera::useBackground(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
 	messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
 }
-
-
-bool Camera::isUsingNPoint()const
-{
-	return use_npoint.second == STATE::USING_NPOINT;
-}
 bool Camera::isUsingBackground()const
 {
 	return use_background.second == STATE::USING_BACKGROUND;
 }
-STATE Camera::getNPointState()const
+bool Camera::isNotUsingBackground()const
 {
-	return use_npoint.second;
+	return use_background.second == STATE::NOT_USING_BACKGROUND;
 }
 STATE Camera::getUsingBackgroundState()const
 {

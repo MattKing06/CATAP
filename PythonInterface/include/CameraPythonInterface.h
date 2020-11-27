@@ -100,8 +100,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setROI", setROI_4PARAM)
 			.def("setROI", &Camera::setROI_Py)
 
-
-
 			
 			//.def_readonly("mask_and_roi_keywords", &Camera::mask_and_roi_keywords_Py)
 			//.def_readonly("mask_keywords", &Camera::mask_keywords_Py)
@@ -116,15 +114,19 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			//.def("getBufferROIminY", &Camera::getBufferROIminY)
 			//.def("getBufferROIsizeX", &Camera::getBufferROIsizeX)
 			//.def("getBufferROIsizeY", &Camera::getBufferROIsizeY)
+
+			
+
+
+			.def("setUseFloor", &Camera::setUseFloor)
+			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
+			.def("setFloorLevel", &Camera::setFloorLevel)
 			.def("getUseFloorState", &Camera::getUseFloorState)
 			.def("isUsingFloor", &Camera::isUsingFloor)
 			.def("isNotUsingFloor", &Camera::isNotUsingFloor)
 			.def("getFloorLevel", &Camera::getFloorLevel)
 			.def("getFlooredPtsCount", &Camera::getFlooredPtsCount)
 			.def("getFlooredPtsPercent", &Camera::getFlooredPtsPercent)
-			.def("setUseFloor", &Camera::setUseFloor)
-			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
-			.def("setFloorLevel", &Camera::setFloorLevel)
 
 				
 			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
@@ -138,21 +140,20 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			//.def("setBufferROIminY", &Camera::setBufferROIminY)
 			//.def("setBufferROIsizeX", &Camera::setBufferROIsizeX)
 			//.def("setBufferROIsizeY", &Camera::setBufferROIsizeY)
-			.def("setUseFloor", &Camera::setUseFloor)
-			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
-			.def("setFLoorLevel", &Camera::setFloorLevel)
-			.def("captureAndSave", &Camera::captureAndSave)
 
+
+
+			.def("captureAndSave", &Camera::captureAndSave)
 				
 			.def("useBackground", &Camera::useBackground)
 			.def("isUsingBackground", &Camera::isUsingBackground)
+			.def("isNotUsingBackground", &Camera::isNotUsingBackground)
+			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
+
 			.def("getNPointState", &Camera::getNPointState)
 			.def("useNPoint", &Camera::useNPoint)
 			.def("isUsingNPoint", &Camera::isUsingNPoint)
-			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
-
-
-
+			.def("isNotUsingNPoint", &Camera::isNotUsingNPoint)
 				
 			.def("startAcquiring", &Camera::startAcquiring)
 			.def("stopAcquiring", &Camera::stopAcquiring)
@@ -167,17 +168,16 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAnalysisState", &Camera::getAnalysisState)
 							
 				
-			.def("LEDOn", &Camera::LEDOn)
-			.def("LEDOff", &Camera::LEDOff)
+			.def("setLEDOn", &Camera::setLEDOn)
+			.def("setLEDOff", &Camera::setLEDOff)
 			.def("isLEDOn", &Camera::isLEDOn)
 			.def("isLEDOff", &Camera::isLEDOff)
 			.def("getLEDState", &Camera::getLEDState)
 
-			// only for tetsing not 
-			//.def("makeANewDirectoryAndName", &Camera::makeANewDirectoryAndName)
 			
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
+			
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setBufferSize)
 			.def("clearBuffers", &Camera::clearBuffers)
@@ -243,8 +243,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("useNPoint", &CameraFactory::useNPoint)
 			.def("isUsingNPoint", &CameraFactory::isUsingNPoint)
 			.def("getNPointState", &CameraFactory::getNPointState)
-
-			
+		
 
 			.def("getSumIntensity", &CameraFactory::getSumIntensity)
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)

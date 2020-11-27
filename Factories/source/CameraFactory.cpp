@@ -285,10 +285,8 @@ void CameraFactory::setupChannels()
 double CameraFactory::pix2mmX(const std::string& name, double value)const
 {
 	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).pix2mmX(value);
-	}
+
+
 	return GlobalConstants::double_min;
 }
 double CameraFactory::pix2mmY(const std::string& name, double value)const

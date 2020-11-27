@@ -238,9 +238,9 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	//{
 	//pvStruct.updateFunction = this->update_ROIandMask_SetYrad;
 	//}
-	else if (pvStruct.pvRecord == ANA_UseFloor_RBV)
+	else if (pvStruct.pvRecord == ANA_UseFloor_RBV) // TODO ERROR?
 	{
-	pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;
+		pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;
 	}
 	else if (pvStruct.pvRecord == ANA_FloorLevel_RBV)
 	{
@@ -375,11 +375,11 @@ void EPICSCameraInterface::update_LED_Sta(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->led_status.first = new_value.first;
+	recastCamera->led_state.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->acquire_state.second = STATE::OFF; break;
-	case GlobalConstants::one_ushort:  recastCamera->acquire_state.second = STATE::ON; break;
+	case GlobalConstants::zero_ushort: recastCamera->led_state.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->led_state.second = STATE::ON; break;
 	default:
 		recastCamera->acquire_state.second = STATE::ERR;
 	}
@@ -723,7 +723,7 @@ void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_
 	default:
 		recastCamera->use_floor.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ", ENUM_TO_STRING(recastCamera->use_background.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV = ", ENUM_TO_STRING(recastCamera->use_floor.second));
 
 }
 void EPICSCameraInterface::update_ANA_FloorLevel_RBV(const struct event_handler_args args)

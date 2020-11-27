@@ -290,6 +290,7 @@ public:
 	/*! Return true if use_floor == STATE::NOT_USING_FLOOR, otherwise false
 	@param[out] bool, value*/
 	bool isNotUsingFloor()const;
+	
 	/*! get the level of the analysis floor 
 	@param[out] long, value*/
 	long getFloorLevel()const;
@@ -305,22 +306,31 @@ public:
 	@param[in] bool, true for use NPoint, False for do not use NPoint 
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
 	bool useNPoint(bool v);
-	/*! set use Npoint scaling or not
-	@param[in] bool, true for use NPoint, False for do not use NPoint
-	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
-	bool useBackground(bool v);
+	/*! get the use Npoint scaling state
+	@param[out] STATE, */
+	STATE getNPointState()const;
 	/*! check if analysis is using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isUsingNPoint()const;
-	/*! check if analysis is using a background data
+	/*! check if analysis is Not using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
-	bool isUsingBackground()const;
-	/*! get the use Npoint scaling state 
-	@param[out] STATE, */
-	STATE getNPointState()const;
-	/*! get the use Npoint scaling state
+	bool isNotUsingNPoint()const;
+
+
+	/*! set use the background image during the analysis  procedure 
+	@param[in] bool, true to use the background, False to not use the background 
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool useBackground(bool v);
+	/*! get the use background state
 	@param[out] STATE, */
 	STATE getUsingBackgroundState()const;
+	/*! check if analysis is using a background data
+	@param[out] bool, true if using background image during analysis */
+	bool isUsingBackground()const;
+	/*! check if analysis is Not using a background data
+	@param[out] bool, true if NOT  using background image during analysis*/
+	bool isNotUsingBackground()const;
+
 
 
 
@@ -410,11 +420,11 @@ public:
 	bool isWriting()const;
 	bool isNotWriting()const;
 
-	bool LEDOn();
-	bool LEDOff();
+	bool setLEDOn();
+	bool setLEDOff();
 	bool isLEDOn()const;
 	bool isLEDOff()const;
-	bool getLEDState()const;
+	STATE getLEDState()const;
 
 
 	/* after debugging move this to private */
@@ -525,7 +535,7 @@ protected:
 	/*! Camera temperature. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > temperature;
 	/*! LED status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> led_status;
+	std::pair<epicsTimeStamp, STATE> led_state;
 	/*! Acquire status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> acquire_state;
 	/*! Analysis status. Value and epicstimestamp.	*/
