@@ -331,6 +331,27 @@ long BPM::getRD2() const
 	return this->rd2.second;
 }
 
+bool BPM::setXPVVirtual(const double& value)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		epicsInterface->setX(value, pvStructs.at(BPMRecords::X));
+		setXPV(value);
+	}
+	return true;
+}
+
+bool BPM::setYPVVirtual(const double& value)
+{
+	if (mode == STATE::VIRTUAL)
+	{
+		epicsInterface->setY(value, pvStructs.at(BPMRecords::Y));
+		setYPV(value);
+	}
+	return true;
+}
+
+
 bool BPM::setXPV(const double& value)
 {
 	xPV.second = value;

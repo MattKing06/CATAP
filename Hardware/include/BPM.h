@@ -243,6 +243,14 @@ public:
 	@param[in] value: desired value.
 	@param[out] bool: true if it worked.*/
 	bool setRDY(const double& value);
+	/*! sets the Y PV (virtual machine only).
+	@param[in] value: desired value.
+	@param[out] bool: true if it worked.*/
+	bool setYPVVirtual(const double& value);
+	/*! sets the X PV (virtual machine only).
+	@param[in] value: desired value.
+	@param[out] bool: true if it worked.*/
+	bool setXPVVirtual(const double& value);
 	/*! sets the X PV (Hardware object only).
 	@param[in] value: desired value.
 	@param[out] bool: true if it worked.*/

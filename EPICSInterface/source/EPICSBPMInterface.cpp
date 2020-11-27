@@ -198,3 +198,14 @@ void EPICSBPMInterface::setSD2(const long& value, const pvStruct& pv)
 {
 	putValue2(pv, value);
 }
+
+void EPICSBPMInterface::setX(const double& value, const pvStruct& pv)
+{
+	putValue2(pv, value);
+}
+
+void EPICSBPMInterface::setY(const double& value, const pvStruct& pv)
+{
+	putValue2(pv, value);
+}
+	

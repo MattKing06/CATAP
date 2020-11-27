@@ -16,7 +16,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 		boost::python::class_<Charge, boost::python::bases<Hardware>, boost::noncopyable>("Charge", boost::python::no_init)
 			.add_property("name", &Charge::getName)
 			.add_property("charge_type", &Charge::getChargeDiagnosticType)
-			.add_property("q", &Charge::getQ)
+			.add_property("q", &Charge::getQ, &Charge::setQVirtual)
 			.add_property("qbuffer", &Charge::getQBuffer)
 			.add_property("qvector", &Charge::getQVector)
 			.add_property("position", &Charge::getPosition)
