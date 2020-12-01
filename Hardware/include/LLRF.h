@@ -88,20 +88,50 @@ public:
 	EPICSLLRFInterface_sptr epicsInterface;
 	std::map<std::string, std::string> LLRFParamMap;
 
-	// amplitude 
+/*! set the LLRF amplitude in LLRF units 		
+	@param[in] value, new value to be set 
+	@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 	bool setAmp(double value);
+/*! set the LLRF amplitude in MW units
+	@param[in] value, new value to be set
+	@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 	bool setAmpMW(double value);
+	/*! get the LLRF amplitude in LLRF units
+		@param[out] value, current value	*/
 	double getAmp()const;
+	/*! get the LLRF amplitude in MW units
+		@param[out] value, current value	*/
 	double getAmpMW()const;
 
 	// phases 
+/*! set the LLRF phase in LLRF units
+	@param[in] value, new value to be set
+	@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 	bool setPhi(double value);
+	/*! set the LLRF phase in Degree units
+		@param[in] value, new value to be set
+		@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 	bool setPhiDEG(double value);
+	/*! set the crest phase for this LLRF object (does not actually set any values in EPICS)
+		@param[in] value, new value to be set
+		@param[out] bool, if the value got set 	*/
 	bool setCrestPhase(double value);
+	/*! set the operating phase FOR this LLRF object (does not actually set any values in EPICS)
+		@param[in] value, new value to be set
+		@param[out] bool, if the value got set */
 	bool setOperatingPhase(double value);
+
+	/*! get the LLRF phase in LLRF units
+		@param[out] value*/
 	double getPhi()const;
+	/*! get the LLRF phase in degree units
+		@param[out] value*/
 	double getPhiDEG()const;
+	/*! get the LLRF crest phase  (atm needs to be set by user)
+		@param[out] value*/
 	double getCrestPhase()const;
+	/*! get the LLRF operating phase (atm needs to be set by user)
+		@param[out] value*/
 	double getOperatingPhase()const;
 
 	/*! get the name alises for this LLRF
@@ -112,24 +142,67 @@ public:
 	boost::python::list getAliases_Py() const;
 
 
+	/*! get the index closest to for the passed time on a LLRF trace 
+		@param[in] time, time in ms to convert to an index 
+		@param[out] value, closest index to that time */
 	size_t getIndex(const double time) const;
+	/*! get the time for the passed index on a LLRF trace
+		@param[in] index, index to convert to a time
+		@param[out] time, time (ms) for the passed index */
 	double getTime(const size_t index) const;
 
+	/*! get a map of all the trace data 
+		@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	std::map<std::string, std::vector<double>> getAllTraceData()const;
+	/*! get a pair of a trace_name : trace_data for 1 trace
+		@param[in] name, trace name to get data for 
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	std::pair<std::string, std::vector<double>> getTraceData(const std::string& name)const;
+	/*! get a trace_data values for requested trace
+		@param[in] name, trace name to get data for
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getTraceValues(const std::string& name)const;
+	/*! get a cavity reverse power trace_data 
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavRevPwr()const;
+	/*! get a cavity forward power trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavFwdPwr()const;
+	/*! get a klystron reverse power trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyRevPwr()const;
+	/*! get a klystron forward power trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyFwdPwr()const;
+	/*! get a cavity reverse phase trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavRevPha()const;
+	/*! get a cavity forward phase trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavFwdPha()const;
+	/*! get a klystron reverse phase trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyRevPha()const;
+	/*! get a klystron forward phase trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyFwdPha()const;
+	/*! get a cavity probe power trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getProbePwr()const;
+	/*! get a cavity probe phase trace_data
+		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getProbePha()const;
+
+	/*! get a dict of all the trace data, python version 
+		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
 	boost::python::dict getAllTraceData_Py();
+	/*! get a dict of all the trace data for 1 trace, python version
+		@param[in] name, trace name to get data for
+		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
 	boost::python::dict getTraceData_Py(const std::string& name);
+	/*! get a trace_data values for requested trace
+		@param[in] name, trace name to get data for
+		@param[out] "trace_data_values" (vector of doubles) */
 	boost::python::list getTraceValues_Py(const std::string& name)const;
 	boost::python::list getCavRevPwr_Py()const;
 	boost::python::list getCavFwdPwr_Py()const;
@@ -166,7 +239,6 @@ public:
 	void setTraceMeanTimes_Py(const boost::python::dict& settings);
 	
 	
-	
 	bool setMeanStartIndex(const std::string& name, size_t  value);
 	bool setMeanStopIndex(const std::string& name, size_t  value);
 
@@ -186,6 +258,7 @@ public:
 	std::map<std::string, std::string> getLLRFStateMap()const;
 
 	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
+
 
 
 
@@ -215,9 +288,6 @@ protected:
 	// special case for the HRRG_GUN and LRRG_GUN
 	void setMachineArea(const TYPE area);
 	void setDefaultPowerTraceMeanTimes();
-
-
-
 
 private:
 	double crest_phase;

@@ -79,7 +79,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
 	
 	
-	// .yaml data is used to defein a map between llrf channel and llrf-trace-source 
+	// .yaml data is used to define a map between llrf channel and llrf-trace-source 
 	// (e.g. klystron forward, cavity probe, etc)
 	buildChannelToTraceSourceMap(paramMap);
 
