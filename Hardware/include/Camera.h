@@ -328,7 +328,6 @@ public:
 	@param[out] bool, true if using NPoint scaling*/
 	bool isNotUsingNPoint()const;
 
-
 	/*! set use the background image during the analysis  procedure 
 	@param[in] bool, true to use the background, False to not use the background 
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
@@ -351,7 +350,6 @@ public:
 	@param[out] bool, value */
 	bool setStepSize(long val);
 
-
 	/*! get the latest pixel sum for the image 
 	@param[out] double, value */
 	double getSumIntensity()const;
@@ -368,6 +366,27 @@ public:
 	@param[in] double, value 
 	@param[out] bool, value */
 	bool setAvgIntensity(double value);
+
+	/*! Get the last directory / filename that HDF5 data was saved to.
+	@param[out] string, value */
+	std::string getLastDirectoryandFileName() const;
+	/*! Get the last directory that HDF5 data was saved to.
+	@param[out] string, value */
+	std::string getLastDirectory()const;
+	/*! Get the last filename that HDF5 data was saved to.
+	@param[out] string, value */
+	std::string getLastFileName()const;
+
+	/*! Get the last directory / filename that the HDF5 buffer data was saved to.
+	@param[out] string, value */
+	std::string getLastBufferDirectoryandFileName() const;
+	/*! Get the last directory that the HDF5 buffer data was saved to.
+	@param[out] string, value */
+	std::string getLastBufferDirectory()const;
+	/*! Get the last filename that the HDF5 buffer data was saved to.
+	@param[out] string, value */
+	std::string getLastBufferFileName()const;
+
 
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -425,6 +444,8 @@ public:
 	bool isNotCapturing()const;
 	bool isWriting()const;
 	bool isNotWriting()const;
+
+	bool isCapturingOrSaving()const;
 
 	bool setLEDOn();
 	bool setLEDOff();
@@ -554,17 +575,16 @@ protected:
 
 	/*! Write status check (did the last write operation succesfully complete). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> write_state_check;
-
 	/*! Write status error message (did the last write operation succesfully complete). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::string> write_error_message;
-
 	
-	/*! Latest directory to write image data to. Value and epicstimestamp.	*/
+	/*! Latest directory to write image data to disc. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::string> save_filepath;
-
-	/*! Latest filename to write image data to. Value and epicstimestamp.	*/
+	/*! Latest filename to write image data to disc. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::string> save_filename;
-		
+	/*! Latest filenumber when write image data to disc. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> save_filenumber;
+
 	/*! Camera circular buffer trigger PROC. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, char> buffer_trigger;
 	/*! Latest filepath to write camera buffer data to. Value and epicstimestamp.	*/

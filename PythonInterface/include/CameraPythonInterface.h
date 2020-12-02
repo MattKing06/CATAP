@@ -144,6 +144,21 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 
 			.def("captureAndSave", &Camera::captureAndSave)
+			.def("isCapturingOrSaving", &Camera::isCapturingOrSaving)
+			.def("isCapturing", &Camera::isCapturing)
+			.def("isNotCapturing", &Camera::isNotCapturing)
+			.def("isWriting", &Camera::isWriting)
+			.def("isNotWriting", &Camera::isNotWriting)
+			.def("isSaving", &Camera::isWriting)
+			.def("isNotSaving", &Camera::isNotWriting)
+
+			.def("collectAndSave", &Camera::captureAndSave)
+			.def("isCollectingOrSaving", &Camera::isCapturingOrSaving)
+			.def("isCollecting", &Camera::isCapturing)
+			.def("isNotCollecting", &Camera::isNotCapturing)
+
+
+				
 				
 			.def("useBackground", &Camera::useBackground)
 			.def("isUsingBackground", &Camera::isUsingBackground)
@@ -172,14 +187,28 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAcquirePeriod", &Camera::getAcquirePeriod)
 			.def("getArrayRate", &Camera::getArrayRate)
 			.def("getTemperature", &Camera::getTemperature)
-				
+			
+			.def("getLastBufferDirectoryandFileName", &Camera::getLastBufferDirectoryandFileName)
+			.def("getLastestBufferDirectoryandFileName", &Camera::getLastBufferDirectoryandFileName)
+			.def("getLastBufferDirectory", &Camera::getLastBufferDirectory)
+			.def("getLastestBufferDirectory", &Camera::getLastBufferDirectory)
+			.def("getLastBufferFileName", &Camera::getLastBufferFileName)
+			.def("getLastestBufferFileName", &Camera::getLastBufferFileName)
+
+			.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
+			.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
+			.def("getLastDirectory", &Camera::getLastDirectory)
+			.def("getLatestDirectory", &Camera::getLastDirectory)
+			.def("getLastestFileName", &Camera::getLastFileName)
+			.def("getLastFileName", &Camera::getLastFileName)
+
 			.def("setLEDOn", &Camera::setLEDOn)
 			.def("setLEDOff", &Camera::setLEDOff)
 			.def("isLEDOn", &Camera::isLEDOn)
 			.def("isLEDOff", &Camera::isLEDOff)
 			.def("getLEDState", &Camera::getLEDState)
-
 			
+	
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 			

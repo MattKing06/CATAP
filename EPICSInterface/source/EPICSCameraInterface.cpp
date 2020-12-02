@@ -42,6 +42,10 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 		pvStruct.updateFunction = this->update_HDF_FilePath_RBV;
 	}
+	else if (pvStruct.pvRecord == HDF_FileNumber_RBV)
+	{
+		pvStruct.updateFunction = this->update_HDF_FileNumber_RBV;
+	}
 	else if (pvStruct.pvRecord == HDF_NumCaptured_RBV)
 	{
 		pvStruct.updateFunction = this->update_HDF_NumCaptured_RBV;
@@ -615,10 +619,15 @@ void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args 
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ", ENUM_TO_STRING(recastCamera->use_background.second));
 }
+void EPICSCameraInterface::update_HDF_FileNumber_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileNumber_RBV");
+	updateTimeStampLongPair(args, recastCamera->save_filenumber);
+}
 void EPICSCameraInterface::update_HDF_FilePath_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FilePath_RBV");
 	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
 	recastCamera->save_filepath.first = new_data->stamp;
@@ -663,20 +672,47 @@ void EPICSCameraInterface::update_HDFB_Buffer_Trigger(const struct event_handler
 void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, std::string> buffer_filepath;
-	// TODO
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV");
+	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
+	recastCamera->buffer_filepath.first = new_data->stamp;
+	const dbr_char_t* value;
+	value = &new_data->value;
+	//std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	// char array must have a const size (defined at compile time (or we use an array on the heap with new and delete)
+	char dummy_char[256]; // MAGIC NUMBER
+	for (int i = 0; i != 256; ++i)
+	{
+		dummy_char[i] = (char)value[i];
+		//std::cout << (int)value[i] << std::endl;
+	}
+	std::string dummy_string(dummy_char);
+	recastCamera->buffer_filepath.second = dummy_string;
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV = ", recastCamera->buffer_filepath.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, std::string> buffer_filename;
-	// TODO
+	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
+	recastCamera->buffer_filename.first = new_data->stamp;
+	const dbr_char_t* value;
+	value = &new_data->value;
+	// std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	// char array must have a const size (defined at compile time (or we use an array on the heap with new and delete)
+	char dummy_char[256]; // MAGIC NUMBER
+	for (int i = 0; i != 256; ++i)
+	{
+		dummy_char[i] = (char)value[i];
+	}
+	std::string dummy_string(dummy_char);
+	recastCamera->buffer_filename.second = dummy_string;
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ", recastCamera->buffer_filename.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->buffer_filenumber);
 }
+
 void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);

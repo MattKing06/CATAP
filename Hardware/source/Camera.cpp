@@ -1215,6 +1215,46 @@ bool Camera::isNotCapturing()const
 	}
 	return getCaptureState() == STATE::NOT_CAPTURING;
 }
+
+bool Camera::isCapturingOrSaving()const
+{
+	if(isCapturing())
+	{
+		return true;
+	}
+	if (isWriting())
+	{
+		return true;
+	}
+	return false;
+}
+
+std::string Camera::getLastDirectoryandFileName() const
+{
+	return getLastDirectory() + "/" + getLastFileName(); // WARNING!! TODO unix / windows conventions :(( 
+}
+std::string Camera::getLastDirectory()const
+{
+	return save_filepath.second;
+}
+std::string Camera::getLastFileName()const
+{
+	return save_filename.second;
+}
+std::string Camera::getLastBufferDirectoryandFileName() const
+{
+	return getLastBufferDirectory() + "/" + getLastBufferFileName();
+}
+std::string Camera::getLastBufferDirectory()const
+{
+	return buffer_filepath.second;
+}
+std::string Camera::getLastBufferFileName()const
+{
+	return buffer_filename.second;
+}
+
+
 std::vector<std::string> Camera::getAliases() const
 {
 	return aliases;
@@ -1239,6 +1279,7 @@ boost::python::list Camera::getScreenNames_Py() const
 {
 	return to_py_list<std::string>(getScreenNames());
 }
+
 char Camera::getBufferTrigger()const
 {
 	return buffer_trigger.second;
@@ -1322,8 +1363,6 @@ bool Camera::setFloorLevel(long v)
 	}
 	return false;
 }
-
-
 
 double Camera::getAcquireTime()const
 {

@@ -29,6 +29,7 @@ public:
     static void update_HDF_WriteStatus(const struct event_handler_args args);
     static void update_HDF_FilePath_RBV(const struct event_handler_args args);
     static void update_HDF_FileName_RBV(const struct event_handler_args args);
+    static void update_HDF_FileNumber_RBV(const struct event_handler_args args);
     static void update_HDF_WriteMessage(const struct event_handler_args args);
     static void update_HDF_NumCaptured_RBV(const struct event_handler_args args);
     static void update_HDF_Capture_RBV(const struct event_handler_args args);
@@ -68,7 +69,7 @@ public:
     static void update_CAM_Temperature_RBV(const struct event_handler_args args);
    // static void update_ANA_UseNPoint(const struct event_handler_args args);
 
-    static void update_HDFB_Buffer_FilePath(const struct event_handler_args args);
+    //static void update_HDFB_Buffer_FilePath(const struct event_handler_args args);
     static void update_HDFB_Buffer_Trigger(const struct event_handler_args args);
     static void update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args);
     static void update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args);

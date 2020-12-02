@@ -89,6 +89,7 @@ namespace CameraRecords
 	extern std::string const HDF_FilePath_RBV;
 	extern std::string const HDF_FileName_RBV;
 	extern std::string const HDF_FileNumber;
+	extern std::string const HDF_FileNumber_RBV;
 	extern std::string const HDF_WriteFile;
 	extern std::string const CAM_Acquire;
 	extern std::string const CAM_Acquire;
