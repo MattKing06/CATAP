@@ -213,6 +213,19 @@ public:
 	@param[out] long, value */
 	long getPixelHeight()const;
 
+	/*! Get the Acquire Time for the camera (shutter open time, units??).
+	@param[out] double, value */
+	double getAcquireTime()const;
+	/*! Get the Acquire Period for the camera (shutter open time, units??).
+	@param[out] double, value */
+	double getAcquirePeriod()const;
+	/*! Get the Array Rate for the camera (repetition rate, Hz).
+	@param[out] double, value */
+	double getArrayRate()const;
+	/*! Get the Sensor Temperature for the camera (degrees Celsius).
+	@param[out] double, value */
+	double getTemperature()const;
+
 
 	/*! Set the buffer trigger to dump the camera image buffer to disc.
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
@@ -330,9 +343,6 @@ public:
 	@param[out] bool, true if NOT  using background image during analysis*/
 	bool isNotUsingBackground()const;
 
-
-
-
 	/*! get the latest pixel sum for the image
 	@param[out] long, value */
 	long getStepSize()const;
@@ -378,9 +388,6 @@ public:
 	long getMaskYRadius()const;
 	std::map<std::string, long> getMask();
 	boost::python::dict getMask_Py();
-
-
-
 
 	bool setMaskAndROIxPos(long val);
 	bool setMaskAndROIyPos(long val);

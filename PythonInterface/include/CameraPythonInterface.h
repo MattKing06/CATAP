@@ -166,7 +166,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isAnalysing", &Camera::isAnalysing)
 			.def("isNotAnalysing", &Camera::isNotAnalysing)
 			.def("getAnalysisState", &Camera::getAnalysisState)
-							
+
+
+			.def("getAcquireTime", &Camera::getAcquireTime)
+			.def("getAcquirePeriod", &Camera::getAcquirePeriod)
+			.def("getArrayRate", &Camera::getArrayRate)
+			.def("getTemperature", &Camera::getTemperature)
 				
 			.def("setLEDOn", &Camera::setLEDOn)
 			.def("setLEDOff", &Camera::setLEDOff)

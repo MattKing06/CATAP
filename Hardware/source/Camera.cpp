@@ -1325,6 +1325,24 @@ bool Camera::setFloorLevel(long v)
 
 
 
+double Camera::getAcquireTime()const
+{
+	return acquire_time.second;
+}
+double Camera::getAcquirePeriod()const
+{
+	return acquire_period.second;
+}
+double Camera::getArrayRate()const
+{
+	return array_rate.second;
+}
+double Camera::getTemperature()const
+{
+	return temperature.second;
+}
+
+
 long Camera::getFloorLevel()const
 {
 	return floor_level.second;
