@@ -614,9 +614,7 @@ void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args 
 		recastCamera->use_background.second = STATE::ERR;
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ", ENUM_TO_STRING(recastCamera->use_background.second));
-
 }
-
 void EPICSCameraInterface::update_HDF_FilePath_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -638,7 +636,6 @@ void EPICSCameraInterface::update_HDF_FilePath_RBV(const struct event_handler_ar
 	recastCamera->save_filepath.second = dummy_string;
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FilePath_RBV = ", recastCamera->save_filepath.second);
 }
-
 void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -657,8 +654,6 @@ void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_ar
 	recastCamera->save_filename.second = dummy_string;
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ", recastCamera->save_filename.second);
 }
-
-
 void EPICSCameraInterface::update_HDFB_Buffer_Trigger(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -716,6 +711,7 @@ void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	recastCamera->use_floor.first = tv->stamp;
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV value = ", tv->value);
 	switch (tv->value)
 	{
 	case 0: recastCamera->use_floor.second = STATE::NOT_USING_FLOOR; break;

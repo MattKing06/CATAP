@@ -56,7 +56,6 @@ roi_keywords({"roi_x", "roi_y", "roi_rad_x", "roi_rad_y"})     //MAGIC STRING
 	{
 		messenger.printDebugMessage(item.first, " = ", item.second);
 	}
-
 	
 	
 	setPVStructs();
@@ -151,8 +150,6 @@ void Camera::setPVStructs()
 	}
 
 }
-
-
 
 TYPE Camera::getCamType()const
 {
@@ -357,49 +354,16 @@ bool Camera::setBufferTrigger()
 
 
 
-bool Camera::setUseFloor()
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		messenger.printDebugMessage("Send ANA_UseFloor 1");
-		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
-		{
-			messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
-		}
-		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
-	}
-	return false;
-}
-bool Camera::setDoNotUseFloor()
-{
-	if(mode == STATE::PHYSICAL)
-	{
-		messenger.printDebugMessage("Send ANA_UseFloor 0");
-		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
-		{
-			messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
-		}		
-	}
-	return false;
-}
-bool Camera::setFloorLevel(long v)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
-	}
-	return false;
-}
 
 bool Camera::setLEDOn()
 {
 	// ALSO HAVE IN SCREENS 
 	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
 	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
 		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_SEND);
 	}
+	messenger.printDebugMessage("Send setLEDOn EPICS_ACTIVATE failed ");
 	return false;
 }
 bool Camera::setLEDOff()
@@ -407,8 +371,10 @@ bool Camera::setLEDOff()
 	// ALSO HAVE IN SCREENS
 	if(epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_ACTIVATE))
 	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
 		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_SEND);
 	}
+	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
 	return false;
 }
 bool Camera::isLEDOn()const
@@ -424,12 +390,6 @@ STATE Camera::getLEDState()const
 	return led_state.second;
 }
 //--------------------------------------------------------------------------------------------------
-
-
-
-
-
-
 //bool Camera::setXPix(double value)
 //{
 //	if (mode == STATE::PHYSICAL)
@@ -494,9 +454,6 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
-
-
-
 
 bool Camera::setMaskXCenter(long val)
 {
@@ -764,7 +721,6 @@ boost::python::dict Camera::getROI_Py()
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
 
-
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
@@ -954,9 +910,6 @@ void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
 	ic.cam->epicsInterface->detachFrom_thisCaContext();
 	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
 }
-
-
-
 
 void Camera::imageCaptureAndSave(size_t num_shots)
 {
@@ -1225,7 +1178,6 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	return ans;
 }
 
-
 bool Camera::isWriting()const
 {
 	return write_state.second == STATE::WRITING;
@@ -1332,6 +1284,47 @@ bool Camera::isNotUsingFloor()const
 {
 	return use_floor.second == STATE::NOT_USING_FLOOR;
 }
+bool Camera::setUseFloor()
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		messenger.printDebugMessage("Send ANA_UseFloor 1");
+		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		{
+			messenger.printDebugMessage("PV FOUND");
+			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+		}
+		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
+		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+	}
+	return false;
+}
+bool Camera::setDoNotUseFloor()
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		messenger.printDebugMessage("Send ANA_UseFloor 0");
+		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		{
+			messenger.printDebugMessage("PV FOUND");
+			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+		}
+		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
+
+	}
+	return false;
+}
+bool Camera::setFloorLevel(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
+	}
+	return false;
+}
+
+
+
 long Camera::getFloorLevel()const
 {
 	return floor_level.second;
@@ -1368,43 +1361,6 @@ long Camera::getPixelHeight()const
 {
 	return pixel_height.second;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 void Camera::debugMessagesOn()

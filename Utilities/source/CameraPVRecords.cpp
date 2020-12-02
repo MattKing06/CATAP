@@ -128,6 +128,7 @@ namespace CameraRecords
 	ROIandMask_SetY,
 	ROIandMask_SetXrad,
 	ROIandMask_SetYrad,
+	ANA_UseFloor,
 	ANA_UseFloor_RBV,
 	ANA_FloorLevel,
 	ANA_FloorLevel_RBV,

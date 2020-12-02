@@ -1114,7 +1114,7 @@ void CameraFactory::cutLHarwdareMapByMachineAreas()
 void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names)
 {
 	std::stringstream ss;
-	ss << "Cutting to name in ";
+	ss << "Cutting to name(s): ";
 	for (auto&& name : names)
 	{
 		ss << name;
@@ -1137,11 +1137,8 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 				should_erase = false;
 				break;
 			}
-			else
-			{
-			}
-		}
-		// if should_erase is still true, erase object from  magnetMap
+			else{ /* .. */ }
+		} // if should_erase is still true, erase object from  magnetMap
 		if (should_erase)
 		{
 			messenger.printDebugMessage("Camera Factory erasing " + it->second.getHardwareName());
@@ -1178,16 +1175,10 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 			messenger.printDebugMessage("Still 2 Virtual_cathode Cameras, deleteing the VELA one");
 		}
 	}
-
 	size_t end_size = camera_map.size();
 	messenger.printDebugMessage("cutLHarwdareMapByNames camera_map.size() went from ", start_size, " to ", end_size);
 	GlobalFunctions::pause_2000();
 }
-
-
-
-
-
 
 void CameraFactory::debugMessagesOn()
 {

@@ -180,8 +180,7 @@ public:
 	@param[out] double, value */
 	long getBufferFileNumber()const;
 
-
-
+	// TODO sort this out and neaten it
 	///*! Get the buffer dump file-path.
 	//@param[out] long, value */
 	//long getBufferROIminX()const;
