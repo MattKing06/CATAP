@@ -2,7 +2,7 @@
 #define EPICS_INTERFACE_H
 #include <LoggingSystem.h>
 #if !defined LISTENER_H && !defined GETTER_H && !defined PUTTER_H
-/* if we are using EPICSTools/Listener/Getter/Putter, then 
+/* if we are using EPICSTools/Listener/Getter/Putter, then
 /* we don't want to include Hardware as it is
 /* unnecessary for EPICSTools/Listener/Getter/Putter */
 #include <Hardware.h>
@@ -24,7 +24,7 @@
 {								\
 	if (status != ECA_NORMAL)	\
 	{							\
-		ca_message(status);		\
+		printf("CATAP: The requested ca operation didn't complete successfully because \"%s\"\n",ca_message(status)); \
 		SEVCHK(status, NULL);   \
 		exit(status);			\
 	}							\
@@ -33,7 +33,7 @@
 
 /** @defgroup epicsInterface EPICS Interfaces
 	@brief A collection of classes responsible for EPICS Channel Access calls.
-	
+
 	*The collection of EPICS Interfaces provide a way of communicating with physical or virtual hardware objects
 	*over EPICS Channel Access. The hardware-specific EPICS Interfaces provide setting, getting, and callback functions
 	*for EPICS PVs that are associated with that hardware type. The general EPICSInterface class is concerned with setting
@@ -54,7 +54,7 @@ public:
 	/*! Retrieves the macro for the time EPICS should wait until it timesout on a request.
 	* @param[out] CA_PEND_IO_TIMEOUT : 5.0*/
 	double get_CA_PEND_IO_TIMEOUT() const;
-	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of 
+	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of
 	* the associated hardware object.*/
 	std::string ownerName;
 	// We also need to create a STATIC messenger in derived epicsinterface claases, 
@@ -67,14 +67,14 @@ public:
 	void messagesOn();
 	/*! turns messaging off for this EPICSInterface instance*/
 	void messagesOff();
-	/*! Checks if messaging flag is on 
+	/*! Checks if messaging flag is on
 	* @param[out] bool : returns true if messenger messagesOn flag is true, false otherwise.*/
 	bool isMessagingOn();
 	/*! Checks if debug flag is on
 	* @param[out] bool : returns true if messenger debugOn flag is true, false otherwise.*/
 	bool isDebugOn();
 	/*! Creates a channel using the pvStruct fullPVName and stores the channel ID in the pvStruct CHID member.
-     * @param[in] pvStruct : Contains the PV we want to create a channel for .*/
+	 * @param[in] pvStruct : Contains the PV we want to create a channel for .*/
 	void retrieveCHID(pvStruct& pvStruct) const;
 	/*! Requests the Channel Type from EPICS using the channel ID assigned in pvStruct, then sets the CHTYPE and monitorCHTYPE
 	*   members in pvStruct. The monitorCHTYPE is forced to be the DBR_TIME equivalent of the CHTYPE retrieved from EPICS.
@@ -179,7 +179,7 @@ public:
 		const std::string& objectName
 		// map_ilck_pvstruct& ILockPVStructs,
 	);
-	
+
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
@@ -236,13 +236,13 @@ public:
 
 
 	// TODO: what should this functiOn return? and how should that get passed to PYTHON users???
-	/*! Send a value to an EPICS PV over Channel Access using ca_put. 
+	/*! Send a value to an EPICS PV over Channel Access using ca_put.
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
 	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
-	/*! Send an array to an EPICS PV over Channel Access using ca_put_array. 
-	* @param[in] pvStruct : Contains the PV we want to put a value to. 
+	/*! Send an array to an EPICS PV over Channel Access using ca_put_array.
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
 	* @param[in] value : The array we want to ca_put_array with.*/
 	template<typename T>
 	void putArray(const pvStruct& pvStruct, const std::vector<T>& value) const
@@ -332,7 +332,12 @@ public:
 		}
 		return false;
 	}
-
+	/*! Send an value to an EPICS PV over Channel Access using ca_put.
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
+	* @param[in] count : Contains the PV we want to put a value to.
+	* @param[in] pointer_to_dbr_type : pointer_to_dbr_type pointer to where got array will be.
+	* @param[out] bool: if command got sent to epics correctls (not if it worked!).*/
+	bool getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const;
 #endif
 protected:
 	/*! NOT IN USE */
@@ -345,4 +350,3 @@ protected:
 /** @}*/
 
 #endif
-

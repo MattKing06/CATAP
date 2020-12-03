@@ -79,6 +79,13 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
 			
+			.def("getImageData", &Camera::getImageData_Py)
+			.def("getImageDataRef", &Camera::getImageDataRef_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getROIData_Py", &Camera::getROIData_Py)
+			.def("updateImageData", &Camera::updateImageData)
+			.def("updateROIData", &Camera::updateROIData)
+
+
 			// use these for setting mask AND ROI 
 			.def("setMaskAndROIxPos", &Camera::setMaskAndROIxPos)
 			.def("setMaskAndROIyPos", &Camera::setMaskAndROIyPos)

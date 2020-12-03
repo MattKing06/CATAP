@@ -6,6 +6,19 @@
 #include <chrono>
 
 
+
+//std::map<int, std::string> EPICSInterface::status_to_string = {
+//	{ECA_NORMAL, "ECA_NORMAL"},
+//	{ECA_TIMEOUT, "ECA_TIMEOUT"},
+//	{ECA_BADTYPE, "ECA_BADTYPE"},
+//	{ECA_BADCHID, "ECA_BADCHID"},
+//	{ECA_BADCOUNT, "ECA_BADCOUNT"},
+//	{ECA_GETFAIL, "ECA_GETFAIL"},
+//	{ECA_NORDACCESS, "ECA_NORDACCESS"},
+//	{ECA_DISCONN, "ECA_DISCONN"}
+//};
+
+
 EPICSInterface::EPICSInterface() : 
 thisCaContext(nullptr),
 messenger(LoggingSystem(false, false))
@@ -585,4 +598,36 @@ std::vector<std::string> EPICSInterface::returnValueFromArgsAsStringVector(const
 		++i;
 	}
 	return rawVectorContainer;
+}
+
+bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const
+{
+	std::cout << "getArrayUserCount, count = " << count << std::endl;
+	std::cout << "ECA_NORMAL check  " << ECA_NORMAL << std::endl;
+		
+	if (ca_state(pvStruct.CHID) == cs_conn)
+	{
+		std::cout << "ca_state(pvStruct.CHID) == cs_conn " << std::endl;
+		int status = ca_array_get(pvStruct.CHTYPE, count, pvStruct.CHID, pointer_to_dbr_type);
+		std::cout << "ca_array_get complete status =  " << status << std::endl;
+		MY_SEVCHK(status);
+		if ( status == ECA_NORMAL)
+		{
+			std::cout << "status == ECA_NORMAL " << std::endl;
+			//int status2 = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			int status2 = ca_flush_io();
+			std::cout << "ca_flush_io complete, status = " << status2 << std::endl;
+			MY_SEVCHK(status2);
+			if (status2 == ECA_NORMAL)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			std::cout << "ca_array_get did not return  ECA_NORMAL " << std::endl;
+		}
+
+	}
+	return false;
 }

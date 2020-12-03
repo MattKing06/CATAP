@@ -453,6 +453,19 @@ public:
 	bool isLEDOff()const;
 	STATE getLEDState()const;
 
+	std::vector<long> getImageData();
+	boost::python::list getImageData_Py();
+	boost::python::list& getImageDataRef_Py();
+	bool updateImageData();
+	std::vector<long> getROIData();
+	boost::python::list getROIData_Py();
+	bool updateROIData();
+
+
+
+
+
+
 
 	/* after debugging move this to private */
 	bool makeANewDirectoryAndName(size_t numbOfShots);
@@ -495,8 +508,17 @@ protected:
 	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > sigma_xy_mm;
 		
+	/*! image data (decimated). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::vector<long>> image_data;
+	std::pair<epicsTimeStamp, boost::python::list> image_data_py;
+	
+	
+	/*! background image data used in analysis. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::vector<long>> background_image_data;
 
-
+	/*! Region of Interes image data. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::vector<long>> roi_array_data;
+	std::pair<epicsTimeStamp, boost::python::list> roi_array_data_py;
 
 
 	size_t running_stats_buffer_size;
@@ -674,6 +696,18 @@ private:
 	std::vector<std::string> mask_keywords;
 	/*! Keywords used for setting ROI (Not preffeered, use mask and ROI together) */
 	std::vector<std::string> roi_keywords;
+
+
+	/*! pointer to an epics dbr_time_long. This is *needed* as a class variable so that 
+	ca_array_get has a pointer to pass back image array data to*/
+	dbr_time_long* pointer_to_array_data;
+
+	bool caArrayGetImageDtata(const std::string& record, unsigned count,
+		std::pair<epicsTimeStamp, std::vector<long>>& pair_to_update);
+	//bool updateArrayData(std::pair<epicsTimeStamp, std::vector<long>>& pair_to_update, const event_handler_args& args);
+	bool updateArrayData(const event_handler_args& args);
+	void updateArrayDataTEST(struct event_handler_args args);
+	void(Camera::*updateArrayDataTEST_pointer)(struct event_handler_args);
 };
 
 
