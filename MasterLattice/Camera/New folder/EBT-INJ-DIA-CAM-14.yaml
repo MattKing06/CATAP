@@ -84,7 +84,7 @@ controls_information:
         CAM2_ArrayData    : EBT-INJ-DIA-CAM-14:CAM2:ArrayData
         # meh LEDs, should probably go in their own factory?? 
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :    CLA-LAS-DIA-LED-01:Off
+        LED_Off    : CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
        
         # HDFB_Buffer_Trigger : EBT-INJ-DIA-CAM-14:CAM:Trigger.PROC

@@ -453,14 +453,17 @@ public:
 	bool isLEDOff()const;
 	STATE getLEDState()const;
 
-	std::vector<long> getImageData();
+	//std::vector<long> getImageData();
 	boost::python::list getImageData_Py();
 	boost::python::list& getImageDataRef_Py();
+
 	bool updateImageData();
-	std::vector<long> getROIData();
-	boost::python::list getROIData_Py();
 	bool updateROIData();
 
+
+	void getROIData();
+	//boost::python::list getROIData_Py();
+	
 
 
 
@@ -508,17 +511,24 @@ protected:
 	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > sigma_xy_mm;
 		
-	/*! image data (decimated). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, std::vector<long>> image_data;
+	struct dbr_time_long* image_data;
+	struct dbr_time_long* roi_data;
+
 	std::pair<epicsTimeStamp, boost::python::list> image_data_py;
+	std::pair<epicsTimeStamp, boost::python::list> roi_array_data_py;
+	
+	
+	size_t num_pixels;
+
+	//std::pair<epicsTimeStamp, boost::python::list> test_list;
 	
 	
 	/*! background image data used in analysis. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, std::vector<long>> background_image_data;
+	//std::pair<epicsTimeStamp, std::vector<long>> background_image_data;
 
 	/*! Region of Interes image data. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, std::vector<long>> roi_array_data;
-	std::pair<epicsTimeStamp, boost::python::list> roi_array_data_py;
+	//std::pair<epicsTimeStamp, std::vector<long>> roi_array_data;
+	//std::pair<epicsTimeStamp, boost::python::list> roi_array_data_py;
 
 
 	size_t running_stats_buffer_size;
@@ -700,14 +710,16 @@ private:
 
 	/*! pointer to an epics dbr_time_long. This is *needed* as a class variable so that 
 	ca_array_get has a pointer to pass back image array data to*/
-	dbr_time_long* pointer_to_array_data;
+	//dbr_time_long* pointer_to_array_data;
+
+	static void updateROIArrayData(struct  event_handler_args args);
 
 	bool caArrayGetImageDtata(const std::string& record, unsigned count,
-		std::pair<epicsTimeStamp, std::vector<long>>& pair_to_update);
+		struct dbr_time_long* array_struct);
 	//bool updateArrayData(std::pair<epicsTimeStamp, std::vector<long>>& pair_to_update, const event_handler_args& args);
-	bool updateArrayData(const event_handler_args& args);
-	void updateArrayDataTEST(struct event_handler_args args);
-	void(Camera::*updateArrayDataTEST_pointer)(struct event_handler_args);
+	bool updateArrayData(std::pair<epicsTimeStamp, boost::python::list>& pair_to_update, const event_handler_args& args);
+	//void updateArrayDataTEST(struct event_handler_args args);
+	//void(Camera::*updateArrayDataTEST_pointer)(struct event_handler_args);
 };
 
 

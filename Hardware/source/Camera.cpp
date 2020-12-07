@@ -4,6 +4,7 @@
 #include "PythonTypeConversions.h"
 #include "boost/algorithm/string/split.hpp"
 #include <algorithm>
+#include <chrono> 
 #include <mutex>          // std::mutex
 std::mutex mtx;           // mutex for critical section
 Camera::Camera():
@@ -13,7 +14,7 @@ Hardware()
 
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
-pointer_to_array_data(nullptr),
+//pointer_to_array_data(nullptr),
 epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
 pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC STRING
 pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC STRING
@@ -88,16 +89,22 @@ roi_keywords({"roi_x", "roi_y", "roi_rad_x", "roi_rad_y"})     //MAGIC STRING
 	mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
 	mask_keywords_Py = to_py_list(mask_keywords);
 	roi_keywords_Py = to_py_list(roi_keywords);
+	
 
+	// set up the image_data pointer
 	int num_pix_x = std::stoi(paramMap.find("ARRAY_DATA_NUM_PIX_X")->second);
 	int num_pix_y = std::stoi(paramMap.find("ARRAY_DATA_NUM_PIX_Y")->second);
-	image_data.second.resize(num_pix_x * num_pix_y);
 	/*
 		allocate memory for pointer_to_array_data, array pointer
 	*/
-	size_t s = num_pix_x * num_pix_y;
-	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, s);
-	pointer_to_array_data = (dbr_time_long*)malloc(nBytes);
+	num_pixels = num_pix_x * num_pix_y;
+	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, num_pixels);
+	image_data = (struct dbr_time_long*)malloc(nBytes);
+	roi_data   = (struct dbr_time_long*)malloc(nBytes);
+	for (auto i = 0; i < num_pixels; i++)
+	{
+		image_data_py.second.append(0);
+	}
 	messenger.printDebugMessage(hardwareName, " pointer_to_array_data pointer allocated ", nBytes, " BYTES ");
 }
 
@@ -1458,29 +1465,34 @@ void Camera::messagesOff()
 }
 
 
-std::vector<long> Camera::getImageData()
-{
-	return image_data.second;
-}
+//std::vector<long> Camera::getImageData()
+//{
+//	return image_data.second;
+//}
 boost::python::list Camera::getImageData_Py()
 {
 	return image_data_py.second;
 }
 boost::python::list& Camera::getImageDataRef_Py()
 {
+	for (auto i = 0; i < num_pixels; i++)
+	{
+		image_data_py.second[i] = image_data->value + i;
+	}
 	return image_data_py.second;
 }
-
-
-
-std::vector<long> Camera::getROIData()
+void Camera::getROIData()
 {
-	return roi_array_data.second;
+	for (auto i = 0; i < 20; i++)
+	{
+		std::cout << (&roi_data->value)[i] << std::endl;
+	}
+	//return roi_data.second.value;
 }
-boost::python::list Camera::getROIData_Py()
-{
-	return to_py_list<long>(getROIData());
-}
+//boost::python::list Camera::getROIData_Py()
+//{
+//	return to_py_list<long>(getROIData());
+//}
 
 bool Camera::updateImageData()
 {
@@ -1489,148 +1501,127 @@ bool Camera::updateImageData()
 		pvStructs.at(CameraRecords::CAM2_ArrayData).COUNT,
 		image_data))
 	{
-		image_data_py.second = to_py_list<long>(image_data.second);
+		std::cout << epicsInterface->getEPICSTime(image_data->stamp) << std::endl;
+		for (auto i = 0; i < 20; i++)
+		{
+			std::cout << (&image_data->value)[i] << std::endl;
+		}
 		return true;
 	}
 	return false;
 }
+
+
 bool Camera::updateROIData()
 {
-	if (caArrayGetImageDtata(CameraRecords::ROI1_ImageData_RBV,
-		roi_size_y.second * roi_size_x.second,
-		roi_array_data))
-	{
+	messenger.printDebugMessage("updateROIData ", roi_size_x.second, " ", roi_size_y.second );
 
+	int status = ca_array_get_callback(DBR_TIME_LONG, (size_t)roi_size_x.second * roi_size_y.second,
+	pvStructs.at(CameraRecords::CAM2_ArrayData).CHID, (caEventCallBackFunc*)&updateROIArrayData,
+		(void*)roi_data);
+	EPICSInterface::sendToEPICS();
+	MY_SEVCHK(status);
+	return true;
+}
+void Camera::updateROIArrayData(struct event_handler_args args)
+{
+	const dbr_time_long* p = (const struct dbr_time_long*)args.dbr;
+	std::cout << "updateROIArrayData complete" << std::endl;
+
+
+	for (auto i = 0; i < 20; i++)
+	{
+		std::cout << (p->value) + i << std::endl;
 	}
-	return false;
+
 }
 
 bool Camera::caArrayGetImageDtata(const std::string& record, unsigned count, 
-	std::pair<epicsTimeStamp, std::vector<long>>& pair_to_update)
+	struct dbr_time_long* array_struct)
 {
-	epicsInterface -> attachTo_thisCaContext();
-	
 	messenger.printDebugMessage("caArrayGetImageDtata, count = ", count);
-
 	if (ca_state(pvStructs.at(record).CHID) == cs_conn)
 	{
-		//ca_array_get_callback(type, 1u, chan, pFunc, pArg)
-		updateArrayDataTEST_pointer = &Camera::updateArrayDataTEST;
-		
-		int status = ca_array_get_callback(
-			pvStructs.at(record).CHTYPE,
+		//struct dbr_time_long dTL;
+
+		//dTL.value
+
+		//struct dbr_time_long {
+		//	dbr_short_t	status;	 		/* status of value */
+		//	dbr_short_t	severity;		/* severity of alarm */
+		//	epicsTimeStamp	stamp;			/* time stamp */
+		//	dbr_long_t	value;			/* current value */
+
+
+		//updateArrayDataTEST_pointer = &Camera::updateArrayDataTEST;
+		//int status = ca_array_get(
+		//	DBR_TIME_LONG,
+		//	count,
+		//	pvStructs.at(record).CHID,
+		//	&pair_to_update.second[0]);
+		//auto start = std::chrono::high_resolution_clock::now();
+		int status = ca_array_get(
+			DBR_TIME_LONG,
 			count,
 			pvStructs.at(record).CHID,
-			(caEventCallBackFunc)updateArrayDataTEST_pointer,
-			(void*)pointer_to_array_data);
-		
-		//std::cout << "ca_state(pvStruct.CHID) == cs_conn " << std::endl;
-		//int status = ca_array_get(pvStructs.at(record).CHTYPE, count, pvStructs.at(record).CHID, 
-		//				(void*)pointer_to_array_data);
-		//std::cout << "ca_array_get complete status =  " << status << std::endl;
-		//MY_SEVCHK(status);
-		//if (status == ECA_NORMAL)
-		//{
-		//	std::cout << "status == ECA_NORMAL " << std::endl;
-		//	int status2 = -1;
-		//	status2 = ca_pend_io(10.0);
-		//	 
-		//	if (status2 == ECA_TIMEOUT)
-		//	{
-		//		std::cout << "ca_pend_io failed, ECA_TIMEOUT " << std::endl;
-		//	}
+			image_data);
+		EPICSInterface::sendToEPICS();
+		MY_SEVCHK(status);
+
+		//auto stop_1 = std::chrono::high_resolution_clock::now();
+
+		//auto stop_2 = std::chrono::high_resolution_clock::now();
+
+		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop_1 - start);
+		//std::cout << "Time taken 1: " << duration.count() << " us" << std::endl;
+
+		//auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop_2 - stop_1);
+		//std::cout << "Time taken 2: " << duration2.count() << " us" << std::endl;
 
 
-		//	std::cout << "ca_pend_io complete, status = " << status2 << std::endl;
-		//	//int status2 = ca_flush_io();
-		//	std::cout << "ca_flush_io complete, status = " << status2 << std::endl;
-		//	MY_SEVCHK(status2);
-		//	if (status2 == ECA_NORMAL)
-		//	{
-		//		event_handler_args args;
-		//		args.type = pvStructs.at(record).CHTYPE;
-		//		args.chid = pvStructs.at(record).CHID;
-		//		args.count = count;
-		//		args.dbr = (void*)pointer_to_array_data;
-		//		messenger.printDebugMessage("calling updateArrayData");
-		//		return updateArrayData(pair_to_update, args);
-		//		//return true;
-		//	}
-		//}
-		//else
-		//{
-		//	std::cout << "ca_array_get did not return  ECA_NORMAL " << std::endl;
-		//}
-
+		if (status == ECA_NORMAL)
+		{
+			//	/*
+			//		we pass the results to the same update ArrayDataFunction
+			//		that might be used if we set up a subscription to the
+			//		channel, this should make it easy to incoporate
+			//		array_data as a continuous monitor at a-later-date
+			//		typedef struct event_handler_args
+			//		{
+			//			void       *usr;   // user argument supplied with request
+			//			chanId     chid;   // channel id
+			//			long       type;   // the type of the item returned
+			//			long       count;  // the element count of the item returned
+			//			const void *dbr;   // a pointer to the item returned
+			//			int        status; // ECA_XXX status of the requested op from the server
+			//		} evargs;
+			//	*/
+			event_handler_args args;
+			args.type = pvStructs.at(record).CHTYPE;
+			args.chid = pvStructs.at(record).CHID;
+			args.count = count;
+			args.dbr = array_struct;
+			messenger.printDebugMessage("calling updateArrayData");
+			//return updateArrayData(pair_to_update, args);
+			return true;
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, "!!ERROR!! ca_array_get did not return ECA_NORMAL");
+		}
 	}
-
-
-	//if(epicsInterface->getArrayUserCount(pvStructs.at(record), 10000, (void*)pointer_to_array_data))
-	//{
-	//	messenger.printDebugMessage("getArrayUserCount returned true");
-	//	/*
-	//		we pass the results to the same update ArrayDataFunction
-	//		that might be used if we set up a subscription to the
-	//		channel, this should make it easy to incoporate
-	//		array_data as a continuous monitor at a-later-date
-	//		typedef struct event_handler_args
-	//		{
-	//			void       *usr;   // user argument supplied with request
-	//			chanId     chid;   // channel id
-	//			long       type;   // the type of the item returned
-	//			long       count;  // the element count of the item returned
-	//			const void *dbr;   // a pointer to the item returned
-	//			int        status; // ECA_XXX status of the requested op from the server
-	//		} evargs;
-	//	*/
-	//	event_handler_args args;
-	//	args.type = pvStructs.at(record).CHTYPE;
-	//	args.chid = pvStructs.at(record).CHID;
-	//	args.count = count;
-	//	args.dbr = (void*)pointer_to_array_data;
-	//	messenger.printDebugMessage("calling updateArrayData");
-	//	return updateArrayData(pair_to_update, args);
-	//}
-	//else
-	//{
-	//	messenger.printDebugMessage(hardwareName, "!!ERROR!! ca_array_get did not return ECA_NORMAL");
-	//}
 	return false;
 }
 //---------------------------------------------------------------------------------
-
-void Camera::updateArrayDataTEST(struct event_handler_args args)
-{
-
-}
-//bool Camera::updateArrayData(std::pair<epicsTimeStamp, std::vector<long>>& pair_to_update, 
-bool Camera::updateArrayData(const event_handler_args& args)
+bool Camera::updateArrayData(std::pair<epicsTimeStamp, boost::python::list>& pair_to_update, 
+	const event_handler_args& args)
 {
 	messenger.printDebugMessage("updateArrayData");
-
-	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
-	/*
-		this function actually gets the new values from EPICS
-		and adds them to the array_data vector
-	/*
-		pointer to array we are expecting depends on type channel
-	*/
-	/*
-		see EPICS 3.14 manual, we do no MALLOC here
-		we can probably improve this much
-	*/
 	const dbr_time_long* p = (const struct dbr_time_long*)args.dbr;
-	const dbr_long_t* pValue;
-	pValue = &p->value;
-	//vector_to_update.insert(vector_to_update.end(), pValue, pValue + data_size);
-	messenger.printDebugMessage("update vector clear");
-	//pair_to_update.second.clear();
-	//messenger.printDebugMessage("update vector resize");
-	//pair_to_update.second.resize(args.count);
-	//std::copy(pValue,
-	//	pValue + args.count,
-	//	pair_to_update.second.begin());
-
-	//pair_to_update.second.insert(pair_to_update.second.end(), pValue, pValue + args.count);
+	std::cout << epicsInterface->getEPICSTime(p->stamp) << std::endl;
+	for (auto i = 0; i < 20; i++)
+	{
+		std::cout << (&p->value)[i] << std::endl;
+	}
 	return true;
 }

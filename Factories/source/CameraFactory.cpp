@@ -20,7 +20,6 @@ CameraFactory::CameraFactory(STATE mode) :
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
-
 CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
 	hasBeenSetup(copyFactory.hasBeenSetup),
 	mode(copyFactory.mode),
@@ -29,12 +28,9 @@ CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
 	machineAreas(copyFactory.machineAreas)
 {
 }
-
 CameraFactory::~CameraFactory()
 {
 }
-
-
 
 bool CameraFactory::setup()
 {

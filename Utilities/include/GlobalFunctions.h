@@ -197,6 +197,7 @@ namespace GlobalFunctions{
 	extern std::string replaceStrChar(std::string str, const std::string& replace, char ch);
 
 
+
 	extern void pause_x(std::chrono::milliseconds x);
 	void standard_pause();
 	void pause_2000();

@@ -730,11 +730,13 @@ void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_size_x);
+	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ", recastCamera->roi_size_x.second);
 }
 void EPICSCameraInterface::update_ROI1_SizeY_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_size_y);
+	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_y = ", recastCamera->roi_size_y.second);
 }
 void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
 {
@@ -742,7 +744,7 @@ void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_
 	// TODO 
 }
 
- void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
+void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
@@ -751,7 +753,7 @@ void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_
 	switch (tv->value)
 	{
 	case 0: recastCamera->use_floor.second = STATE::NOT_USING_FLOOR; break;
-	case 1:  recastCamera->use_floor.second = STATE::USING_FLOOR; break;
+	case 1: recastCamera->use_floor.second = STATE::USING_FLOOR; break;
 	default:
 		recastCamera->use_floor.second = STATE::ERR;
 	}

@@ -193,7 +193,7 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 {
 	char timeString[37];
 	epicsTimeToStrftime(timeString, sizeof(timeString), "[%a %b %d %Y %H:%M:%S.%f]", &stamp);
-	return timeString;
+	return std::string(timeString);
 }
 
 void EPICSInterface::debugMessagesOn()

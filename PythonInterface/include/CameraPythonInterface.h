@@ -81,7 +81,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			
 			.def("getImageData", &Camera::getImageData_Py)
 			.def("getImageDataRef", &Camera::getImageDataRef_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getROIData_Py", &Camera::getROIData_Py)
+			
+			.def("getROIData", &Camera::getROIData)
 			.def("updateImageData", &Camera::updateImageData)
 			.def("updateROIData", &Camera::updateROIData)
 
