@@ -13,48 +13,52 @@ Hardware()
 }
 
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
-Hardware(paramMap, mode),
-//pointer_to_array_data(nullptr),
-epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
-pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC STRING
-pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC STRING
-max_shots_number((size_t)std::stoi(paramMap.find("MAX_SHOTS_NUMBER")->second)),  // MAGIC STRING
-x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_xy_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-cam_type(TYPE::UNKNOWN_TYPE),
-mask_and_roi_keywords({"x_pos", "y_pos", "x_size", "x_size"}),  //MAGIC STRING
-mask_keywords({"mask_x", "mask_y", "mask_rad_x", "mask_rad_y"}),//MAGIC STRING 
-roi_keywords({"roi_x", "roi_y", "roi_rad_x", "roi_rad_y"})     //MAGIC STRING
-//mask_and_roi_keywords_Py(to_py_list(mask_and_roi_keywords)),
-//mask_keywords_Py(to_py_list(mask_keywords)),
-//roi_keywords_Py(to_py_list(roi_keywords))
+	Hardware(paramMap, mode),
+	//pointer_to_array_data(nullptr),
+	epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
+	pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC STRING
+	pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC STRING
+	max_shots_number((size_t)std::stoi(paramMap.find("MAX_SHOTS_NUMBER")->second)),  // MAGIC STRING
+	x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	sigma_y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	sigma_xy_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	temperature(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	cam_type(TYPE::UNKNOWN_TYPE),
+	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
+	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
+	roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
+	//mask_and_roi_keywords_Py(to_py_list(mask_and_roi_keywords)),
+	//mask_keywords_Py(to_py_list(mask_keywords)),
+	//roi_keywords_Py(to_py_list(roi_keywords))
+	image_data_has_not_malloced(true),
+	image_data_has_not_vector_resized(true),
+	roi_data_has_not_malloced(true),
+	roi_data_has_not_vector_resized(true)
 {
-	
+
 	for (auto&& item : paramMap)
 	{
 		messenger.printDebugMessage(item.first, " = ", item.second);
@@ -89,23 +93,11 @@ roi_keywords({"roi_x", "roi_y", "roi_rad_x", "roi_rad_y"})     //MAGIC STRING
 	mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
 	mask_keywords_Py = to_py_list(mask_keywords);
 	roi_keywords_Py = to_py_list(roi_keywords);
-	
 
-	// set up the image_data pointer
+	// set the number of pixels in the (decminated) camera image 
 	int num_pix_x = std::stoi(paramMap.find("ARRAY_DATA_NUM_PIX_X")->second);
 	int num_pix_y = std::stoi(paramMap.find("ARRAY_DATA_NUM_PIX_Y")->second);
-	/*
-		allocate memory for pointer_to_array_data, array pointer
-	*/
 	num_pixels = num_pix_x * num_pix_y;
-	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, num_pixels);
-	image_data = (struct dbr_time_long*)malloc(nBytes);
-	roi_data   = (struct dbr_time_long*)malloc(nBytes);
-	for (auto i = 0; i < num_pixels; i++)
-	{
-		image_data_py.second.append(0);
-	}
-	messenger.printDebugMessage(hardwareName, " pointer_to_array_data pointer allocated ", nBytes, " BYTES ");
 }
 
 Camera::Camera(const Camera& copyCamera):
@@ -118,11 +110,9 @@ roi_keywords(copyCamera.roi_keywords)
 //roi_keywords_Py(copyCamera.roi_keywords_Py)
 {
 }
-
 Camera::~Camera()
 {
 }
-
 void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)
@@ -166,14 +156,10 @@ void Camera::setPVStructs()
 	}
 
 }
-
 TYPE Camera::getCamType()const
 {
 	return cam_type;
 }
-
-
-
 double Camera::pix2mmX(double value)const
 {
 	return value / pix2mmX_ratio;
@@ -182,18 +168,14 @@ double Camera::pix2mmY(double value)const
 {
 	return value / pix2mmY_ratio;
 }
-
 double Camera::mm2pixX(double value)const
 {
 	return value * pix2mmX_ratio;
 }
-
 double Camera::mm2pixY(double value)const
 {
 	return value * pix2mmX_ratio;
 }
-
-
 double Camera::getpix2mmX()const
 {
 	return pix2mmX_ratio;
@@ -210,7 +192,6 @@ double Camera::setpix2mmY(double value)
 {
 	return pix2mmY_ratio = value;
 }
-
 double Camera::getX()const
 {
 	return x_mm.second;
@@ -231,7 +212,6 @@ double Camera::getSigXY()const
 {
 	return sigma_xy_mm.second;
 }
-
 double Camera::getXPix()const
 {
 	return x_pix.second;
@@ -252,7 +232,6 @@ double Camera::getSigXYPix()const
 {
 	return sigma_xy_pix.second;
 }
-
 double Camera::getSumIntensity()const
 {
 	return sum_intensity.second;
@@ -261,7 +240,6 @@ double Camera::getAvgIntensity()const
 {
 	return avg_intensity.second;
 }
-
 long Camera::getStepSize()const
 {
 	return step_size.second;
@@ -270,8 +248,6 @@ bool Camera::setStepSize(long val)
 {
 	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_StepSize), val);
 }
-
-
 bool Camera::setX(double value)
 {
 	if(mode == STATE::PHYSICAL)
@@ -322,7 +298,6 @@ bool Camera::setSigXY(double value)
 	sigma_xy_pix = std::make_pair(epicsTimeStamp(), mm2pixX(value));
 	return true;
 }
-
 bool Camera::setBufferTrigger()
 {
 	if (mode == STATE::PHYSICAL)
@@ -332,7 +307,6 @@ bool Camera::setBufferTrigger()
 	}
 	return false;
 }
-
 //
 //bool Camera::setROIminX(long v)
 //{
@@ -366,11 +340,6 @@ bool Camera::setBufferTrigger()
 //	}
 //	return false;
 //}
-
-
-
-
-
 bool Camera::setLEDOn()
 {
 	// ALSO HAVE IN SCREENS 
@@ -451,7 +420,6 @@ STATE Camera::getLEDState()const
 //	sigma_xy_pix = std::make_pair(epicsTimeStamp(), value);
 //	return true;
 //}
-
 bool Camera::setSumIntensity(double value)
 {
 	if (mode == STATE::PHYSICAL)
@@ -470,7 +438,6 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
-
 bool Camera::setMaskXCenter(long val)
 {
 	messenger.printMessage("setMaskXCenter ", val);
@@ -568,7 +535,6 @@ bool Camera::setROI_Py(boost::python::dict settings)
 	return setROI(to_std_map<std::string, long>(settings));
 
 }
-
 long Camera::getMaskAndROIxPos()const
 {
 	return roi_and_mask_centre_x.second; // NEEDS CHECKING
@@ -585,8 +551,6 @@ long Camera::getMaskAndROIySize()const
 {
 	return roi_and_mask_radius_y.second; // NEEDS CHECKING
 }
-
-
 bool Camera::setMaskAndROIxPos(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetX), (double)val);
@@ -632,8 +596,6 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 {
 	return setMaskandROI(to_std_map<std::string, long>(settings));
 }
-
-
 bool Camera::useNPoint(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
@@ -651,7 +613,6 @@ bool Camera::isNotUsingNPoint()const
 {
 	return use_npoint.second == STATE::NOT_USING_NPOINT;
 }
-
 bool Camera::useBackground(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
@@ -670,8 +631,6 @@ STATE Camera::getUsingBackgroundState()const
 {
 	return use_background.second;
 }
-
-
 double Camera::getPix2mm()const
 {
 	return pixel_to_mm.second;
@@ -705,8 +664,6 @@ boost::python::dict Camera::getMask_Py()
 {
 	return  to_py_dict<std::string, long>(getMask());
 }
-
-
 long Camera::getROIMinX()const
 {
 	return roi_min_x.second;
@@ -736,7 +693,6 @@ boost::python::dict Camera::getROI_Py()
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
-
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
@@ -750,7 +706,6 @@ boost::python::dict Camera::getMaskandROI_Py()const
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
-
 boost::python::dict Camera::getRunningStats()const
 {
 	boost::python::dict r;
@@ -766,7 +721,6 @@ boost::python::dict Camera::getRunningStats()const
 	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
 	return r;
 }
-
 size_t Camera::getBufferSize()const
 {
 	return running_stats_buffer_size;
@@ -798,7 +752,6 @@ void Camera::clearBuffers()
 	sigma_y_mm_rs.clearBuffer();
 	sigma_xy_mm_rs.clearBuffer();
 }
-
 bool Camera::startAcquiring()
 {
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Acquire), GlobalConstants::one_ushort);
@@ -893,7 +846,6 @@ bool Camera::captureAndSave(size_t num_shots)
 	}
 	return false;
 }
-
 void Camera::killFinishedImageCollectThread()
 {
 	messenger.printDebugMessage("killFinishedImageCollectThreads");
@@ -917,7 +869,6 @@ void Camera::killFinishedImageCollectThread()
 		}
 	}
 }
-
 void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
 {
 	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
@@ -926,7 +877,6 @@ void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
 	ic.cam->epicsInterface->detachFrom_thisCaContext();
 	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
 }
-
 void Camera::imageCaptureAndSave(size_t num_shots)
 {
 	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
@@ -1032,7 +982,6 @@ bool Camera::capture()
 	}
 	return ans;
 }
-
 bool Camera::write()
 {
 	bool ans = false;
@@ -1050,7 +999,6 @@ bool Camera::write()
 	}
 	return ans;
 }
-
 //-------------------------------------------------------------------------------------------------------
 bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
 {
@@ -1193,7 +1141,6 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	//return true;
 	return ans;
 }
-
 bool Camera::isWriting()const
 {
 	return write_state.second == STATE::WRITING;
@@ -1231,7 +1178,6 @@ bool Camera::isNotCapturing()const
 	}
 	return getCaptureState() == STATE::NOT_CAPTURING;
 }
-
 bool Camera::isCapturingOrSaving()const
 {
 	if(isCapturing())
@@ -1244,7 +1190,6 @@ bool Camera::isCapturingOrSaving()const
 	}
 	return false;
 }
-
 std::string Camera::getLastDirectoryandFileName() const
 {
 	return getLastDirectory() + "/" + getLastFileName(); // WARNING!! TODO unix / windows conventions :(( 
@@ -1269,8 +1214,6 @@ std::string Camera::getLastBufferFileName()const
 {
 	return buffer_filename.second;
 }
-
-
 std::vector<std::string> Camera::getAliases() const
 {
 	return aliases;
@@ -1295,7 +1238,6 @@ boost::python::list Camera::getScreenNames_Py() const
 {
 	return to_py_list<std::string>(getScreenNames());
 }
-
 char Camera::getBufferTrigger()const
 {
 	return buffer_trigger.second;
@@ -1312,7 +1254,6 @@ long Camera::getBufferFileNumber()const
 {
 	return buffer_filenumber.second;
 }
-
 //long Camera::getBufferROIminX()const
 //{
 //	return roi_min_x.second;
@@ -1345,13 +1286,13 @@ bool Camera::setUseFloor()
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		messenger.printDebugMessage("Send ANA_UseFloor 1");
+		//messenger.printDebugMessage("Send ANA_UseFloor 1");
 		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
 		{
-			messenger.printDebugMessage("PV FOUND");
+			//messenger.printDebugMessage("PV FOUND");
 			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
 		}
-		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
+		//messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
 		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
 	}
 	return false;
@@ -1379,7 +1320,6 @@ bool Camera::setFloorLevel(long v)
 	}
 	return false;
 }
-
 double Camera::getAcquireTime()const
 {
 	return acquire_time.second;
@@ -1396,8 +1336,6 @@ double Camera::getTemperature()const
 {
 	return temperature.second;
 }
-
-
 long Camera::getFloorLevel()const
 {
 	return floor_level.second;
@@ -1434,194 +1372,248 @@ long Camera::getPixelHeight()const
 {
 	return pixel_height.second;
 }
-
-
 void Camera::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage(hardwareName, " - DEBUG ON");
 	epicsInterface->debugMessagesOn();
 }
-
 void Camera::debugMessagesOff()
 {
 	messenger.debugMessagesOff();
 	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
 	epicsInterface->debugMessagesOff();
 }
-
 void Camera::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage(hardwareName, " - MESSAGES ON");
 	epicsInterface->messagesOn();
 }
-
 void Camera::messagesOff()
 {
 	messenger.printMessage(hardwareName, " - MESSAGES OFF");
 	messenger.messagesOff();
 	epicsInterface->messagesOff();
 }
+/*
+		Getting image data:
 
+		What I want to achieve: 
 
-//std::vector<long> Camera::getImageData()
-//{
-//	return image_data.second;
-//}
-boost::python::list Camera::getImageData_Py()
-{
-	return image_data_py.second;
-}
-boost::python::list& Camera::getImageDataRef_Py()
-{
-	for (auto i = 0; i < num_pixels; i++)
-	{
-		image_data_py.second[i] = image_data->value + i;
-	}
-	return image_data_py.second;
-}
-void Camera::getROIData()
-{
-	for (auto i = 0; i < 20; i++)
-	{
-		std::cout << (&roi_data->value)[i] << std::endl;
-	}
-	//return roi_data.second.value;
-}
-//boost::python::list Camera::getROIData_Py()
-//{
-//	return to_py_list<long>(getROIData());
-//}
+		Get camera image data without any extra copying 
+		Have the data in a container that can (easily) be seen in python without copying
+		Get time stamped data 
 
+		It seems out that acheiving all 3 at once is not obvious 
+		Proposed solution (which is not perfect and has flaws) 
+
+		Function to get time stamp (fast as possible)
+		Function to update data into a vector 
+		Vector exposed to python for access without copying 
+		Function to get data will copy data into a python list 
+*/
+/* memory shenanigans so its only used for large image arrays when requested */ 
+bool Camera::vector_resize(std::vector<long>& vec)
+{
+	vec.resize(num_pixels);
+	return vec.size() == num_pixels;
+}
+void Camera::malloc_imagedata()
+{
+	/*
+		allocate memory for pointer_to_array_data, array pointer
+	*/
+	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, num_pixels);
+	//std::cout << sizeof(*dbr_image_data) << std::endl;
+	dbr_image_data = (struct dbr_time_long*)malloc(nBytes);
+	//std::cout << sizeof(*dbr_image_data) << std::endl;
+	messenger.printDebugMessage(hardwareName, " dbr_image_data pointer allocated ", nBytes, " BYTES ");
+	image_data_has_not_malloced = false;
+}
+void Camera::malloc_roidata()
+{
+	/*
+		allocate memory for pointer_to_array_data, array pointer
+	*/
+	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, num_pixels);
+	//std::cout << sizeof(*dbr_roi_data) << std::endl;
+	dbr_roi_data = (struct dbr_time_long*)malloc(nBytes);
+	//std::cout << sizeof(*dbr_roi_data) << std::endl;
+	messenger.printDebugMessage(hardwareName, " dbr_roi_data pointer allocated ", nBytes, " BYTES ");
+	roi_data_has_not_malloced = false;
+}
 bool Camera::updateImageData()
 {
-	messenger.printDebugMessage("updateImageData");
-	if(caArrayGetImageDtata(CameraRecords::CAM2_ArrayData,
-		pvStructs.at(CameraRecords::CAM2_ArrayData).COUNT,
-		image_data))
+	if (image_data_has_not_vector_resized)
 	{
-		std::cout << epicsInterface->getEPICSTime(image_data->stamp) << std::endl;
-		for (auto i = 0; i < 20; i++)
-		{
-			std::cout << (&image_data->value)[i] << std::endl;
-		}
+		messenger.printDebugMessage("vector_resize for image_data ");
+		image_data_has_not_vector_resized = vector_resize(image_data.second);
+	}
+	if (!image_data_has_not_vector_resized)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
+		//	, image_data.first);
+		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
+			, image_data.second.size());
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		return got_value;
+	}
+	else {
+		messenger.printDebugMessage("!!ERROR!! image_data_has_not_vector_resized = ", image_data_has_not_vector_resized);
+	}
+	return false;
+}
+bool Camera::updateImageDataWithTimeStamp()
+{
+	if (image_data_has_not_malloced)
+	{
+		messenger.printDebugMessage("calling malloc_imagedata");
+		malloc_imagedata();
+	}
+	if (image_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for image_data ");
+		image_data_has_not_vector_resized = !vector_resize(image_data.second);
+	}
+	if (!image_data_has_not_vector_resized && !image_data_has_not_malloced)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
+			, image_data.first);
+		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
+			, image_data.second.size());
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("updateImageDataWithTimeStamp Time taken: ", duration.count(), " us");
+		return got_stamp && got_value;
+	}
+	else {
+		messenger.printDebugMessage("!!ERROR!! image_data_has_not_vector_resized = ", image_data_has_not_vector_resized);
+		messenger.printDebugMessage("!!ERROR!! image_data_has_not_malloced = ", image_data_has_not_malloced);
+	}
+
+	return false;
+}
+bool Camera::updateROIData()
+{
+	if (roi_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for roi_data ");
+		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+	}
+	auto start = std::chrono::high_resolution_clock::now();
+	//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
+	//	, image_data.first);
+	bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
+		, roi_data.second.size());
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
+	return got_value;
+}
+bool Camera::updateROIDataWithTimeStamp()
+{
+	if (roi_data_has_not_malloced)
+	{
+		messenger.printDebugMessage("calling malloc_roidata");
+		malloc_roidata();
+	}
+	if (roi_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for roi_data ");
+		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+	}
+	if (!roi_data_has_not_vector_resized && !roi_data_has_not_malloced)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		bool got_stamp = getArrayTimeStamp(dbr_roi_data, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
+			, roi_data.first);
+		long roi_num_pixels = getROIMinY() * getROIMinX();
+		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
+			, roi_num_pixels);
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("updateROIDataWithTimeStamp Time taken: ", duration.count(), " us");
+		return got_stamp && got_value;
+	}
+	return false;
+}
+bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct& pvs,
+	epicsTimeStamp& ts_to_update
+	)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+	if (ca_state(pvs.CHID) == cs_conn)
+	{
+		int status = ca_array_get(DBR_TIME_LONG,1,pvs.CHID,dbr_struct);
+		EPICSInterface::sendToEPICS();
+		MY_SEVCHK(status);
+		ts_to_update = dbr_struct->stamp;
+		//std::cout << epicsInterface->getEPICSTime(ts_to_update) << std::endl;
+		auto stop  = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
+		std::cout << dbr_struct->value << std::endl;
 		return true;
 	}
 	return false;
 }
 
 
-bool Camera::updateROIData()
+
+
+bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,size_t count)
 {
-	messenger.printDebugMessage("updateROIData ", roi_size_x.second, " ", roi_size_y.second );
-
-	int status = ca_array_get_callback(DBR_TIME_LONG, (size_t)roi_size_x.second * roi_size_y.second,
-	pvStructs.at(CameraRecords::CAM2_ArrayData).CHID, (caEventCallBackFunc*)&updateROIArrayData,
-		(void*)roi_data);
-	EPICSInterface::sendToEPICS();
-	MY_SEVCHK(status);
-	return true;
-}
-void Camera::updateROIArrayData(struct event_handler_args args)
-{
-	const dbr_time_long* p = (const struct dbr_time_long*)args.dbr;
-	std::cout << "updateROIArrayData complete" << std::endl;
-
-
-	for (auto i = 0; i < 20; i++)
+	auto start = std::chrono::high_resolution_clock::now();
+	if (ca_state(pvs.CHID) == cs_conn)
 	{
-		std::cout << (p->value) + i << std::endl;
-	}
-
-}
-
-bool Camera::caArrayGetImageDtata(const std::string& record, unsigned count, 
-	struct dbr_time_long* array_struct)
-{
-	messenger.printDebugMessage("caArrayGetImageDtata, count = ", count);
-	if (ca_state(pvStructs.at(record).CHID) == cs_conn)
-	{
-		//struct dbr_time_long dTL;
-
-		//dTL.value
-
-		//struct dbr_time_long {
-		//	dbr_short_t	status;	 		/* status of value */
-		//	dbr_short_t	severity;		/* severity of alarm */
-		//	epicsTimeStamp	stamp;			/* time stamp */
-		//	dbr_long_t	value;			/* current value */
-
-
-		//updateArrayDataTEST_pointer = &Camera::updateArrayDataTEST;
-		//int status = ca_array_get(
-		//	DBR_TIME_LONG,
-		//	count,
-		//	pvStructs.at(record).CHID,
-		//	&pair_to_update.second[0]);
-		//auto start = std::chrono::high_resolution_clock::now();
-		int status = ca_array_get(
-			DBR_TIME_LONG,
-			count,
-			pvStructs.at(record).CHID,
-			image_data);
+		int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
 		EPICSInterface::sendToEPICS();
 		MY_SEVCHK(status);
-
-		//auto stop_1 = std::chrono::high_resolution_clock::now();
-
-		//auto stop_2 = std::chrono::high_resolution_clock::now();
-
-		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop_1 - start);
-		//std::cout << "Time taken 1: " << duration.count() << " us" << std::endl;
-
-		//auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop_2 - stop_1);
-		//std::cout << "Time taken 2: " << duration2.count() << " us" << std::endl;
-
-
-		if (status == ECA_NORMAL)
-		{
-			//	/*
-			//		we pass the results to the same update ArrayDataFunction
-			//		that might be used if we set up a subscription to the
-			//		channel, this should make it easy to incoporate
-			//		array_data as a continuous monitor at a-later-date
-			//		typedef struct event_handler_args
-			//		{
-			//			void       *usr;   // user argument supplied with request
-			//			chanId     chid;   // channel id
-			//			long       type;   // the type of the item returned
-			//			long       count;  // the element count of the item returned
-			//			const void *dbr;   // a pointer to the item returned
-			//			int        status; // ECA_XXX status of the requested op from the server
-			//		} evargs;
-			//	*/
-			event_handler_args args;
-			args.type = pvStructs.at(record).CHTYPE;
-			args.chid = pvStructs.at(record).CHID;
-			args.count = count;
-			args.dbr = array_struct;
-			messenger.printDebugMessage("calling updateArrayData");
-			//return updateArrayData(pair_to_update, args);
-			return true;
-		}
-		else
-		{
-			messenger.printDebugMessage(hardwareName, "!!ERROR!! ca_array_get did not return ECA_NORMAL");
-		}
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
+		return true;
 	}
 	return false;
 }
-//---------------------------------------------------------------------------------
-bool Camera::updateArrayData(std::pair<epicsTimeStamp, boost::python::list>& pair_to_update, 
-	const event_handler_args& args)
+
+
+
+
+
+std::vector<long> Camera::getImageData()
 {
-	messenger.printDebugMessage("updateArrayData");
-	const dbr_time_long* p = (const struct dbr_time_long*)args.dbr;
-	std::cout << epicsInterface->getEPICSTime(p->stamp) << std::endl;
-	for (auto i = 0; i < 20; i++)
-	{
-		std::cout << (&p->value)[i] << std::endl;
-	}
-	return true;
+	return image_data.second;
 }
+boost::python::list Camera::getImageData_Py()
+{
+	return to_py_list<long>(getImageData());
+}
+std::vector<long> Camera::getROIData()
+{
+	return roi_data.second;
+}
+boost::python::list Camera::getROIData_Py()
+{
+	return to_py_list<long>(getROIData());
+}
+
+std::vector<long>& Camera::getImageDataConstRef()
+{
+	return image_data.second;
+}
+std::vector<long>& Camera::getROIDataConstRef()
+{
+	return roi_data.second;
+}
+
+
+
+
+
+

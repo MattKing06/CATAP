@@ -36,7 +36,7 @@ controls_information:
         CAM_Acquire_RBV    : CLA-VCA-DIA-CAM-01:CAM:Acquire_RBV
        
 
-        #  analysis, enable callbacks is start / stop analysis 
+        # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
         # the analysis can use a back groun dsubtracted image 
@@ -64,7 +64,7 @@ controls_information:
         
         ANA_StepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
         ANA_StepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
-
+        
         ANA_X_RBV    : CLA-VCA-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-VCA-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaX_RBV
@@ -78,15 +78,15 @@ controls_information:
         ANA_SigmaYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXYPix_RBV
         ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV 
+
         
-        
-        # actuall array data
+        # # actuall array data
         CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
-        # meh LEDs, should probably go in their own factory?? 
+        # # meh LEDs, should probably go in their own factory?? 
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
         LED_Off    : CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
-       
+        
         HDFB_Buffer_Trigger : CLA-VCA-DIA-CAM-01:CAM:Trigger.PROC
         HDFB_Buffer_FilePath : CLA-VCA-DIA-CAM-01:HDFB:FilePath
         HDFB_Buffer_FilePath_RBV : CLA-VCA-DIA-CAM-01:HDFB:FilePath_RBV
@@ -95,7 +95,7 @@ controls_information:
         HDFB_Buffer_FileNumber : CLA-VCA-DIA-CAM-01:HDFB:FileNumber
         HDFB_Buffer_FileNumber_RBV : CLA-VCA-DIA-CAM-01:HDFB:FileNumber_RBV
        
-        # HDF_NumCapture_RBV    : CLA-VCA-DIA-CAM-01:HDF:NumCapture_RBV
+        # HDF_NumCapture_RBV    : CLA-VCAWws-DIA-CAM-01:HDF:NumCapture_RBV
 
 
         CAM_AcquireTime_RBV    : CLA-VCA-DIA-CAM-01:CAM:AcquireTime_RBV

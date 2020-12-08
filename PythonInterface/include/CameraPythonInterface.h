@@ -5,12 +5,22 @@
 #include <CameraFactory.h>
 #include <PythonTypeConversions.h>
 #include <boost/python.hpp>
-
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 namespace BOOST_PYTHON_CAMERA_INCLUDE
 {
+	void expose_std_vector_long_object()
+	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<std::vector<long>>())->to_python_target_type());
+		if (is_registered) return;
+		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
+		.def(boost::python::vector_indexing_suite<std::vector<long>>())
+		;
+	}
 	void expose_camera_object() 
 	{
+		
+
 		
 		// function pointers for overloads we want to expose
 		bool(Camera:: * setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
@@ -19,6 +29,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Camera>())->to_python_target_type());
 		if (is_registered) return;
+		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
+			.def(boost::python::vector_indexing_suite<std::vector<long>>())
+			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
 			.def("pix2mmX", &Camera::pix2mmX        )
 			.def("pix2mmY", &Camera::pix2mmY		)
@@ -79,12 +92,18 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
 			
-			.def("getImageData", &Camera::getImageData_Py)
-			.def("getImageDataRef", &Camera::getImageDataRef_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			
-			.def("getROIData", &Camera::getROIData)
+	
 			.def("updateImageData", &Camera::updateImageData)
+			.def("updateImageDataWithTimeStamp", &Camera::updateImageDataWithTimeStamp)
 			.def("updateROIData", &Camera::updateROIData)
+			.def("updateROIDataWithTimeStamp", &Camera::updateROIDataWithTimeStamp)
+
+			.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			
+			.def("getImageData", &Camera::getImageData_Py)
+			.def("getROIData", &Camera::getROIData_Py)
+
 
 
 			// use these for setting mask AND ROI 

@@ -453,16 +453,21 @@ public:
 	bool isLEDOff()const;
 	STATE getLEDState()const;
 
-	//std::vector<long> getImageData();
-	boost::python::list getImageData_Py();
-	boost::python::list& getImageDataRef_Py();
 
 	bool updateImageData();
+	bool updateImageDataWithTimeStamp();
 	bool updateROIData();
+	bool updateROIDataWithTimeStamp();
+
+	std::vector<long> getImageData();
+	boost::python::list getImageData_Py();
+	std::vector<long> getROIData();
+	boost::python::list getROIData_Py();
 
 
-	void getROIData();
-	//boost::python::list getROIData_Py();
+	std::vector<long>& getImageDataConstRef();
+	std::vector<long>& getROIDataConstRef();
+
 	
 
 
@@ -511,13 +516,6 @@ protected:
 	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > sigma_xy_mm;
 		
-	struct dbr_time_long* image_data;
-	struct dbr_time_long* roi_data;
-
-	std::pair<epicsTimeStamp, boost::python::list> image_data_py;
-	std::pair<epicsTimeStamp, boost::python::list> roi_array_data_py;
-	
-	
 	size_t num_pixels;
 
 	//std::pair<epicsTimeStamp, boost::python::list> test_list;
@@ -662,6 +660,17 @@ protected:
 	std::pair<epicsTimeStamp, long> num_capture;
 
 
+	struct dbr_time_long* dbr_image_data;
+	struct dbr_time_long* dbr_roi_data;
+
+	std::pair<epicsTimeStamp, boost::python::list> image_data_py;
+	std::pair<epicsTimeStamp, boost::python::list> roi_array_data_py;
+
+	/*! Number of images to capture. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, std::vector<long>> image_data;
+	std::pair<epicsTimeStamp, std::vector<long>> roi_data;
+
+
 private:
 
 	TYPE cam_type;
@@ -720,6 +729,23 @@ private:
 	bool updateArrayData(std::pair<epicsTimeStamp, boost::python::list>& pair_to_update, const event_handler_args& args);
 	//void updateArrayDataTEST(struct event_handler_args args);
 	//void(Camera::*updateArrayDataTEST_pointer)(struct event_handler_args);
+
+
+	bool getArrayTimeStamp(struct dbr_time_long* dbr_struct, 
+						  const pvStruct& pvs, epicsTimeStamp& ts_to_update);
+	bool getArrayValue(std::vector<long>& data_vec, const pvStruct& pvs, size_t count);
+
+	// some flags and functions to resevere memory when it is needed (not automatically!) 
+	bool vector_resize(std::vector<long>& vec);
+	//bool malloc_reserve(struct dbr_time_long& vec);
+	void malloc_imagedata();
+	void malloc_roidata();
+
+	bool image_data_has_not_malloced;
+	bool image_data_has_not_vector_resized;
+	bool roi_data_has_not_malloced;
+	bool roi_data_has_not_vector_resized;
+
 };
 
 
