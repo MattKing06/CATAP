@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(img_factory_check_all_names_test)
 BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL OF PRESSURES OF THE MAP	------");
-	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
+	std::string testIMGName = "EBT-INJ-VAC-IMG-03";
 	if (status)
 	{
 		IMG testIMG = imgFac.getIMG(testIMGName);
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test_several_times)
 BOOST_AUTO_TEST_CASE(img_factory_retrieve_monitor_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: RETRIEVE MONITOR STATUS	------");
-	setPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
+	setPV.fullPVName = "VM-EBT-INJ-VAC-IMG-03";
 	setPV.pvRecord = "P";
 	imgFac.messagesOn();
 	bool status = imgFac.setup("nominal");
