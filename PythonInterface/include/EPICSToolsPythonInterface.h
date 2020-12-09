@@ -53,6 +53,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("get", get_single)
 			.def("get", get_multiple)
 			.def("getArray", &EPICSTools::getArray_Py)
+			.def("getArray", &EPICSTools::getArray_Py2)
 			.def("put", put_single)
 			.def("put", put_multiple)
 			.def("putArray", &EPICSTools::putArray_Py)
