@@ -15,7 +15,10 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 	{ "YAG", "Screen" },
 	{ "IMG", "IMG" },
 	{ "LLRF", "LLRF"  }, // ??? 
-	{ "CAM", "Camera" }
+	{ "CAM", "Camera" },
+	{ "LEM", "LaserEnergyMeter" },
+	{ "LHW", "LaserHWP" },
+	{ "SHUT", "Shutter" }
 };
 
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);

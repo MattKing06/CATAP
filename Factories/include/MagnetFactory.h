@@ -232,15 +232,21 @@ class MagnetFactory
 		void setMonitorStatus(pvStruct& pvStruct);
 		// private
 		bool hasBeenSetup;
-		// offlien physical or virtual 
+		// offline physical or virtual 
 		STATE mode;
 
 
+		/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/
 		void debugMessagesOn();
+		/*! turns debug messages off for valveFactory and calls same function in all valves and configReader*/
 		void debugMessagesOff();
+		/*! turns messages on for valveFactory and calls same function in all valves and configReader*/
 		void messagesOn();
+		/*! turns messages off for valveFactory and calls same function in all valves and configReader*/
 		void messagesOff();
+		/*! returns true if messenger debug flag is true, false otherwise*/
 		bool isDebugOn();
+		/*! returns true if messenger messages flag is true, false otherwise*/
 		bool isMessagingOn();
 
 		LoggingSystem messenger;
