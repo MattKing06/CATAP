@@ -171,16 +171,19 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	// epics valve interface has been initialized in valve constructor
 	// but we have a lot of PV information to retrieve from EPICS first
 	// so we will cycle through the PV structs, and set up their values.
+	messenger.printDebugMessage("Calling  populateCameraMap");
 	populateCameraMap();
+	messenger.printDebugMessage("populateCameraMap finished");
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	messenger.printDebugMessage("Calling cutLHarwdareMapByNames");
 	cutLHarwdareMapByNames(names);
+	messenger.printDebugMessage("cutLHarwdareMapByNames Finished");
 	setupChannels();
 	EPICSInterface::sendToEPICS();
-
 	for (auto& item : camera_map)
 	{
 		std::string name(item.second.getHardwareName());
@@ -231,11 +234,6 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
-
-
-
-
-
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
@@ -260,7 +258,7 @@ void CameraFactory::populateCameraMap()
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		//messenger.printDebugMessage("CameraFactory calling parseNextYamlFile");
+		messenger.printDebugMessage("CameraFactory calling parseNextYamlFile");
 		reader.parseNextYamlFile(camera_map);
 	}
 	messenger.printDebugMessage("CameraFactory has finished populating "

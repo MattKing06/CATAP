@@ -16,9 +16,9 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
 	//pointer_to_array_data(nullptr),
 	epicsInterface(boost::make_shared<EPICSCameraInterface>(EPICSCameraInterface())), // calls copy constructor and destroys 
-	pix2mmX_ratio(std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second)),  // MAGIC STRING
-	pix2mmY_ratio(std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second)),  // MAGIC STRING
-	max_shots_number((size_t)std::stoi(paramMap.find("MAX_SHOTS_NUMBER")->second)),  // MAGIC STRING
+	pix2mmX_ratio(GlobalConstants::double_min),  // MAGIC STRING
+	pix2mmY_ratio(GlobalConstants::double_min),  // MAGIC STRING
+	max_shots_number(GlobalConstants::size_zero),  // MAGIC STRING
 	x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -49,56 +49,357 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
-	roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
-	//mask_and_roi_keywords_Py(to_py_list(mask_and_roi_keywords)),
-	//mask_keywords_Py(to_py_list(mask_keywords)),
-	//roi_keywords_Py(to_py_list(roi_keywords))
+	//roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
 	image_data_has_not_malloced(true),
 	image_data_has_not_vector_resized(true),
 	roi_data_has_not_malloced(true),
-	roi_data_has_not_vector_resized(true)
+	roi_data_has_not_vector_resized(true),
+	array_data_num_pix_x(GlobalConstants::size_zero),
+	array_data_num_pix_y(GlobalConstants::size_zero),
+	array_data_pixel_count(GlobalConstants::size_zero),
+	binary_num_pix_x(GlobalConstants::size_zero),
+	binary_num_pix_y(GlobalConstants::size_zero),
+	binary_data_pixel_count(GlobalConstants::size_zero),
+	x_pix_scale_factor(GlobalConstants::size_zero),
+	y_pix_scale_factor(GlobalConstants::size_zero),
+	x_mask_def(GlobalConstants::size_zero),
+	y_mask_def(GlobalConstants::size_zero),
+	x_mask_rad_def(GlobalConstants::size_zero),
+	y_mask_rad_def(GlobalConstants::size_zero),
+	x_mask_rad_max(GlobalConstants::size_zero),
+	y_mask_rad_max(GlobalConstants::size_zero),
+	use_mask_rad_limits(false),
+	x_center_def(GlobalConstants::size_zero),
+	y_center_def(GlobalConstants::size_zero),
+	sensor_max_temperature(GlobalConstants::double_min),
+	sensor_min_temperature(GlobalConstants::double_min),
+	average_pixel_value_for_beam(GlobalConstants::double_min),
+	min_x_pixel_pos(GlobalConstants::double_min),
+	max_x_pixel_pos(GlobalConstants::double_min),
+	min_y_pixel_pos(GlobalConstants::double_min),
+	max_y_pixel_pos(GlobalConstants::double_min),
+	busy(false),
+	has_led(false),
+	last_capture_and_save_success(false)
 {
-
+	messenger.printDebugMessage(hardwareName, " printing paramMap:" );
 	for (auto&& item : paramMap)
 	{
 		messenger.printDebugMessage(item.first, " = ", item.second);
 	}
+	getMasterLatticeData(paramMap, mode);
 	setPVStructs();
-	// TODO name_alias should be in harwdare constructor?? 
-	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
-	boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
-	// REMOVE SPACES FROM THE NAME
-	for (auto& name : screen_names)
+	mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
+	mask_keywords_Py = to_py_list(mask_keywords);
+	//roi_keywords_Py = to_py_list(roi_keywords);
+}
+
+void Camera::getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode)
+{
+	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_X_PIX_2_MM");
+	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_X_PIX_2_MM"))
 	{
-		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
-		messenger.printDebugMessage(hardwareName, " added screen_name " + name);
-	}
-	for (auto& name : aliases)
-	{
-		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
-		messenger.printDebugMessage(hardwareName, " added aliase " + name);
-	}
-	// add cmaera type 
-	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramMap.at("CAM_TYPE")))
-	{
-		cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
+		pix2mmX_ratio = std::stof(paramMap.find("ARRAY_DATA_X_PIX_2_MM")->second); 	
 	}
 	else
 	{
-		messenger.printDebugMessage(hardwareName, " !!ERROR!! config file CAM_TYPE = ", paramMap.at("CAM_TYPE"));
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_X_PIX_2_MM");
 	}
-	//mask_and_roi_keywords = std::vector<std::string>{ "x_pos", "y_pos", "x_size", "x_size" };  //MAGIC STRING
-	//mask_keywords = std::vector<std::string>{ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" };//MAGIC STRING 
-	//roi_keywords = std::vector<std::string>{ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" };     //MAGIC STRING
-	mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
-	mask_keywords_Py = to_py_list(mask_keywords);
-	roi_keywords_Py = to_py_list(roi_keywords);
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_X_PIX_2_MM");
+	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_X_PIX_2_MM"))
+	{
+		pix2mmY_ratio = std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_Y_PIX_2_MM");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find MAX_SHOTS_NUMBER");
+	if (GlobalFunctions::entryExists(paramMap, "MAX_SHOTS_NUMBER"))
+	{
+		max_shots_number = (size_t)std::stof(paramMap.find("MAX_SHOTS_NUMBER")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_Y_PIX_2_MM");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find name_alias");
+	if (GlobalFunctions::entryExists(paramMap, "name_alias"))
+	{
+		boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+		for (auto& name : aliases)
+		{
+			name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+			messenger.printDebugMessage(hardwareName, " added aliase " + name);
+		}
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find SCREEN_NAME");
+	if (GlobalFunctions::entryExists(paramMap, "SCREEN_NAME"))
+	{
+		boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
+		for (auto& name : screen_names)
+		{
+			name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+			messenger.printDebugMessage(hardwareName, " added screen_name " + name);
+		}
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find CAM_TYPE");
+	if (GlobalFunctions::entryExists(paramMap, "CAM_TYPE"))
+	{
+		if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, paramMap.at("CAM_TYPE")))
+		{
+			cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
+		}
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find HAS_LED");
+	if (GlobalFunctions::entryExists(paramMap, "HAS_LED"))
+	{
+		if (std::string(paramMap.find("HAS_LED")->second) == GlobalConstants::TRUE)
+		{
+			has_led = true;
+		}
+		if (std::string(paramMap.find("HAS_LED")->second) == GlobalConstants::FALSE)
+		{
+			has_led = false;
+		}
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_X");
+	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_X"))
+	{
+		array_data_num_pix_x = (size_t)std::stof(paramMap.find("ARRAY_DATA_NUM_PIX_X")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_X");
+	}
 
-	// set the number of pixels in the (decminated) camera image 
-	int num_pix_x = std::stoi(paramMap.find("ARRAY_DATA_NUM_PIX_X")->second);
-	int num_pix_y = std::stoi(paramMap.find("ARRAY_DATA_NUM_PIX_Y")->second);
-	num_pixels = num_pix_x * num_pix_y;
+	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
+	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
+	{
+		array_data_num_pix_y = (size_t)std::stof(paramMap.find("ARRAY_DATA_NUM_PIX_Y")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_Y");
+	}
+	array_data_pixel_count = array_data_num_pix_y * array_data_num_pix_x;
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
+	if (GlobalFunctions::entryExists(paramMap, "BINARY_NUM_PIX_X"))
+	{
+		binary_num_pix_x = (size_t)std::stof(paramMap.find("BINARY_NUM_PIX_X")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find BINARY_NUM_PIX_X");
+	}
+	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
+	if (GlobalFunctions::entryExists(paramMap, "BINARY_NUM_PIX_X"))
+	{
+		binary_num_pix_y = (size_t)std::stof(paramMap.find("BINARY_NUM_PIX_Y")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find BINARY_NUM_PIX_Y");
+	}
+	binary_data_pixel_count = binary_num_pix_x * binary_num_pix_y;
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find X_PIX_SCALE_FACTOR");
+	if (GlobalFunctions::entryExists(paramMap, "X_PIX_SCALE_FACTOR"))
+	{
+		x_pix_scale_factor = (size_t)std::stof(paramMap.find("X_PIX_SCALE_FACTOR")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_PIX_SCALE_FACTOR");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find Y_PIX_SCALE_FACTOR");
+	if (GlobalFunctions::entryExists(paramMap, "Y_PIX_SCALE_FACTOR"))
+	{
+		y_pix_scale_factor = (size_t)std::stof(paramMap.find("Y_PIX_SCALE_FACTOR")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_PIX_SCALE_FACTOR");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find AVG_PIXEL_VALUE_FOR_BEAM");
+	if (GlobalFunctions::entryExists(paramMap, "AVG_PIXEL_VALUE_FOR_BEAM"))
+	{
+		average_pixel_value_for_beam = std::stof(paramMap.find("AVG_PIXEL_VALUE_FOR_BEAM")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find AVG_PIXEL_VALUE_FOR_BEAM");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find SENSOR_MAX_TEMP");
+	if (GlobalFunctions::entryExists(paramMap, "SENSOR_MAX_TEMP"))
+	{
+		sensor_max_temperature = std::stof(paramMap.find("SENSOR_MAX_TEMP")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find SENSOR_MAX_TEMP");
+	}	
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find SENSOR_MIN_TEMP");
+	if (GlobalFunctions::entryExists(paramMap, "SENSOR_MIN_TEMP"))
+	{
+		sensor_min_temperature = std::stof(paramMap.find("SENSOR_MIN_TEMP")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find SENSOR_MIN_TEMP");
+	}	
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find MIN_X_PIXEL_POS");
+	if (GlobalFunctions::entryExists(paramMap, "MIN_X_PIXEL_POS"))
+	{
+		min_x_pixel_pos = std::stof(paramMap.find("MIN_X_PIXEL_POS")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MIN_X_PIXEL_POS");
+	}	
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find MAX_X_PIXEL_POS");
+	if (GlobalFunctions::entryExists(paramMap, "MAX_X_PIXEL_POS"))
+	{
+		max_x_pixel_pos = std::stof(paramMap.find("MAX_X_PIXEL_POS")->second);
+	}
+	else
+	{
+	messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_X_PIXEL_POS");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find MIN_Y_PIXEL_POS");
+	if (GlobalFunctions::entryExists(paramMap, "MIN_Y_PIXEL_POS"))
+	{
+		min_y_pixel_pos = std::stof(paramMap.find("MIN_Y_PIXEL_POS")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MIN_Y_PIXEL_POS");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find MAX_Y_PIXEL_POS");
+	if (GlobalFunctions::entryExists(paramMap, "MAX_Y_PIXEL_POS"))
+	{
+		max_y_pixel_pos = std::stof(paramMap.find("MAX_Y_PIXEL_POS")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_Y_PIXEL_POS");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find X_MASK_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "X_MASK_DEF"))
+	{
+		x_mask_def = (size_t)std::stof(paramMap.find("X_MASK_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_MASK_DEF");
+	}	
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find Y_MASK_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "Y_MASK_DEF"))
+	{
+		y_mask_def = (size_t)std::stof(paramMap.find("Y_MASK_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_MASK_DEF");
+	}	
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find X_MASK_RAD_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "X_MASK_RAD_DEF"))
+	{
+		x_mask_rad_def = (size_t)std::stof(paramMap.find("X_MASK_RAD_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_MASK_RAD_DEF");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find Y_MASK_RAD_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "Y_MASK_RAD_DEF"))
+	{
+		y_mask_rad_def = (size_t)std::stof(paramMap.find("Y_MASK_RAD_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_MASK_RAD_DEF");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find X_MASK_RAD_MAX");
+	if (GlobalFunctions::entryExists(paramMap, "X_MASK_RAD_MAX"))
+	{
+		x_mask_rad_max = (size_t)std::stof(paramMap.find("X_MASK_RAD_MAX")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_MASK_RAD_MAX");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find Y_MASK_RAD_MAX");
+	if (GlobalFunctions::entryExists(paramMap, "Y_MASK_RAD_MAX"))
+	{
+		y_mask_rad_max = (size_t)std::stof(paramMap.find("Y_MASK_RAD_MAX")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_MASK_RAD_MAX");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find X_CENTER_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "X_CENTER_DEF"))
+	{
+		x_center_def = (size_t)std::stof(paramMap.find("X_CENTER_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_CENTER_DEF");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "Y_CENTER_DEF"))
+	{
+		y_center_def = (size_t)std::stof(paramMap.find("Y_CENTER_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find USE_MASK_RAD_LIMITS");
+	if (GlobalFunctions::entryExists(paramMap, "USE_MASK_RAD_LIMITS"))
+	{
+		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::TRUE )
+		{
+			use_mask_rad_limits = true;
+		}
+		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::FALSE )
+		{
+			use_mask_rad_limits = false;
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find USE_MASK_RAD_LIMITS");
+	}
 }
+
+
 
 Camera::Camera(const Camera& copyCamera):
 Hardware(copyCamera),
@@ -117,11 +418,8 @@ void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)
 	{
-		
 		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
-
-
 			pvStructs[record] = pvStruct();
 			pvStructs[record].pvRecord = record;
 			// TODO NO ERROR CHECKING! (we assum config file is good??? 
@@ -144,17 +442,12 @@ void Camera::setPVStructs()
 				pvStructs[record].fullPVName = PV;
 				std::cout << "Physical Camera PV " + pvStructs[record].fullPVName << std::endl;
 			}
-			//pv.pvRecord = record;
-			//chid, count, mask, chtype are left undefined for now.
-			//pvStructs[pv.pvRecord] = pv;
 		}
 		else
 		{
-			std::cout << "Can't find record = "<< record << std::endl;
+			std::cout << "Can't find record = " << record << std::endl;
 		}
-
 	}
-
 }
 TYPE Camera::getCamType()const
 {
@@ -340,15 +633,26 @@ bool Camera::setBufferTrigger()
 //	}
 //	return false;
 //}
+bool Camera::hasLED()const
+{
+	return has_led;
+}
 bool Camera::setLEDOn()
 {
 	// ALSO HAVE IN SCREENS 
-	if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
+	if (has_led)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
-		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_SEND);
+		if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+			return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_SEND);
+		}
+		messenger.printDebugMessage(hardwareName," Send setLEDOn EPICS_ACTIVATE failed ");
 	}
-	messenger.printDebugMessage("Send setLEDOn EPICS_ACTIVATE failed ");
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " Does not have a LED, setLEDOn failed ");
+	}
 	return false;
 }
 bool Camera::setLEDOff()
@@ -950,14 +1254,12 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 					messenger.printDebugMessage(hardwareName, " makeANewDirectoryAndName returned false.");
 				}
 			}
-
 		}
 	}
 	else
 	{
 		messenger.printDebugMessage(hardwareName, " setNumberOfShotsToCapture returned false."); 
 	}
-
 }
 //-------------------------------------------------------------------------------------------------------
 bool Camera::setNumberOfShotsToCapture(size_t num)
@@ -1153,30 +1455,38 @@ STATE Camera::getCaptureState()const
 {
 	return capture_state.second;
 }
+bool Camera::isBusy()
+{
+	return busy == true;
+}
+bool Camera::isNotBusy()
+{
+	return busy == false;
+}
+bool Camera::didLastCaptureAndSaveSucceed()
+{
+	return last_capture_and_save_success == true;
+}
 //---------------------------------------------------------------------------------
 bool Camera::isCapturing()const
 {
 	if (getCaptureState() == STATE::CAPTURING)
 	{
 		messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
+		return true;
 	}
-	else
-	{
-		messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
-	}
-	return getCaptureState() == STATE::CAPTURING;
+	messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
+	return false;
 }
 bool Camera::isNotCapturing()const
 {
 	if (getCaptureState() == STATE::NOT_CAPTURING)
 	{
 		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is TRUE");
+		return true;
 	}
-	else
-	{
-		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is FALSE");
-	}
-	return getCaptureState() == STATE::NOT_CAPTURING;
+	messenger.printDebugMessage("isNotCapturing ", hardwareName, " is FALSE");
+	return false;
 }
 bool Camera::isCapturingOrSaving()const
 {
@@ -1408,7 +1718,7 @@ void Camera::messagesOff()
 		It seems out that acheiving all 3 at once is not obvious 
 		Proposed solution (which is not perfect and has flaws) 
 
-		Function to get time stamp (fast as possible)
+		Function to get time stamp (fast as possible) 
 		Function to update data into a vector 
 		Vector exposed to python for access without copying 
 		Function to get data will copy data into a python list 
@@ -1416,30 +1726,22 @@ void Camera::messagesOff()
 /* memory shenanigans so its only used for large image arrays when requested */ 
 bool Camera::vector_resize(std::vector<long>& vec)
 {
-	vec.resize(num_pixels);
-	return vec.size() == num_pixels;
+	vec.resize(array_data_pixel_count);
+	return vec.size() == array_data_pixel_count;
 }
 void Camera::malloc_imagedata()
 {
-	/*
-		allocate memory for pointer_to_array_data, array pointer
-	*/
-	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, num_pixels);
-	//std::cout << sizeof(*dbr_image_data) << std::endl;
+	/*	allocate memory for dbr_image_data, array pointer 	*/
+	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, array_data_pixel_count);
 	dbr_image_data = (struct dbr_time_long*)malloc(nBytes);
-	//std::cout << sizeof(*dbr_image_data) << std::endl;
 	messenger.printDebugMessage(hardwareName, " dbr_image_data pointer allocated ", nBytes, " BYTES ");
 	image_data_has_not_malloced = false;
 }
 void Camera::malloc_roidata()
 {
-	/*
-		allocate memory for pointer_to_array_data, array pointer
-	*/
-	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, num_pixels);
-	//std::cout << sizeof(*dbr_roi_data) << std::endl;
+	/*		allocate memory for dbr_roi_data, array pointer  	*/
+	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, array_data_pixel_count);
 	dbr_roi_data = (struct dbr_time_long*)malloc(nBytes);
-	//std::cout << sizeof(*dbr_roi_data) << std::endl;
 	messenger.printDebugMessage(hardwareName, " dbr_roi_data pointer allocated ", nBytes, " BYTES ");
 	roi_data_has_not_malloced = false;
 }
@@ -1448,7 +1750,15 @@ bool Camera::updateImageData()
 	if (image_data_has_not_vector_resized)
 	{
 		messenger.printDebugMessage("vector_resize for image_data ");
-		image_data_has_not_vector_resized = vector_resize(image_data.second);
+		vector_resize(image_data.second);
+		if (image_data.second.size() == array_data_pixel_count)
+		{
+			image_data_has_not_vector_resized = false;
+		}
+		else
+		{
+			image_data_has_not_vector_resized = true;
+		}
 	}
 	if (!image_data_has_not_vector_resized)
 	{
@@ -1503,17 +1813,27 @@ bool Camera::updateROIData()
 	if (roi_data_has_not_vector_resized)
 	{
 		messenger.printDebugMessage("vector_resize for roi_data ");
-		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+		vector_resize(roi_data.second);
+		if (roi_data.second.size() == array_data_pixel_count)
+		{
+			roi_data_has_not_vector_resized = false;
+		}
+		else
+		{
+			roi_data_has_not_vector_resized = true;
+		}
 	}
-	auto start = std::chrono::high_resolution_clock::now();
-	//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
-	//	, image_data.first);
-	bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
-		, roi_data.second.size());
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
-	return got_value;
+	if (!roi_data_has_not_vector_resized)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
+			, roi_data.second.size());
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
+		return got_value;
+	}
+	return false;
 }
 bool Camera::updateROIDataWithTimeStamp()
 {
@@ -1562,10 +1882,6 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 	}
 	return false;
 }
-
-
-
-
 bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,size_t count)
 {
 	auto start = std::chrono::high_resolution_clock::now();
@@ -1581,11 +1897,6 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	}
 	return false;
 }
-
-
-
-
-
 std::vector<long> Camera::getImageData()
 {
 	return image_data.second;
@@ -1602,7 +1913,6 @@ boost::python::list Camera::getROIData_Py()
 {
 	return to_py_list<long>(getROIData());
 }
-
 std::vector<long>& Camera::getImageDataConstRef()
 {
 	return image_data.second;
@@ -1613,7 +1923,7 @@ std::vector<long>& Camera::getROIDataConstRef()
 }
 
 
-
+ 
 
 
 

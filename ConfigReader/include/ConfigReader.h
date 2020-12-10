@@ -84,6 +84,7 @@ public:
 		}
 	}
 
+	// TODO can we have some more information printed to help correct Master Lattice errors 
 	template<typename HardwareType>
 	void parseYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
@@ -107,7 +108,7 @@ public:
 				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 
-				messenger.printDebugMessage("LoadFile got template");
+				messenger.printDebugMessage("LoadFile got template, comparing ");
 
 
 				std::vector<std::string> missingEntriesFromFile = compareFileWithTemplate(configTemplate, config);
@@ -144,6 +145,8 @@ public:
 			}
 		}
 		// POTENTIAL EXCEPTIONS //
+		// TODO can we have some more infomration about what these are and maybe print some hints on 
+		// how to fix the issue if it is raised 
 		catch (std::length_error EmptyFileException)
 		{
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,

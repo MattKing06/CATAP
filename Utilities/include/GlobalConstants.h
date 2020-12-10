@@ -225,6 +225,9 @@ namespace GlobalConstants
 	/*! Maximum possible value of a long */
 	const long long_max = std::numeric_limits<unsigned short>::max();
 
+	/*! Maximum possible value of a long */
+	const size_t size_zero = 0;
+
 	/*! Integer-type variable for 0 */
 	const int zero_int= 0;
 	/*! Integer-type variable for 1 */
@@ -283,6 +286,8 @@ namespace GlobalConstants
 
 
 	const std::string nominal = "nominal";
+	const std::string TRUE  = "TRUE";
+	const std::string FALSE  = "FALSE";
 	
 	
 

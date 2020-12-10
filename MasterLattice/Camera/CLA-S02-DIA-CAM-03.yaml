@@ -2,119 +2,123 @@
 controls_information:
     PV: true
     pv_record_map:
-        HDFB_Buffer_Trigger : CLA-S02-DIA-CAM-01:CAM:Trigger.PROC
-        HDFB_Buffer_FilePath : CLA-S02-DIA-CAM-01:HDFB:FilePath
-        HDFB_Buffer_FilePath_RBV : CLA-S02-DIA-CAM-01:HDFB:FilePath_RBV
-        HDFB_Buffer_FileName : CLA-S02-DIA-CAM-01:HDFB:FileName
-        HDFB_Buffer_FileName_RBV : CLA-S02-DIA-CAM-01:HDFB:FileName_RBV
-        HDFB_Buffer_FileNumber : CLA-S02-DIA-CAM-01:HDFB:FileNumber
-        HDFB_Buffer_FileNumber_RBV : CLA-S02-DIA-CAM-01:HDFB:FileNumber_RBV
-        ROI1_MinX_RBV : CLA-S02-DIA-CAM-01:ROI1:MinX_RBV
-        ROI1_MinX : CLA-S02-DIA-CAM-01:ROI1:MinX
-        ROI1_MinY_RBV : CLA-S02-DIA-CAM-01:ROI1:MinY_RBV
-        ROI1_MinY : CLA-S02-DIA-CAM-01:ROI1:MinY
-        ROI1_SizeX_RBV : CLA-S02-DIA-CAM-01:ROI1:SizeX_RBV
-        ROI1_SizeY_RBV : CLA-S02-DIA-CAM-01:ROI1:SizeY_RBV
-        ROI1_SizeX : CLA-S02-DIA-CAM-01:ROI1:SizeX
-        ROI1_SizeY : CLA-S02-DIA-CAM-01:ROI1:SizeY
-        ROI1_ImageData_RBV  : CLA-S02-DIA-CAM-01:CAM3:ArrayData
-        ROIandMask_SetX : CLA-S02-DIA-CAM-01:ANA:SetX
-        ROIandMask_SetY : CLA-S02-DIA-CAM-01:ANA:SetY
-        ROIandMask_SetXrad : CLA-S02-DIA-CAM-01:ANA:SetXRad
-        ROIandMask_SetYrad : CLA-S02-DIA-CAM-01:ANA:SetYRad        
-        ANA_UseFloor    : CLA-S02-DIA-CAM-01:ANA:UseFloor
-        ANA_UseFloor_RBV    : CLA-S02-DIA-CAM-01:ANA:UseFloor_RBV
-        ANA_FloorLevel    : CLA-S02-DIA-CAM-01:ANA:Floor
-        ANA_FloorLevel_RBV    : CLA-S02-DIA-CAM-01:ANA:Floor_RBV
-        ANA_FlooredPoints_RBV    : CLA-S02-DIA-CAM-01:ANA:FLOORED_PTS
-        ANA_FlooredPercent_RBV    : CLA-S02-DIA-CAM-01:ANA:FLOORED_PCENT
-        ANA_CPU_RBV    : CLA-S02-DIA-CAM-01:ANA:ANA_CPU
-        ANA_CPU_CropSubMask_RBV    : CLA-S02-DIA-CAM-01:ANA:CSM_CPU
-        ANA_CPU_Npoint_RBV    : CLA-S02-DIA-CAM-01:ANA:NP_CPU
-        ANA_CPU_Dot_RBV    : CLA-S02-DIA-CAM-01:ANA:DP_CPU
-        ANA_PixW_RBV : CLA-S02-DIA-CAM-01:ANA:PixW_RBV
-        ANA_PixH_RBV : CLA-S02-DIA-CAM-01:ANA:PixH_RBV
-        HDF_WriteFile_RBV    : CLA-S02-DIA-CAM-01:HDF:WriteFile_RBV
-        HDF_WriteStatus    : CLA-S02-DIA-CAM-01:HDF:WriteStatus
-        HDF_WriteMessage    : CLA-S02-DIA-CAM-01:HDF:WriteMessage
-        HDF_NumCaptured_RBV    : CLA-S02-DIA-CAM-01:HDF:NumCaptured_RBV
-        HDF_Capture_RBV    : CLA-S02-DIA-CAM-01:HDF:Capture_RBV
-        CAM_Acquire_RBV    : CLA-S02-DIA-CAM-01:CAM:Acquire_RBV
-        HDF_NumCapture_RBV    : CLA-S02-DIA-CAM-01:HDF:NumCapture_RBV
-        # MAGICK_NumCaptured_RBV    : CLA-S02-DIA-CAM-01:MAGICK:NumCaptured_RBV
-        # MAGICK_WriteFile_RBV    : CLA-S02-DIA-CAM-01:MAGICK:WriteFile_RBV
-        # MAGICK_WriteStatus    : CLA-S02-DIA-CAM-01:MAGICK:WriteStatus
-        # MAGICK_WriteMessage    : CLA-S02-DIA-CAM-01:MAGICK:WriteMessage
-        # MAGICK_Capture_RBV    : CLA-S02-DIA-CAM-01:MAGICK:Capture_RBV
-        # MAGICK_NumCapture_RBV    : CLA-S02-DIA-CAM-01:MAGICK:NumCapture_RBV
-        ANA_StepSize_RBV    : CLA-S02-DIA-CAM-01:ANA:StepSize_RBV
-        ANA_EnableCallbacks_RBV    : CLA-S02-DIA-CAM-01:ANA:EnableCallbacks_RBV
-        ANA_UseBkgrnd    : CLA-S02-DIA-CAM-01:ANA:UseBkgrnd
-        ANA_UseNPoint    : CLA-S02-DIA-CAM-01:ANA:UseNPoint
-        ANA_X_RBV    : CLA-S02-DIA-CAM-01:ANA:X_RBV
-        ANA_Y_RBV    : CLA-S02-DIA-CAM-01:ANA:Y_RBV
-        ANA_SigmaX_RBV    : CLA-S02-DIA-CAM-01:ANA:SigmaX_RBV
-        ANA_SigmaY_RBV    : CLA-S02-DIA-CAM-01:ANA:SigmaY_RBV
-        ANA_CovXY_RBV    : CLA-S02-DIA-CAM-01:ANA:CovXY_RBV
-        ANA_AvgIntensity_RBV    : CLA-S02-DIA-CAM-01:ANA:AvgIntensity_RBV
-        ANA_Intensity_RBV    : CLA-S02-DIA-CAM-01:ANA:Intensity_RBV
-        ANA_XPix_RBV    : CLA-S02-DIA-CAM-01:ANA:XPix_RBV
-        ANA_YPix_RBV    : CLA-S02-DIA-CAM-01:ANA:YPix_RBV
-        ANA_SigmaXPix_RBV    : CLA-S02-DIA-CAM-01:ANA:SigmaXPix_RBV
-        ANA_SigmaYPix_RBV    : CLA-S02-DIA-CAM-01:ANA:SigmaYPix_RBV
-        ANA_CovXYPix_RBV    : CLA-S02-DIA-CAM-01:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : CLA-S02-DIA-CAM-01:ANA:PixelResults_RBV
-        ANA_MaskXCenter_RBV    : CLA-S02-DIA-CAM-01:ANA:MaskXCenter_RBV
-        ANA_MaskYCenter_RBV    : CLA-S02-DIA-CAM-01:ANA:MaskYCenter_RBV
-        ANA_MaskXRad_RBV    : CLA-S02-DIA-CAM-01:ANA:MaskXRad_RBV
-        ANA_MaskYRad_RBV    : CLA-S02-DIA-CAM-01:ANA:MaskYRad_RBV
-        ANA_CenterX_RBV    : CLA-S02-DIA-CAM-01:ANA:CenterX_RBV
-        ANA_CenterY_RBV    : CLA-S02-DIA-CAM-01:ANA:CenterY_RBV
-        ANA_PixMM_RBV    : CLA-S02-DIA-CAM-01:ANA:PixMM_RBV
-        CAM_AcquireTime_RBV    : CLA-S02-DIA-CAM-01:CAM:AcquireTime_RBV
-        CAM_AcquirePeriod_RBV    : CLA-S02-DIA-CAM-01:CAM:AcquirePeriod_RBV
-        CAM_ArrayRate_RBV    : CLA-S02-DIA-CAM-01:CAM:ArrayRate_RBV
-        CAM_Temperature_RBV    : CLA-S02-DIA-CAM-01:CAM:Temperature_RBV
-        HDF_FilePath    : CLA-S02-DIA-CAM-01:HDF:FilePath
-        HDF_FileName    : CLA-S02-DIA-CAM-01:HDF:FileName
-        HDF_FilePath_RBV    : CLA-S02-DIA-CAM-01:HDF:FilePath_RBV
-        HDF_FileName_RBV    : CLA-S02-DIA-CAM-01:HDF:FileName_RBV
-        HDF_FileNumber    : CLA-S02-DIA-CAM-01:HDF:FileNumber
-        HDF_WriteFile    : CLA-S02-DIA-CAM-01:HDF:WriteFile
-        CAM_Acquire    : CLA-S02-DIA-CAM-01:CAM:Acquire
-        CAM_Acquire    : CLA-S02-DIA-CAM-01:CAM:Acquire
-        HDF_Capture    : CLA-S02-DIA-CAM-01:HDF:Capture
-        HDF_NumCapture    : CLA-S02-DIA-CAM-01:HDF:NumCapture
-        MAGICK_FileName    : CLA-S02-DIA-CAM-01:MAGICK:FileName
-        MAGICK_FilePath    : CLA-S02-DIA-CAM-01:MAGICK:FilePath
-        MAGICK_FileNumber    : CLA-S02-DIA-CAM-01:MAGICK:FileNumber
-        MAGICK_Capture    : CLA-S02-DIA-CAM-01:MAGICK:Capture
-        MAGICK_WriteFile    : CLA-S02-DIA-CAM-01:MAGICK:WriteFile
-        MAGICK_NumCapture    : CLA-S02-DIA-CAM-01:MAGICK:NumCapture
-        ANA_StepSize    : CLA-S02-DIA-CAM-01:ANA:StepSize
-        ANA_EnableCallbacks    : CLA-S02-DIA-CAM-01:ANA:EnableCallbacks
-        ANA_NewBkgrnd    : CLA-S02-DIA-CAM-01:ANA:NewBkgrnd
-        ANA_UseBkgrnd    : CLA-S02-DIA-CAM-01:ANA:UseBkgrnd
-        ANA_UseNPoint    : CLA-S02-DIA-CAM-01:ANA:UseNPoint
-        CAM2_ArrayData    : CLA-S02-DIA-CAM-01:CAM2:ArrayData
-        ANA_MaskXCenter    : CLA-S02-DIA-CAM-01:ANA:MaskXCenter
-        ANA_MaskYCenter    : CLA-S02-DIA-CAM-01:ANA:MaskYCenter
-        ANA_MaskXRad    : CLA-S02-DIA-CAM-01:ANA:MaskXRad
-        ANA_MaskYRad    : CLA-S02-DIA-CAM-01:ANA:MaskYRad
-        ANA_CenterX    : CLA-S02-DIA-CAM-01:ANA:CenterX
-        ANA_CenterY    : CLA-S02-DIA-CAM-01:ANA:CenterY
-        ANA_PixMM    : CLA-S02-DIA-CAM-01:ANA:PixMM
-        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :    CLA-LAS-DIA-LED-01:Off
-        LED_On    : CLA-LAS-DIA-LED-01:On
+        # NO _RBV versions of these PVs 
+        ROIandMask_SetX : CLA-S02-DIA-CAM-03:ANA:SetX
+        ROIandMask_SetY : CLA-S02-DIA-CAM-03:ANA:SetY
+        ROIandMask_SetXrad : CLA-S02-DIA-CAM-03:ANA:SetXRad
+        ROIandMask_SetYrad : CLA-S02-DIA-CAM-03:ANA:SetYRad 
+        # the "mask" from JW/TP implementation 
+        ANA_MaskXCenter    : CLA-S02-DIA-CAM-03:ANA:MaskXCenter
+        ANA_MaskXCenter_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskXCenter_RBV
+        ANA_CenterX_RBV    : CLA-S02-DIA-CAM-03:ANA:CenterX_RBV
+        ANA_CenterX    : CLA-S02-DIA-CAM-03:ANA:CenterX
+        ANA_CenterY_RBV    : CLA-S02-DIA-CAM-03:ANA:CenterY_RBV
+        ANA_CenterY    : CLA-S02-DIA-CAM-03:ANA:CenterY
+        ANA_MaskYCenter    : CLA-S02-DIA-CAM-03:ANA:MaskYCenter
+        ANA_MaskYCenter_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskYCenter_RBV
+        ANA_MaskXRad_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskXRad_RBV
+        ANA_MaskXRad    : CLA-S02-DIA-CAM-03:ANA:MaskXRad
+        ANA_MaskYRad_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskYRad_RBV
+        ANA_MaskYRad    : CLA-S02-DIA-CAM-03:ANA:MaskYRad
+        # ROI SK implementation  
+        ROI1_MinX_RBV : CLA-S02-DIA-CAM-03:ROI1:MinX_RBV
+        ROI1_MinX : CLA-S02-DIA-CAM-03:ROI1:MinX
+        ROI1_MinY_RBV : CLA-S02-DIA-CAM-03:ROI1:MinY_RBV
+        ROI1_MinY : CLA-S02-DIA-CAM-03:ROI1:MinY
+        ROI1_SizeX_RBV : CLA-S02-DIA-CAM-03:ROI1:SizeX_RBV
+        ROI1_SizeX : CLA-S02-DIA-CAM-03:ROI1:SizeX
+        ROI1_SizeY_RBV : CLA-S02-DIA-CAM-03:ROI1:SizeY_RBV
+        ROI1_SizeY : CLA-S02-DIA-CAM-03:ROI1:SizeY
+        ROI1_ImageData_RBV  : CLA-S02-DIA-CAM-03:CAM3:ArrayData
+        # start stop acquiring images 
+        CAM_Acquire    : CLA-S02-DIA-CAM-03:CAM:Acquire
+        CAM_Acquire_RBV    : CLA-S02-DIA-CAM-03:CAM:Acquire_RBV
+        # #  analysis, enable callbacks is start / stop analysis 
+        ANA_EnableCallbacks_RBV    : CLA-S02-DIA-CAM-03:ANA:EnableCallbacks_RBV
+        ANA_EnableCallbacks    : CLA-S02-DIA-CAM-03:ANA:EnableCallbacks
+        # the analysis can use a back groun dsubtracted image 
+        ANA_NewBkgrnd    : CLA-S02-DIA-CAM-03:ANA:NewBkgrnd
+        ANA_UseBkgrnd    : CLA-S02-DIA-CAM-03:ANA:UseBkgrnd
+        # the analysis can use "n-point scaling" 
+        ANA_UseNPoint    : CLA-S02-DIA-CAM-03:ANA:UseNPoint       
+        # The analysis can set a noise floor, pixel values below this are set to zero 
+        ANA_UseFloor : CLA-S02-DIA-CAM-03:ANA:UseFloor
+        ANA_UseFloor_RBV : CLA-S02-DIA-CAM-03:ANA:UseFloor_RBV
+        ANA_FloorLevel    : CLA-S02-DIA-CAM-03:ANA:Floor
+        ANA_FloorLevel_RBV    : CLA-S02-DIA-CAM-03:ANA:Floor_RBV
+        ANA_FlooredPoints_RBV    : CLA-S02-DIA-CAM-03:ANA:FLOORED_PTS
+        ANA_FlooredPercent_RBV    : CLA-S02-DIA-CAM-03:ANA:FLOORED_PCENT
+        # Analysis CPU metrics 
+        ANA_CPU_RBV    : CLA-S02-DIA-CAM-03:ANA:ANA_CPU
+        ANA_CPU_CropSubMask_RBV    : CLA-S02-DIA-CAM-03:ANA:CSM_CPU
+        ANA_CPU_Npoint_RBV    : CLA-S02-DIA-CAM-03:ANA:NP_CPU
+        ANA_CPU_Dot_RBV    : CLA-S02-DIA-CAM-03:ANA:DP_CPU
+        ANA_PixW_RBV : CLA-S02-DIA-CAM-03:ANA:PixW_RBV
+        ANA_PixH_RBV : CLA-S02-DIA-CAM-03:ANA:PixH_RBV
+        ANA_PixMM    : CLA-S02-DIA-CAM-03:ANA:PixMM
+        ANA_PixMM_RBV    : CLA-S02-DIA-CAM-03:ANA:PixMM_RBV
+        ANA_StepSize    : CLA-S02-DIA-CAM-03:ANA:StepSize
+        ANA_StepSize_RBV    : CLA-S02-DIA-CAM-03:ANA:StepSize_RBV
+        ANA_X_RBV    : CLA-S02-DIA-CAM-03:ANA:X_RBV
+        ANA_Y_RBV    : CLA-S02-DIA-CAM-03:ANA:Y_RBV
+        ANA_SigmaX_RBV    : CLA-S02-DIA-CAM-03:ANA:SigmaX_RBV
+        ANA_SigmaY_RBV    : CLA-S02-DIA-CAM-03:ANA:SigmaY_RBV
+        ANA_CovXY_RBV    : CLA-S02-DIA-CAM-03:ANA:CovXY_RBV
+        ANA_AvgIntensity_RBV    : CLA-S02-DIA-CAM-03:ANA:AvgIntensity_RBV
+        ANA_Intensity_RBV    : CLA-S02-DIA-CAM-03:ANA:Intensity_RBV
+        ANA_XPix_RBV    : CLA-S02-DIA-CAM-03:ANA:XPix_RBV
+        ANA_YPix_RBV    : CLA-S02-DIA-CAM-03:ANA:YPix_RBV
+        ANA_SigmaXPix_RBV    : CLA-S02-DIA-CAM-03:ANA:SigmaXPix_RBV
+        ANA_SigmaYPix_RBV    : CLA-S02-DIA-CAM-03:ANA:SigmaYPix_RBV
+        ANA_CovXYPix_RBV    : CLA-S02-DIA-CAM-03:ANA:CovXYPix_RBV
+        ANA_PixelResults_RBV    : CLA-S02-DIA-CAM-03:ANA:PixelResults_RBV 
+        # # actuall array data
+        CAM2_ArrayData    : CLA-S02-DIA-CAM-03:CAM2:ArrayData
+        HDFB_Buffer_Trigger : CLA-S02-DIA-CAM-03:CAM:Trigger.PROC
+        HDFB_Buffer_FilePath : CLA-S02-DIA-CAM-03:HDFB:FilePath
+        HDFB_Buffer_FilePath_RBV : CLA-S02-DIA-CAM-03:HDFB:FilePath_RBV
+        HDFB_Buffer_FileName : CLA-S02-DIA-CAM-03:HDFB:FileName
+        HDFB_Buffer_FileName_RBV : CLA-S02-DIA-CAM-03:HDFB:FileName_RBV
+        HDFB_Buffer_FileNumber : CLA-S02-DIA-CAM-03:HDFB:FileNumber
+        HDFB_Buffer_FileNumber_RBV : CLA-S02-DIA-CAM-03:HDFB:FileNumber_RBV
+        # HDF_NumCapture_RBV    : CLA-VCAWws-DIA-CAM-01:HDF:NumCapture_RBV
+        CAM_AcquireTime_RBV    : CLA-S02-DIA-CAM-03:CAM:AcquireTime_RBV
+        CAM_AcquirePeriod_RBV    : CLA-S02-DIA-CAM-03:CAM:AcquirePeriod_RBV
+        CAM_ArrayRate_RBV    : CLA-S02-DIA-CAM-03:CAM:ArrayRate_RBV
+        CAM_Temperature_RBV    : CLA-S02-DIA-CAM-03:CAM:Temperature_RBV
+        HDF_Capture    : CLA-S02-DIA-CAM-03:HDF:Capture
+        HDF_NumCapture    : CLA-S02-DIA-CAM-03:HDF:NumCapture
+        HDF_FilePath    : CLA-S02-DIA-CAM-03:HDF:FilePath
+        HDF_FileName    : CLA-S02-DIA-CAM-03:HDF:FileName
+        HDF_FileNumber    : CLA-S02-DIA-CAM-03:HDF:FileNumber
+        HDF_FileNumber_RBV    : CLA-S02-DIA-CAM-03:HDF:FileNumber_RBV
+        HDF_FilePath_RBV    : CLA-S02-DIA-CAM-03:HDF:FilePath_RBV
+        HDF_FileName_RBV    : CLA-S02-DIA-CAM-03:HDF:FileName_RBV
+        HDF_WriteFile    : CLA-S02-DIA-CAM-03:HDF:WriteFile
+        # MAGICK_FileName    : CLA-S02-DIA-CAM-03:MAGICK:FileName
+        # MAGICK_FilePath    : CLA-S02-DIA-CAM-03:MAGICK:FilePath
+        # MAGICK_FileNumber    : CLA-S02-DIA-CAM-03:MAGICK:FileNumber
+        # MAGICK_Capture    : CLA-S02-DIA-CAM-03:MAGICK:Capture
+        # MAGICK_WriteFile    : CLA-S02-DIA-CAM-03:MAGICK:WriteFile
+        # MAGICK_NumCapture    : CLA-S02-DIA-CAM-03:MAGICK:NumCapture
+        # MAGICK_NumCaptured_RBV    : CLA-S02-DIA-CAM-03:MAGICK:NumCaptured_RBV
+        # MAGICK_WriteFile_RBV    : CLA-S02-DIA-CAM-03:MAGICK:WriteFile_RBV
+        # MAGICK_WriteStatus    : CLA-S02-DIA-CAM-03:MAGICK:WriteStatus
+        # MAGICK_WriteMessage    : CLA-S02-DIA-CAM-03:MAGICK:WriteMessage
+        # MAGICK_Capture_RBV    : CLA-S02-DIA-CAM-03:MAGICK:Capture_RBV
+        # MAGICK_NumCapture_RBV    : CLA-S02-DIA-CAM-03:MAGICK:NumCapture_RBV
+        # ANA_PixMM    : CLA-S02-DIA-CAM-03:ANA:PixMM
+        # LED_Sta    : CLA-LAS-DIA-LED-01:Sta
+        # LED_Off    : CLA-LAS-DIA-LED-01:Off
+        # LED_On    : CLA-LAS-DIA-LED-01:On
 
 properties:
     hardware_type: Camera
     machine_area : S02 # Set by where the camera physically *IS* 
-    name : CLA-S02-DIA-CAM-01
-    name_alias: S02-CAM-01, S02-CAM1  # include screen names here as well 
+    name : CLA-S02-DIA-CAM-03
+    name_alias: S02-CAM-03, S02-CAM3  # include screen names here as well 
     CAM_TYPE : CLARA_CAM 
-    SCREEN_NAME : S02-SCR-01, S02-YAG-01 # which screen is the camera looking at 
+    SCREEN_NAME : S02-SCR-03,S02-YAG-03 # which screen is the camera looking at 
     IP_ADDRESS_STREAM : "" 
     MAX_SHOTS_NUMBER  :	600 # max number of shots that can be taken in a single burst 
     ## these are the indices of each value in the array PixelResults_RBV
@@ -155,6 +159,7 @@ properties:
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
+
 
 
 # PV_IA_SUFFIX_X_RBV		= ANA:X_RBV;

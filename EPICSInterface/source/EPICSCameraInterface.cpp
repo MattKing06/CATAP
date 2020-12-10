@@ -216,7 +216,7 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	}
 	else if (pvStruct.pvRecord == ROI1_SizeX_RBV)
 	{
-	pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;
+		pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;
 	}
 	else if (pvStruct.pvRecord == ROI1_SizeY_RBV)
 	{
@@ -307,7 +307,8 @@ void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_a
 	default:
 		recastCamera->write_state_check.second = STATE::ERR;
 	}
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteFile_RBV = " + ENUM_TO_STRING(recastCamera->write_state_check.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteFile_RBV = ",
+		ENUM_TO_STRING(recastCamera->write_state_check.second));
 }
 void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_args args)
 {
@@ -321,7 +322,8 @@ void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_arg
 	default:
 		recastCamera->write_state.second = STATE::ERR;
 	}
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteStatus = " + ENUM_TO_STRING(recastCamera->write_state.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteStatus = ",
+		ENUM_TO_STRING(recastCamera->write_state.second));
 }
 void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_args args)
 {
@@ -340,13 +342,31 @@ void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_ar
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->write_error_message.second = dummy_string;
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteMessage (write_error_message) = ", recastCamera->write_error_message.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteMessage (write_error_message) = ", 
+		recastCamera->write_error_message.second);
 }
+
+
+
+
 void EPICSCameraInterface::update_HDF_NumCaptured_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_NumCaptured_RBV = ",
+		recastCamera->buffer_filename.second);
+
 }
+void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_NumCapture_RBV = ",
+		recastCamera->pixel_to_mm.second);
+}
+
+
+
 void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -359,7 +379,9 @@ void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_arg
 	default:
 		recastCamera->capture_state.second = STATE::ERR;
 	}
-	//messenger.printDebugMessage(recastCamera->getHardwareName()," update_HDF_Capture_RBV = " + ENUM_TO_STRING(recastCamera->capture_state.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_Capture_RBV = ", 
+		ENUM_TO_STRING(recastCamera->capture_state.second));
+
 }
 void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_args args)
 {
@@ -373,7 +395,8 @@ void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_arg
 	default:
 		recastCamera->acquire_state.second = STATE::ERR;
 	}
-	std::cout << recastCamera->getHardwareName() << " new acquire state = " << ENUM_TO_STRING(recastCamera->acquire_state.second) << std::endl;
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Acquire_RBV = ",
+		ENUM_TO_STRING(recastCamera->acquire_state.second));
 }
 void EPICSCameraInterface::update_LED_Sta(const struct event_handler_args args)
 {
@@ -387,26 +410,27 @@ void EPICSCameraInterface::update_LED_Sta(const struct event_handler_args args)
 	default:
 		recastCamera->acquire_state.second = STATE::ERR;
 	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_LED_Sta = ", 
+		recastCamera->led_state.second);
+
 }
 void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->pixel_to_mm);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixMM_RBV = ", 
+		recastCamera->pixel_to_mm.second);
 }
-void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_HDF_NumCapture_RBV ");
-}
+
 void EPICSCameraInterface::update_ANA_StepSize_RBV(const struct event_handler_args args) 
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->step_size);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_StepSize_RBV = ",
+		recastCamera->step_size.second);
 }
 void EPICSCameraInterface::update_ANA_EnableCallbacks_RBV(const struct event_handler_args args) 
 {
-	//messenger.printDebugMessage("update_ANA_EnableCallbacks_RBV ");
-	//std::cout << "update_ANA_EnableCallbacks_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
 	recastCamera->analysis_state.first = new_value.first;
@@ -417,110 +441,94 @@ void EPICSCameraInterface::update_ANA_EnableCallbacks_RBV(const struct event_han
 	default:
 		recastCamera->analysis_state.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_EnableCallbacks_RBV = ", ENUM_TO_STRING(recastCamera->analysis_state.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_EnableCallbacks_RBV = ", 
+		ENUM_TO_STRING(recastCamera->analysis_state.second));
 }
 void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_mm);
 	recastCamera->x_mm_rs.Push(recastCamera->x_mm.second);
-	//messenger.printDebugMessage("update_ANA_X_RBV, val =  ", recastCamera->x_mm.second);
-
-	//std::pair<epicsTimeStamp, double > x_pix;
-	///*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > y_pix;
-	///*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sigma_x_pix;
-	///*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sigma_y_pix;
-	///*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sigma_xy_pix;
-	///*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > x_mm;
-	///*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > y_mm;
-	///*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sigma_x_mm;
-	///*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sigma_y_mm;
-	///*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sigma_xy_mm;
-	//*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > sum_intensity;
-	///*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
-	//std::pair<epicsTimeStamp, double > avg_intensity;
-
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_X_RBV = ", 
+	//	recastCamera->x_mm.second);
 }
 void EPICSCameraInterface::update_ANA_Y_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_Y_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->y_mm);
-	//std::cout << "update_ANA_Y_RBV " << recastCamera->getHardwareName() << std::endl;
 	recastCamera->y_mm_rs.Push(recastCamera->y_mm.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_Y_RBV = ",
+	//	recastCamera->y_mm.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaX_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_SigmaX_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_x_mm);
-	//std::cout << "update_ANA_Y_RBV " << recastCamera->getHardwareName() << std::endl;
 	recastCamera->sigma_x_mm_rs.Push(recastCamera->sigma_x_mm.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaX_RBV = ", 
+	//	recastCamera->sigma_x_mm.second);
 }
-void EPICSCameraInterface::update_ANA_SigmaY_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_SigmaY_RBV ");
+void EPICSCameraInterface::update_ANA_SigmaY_RBV(const struct event_handler_args args) 
+{
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_y_mm);
-	//std::cout << "update_ANA_Y_RBV " << recastCamera->getHardwareName() << std::endl;
 	recastCamera->sigma_y_mm_rs.Push(recastCamera->sigma_y_mm.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaY_RBV = ", 
+	//	recastCamera->sigma_y_mm.second);
 }
 void EPICSCameraInterface::update_ANA_CovXY_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_ANA_CovXY_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_xy_mm);
-	//std::cout << "update_ANA_Y_RBV " << recastCamera->getHardwareName() << std::endl;
+	recastCamera->sigma_xy_mm_rs.Push(recastCamera->sigma_xy_mm.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CovXY_RBV = ", 
+	//	recastCamera->sigma_xy_mm.second);
 }
 void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_AvgIntensity_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->avg_intensity);
-	//std::cout << "update_ANA_AvgIntensity_RBV " << recastCamera->getHardwareName() << std::endl;
+	recastCamera->avg_intensity_rs.Push(recastCamera->avg_intensity.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_AvgIntensity_RBV = ", 
+	//	recastCamera->avg_intensity.second);
 }
 void EPICSCameraInterface::update_ANA_Intensity_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_Intensity_RBV ");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sum_intensity);
-	//std::cout << "update_ANA_AvgIntensity_RBV " << recastCamera->getHardwareName() << std::endl;
+	recastCamera->sum_intensity_rs.Push(recastCamera->sum_intensity.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_Intensity_RBV = ", 
+	//	recastCamera->sum_intensity.second);
 }
 void EPICSCameraInterface::update_ANA_XPix_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_XPix_RBV ");
-	//std::cout << "update_ANA_XPix_RBV" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_pix);
-	//std::cout << "update_ANA_AvgIntensity_RBV " << recastCamera->getHardwareName() << std::endl;
+	recastCamera->x_pix_rs.Push(recastCamera->x_pix.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_XPix_RBV = ", 
+	//	recastCamera->x_pix.second);
 }
 void EPICSCameraInterface::update_ANA_YPix_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_YPix_RBV ");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->y_pix);
+	recastCamera->y_pix_rs.Push(recastCamera->y_pix.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_YPix_RBV = ",
+	//	recastCamera->y_pix.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaXPix_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_SigmaXPix_RBV ");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_x_pix);
+	recastCamera->sigma_x_pix_rs.Push(recastCamera->sigma_x_pix.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaXPix_RBV = ", 
+	//	recastCamera->sigma_x_pix.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaYPix_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_SigmaYPix_RBV ");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_y_pix);
+	recastCamera->sigma_y_pix_rs.Push(recastCamera->sigma_y_pix.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaYPix_RBV = ",
+	//	recastCamera->sigma_y_pix.second);
 }
 void EPICSCameraInterface::update_ANA_CovXYPix_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_CovXYPix_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_xy_pix);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CovXYPix_RBV = ", 
+	//	recastCamera->sigma_xy_pix.second);
 }
 void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handler_args args) {
 	//messenger.printDebugMessage("update_ANA_PixelResults_RBV ");
@@ -528,70 +536,72 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 void EPICSCameraInterface::update_ANA_MaskXCenter_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->mask_x_center);
-	messenger.printDebugMessage("update_ANA_MaskXCenter_RBV ", recastCamera->getHardwareName(),
-	" new_val = ", recastCamera->mask_x_center.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, "update_ANA_MaskXCenter_RBV = ", 
+		recastCamera->mask_x_center.second);
 }
 void EPICSCameraInterface::update_ANA_MaskYCenter_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_MaskYCenter_RBV ");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->mask_y_center);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_MaskYCenter_RBV = ",
+		recastCamera->mask_y_center.second);
+
 }
 void EPICSCameraInterface::update_ANA_MaskXRad_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_MaskXRad_RBV");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->mask_x_radius);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_MaskXRad_RBV = ",
+		recastCamera->mask_x_radius.second);
 }
 void EPICSCameraInterface::update_ANA_MaskYRad_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_MaskYRad_RBV");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->mask_y_radius);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_MaskYRad_RBV = ", 
+		recastCamera->mask_y_radius.second);
 }
 void EPICSCameraInterface::update_ANA_CenterX_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_CenterX_RBV");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_center);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CenterX_RBV = ",
+		recastCamera->x_center.second);
 }
 void EPICSCameraInterface::update_ANA_CenterY_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_ANA_CenterY_RBV");
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->y_center);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CenterY_RBV = ",
+		recastCamera->y_center.second);
 }
 void EPICSCameraInterface::update_CAM_AcquireTime_RBV(const struct event_handler_args args)
 {
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
-	//messenger.printDebugMessage("update_CAM_AcquireTime_RBV");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->acquire_time);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_AcquireTime_RBV = ",
+		recastCamera->acquire_time.second);
 }
 void EPICSCameraInterface::update_CAM_AcquirePeriod_RBV(const struct event_handler_args args)
 {
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
-	//messenger.printDebugMessage("update_CAM_AcquirePeriod_RBV");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->acquire_period);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_AcquirePeriod_RBV = ",
+		recastCamera->acquire_period.second);
 }
 void EPICSCameraInterface::update_CAM_ArrayRate_RBV(const struct event_handler_args args)
 {
-	//std::cout << "update_CAM_ArrayRate_RBV????" << std::endl;
-	//messenger.printDebugMessage("update_CAM_ArrayRate_RBV");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->array_rate);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_ArrayRate_RBV = ", 
+		recastCamera->array_rate.second);
 }
 void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CAM_Temperature_RBV");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->temperature);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Temperature_RBV = ", 
+		recastCamera->temperature.second);
 }
 void EPICSCameraInterface::update_ANA_UseNPoint(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_ANA_UseNPoint");
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	recastCamera->use_npoint.first = tv->stamp;
 	switch (tv->value)
@@ -601,7 +611,8 @@ void EPICSCameraInterface::update_ANA_UseNPoint(const struct event_handler_args 
 	default:
 		recastCamera->use_npoint.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseNPoint = ", ENUM_TO_STRING(recastCamera->use_npoint.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseNPoint = ",
+		ENUM_TO_STRING(recastCamera->use_npoint.second));
 
 }
 void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args args)
@@ -617,13 +628,15 @@ void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args 
 	default:
 		recastCamera->use_background.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ", ENUM_TO_STRING(recastCamera->use_background.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ", 
+		ENUM_TO_STRING(recastCamera->use_background.second));
 }
 void EPICSCameraInterface::update_HDF_FileNumber_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileNumber_RBV");
-	updateTimeStampLongPair(args, recastCamera->save_filenumber);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileNumber_RBV = ",
+		recastCamera->save_filenumber.second);
+
 }
 void EPICSCameraInterface::update_HDF_FilePath_RBV(const struct event_handler_args args)
 {
@@ -643,7 +656,8 @@ void EPICSCameraInterface::update_HDF_FilePath_RBV(const struct event_handler_ar
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->save_filepath.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FilePath_RBV = ", recastCamera->save_filepath.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FilePath_RBV = ", 
+		recastCamera->save_filepath.second);
 }
 void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_args args)
 {
@@ -661,13 +675,17 @@ void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_ar
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->save_filename.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ", recastCamera->save_filename.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ", 
+		recastCamera->save_filename.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_Trigger(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//std::pair<epicsTimeStamp, char> buffer_trigger;
 	// TODO
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_Trigger = ", 
+		recastCamera->buffer_filename.second);
+
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args)
 {
@@ -687,7 +705,8 @@ void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_ha
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->buffer_filepath.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV = ", recastCamera->buffer_filepath.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV = ",
+		recastCamera->buffer_filepath.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args)
 {
@@ -705,19 +724,24 @@ void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_ha
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->buffer_filename.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ", recastCamera->buffer_filename.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ",
+		recastCamera->buffer_filename.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->buffer_filenumber);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FileNumber_RBV = ",
+		recastCamera->buffer_filenumber.second);
+
 }
 
 void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_min_x);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinX_RBV = ", recastCamera->roi_min_x.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinX_RBV = ", 
+		recastCamera->roi_min_x.second);
 
 }
 void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args args)
@@ -725,23 +749,29 @@ void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args 
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, long> roi_min_y;
 	updateTimeStampLongPair(args, recastCamera->roi_min_y);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinY_RBV = ",
+		recastCamera->roi_min_y.second);
+
 }
 void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_size_x);
-	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ", recastCamera->roi_size_x.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ",
+		recastCamera->roi_size_x.second);
 }
 void EPICSCameraInterface::update_ROI1_SizeY_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_size_y);
-	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_y = ", recastCamera->roi_size_y.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_SizeY_RBV = ", 
+		recastCamera->roi_size_y.second);
 }
 void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	// TODO 
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_ImageData_RBV");
 }
 
 void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
@@ -758,57 +788,74 @@ void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_ar
 		recastCamera->use_floor.second = STATE::ERR;
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV = ", ENUM_TO_STRING(recastCamera->use_floor.second));
-
 }
 void EPICSCameraInterface::update_ANA_FloorLevel_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->floor_level);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_FloorLevel_RBV = ",
+		recastCamera->floor_level.second);
 }
 void EPICSCameraInterface::update_ANA_FlooredPoints_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->floored_pts_count);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_FlooredPoints_RBV = ",
+		recastCamera->floored_pts_count.second);
 }
 void EPICSCameraInterface::update_ANA_FlooredPercent_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->floored_pts_percent);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_FlooredPercent_RBV = ", 
+		recastCamera->floored_pts_percent.second);
 }
 void EPICSCameraInterface::update_ANA_CPU_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, long> cpu_total;
 	updateTimeStampLongPair(args, recastCamera->cpu_total);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_RBV = ", 
+	//	recastCamera->cpu_total.second);
 }
 void EPICSCameraInterface::update_ANA_CPU_CropSubMask_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, long> cpu_crop_sub_mask;
 	updateTimeStampLongPair(args, recastCamera->cpu_crop_sub_mask);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_CropSubMask_RBV = ", 
+		recastCamera->cpu_crop_sub_mask.second);
+
 }
 void EPICSCameraInterface::update_ANA_CPU_Npoint_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//std::pair<epicsTimeStamp, long> cpu_npoint;
 	updateTimeStampLongPair(args, recastCamera->cpu_npoint);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Npoint_RBV = ", 
+		recastCamera->cpu_npoint.second);
+
 }
 void EPICSCameraInterface::update_ANA_CPU_Dot_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	//std::pair<epicsTimeStamp, long> cpu_dot;
 	updateTimeStampLongPair(args, recastCamera->cpu_dot);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Dot_RBV = ", 
+		recastCamera->cpu_dot.second);
 }
 void EPICSCameraInterface::update_ANA_PixW_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->pixel_width);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixW_RBV = ", 
+		recastCamera->pixel_width.second);
 }
 void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//std::pair<epicsTimeStamp, long> pixel_height;
 	updateTimeStampLongPair(args, recastCamera->pixel_height);
+	messenger.printDebugMessage(recastCamera->hardwareName, " R = ", 
+		recastCamera->pixel_height.second);
+
 }
 
 

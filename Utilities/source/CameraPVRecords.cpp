@@ -225,7 +225,7 @@ namespace CameraRecords
 		ROI1_MinY_RBV,
 		ROI1_SizeX_RBV,
 		ROI1_SizeY_RBV,
-		ROI1_ImageData_RBV,
+		//ROI1_ImageData_RBV,
 		//ROIandMask_SetX,
 		//ROIandMask_SetY,
 		//ROIandMask_SetXrad,

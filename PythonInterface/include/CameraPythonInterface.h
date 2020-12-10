@@ -29,10 +29,13 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Camera>())->to_python_target_type());
 		if (is_registered) return;
+		// we need to define this here
 		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
+			.def("getCamType", &Camera::getCamType)
+			.def("getPix2mm", &Camera::getPix2mm        )
 			.def("pix2mmX", &Camera::pix2mmX        )
 			.def("pix2mmY", &Camera::pix2mmY		)
 			.def("mm2pixX", &Camera::mm2pixX		)
@@ -66,16 +69,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setSigXmm", &Camera::setSigX)
 			.def("setSigYmm", &Camera::setSigY)
 			.def("setSigXYmm", &Camera::setSigXY)
-			.def("getSumIntensity", &Camera::getSumIntensity)
-			.def("getAvgIntensity", &Camera::getAvgIntensity)
-			.def("setSumIntensity", &Camera::setSumIntensity)
-			.def("setAvgIntensity", &Camera::setAvgIntensity)
-
-
-			.def("getStepSize", &Camera::getStepSize)
-			.def("setStepSize", &Camera::setStepSize)
-
-			
+			.def("isBusy", &Camera::isBusy)
+			.def("isNotBusy", &Camera::isNotBusy)
+			.def("didLastCaptureAndSaveSucceed", &Camera::didLastCaptureAndSaveSucceed)
 			.def("getMaskXCenter", &Camera::getMaskXCenter)
 			.def("getMaskYCenter", &Camera::getMaskYCenter)
 			.def("getMaskXRadius", &Camera::getMaskXRadius)
@@ -91,30 +87,21 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
 			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
-			
-	
 			.def("updateImageData", &Camera::updateImageData)
 			.def("updateImageDataWithTimeStamp", &Camera::updateImageDataWithTimeStamp)
 			.def("updateROIData", &Camera::updateROIData)
 			.def("updateROIDataWithTimeStamp", &Camera::updateROIDataWithTimeStamp)
-
 			.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			
 			.def("getImageData", &Camera::getImageData_Py)
 			.def("getROIData", &Camera::getROIData_Py)
-
-
-
-			// use these for setting mask AND ROI 
-			.def("setMaskAndROIxPos", &Camera::setMaskAndROIxPos)
+			.def("setMaskAndROIxPos", &Camera::setMaskAndROIxPos) 			// use these for setting mask AND ROI 
 			.def("setMaskAndROIyPos", &Camera::setMaskAndROIyPos)
 			.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
 			.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
 			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
 			.def("setMaskandROI", &Camera::setMaskandROI_Py)
-			// we don:t want people to use these!! 
-			.def("setMaskXCenter", &Camera::setMaskXCenter)
+			.def("setMaskXCenter", &Camera::setMaskXCenter) 			// we don:t want people to use these!! 
 			.def("setMaskYCenter", &Camera::setMaskYCenter)
 			.def("setMaskXRadius", &Camera::setMaskXRadius)
 			.def("setMaskYRadius", &Camera::setMaskYRadius)
@@ -126,25 +113,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setROIsizeY", &Camera::setROISizeY)
 			.def("setROI", setROI_4PARAM)
 			.def("setROI", &Camera::setROI_Py)
-
-			
-			//.def_readonly("mask_and_roi_keywords", &Camera::mask_and_roi_keywords_Py)
-			//.def_readonly("mask_keywords", &Camera::mask_keywords_Py)
-			//.def_readonly("roi_keywords", &Camera::roi_keywords_Py)
-					
-			
 			.def("getBufferTrigger", &Camera::getBufferTrigger)
 			.def("getBufferFilePath", &Camera::getBufferFilePath)
 			.def("getBufferFileName", &Camera::getBufferFileName)
 			.def("getBufferFileNumber", &Camera::getBufferFileNumber)
-			//.def("getBufferROIminX", &Camera::getBufferROIminX)
-			//.def("getBufferROIminY", &Camera::getBufferROIminY)
-			//.def("getBufferROIsizeX", &Camera::getBufferROIsizeX)
-			//.def("getBufferROIsizeY", &Camera::getBufferROIsizeY)
-
-			
-
-
+			.def("getCPUTotal", &Camera::getCPUTotal)
+			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
+			.def("getCPUNPoint", &Camera::getCPUNPoint)
+			.def("getCPUDot", &Camera::getCPUDot)
 			.def("setUseFloor", &Camera::setUseFloor)
 			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
 			.def("setFloorLevel", &Camera::setFloorLevel)
@@ -154,91 +130,73 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getFloorLevel", &Camera::getFloorLevel)
 			.def("getFlooredPtsCount", &Camera::getFlooredPtsCount)
 			.def("getFlooredPtsPercent", &Camera::getFlooredPtsPercent)
-
-				
 			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
 			.def("getCPUNPoint", &Camera::getCPUNPoint)
 			.def("getCPUDot", &Camera::getCPUDot)
-
 			.def("getPixelWidth", &Camera::getPixelWidth)
 			.def("getPixelHeight", &Camera::getPixelHeight)
 			.def("setBufferTrigger", &Camera::setBufferTrigger)
-			//.def("setBufferROIminX", &Camera::setBufferROIminX)
-			//.def("setBufferROIminY", &Camera::setBufferROIminY)
-			//.def("setBufferROIsizeX", &Camera::setBufferROIsizeX)
-			//.def("setBufferROIsizeY", &Camera::setBufferROIsizeY)
-
-
-
 			.def("captureAndSave", &Camera::captureAndSave)
-			.def("isCapturingOrSaving", &Camera::isCapturingOrSaving)
+			.def("getCaptureState", &Camera::getCaptureState)
 			.def("isCapturing", &Camera::isCapturing)
 			.def("isNotCapturing", &Camera::isNotCapturing)
 			.def("isWriting", &Camera::isWriting)
 			.def("isNotWriting", &Camera::isNotWriting)
+			.def("isCapturingOrSaving", &Camera::isCapturingOrSaving)
 			.def("isSaving", &Camera::isWriting)
 			.def("isNotSaving", &Camera::isNotWriting)
-
 			.def("collectAndSave", &Camera::captureAndSave)
 			.def("isCollectingOrSaving", &Camera::isCapturingOrSaving)
 			.def("isCollecting", &Camera::isCapturing)
 			.def("isNotCollecting", &Camera::isNotCapturing)
-
-
-				
-				
 			.def("useBackground", &Camera::useBackground)
+			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
 			.def("isUsingBackground", &Camera::isUsingBackground)
 			.def("isNotUsingBackground", &Camera::isNotUsingBackground)
-			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
-
-			.def("getNPointState", &Camera::getNPointState)
 			.def("useNPoint", &Camera::useNPoint)
+			.def("getNPointState", &Camera::getNPointState)
 			.def("isUsingNPoint", &Camera::isUsingNPoint)
 			.def("isNotUsingNPoint", &Camera::isNotUsingNPoint)
-				
-			.def("startAcquiring", &Camera::startAcquiring)
-			.def("stopAcquiring", &Camera::stopAcquiring)
-			.def("isAcquiring", &Camera::isAcquiring)
-			.def("isNotAcquiring", &Camera::isNotAcquiring)
-			.def("getAcquireState", &Camera::getAcquireState)
-
-			.def("startAnalysing", &Camera::startAnalysing)
-			.def("stopAnalysing", &Camera::stopAnalysing)
-			.def("isAnalysing", &Camera::isAnalysing)
-			.def("isNotAnalysing", &Camera::isNotAnalysing)
-			.def("getAnalysisState", &Camera::getAnalysisState)
-
-
-			.def("getAcquireTime", &Camera::getAcquireTime)
-			.def("getAcquirePeriod", &Camera::getAcquirePeriod)
-			.def("getArrayRate", &Camera::getArrayRate)
-			.def("getTemperature", &Camera::getTemperature)
-			
-			.def("getLastBufferDirectoryandFileName", &Camera::getLastBufferDirectoryandFileName)
-			.def("getLastestBufferDirectoryandFileName", &Camera::getLastBufferDirectoryandFileName)
-			.def("getLastBufferDirectory", &Camera::getLastBufferDirectory)
-			.def("getLastestBufferDirectory", &Camera::getLastBufferDirectory)
-			.def("getLastBufferFileName", &Camera::getLastBufferFileName)
-			.def("getLastestBufferFileName", &Camera::getLastBufferFileName)
-
+			.def("getStepSize", &Camera::getStepSize)
+			.def("setStepSize", &Camera::setStepSize)
+			.def("getSumIntensity", &Camera::getSumIntensity)
+			.def("getAvgIntensity", &Camera::getAvgIntensity)
+			.def("setSumIntensity", &Camera::setSumIntensity)
+			.def("setAvgIntensity", &Camera::setAvgIntensity)
 			.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastDirectory", &Camera::getLastDirectory)
 			.def("getLatestDirectory", &Camera::getLastDirectory)
 			.def("getLastestFileName", &Camera::getLastFileName)
 			.def("getLastFileName", &Camera::getLastFileName)
-
+			.def("getLastBufferDirectoryandFileName", &Camera::getLastBufferDirectoryandFileName)
+			.def("getLastestBufferDirectoryandFileName", &Camera::getLastBufferDirectoryandFileName)
+			.def("getLastBufferDirectory", &Camera::getLastBufferDirectory)
+			.def("getLastestBufferDirectory", &Camera::getLastBufferDirectory)
+			.def("getLastBufferFileName", &Camera::getLastBufferFileName)
+			.def("getLastestBufferFileName", &Camera::getLastBufferFileName)
+			.def("startAcquiring", &Camera::startAcquiring)
+			.def("stopAcquiring", &Camera::stopAcquiring)
+			.def("isAcquiring", &Camera::isAcquiring)
+			.def("isNotAcquiring", &Camera::isNotAcquiring)
+			.def("getAcquireState", &Camera::getAcquireState)
+			.def("startAnalysing", &Camera::startAnalysing)
+			.def("stopAnalysing", &Camera::stopAnalysing)
+			.def("isAnalysing", &Camera::isAnalysing)
+			.def("isNotAnalysing", &Camera::isNotAnalysing)
+			.def("getAnalysisState", &Camera::getAnalysisState)
+			.def("getAcquireTime", &Camera::getAcquireTime)
+			.def("getAcquirePeriod", &Camera::getAcquirePeriod)
+			.def("getArrayRate", &Camera::getArrayRate)
+			.def("getTemperature", &Camera::getTemperature)
+			.def("hasLED", &Camera::hasLED)
 			.def("setLEDOn", &Camera::setLEDOn)
 			.def("setLEDOff", &Camera::setLEDOff)
 			.def("isLEDOn", &Camera::isLEDOn)
 			.def("isLEDOff", &Camera::isLEDOff)
 			.def("getLEDState", &Camera::getLEDState)
-			
-	
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
-			
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setBufferSize)
 			.def("clearBuffers", &Camera::clearBuffers)
@@ -292,20 +250,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setSigXmm", &CameraFactory::setSigX)
 			.def("setSigYmm", &CameraFactory::setSigY)
 			.def("setSigXYmm", &CameraFactory::setSigXY)
-
 			.def("getStepSize", &CameraFactory::getStepSize)
 			.def("setStepSize", &CameraFactory::setStepSize)
-
-
 			.def("useBackground", &CameraFactory::useBackground)
 			.def("isUsingBackground", &CameraFactory::isUsingBackground)
 			.def("getUsingBackgroundState", &CameraFactory::getUsingBackgroundState)
-
 			.def("useNPoint", &CameraFactory::useNPoint)
 			.def("isUsingNPoint", &CameraFactory::isUsingNPoint)
 			.def("getNPointState", &CameraFactory::getNPointState)
-		
-
 			.def("getSumIntensity", &CameraFactory::getSumIntensity)
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)

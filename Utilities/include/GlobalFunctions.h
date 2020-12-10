@@ -108,7 +108,11 @@ namespace GlobalFunctions{
 		else
 			return std::abs(a - b) < epsilon;
 	}
-
+	template<typename T = int>
+	bool areNotSame(const  T a, const T b, const T epsilon = 0)
+	{
+		return !areSame(a, b, epsilon);
+	}
 	//template<typename T = int>
 	//bool areSame(const T a, const T b, const T epsilon = 0)
 	//{
@@ -129,11 +133,7 @@ namespace GlobalFunctions{
         return ret;
     }
 
-	template<typename T = int>
-	bool areNotSame(const  T a, const T b, const T epsilon = 0)
-	{
-		return !areSame(a, b, epsilon);
-	}
+
 
 	//template<typename T = double>
 	//double roundToN(const T a, const size_t n)
