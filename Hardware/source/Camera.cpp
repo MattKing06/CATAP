@@ -955,7 +955,7 @@ long Camera::getMaskYRadius()const
 {
 	return mask_y_radius.second;
 }
-std::map<std::string, long> Camera::getMask()
+std::map<std::string, long> Camera::getMask()const
 {
 	std::map<std::string, long> r;
 	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
@@ -964,7 +964,7 @@ std::map<std::string, long> Camera::getMask()
 	r["mask_rad_x"] = getMaskYRadius();// MAGIC STRING
 	return r;
 }
-boost::python::dict Camera::getMask_Py()
+boost::python::dict Camera::getMask_Py()const
 {
 	return  to_py_dict<std::string, long>(getMask());
 }
@@ -984,7 +984,7 @@ long Camera::getROISizeY()const
 {
 	return roi_size_y.second;
 }
-std::map<std::string, long> Camera::getROI()
+std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
 	r["x_pos"] = getROIMinX(); // MAGIC STRING
@@ -993,7 +993,7 @@ std::map<std::string, long> Camera::getROI()
 	r["y_size"] = getROISizeY();// MAGIC STRING
 	return r;
 }
-boost::python::dict Camera::getROI_Py()
+boost::python::dict Camera::getROI_Py()const
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
@@ -1897,19 +1897,19 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	}
 	return false;
 }
-std::vector<long> Camera::getImageData()
+std::vector<long> Camera::getImageData()const
 {
 	return image_data.second;
 }
-boost::python::list Camera::getImageData_Py()
+boost::python::list Camera::getImageData_Py()const
 {
 	return to_py_list<long>(getImageData());
 }
-std::vector<long> Camera::getROIData()
+std::vector<long> Camera::getROIData()const
 {
 	return roi_data.second;
 }
-boost::python::list Camera::getROIData_Py()
+boost::python::list Camera::getROIData_Py()const
 {
 	return to_py_list<long>(getROIData());
 }

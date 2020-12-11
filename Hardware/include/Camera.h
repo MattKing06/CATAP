@@ -246,10 +246,10 @@ public:
 	long getROISizeY()const;
 	/*! Get the Region Of Interest values.
 	@param[out] map<std::string, long>, with new values  */
-	std::map<std::string, long> getROI();
+	std::map<std::string, long> getROI()const;
 	/*! Get the Region Of Interest values.
 	@param[out] dict, with new values  */
-	boost::python::dict getROI_Py();
+	boost::python::dict getROI_Py()const;
 	/*! Set the using a Floor during image analysis to true .
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setUseFloor();
@@ -389,10 +389,10 @@ public:
 	long getMaskYRadius()const;
 	/*! Get the mask settings.
 	@param[in] map<string, long>, value */
-	std::map<std::string, long> getMask();
+	std::map<std::string, long> getMask()const;
 	/*! Get the mask settings (python version).
 	@param[in] map<string, long>, value */
-	boost::python::dict getMask_Py();
+	boost::python::dict getMask_Py()const;
 	/*! Set the mask and ROI x position,  
 	@param[in] long, value (lower left hand pixel of ROI) 
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -542,19 +542,19 @@ public:
 	/*! Get a copy of the current image data. Until an updateImage function is called this will be empty, 
 	to reduce network load Camera data ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
-	std::vector<long> getImageData();
+	std::vector<long> getImageData()const;
 	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored. 
 	@param[out] list, latest data */
-	boost::python::list getImageData_Py();
+	boost::python::list getImageData_Py()const;
 	/*! Get a copy of the current image data. Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
-	std::vector<long> getROIData();
+	std::vector<long> getROIData()const;
 	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
-	boost::python::list getROIData_Py();
+	boost::python::list getROIData_Py()const;
 	/*! Get a reference to the current image data. Gives access to image data without copying 
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
 	std::vector<long>& getImageDataConstRef();

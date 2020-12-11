@@ -233,6 +233,9 @@ namespace GlobalConstants
 	/*! Integer-type variable for 1 */
 	const int one_int = 1;
 
+	/*! Minimum possible value of a double */
+	const char char_min = std::numeric_limits<char>::min();
+
 	//const epicsUInt16 zero_epicsUInt16= 0;
 	//const epicsUInt16 one_epicsUInt16 = 1;
 
