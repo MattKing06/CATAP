@@ -1937,7 +1937,7 @@ long Camera::getBlackLevel()const
 {
 	return black_level.second;
 }
-long Camera::setGain(long value)
+bool Camera::setGain(long value)
 {
 	if (getCamType() == TYPE::VELA_CAMERA)
 	{

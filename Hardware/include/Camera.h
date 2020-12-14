@@ -584,7 +584,7 @@ public:
 	long getBlackLevel()const;
 	/*! Set the black level (for VELA camera types only),
 	@param[out] long, latest value */
-	long setGain(long value);
+	bool setGain(long value);
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
