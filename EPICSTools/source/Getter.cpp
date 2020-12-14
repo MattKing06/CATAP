@@ -340,6 +340,7 @@ boost::python::list Getter::getArray_Py()
 		{
 			d_vec.push_back(boost::get<double>(item));
 		}
+		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(d_vec);
 	}
 	else if (isIntArray())
@@ -349,6 +350,7 @@ boost::python::list Getter::getArray_Py()
 		{
 			i_vec.push_back(boost::get<int>(item));
 		}
+		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(i_vec);
 	}
 	else if (isEnumArray())
@@ -358,6 +360,7 @@ boost::python::list Getter::getArray_Py()
 		{
 			us_vec.push_back(boost::get<unsigned short>(item));
 		}
+		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(us_vec);
 	}
 	else if (isStringArray())
@@ -367,6 +370,7 @@ boost::python::list Getter::getArray_Py()
 		{
 			str_vec.push_back(boost::get<std::string>(item));
 		}
+		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(str_vec);
 	}
 	else if (isFloatArray())
@@ -376,6 +380,7 @@ boost::python::list Getter::getArray_Py()
 		{
 			f_vec.push_back(boost::get<float>(item));
 		}
+		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(f_vec);
 	}
 	else if (isLongArray())
@@ -385,6 +390,7 @@ boost::python::list Getter::getArray_Py()
 		{
 			l_vec.push_back(boost::get<long>(item));
 		}
+		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(l_vec);
 	}
 	else
