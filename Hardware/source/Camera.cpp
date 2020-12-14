@@ -5,6 +5,7 @@
 #include "boost/algorithm/string/split.hpp"
 #include <algorithm>
 #include <chrono> 
+#include <time.h> 
 #include <mutex>          // std::mutex
 std::mutex mtx;           // mutex for critical section
 Camera::Camera():
