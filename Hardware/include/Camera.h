@@ -48,7 +48,7 @@ public:
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;
 	/*! get the name alises for this Camera (python version)
-		@param[out] names, python list containing all the alias names */
+	@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
 	/*! get the screen name (and aliases) the camera is attached to 
 	@param[out] names, vector containing  all the screen names (and their aliases) */
@@ -575,6 +575,19 @@ public:
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
 	boost::python::dict getRunningStats()const;
+	/*! Set the black level (for vela camera types only),
+	@param[in] long, values 
+	@param[out] bool, values */
+	bool setBlackLevel(long value);
+	/*! Set the black level (for VELA camera types only),
+	@param[out] bool, if command got sent to EPICS (not if it was accepted) */
+	long getBlackLevel()const;
+	/*! Set the black level (for VELA camera types only),
+	@param[out] long, latest value */
+	long setGain(long value);
+	/*! Get the gain (for VELA camera types only),
+	@param[out] long, latest value */
+	long getGain()const;
 	/* Enable debug messages*/
 	void debugMessagesOn();
 	/* Disbale debug messages*/
@@ -583,7 +596,6 @@ public:
 	void messagesOn();
 	/* Disable messages*/
 	void messagesOff();
-
 	friend class EPICSCameraInterface;
 	friend class CameraFactory;
 protected:
@@ -591,6 +603,10 @@ protected:
 		In general we put data that comes back from EPCIS into a timestamp, data pair. 
 		This is because we expect to be able to use the time stamps to synchonize different data streams 
 	*/
+	/*! Camera gain, for VELA_CAMERA type only. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > gain;
+	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > black_level;
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
 	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/

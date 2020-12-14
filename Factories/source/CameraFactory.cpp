@@ -570,6 +570,48 @@ long CameraFactory::getBufferFileNumber(const std::string& name)const
 	}
 	return GlobalConstants::long_min;
 }
+
+bool CameraFactory::setBlackLevel(const std::string& name, long value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setBlackLevel(value);
+	}
+	return GlobalConstants::long_min;
+}
+
+long CameraFactory::getBlackLevel(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBlackLevel();
+	}
+	return GlobalConstants::long_min;
+}
+
+bool CameraFactory::setGain(const std::string& name, long value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setGain(value);
+	}
+	return GlobalConstants::long_min;
+}
+
+long CameraFactory::getGain(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getGain();
+	}
+	return GlobalConstants::long_min;
+}
+
+
 long CameraFactory::getCPUTotal(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -2372,7 +2414,6 @@ boost::python::list CameraFactory::getCameraNames_Py()
 //	return to_py_list<std::string>(getNameAliases(cam_name));
 //}
 
-
 Camera& CameraFactory::getCamera(const std::string& cam_name)
 {
 	std::string full_name = getFullName(cam_name);
@@ -2382,7 +2423,6 @@ Camera& CameraFactory::getCamera(const std::string& cam_name)
 	}
 	return dummy_cam;
 }
-
 
 void CameraFactory::updateAliasNameMap(const Camera& camera)
 {

@@ -308,6 +308,10 @@ CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE
 			messenger.printMessage("Unable to setup cameraFactory");
 		}
 	}
+	else
+	{
+		messenger.printMessage("cameraFactory has already been setup!");
+	}
 	return cameraFactory;
 }
 

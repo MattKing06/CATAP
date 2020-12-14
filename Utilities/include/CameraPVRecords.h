@@ -9,6 +9,10 @@
 
 namespace CameraRecords
 {
+	extern std::string const CAM_BlackLevel;
+	extern std::string const CAM_BlackLevel_RBV;
+	extern std::string const CAM_Gain;
+	extern std::string const CAM_Gain_RBV;
 	extern std::string const HDFB_Buffer_Trigger;
 	extern std::string const HDFB_Buffer_FilePath;
 	extern std::string const HDFB_Buffer_FilePath_RBV;
@@ -117,6 +121,10 @@ namespace CameraRecords
 	extern std::string const LED_Sta;
 	extern std::string const LED_Off;
 	extern std::string const LED_On;
+	extern std::string const CAM_BlackLevel;
+	extern std::string const CAM_BlackLevel_RBV;
+	extern std::string const CAM_Gain;
+	extern std::string const CAM_Gain_RBV;
 
 	extern std::vector<std::string> cameraRecordList;
 

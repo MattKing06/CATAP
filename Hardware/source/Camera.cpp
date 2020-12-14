@@ -46,6 +46,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
@@ -1922,8 +1924,30 @@ std::vector<long>& Camera::getROIDataConstRef()
 	return roi_data.second;
 }
 
-
- 
+bool Camera::setBlackLevel(long value)
+{
+	if (getCamType() == TYPE::VELA_CAMERA)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::CAM_BlackLevel), value);
+	}
+	return false;
+}
+long Camera::getBlackLevel()const
+{
+	return black_level.second;
+}
+long Camera::setGain(long value)
+{
+	if (getCamType() == TYPE::VELA_CAMERA)
+	{
+		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::CAM_Gain), value);
+	}
+	return false;
+}
+long Camera::getGain()const
+{
+	return gain.second;
+}
 
 
 

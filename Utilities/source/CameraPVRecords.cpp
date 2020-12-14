@@ -94,7 +94,10 @@ namespace CameraRecords
 	std::string const ANA_StepSize = "ANA_StepSize";
 	std::string const ANA_EnableCallbacks = "ANA_EnableCallbacks";
 	std::string const ANA_NewBkgrnd = "ANA_NewBkgrnd";
-
+	std::string const CAM_BlackLevel = "CAM_BlackLevel";
+	std::string const CAM_BlackLevel_RBV = "CAM_BlackLevel_RBV";
+	std::string const CAM_Gain = "CAM_Gain";
+	std::string const CAM_Gain_RBV = "CAM_Gain_RBV";
 	std::string const ANA_UseNPoint = "ANA_UseNPoint";
 	std::string const CAM2_ArrayData = "CAM2_ArrayData";
 	std::string const ANA_MaskXCenter = "ANA_MaskXCenter";
@@ -109,7 +112,11 @@ namespace CameraRecords
 	std::string const LED_On = "LED_On";
 
 	std::vector<std::string> cameraRecordList = { 
-	HDFB_Buffer_Trigger,
+	CAM_Gain,
+	CAM_Gain_RBV,
+	CAM_BlackLevel,
+	CAM_BlackLevel_RBV,		
+		HDFB_Buffer_Trigger,
 	HDFB_Buffer_FilePath,
 	HDFB_Buffer_FilePath_RBV,
 	HDFB_Buffer_FileName,	
@@ -217,6 +224,8 @@ namespace CameraRecords
 
 	std::vector<std::string> cameraMonitorRecordsList
 	{
+		CAM_Gain_RBV,
+		CAM_BlackLevel_RBV,
 		HDFB_Buffer_Trigger,
 		HDFB_Buffer_FilePath_RBV,
 		HDFB_Buffer_FileName_RBV,

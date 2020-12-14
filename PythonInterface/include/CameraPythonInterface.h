@@ -202,6 +202,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("clearBuffers", &Camera::clearBuffers)
 			.def("getRunningStats", &Camera::getRunningStats)
 			.def("getScreen", &Camera::getScreen)
+			
+			.def("setGain", &Camera::setGain)
+			.def("getGain", &Camera::getGain)
+			.def("setBlackLevel", &Camera::setBlackLevel)
+			.def("getBlackLevel", &Camera::getBlackLevel)
+
+
+
 			.def("debugMessagesOff", &Camera::debugMessagesOff)
 			.def("messagesOn", &Camera::messagesOn)
 			.def("messagesOff", &Camera::messagesOff)
@@ -394,6 +402,11 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getRunningStats", &CameraFactory::getRunningStats)
 			.def("getScreen", &CameraFactory::getScreen)
 
+
+			.def("setGain", &CameraFactory::setGain)
+			.def("getGain", &CameraFactory::getGain)
+			.def("setBlackLevel", &CameraFactory::setBlackLevel)
+			.def("getBlackLevel", &CameraFactory::getBlackLevel)
 
 			//.def("pix2mmX", &CameraFactory::pix2mmX)
 			//.def("pix2mmY", &CameraFactory::pix2mmY)

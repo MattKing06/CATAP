@@ -94,6 +94,10 @@ public:
     static void update_ANA_UseNPoint(const struct event_handler_args args);
     //static void update_ANA_PixMM_RBV(const struct event_handler_args args);
     static void update_LED_Sta(const struct event_handler_args args);
+    
+    static void update_BlackLevel_RBV(const struct event_handler_args args);
+    static void update_Gain_RBV(const struct event_handler_args args);
+
 
  };
 

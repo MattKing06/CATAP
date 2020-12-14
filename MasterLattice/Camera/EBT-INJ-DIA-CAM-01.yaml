@@ -2,6 +2,10 @@
 controls_information:
     PV: true
     pv_record_map:
+        CAM_BlackLevel_RBV : EBT-INJ-DIA-CAM-01:CAM:BlackLevelRaw_RBV
+        CAM_BlackLevel :  EBT-INJ-DIA-CAM-01:CAM:BlackLevelRaw
+        CAM_Gain_RBV : EBT-INJ-DIA-CAM-01:CAM:GainRaw_RBV
+        CAM_Gain : EBT-INJ-DIA-CAM-01:CAM:GainRaw
         # NO _RBV versions of these PVs 
         ROIandMask_SetX : EBT-INJ-DIA-CAM-01:ANA:SetX
         ROIandMask_SetY : EBT-INJ-DIA-CAM-01:ANA:SetY

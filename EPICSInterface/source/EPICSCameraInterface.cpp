@@ -290,6 +290,14 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 		pvStruct.updateFunction = this->update_ANA_UseNPoint;
 	}
+	else if (pvStruct.pvRecord == CAM_BlackLevel_RBV)
+	{
+		pvStruct.updateFunction = this->update_BlackLevel_RBV;
+	}
+	else if (pvStruct.pvRecord == CAM_Gain_RBV)
+	{
+		pvStruct.updateFunction = this->update_Gain_RBV;
+	}
 	else
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
@@ -421,7 +429,20 @@ void EPICSCameraInterface::update_ANA_PixMM_RBV(const struct event_handler_args 
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixMM_RBV = ", 
 		recastCamera->pixel_to_mm.second);
 }
-
+void EPICSCameraInterface::update_BlackLevel_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	updateTimeStampLongPair(args, recastCamera->black_level);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_BlackLevel_RBV = ",
+		recastCamera->black_level.second);
+}
+void EPICSCameraInterface::update_Gain_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	updateTimeStampLongPair(args, recastCamera->gain);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_Gain_RBV = ",
+		recastCamera->gain.second);
+}
 void EPICSCameraInterface::update_ANA_StepSize_RBV(const struct event_handler_args args) 
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
