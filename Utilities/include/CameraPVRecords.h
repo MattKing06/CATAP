@@ -53,6 +53,8 @@ namespace CameraRecords
 	extern std::string const HDF_NumCaptured_RBV;
 	extern std::string const HDF_Capture_RBV;
 	extern std::string const CAM_Acquire_RBV;
+	extern std::string const CAM_Start_Acquire;
+	extern std::string const CAM_Stop_Acquire;
 	extern std::string const HDF_NumCapture_RBV;
 	extern std::string const MAGICK_NumCaptured_RBV;
 	extern std::string const MAGICK_WriteFile_RBV;
@@ -95,8 +97,6 @@ namespace CameraRecords
 	extern std::string const HDF_FileNumber;
 	extern std::string const HDF_FileNumber_RBV;
 	extern std::string const HDF_WriteFile;
-	extern std::string const CAM_Acquire;
-	extern std::string const CAM_Acquire;
 	extern std::string const HDF_Capture;
 	extern std::string const HDF_NumCapture;
 	extern std::string const MAGICK_FileName;

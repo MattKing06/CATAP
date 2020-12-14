@@ -35,8 +35,9 @@ controls_information:
         ROI1_SizeY : EBT-INJ-DIA-CAM-05:ROI1:SizeY
         ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-05:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Acquire    : EBT-INJ-DIA-CAM-05:CAM:Acquire
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-05:CAM:Acquire_RBV
+        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Start   # VELA CAM is different to CLARA cam!!! 
+        CAM_Stop_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Stop     # VELA CAM is different to CLARA cam!!! 
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-01:CAM:CameraState # VELA CAM is different to CLARA cam!!! 
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-05:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-05:ANA:EnableCallbacks
@@ -112,9 +113,9 @@ controls_information:
         # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-05:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-05:MAGICK:NumCapture_RBV
         ANA_PixMM    : EBT-INJ-DIA-CAM-05:ANA:PixMM
-        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :  CLA-LAS-DIA-LED-01:Off
-        LED_On    : CLA-LAS-DIA-LED-01:On
+        LED_Sta    : EBT-INJ-DIA-LED-01:Sta
+        LED_Off    : EBT-INJ-DIA-LED-01:Off
+        LED_On    : EBT-INJ-DIA-LED-01:Sta
 
 properties:
     hardware_type: Camera

@@ -40,6 +40,8 @@ namespace CameraRecords
 	std::string const HDF_WriteMessage = "HDF_WriteMessage";
 	std::string const HDF_NumCaptured_RBV = "HDF_NumCaptured_RBV";
 	std::string const HDF_Capture_RBV = "HDF_Capture_RBV";
+	std::string const CAM_Start_Acquire = "CAM_Start_Acquire";
+	std::string const CAM_Stop_Acquire = "CAM_Stop_Acquire";
 	std::string const CAM_Acquire_RBV = "CAM_Acquire_RBV";
 	std::string const HDF_NumCapture_RBV = "HDF_NumCapture_RBV";
 	std::string const MAGICK_NumCaptured_RBV = "MAGICK_NumCaptured_RBV";
@@ -82,7 +84,6 @@ namespace CameraRecords
 	std::string const HDF_FileNumber = "HDF_FileNumber";
 	std::string const HDF_FileNumber_RBV = "HDF_FileNumber_RBV";
 	std::string const HDF_WriteFile = "HDF_WriteFile";
-	std::string const CAM_Acquire = "CAM_Acquire";
 	std::string const HDF_Capture = "HDF_Capture";
 	std::string const HDF_NumCapture = "HDF_NumCapture";
 	std::string const MAGICK_FileName = "MAGICK_FileName";
@@ -116,7 +117,7 @@ namespace CameraRecords
 	CAM_Gain_RBV,
 	CAM_BlackLevel,
 	CAM_BlackLevel_RBV,		
-		HDFB_Buffer_Trigger,
+	HDFB_Buffer_Trigger,
 	HDFB_Buffer_FilePath,
 	HDFB_Buffer_FilePath_RBV,
 	HDFB_Buffer_FileName,	
@@ -153,7 +154,6 @@ namespace CameraRecords
 	HDF_WriteMessage,
 	HDF_NumCaptured_RBV,
 	HDF_Capture_RBV,
-	CAM_Acquire_RBV,
 	HDF_NumCapture_RBV,
 	MAGICK_NumCaptured_RBV,
 	MAGICK_WriteFile_RBV,
@@ -185,6 +185,9 @@ namespace CameraRecords
 	ANA_CenterX_RBV ,
 	ANA_CenterY_RBV,
 	ANA_PixMM_RBV ,
+	CAM_Acquire_RBV,
+	CAM_Start_Acquire,
+	CAM_Stop_Acquire,
 	CAM_AcquireTime_RBV,
 	CAM_AcquirePeriod_RBV,
 	CAM_ArrayRate_RBV ,
@@ -196,7 +199,6 @@ namespace CameraRecords
 	HDF_FileName_RBV ,
 	HDF_FilePath_RBV,
 	HDF_WriteFile ,
-	CAM_Acquire ,
 	HDF_Capture ,
 	HDF_NumCapture  ,
 	MAGICK_FileName,

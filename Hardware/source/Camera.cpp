@@ -1061,11 +1061,11 @@ void Camera::clearBuffers()
 }
 bool Camera::startAcquiring()
 {
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Acquire), GlobalConstants::one_ushort);
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
 }
 bool Camera::stopAcquiring()
 {
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Acquire), GlobalConstants::zero_ushort);
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
 }
 bool Camera::isAcquiring()const
 {

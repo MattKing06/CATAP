@@ -112,9 +112,10 @@ controls_information:
         # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-14:MAGICK:NumCapture_RBV
         # meh LEDs, should probably go in their own factory?? 
-        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    : CLA-LAS-DIA-LED-01:Off
-        LED_On    : CLA-LAS-DIA-LED-01:On
+        ANA_PixMM    : EBT-INJ-DIA-CAM-14:ANA:PixMM
+        LED_Sta    : EBT-INJ-DIA-LED-01:Sta
+        LED_Off    : EBT-INJ-DIA-LED-01:Off
+        LED_On    : EBT-INJ-DIA-LED-01:Sta
      
 properties:
     hardware_type: Camera
