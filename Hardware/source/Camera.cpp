@@ -83,7 +83,19 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	max_y_pixel_pos(GlobalConstants::double_min),
 	busy(false),
 	has_led(false),
-	last_capture_and_save_success(false)
+	last_capture_and_save_success(false),
+	x_pix_rs(RunningStats() ),
+	y_pix_rs(RunningStats() ),
+	sigma_x_pix_rs(RunningStats() ),
+	sigma_y_pix_rs(RunningStats() ),
+	sigma_xy_pix_rs(RunningStats() ),
+	x_mm_rs(RunningStats() ),
+	y_mm_rs(RunningStats() ),
+	sigma_x_mm_rs(RunningStats() ),
+	sigma_y_mm_rs(RunningStats() ),
+	sigma_xy_mm_rs(RunningStats() ),
+	avg_intensity_rs(RunningStats() ),
+	sum_intensity_rs(RunningStats() )
 {
 	messenger.printDebugMessage(hardwareName, " printing paramMap:" );
 	for (auto&& item : paramMap)
@@ -1308,36 +1320,40 @@ bool Camera::write()
 bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
 {
 	bool ans = false;
-	
-	messenger.printDebugMessage("char: ", sizeof(char));
-	messenger.printDebugMessage("char: ", sizeof(char));
-	messenger.printDebugMessage("char: ", sizeof(char));
-	
 
-	//std::string time_now = GlobalFunctions::time_iso_8601();
+	messenger.printDebugMessage("char: ", sizeof(char));
+	messenger.printDebugMessage("char: ", sizeof(char));
+	messenger.printDebugMessage("char: ", sizeof(char));
+
+	//std::string time_now = globalfunctions::time_iso_8601();
 	
 	// this sets up the directory structure, based on year, month date
 	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
 	std::time_t t = std::chrono::system_clock::to_time_t(p);
+
+	// now we jump into some c because, meh 
+	// use local timezone 
 	tm local_tm = *localtime(&t);
-	//struct tm local_tm;
-	localtime_s(&local_tm, &t);
-	char newPath[256] = "/CameraImages/";
-	std::string strPath = "/CameraImages/" +
+	////struct tm local_tm;
+	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
+	char newPath[256] = "/cameraimages/";
+	std::string strpath = "/cameraimages/" +
 		std::to_string(local_tm.tm_year + 1900) +
 		"/" + std::to_string(local_tm.tm_mon + 1) +
 		"/" + std::to_string(local_tm.tm_mday) + "/";
-	strcpy(newPath, strPath.c_str());
+
+	strcpy(newPath, strpath.c_str());
 
 	char newName[256] = "defaultname";
 	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
 	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
-	strcpy(newName, strName.c_str()); 
-	messenger.printDebugMessage("File Directory would be: ",newPath);
+	strcpy(newName, strName.c_str());
+	messenger.printDebugMessage("File Directory would be: ", newPath);
 	messenger.printDebugMessage("File name is: ", newName);
 
+
 	std::stringstream s;
-	for (auto&& t: newPath)
+	for (auto&& t : newPath)
 	{
 		s << static_cast<unsigned>(t);
 		s << " ";
@@ -1388,62 +1404,62 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 
 	}
 	else
-	{ 
+	{
 		messenger.printDebugMessage(hardwareName, " HDF_FileName is not connected");
 	}
 
 
 
-	//ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FileName), newName);
+	//ans = epicsinterface->putarrayvalue<char*>(pvstructs.at(camerarecords::hdf_filename), newname);
 	//if (ans)
 	//{
-	//	ans = epicsInterface->putArrayValue<char*>(pvStructs.at(CameraRecords::HDF_FilePath), newPath);
+	//	ans = epicsinterface->putarrayvalue<char*>(pvstructs.at(camerarecords::hdf_filepath), newpath);
 	//	if (ans)
 	//	{
-	//		requested_directory = newPath;
-	//		requested_filename = newName;
+	//		requested_directory = newpath;
+	//		requested_filename = newname;
 	//	}
 	//	else
 	//	{
-	//		messenger.printDebugMessage(hardwareName, " Failed to send new filepath");
+	//		messenger.printdebugmessage(hardwarename, " failed to send new filepath");
 	//	}
 	//}
 	//else
 	//{
-	//	messenger.printDebugMessage(hardwareName, " Failed to send new filename");
+	//	messenger.printdebugmessage(hardwarename, " failed to send new filename");
 	//}
 
 
 	//}
 	//else
 	//{
-	//	messenger.printDebugMessage(hardwareName," Failed to send new filename");
+	//	messenger.printdebugmessage(hardwarename," failed to send new filename");
 	//}
 
-	//putArrayValue(camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHTYPE,
-	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).COUNT,
-	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_NAME).CHID,
-	//	&newName);
-	//ca_array_put(camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_PATH).CHTYPE,
-	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_PATH).COUNT,
-	//	camera.pvComStructs.at(CAM_PV_TYPE::CAM_FILE_PATH).CHID,
-	//	&newPath);
+	//putarrayvalue(camera.pvcomstructs.at(cam_pv_type::cam_file_name).chtype,
+	//	camera.pvcomstructs.at(cam_pv_type::cam_file_name).count,
+	//	camera.pvcomstructs.at(cam_pv_type::cam_file_name).chid,
+	//	&newname);
+	//ca_array_put(camera.pvcomstructs.at(cam_pv_type::cam_file_path).chtype,
+	//	camera.pvcomstructs.at(cam_pv_type::cam_file_path).count,
+	//	camera.pvcomstructs.at(cam_pv_type::cam_file_path).chid,
+	//	&newpath);
 
-	//int status = sendToEpics("ca_put", "", "Timeout trying to send new file path state.");
-	//if (status == ECA_NORMAL)
+	//int status = sendtoepics("ca_put", "", "timeout trying to send new file path state.");
+	//if (status == eca_normal)
 	//{
 	//	ans = true;
-	//	camera.daq.latestDirectory = newPath;
-	//	camera.daq.latestFilename = newName;
+	//	camera.daq.latestdirectory = newpath;
+	//	camera.daq.latestfilename = newname;
 
-	//	allCamData.at(camera.name).daq.latestDirectory = newPath;
-	//	allCamData.at(camera.name).daq.latestFilename = newName;
+	//	allcamdata.at(camera.name).daq.latestdirectory = newpath;
+	//	allcamdata.at(camera.name).daq.latestfilename = newname;
 
-	//message("New latestDirectory set to ", latest_directory, " on ", camera.name, " camera.");
-	//message("New latestFilename set to  ", latest_filename, " on ", camera.name, " camera.");
+	//message("new latestdirectory set to ", latest_directory, " on ", camera.name, " camera.");
+	//message("new latestfilename set to  ", latest_filename, " on ", camera.name, " camera.");
 	//}
 
-	//return true;
+//	//return true;
 	return ans;
 }
 bool Camera::isWriting()const

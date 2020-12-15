@@ -31,7 +31,7 @@ class ImageCapture
 		bool is_busy;
 		STATE status;
 };
-/* shared poitner to epics interface */
+/* shared pointer to epics interface */
 class EPICSCameraInterface;
 typedef boost::shared_ptr<EPICSCameraInterface> EPICSCameraInterface_sptr;
 /* main camera object */
@@ -554,6 +554,7 @@ public:
 	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
+
 	boost::python::list getROIData_Py()const;
 	/*! Get a reference to the current image data. Gives access to image data without copying 
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
@@ -564,10 +565,10 @@ public:
 	/*! Get the size of the running stats buffer, running_stats_buffer_size
 	@param[out] size_t, value */
 	size_t getBufferSize()const;
-	/*! Set the size of the running stats buffer, running_stats_buffer_size
+	/*! set the size of the running stats buffer, running_stats_buffer_size
 	@param[in] size_t, value */
 	void setBufferSize(size_t v);
-	/*! Clear all runing stats buffers */
+	/*! clear all runing stats buffers */
 	void clearBuffers();
 	/*! Get the pixel to mm conversion factor, 
 	@param[out] double, value */
