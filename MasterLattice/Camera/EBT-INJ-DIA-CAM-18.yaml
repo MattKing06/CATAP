@@ -35,9 +35,9 @@ controls_information:
         ROI1_SizeY : EBT-INJ-DIA-CAM-18:ROI1:SizeY
         ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-18:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Start   # VELA CAM is different to CLARA cam!!! 
-        CAM_Stop_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Stop     # VELA CAM is different to CLARA cam!!! 
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-01:CAM:CameraState # VELA CAM is different to CLARA cam!!! 
+        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-18:CAM:Start   # VELA CAM is different to CLARA cam!!! 
+        CAM_Stop_Acquire    : EBT-INJ-DIA-CAM-18:CAM:Stop     # VELA CAM is different to CLARA cam!!! 
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-18:CAM:CameraState # VELA CAM is different to CLARA cam!!! 
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-18:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-18:ANA:EnableCallbacks
