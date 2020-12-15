@@ -16,3 +16,32 @@ Vacuum Valve and Valve Factory
 .. literalinclude:: exampleScripts/valveExample.py
    :language: python
    :linenos:
+
+==============================
+IMG and IMG Factory
+==============================
+
+.. literalinclude:: exampleScripts/IMGExample.py
+   :language: python
+   :linenos:
+
+
+==============================
+EPICSTools
+==============================
+
+The list of functions for EPICSTools can be found here: :doc:`./EPICSTools`
+
+Single Value Example
+********************
+
+.. literalinclude:: exampleScripts/EPICSToolsExample.py
+   :language: python
+   :linenos:
+   
+Array Value Example
+*******************
+
+.. literalinclude:: exampleScripts/EPICSToolsArrayExample.py
+   :language: python
+   :linenos:

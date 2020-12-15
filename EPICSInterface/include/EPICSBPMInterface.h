@@ -93,19 +93,35 @@ public:
 	static void updateRDY(const struct event_handler_args args);
 	/*! sends a pulse (a long) to set the horizontal attenuation
 	* @param[in] value : The desired horizontal attenuation
-	* @param[in] pv : The pvStruct associated with the SA1 PV*/
+// <<<<<<< HEAD
+	// * @param[in] pv : The pvStruct associated with the SA1 PV*/
+	// void setSA1(const long& value, const pvStruct& pv);
+	// /*! sends a pulse (a long) to set the vertical attenuation
+	// * @param[in] value : The desired vertical attenuation
+	// * @param[in] pv : The pvStruct associated with the SA2 PV*/
+	// void setSA2(const long& value, const pvStruct& pv);
+	// /*! sends a pulse (a long) to set the horizontal delay
+	// * @param[in] value : The desired horizontal delay
+	// * @param[in] pv : The pvStruct associated with the SD1 PV*/
+	// void setSD1(const long& value, const pvStruct& pv);
+	// /*! sends a pulse (a long) to set the vertical delay
+	// * @param[in] value : The desired vertical delay
+	// * @param[in] pv : The pvStruct associated with the SD2 PV*/
+// =======
+	* @param[in] pv : The pvStruct associated with the BPM PV*/
 	void setSA1(const long& value, const pvStruct& pv);
 	/*! sends a pulse (a long) to set the vertical attenuation
 	* @param[in] value : The desired vertical attenuation
-	* @param[in] pv : The pvStruct associated with the SA2 PV*/
+	* @param[in] pv : The pvStruct associated with the BPM PV*/
 	void setSA2(const long& value, const pvStruct& pv);
 	/*! sends a pulse (a long) to set the horizontal delay
 	* @param[in] value : The desired horizontal delay
-	* @param[in] pv : The pvStruct associated with the SD1 PV*/
+	* @param[in] pv : The pvStruct associated with the BPM PV*/
 	void setSD1(const long& value, const pvStruct& pv);
 	/*! sends a pulse (a long) to set the vertical delay
 	* @param[in] value : The desired vertical delay
-	* @param[in] pv : The pvStruct associated with the SD2 PV*/
+	* @param[in] pv : The pvStruct associated with the BPM PV*/
+//>>>>>>> master
 	void setSD2(const long& value, const pvStruct& pv);
 	/*! sends a pulse (a double) to set the X PV (virtual only)
 	* @param[in] value : The desired X PV

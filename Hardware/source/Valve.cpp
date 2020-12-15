@@ -15,8 +15,8 @@ Valve::Valve(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	messenger = LoggingSystem(true, true);
 }
 
-void Valve::setPVStructs() {
-
+void Valve::setPVStructs() 
+{
 	for (auto&& record : ValveRecords::valveRecordList)
 	{
 		pvStructs[record] = pvStruct();
@@ -32,7 +32,6 @@ void Valve::setPVStructs() {
 			break;
 		}
 	}
-
 }
 
 std::vector<std::string> Valve::getAliases() const

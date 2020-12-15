@@ -1,13 +1,19 @@
 #ifndef EPICS_INTERFACE_H
 #define EPICS_INTERFACE_H
 #include <LoggingSystem.h>
+#if !defined LISTENER_H && !defined GETTER_H && !defined PUTTER_H
+/* if we are using EPICSTools/Listener/Getter/Putter, then 
+/* we don't want to include Hardware as it is
+/* unnecessary for EPICSTools/Listener/Getter/Putter */
 #include <Hardware.h>
+#endif // LISTENER_H || GETTER_H || PUTTER_H
 #include <functional>
 #include <vector>
 // EPICS include
 #ifndef __CINT__
 #include <cadef.h>
 #include <epicsTime.h>
+#include <GlobalStateEnums.h>
 //#include <pyconfig.h>
 #endif
 #ifndef PV_H_
@@ -34,7 +40,7 @@
 	*up connections and subscriptions for PVs as well as general functions that are needed by all child EPICS Interfaces, i.e. putValve.
 @{*/
 class PV;
-#define CA_PEND_IO_TIMEOUT 5.0
+#define CA_PEND_IO_TIMEOUT 10.0
 class EPICSInterface
 {
 
@@ -51,7 +57,6 @@ public:
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of 
 	* the associated hardware object.*/
 	std::string ownerName;
-	
 	// We also need to create a STATIC messenger in derived epicsinterface claases, 
 	LoggingSystem messenger;
 	/*! turns debug messaging on for this EPICSInterface instance*/
@@ -81,7 +86,16 @@ public:
 	/*! Sets up a monitor to a PV which provides EPICS a callback function for updating the hardware object we pass in.
 	* @param[in] hardware : The hardware object that is passed to our callback function to update
 	* @param[in] pvStruct : Used to tell EPICS which PV to monitor and which callback function to use when the PV changes*/
-	void createSubscription(Hardware& hardware, pvStruct& pvStruct) const;
+	template<typename SubscriptionType>
+	void createSubscription(SubscriptionType& returnObject, pvStruct& pvStruct) const
+	{
+		int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
+			pvStruct.CHID, pvStruct.MASK,
+			pvStruct.updateFunction,
+			(void*)&returnObject,
+			&pvStruct.EVID);
+		MY_SEVCHK(status);
+	}
 	/*! Removes the monitor for a given PV
 	* @param[in] pv : The PV we want to remove the monitor for.*/
 	void removeSubscription(pvStruct& pv);
@@ -119,13 +133,6 @@ public:
 		return static_cast<hardwareType*>(args.usr);
 	}
 
-
-
-
-	// functiOns to return a pair<timestamp, TYPE > for simple types 
-	//static std::pair<epicsTimeStamp, int>    returnTSVFromArgsInt(const struct event_handler_args& args);
-	//static std::pair<epicsTimeStamp, double> (const struct event_handler_args& args);
-
 	/*! Casts the value from EPICS (in args object) to a double
 	* @param[in] args : The object returned by EPICS containing the new PV value
 	* @param[out] value : The value from EPICS cast as a double.*/
@@ -137,7 +144,7 @@ public:
 	/*! Casts the value from EPICS (in args object) to a long
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a long.*/
-	static long returnValueFromArgsAslong(const struct event_handler_args args);
+	static long returnValueFromArgsAsLong(const struct event_handler_args args);
 	/*! Casts the value from EPICS (in args object) to a float
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a float.*/
@@ -146,6 +153,27 @@ public:
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a vector of doubles.*/
 	static std::vector<double> returnValueFromArgsAsDoubleVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of integers
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of integers.*/
+	static std::vector<int> returnValueFromArgsAsIntVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of floats
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of floats.*/
+	static std::vector<float> returnValueFromArgsAsFloatVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of longs
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of longs.*/
+	static std::vector<long> returnValueFromArgsAsLongVector(const struct event_handler_args args);
+	/*! Casts the value from EPICS (in args object) to a vector of unsigned shorts
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of unsigned shorts.*/
+	static std::vector<unsigned short> returnValueFromArgsAsEnumVector(const struct event_handler_args);
+	/*! Casts the value from EPICS (in args object) to a vector of std::strings
+	 * @param[in] args : The object returned by EPICS containing the new PV value
+	 * @param[out] value : The value from EPICS cast as a vector of std::strings.*/
+	static std::vector<std::string> returnValueFromArgsAsStringVector(const struct event_handler_args);
+
 	/*! Casts the value from EPICS (in args object) to a std::string
 	 * @param[in] args : The object returned by EPICS containing the new PV value
 	 * @param[out] value : The value from EPICS cast as a std::string.*/
@@ -165,43 +193,106 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
-
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, int pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampIntPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, int>& pairToUpdate);
-
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampUShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, unsigned short>& pairToUpdate);
-	// sometimes you have to return a pair<timestamp,int> and then choose a STAT based On the int
-	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, long pair and sets the Hardware parameter to that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, std::string pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampStringPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::string>& pairToUpdate);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, float pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampFloatPair(const struct event_handler_args& args, std::pair < epicsTimeStamp, float>& pairToUpdate);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
-
-	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size);
-	static void updateTimeStampLongPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, long>& pairToUpdate);
-
 	static void updateTimeStampShortPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, short>& pairToUpdate);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<double> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<int> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampIntegerVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<long> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampLongVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<long>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<float> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampFloatVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<float>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<unsigned short> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampEnumVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<unsigned short>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<std::string> and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampStringVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<std::string>>& pairToUpdate, long size);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, short pair and returns the pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	 * @param[out] pair : The value and timestamp from EPICS cast as a epicsTimeStamp, short pair. */
 	static std::pair<epicsTimeStamp, short> getTimeStampShortPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair (enum) and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short (enum) value returned from EPICS */
 	static std::pair<epicsTimeStamp, int> getTimeStampEnumPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the double value returned from EPICS */
 	static std::pair<epicsTimeStamp, double> getTimeStampDoublePair(const struct event_handler_args& args);
-	// Add in some more for vectors as we need them ... 
-
-
-	// TODO: what should this functiOn return? and how should that get passed to PYTHON users???
-	/*! Send a value to an EPICS PV over Channel Access using ca_put. 
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
+	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
+	/*! Send an array to an EPICS PV over Channel Access using ca_put_array. 
 	* @param[in] pvStruct : Contains the PV we want to put a value to. 
-	* @param[in] value : The value we want to ca_put.*/
+	* @param[in] value : The array we want to ca_put_array with.*/
+	template<typename T>
+	void putArray(const pvStruct& pvStruct, const std::vector<T>& value) const
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			if (ca_write_access(pvStruct.CHID))
+			{
+				int status = ca_array_put(pvStruct.CHTYPE, pvStruct.COUNT, pvStruct.CHID, &value[0]);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+			}
+			else
+			{
+				messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
+			}
+		}
+		else
+		{
+			messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
+		}
+	}
+	/*! Send an value to an EPICS PV over Channel Access using ca_put.
+	 * @param[in] pvStruct : Contains the PV we want to put a value to.
+	 * @param[in] value : The value we want to ca_put.*/
 	template<typename T>
 	void putValue(const pvStruct& pvStruct, const T& value) const
 	{
 		if (ca_state(pvStruct.CHID) == cs_conn)
 		{
-			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
-			MY_SEVCHK(status);
-			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-			MY_SEVCHK(status);
+			if (ca_write_access(pvStruct.CHID))
+			{
+				int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+			}
+			else
+			{
+				messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
+			}
+		}
+		else
+		{
+			messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
 		}
 	}
 
@@ -238,5 +329,6 @@ protected:
 	// some other stuff might be needed here, need to check interface.h from VELA-CLARA COntrollers
 };
 /** @}*/
+
 #endif
 

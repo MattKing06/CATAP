@@ -4,7 +4,7 @@
 #include <GlobalTypesPythonInterface.h>
 #include <BPMPythonInterface.h>
 #include <ChargePythonInterface.h>
-#include <GeneralMonitorPythonInterface.h>
+#include <EPICSToolsPythonInterface.h>
 #include <IMGPythonInterface.h>
 #include <LaserMirrorPythonInterface.h>
 #include <LEDPythonInterface.h>
@@ -19,6 +19,8 @@
 #include <ShutterPythonInterface.h>
 #include <StagePythonInterface.h>
 #include <ValvePythonInterface.h>
+#include <LaserEnergyMeterPythonInterface.h>
+#include <LaserHWPPythonInterface.h>
 
 BOOST_PYTHON_MODULE(_HardwareFactory)
 {
@@ -36,8 +38,8 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_BPM_INCLUDE::expose_bpm_factory_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_factory_object();
-	BOOST_PYTHON_GENERAL_MONITOR_INCLUDE::expose_general_monitor_object();
-	BOOST_PYTHON_GENERAL_MONITOR_INCLUDE::expose_general_monitor_factory_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_factory_object();
 	BOOST_PYTHON_LASER_MIRROR_INCLUDE::expose_laser_mirror_object();
@@ -50,6 +52,11 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_factory_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_factory_object();
+
+
+	BOOST_PYTHON_SHUTTER_INCLUDE::expose_shutter_state_struct();
+	BOOST_PYTHON_SHUTTER_INCLUDE::expose_shutter_object();
+	BOOST_PYTHON_SHUTTER_INCLUDE::expose_shutter_factory_object();
 
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
@@ -69,4 +76,8 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_STAGE_INCLUDE::expose_stage_factory_object();
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveObject();
 	BOOST_PYTHON_VALVE_INCLUDE::exposeValveFactoryObject();
+	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_object();
+	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_factory_object();
+	BOOST_PYTHON_LASER_HWP_INCLUDE::expose_laser_hwp_object();
+	BOOST_PYTHON_LASER_HWP_INCLUDE::expose_laser_hwp_factory_object();
 }

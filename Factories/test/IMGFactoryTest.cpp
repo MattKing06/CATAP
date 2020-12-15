@@ -1,30 +1,43 @@
 #include <boost/test/unit_test.hpp>
+#include <GlobalConstants.h>
 #include <IMGFactory.h>
 #include <string>
 #include <vector>
+#include <iostream>
 #include <stdlib.h>
-#include <boost/math/special_functions/fpclassify.hpp>
-#include <boost/lexical_cast.hpp>
 #include <chrono>
 #include <thread>
 
-BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
+struct fixture {
+	fixture()
+	{
+		imgFac = IMGFactory(STATE::VIRTUAL);
+		imgFac.messagesOn();
+		imgFac.debugMessagesOff();
+		BOOST_TEST_MESSAGE("setup fixture");
+		status = imgFac.setup("nominal");
+	}
+	~fixture() { BOOST_TEST_MESSAGE("teardown fixture"); }
+
+	IMGFactory imgFac;
+	bool status;
+	pvStruct setPV;
+
+};
+
+BOOST_FIXTURE_TEST_SUITE(IMGFactoryTestSuite, fixture)
 BOOST_AUTO_TEST_CASE(start_test)
 {
-	BOOST_TEST_MESSAGE("------	RUNNING IMG FACTORY TESTS	------");
+	BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");
 }
-
 BOOST_AUTO_TEST_CASE(img_factory_check_values_on_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: CHECK VALUES ON PRESSURE	------");
 	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
-	IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
-	imgFac.messagesOn();
-	imgFac.debugMessagesOn();
-	bool status = imgFac.setup("nominal");
 	if (status)
 	{
-		if (ca_state(imgFac.getIMG(testIMGName).pvStructs.at("P").CHID) == cs_conn)
+		IMG test_IMG = imgFac.getIMG(testIMGName);
+		if (ca_state(test_IMG.pvStructs.at("P").CHID) == cs_conn)
 		{
 			BOOST_CHECK(isnan(imgFac.getIMGPressure(testIMGName)) != true);
 			std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -35,14 +48,11 @@ BOOST_AUTO_TEST_CASE(img_factory_check_values_on_pressure_test)
 		}
 	}
 }
-
 BOOST_AUTO_TEST_CASE(setting_up_img_factory_and_get_names_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET MAP OF NAMES AND PRESSURES	------");
-	IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
-	bool status = imgFac.setup("nominal");
 	auto namesMap = imgFac.getAllIMGNames();
-		
+	
 	if (status)
 	{
 		for (auto&& item : namesMap)
@@ -57,16 +67,11 @@ BOOST_AUTO_TEST_CASE(setting_up_img_factory_and_get_names_pressure_test)
 				imgFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
 			}
 		}
-	}	
+	}
 }
-
 BOOST_AUTO_TEST_CASE(img_factory_check_all_names_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL NAMES	------");
-	IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
-	imgFac.messagesOn();
-	bool status = imgFac.setup("nominal");
-	
 	if (status) {
 		auto allIMGNames = imgFac.getAllIMGNames();
 		std::map<std::string, double> pressureMap = imgFac.getAllIMGPressure();
@@ -87,13 +92,11 @@ BOOST_AUTO_TEST_CASE(img_factory_check_all_names_test)
 BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL OF PRESSURES OF THE MAP	------");
-	IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
 	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
-	imgFac.messagesOn();
-	bool status = imgFac.setup("nominal");
 	if (status)
 	{
-		if (ca_state(imgFac.getIMG(testIMGName).pvStructs.at("P").CHID) == cs_conn)
+		IMG testIMG = imgFac.getIMG(testIMGName);
+		if (ca_state(testIMG.pvStructs.at("P").CHID) == cs_conn)
 		{
 			std::map<std::string, double> allPressures = imgFac.getAllIMGPressure();
 			BOOST_CHECK(isnan(allPressures.at(testIMGName)) != true);
@@ -107,11 +110,37 @@ BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test)
 	imgFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");
 }
 
+BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test_several_times)
+{
+	BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL OF PRESSURES OF THE MAP	------");
+	if (status)
+	{
+		auto allIMGNames = imgFac.getAllIMGNames();
+		
+		for (auto imgName : allIMGNames)
+		{
+			IMG test_IMG = imgFac.getIMG(imgName);
+			int i = 1;
+			if (ca_state(test_IMG.pvStructs.at("P").CHID) == cs_conn)
+			{
+				while (i < 1000)
+				{
+					BOOST_CHECK(test_IMG.getIMGPressure() != GlobalConstants::double_min);
+					i++;
+				}
+			}
+			else
+			{
+				imgFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
+			}
+		}
+	}
+	imgFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");
+}
+
 BOOST_AUTO_TEST_CASE(img_factory_retrieve_monitor_test)
 {
 	BOOST_TEST_MESSAGE("------	IMG FACTORY: RETRIEVE MONITOR STATUS	------");
-	IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
-	pvStruct setPV;
 	setPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
 	setPV.pvRecord = "P";
 	imgFac.messagesOn();
@@ -121,7 +150,6 @@ BOOST_AUTO_TEST_CASE(img_factory_retrieve_monitor_test)
 	setPV.pvRecord = 'Sta';
 	imgFac.retrieveMonitorStatus(setPV);
 	BOOST_CHECK(setPV.monitor == true);
-	
 }
 
 BOOST_AUTO_TEST_SUITE_END()

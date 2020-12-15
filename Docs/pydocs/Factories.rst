@@ -30,6 +30,31 @@ ChargeFactory
    :show-inheritance:
 
 ===========================
+IMGFactory
+===========================
+.. automodule:: IMG
+   :members: IMGFactory
+   :undoc-members:
+   :show-inheritance:
+
+===========================
+LaserEnergyMeterFactory
+===========================
+.. automodule:: LaserEnergyMeter
+   :members: LaserEnergyMeterFactory
+   :undoc-members:
+   :show-inheritance:
+
+
+==========================
+LaserHWPFactory
+==========================
+.. automodule:: LaserHWP
+   :members: LaserHWPFactory
+   :undoc-members:
+   :show-inheritance:
+
+===========================
 MagnetFactory
 ===========================
 .. automodule:: Magnet

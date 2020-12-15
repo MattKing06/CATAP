@@ -61,6 +61,13 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("CLARA_PH1", TYPE::CLARA_PH1)
 			.value("CLARA_2_BA1", TYPE::CLARA_2_BA1)
 			.value("CLARA_2_BA1_BA2", TYPE::CLARA_2_BA1_BA2)
+			.value("BPM_TYPE", TYPE::BPM_TYPE)
+			.value("CHARGE", TYPE::CHARGE)
+			.value("HWP", TYPE::HWP)
+			.value("SHUTTER", TYPE::SHUTTER)
+			.value("ENERGYMETER", TYPE::ENERGYMETER)
+			.value("VALVE", TYPE::VALVE)
+			.value("CHARGE", TYPE::CHARGE)
 
 
 

@@ -18,6 +18,7 @@ namespace MagnetRecords
 
 	std::vector<std::string> magnetRecordList = { GETSETI,READI,RILK,RPOWER,SETI,SPOWER,
 		K_DIP_P,INT_STR_MM,INT_STR,K_SET_P,K_ANG,K_MRAD,K_VAL};
+//	std::vector<std::string> magnetRecordList = { GETSETI,READI,RILK,RPOWER,SETI,SPOWER };
 }
 
 namespace MagnetPSUValueToState

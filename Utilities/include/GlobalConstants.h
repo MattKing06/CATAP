@@ -78,9 +78,52 @@ namespace GlobalConstants
 		{"Charge", TYPE::CHARGE},
 		{"charge", TYPE::CHARGE},
 
+		{ENUM_TO_STRING(TYPE::SHUTTER), TYPE::SHUTTER},
+		{"Shutter", TYPE::SHUTTER},
+		{"shutter", TYPE::SHUTTER},
+
 		{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},
+
+				
+		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
+		{"LLRF", TYPE::LLRF_TYPE},
+		{"llrf", TYPE::LLRF_TYPE},
+
+		{ENUM_TO_STRING(TYPE::ENERGYMETER), TYPE::ENERGYMETER},
+		{"LaserEnergyMeter", TYPE::ENERGYMETER},
+		{"LEM", TYPE::ENERGYMETER},
+
+		{ENUM_TO_STRING(TYPE::HWP), TYPE::HWP},
+		{"LaserHWP", TYPE::HWP},
+		{"LHW", TYPE::HWP},
+
+		// magnet types
+		{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},
+		{ENUM_TO_STRING(TYPE::DIPOLE), TYPE::DIPOLE},
+		{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
+		{ENUM_TO_STRING(TYPE::HORIZONTAL_CORRECTOR), TYPE::HORIZONTAL_CORRECTOR},
+		{ENUM_TO_STRING(TYPE::SOLENOID), TYPE::SOLENOID},
+		{ENUM_TO_STRING(TYPE::BUCKING_SOLENOID), TYPE::BUCKING_SOLENOID},
+		// magnet PSU reverse types
+		{ENUM_TO_STRING(TYPE::NR), TYPE::NR},
+		{ENUM_TO_STRING(TYPE::BIPOLAR), TYPE::BIPOLAR},
+		{ENUM_TO_STRING(TYPE::NR_GANGED), TYPE::NR_GANGED},
+		{ENUM_TO_STRING(TYPE::POSITIVE_ONLY), TYPE::POSITIVE_ONLY},
+		// screen
+		{ENUM_TO_STRING(TYPE::VELA_PNEUMATIC), TYPE::VELA_PNEUMATIC},
+		{ENUM_TO_STRING(TYPE::VELA_HV_MOVER), TYPE::VELA_HV_MOVER},
+		{ENUM_TO_STRING(TYPE::VELA_V_MOVER), TYPE::VELA_V_MOVER},
+		{ENUM_TO_STRING(TYPE::CLARA_HV_MOVER), TYPE::CLARA_HV_MOVER},
+		{ENUM_TO_STRING(TYPE::CLARA_V_MOVER), TYPE::CLARA_V_MOVER},
+		{ENUM_TO_STRING(TYPE::CLARA_PNEUMATIC), TYPE::CLARA_PNEUMATIC},
+		{ENUM_TO_STRING(TYPE::PNEUMATIC), TYPE::PNEUMATIC},
+		{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE},
+
+		{ENUM_TO_STRING(TYPE::HORIZONTAL), TYPE::HORIZONTAL},
+		{ENUM_TO_STRING(TYPE::VERTICAL), TYPE::VERTICAL}
+
 
 
 				{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
@@ -168,6 +211,12 @@ namespace GlobalConstants
 	/*! Maximum possible value of a double */
 	const double double_max = std::numeric_limits<double>::max();
 
+	/*! Minimum possible value of a int */
+	const int int_min = std::numeric_limits<int>::min();
+	/*! Maximum possible value of a int */
+	const int int_max = std::numeric_limits<int>::max();
+
+
 	/*! Double-type variable for 0.0 */
 	const double zero_double = 0.0;
 	/*! Double-type variable for 1.0 */
@@ -244,6 +293,7 @@ namespace GlobalConstants
 	const std::string nominal = "nominal";
 	
 	
+
 
 
 

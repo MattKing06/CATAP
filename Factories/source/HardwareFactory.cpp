@@ -18,6 +18,9 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	valveFactory(ValveFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
 	cameraFactory(CameraFactory(mode)),
+	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
+	laserHWPFactory(LaserHWPFactory(mode)),
+	shutterFactory(ShutterFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -63,10 +66,50 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 			setup = valveFactory.setup(VERSION);
 		}
 	}
+	else if (hardwareType == "Laser Energy Meter")
+	{
+		if (!laserEnergyMeterFactory.hasBeenSetup)
+		{
+			setup = laserEnergyMeterFactory.setup(VERSION);
+		}
+	}
+	else if (hardwareType == "Laser HWP")
+	{
+		if (!laserHWPFactory.hasBeenSetup)
+		{
+			setup = laserHWPFactory.setup(VERSION);
+		}
+	}
 	return setup;
 }
 
-// YOU MUST define a machein area to get a LLRF factory, you CANNOT get them all 
+
+
+ShutterFactory& HardwareFactory::getShutterFactory()
+{
+	messenger.printMessage("getShutterFactory Called");
+	if (!shutterFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getShutterFactory calling setup");
+		bool setup = shutterFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getShutterFactory Complete");
+			return shutterFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ShutterFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getShutterFactory Complete");
+		return shutterFactory;
+	}
+}
+
+// YOU MUST define a machine area to get a LLRF factory, you CANNOT get them all
 LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 {
 	return getLLRFFactory(std::vector<TYPE>{machineArea});
@@ -74,29 +117,6 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machineAreas)
 {
 	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
-}
-
-LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
-{
-	messenger.printMessage("getLLRFFactory Called");
-	if (!llrffactory.hasBeenSetup)
-	{
-		bool setup = llrffactory.setup("nominal", machineAreas);
-		if (setup)
-		{
-			messenger.printMessage("getLLRFFactory Complete");
-			return llrffactory;
-		}
-		else
-		{
-			messenger.printMessage("Unable to setup LLRFFactory, Hopefully you'll never see this");
-		}
-	}
-	else
-	{
-		messenger.printMessage("getLLRFFactory Complete");
-		return llrffactory;
-	}
 }
 
 MagnetFactory& HardwareFactory::getMagnetFactory()
@@ -236,6 +256,42 @@ CameraFactory& HardwareFactory::getCameraFactory()
 	return cameraFactory;
 }
 
+LaserEnergyMeterFactory& HardwareFactory::getLaserEnergyMeterFactory()
+{
+	if (!laserEnergyMeterFactory.hasBeenSetup)
+	{
+		bool setup = laserEnergyMeterFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getlaserEnergyMeterFactory Complete");
+			return laserEnergyMeterFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup laserEnergyMeterFactory");
+		}
+	}
+	return laserEnergyMeterFactory;
+}
+
+LaserHWPFactory& HardwareFactory::getLaserHWPFactory()
+{
+	if (!laserHWPFactory.hasBeenSetup)
+	{
+		bool setup = laserHWPFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getLaserHWPFactory Complete");
+			return laserHWPFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup LaserHWPFactory");
+		}
+	}
+	return laserHWPFactory;
+}
+
 void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -243,6 +299,9 @@ void HardwareFactory::debugMessagesOn()
 	magnetFactory.debugMessagesOn();
 	bpmFactory.debugMessagesOn();
 	chargeFactory.debugMessagesOn();
+	cameraFactory.debugMessagesOn();
+	laserEnergyMeterFactory.debugMessagesOn();
+	laserHWPFactory.debugMessagesOn();
 }
 
 void HardwareFactory::debugMessagesOff()
@@ -253,6 +312,8 @@ void HardwareFactory::debugMessagesOff()
 	bpmFactory.debugMessagesOff();
 	chargeFactory.debugMessagesOff();
 	valveFactory.debugMessagesOff();
+	laserEnergyMeterFactory.debugMessagesOff();
+	laserHWPFactory.debugMessagesOff();
 }
 
 void HardwareFactory::messagesOn()
@@ -263,6 +324,8 @@ void HardwareFactory::messagesOn()
 	bpmFactory.messagesOn();
 	chargeFactory.messagesOn();
 	valveFactory.messagesOn();
+	laserEnergyMeterFactory.messagesOn();
+	laserHWPFactory.messagesOn();
 }
 
 void HardwareFactory::messagesOff()
@@ -273,6 +336,8 @@ void HardwareFactory::messagesOff()
 	bpmFactory.messagesOff();
 	chargeFactory.messagesOff();
 	valveFactory.messagesOff();
+	laserEnergyMeterFactory.messagesOff();
+	laserHWPFactory.messagesOff();
 }
 
 bool HardwareFactory::isMessagingOn()

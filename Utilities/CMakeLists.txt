@@ -13,6 +13,8 @@ set( SOURCE_FILES
     source/ScreenPVRecords.cpp
     source/HardwareState.cpp
     source/IMGPVRecords.cpp
+    source/LaserEnergyMeterPVRecords.cpp
+    source/LaserHWPPVRecords.cpp
     source/LaserMirrorPVRecords.cpp
     source/LEDPVRecords.cpp
     source/LightingPVRecords.cpp
@@ -37,6 +39,8 @@ set( INCLUDE_FILES
      include/ChargePVRecords.h
      include/ScreenPVRecords.h
      include/IMGPVRecords.h
+     include/LaserEnergyMeterPVRecords.h
+     include/LaserHWPPVRecords.h
      include/LaserMirrorPVRecords.h
      include/LEDPVRecords.h
      include/LightingPVRecords.h

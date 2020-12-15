@@ -18,6 +18,17 @@ Hardware::Hardware() :
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
 
+Hardware::Hardware(STATE mode) :
+	machine_area(TYPE::UNKNOWN_TYPE),
+	hardware_type(TYPE::UNKNOWN_TYPE),
+	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	mode(mode)
+{
+	//messenger.printDebugMessage("Constructing Hardware (with no config)");
+	std::cout << "Constructing Hardware with no config" << std::endl;
+}
+
 Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode) :
 mode(mode),
 messenger(LoggingSystem(true, true)),

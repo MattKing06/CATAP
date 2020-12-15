@@ -62,6 +62,24 @@ boost::python::list to_py_list(const std::pair<value1, value2>& pair)
 	return newList;
 }
 
+template<class typeOfVectorToConvert>
+inline
+boost::python::list to_py_list(const boost::circular_buffer<std::vector<typeOfVectorToConvert>>& buffer)
+{
+	boost::python::list newList;
+	for (auto&& vector : buffer)
+	{
+		boost::python::list vecList;
+		for (auto& item : vector)
+		{
+			vecList.append(item);
+		}
+		newList.append(vecList);
+	}
+	return newList;
+}
+
+
 template<class mapkey, class mapvalue>
 inline
 boost::python::dict to_py_dict(const std::map<mapkey, mapvalue>& map)

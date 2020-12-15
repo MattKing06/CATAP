@@ -29,6 +29,30 @@ Charge Class
    :undoc-members:
 
 ===========================
+IMG Class
+===========================
+.. automodule:: IMG
+   :members: IMG
+   :undoc-members:
+
+
+===========================
+LaserEnergyMeter
+===========================
+.. automodule:: LaserEnergyMeter
+   :members: LaserEnergyMeter
+   :undoc-members:
+
+
+==========================
+LaserHWP
+==========================
+.. automodule:: LaserHWP
+   :members: LaserHWP
+   :undoc-members:
+
+
+===========================
 Magnet Class
 ===========================
 .. automodule:: Magnet
