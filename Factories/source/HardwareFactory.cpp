@@ -109,7 +109,7 @@ ShutterFactory& HardwareFactory::getShutterFactory()
 	}
 }
 
-// YOU MUST define a machine area to get a LLRF factory, you CANNOT get them all
+// YOU MUST define a machine area to get a LLRF factory, you CANNOT just get them all
 LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 {
 	return getLLRFFactory(std::vector<TYPE>{machineArea});
@@ -117,6 +117,10 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machineAreas)
 {
 	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
+}
+LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
+{
+	return getLLRFFactory(machineAreas);
 }
 
 MagnetFactory& HardwareFactory::getMagnetFactory()
@@ -181,6 +185,27 @@ ValveFactory& HardwareFactory::getValveFactory()
 		return valveFactory;
 	}
 }
+IMGFactory& HardwareFactory::getIMGFactory()
+{
+	if (!imgFactory.hasBeenSetup)
+	{
+		bool setup = imgFactory.setup("nominal");
+		if (setup)
+		{
+			return imgFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup IMGFactory");
+		}
+	}
+	else
+	{
+		return imgFactory;
+	}
+}
+
+
 BPMFactory& HardwareFactory::getBPMFactory()
 {
 	if (!bpmFactory.hasBeenSetup)

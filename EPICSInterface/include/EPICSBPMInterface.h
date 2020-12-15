@@ -108,7 +108,7 @@ public:
 	// * @param[in] value : The desired vertical delay
 	// * @param[in] pv : The pvStruct associated with the SD2 PV*/
 // =======
-	* @param[in] pv : The pvStruct associated with the BPM PV*/
+	/* @param[in] pv : The pvStruct associated with the BPM PV*/
 	void setSA1(const long& value, const pvStruct& pv);
 	/*! sends a pulse (a long) to set the vertical attenuation
 	* @param[in] value : The desired vertical attenuation
