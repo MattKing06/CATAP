@@ -12,9 +12,9 @@
 #include "MagnetPVRecords.h"
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
-
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+
 
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
@@ -25,17 +25,34 @@ typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
 
 
 struct magnetState
-{   // proviude a default constructor
+{   // provide a default constructor
 	magnetState() :
 		name(GlobalConstants::DUMMY_NAME),
-		psuState(STATE::ERR),
-		ilkState(STATE::ERR),
+		psu_state(STATE::ERR),
+		ilk_state(STATE::ERR),
 		seti(GlobalConstants::double_min),
-		readi(GlobalConstants::double_min)
+		readi(GlobalConstants::double_min),
+		k_dip_p(GlobalConstants::double_min),
+		int_str_mm(GlobalConstants::double_min),
+		k_set_p(GlobalConstants::double_min),
+		int_str(GlobalConstants::double_min),
+		k_ang(GlobalConstants::double_min),
+		k_mrad(GlobalConstants::double_min),
+		k_val(GlobalConstants::double_min)
 	{};
 	std::string name;
-	STATE psuState, ilkState;
+	TYPE type;
+	STATE psu_state, ilk_state;
 	double seti, readi;
+	// physics units (not all types of magnets have all tehse values 
+	double k_dip_p, int_str_mm, k_set_p, int_str, k_ang, k_val, k_mrad,
+		magnetic_length;
+
+	std::vector<double> field_integral_coefficients;
+
+	// preprocessor ifdefine guards for non-python apps??? 
+	boost::python::dict state_dict;
+
 };
 
 #include <thread>
@@ -43,7 +60,7 @@ struct magnetState
 class Degauss
 {   
 	public:
-		// proviude a default constructor
+		// provide a default constructor
 		Degauss();
 		Magnet* magnet;
 		std::vector<double>  degauss_values;
@@ -67,7 +84,6 @@ class Magnet : public Hardware
 		//should need a magnet name (full PV root, or alias can be given)
 		//Magnet(Hardware hardware); // this should be possible, but isn't useful right now.
 		//Magnet(std::string knownNameOfMagnet);
-		
 	/*! Custom constructor for Magnet object
 		@param[in] magnetParametersAndValuesMap strings defining parameters extracted from YAML config files
 		@param[in] mode Defines the STATE of Magnet we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)			*/
@@ -75,11 +91,10 @@ class Magnet : public Hardware
 	/*! Copy constructor for Magnet object
 		@param[in] copyMagnet references to magnet to be copied					*/
 		Magnet(const Magnet& copyMagnet);
-
-	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilkstate and psustae
+	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 		@param[out] magnetState structured data									*/
 		magnetState getMagnetState()const;
-	/*! set a magnetState (structured data with magnet name and latest, readi, seti, ilkstate and psustae
+	/*! set a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 		@param[in] magnetState structured data to set
 		@param[out] bool, for if commands successfully got sent to EPICS		*/
 		bool setMagnetState(const magnetState& ms);
@@ -103,10 +118,9 @@ class Magnet : public Hardware
 	/*! get the magnet manufacturer, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getManufacturer() const;
-
 	/*! get the type of magnet, defined in the master lattice yaml file
 		@param[out] result  */
-		std::string getMagnetType() const;
+		TYPE getMagnetType() const;
 	/*! get the magnet reverse type, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMagnetRevType() const;
@@ -143,6 +157,16 @@ class Magnet : public Hardware
 		@param[in] value to set READ_tolerance to
 		@param[out] READI_tolerance after setting new value */
 		double setREADITolerance(const double value);
+	/*! get the minimum I value that can be set for this magnet,  defined in the master lattice yaml file*/
+		double getMinI()const;
+	/*! get the maximum I value that can be set for this magnet,  defined in the master lattice yaml file*/
+		double getMaxI()const;
+	/*! Get the field integral coefficents, defined in the master lattice yaml file
+		@param[out] result  */
+		std::vector<double> getFieldIntegralCoefficients() const;
+	/*! Get the field integral coefficents, defined in the master lattice yaml file (Python version)
+		@param[out] result  */
+		boost::python::list getFieldIntegralCoefficients_Py() const;
 	/*! set the values used during degaussing
 		@param[out] new value sthat will be used */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
@@ -153,6 +177,14 @@ class Magnet : public Hardware
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
+
+	/*! get the magnet TYPE (quadrupole, dipole, correctoer, solenoid, etc.)
+		@param[out] result  */
+		TYPE getMagType() const;
+
+		/*! get the magnet lattice position, defined in the master lattice yaml file
+		@param[out] result  */
+		double getPosition() const;
 	/*! get the current READI 
 		@param[out] result  */
 		double getREADI() const;
@@ -161,31 +193,65 @@ class Magnet : public Hardware
 		double getSETI() const;
 	/*! get the current state of the interlock 
 		@param[out] result  */
-		STATE getILKState() const;
+		STATE getIlkState() const;
 	/*! get the current state of the PSU 
 		@param[out] result  */
 		STATE getPSUState() const;
+	/*! The beam momentum can be found by setting the dipoles to bend the beam at 45 degrees and reading getKDipP
+		@param[out] result  */
+		double getKDipP() const;
+	/*! Integrated strength, this is in T for quads and T/mm for correctors, solenoids and dipoles
+		@param[out] result  */
+		double getIntStr_mm() const;
+	/*! ntegrated strength, this is in T for all magnet types 
+		@param[out] result  */
+		double getIntStr() const;
+	/*! Assumed beam momentum here (MeV/c) used for magnet
+		@param[out] result  */
+		double getKSetP() const;
+	/*! The bend angle for the dipole in degrees
+		@param[out] result  */
+		double getKAng() const;
+	/*! The bend angle for the correctors in milliradians
+		@param[out] result  */
+		double getKmrad() const;
+	/*! The K factor for the Quads in 1/m2
+		@param[out] result  */
+		double getKVal() const;
+
+
+	/*! returns TRUE if the magnet is performing a degauss procedure*/
+		bool isDegaussing()const;
 	/*! set the current to value
 		@param[in] value			
-		@param[out] bool, if the command got sent to epics (not if setting that current was successfull!) 	*/
+		@param[out] bool, if the command got sent to epics (not if setting that value was successfull!) 	*/
 		bool SETI(const double value); 
 	/*! set the current to zero	
-		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
+		@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 		bool SETIZero(); 	
+	/*! Set the assumed beam momentum (MeV/c) used for magnet field strength / bend angle calculations
+		@param[out] result  */
+		bool setKSetP(const double value);
 	/*! switch the magnet PSU on	
-		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
+		@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 		bool switchOn();
 	/*! switch the magnet PSU off	
-		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
+		@param[out] bool, if the command got sent to epics  (not if setting that value was successfull!)	*/
 		bool switchOff();
 	/*! switch the magnet PSU on to STATE value	
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
 		@param[out] bool, if the command got sent to epics  (not if setting that current was successfull!)	*/
 		bool setPSUState(const STATE value);
+	/*! switch the magnet Ilk to value
+		@param[in] value, (in OFFLINE mode can probably be an arbitrary value)
+		@param[out] bool, if the command got sent (not if setting that value was successfull!)	*/
+		bool offlineSetIlkState(const STATE value);
+
 	/*! switch the magnet PSU on to STATE value
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
 		@param[out] bool, if the command got sent (not if setting that current was successfull!)	*/
-		bool offlineSetILKState(const STATE value);
+		bool offlineSetPSUState(const STATE value);
+
 	/*! enable debug-messages for this magnet 	*/
 		void debugMessagesOn();
 	/*! disbale debug0messages for this magnet 	*/
@@ -194,7 +260,9 @@ class Magnet : public Hardware
 		void messagesOn();
 	/*! disable messages for this magnet		*/
 		void messagesOff();
-						
+
+		
+
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;
 	protected:
@@ -206,9 +274,24 @@ class Magnet : public Hardware
 	/*! latest getseti value and epicstimestamp 	*/
 		std::pair<epicsTimeStamp, double > GETSETI;
 	/*! latest psu state value and epicstimestamp 	*/
-		std::pair<epicsTimeStamp, STATE > psuState;
+		std::pair<epicsTimeStamp, STATE > psu_state;
 	/*! latest interlock state value and epicstimestamp 	*/
-		std::pair<epicsTimeStamp, STATE > ilkState;
+		std::pair<epicsTimeStamp, STATE > ilk_state;
+	/*! latest K_DIP_P value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_DIP_P;
+	/*! latest INT_STR_MM value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > INT_STR_MM;
+	/*! latest INT_STR value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > INT_STR;
+	/*! latest K_SET_P value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_SET_P;
+	/*! latest k_ang value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_ANG;
+	/*! latest k_val value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_VAL;
+	/*! latest k_mrad value and epicstimestamp 	*/
+		std::pair<epicsTimeStamp, double > K_MRAD;
+
 	private:
 	/*! map containing all the magnet objects				*/
 		std::map<std::string, std::string> magnetParametersAndValuesMap;
@@ -221,10 +304,12 @@ class Magnet : public Hardware
 		void offlineSETI(const double& value);
 	/*! switch the magnet PSU on to STATE value
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
-		bool offlineSetPSUState(const STATE value);
+		bool offlineSetpsu_state(const STATE value);
+
+	/* degaussing is handled by its own object */
 		Degauss degausser;
 	/*! flag set to True when this magnet is degaussing, otherwise false*/
-		bool isDegaussing;
+		bool is_degaussing;
 	/*! flag 	*/
 		bool last_degauss_success;
 	/*! current step in the deagussing cycle	*/
@@ -244,26 +329,36 @@ class Magnet : public Hardware
 		std::string manufacturer;
 
 	/*! magnet type, e.g. SOL, DIP, QUAD, VCOR, HCOR, defined in the master lattice yaml file	*/
-		std::string magType;
-		TYPE magtype;
+		//std::string mag_type;
+		TYPE mag_type;
 	/*! how the magnet reverses polarity (as seen in the control system, or defined offline), defined in the master lattice yaml file	*/
 		std::string magRevType;
 	/*! The tolerance used when checking if READI is eqal to SETI, defined in the master lattice yaml file	*/
 		double READI_tolerance;
 	/*! magnetic length, defined in the master lattice yaml file */
-		double magneticLength;
+		double magnetic_length;
 	/*! magnet serial number, defined in the master lattice yaml file	*/
-		std::string serialNumber;
+		std::string serial_number;
+
+	/*! magnet minimum SETI value that can be passed, defined in the master lattice yaml file	*/
+		double min_i;
+	/*! magnet maximum SETI value that can be passed, defined in the master lattice yaml file	*/
+		double max_i;
+
+	
+	/*! magnet beamline position	*/
+		double position;
+
+	/*! measured field itnegral cooefficients */
+		std::vector<double> field_integral_coefficients;
+
 
 		//std::string magRevType;
 		double RI_tolerance;
-
-		//int numberOfDegaussSteps; // TODO: this should be a size_t or uint
-		
+	
 
 
 
-		//double magneticLength;
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */
@@ -280,7 +375,6 @@ class Magnet : public Hardware
 		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
 		bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
 		
-
 		/* magnet types are stored as strings the master-lattice */
 		static std::map<std::string, TYPE> create_map()
 		{
@@ -295,6 +389,7 @@ class Magnet : public Hardware
 			return m;
 		}
 		static const std::map<std::string, TYPE> magnet_string_to_type_map;
+
 };
 /**\copydoc Hardware*/
 /**@}*/

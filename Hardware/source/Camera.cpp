@@ -8,6 +8,11 @@
 #include <time.h> 
 #include <mutex>          // std::mutex
 std::mutex mtx;           // mutex for critical section
+#include "boost/algorithm/string/split.hpp"
+#include <boost/make_shared.hpp>
+#include "GlobalConstants.h"
+
+
 Camera::Camera():
 Hardware()
 {
@@ -194,6 +199,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_X");
 	}
+
 
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
@@ -433,6 +439,7 @@ void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)
 	{
+
 		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
 			pvStructs[record] = pvStruct();
@@ -562,8 +569,11 @@ bool Camera::setX(double value)
 	{
 		return  false;
 	}
-	x_mm = std::make_pair(epicsTimeStamp(), value);
-	x_pix = std::make_pair(x_mm.first, mm2pixX(value));
+	//messenger.printDebugMessage(hardwareName, CameraRecords::ANA_X_RBV + " putvalue = ", value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_X_RBV), value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_XPix_RBV), mm2pixX(value));
+	//x_pix = std::make_pair(x_mm.first, mm2pixX(value));
+	//x_mm = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
 bool Camera::setY(double value)
@@ -572,8 +582,11 @@ bool Camera::setY(double value)
 	{
 		return false;
 	}
-	y_mm = std::make_pair(epicsTimeStamp(), value);
-	y_pix = std::make_pair(y_mm.first, mm2pixY(value));
+	//messenger.printDebugMessage(hardwareName, CameraRecords::ANA_Y_RBV + " putvalue = ", value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_Y_RBV), value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_YPix_RBV), mm2pixX(value));
+	//y_mm = std::make_pair(epicsTimeStamp(), value);
+	//y_pix = std::make_pair(y_mm.first, mm2pixY(value));
 	return true;
 }
 bool Camera::setSigX(double value)
@@ -582,8 +595,11 @@ bool Camera::setSigX(double value)
 	{
 		return false;
 	}
-	sigma_x_mm = std::make_pair(epicsTimeStamp(), value);
-	sigma_x_pix = std::make_pair(sigma_x_mm.first, mm2pixX(value));
+	//messenger.printDebugMessage(hardwareName, CameraRecords::ANA_SigmaX_RBV + " putvalue = ", value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_SigmaX_RBV), value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_SigmaXPix_RBV), mm2pixX(value));	
+	//sigma_x_mm = std::make_pair(epicsTimeStamp(), value);
+	//sigma_x_pix = std::make_pair(sigma_x_mm.first, mm2pixX(value));
 	return true;
 }
 bool Camera::setSigY(double value)
@@ -592,8 +608,11 @@ bool Camera::setSigY(double value)
 	{
 		return false;
 	}
-	sigma_y_mm = std::make_pair(epicsTimeStamp(), value);
-	sigma_y_pix = std::make_pair(sigma_y_mm.first, mm2pixY(value));
+	//messenger.printDebugMessage(hardwareName, CameraRecords::ANA_SigmaY_RBV + " putvalue = ", value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_SigmaY_RBV), value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_SigmaYPix_RBV), mm2pixX(value));
+	//sigma_y_mm = std::make_pair(epicsTimeStamp(), value);
+	//sigma_y_pix = std::make_pair(sigma_y_mm.first, mm2pixY(value));
 	return true;
 }
 bool Camera::setSigXY(double value)
@@ -602,8 +621,11 @@ bool Camera::setSigXY(double value)
 	{
 		return false;
 	}
-	sigma_xy_mm = std::make_pair(epicsTimeStamp(), value);
-	sigma_xy_pix = std::make_pair(epicsTimeStamp(), mm2pixX(value));
+	//messenger.printDebugMessage(hardwareName, CameraRecords::ANA_CovXY_RBV + " putvalue = ", value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_CovXY_RBV), value);
+	epicsInterface->putValue(pvStructs.at(CameraRecords::ANA_CovXYPix_RBV), mm2pixX(value));
+	//sigma_xy_mm = std::make_pair(epicsTimeStamp(), value);
+	//sigma_xy_pix = std::make_pair(epicsTimeStamp(), mm2pixX(value));
 	return true;
 }
 bool Camera::setBufferTrigger()

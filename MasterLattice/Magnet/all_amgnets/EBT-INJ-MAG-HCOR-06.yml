@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-INJ-MAG-HCOR-06:GETSETI
+    READI: EBT-INJ-MAG-HCOR-06:READI
+    RILK: EBT-INJ-MAG-HCOR-06:RILK
+    SETI: EBT-INJ-MAG-HCOR-06:SETI
+    RPOWER: EBT-INJ-MAG-HVCOR-01:RPOWER
+    SPOWER: EBT-INJ-MAG-HVCOR-01:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "6.0,-6.0,4.0,-4.0,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  field_integral_coefficients: "0.102617753623188,0.0"
+  hardware_type: MAGNET
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: HCOR
+  magnetic_length: 182.725806451613
+  manufacturer: Scanditronix
+  name: EBT-INJ-MAG-HCOR-06
+  name_alias: INJ-HCOR06,INJ-HCOR-06
+  num_degauss_steps: 11
+  position: 7.239
+  ri_tolerance: 0.015
+  serial_number: 1279-14610-0004

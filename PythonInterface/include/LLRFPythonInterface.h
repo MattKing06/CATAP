@@ -17,45 +17,65 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
 			
 
-			.def("setPhi", &LLRF::setPhi)
 			.def("setAmp", &LLRF::setAmp)
 			.def("setAmpMW", &LLRF::setAmpMW)
-			.def("setPhiDEG", &LLRF::setPhiDEG)
-
-			.def("getPhi", &LLRF::getPhi)
 			.def("getAmp", &LLRF::getAmp)
 			.def("getAmpMW", &LLRF::getAmpMW)
+
+
+			.def("setPhi", &LLRF::setPhi)
+			.def("setPhiDEG", &LLRF::setPhiDEG)
+			.def("setCrestPhase", &LLRF::setCrestPhase)
+			.def("setOperatingPhase", &LLRF::setOperatingPhase)
+
+			.def("getPhi", &LLRF::getPhi)
 			.def("getPhiDEG", &LLRF::getPhiDEG)
+			.def("getCrestPhase", &LLRF::getCrestPhase)
+			.def("getOperatingPhase", &LLRF::getOperatingPhase)
+
 
 			.def("getAliases", &LLRF::getAliases_Py)
 
 			.def("getIndex", &LLRF::getIndex)
 			.def("getTime",  &LLRF::getTime)
 
+			.def("setMeanStartEndIndex", &LLRF::setMeanStartEndIndex)
 			.def("setMeanStartEndTime", &LLRF::setMeanStartEndTime)
-			.def("setMeanStartIndex", &LLRF::setMeanStartIndex)
-			.def("setMeanStopIndex",  &LLRF::setMeanStopIndex)
-			.def("getMeanStartIndex", &LLRF::getMeanStartIndex)
+			.def("getMeanStartEndIndex", &LLRF::getMeanStartEndIndex)
+			.def("getMeanStartEndTime", &LLRF::getMeanStartEndTime)
+
+			.def("getTraceMeanIndices", &LLRF::getTraceMeanIndices_Py)
+			.def("getTraceMeanTimes", &LLRF::getTraceMeanTimes_Py)
+			.def("setTraceMeanIndices", &LLRF::setTraceMeanIndices_Py)
+			.def("setTraceMeanTimes", &LLRF::setTraceMeanTimes_Py)
+
+
 			//.def("getMean", &LLRFFactory::getMeanStartIndex)
 			.def("getCavRevPha",&LLRF::getCavRevPha)
 			.def("getCutMean",  &LLRF::getCutMean)
-			.def("getMeanStartTime",&LLRF::getMeanStartTime)
-			.def("getMeanStopTime", &LLRF::getMeanStopTime)
+			.def("getPowerCutMean",  &LLRF::getPowerCutMean_Py)
+			
+			
+			
+			
+
+
+
 
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)
 
 
-			.def("getTraceData", &LLRF::getTraceData_Py)
-			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
-			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
-			.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
-			.def("getKlyFwdPwr", &LLRF::getKlyFwdPwr_Py)
-			.def("getCavRevPha", &LLRF::getCavRevPha_Py)
-			.def("getCavFwdPha", &LLRF::getCavFwdPha_Py)
-			.def("getKlyRevPha", &LLRF::getKlyRevPha_Py)
-			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
-			.def("getProbePha",  &LLRF::getProbePha_Py)
-			.def("getProbePwr",  &LLRF::getProbePwr_Py)
+			//.def("getTraceData", &LLRF::getTraceData_Py)
+			//.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
+			//.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
+			//.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
+			//.def("getKlyFwdPwr", &LLRF::getKlyFwdPwr_Py)
+			//.def("getCavRevPha", &LLRF::getCavRevPha_Py)
+			//.def("getCavFwdPha", &LLRF::getCavFwdPha_Py)
+			//.def("getKlyRevPha", &LLRF::getKlyRevPha_Py)
+			//.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
+			//.def("getProbePha",  &LLRF::getProbePha_Py)
+			//.def("getProbePwr",  &LLRF::getProbePwr_Py)
 
 			.def("getTraceData", &LLRF::getTraceData_Py)
 			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)

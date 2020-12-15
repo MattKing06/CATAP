@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 			magFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
 		}
 	}
-}
+} 
 
 BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 {

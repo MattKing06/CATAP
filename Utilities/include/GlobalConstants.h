@@ -93,6 +93,7 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},
+
 				
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
@@ -129,11 +130,48 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE},
 
 		{ENUM_TO_STRING(TYPE::HORIZONTAL), TYPE::HORIZONTAL},
-		{ENUM_TO_STRING(TYPE::VERTICAL), TYPE::VERTICAL}
+		{ENUM_TO_STRING(TYPE::VERTICAL), TYPE::VERTICAL},
 
+				{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
+				{"Valve", TYPE::VALVE},
+
+				{ENUM_TO_STRING(TYPE::BPM_TYPE), TYPE::BPM_TYPE},
+				{"BPM", TYPE::BPM_TYPE},
+				
+				{"IMG", TYPE::IMG_TYPE},
+				{ENUM_TO_STRING(TYPE::IMG_TYPE), TYPE::IMG_TYPE},
+				
+				{"Charge", TYPE::CHARGE},
+				{ENUM_TO_STRING(TYPE::CHARGE), TYPE::CHARGE},
+			
+				{"Screen", TYPE::SCREEN},
+				{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
+				
+				{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
+				{"LLRF", TYPE::LLRF_TYPE},
+				
+				//{ENUM_TO_STRING(TYPE::HVCOR), TYPE::HVCOR},
+				{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
+				{ENUM_TO_STRING(TYPE::HORIZONTAL_CORRECTOR), TYPE::HORIZONTAL_CORRECTOR},
+				{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},
+				{ENUM_TO_STRING(TYPE::DIPOLE), TYPE::DIPOLE},
+				{ENUM_TO_STRING(TYPE::SOLENOID), TYPE::SOLENOID},
+				{ENUM_TO_STRING(TYPE::BUCKING_SOLENOID), TYPE::BUCKING_SOLENOID},
+				{ENUM_TO_STRING(TYPE::NR), TYPE::NR},
+				{ENUM_TO_STRING(TYPE::BIPOLAR), TYPE::BIPOLAR},
+				{ENUM_TO_STRING(TYPE::NR_GANGED), TYPE::NR_GANGED},
+				{ENUM_TO_STRING(TYPE::POSITIVE_ONLY), TYPE::POSITIVE_ONLY},
+				{ENUM_TO_STRING(TYPE::VELA_PNEUMATIC), TYPE::VELA_PNEUMATIC},
+				{ENUM_TO_STRING(TYPE::VELA_HV_MOVER), TYPE::VELA_HV_MOVER},
+				{ENUM_TO_STRING(TYPE::VELA_V_MOVER), TYPE::VELA_V_MOVER},
+				{ENUM_TO_STRING(TYPE::CLARA_HV_MOVER), TYPE::CLARA_HV_MOVER},
+				{ENUM_TO_STRING(TYPE::CLARA_V_MOVER), TYPE::CLARA_V_MOVER},
+				{ENUM_TO_STRING(TYPE::CLARA_PNEUMATIC), TYPE::CLARA_PNEUMATIC},
+				{ENUM_TO_STRING(TYPE::PNEUMATIC), TYPE::PNEUMATIC},
+				{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE}
 	};
 
-	const std::map<std::string, STATE> stringToSateMap =
+	const std::map<std::string, STATE> stringToStateMap =
 	{
 			{ENUM_TO_STRING(STATE::OFF), STATE::OFF},
 			{ENUM_TO_STRING(STATE::UNKNOWN_NAME), STATE::UNKNOWN_NAME},
@@ -245,8 +283,12 @@ namespace GlobalConstants
 	const size_t zero_sizet = 0;
 	/*! Unsigned Integer-type for 1 */
 	const size_t one_sizet = 1;
+	/*! Unsigned Integer-type for 2 */
 	const size_t two_sizet = 2;
+	/*! Unsigned Integer-type for 80 */
 	const size_t eighty_sizet = 80;
+	/*! Unsigned Integer-type for 999999 */
+	const size_t nine99999 = 999999;
 
 
 
@@ -341,6 +383,144 @@ namespace GlobalConstants
 	const std::string  CPPHA = "CPPHA";
 	const std::string  CFPOW = "CFPOW";
 	const std::string  CFPHA = "CFPHA";
+
+
+
+	const std::string CH1_PWR_REM_SCAN   = "CH1_PWR_REM_SCAN";
+	const std::string CH1_PHASE_REM_SCAN = "CH1_PHASE_REM_SCAN";
+	const std::string CH1_PHASE_DER_SCAN = "CH1_PHASE_DER_SCAN";
+	const std::string CH1_AMP_DER_SCAN   = "CH1_AMP_DER_SCAN";
+	const std::string CH1_PWR_LOC_SCAN   = "CH1_PWR_LOC_SCAN";
+
+	const std::string CH2_PHASE_REM_SCAN = "CH2_PHASE_REM_SCAN";
+	const std::string CH2_PHASE_DER_SCAN = "CH2_PHASE_DER_SCAN";
+	const std::string CH2_PWR_REM_SCAN   = "CH2_PWR_REM_SCAN";
+	const std::string CH2_AMP_DER_SCAN   = "CH2_AMP_DER_SCAN";
+	const std::string CH2_PWR_LOC_SCAN   = "CH2_PWR_LOC_SCAN";
+
+	const std::string CH3_PWR_REM_SCAN   = "CH3_PWR_REM_SCAN";
+	const std::string CH3_AMP_DER_SCAN   = "CH3_AMP_DER_SCAN";
+	const std::string CH3_PHASE_DER_SCAN = "CH3_PHASE_DER_SCAN";
+	const std::string CH3_PWR_LOC_SCAN   = "CH3_PWR_LOC_SCAN";
+	const std::string CH3_PHASE_REM_SCAN = "CH3_PHASE_REM_SCAN";
+
+	const std::string CH4_PWR_REM_SCAN = "CH4_PWR_REM_SCAN";
+	const std::string CH4_PHASE_REM_SCAN = "CH4_PHASE_REM_SCAN";
+	const std::string CH4_AMP_DER_SCAN = "CH4_AMP_DER_SCAN";
+	const std::string CH4_PHASE_DER_SCAN = "CH4_PHASE_DER_SCAN";
+	const std::string CH4_PWR_LOC_SCAN = "CH4_PWR_LOC_SCAN";
+
+	const std::string CH5_PWR_REM_SCAN = "CH5_PWR_REM_SCAN";
+	const std::string CH5_PHASE_REM_SCAN = "CH5_PHASE_REM_SCAN";
+	const std::string CH5_AMP_DER_SCAN = "CH5_AMP_DER_SCAN";
+	const std::string CH5_PHASE_DER_SCAN = "CH5_PHASE_DER_SCAN";
+	const std::string CH5_PWR_LOC_SCAN = "CH5_PWR_LOC_SCAN";
+
+	const std::string CH6_PWR_REM_SCAN = "CH6_PWR_REM_SCAN";
+	const std::string CH6_PHASE_REM_SCAN = "CH6_PHASE_REM_SCAN";
+	const std::string CH6_AMP_DER_SCAN = "CH6_AMP_DER_SCAN";
+	const std::string CH6_PHASE_DER_SCAN = "CH6_PHASE_DER_SCAN";
+	const std::string CH6_PWR_LOC_SCAN = "CH6_PWR_LOC_SCAN";
+
+	const std::string CH7_PWR_REM_SCAN = "CH7_PWR_REM_SCAN";
+	const std::string CH7_AMP_DER_SCAN = "CH7_AMP_DER_SCAN";
+	const std::string CH7_PHASE_DER_SCAN = "CH7_PHASE_DER_SCAN";
+	const std::string CH7_PWR_LOC_SCAN = "CH7_PWR_LOC_SCAN";
+	const std::string CH7_PHASE_REM_SCAN = "CH7_PHASE_REM_SCAN";
+
+	const std::string CH8_PWR_REM_SCAN = "CH8_PWR_REM_SCAN";
+	const std::string CH8_AMP_DER_SCAN = "CH8_AMP_DER_SCAN";
+	const std::string CH8_PHASE_DER_SCAN = "CH8_PHASE_DER_SCAN";
+	const std::string CH8_PWR_LOC_SCAN = "CH8_PWR_LOC_SCAN";
+	const std::string CH8_PHASE_REM_SCAN = "CH8_PHASE_REM_SCAN";
+
+	const std::string CH1_PWR_REM_ACQM = "CH1_PWR_REM_ACQM";
+	const std::string CH1_PHASE_REM_ACQM = "CH1_PHASE_REM_ACQM";
+	const std::string CH2_PWR_REM_ACQM = "CH2_PWR_REM_ACQM";
+	const std::string CH2_PHASE_REM_ACQM = "CH2_PHASE_REM_ACQM";
+	const std::string CH3_PWR_REM_ACQM = "CH3_PWR_REM_ACQM";
+	const std::string CH3_PHASE_REM_ACQM = "CH3_PHASE_REM_ACQM";
+	const std::string CH4_PWR_REM_ACQM = "CH4_PWR_REM_ACQM";
+	const std::string CH4_PHASE_REM_ACQM = "CH4_PHASE_REM_ACQM";
+	const std::string CH5_PWR_REM_ACQM = "CH5_PWR_REM_ACQM";
+	const std::string CH5_PHASE_REM_ACQM = "CH5_PHASE_REM_ACQM";
+	const std::string CH6_PWR_REM_ACQM = "CH6_PWR_REM_ACQM";
+	const std::string CH6_PHASE_REM_ACQM = "CH6_PHASE_REM_ACQM";
+	const std::string CH7_PWR_REM_ACQM = "CH7_PWR_REM_ACQM";
+	const std::string CH7_PHASE_REM_ACQM = "CH7_PHASE_REM_ACQM";
+	const std::string CH8_PWR_REM_ACQM = "CH8_PWR_REM_ACQM";
+	const std::string CH8_PHASE_REM_ACQM = "CH8_PHASE_REM_ACQM";
+
+	//// NOT NEEDED??
+	//const std::string CH2_PHASE_REM = "CH2_PHASE_REM";
+	//const std::string CH3_PWR_REM = "CH3_PWR_REM";
+	//const std::string CH3_PHASE_REM = "CH3_PHASE_REM";
+	//const std::string CH1_PHASE_REM = "CH1_PHASE_REM";
+	//const std::string CH2_PWR_REM = "CH2_PWR_REM";
+	//const std::string CH1_PWR_REM = "CH1_PWR_REM";
+	//const std::string CH4_PWR_REM = "CH4_PWR_REM";
+	//const std::string CH4_PHASE_REM = "CH4_PHASE_REM";
+	//const std::string CH5_PHASE_REM = "CH5_PHASE_REM";
+	//const std::string CH6_PWR_REM = "CH6_PWR_REM";
+	//const std::string CH5_PWR_REM = "CH5_PWR_REM";
+	//const std::string CH6_PHASE_REM = "CH6_PHASE_REM";
+	//const std::string CH7_PWR_REM = "CH7_PWR_REM";
+	//const std::string CH8_PWR_REM = "CH8_PWR_REM";
+	//const std::string CH7_PHASE_REM = "CH7_PHASE_REM";
+	//const std::string CH8_PHASE_REM = "CH8_PHASE_REM";
+
+	const std::string LLRF_CH1_INTERLOCK = "LLRF_CH1_INTERLOCK";
+	const std::string LLRF_CH2_INTERLOCK = "LLRF_CH2_INTERLOCK";
+	const std::string LLRF_CH3_INTERLOCK = "LLRF_CH3_INTERLOCK";
+	const std::string LLRF_CH4_INTERLOCK = "LLRF_CH4_INTERLOCK";
+	const std::string LLRF_CH5_INTERLOCK = "LLRF_CH5_INTERLOCK";
+	const std::string LLRF_CH6_INTERLOCK = "LLRF_CH6_INTERLOCK";
+	const std::string LLRF_CH7_INTERLOCK = "LLRF_CH7_INTERLOCK";
+	const std::string LLRF_CH8_INTERLOCK = "LLRF_CH8_INTERLOCK";
+
+	// TODO i doubt we need these 
+	const std::string CH1_INTERLOCK_STATUS = "CH1_INTERLOCK_STATUS";
+	const std::string CH1_INTERLOCK_ENABLE = "CH1_INTERLOCK_ENABLE";
+	const std::string CH1_INTERLOCK_U = "CH1_INTERLOCK_U";
+	const std::string CH1_INTERLOCK_P = "CH1_INTERLOCK_P";
+	const std::string CH1_INTERLOCK_PDBM = "CH1_INTERLOCK_PDBM";
+	const std::string CH2_INTERLOCK_STATUS = "CH2_INTERLOCK_STATUS";
+	const std::string CH2_INTERLOCK_ENABLE = "CH2_INTERLOCK_ENABLE";
+	const std::string CH2_INTERLOCK_U = "CH2_INTERLOCK_U";
+	const std::string CH2_INTERLOCK_P = "CH2_INTERLOCK_P";
+	const std::string CH2_INTERLOCK_PDBM = "CH2_INTERLOCK_PDBM";
+	const std::string CH3_INTERLOCK_STATUS = "CH3_INTERLOCK_STATUS";
+	const std::string CH3_INTERLOCK_ENABLE = "CH3_INTERLOCK_ENABLE";
+	const std::string CH3_INTERLOCK_U = "CH3_INTERLOCK_U";
+	const std::string CH3_INTERLOCK_P = "CH3_INTERLOCK_P";
+	const std::string CH3_INTERLOCK_PDBM = "CH3_INTERLOCK_PDBM";
+	const std::string CH4_INTERLOCK_STATUS = "CH4_INTERLOCK_STATUS";
+	const std::string CH4_INTERLOCK_ENABLE = "CH4_INTERLOCK_ENABLE";
+	const std::string CH4_INTERLOCK_U = "CH4_INTERLOCK_U";
+	const std::string CH4_INTERLOCK_P = "CH4_INTERLOCK_P";
+	const std::string CH4_INTERLOCK_PDBM = "CH4_INTERLOCK_PDBM";
+	const std::string CH5_INTERLOCK_STATUS = "CH5_INTERLOCK_STATUS";
+	const std::string CH5_INTERLOCK_ENABLE = "CH5_INTERLOCK_ENABLE";
+	const std::string CH5_INTERLOCK_U = "CH5_INTERLOCK_U";
+	const std::string CH5_INTERLOCK_P = "CH5_INTERLOCK_P";
+	const std::string CH5_INTERLOCK_PDBM = "CH5_INTERLOCK_PDBM";
+	const std::string CH6_INTERLOCK_STATUS = "CH6_INTERLOCK_STATUS";
+	const std::string CH6_INTERLOCK_ENABLE = "CH6_INTERLOCK_ENABLE";
+	const std::string CH6_INTERLOCK_U = "CH6_INTERLOCK_U";
+	const std::string CH6_INTERLOCK_P = "CH6_INTERLOCK_P";
+	const std::string CH6_INTERLOCK_PDBM = "CH6_INTERLOCK_PDBM";
+	const std::string CH7_INTERLOCK_STATUS = "CH7_INTERLOCK_STATUS";
+	const std::string CH7_INTERLOCK_ENABLE = "CH7_INTERLOCK_ENABLE";
+	const std::string CH7_INTERLOCK_U = "CH7_INTERLOCK_U";
+	const std::string CH7_INTERLOCK_P = "CH7_INTERLOCK_P";
+	const std::string CH7_INTERLOCK_PDBM = "CH7_INTERLOCK_PDBM";
+	const std::string CH8_INTERLOCK_STATUS = "CH8_INTERLOCK_STATUS";
+	const std::string CH8_INTERLOCK_ENABLE = "CH8_INTERLOCK_ENABLE";
+	const std::string CH8_INTERLOCK_U = "CH8_INTERLOCK_U";
+	const std::string CH8_INTERLOCK_P = "CH8_INTERLOCK_P";
+	const std::string CH8_INTERLOCK_PDBM = "CH8_INTERLOCK_PDBM";
+
+
 
 
 }

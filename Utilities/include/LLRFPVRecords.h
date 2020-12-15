@@ -140,7 +140,7 @@ extern std::string const CH8_AMP_DER_SCAN;
 extern std::string const CH8_PHASE_DER_SCAN;
 extern std::string const CH8_PWR_LOC_SCAN;              
 
-extern std::vector<std::string> llrfRecordList;
+	extern const std::vector<std::string> llrfRecordList;
 }
 
 namespace LLRFState

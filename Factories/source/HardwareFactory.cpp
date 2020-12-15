@@ -1,4 +1,5 @@
 #include "HardwareFactory.h"
+#include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
@@ -15,7 +16,6 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	chargeFactory(ChargeFactory(mode)),
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
-	imgFactory(IMGFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
 	cameraFactory(CameraFactory(mode)),
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
@@ -26,17 +26,12 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
+
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
-	if (hardwareType == "IMG")
-	{
-		if (!imgFactory.hasBeenSetup)
-		{
-			setup = imgFactory.setup(VERSION);
-		}
-	}
-	else if (hardwareType == "Magnet")
+	// TODO these TYPES should be the type ENUM
+	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
 		{
@@ -90,7 +85,6 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 
 
 
-
 ShutterFactory& HardwareFactory::getShutterFactory()
 {
 	messenger.printMessage("getShutterFactory Called");
@@ -115,7 +109,7 @@ ShutterFactory& HardwareFactory::getShutterFactory()
 	}
 }
 
-// YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
+// YOU MUST define a machine area to get a LLRF factory, you CANNOT just get them all
 LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 {
 	return getLLRFFactory(std::vector<TYPE>{machineArea});
@@ -124,39 +118,36 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machi
 {
 	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
 }
-
 LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
 {
-	messenger.printMessage("getLLRFFactory Called");
-	if (!llrffactory.hasBeenSetup)
-	{
-		bool setup = llrffactory.setup("nominal", machineAreas);
-		if (setup)
-		{
-			messenger.printMessage("getLLRFFactory Complete");
-			return llrffactory;
-		}
-		else
-		{
-			messenger.printMessage("Unable to setup LLRFFactory, Hopefully you'll never see this");
-		}
-	}
-	else
-	{
-		messenger.printMessage("getLLRFFactory Complete");
-		return llrffactory;
-	}
+	return getLLRFFactory(machineAreas);
 }
 
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
+	return getMagnetFactory(std::vector<TYPE>{TYPE::ALL_VELA_CLARA});
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(TYPE machineArea)
+{
+	return getMagnetFactory(std::vector<TYPE>{machineArea});
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(const boost::python::list& machineAreas)
+{
+	return getMagnetFactory(to_std_vector<TYPE>(machineAreas));
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machineAreas )
+{
 	if (!magnetFactory.hasBeenSetup)
 	{
-		messenger.printMessage("Setup magnet Factory Nominal");
-		bool setup = magnetFactory.setup("nominal");
+		messenger.printMessage("magnetFactory is being setup");
+		bool setup = magnetFactory.setup(GlobalConstants::nominal, machineAreas);
+
+		// messenger.printMessage("Setup magnet Factory Nominal");
+		// bool setup = magnetFactory.setup("nominal");
+
 		if(setup)
 		{
-			messenger.printMessage("getMagnetFactory Complete");
+			messenger.printMessage("magnetFactory setup complete");
 			return magnetFactory;
 		}
 		else
@@ -166,10 +157,13 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	}
 	else
 	{
-		messenger.printMessage("getMagnetFactory Complete");
+		messenger.printMessage("magnetFactory has already been setup");
 		return magnetFactory;
 	}
 }
+
+
+
 ValveFactory& HardwareFactory::getValveFactory()
 {
 	if (!valveFactory.hasBeenSetup)
@@ -210,6 +204,7 @@ IMGFactory& HardwareFactory::getIMGFactory()
 		return imgFactory;
 	}
 }
+
 
 BPMFactory& HardwareFactory::getBPMFactory()
 {

@@ -7,7 +7,14 @@ controls_information:
     RPOWER: CLA-L01-MAG-SOL-01:RPOWER
     SETI: CLA-L01-MAG-SOL-01:SETI
     SPOWER: CLA-L01-MAG-SOL-01:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    CLA-L01-MAG-SOL-01:K_DIP_P
+    INT_STR_MM: CLA-L01-MAG-SOL-01:INT_STR_MM
+    INT_STR:    CLA-L01-MAG-SOL-01:INT_STR
+    K_SET_P:    CLA-L01-MAG-SOL-01:K_SET_P
+    K_ANG:      CLA-L01-MAG-SOL-01:K_ANG
+    K_MRAD:     CLA-L01-MAG-SOL-01:K_MRAD
+    K_VAL:      CLA-L01-MAG-SOL-01:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 0.5
   degauss_values: "150.0,-150.0,100.0,-100.0,66.0,-66.0,30.0,-30.0,10.0,-10.0,0.0"
@@ -15,7 +22,7 @@ properties:
   hardware_type: Magnet
   machine_area: L01
   mag_set_max_wait_time: 45.0
-  mag_type: SOL
+  mag_type: SOLENOID
   magnetic_length: 726.918205128205
   manufacturer: '"EfremovInstitute"'
   name: CLA-L01-MAG-SOL-01
@@ -24,3 +31,5 @@ properties:
   position: 1.64
   ri_tolerance: 0.1
   serial_number: 08
+  min_i : -150.0
+  max_i : 150.0

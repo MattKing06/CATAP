@@ -134,9 +134,8 @@ namespace LLRFRecords
 	std::string const CH8_PHASE_DER_SCAN = "CH8_PHASE_DER_SCAN";
 	std::string const CH8_PWR_LOC_SCAN = "CH8_PWR_LOC_SCAN";
 
-	std::vector<std::string> llrfRecordList = { KEEP_ALIVE, AMP_FF,
-TRIG_SOURCE
-/*,
+	const std::vector<std::string> llrfRecordList = { KEEP_ALIVE, AMP_FF,
+TRIG_SOURCE,
 AMP_SP,
 PHI_FF,
 PHI_SP,
@@ -263,7 +262,7 @@ CH8_PHASE_REM_ACQM,
 CH8_PHASE_REM,
 CH8_AMP_DER_SCAN,
 CH8_PHASE_DER_SCAN,
-CH8_PWR_LOC_SCAN*/ 
+CH8_PWR_LOC_SCAN 
 };
 
 }

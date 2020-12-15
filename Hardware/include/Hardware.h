@@ -9,6 +9,7 @@
 #include <GlobalStateEnums.h>
 #include <GlobalTypeEnums.h>
 #include "GlobalConstants.h"
+#include "HardwareState.h"
 
 /** @defgroup hardware Hardware
  *  @brief A collection of classes that represent hardware components of VELA/CLARA with parameters defined by configuration files.
@@ -37,7 +38,10 @@ public:
 	TYPE getMachineArea() const;
 	std::string getHardwareTypeStr() const;
 	TYPE getHardwareType() const;
+
 	std::string getHardwareName() const;
+
+
 	STATE getMode() const;
 
 	// TODO: do we need this? can't an child of these class just access pvStructs,
@@ -78,14 +82,20 @@ public:
 
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
-	static std::map<std::string, TYPE> create_map()
-	{
-		std::map<std::string, TYPE> m;
-		m["Magnet"] = TYPE::MAGNET;
-		return m;
-	}
-	static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
+	HardwareState state_IO;
+
+// <<<<<<< HEAD
+
+// =======
+	// static std::map<std::string, TYPE> create_map()
+	// {
+		// std::map<std::string, TYPE> m;
+		// m["Magnet"] = TYPE::MAGNET;
+		// return m;
+	// }
+	// static const std::map<std::string, TYPE> string_to_hardware_type_map;
+// >>>>>>> 57_magnet_llrf_cam_bug_fix_fro_sim-frame_integration
 };
 /** @}*/
 #endif //HARDWARE_H_

@@ -7,7 +7,14 @@ controls_information:
     SETI: EBT-INJ-MAG-VCOR-10:SETI
     RPOWER: EBT-INJ-MAG-HVCOR-01:RPOWER
     SPOWER: EBT-INJ-MAG-HVCOR-01:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    EBT-INJ-MAG-VCOR-10:K_DIP_P
+    INT_STR_MM: EBT-INJ-MAG-VCOR-10:INT_STR_MM
+    INT_STR:    EBT-INJ-MAG-VCOR-10:INT_STR
+    K_SET_P:    EBT-INJ-MAG-VCOR-10:K_SET_P
+    K_ANG:      EBT-INJ-MAG-VCOR-10:K_ANG
+    K_MRAD:     EBT-INJ-MAG-VCOR-10:K_MRAD
+    K_VAL:      EBT-INJ-MAG-VCOR-10:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 0.1
   degauss_values: "6.0,-6.0,4.0,-4.0,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
@@ -15,7 +22,7 @@ properties:
   hardware_type: Magnet
   machine_area: INJ
   mag_set_max_wait_time: 45.0
-  mag_type: VCOR
+  mag_type: VERTICAL_CORRECTOR
   magnetic_length: 182.9665314
   manufacturer: Scanditronix
   name: EBT-INJ-MAG-VCOR-10
@@ -24,3 +31,5 @@ properties:
   position: 16.732
   ri_tolerance: 0.01
   serial_number: 1279-14610-0009
+  min_i : -7.0
+  max_i : 7.0

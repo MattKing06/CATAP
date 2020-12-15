@@ -7,7 +7,14 @@ controls_information:
     RPOWER: CLA-C2V-MAG-QUAD-02:RPOWER
     SETI: CLA-C2V-MAG-QUAD-02:SETI
     SPOWER: CLA-C2V-MAG-QUAD-02:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    CLA-C2V-MAG-QUAD-02:K_DIP_P
+    INT_STR_MM: CLA-C2V-MAG-QUAD-02:INT_STR_MM
+    INT_STR:    CLA-C2V-MAG-QUAD-02:INT_STR
+    K_SET_P:    CLA-C2V-MAG-QUAD-02:K_SET_P
+    K_ANG:      CLA-C2V-MAG-QUAD-02:K_ANG
+    K_MRAD:     CLA-C2V-MAG-QUAD-02:K_MRAD
+    K_VAL:      CLA-C2V-MAG-QUAD-02:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 1.0
   degauss_values: "200.0,-200.0,100.0,-100.0,50.0,-50.0,25.0,-25.0,10.0,-10.0,0.0"
@@ -15,7 +22,7 @@ properties:
   hardware_type: Magnet
   machine_area: C2V
   mag_set_max_wait_time: 45.0
-  mag_type: QUAD
+  mag_type: QUADRUPOLE
   magnetic_length: 121.511900610076
   manufacturer: Danfysik
   name: CLA-C2V-MAG-QUAD-02
@@ -24,3 +31,5 @@ properties:
   position: 6.950148145
   ri_tolerance: 0.1
   serial_number: '13254'
+  min_i : -200.0
+  max_i : 200.0

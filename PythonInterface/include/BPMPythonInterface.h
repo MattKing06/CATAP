@@ -16,8 +16,8 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 		// bpm exposure
 		boost::python::class_<BPM, boost::python::bases<Hardware>, boost::noncopyable>("BPM", boost::python::no_init)
 			.add_property("name", &BPM::getBPMName)
-			.add_property("x", &BPM::getXFromPV)
-			.add_property("y", &BPM::getYFromPV)
+			.add_property("x", &BPM::getXFromPV, &BPM::setXPVVirtual)
+			.add_property("y", &BPM::getYFromPV, &BPM::setYPVVirtual)
 			.add_property("data", &BPM::getData)
 			.add_property("q", &BPM::getQ)
 			.add_property("xpvbuffer", &BPM::getXPVBuffer)

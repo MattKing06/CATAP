@@ -21,7 +21,7 @@
 
 EPICSInterface::EPICSInterface() : 
 thisCaContext(nullptr),
-messenger(LoggingSystem(false, false))
+messenger(LoggingSystem(true, true))
 {
 	int status;
 	/* 
@@ -37,6 +37,9 @@ messenger(LoggingSystem(false, false))
 	}
 
 	thisCaContext = ca_current_context();
+
+	messenger.printDebugMessage("EPICSInterface constuctor ");
+
 }
 
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine):
@@ -97,7 +100,7 @@ void EPICSInterface::detachFrom_thisCaContext()
 //	MY_SEVCHK(status);
 //}
 
-void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
+void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is a better name ?? 
 {
 	try
 	{
@@ -147,7 +150,10 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		std::cout << e.what() << std::endl;
 	}
 
+
 }
+
+
 void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 {
 	if (pvStruct.monitor)
@@ -393,9 +399,11 @@ std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUShortPair
 	std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	dbr_enum_t a = tv->value;
-	//std::cout << "tv->value  = " << a << std::endl;
+	//std::cout << "tv->value  = " << a << " sizeof(a) " << sizeof(a) << std::endl;
 	r.first  = tv->stamp;
 	r.second = (unsigned short)a;
+	//std::cout << "r.second   = " << r.second  << " sizeof(r.second ) " << sizeof(r.second ) << std::endl;
+
 /* 
 	std::pair<epicsTimeStamp, short> r;
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);

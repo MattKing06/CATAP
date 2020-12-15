@@ -12,6 +12,16 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<TYPE>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::enum_<TYPE>("TYPE")
+			//hardware types 
+			.value("MAGNET", TYPE::MAGNET)
+			.value("CHARGE", TYPE::CHARGE)
+			.value("BPM_TYPE", TYPE::BPM_TYPE)
+			.value("VALVE", TYPE::VALVE)
+			.value("IMG_TYPE", TYPE::IMG_TYPE)
+			.value("LLRF_TYPE", TYPE::LLRF_TYPE)
+			.value("SCREEN", TYPE::SCREEN)
+			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE)
+			// screen stuff 
 			.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
 			.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
 			.value("CLARA_HV_MOVER", TYPE::CLARA_HV_MOVER)
@@ -22,7 +32,8 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("VERTICAL", TYPE::VERTICAL)
 			.value("PNEUMATIC", TYPE::PNEUMATIC)
 			.value("UNKNOWN_TYPE", TYPE::UNKNOWN_TYPE)
-			.value("MAGNET", TYPE::MAGNET)
+			
+			// magnet stuff
 			.value("QUADRUPOLE", TYPE::QUADRUPOLE)
 			.value("DIPOLE", TYPE::DIPOLE)
 			//.value("HVCOR", TYPE::HVCOR)
@@ -34,8 +45,6 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("BIPOLAR", TYPE::BIPOLAR)
 			.value("NR_GANGED", TYPE::NR_GANGED)
 			.value("POSITIVE_ONLY", TYPE::POSITIVE_ONLY)
-
-
 			.value("UNKNOWN_AREA", TYPE::UNKNOWN_AREA)
 			.value("ALL_VELA_CLARA", TYPE::ALL_VELA_CLARA)
 			.value("VELA_LASER", TYPE::VELA_LASER)

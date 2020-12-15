@@ -2,10 +2,19 @@
 #define CAMERA_H_
 
 #include <vector>
-#include <Hardware.h>
-#include <EPICSCameraInterface.h>
-#include <GlobalConstants.h>
-#include <GlobalStateEnums.h>
+#ifndef HARDWARE_H_
+#include "Hardware.h"
+#endif //HARDWARE_H_
+
+#ifndef EPICS_CAMERA_INTERFACE_H_ // TODO why do we need an include gaurd here??? 
+#include "EPICSCameraInterface.h"
+#endif //EPICS_CAMERA_INTERFACE_H_
+#include <boost/shared_ptr.hpp>
+#include <vector>
+#include "GlobalConstants.h"
+#include "GlobalTypeEnums.h"
+
+#include "CameraPVRecords.h"
 #include <boost/make_shared.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
@@ -31,7 +40,7 @@ class ImageCapture
 		bool is_busy;
 		STATE status;
 };
-/* shared pointer to epics interface */
+
 class EPICSCameraInterface;
 typedef boost::shared_ptr<EPICSCameraInterface> EPICSCameraInterface_sptr;
 /* main camera object */
@@ -90,6 +99,7 @@ public:
 	/*! Set the pixels to mm in y(horizontal) direction.
 	@param[in] double, new value */
 	double setpix2mmY(double value);
+
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
 	@param[in] double, value 
@@ -597,6 +607,7 @@ public:
 	void messagesOn();
 	/* Disable messages*/
 	void messagesOff();
+
 	friend class EPICSCameraInterface;
 	friend class CameraFactory;
 protected:
@@ -608,6 +619,7 @@ protected:
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
+
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
 	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
@@ -663,6 +675,9 @@ protected:
 	/*! conversion factor for pixels to mm. Value and epicstimestamp. From Epics. */
 	std::pair<epicsTimeStamp, double > pix_to_mm;
 	/*! conversion factor for pixels to mm in the x direction. From Master Lattice. */
+
+	/*! conversion of pixels to mm */
+	std::pair<epicsTimeStamp, double > pix2mm;
 	double pix2mmX_ratio;
 	/*! conversion factor for pixels to mm in the y direction. From Master Lattice. */
 	double pix2mmY_ratio;

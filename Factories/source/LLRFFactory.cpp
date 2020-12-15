@@ -75,7 +75,6 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG_GUN), machineAreas.end());
 		}
 	}
-
 	messenger.printDebugMessage("called LLRF Factory  setup ");
 	if (hasBeenSetup)
 	{
@@ -97,40 +96,43 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	}
 	cutLLRFMapByMachineAreas();
 
-	//setupChannels();
-	//EPICSInterface::sendToEPICS();
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 
 
 	for (auto& llrf : LLRFMap)
 	{
 		// update aliases for valve in map
 		updateAliasNameMap(llrf.second);
+		// update deafult tarce mean indecies 
+		llrf.second.setDefaultPowerTraceMeanTimes();
+		
 		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
-	//	for (auto& pv : pvstruct)
-	//	{
-	//		// sets the monitor state in the pvstruict to true or false
-	//		if (ca_state(pv.second.CHID) == cs_conn)
-	//		{
-	//			retrieveMonitorStatus(pv.second);
-	//			valve.second.epicsInterface->retrieveCHTYPE(pv.second);
-	//			valve.second.epicsInterface->retrieveCOUNT(pv.second);
-	//			valve.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-	//			//// not sure how to set the mask from EPICS yet.
-	//			pv.second.MASK = DBE_VALUE;
-	//			messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-	//				"write", std::to_string(ca_write_access(pv.second.CHID)),
-	//				"state", std::to_string(ca_state(pv.second.CHID)));
-	//			if (pv.second.monitor)
-	//			{
-	//				valve.second.epicsInterface->createSubscription(valve.second, pv.second);
-	//				EPICSInterface::sendToEPICS();
-	//			}
-	//		}
-	//		else
-	//		{
-	//			messenger.printMessage(valve.first, " CANNOT CONNECT TO EPICS");
-	//		}
-	//	}
+		for (auto& pv : pvstruct)
+		{
+			// sets the monitor state in the pvstruict to true or false
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				retrieveMonitorStatus(pv.second);
+				llrf.second.epicsInterface->retrieveCHTYPE(pv.second);
+				llrf.second.epicsInterface->retrieveCOUNT(pv.second);
+				llrf.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
+				//// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.pvRecord, ": read = ", std::to_string(ca_read_access(pv.second.CHID)),
+					", write = ", std::to_string(ca_write_access(pv.second.CHID)),
+					", state = ", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					llrf.second.epicsInterface->createSubscription(llrf.second, pv.second);
+					EPICSInterface::sendToEPICS();
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
+			}
+		}
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
@@ -214,7 +216,6 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 	}
 	size_t end_size = LLRFMap.size();
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas LLRFMap.size() went from ", start_size," to ", end_size);
-
 }
 
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
@@ -247,6 +248,53 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 	}
 }
 
+void LLRFFactory::setupChannels()
+{
+	for (auto& device : LLRFMap)
+	{
+		messenger.printMessage(device.second.getHardwareName(), " getting pvStructs.");
+		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			// thsi is connecting to a CHID
+			device.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+	EPICSInterface::sendToEPICS();
+	size_t count = 0;
+	size_t error_count = 0;
+	for (auto& device : LLRFMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			++count;
+			++error_count;
+			// this is connecting to a CHID
+			channel_state state = ca_state(pv.second.CHID);
+			switch (state)
+			{
+			case cs_never_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_never_conn");
+				break;
+			case cs_prev_conn:
+				messenger.printMessage(pv.second.fullPVName, " cs_prev_conn");
+				break;
+			case cs_conn:
+				--error_count;
+				//messenger.printMessage(pv.second.fullPVName, " cs_conn");
+				break;
+			case cs_closed:
+				messenger.printMessage(pv.second.fullPVName, " cs_closed");
+				break;
+			default:
+				messenger.printMessage("!!! Unexpected error while searching ca_state: ");
+			}
+		}
+	}
+	messenger.printMessage("Checking CHID state for connection errors... Found ", error_count,
+		" / ", count, " errors.");
+}
 
 
 std::vector<std::string> LLRFFactory::getLLRFNames()
@@ -277,13 +325,13 @@ LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
 
 std::string LLRFFactory::getFullName(const std::string& name_to_check) const
 {
-	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	std::cout << "getFullName looking for " << name_to_check << std::endl;
 	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
 	{
-		//std::cout << name_to_check << " found " << std::endl;
+		std::cout << name_to_check << " found " << std::endl;
 		return alias_name_map.at(name_to_check);
 	}
-	//std::cout << name_to_check << " NOT found " << std::endl;
+	std::cout << name_to_check << " NOT found " << std::endl;
 	return dummy_llrf.getHardwareName();
 }
 
@@ -681,7 +729,19 @@ bool LLRFFactory::setTraceDataBufferSize(const std::string& llrf_name, const std
 
 
 
+void LLRFFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+{
+	if (GlobalFunctions::entryExists(pv_to_monitor, pvStruct.pvRecord))
+	{
+		messenger.printMessage("Monitor ", pvStruct.pvRecord);
+		pvStruct.monitor = true;
+	}
+	else
+	{
+		pvStruct.monitor = false;
+	}
 
+}
 
 void LLRFFactory::debugMessagesOn()
 {

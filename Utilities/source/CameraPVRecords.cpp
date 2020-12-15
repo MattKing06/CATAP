@@ -60,6 +60,7 @@ namespace CameraRecords
 	std::string const ANA_CovXY_RBV = "ANA_CovXY_RBV";
 	std::string const ANA_AvgIntensity_RBV = "ANA_AvgIntensity_RBV";
 	std::string const ANA_Intensity_RBV = "ANA_Intensity_RBV";
+
 	std::string const ANA_XPix_RBV = "ANA_XPix_RBV";
 	std::string const ANA_YPix_RBV = "ANA_YPix_RBV";
 	std::string const ANA_SigmaXPix_RBV = "ANA_SigmaXPix_RBV";
@@ -300,5 +301,4 @@ namespace CameraRecords
 	};
 
 };
-
 

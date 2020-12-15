@@ -13,10 +13,10 @@ ChargeFactory::ChargeFactory() : ChargeFactory(STATE::OFFLINE)
 	std::cout << "ChargeFactory DEFAULT constRUCTOR called " << std::endl;
 }
 
-ChargeFactory::ChargeFactory(STATE mode):
-mode(mode),
-hasBeenSetup(false),
-reader(ConfigReader("Charge", mode))
+ChargeFactory::ChargeFactory(STATE mode) :
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("Charge", mode))
 {
 	messenger = LoggingSystem(false, false);
 	//hasBeenSetup = false;
@@ -95,7 +95,7 @@ void ChargeFactory::setupChannels()
 	}
 }
 
-bool ChargeFactory::setup(const std::string &VERSION)
+bool ChargeFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)
 	{
@@ -138,8 +138,8 @@ bool ChargeFactory::setup(const std::string &VERSION)
 			else
 			{
 				messenger.printMessage(charge.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
 	}
@@ -151,7 +151,7 @@ bool ChargeFactory::setup(const std::string &VERSION)
 std::map<std::string, Charge> ChargeFactory::getChargeDiagnostics(std::vector<std::string> chargeNames)
 {
 	std::map<std::string, Charge> selectedCharges;
-	for (auto & chargeName : chargeNames)
+	for (auto& chargeName : chargeNames)
 	{
 		selectedCharges[chargeName] = chargeMap.find(chargeName)->second;
 	}
@@ -187,6 +187,24 @@ std::string ChargeFactory::getChargeDiagnosticName(const std::string& name)
 		return chargeMap.find(name)->second.getName();
 	}
 	return "0";
+}
+
+std::vector<std::string> ChargeFactory::getAllChargeDiagnosticNames()
+{
+	std::vector<std::string> chargenames;
+	if (!hasBeenSetup)
+	{
+		this->setup("nominal");
+	}
+	else
+	{
+		for (auto& it : chargeMap)
+		{
+			chargenames.push_back(it.first);
+		}
+		return chargenames;
+	}
+	return chargenames;
 }
 
 void ChargeFactory::setBufferSize(const std::string& name, const size_t& value)
@@ -373,7 +391,7 @@ std::map<std::string, boost::circular_buffer< double > > ChargeFactory::getQBuff
 std::map<std::string, double> ChargeFactory::getAllQ()
 {
 	std::map<std::string, double> chargeAndQMap;
-	for (auto charge: chargeMap)
+	for (auto charge : chargeMap)
 	{
 		std::pair<std::string, double> nameAndQPair = std::make_pair(charge.first, charge.second.getQ());
 		chargeAndQMap.insert(nameAndQPair);
@@ -492,6 +510,13 @@ boost::python::dict ChargeFactory::getAllQBuffer_Py()
 	std::map<std::string, boost::circular_buffer< double > > qvals = getAllQBuffer();
 	boost::python::dict newPyDict = to_py_dict(qvals);
 	return newPyDict;
+}
+
+boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
+{
+	std::vector<std::string> allnames = getAllChargeDiagnosticNames();
+	boost::python::list newPyList = to_py_list(allnames);
+	return newPyList;
 }
 
 boost::python::dict ChargeFactory::getAllPosition_Py()

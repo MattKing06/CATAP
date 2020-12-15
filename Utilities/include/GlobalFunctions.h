@@ -12,8 +12,9 @@
 #include <thread>
 #include <sstream>
 #include <iomanip> 
+#include <iterator>
 #include "GlobalConstants.h"
-
+#include "GlobalTypeEnums.h"
 
 /*! @addtogroup utils*/
 /*!@{*/
@@ -23,7 +24,7 @@
 	These can be used within any class and were written for ease-of-use.
 */
 
-namespace GlobalFunctions{
+namespace GlobalFunctions {
 
     /*
             We often check if entries exist in maps,
@@ -69,16 +70,6 @@ namespace GlobalFunctions{
 			return false;
 		}
 	}
-
-	//template<class T>
-    //bool entryExists(const std::map<std::string, T>& m, std::string& name)
-    //{
-    //    bool ret = false;
-    //    auto it = m.find(name);
-    //    if (it != m.end())
-    //        ret = true;
-    //    return ret;
-    //}
 
 	template<typename T = int>
 	bool areSame(const std::vector<T> a, const std::vector<T> b, const T epsilon = 0) 
@@ -141,8 +132,28 @@ namespace GlobalFunctions{
 	//	double p = pow(UTL::TEN_DOUBLE, (double)n);
 	//	return std::round(a * p) / p;
 	//}
+
 	/* what time is is? */
 	extern time_t timeNow();
+
+
+	template<typename T = int>
+	std::string toString(const std::vector<T>& vec)
+	{
+		std::ostringstream oss;
+		if (!vec.empty())
+		{
+			// Convert all but the last element to avoid a trailing ","
+			std::copy(vec.begin(), vec.end() - 1, std::ostream_iterator<T>(oss, ","));
+			// Now add the last element with no delimiter
+			oss << vec.back();
+		}
+		return oss.str();
+	}
+
+
+	extern bool stringIsSubString(const std::string& stringToCheck, 
+		const std::string& stringToLookFor);
 
 	extern std::string getTimeAndDateString();
 
@@ -209,7 +220,13 @@ namespace GlobalFunctions{
 	void pause_1()   ;
 
 
-	bool isInMachineArea(TYPE testArea, TYPE area);
+
+	extern TYPE stringToType(const std::string& string_to_compare);
+
+	// isInMahineArea
+
+	extern bool isInMachineArea(TYPE testArea, TYPE area);
+
 
 
 }

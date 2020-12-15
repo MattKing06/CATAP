@@ -1,10 +1,7 @@
 #ifndef GLOBAL_TYPE_ENUMS_H_
 #define GLOBAL_TYPE_ENUMS_H_
-
 #include <boost/preprocessor.hpp>
 #include <string>
-
-
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //                                                                            \
     /// This macro creates an enum and also enables us to                     \
@@ -36,18 +33,24 @@
 
 
 /*
-						**************** README *********************
-						**************** README *********************
-						**************** README *********************
-						**************** README *********************
-						**************** README *********************
+  ___ ___   _   ___  __  __ ___
+ | _ \ __| /_\ |   \|  \/  | __|
+ |   / _| / _ \| |) | |\/| | _|
+ |_|_\___/_/ \_\___/|_|  |_|___|
+
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
 	
 	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
-		 
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalTypesPythonInterface.h
+	 
 	IF ADDING A MACHINE_AREA THAT IS AN AGGREGATE OF MANY AREAS UPDATE  GlobalfUNCTIONS::isInMachineArea
 
 		AND the python exposure functions
 
+	IF ADDING A MACHINE_AREA THAT IS AN AGGREGATE OF MANY AREAS UPDATE  GlobalFunctions::isInMachineArea
 */
 DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
 	(UNKNOWN_TYPE)

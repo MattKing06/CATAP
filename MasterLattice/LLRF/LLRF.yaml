@@ -138,9 +138,16 @@ properties:
     name: UNKNOWN
     virtual_name: UNKNOWN
     name_alias: UNKNOWN1,UNKNOWN2
-    chanel_to_trace_map : element1,element2,element3
-  
-  
+    crest_phase : 143.2
+    kfpow_mean_start_time : 0.0
+    kfpow_mean_end_time : 0.0
+    krpow_mean_start_time : 0.0
+    krpow_mean_end_time : 0.0
+    cfpow_mean_start_time : 0.0
+    cfpow_mean_end_time : 0.0
+    crpow_mean_start_time : 0.0
+    crpow_mean_end_time : 0.0
+
   
   
   

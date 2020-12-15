@@ -119,7 +119,7 @@ properties:
     name : CLA-S01-DIA-CAM-01
     name_alias: S01-CAM-01,S01-CAM1,S01-CAM-1  # include screen names here as well 
     CAM_TYPE : CLARA_CAM 
-    SCREEN_NAME : S01-SCR-01,S01-YAG-01,S01-SCR-1,S01-YAG-1 # which screen is the camera looking at 
+    SCREEN_NAME : CLA-S01-DIA-SCR-01,S01-YAG-01,S01-SCR-1,S01-YAG-1 # which screen is the camera looking at 
     IP_ADDRESS_STREAM : "" 
     MAX_SHOTS_NUMBER  :	600 # max number of shots that can be taken in a single burst 
     ## these are the indices of each value in the array PixelResults_RBV

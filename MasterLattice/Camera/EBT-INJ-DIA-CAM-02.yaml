@@ -100,6 +100,7 @@ controls_information:
         HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-02:HDF:FilePath_RBV
         HDF_FileName_RBV    : EBT-INJ-DIA-CAM-02:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-02:HDF:WriteFile
+
         # MAGICK_FileName    : EBT-INJ-DIA-CAM-02:MAGICK:FileName
         # MAGICK_FilePath    : EBT-INJ-DIA-CAM-02:MAGICK:FilePath
         # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-02:MAGICK:FileNumber
