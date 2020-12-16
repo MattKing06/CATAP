@@ -1,13 +1,17 @@
 #ifndef EPICS_CAMERA_INTERFACE_H_
 #define EPICS_CAMERA_INTERFACE_H_
+#ifndef EPICS_INTERFACE_H_
 #include "EPICSInterface.h"
 #endif 
 #include "Camera.h"
 #include <iostream>
 #include <GlobalStateEnums.h>
 
+// forward declaratiOn of Magnet class
+// tells compiler that we will use this class.
 class Camera;
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
+
 class EPICSCameraInterface : public EPICSInterface
 {
 public:
@@ -38,7 +42,7 @@ public:
     static void update_ANA_EnableCallbacks_RBV(const struct event_handler_args args);
     static void update_ANA_X_RBV(const struct event_handler_args args);
     static void update_ANA_Y_RBV(const struct event_handler_args args);
-    static void update_ANA_SigmaX_RBV(const struct event_handler_args args);        
+    static void update_ANA_SigmaX_RBV(const struct event_handler_args args);
     static void update_ANA_SigmaY_RBV(const struct event_handler_args args);
     static void update_ANA_CovXY_RBV(const struct event_handler_args args);
     static void update_ANA_AvgIntensity_RBV(const struct event_handler_args args);
@@ -90,12 +94,10 @@ public:
     static void update_ANA_UseNPoint(const struct event_handler_args args);
     //static void update_ANA_PixMM_RBV(const struct event_handler_args args);
     static void update_LED_Sta(const struct event_handler_args args);
-    
+
     static void update_BlackLevel_RBV(const struct event_handler_args args);
     static void update_Gain_RBV(const struct event_handler_args args);
 
 
- };
-
-
+};
 #endif //EPICS_CAMERA_INTERFACE_H_

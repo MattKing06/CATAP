@@ -927,17 +927,13 @@ private:
 	void cutLHarwdareMapByNames(const std::vector<std::string>& names);
 	/*! set up connections to epics */
 	void setupChannels();
-	/* sets the pvStruct monitor flag to true if the record is hardcoded as a record to monitor */
+	/*! sets the pvStruct monitor flag to true if the record is hardcoded as a record to monitor 
+	@param[in] pvStruct, pvStruct to set monitor status for */
 	void setMonitorStatus(pvStruct& pvStruct);
 		
 	std::map<std::string, Camera> camera_map;
 	
 
-	/* defines whether a PV is montiored or now */
-	void setMonitorStatus(pvStruct& pvStruct);
-
-
-	void setupChannels();
 
 	std::vector<TYPE> machineAreas;
 
