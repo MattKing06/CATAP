@@ -69,7 +69,7 @@ class TraceData
 		size_t  trace_data_size;
 		// the state of the scan and acqm 
 		STATE scan, acqm;
-		LLRFInterlock interlock;
+		LLRFInterlock interlock; // these are the LLRF interlocks not the "global" 
 };
 
 
@@ -284,6 +284,20 @@ protected:
 	std::pair<epicsTimeStamp, double > amp_MW;
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
+	
+	
+	
+	/*! State of the LLRF trigger, value and epicstimestamp 	*/
+	std::pair<epicsTimeStamp, STATE> trig_state;
+
+
+
+
+
+
+	/* pointer to dbr_time_stuct, used to get timestmp for images*/
+	/* image_data vector to hold image data */
+	std::pair<epicsTimeStamp, struct dbr_time_long*> all_trace_data;
 
 	// special case for the HRRG_GUN and LRRG_GUN
 	void setMachineArea(const TYPE area);

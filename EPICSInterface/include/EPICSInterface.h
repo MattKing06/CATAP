@@ -190,6 +190,11 @@ public:
 		// map_ilck_pvstruct& ILockPVStructs,
 	);
 
+
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, bool pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	 * @param[in] pairToUpdate : :pair<epicsTimeStamp, bool objetc to update */
+	static void updateTimeStampBoolPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, bool>& pairToUpdate);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);

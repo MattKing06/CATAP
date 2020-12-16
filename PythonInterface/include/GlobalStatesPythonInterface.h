@@ -100,7 +100,9 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("ZERO_POINT_ZERO_FIVE", STATE::ZERO_POINT_ZERO_FIVE)
 			.value("NOW", STATE::NOW)		    
 			.value("EXTERNAL", STATE::EXTERNAL)
-			.value("INTERNAL", STATE::INTERNAL)  
+			.value("INTERNAL", STATE::INTERNAL)
+			.value("NOT_ACTIVE", STATE::NOT_ACTIVE)
+			.value("ACTIVE", STATE::ACTIVE)
 
 			;
 	}

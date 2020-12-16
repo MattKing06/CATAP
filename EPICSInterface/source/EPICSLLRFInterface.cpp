@@ -48,31 +48,59 @@ void EPICSLLRFInterface::update_AMP_FF(const struct event_handler_args args)
 }
 void EPICSLLRFInterface::update_TRIG_SOURCE(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_TRIG_SOURCE");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_int* tv = (const struct dbr_time_int*)(args.dbr);
+	recastLLRF->trig_state.first = tv->stamp;
+	switch (tv->value)
+	{
+	case 0:		recastLLRF->trig_state.second = STATE::OFF; break;
+	case 1:		recastLLRF->trig_state.second = STATE::EXTERNAL; break;
+	case 2:		recastLLRF->trig_state.second = STATE::INTERNAL; break;
+	}
+	messenger.printDebugMessage("update_TRIG_SOURCE FOR: " + recastLLRF->getHardwareName(), 
+		" ", recastLLRF->trig_state.second);
 }
 void EPICSLLRFInterface::update_AMP_SP(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_AMP_SP");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateTimeStampDoublePair(args, recastLLRF->amp_sp);
+	messenger.printDebugMessage("update_AMP_SP FOR: " + recastLLRF->getHardwareName(), 
+		" ", recastLLRF->amp_sp.second);
 }
 void EPICSLLRFInterface::update_PHI_FF(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_PHI_FF");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateTimeStampDoublePair(args, recastLLRF->phi_ff);
+	messenger.printDebugMessage("update_PHI_FF FOR: " + recastLLRF->getHardwareName(),
+		" ", recastLLRF->phi_ff.second);
 }
 void EPICSLLRFInterface::update_PHI_SP(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_PHI_SP");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateTimeStampDoublePair(args, recastLLRF->phi_ff);
+	messenger.printDebugMessage("update_PHI_SP FOR: " + recastLLRF->getHardwareName(),
+		" ", recastLLRF->phi_sp.second);
 }
 void EPICSLLRFInterface::update_RF_OUTPUT(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_RF_OUTPUT");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateTimeStampBoolPair(args, recastLLRF->rf_output);
+	messenger.printDebugMessage("update_RF_OUTPUT FOR: " + recastLLRF->getHardwareName(),
+		" ", recastLLRF->phi_sp.second);
 }
 void EPICSLLRFInterface::update_FF_PHASE_LOCK_STATE(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_FF_PHASE_LOCK_STATE");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateTimeStampBoolPair(args, recastLLRF->ff_phase_lock);
+	messenger.printDebugMessage("update_FF_PHASE_LOCK_STATE FOR: " + recastLLRF->getHardwareName(),
+		" ", recastLLRF->ff_phase_lock.second);
 }
 void EPICSLLRFInterface::update_FF_AMP_LOCK_STATE(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_FF_AMP_LOCK_STATE");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateTimeStampBoolPair(args, recastLLRF->ff_amp_lock);
+	messenger.printDebugMessage("update_FF_AMP_LOCK_STATE FOR: " + recastLLRF->getHardwareName(),
+		" ", recastLLRF->ff_amp_lock.second);
 }
 void EPICSLLRFInterface::update_TIME_VECTOR(const struct event_handler_args args)
 {
@@ -88,18 +116,33 @@ void EPICSLLRFInterface::update_PULSE_LENGTH(const struct event_handler_args arg
 }
 void EPICSLLRFInterface::update_INTERLOCK(const struct event_handler_args args)
 {
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	recastLLRF->interlock_state.first = tv->stamp;
+	switch (tv->value)
+	{
+	case 0:
+		recastLLRF->interlock_state.second = STATE::NON_ACTIVE;
+		break;
+	case 1:
+		recastLLRF->interlock_state.second = STATE::ACTIVE;
+		break;
+	default:
+		recastLLRF->interlock_state.seconde = STATE::UNKNOWN;
+	}
 	messenger.printDebugMessage("update_INTERLOCK");
 }
 void EPICSLLRFInterface::update_PULSE_SHAPE(const struct event_handler_args args)
 {
 	messenger.printDebugMessage("update_PULSE_SHAPE");
 }
+
+
+// probably don't need this 
 void EPICSLLRFInterface::update_PULSE_SHAPE_APPLY(const struct event_handler_args args)
 {
 	messenger.printDebugMessage("update_PULSE_SHAPE_APPLY");
 }
-
-
 
 void EPICSLLRFInterface::update_LLRF_TRACES(const struct event_handler_args args)
 {

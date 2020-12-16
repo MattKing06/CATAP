@@ -147,7 +147,7 @@ properties:
     cfpow_mean_end_time : 0.0
     crpow_mean_start_time : 0.0
     crpow_mean_end_time : 0.0
-
+    trace_data_size : 1017
   
   
   

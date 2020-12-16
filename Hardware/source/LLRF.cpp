@@ -60,14 +60,14 @@ enable(copy_obj.enable)
 LLRFInterlock::~LLRFInterlock(){}
 
 LLRF::LLRF() :
-trace_data_size(1017)// TODOD hardcoded int
+trace_data_size(1017)// TODD hardcoded int
 {
 }
 
 LLRF::LLRF(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
 	crest_phase(std::stof(paramMap.find("crest_phase")->second)),
-	trace_data_size(1017),// TODOD hardcoded int
+	trace_data_size(std::stof(paramMap.find("trace_data_size")->second)),// TODOD hardcoded int
 	// calls copy constructor and destroys 
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
@@ -1016,9 +1016,6 @@ bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size
 	}
 	return false;
 }
-
-
-
 void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
 {
 	// for each cavity there are dummy traces,
@@ -1090,8 +1087,6 @@ void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
 	}
 	addDummyTrace(paramMap, "time_vector", time_vector);
 }
-
-
 void LLRF::addDummyTrace(const std::map<std::string, std::string>& paramMap, const std::string& trace_name, std::vector< double>& trace_to_update)
 {
 	std::vector<std::string> dummy_trace_string;
@@ -1162,8 +1157,6 @@ std::string LLRF::getTraceFromChannelData(const std::string& channel_data) const
 	
 	return "";
 }
-
-
 
 std::map<std::string, std::string> LLRF::getLLRFStateMap()const
 {
@@ -1256,9 +1249,114 @@ std::map<std::string, std::string> LLRF::getLLRFStateMap()const
 //}
 
 
+/*
+		Getting image data:
+
+		What I want to achieve:
+
+		Get camera image data without any extra copying
+		Have the data in a container that can (easily) be seen in python without copying
+		Get time stamped data
+
+		It seems out that acheiving all 3 at once is not obvious
+		Proposed solution (which is not perfect and has flaws)
+
+		Function to get time stamp (fast as possible)
+		Function to update data into a vector
+		Vector exposed to python for access without copying
+		Function to get data will copy data into a python list
+*/
+/* memory shenanigans so its only used for large image arrays when requested */
 
 
 
+//
+//bool Camera::vector_resize(std::vector<long>& vec)
+//{
+//	vec.resize(array_data_pixel_count);
+//	return vec.size() == array_data_pixel_count;
+//}
+//void Camera::malloc_imagedata()
+//{
+//	/*	allocate memory for dbr_image_data, array pointer 	*/
+//	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, array_data_pixel_count);
+//	dbr_image_data = (struct dbr_time_long*)malloc(nBytes);
+//	messenger.printDebugMessage(hardwareName, " dbr_image_data pointer allocated ", nBytes, " BYTES ");
+//	image_data_has_not_malloced = false;
+//}
+//void Camera::malloc_roidata()
+//{
+//	/*		allocate memory for dbr_roi_data, array pointer  	*/
+//	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, array_data_pixel_count);
+//	dbr_roi_data = (struct dbr_time_long*)malloc(nBytes);
+//	messenger.printDebugMessage(hardwareName, " dbr_roi_data pointer allocated ", nBytes, " BYTES ");
+//	roi_data_has_not_malloced = false;
+//}
+//bool Camera::updateImageData()
+//{
+//	if (image_data_has_not_vector_resized)
+//	{
+//		messenger.printDebugMessage("vector_resize for image_data ");
+//		vector_resize(image_data.second);
+//		if (image_data.second.size() == array_data_pixel_count)
+//		{
+//			image_data_has_not_vector_resized = false;
+//		}
+//		else
+//		{
+//			image_data_has_not_vector_resized = true;
+//		}
+//	}
+//	if (!image_data_has_not_vector_resized)
+//	{
+//		auto start = std::chrono::high_resolution_clock::now();
+//		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
+//		//	, image_data.first);
+//		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
+//			, image_data.second.size());
+//		auto stop = std::chrono::high_resolution_clock::now();
+//		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+//		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+//		return got_value;
+//	}
+//	else {
+//		messenger.printDebugMessage("!!ERROR!! image_data_has_not_vector_resized = ", image_data_has_not_vector_resized);
+//	}
+//	return false;
+//}
+//bool Camera::updateImageDataWithTimeStamp()
+//{
+//	if (image_data_has_not_malloced)
+//	{
+//		messenger.printDebugMessage("calling malloc_imagedata");
+//		malloc_imagedata();
+//	}
+//	if (image_data_has_not_vector_resized)
+//	{
+//		messenger.printDebugMessage("vector_resize for image_data ");
+//		image_data_has_not_vector_resized = !vector_resize(image_data.second);
+//	}
+//	if (!image_data_has_not_vector_resized && !image_data_has_not_malloced)
+//	{
+//		auto start = std::chrono::high_resolution_clock::now();
+//		bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
+//			, image_data.first);
+//		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
+//			, image_data.second.size());
+//		auto stop = std::chrono::high_resolution_clock::now();
+//		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+//		messenger.printDebugMessage("updateImageDataWithTimeStamp Time taken: ", duration.count(), " us");
+//		return got_stamp && got_value;
+//	}
+//	else {
+//		messenger.printDebugMessage("!!ERROR!! image_data_has_not_vector_resized = ", image_data_has_not_vector_resized);
+//		messenger.printDebugMessage("!!ERROR!! image_data_has_not_malloced = ", image_data_has_not_malloced);
+//	}
+//
+//	return false;
+//}
+//
+//
 
 
 
@@ -1307,8 +1405,6 @@ std::string LLRF::fullLLRFTraceName(const std::string& name_in)const
 	{
 		name = CAVITY_PROBE_PHASE;
 	}
-
-
 	if (machine_area == TYPE::HRRG_GUN )
 	{
 		if (name == CAVITY_REVERSE_PHASE)

@@ -120,8 +120,27 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machi
 }
 LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
 {
-	return getLLRFFactory(machineAreas);
+	messenger.printMessage("getLLRFFactory Called");
+	if (!llrffactory.hasBeenSetup)
+	{
+		bool setup = llrffactory.setup("nominal", machineAreas);
+		if (setup)
+		{
+			return llrffactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup LLRFFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		return llrffactory;
+	}
 }
+
+
+
 
 MagnetFactory& HardwareFactory::getMagnetFactory()
 {
@@ -234,7 +253,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		bool setup = chargeFactory.setup("nominal");
 		if (setup)
 		{
-			messenger.printMessage("getLLRFFactory Complete");
+			messenger.printMessage("getChargeFactory Complete");
 			return chargeFactory;
 		}
 		else

@@ -149,7 +149,7 @@ properties:
     CH6 :  HRRG_CAVITY_PROBE
     CH7 :  CALIBRATION
     CH8 :  HRRG_CAVITY_PROBE
-
+    trace_data_size : 1017
     # These numbers are which "part" of the one record concatented trace 
     ONE_RECORD_KLYSTRON_FORWARD_POWER : 1
     ONE_RECORD_KLYSTRON_FORWARD_PHASE : 2
