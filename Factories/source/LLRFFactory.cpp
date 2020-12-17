@@ -67,12 +67,12 @@ bool LLRFFactory::setup(const std::string& version, const boost::python::list& m
 bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	machineAreas = machineAreas_IN;
-	// we CANNOT HAVE HRRG_GUN AND LRG_GUN, default to LRRG_GUN
-	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+	// we CANNOT HAVE HRRG AND LRRG, default to LRRG
+	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG))
 	{
-		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
 		{
-			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG_GUN), machineAreas.end());
+			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG), machineAreas.end());
 		}
 	}
 	messenger.printDebugMessage("called LLRF Factory  setup ");
@@ -179,15 +179,15 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 			// if this returns true then we should keep the LLRF and can break out the for loop 
 			else if(it->second.getMachineArea() == TYPE::GUN )
 			{
-				if (GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+				if (GlobalFunctions::entryExists(machineAreas, TYPE::HRRG))
 				{
-					it->second.setMachineArea(TYPE::HRRG_GUN);
+					it->second.setGunType(TYPE::HRRG);
 					should_erase = false;
 					break;
 				}
-				else if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
 				{
-					it->second.setMachineArea(TYPE::LRRG_GUN);
+					it->second.setGunType(TYPE::LRRG);
 					should_erase = false;
 					break;
 				}
@@ -200,7 +200,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 			{ 
 			
 			}
-			it->second.setMachineArea(it->second.getMachineArea());
+			//it->second.setMachineArea(it->second.getMachineArea());
 		}
 		// if should_erase is still true, erase object from  magnetMap
 		if (should_erase)

@@ -63,8 +63,10 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("VELA_INJ", TYPE::VELA_INJ)
 			.value("VELA_GUN", TYPE::VELA_GUN)
 			.value("CLARA_GUN", TYPE::CLARA_GUN)
-			.value("HRRG_GUN", TYPE::HRRG_GUN)
-			.value("LRRG_GUN", TYPE::LRRG_GUN)
+			.value("HRRG_GUN", TYPE::HRRG) // Typo get rid
+			.value("LRRG_GUN", TYPE::LRRG) // Typo get rid
+			.value("HRRG", TYPE::HRRG)
+			.value("LRRG", TYPE::LRRG)
 			.value("CLARA_PH1", TYPE::CLARA_PH1)
 			.value("CLARA_2_BA1", TYPE::CLARA_2_BA1)
 			.value("CLARA_2_BA1_BA2", TYPE::CLARA_2_BA1_BA2)

@@ -262,7 +262,7 @@ void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& ar
 void EPICSInterface::updateTimeStampBoolPair(const struct event_handler_args& args,
 	std::pair<epicsTimeStamp, bool>& pairToUpdate)
 {
-	const struct dbr_time_int* tv = (const struct dbr_time_int*)(args.dbr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	if(tv->value == GlobalConstants::one_int)
 	{
 		pairToUpdate.second = true;
@@ -271,7 +271,7 @@ void EPICSInterface::updateTimeStampBoolPair(const struct event_handler_args& ar
 	{
 		pairToUpdate.second = false;
 	}
-	pairToUpdate.second = tv->stamp;
+	pairToUpdate.first = tv->stamp;
 }
 
 void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,

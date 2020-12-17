@@ -37,8 +37,8 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::VELA), TYPE::VELA},
 		{ENUM_TO_STRING(TYPE::VELA_GUN), TYPE::VELA_GUN},
 		{ENUM_TO_STRING(TYPE::CLARA_GUN), TYPE::CLARA_GUN},
-		{ENUM_TO_STRING(TYPE::HRRG_GUN), TYPE::HRRG_GUN},
-		{ENUM_TO_STRING(TYPE::LRRG_GUN), TYPE::LRRG_GUN},
+		{ENUM_TO_STRING(TYPE::HRRG), TYPE::HRRG},
+		{ENUM_TO_STRING(TYPE::LRRG), TYPE::LRRG},
 		{ENUM_TO_STRING(TYPE::GUN), TYPE::GUN},
 		{ENUM_TO_STRING(TYPE::L01), TYPE::L01},
 		{ENUM_TO_STRING(TYPE::S01), TYPE::S01},
@@ -227,10 +227,10 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::USING_NPOINT), STATE::USING_NPOINT},
 			{ENUM_TO_STRING(STATE::NOT_USING_NPOINT), STATE::NOT_USING_NPOINT},
 			{ENUM_TO_STRING(STATE::USING_BACKGROUND), STATE::USING_BACKGROUND},
-			{ENUM_TO_STRING(STATE::NOT_USING_BACKGROUND), STATE::NOT_USING_BACKGROUND}
-			{ENUM_TO_STRING(STATE::ACTIVE), STATE::ACTIVE}
-			{ENUM_TO_STRING(STATE::NOT_ACTIVE), STATE::NOT_ACTIVE}
-			{ENUM_TO_STRING(STATE::INTERNAL), STATE::INTERNAL}
+			{ENUM_TO_STRING(STATE::NOT_USING_BACKGROUND), STATE::NOT_USING_BACKGROUND},
+			{ENUM_TO_STRING(STATE::ACTIVE), STATE::ACTIVE},
+			{ENUM_TO_STRING(STATE::NOT_ACTIVE), STATE::NOT_ACTIVE},
+			{ENUM_TO_STRING(STATE::INTERNAL), STATE::INTERNAL},
 			{ENUM_TO_STRING(STATE::EXTERNAL), STATE::EXTERNAL}
 	};
 
@@ -389,89 +389,110 @@ namespace GlobalConstants
 	const std::string  CFPHA = "CFPHA";
 
 
+	const std::string 	CH1_PWR_REM_SCAN   = "CH1_PWR_REM_SCAN";
+	const std::string 	CH1_PWR_REM_ACQM   = "CH1_PWR_REM_ACQM";
+	const std::string 	CH1_PWR_REM		   = "CH1_PWR_REM";
+	const std::string 	CH1_PHASE_REM_SCAN = "CH1_PHASE_REM_SCAN";
+	const std::string 	CH1_PHASE_REM_ACQM = "CH1_PHASE_REM_ACQM";
+	const std::string 	CH1_PHASE_REM	   = "CH1_PHASE_REM";
+	const std::string 	CH1_AMP_DER_SCAN   = "CH1_AMP_DER_SCAN";
+	const std::string 	CH1_AMP_DER_ACQM   = "CH1_AMP_DER_ACQM";
+	const std::string 	CH1_PHASE_DER_SCAN = "CH1_PHASE_DER_SCAN";
+	const std::string 	CH1_PHASE_DER_ACQM = "CH1_PHASE_DER_ACQM";
+	const std::string 	CH1_PWR_LOC_SCAN   = "CH1_PWR_LOC_SCAN";
+	const std::string 	CH1_PWR_LOC_ACQM   = "CH1_PWR_LOC_ACQM";
 
-	const std::string CH1_PWR_REM_SCAN   = "CH1_PWR_REM_SCAN";
-	const std::string CH1_PHASE_REM_SCAN = "CH1_PHASE_REM_SCAN";
-	const std::string CH1_PHASE_DER_SCAN = "CH1_PHASE_DER_SCAN";
-	const std::string CH1_AMP_DER_SCAN   = "CH1_AMP_DER_SCAN";
-	const std::string CH1_PWR_LOC_SCAN   = "CH1_PWR_LOC_SCAN";
+	const std::string 	CH2_PWR_REM_SCAN = "CH2_PWR_REM_SCAN";
+	const std::string 	CH2_PWR_REM_ACQM = "CH2_PWR_REM_ACQM";
+	const std::string 	CH2_PWR_REM = "CH2_PWR_REM";
+	const std::string 	CH2_PHASE_REM_SCAN = "CH2_PHASE_REM_SCAN";
+	const std::string 	CH2_PHASE_REM_ACQM = "CH2_PHASE_REM_ACQM";
+	const std::string 	CH2_PHASE_REM = "CH2_PHASE_REM";
+	const std::string 	CH2_AMP_DER_SCAN = "CH2_AMP_DER_SCAN";
+	const std::string 	CH2_AMP_DER_ACQM = "CH2_AMP_DER_ACQM";
+	const std::string 	CH2_PHASE_DER_SCAN = "CH2_PHASE_DER_SCAN";
+	const std::string 	CH2_PHASE_DER_ACQM = "CH2_PHASE_DER_ACQM";
+	const std::string 	CH2_PWR_LOC_SCAN = "CH2_PWR_LOC_SCAN";
+	const std::string 	CH2_PWR_LOC_ACQM = "CH2_PWR_LOC_ACQM";
 
-	const std::string CH2_PHASE_REM_SCAN = "CH2_PHASE_REM_SCAN";
-	const std::string CH2_PHASE_DER_SCAN = "CH2_PHASE_DER_SCAN";
-	const std::string CH2_PWR_REM_SCAN   = "CH2_PWR_REM_SCAN";
-	const std::string CH2_AMP_DER_SCAN   = "CH2_AMP_DER_SCAN";
-	const std::string CH2_PWR_LOC_SCAN   = "CH2_PWR_LOC_SCAN";
+	const std::string 	CH3_PWR_REM_SCAN = "CH3_PWR_REM_SCAN";
+	const std::string 	CH3_PWR_REM_ACQM = "CH3_PWR_REM_ACQM";
+	const std::string 	CH3_PWR_REM = "CH3_PWR_REM";
+	const std::string 	CH3_PHASE_REM_SCAN = "CH3_PHASE_REM_SCAN";
+	const std::string 	CH3_PHASE_REM_ACQM = "CH3_PHASE_REM_ACQM";
+	const std::string 	CH3_PHASE_REM = "CH3_PHASE_REM";
+	const std::string 	CH3_AMP_DER_SCAN = "CH3_AMP_DER_SCAN";
+	const std::string 	CH3_AMP_DER_ACQM = "CH3_AMP_DER_ACQM";
+	const std::string 	CH3_PHASE_DER_SCAN = "CH3_PHASE_DER_SCAN";
+	const std::string 	CH3_PHASE_DER_ACQM = "CH3_PHASE_DER_ACQM";
+	const std::string 	CH3_PWR_LOC_SCAN = "CH3_PWR_LOC_SCAN";
+	const std::string 	CH3_PWR_LOC_ACQM = "CH3_PWR_LOC_ACQM";
 
-	const std::string CH3_PWR_REM_SCAN   = "CH3_PWR_REM_SCAN";
-	const std::string CH3_AMP_DER_SCAN   = "CH3_AMP_DER_SCAN";
-	const std::string CH3_PHASE_DER_SCAN = "CH3_PHASE_DER_SCAN";
-	const std::string CH3_PWR_LOC_SCAN   = "CH3_PWR_LOC_SCAN";
-	const std::string CH3_PHASE_REM_SCAN = "CH3_PHASE_REM_SCAN";
+	const std::string 	CH4_PWR_REM_SCAN = "CH4_PWR_REM_SCAN";
+	const std::string 	CH4_PWR_REM_ACQM = "CH4_PWR_REM_ACQM";
+	const std::string 	CH4_PWR_REM = "CH4_PWR_REM";
+	const std::string 	CH4_PHASE_REM_SCAN = "CH4_PHASE_REM_SCAN";
+	const std::string 	CH4_PHASE_REM_ACQM = "CH4_PHASE_REM_ACQM";
+	const std::string 	CH4_PHASE_REM = "CH4_PHASE_REM";
+	const std::string 	CH4_AMP_DER_SCAN = "CH4_AMP_DER_SCAN";
+	const std::string 	CH4_AMP_DER_ACQM = "CH4_AMP_DER_ACQM";
+	const std::string 	CH4_PHASE_DER_SCAN = "CH4_PHASE_DER_SCAN";
+	const std::string 	CH4_PHASE_DER_ACQM = "CH4_PHASE_DER_ACQM";
+	const std::string 	CH4_PWR_LOC_SCAN = "CH4_PWR_LOC_SCAN";
+	const std::string 	CH4_PWR_LOC_ACQM = "CH4_PWR_LOC_ACQM";
+						  
+	const std::string 	CH5_PWR_REM_SCAN = "CH5_PWR_REM_SCAN";
+	const std::string 	CH5_PWR_REM_ACQM = "CH5_PWR_REM_ACQM";
+	const std::string 	CH5_PWR_REM = "CH5_PWR_REM";
+	const std::string 	CH5_PHASE_REM_SCAN = "CH5_PHASE_REM_SCAN";
+	const std::string 	CH5_PHASE_REM_ACQM = "CH5_PHASE_REM_ACQM";
+	const std::string 	CH5_PHASE_REM = "CH5_PHASE_REM";
+	const std::string 	CH5_AMP_DER_SCAN = "CH5_AMP_DER_SCAN";
+	const std::string 	CH5_AMP_DER_ACQM = "CH5_AMP_DER_ACQM";
+	const std::string 	CH5_PHASE_DER_SCAN = "CH5_PHASE_DER_SCAN";
+	const std::string 	CH5_PHASE_DER_ACQM = "CH5_PHASE_DER_ACQM";
+	const std::string 	CH5_PWR_LOC_SCAN = "CH5_PWR_LOC_SCAN";
+	const std::string 	CH5_PWR_LOC_ACQM = "CH5_PWR_LOC_ACQM";
 
-	const std::string CH4_PWR_REM_SCAN = "CH4_PWR_REM_SCAN";
-	const std::string CH4_PHASE_REM_SCAN = "CH4_PHASE_REM_SCAN";
-	const std::string CH4_AMP_DER_SCAN = "CH4_AMP_DER_SCAN";
-	const std::string CH4_PHASE_DER_SCAN = "CH4_PHASE_DER_SCAN";
-	const std::string CH4_PWR_LOC_SCAN = "CH4_PWR_LOC_SCAN";
+	const std::string 	CH6_PWR_REM_SCAN = "CH6_PWR_REM_SCAN";
+	const std::string 	CH6_PWR_REM_ACQM = "CH6_PWR_REM_ACQM";
+	const std::string 	CH6_PWR_REM = "CH6_PWR_REM";
+	const std::string 	CH6_PHASE_REM_SCAN = "CH6_PHASE_REM_SCAN";
+	const std::string 	CH6_PHASE_REM_ACQM = "CH6_PHASE_REM_ACQM";
+	const std::string 	CH6_PHASE_REM = "CH6_PHASE_REM";
+	const std::string 	CH6_AMP_DER_SCAN = "CH6_AMP_DER_SCAN";
+	const std::string 	CH6_AMP_DER_ACQM = "CH6_AMP_DER_ACQM";
+	const std::string 	CH6_PHASE_DER_SCAN = "CH6_PHASE_DER_SCAN";
+	const std::string 	CH6_PHASE_DER_ACQM = "CH6_PHASE_DER_ACQM";
+	const std::string 	CH6_PWR_LOC_SCAN = "CH6_PWR_LOC_SCAN";
+	const std::string 	CH6_PWR_LOC_ACQM = "CH6_PWR_LOC_ACQM";
 
-	const std::string CH5_PWR_REM_SCAN = "CH5_PWR_REM_SCAN";
-	const std::string CH5_PHASE_REM_SCAN = "CH5_PHASE_REM_SCAN";
-	const std::string CH5_AMP_DER_SCAN = "CH5_AMP_DER_SCAN";
-	const std::string CH5_PHASE_DER_SCAN = "CH5_PHASE_DER_SCAN";
-	const std::string CH5_PWR_LOC_SCAN = "CH5_PWR_LOC_SCAN";
+	const std::string 	CH7_PWR_REM_SCAN = "CH7_PWR_REM_SCAN";
+	const std::string 	CH7_PWR_REM_ACQM = "CH7_PWR_REM_ACQM";
+	const std::string 	CH7_PWR_REM = "CH7_PWR_REM";
+	const std::string 	CH7_PHASE_REM_SCAN = "CH7_PHASE_REM_SCAN";
+	const std::string 	CH7_PHASE_REM_ACQM = "CH7_PHASE_REM_ACQM";
+	const std::string 	CH7_PHASE_REM = "CH7_PHASE_REM";
+	const std::string 	CH7_AMP_DER_SCAN = "CH7_AMP_DER_SCAN";
+	const std::string 	CH7_AMP_DER_ACQM = "CH7_AMP_DER_ACQM";
+	const std::string 	CH7_PHASE_DER_SCAN = "CH7_PHASE_DER_SCAN";
+	const std::string 	CH7_PHASE_DER_ACQM = "CH7_PHASE_DER_ACQM";
+	const std::string 	CH7_PWR_LOC_SCAN = "CH7_PWR_LOC_SCAN";
+	const std::string 	CH7_PWR_LOC_ACQM = "CH7_PWR_LOC_ACQM";
 
-	const std::string CH6_PWR_REM_SCAN = "CH6_PWR_REM_SCAN";
-	const std::string CH6_PHASE_REM_SCAN = "CH6_PHASE_REM_SCAN";
-	const std::string CH6_AMP_DER_SCAN = "CH6_AMP_DER_SCAN";
-	const std::string CH6_PHASE_DER_SCAN = "CH6_PHASE_DER_SCAN";
-	const std::string CH6_PWR_LOC_SCAN = "CH6_PWR_LOC_SCAN";
+	const std::string 	CH8_PWR_REM_SCAN = "CH8_PWR_REM_SCAN";
+	const std::string 	CH8_PWR_REM_ACQM = "CH8_PWR_REM_ACQM";
+	const std::string 	CH8_PWR_REM = "CH8_PWR_REM";
+	const std::string 	CH8_PHASE_REM_SCAN = "CH8_PHASE_REM_SCAN";
+	const std::string 	CH8_PHASE_REM_ACQM = "CH8_PHASE_REM_ACQM";
+	const std::string 	CH8_PHASE_REM = "CH8_PHASE_REM";
+	const std::string 	CH8_AMP_DER_SCAN = "CH8_AMP_DER_SCAN";
+	const std::string 	CH8_AMP_DER_ACQM = "CH8_AMP_DER_ACQM";
+	const std::string 	CH8_PHASE_DER_SCAN = "CH8_PHASE_DER_SCAN";
+	const std::string 	CH8_PHASE_DER_ACQM = "CH8_PHASE_DER_ACQM";
+	const std::string 	CH8_PWR_LOC_SCAN = "CH8_PWR_LOC_SCAN";
+	const std::string 	CH8_PWR_LOC_ACQM = "CH8_PWR_LOC_ACQM";
 
-	const std::string CH7_PWR_REM_SCAN = "CH7_PWR_REM_SCAN";
-	const std::string CH7_AMP_DER_SCAN = "CH7_AMP_DER_SCAN";
-	const std::string CH7_PHASE_DER_SCAN = "CH7_PHASE_DER_SCAN";
-	const std::string CH7_PWR_LOC_SCAN = "CH7_PWR_LOC_SCAN";
-	const std::string CH7_PHASE_REM_SCAN = "CH7_PHASE_REM_SCAN";
-
-	const std::string CH8_PWR_REM_SCAN = "CH8_PWR_REM_SCAN";
-	const std::string CH8_AMP_DER_SCAN = "CH8_AMP_DER_SCAN";
-	const std::string CH8_PHASE_DER_SCAN = "CH8_PHASE_DER_SCAN";
-	const std::string CH8_PWR_LOC_SCAN = "CH8_PWR_LOC_SCAN";
-	const std::string CH8_PHASE_REM_SCAN = "CH8_PHASE_REM_SCAN";
-
-	const std::string CH1_PWR_REM_ACQM = "CH1_PWR_REM_ACQM";
-	const std::string CH1_PHASE_REM_ACQM = "CH1_PHASE_REM_ACQM";
-	const std::string CH2_PWR_REM_ACQM = "CH2_PWR_REM_ACQM";
-	const std::string CH2_PHASE_REM_ACQM = "CH2_PHASE_REM_ACQM";
-	const std::string CH3_PWR_REM_ACQM = "CH3_PWR_REM_ACQM";
-	const std::string CH3_PHASE_REM_ACQM = "CH3_PHASE_REM_ACQM";
-	const std::string CH4_PWR_REM_ACQM = "CH4_PWR_REM_ACQM";
-	const std::string CH4_PHASE_REM_ACQM = "CH4_PHASE_REM_ACQM";
-	const std::string CH5_PWR_REM_ACQM = "CH5_PWR_REM_ACQM";
-	const std::string CH5_PHASE_REM_ACQM = "CH5_PHASE_REM_ACQM";
-	const std::string CH6_PWR_REM_ACQM = "CH6_PWR_REM_ACQM";
-	const std::string CH6_PHASE_REM_ACQM = "CH6_PHASE_REM_ACQM";
-	const std::string CH7_PWR_REM_ACQM = "CH7_PWR_REM_ACQM";
-	const std::string CH7_PHASE_REM_ACQM = "CH7_PHASE_REM_ACQM";
-	const std::string CH8_PWR_REM_ACQM = "CH8_PWR_REM_ACQM";
-	const std::string CH8_PHASE_REM_ACQM = "CH8_PHASE_REM_ACQM";
-
-	//// NOT NEEDED??
-	//const std::string CH2_PHASE_REM = "CH2_PHASE_REM";
-	//const std::string CH3_PWR_REM = "CH3_PWR_REM";
-	//const std::string CH3_PHASE_REM = "CH3_PHASE_REM";
-	//const std::string CH1_PHASE_REM = "CH1_PHASE_REM";
-	//const std::string CH2_PWR_REM = "CH2_PWR_REM";
-	//const std::string CH1_PWR_REM = "CH1_PWR_REM";
-	//const std::string CH4_PWR_REM = "CH4_PWR_REM";
-	//const std::string CH4_PHASE_REM = "CH4_PHASE_REM";
-	//const std::string CH5_PHASE_REM = "CH5_PHASE_REM";
-	//const std::string CH6_PWR_REM = "CH6_PWR_REM";
-	//const std::string CH5_PWR_REM = "CH5_PWR_REM";
-	//const std::string CH6_PHASE_REM = "CH6_PHASE_REM";
-	//const std::string CH7_PWR_REM = "CH7_PWR_REM";
-	//const std::string CH8_PWR_REM = "CH8_PWR_REM";
-	//const std::string CH7_PHASE_REM = "CH7_PHASE_REM";
-	//const std::string CH8_PHASE_REM = "CH8_PHASE_REM";
 
 	const std::string LLRF_CH1_INTERLOCK = "LLRF_CH1_INTERLOCK";
 	const std::string LLRF_CH2_INTERLOCK = "LLRF_CH2_INTERLOCK";

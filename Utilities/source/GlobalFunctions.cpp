@@ -150,9 +150,9 @@ namespace GlobalFunctions {
 				return testArea == area;
 			case TYPE::CLARA_GUN:
 				return entryExists(std::vector<TYPE>{TYPE::CLARA_GUN, TYPE::CLARA_LASER}, area);
-			case TYPE::HRRG_GUN:
+			case TYPE::HRRG:
 				return testArea == area;
-			case TYPE::LRRG_GUN:
+			case TYPE::LRRG:
 				return testArea == area;
 			case TYPE::L01:
 				return testArea == area;
@@ -165,7 +165,7 @@ namespace GlobalFunctions {
 			case TYPE::INJ:
 				return testArea == area;
 			case TYPE::GUN:
-				return entryExists(std::vector<TYPE>{TYPE::VELA_GUN, TYPE::CLARA_GUN, TYPE::HRRG_GUN, TYPE::LRRG_GUN}, area);
+				return entryExists(std::vector<TYPE>{TYPE::VELA_GUN, TYPE::CLARA_GUN, TYPE::HRRG, TYPE::LRRG}, area);
 			case TYPE::S01:
 				return testArea == area;
 			case TYPE::S02:

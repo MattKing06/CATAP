@@ -22,7 +22,11 @@ public:
 	LLRFInterlock();
 	LLRFInterlock(const LLRFInterlock& copy_trace_data);
 	~LLRFInterlock();
-	double u_level, p_level, pdbm_level;
+	
+	std::pair<epicsTimeStamp, double > u_level;
+	std::pair<epicsTimeStamp, double > p_level;
+	std::pair<epicsTimeStamp, double > pdbm_level;
+
 	bool status, enable;
 };
 
@@ -69,7 +73,10 @@ class TraceData
 		size_t  trace_data_size;
 		// the state of the scan and acqm 
 		STATE scan, acqm;
-		LLRFInterlock interlock; // these are the LLRF interlocks not the "global" 
+		
+
+		bool interlock_state;
+
 };
 
 
@@ -79,10 +86,23 @@ class LLRF : public Hardware
 {
 public:
 	LLRF();
-	LLRF(const std::map<std::string, std::string>& paramMap, STATE mode);
+	LLRF(const std::map<std::string, std::string>& paramMap, const  STATE mode);
 	LLRF(const LLRF& copyLLRF);
 	~LLRF();
+	
+	/*! Both the HRRG and LRRG use the same LLRF box, the main difference is which channels are used for traces 
+		therefore this needs to be set by the LLRFFactory  based on passed in user settings. 
+		A similar scheme may be required if other LLRF boxes support mulitple RF structures 
+	@param[in] TYPE, new vlaue to set (currenlty should ONLY be HRRG or LRRG) 
+	*/
+	void setGunType(const TYPE area); // called from factory
+	/*! When the machein area has been correctly set we cna set up the trace data correctly. 
+	Diferent channels numbers refer to different traces. This cannot be done easily   */
+	void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap);
 	void setPVStructs();
+	/*! For debugging to see if maps and trace names get set correctly */
+	void printSetupData()const;
+
 
 	// TODO private ?? 
 	EPICSLLRFInterface_sptr epicsInterface;
@@ -260,6 +280,26 @@ public:
 	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
 
 
+	/*! Set the current waveform as the pulse shape to be used 
+	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
+	bool applyPulseShape();
+	/*! Load the passed waveform as the pulse shape to be used (does not apply it)
+	@param[in] vector<double>, waveform for new pulse shape
+	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
+	bool setPulseShape(std::vector<double>& values);
+	/*! Load the passed waveform as the pulse shape to be used (does not apply it), Python version
+	@param[in] list, waveform for new pulse shape
+	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
+	bool setPulseShape_Py(boost::python::list& values);
+	/*! Load the passed waveform as the pulse shape to be used and apply it 
+	@param[in]  vector<double>, waveform for new pulse shape
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setAndApplyPulseShape(std::vector<double>& values);
+	/*! Load the passed waveform as the pulse shape to be used and apply it, Python version 
+	@param[in] list, waveform for new pulse shape
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setAndApplyPulseShape(boost::python::list& values);
+
 
 
 	void debugMessagesOn();
@@ -290,17 +330,39 @@ protected:
 	/*! State of the LLRF trigger, value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, STATE> trig_state;
 
+	/*! State of the top level LLRF interlock, value and epicstimestamp */
+	std::pair<epicsTimeStamp, STATE> interlock_state;
+
+	/*! State of the top level LLRF RF output, value and epicstimestamp */
+	std::pair<epicsTimeStamp, bool> rf_output;
+	
+	/*! Flag for state of ff_phase_lock checkbox, value and epicstimestamp */
+	std::pair<epicsTimeStamp, bool> ff_phase_lock;
+
+	/*! Flag for state of ff_amp_lock checkbox, value and epicstimestamp */
+	std::pair<epicsTimeStamp, bool> ff_amp_lock;
+	
+	/*! Map of TraceData objects keyed by the trace name (klystron forward power etc).
+	Each physical llrf box has more traces avialable than we typically monitor,
+	Detailed trace data is only kept for the main power and phase traces for this particular LLRF object.
+	More can be added if needed. 	*/
+	std::map<std::string, TraceData> trace_data_map;
+	/*! Map of the ACQM for each trace, keyed by their generic name (channel 1, channel 2 etc)
+	this data is stored for all possible traces in this LLRF box */
+	std::map<std::string, STATE> trace_ACQM_map;
+	/*! Map of the SCAN for each trace, keyed by their generic name (channel 1, channel 2 etc)
+	this data is stored for all possible traces in this LLRF box */
+	std::map<std::string, STATE> trace_SCAN_map;
+	/*! Map of the interlock states for each trace, keyed by their generic name (channel 1, channel 2 etc)
+	this data is stored for all possible traces in this LLRF box */
+	std::map<std::string, LLRFInterlock> all_trace_interlocks;
 
 
-
-
-
-	/* pointer to dbr_time_stuct, used to get timestmp for images*/
-	/* image_data vector to hold image data */
+	/*! pointer to dbr_time_stuct, used to get timestmp for trace data ... NO ?? not sure, maybe */
 	std::pair<epicsTimeStamp, struct dbr_time_long*> all_trace_data;
 
 	// special case for the HRRG_GUN and LRRG_GUN
-	void setMachineArea(const TYPE area);
+	//void setMachineArea(const TYPE area);
 	void setDefaultPowerTraceMeanTimes();
 
 private:
@@ -310,12 +372,9 @@ private:
 		defined in the master lattice yaml file	*/
 	std::vector<std::string> aliases;
 
-	// we have some maps to store the trace_data and ACQM and SCAN states  
-	// the ACQM and SCAN have many more traces than we ever typically use here, that is why they 
-	// are not part of the trace_data class
-	std::map<std::string, TraceData> trace_data_map;
-	std::map<std::string, STATE> trace_ACQM_map;
-	std::map<std::string, STATE> trace_SCAN_map;
+
+
+
 
 
 	void setTraceDataMap();
@@ -335,17 +394,28 @@ private:
 	void addDummyTrace(const std::map<std::string, std::string>& paramMap, 
 		const std::string& trace_name, std::vector< double>& trace_to_update);
 
+	/*! The time for each point on a rf trace */
 	std::vector<double> time_vector;
 	
+
+	/*! Dummy Klystron Forward Power trace for use in the Virtual Machine */
 	std::vector<double> kfpow_dummy_trace;
+	/*! Dummy Klystron Reverse Power trace for use in the Virtual Machine */
 	std::vector<double> krpow_dummy_trace;
+	/*! Dummy Cavity Forward Power trace for use in the Virtual Machine */
 	std::vector<double> cfpow_dummy_trace;
+	/*! Dummy Cavity Reverse Power trace for use in the Virtual Machine */
 	std::vector<double> crpow_dummy_trace;
+	/*! Dummy Klystron Forward Phase trace for use in the Virtual Machine */
 	std::vector<double> kfpha_dummy_trace;
+	/*! Dummy Klystron Reverse Phase trace for use in the Virtual Machine */
 	std::vector<double> krpha_dummy_trace;
+	/*! Dummy Cavity Forward Phase trace for use in the Virtual Machine */
 	std::vector<double> cfpha_dummy_trace;
+	/*! Dummy Cavity Reverse Phase trace for use in the Virtual Machine */
 	std::vector<double> crpha_dummy_trace;
 
+	/*!Full Names for the power traces for this LLRF  */ // why do i need these??? 
 	std::vector<std::string> power_trace_names;
 
 
@@ -358,8 +428,7 @@ private:
 	std::map<std::string, STATE> all_trace_acqm;
 	std::map<std::string, STATE> all_trace_scan;
 
-	// eahc channel has a set of interlocks values and STATEs
-	std::map<std::string, LLRFInterlock> all_trace_interlocks;
+
 
 	void setupInterlocks();
 	void setupAllTraceACQM();

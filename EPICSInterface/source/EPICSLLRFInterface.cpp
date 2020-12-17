@@ -2,6 +2,7 @@
 #include "LLRFPVRecords.h"
 #include "GlobalFunctions.h"
 #include "GlobalConstants.h"
+#include "GlobalStateEnums.h"
 
 
 LoggingSystem EPICSLLRFInterface::messenger;
@@ -49,7 +50,7 @@ void EPICSLLRFInterface::update_AMP_FF(const struct event_handler_args args)
 void EPICSLLRFInterface::update_TRIG_SOURCE(const struct event_handler_args args)
 {
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	const struct dbr_time_int* tv = (const struct dbr_time_int*)(args.dbr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	recastLLRF->trig_state.first = tv->stamp;
 	switch (tv->value)
 	{
@@ -86,7 +87,7 @@ void EPICSLLRFInterface::update_RF_OUTPUT(const struct event_handler_args args)
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateTimeStampBoolPair(args, recastLLRF->rf_output);
 	messenger.printDebugMessage("update_RF_OUTPUT FOR: " + recastLLRF->getHardwareName(),
-		" ", recastLLRF->phi_sp.second);
+		" ", recastLLRF->rf_output.second);
 }
 void EPICSLLRFInterface::update_FF_PHASE_LOCK_STATE(const struct event_handler_args args)
 {
@@ -104,7 +105,10 @@ void EPICSLLRFInterface::update_FF_AMP_LOCK_STATE(const struct event_handler_arg
 }
 void EPICSLLRFInterface::update_TIME_VECTOR(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_TIME_VECTOR");
+	// mutex from updateLLRFValue()
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const dbr_double_t* p_data = (const dbr_double_t*)args.dbr;
+	std::copy(p_data, p_data + recastLLRF->time_vector.size(), recastLLRF->time_vector.begin());
 }
 void EPICSLLRFInterface::update_PULSE_OFFSET(const struct event_handler_args args)
 {
@@ -122,13 +126,13 @@ void EPICSLLRFInterface::update_INTERLOCK(const struct event_handler_args args)
 	switch (tv->value)
 	{
 	case 0:
-		recastLLRF->interlock_state.second = STATE::NON_ACTIVE;
+		recastLLRF->interlock_state.second = STATE::NOT_ACTIVE;
 		break;
 	case 1:
 		recastLLRF->interlock_state.second = STATE::ACTIVE;
 		break;
 	default:
-		recastLLRF->interlock_state.seconde = STATE::UNKNOWN;
+		recastLLRF->interlock_state.second = STATE::UNKNOWN;
 	}
 	messenger.printDebugMessage("update_INTERLOCK");
 }
@@ -139,10 +143,10 @@ void EPICSLLRFInterface::update_PULSE_SHAPE(const struct event_handler_args args
 
 
 // probably don't need this 
-void EPICSLLRFInterface::update_PULSE_SHAPE_APPLY(const struct event_handler_args args)
-{
-	messenger.printDebugMessage("update_PULSE_SHAPE_APPLY");
-}
+//void EPICSLLRFInterface::update_PULSE_SHAPE_APPLY(const struct event_handler_args args)
+//{
+//	messenger.printDebugMessage("update_PULSE_SHAPE_APPLY");
+//}
 
 void EPICSLLRFInterface::update_LLRF_TRACES(const struct event_handler_args args)
 {
@@ -222,9 +226,6 @@ void EPICSLLRFInterface::update_CH8_PHASE_REM(const struct event_handler_args ar
 {
 	messenger.printDebugMessage("update_CH8_PHASE_REM");
 }
-
-
-
 
 
 

@@ -30,7 +30,7 @@ public:
     static void update_PULSE_LENGTH(const struct event_handler_args args);
     static void update_INTERLOCK(const struct event_handler_args args);
     static void update_PULSE_SHAPE(const struct event_handler_args args);
-    static void update_PULSE_SHAPE_APPLY(const struct event_handler_args args);
+    //static void update_PULSE_SHAPE_APPLY(const struct event_handler_args args);
     static void update_CH1_INTERLOCK_STATUS(const struct event_handler_args args);
     static void update_CH1_INTERLOCK_ENABLE(const struct event_handler_args args);
     static void update_CH1_INTERLOCK_U(const struct event_handler_args args);
@@ -173,7 +173,7 @@ public:
     {LLRFRecords::PULSE_LENGTH, this->update_PULSE_LENGTH				},
     {LLRFRecords::INTERLOCK, this->update_INTERLOCK						},
     {LLRFRecords::PULSE_SHAPE, this->update_PULSE_SHAPE					},
-    {LLRFRecords::PULSE_SHAPE_APPLY,this->update_PULSE_SHAPE_APPLY      },
+   // {LLRFRecords::PULSE_SHAPE_APPLY,this->update_PULSE_SHAPE_APPLY      },
     {LLRFRecords::CH1_INTERLOCK_STATUS, this->update_CH1_INTERLOCK_STATUS},
     {LLRFRecords::CH1_INTERLOCK_ENABLE,this->update_CH1_INTERLOCK_ENABLE},
     {LLRFRecords::CH1_INTERLOCK_U, this->update_CH1_INTERLOCK_U         },
