@@ -82,6 +82,9 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 
 	buildChannelToTraceSourceMap(paramMap);
 	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
+
+	//does not work???? 
+
 	addDummyTraces(paramMap);
 	setupInterlocks();
 	setupAllTraceACQM();
@@ -134,7 +137,15 @@ void LLRF::printSetupData()const
 	{
 		std::cout << item.first << std::endl;
 	}
-	std::cout << "all_trace_interlocks Keys:" << std::endl;
+
+
+	messenger.printDebugMessage("printSetupData added these interlocks:");
+	for (auto&& trace : all_trace_interlocks)
+	{
+		messenger.printDebugMessage(trace.first);
+	}
+
+	std::cout << "power_trace_names Keys:" << std::endl;
 	for (auto&& item : power_trace_names)
 	{
 		std::cout << item << std::endl;
@@ -745,6 +756,7 @@ double LLRF::getTime(const size_t index) const
 
 void LLRF::setupInterlocks()
 {
+	messenger.printDebugMessage("setupInterlocks");
 	using namespace GlobalConstants;
 	all_trace_interlocks[LLRF_CH1_INTERLOCK] = LLRFInterlock();
 	all_trace_interlocks[LLRF_CH2_INTERLOCK] = LLRFInterlock();
@@ -754,10 +766,15 @@ void LLRF::setupInterlocks()
 	all_trace_interlocks[LLRF_CH6_INTERLOCK] = LLRFInterlock();
 	all_trace_interlocks[LLRF_CH7_INTERLOCK] = LLRFInterlock();
 	all_trace_interlocks[LLRF_CH8_INTERLOCK] = LLRFInterlock();
-
+	messenger.printDebugMessage("setupInterlocks added these interlocks:");
+	for (auto&& trace : all_trace_interlocks)
+	{
+		messenger.printDebugMessage(trace.first);
+	}
 }
 void LLRF::setupAllTraceSCAN()
 {
+	messenger.printDebugMessage("setupAllTraceSCAN");
 	using namespace GlobalConstants;
 	all_trace_scan[CH1_PWR_REM_SCAN] = STATE::UNKNOWN;
 	all_trace_scan[CH1_PHASE_REM_SCAN] = STATE::UNKNOWN;
@@ -800,9 +817,16 @@ void LLRF::setupAllTraceSCAN()
 	all_trace_scan[CH8_PWR_LOC_SCAN] = STATE::UNKNOWN;
 	all_trace_scan[CH8_PHASE_REM_SCAN] = STATE::UNKNOWN;
 
+	messenger.printDebugMessage("setupAllTraceSCAN added these interlocks:");
+	for (auto&& trace : all_trace_scan)
+	{
+		messenger.printDebugMessage(trace.first);
+	}
+
 }
 void LLRF::setupAllTraceACQM()
 {
+	messenger.printDebugMessage("setupAllTraceACQM");
 	using namespace GlobalConstants;
 	all_trace_acqm[CH1_PWR_REM_ACQM] = STATE::UNKNOWN;
 	all_trace_acqm[CH1_PHASE_REM_ACQM] = STATE::UNKNOWN;
@@ -820,6 +844,14 @@ void LLRF::setupAllTraceACQM()
 	all_trace_acqm[CH7_PHASE_REM_ACQM] = STATE::UNKNOWN;
 	all_trace_acqm[CH8_PWR_REM_ACQM] = STATE::UNKNOWN;
 	all_trace_acqm[CH8_PHASE_REM_ACQM] = STATE::UNKNOWN;
+
+	messenger.printDebugMessage("setupAllTraceACQM added these ACQM:");
+	for (auto&& trace : all_trace_acqm)
+	{
+		messenger.printDebugMessage(trace.first);
+	}
+
+
 }
 
 void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& args)

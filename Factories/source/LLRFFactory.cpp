@@ -96,6 +96,8 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	}
 	messenger.printDebugMessage("Calling cutLLRFMapByMachineAreas");
 	cutLLRFMapByMachineAreas();
+
+
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas Finished");
 	setupChannels();
 	EPICSInterface::sendToEPICS();
