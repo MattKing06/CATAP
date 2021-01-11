@@ -72,6 +72,8 @@ find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(Hardware PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 target_include_directories(Hardware PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/EPICSInterface/include)
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
@@ -83,6 +85,7 @@ target_include_directories(Hardware PUBLIC ${PYTHON_INCLUDE_DIR})
 TARGET_LINK_LIBRARIES(Hardware
 					  PUBLIC
 					    PV
+                        Threads::Threads
 					  PRIVATE
 						Utilities
 			     	    ${Boost_LIBRARIES}
