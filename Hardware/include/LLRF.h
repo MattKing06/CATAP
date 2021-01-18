@@ -27,7 +27,8 @@ public:
 	std::pair<epicsTimeStamp, double > p_level;
 	std::pair<epicsTimeStamp, double > pdbm_level;
 
-	bool status, enable;
+	std::pair<epicsTimeStamp, bool > status;
+	std::pair<epicsTimeStamp, bool > enable;
 };
 
 class TraceData
@@ -72,13 +73,11 @@ class TraceData
 		// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor 
 		size_t  trace_data_size;
 		// the state of the scan and acqm 
-		STATE scan, acqm;
+		std::pair<epicsTimeStamp, STATE> scan;
+		std::pair<epicsTimeStamp, STATE> acqm;
 		
-
 		bool interlock_state;
-
 };
-
 
 
 
@@ -98,7 +97,7 @@ public:
 	void setGunType(const TYPE area); // called from factory
 	/*! When the machein area has been correctly set we cna set up the trace data correctly. 
 	Diferent channels numbers refer to different traces. This cannot be done easily   */
-	void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap);
+	void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
 	void setPVStructs();
 	/*! For debugging to see if maps and trace names get set correctly */
 	void printSetupData()const;
@@ -170,6 +169,16 @@ public:
 		@param[in] index, index to convert to a time
 		@param[out] time, time (ms) for the passed index */
 	double getTime(const size_t index) const;
+
+	/*! get all the trace data for this LLRF structure (calls a ca_array_get once, to reduce network traffic does not start monitoring of all traces)
+	@param[out] map<string, vector<double>>, */
+	std::map<std::string, std::vector<double>> getNewTraceData();
+	/*! Start trace monitoring (please think about if you reallly need to monitor all traces)
+	@param[out] if the command got sent to epics  (not if setting that value was successfull!) */
+	void startTraceMonitoring()
+	/*! stop the trace monitoring for this object (can significantly reduce network traffic)
+	@param[out] bool, if the monitoring was succesfully stopped */
+	bool stopTraceMonitoring();
 
 	/*! get a map of all the trace data 
 		@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
@@ -301,6 +310,66 @@ public:
 	bool setAndApplyPulseShape(boost::python::list& values);
 
 
+//--------------------------------------------------------------------------------------------------
+	/*! Get the ACQM STATE for each trace data
+	@param[out] map<string, STATE>, values keyed by the trace name */
+	std::map<std::string, STATE> getAllTraceACQM()const;
+	/*! Get the ACQM STATE for each trace data, Python version 
+	@param[out] dict, values keyed by the trace name */
+	boost::python::dict getAllTraceACQM_Py()const;
+	/*! Get the SCAN STATE for each trace data
+	@param[out] map<string, STATE>, values keyed by the trace name */
+	std::map<std::string, STATE> getAllTraceSCAN()const;
+	/*! Get the SCAN STATE for each trace data, Python version
+	@param[out] dict, values keyed by the trace name */
+	boost::python::dict getAllTraceSCAN_Py()const;
+	
+	/*! Set the SCAN for a trace 
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setSCAN(const std::string& trace, STATE new_scan);
+	/*! Set the ACQM for a trace
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setACQM(const std::string& trace, STATE new_acqm);
+
+
+
+	/*! Set every trace SCAN to passive 
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setAllSCANPassive();
+	
+	/*! Set every main trace SCAN to passive (main traces are the phase and power remote 
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setMainSCANPassive();
+	/*! Set every main trace SCAN to 10 Hz (main traces are the phase and power remote
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setMainSCAN10Hz();
+
+	/*! Helper function to convert the SCAN STATE enum to the actual number used by EPICS 
+	@param[in] scan, STATE vlaue to convert 
+	@param[out] int, number to pass to EPCIS for this scan */
+	int convert_SCAN_to_EPICS_Number(STATE scan) const;
+	/*! Helper funciton to convert the ACQM STATE enum to the actual number used by EPICS
+	@param[in] scan, STATE vlaue to convert
+	@param[out] int, number to pass to EPCIS for this acqm */
+	int convert_ACQM_to_EPICS_Number(STATE scan) const;
+
+
+
+	       // bool setTraceSCAN(const std::string& name, const llrfStructs::LLRF_PV_TYPE pv, const llrfStructs::LLRF_SCAN value);
+        //bool setAllSCANToPassive();
+        //bool setPowerRemoteTraceSCAN10sec(const std::string& name);
+
+
+        //bool setAllTraceSCAN(const llrfStructs::LLRF_SCAN value);
+        //bool setTORSCANToIOIntr();
+        //bool setTORSCANToPassive();
+        //bool resetTORSCANToIOIntr();
+        //int getTORSCAN()const;
+        //void updateSCAN(const std::string& name, const llrfStructs::LLRF_PV_TYPE pv, const event_handler_args& args);
+
+        //bool setTORACQMEvent();
+        //int getTORACQM()const;
+
 
 	void debugMessagesOn();
 	void debugMessagesOff();
@@ -319,6 +388,24 @@ protected:
 	std::pair<epicsTimeStamp, double > phi_sp;
 	/*! latest phi_ff value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_ff;
+
+
+	/*! maximum amp_sp that can be applied (set in the main control system, NOT through CATAP)*/
+	std::pair<epicsTimeStamp, double > max_amp_sp;
+
+	/*! latest phi_ff value and epicstimestamp 	*/
+	std::pair<epicsTimeStamp, std::vector< double>> pulse_shape;
+
+
+	/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
+	std::pair<epicsTimeStamp, double > llrf_pulse_duration;
+
+	/*! pulse offset */
+	std::pair<epicsTimeStamp, double > pulse_offset;
+
+	/*! RF PSS Heartbeat, when in RF mode this signal must keep changing to keep the RF system alive */
+	std::pair<epicsTimeStamp, double > heartbeat;
+
 
 	/*! latest amp_MW value and epicstimestamp (should be Klystron Fowrad Power in MW at beam time in pulse */
 	std::pair<epicsTimeStamp, double > amp_MW;
@@ -347,12 +434,15 @@ protected:
 	Detailed trace data is only kept for the main power and phase traces for this particular LLRF object.
 	More can be added if needed. 	*/
 	std::map<std::string, TraceData> trace_data_map;
+
 	/*! Map of the ACQM for each trace, keyed by their generic name (channel 1, channel 2 etc)
 	this data is stored for all possible traces in this LLRF box */
-	std::map<std::string, STATE> trace_ACQM_map;
+	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_acqm;
+
 	/*! Map of the SCAN for each trace, keyed by their generic name (channel 1, channel 2 etc)
 	this data is stored for all possible traces in this LLRF box */
-	std::map<std::string, STATE> trace_SCAN_map;
+	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_scan;
+
 	/*! Map of the interlock states for each trace, keyed by their generic name (channel 1, channel 2 etc)
 	this data is stored for all possible traces in this LLRF box */
 	std::map<std::string, LLRFInterlock> all_trace_interlocks;
@@ -373,9 +463,7 @@ private:
 	std::vector<std::string> aliases;
 
 
-
-
-
+	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
 
 	void setTraceDataMap();
 	void addToTraceDataMap(const std::string& name);
@@ -423,10 +511,7 @@ private:
 	size_t trace_data_size;
 	void setTraceDataBufferSize(const size_t new_size);
 
-	// here we keep all the traces acqm and scan STATEs
-	// actual usable traces also have their own version of this in their trace_data 
-	std::map<std::string, STATE> all_trace_acqm;
-	std::map<std::string, STATE> all_trace_scan;
+
 
 
 
@@ -440,8 +525,8 @@ private:
 	void updateInterLockP(const std::string& ch, const struct event_handler_args& args);
 	void updateInterLockPDBM(const std::string& ch, const struct event_handler_args& args);
 
-	void updateSCAN(const std::string& ch, const struct event_handler_args& args);
-	void updateACQM(const std::string& ch, const struct event_handler_args& args);
+	//void updateSCAN(const std::string& ch, const struct event_handler_args& args);
+	//void updateACQM(const std::string& ch, const struct event_handler_args& args);
 
 
 	void buildChannelToTraceSourceMap(const std::map<std::string, std::string>& paramMap);
@@ -452,8 +537,66 @@ private:
 
 
 
-
-
+	/*! All the "main" channel names, main refers to the power and phase traces  */
+	const std::vector<std::string> allMainChannelTraceNames{
+	GlobalConstants::CH1_PWR_REM,
+	GlobalConstants::CH2_PWR_REM,
+	GlobalConstants::CH3_PWR_REM,
+	GlobalConstants::CH4_PWR_REM,
+	GlobalConstants::CH5_PWR_REM,
+	GlobalConstants::CH6_PWR_REM,
+	GlobalConstants::CH7_PWR_REM,
+	GlobalConstants::CH8_PWR_REM,
+	GlobalConstants::CH1_PHASE_REM,
+	GlobalConstants::CH2_PHASE_REM,
+	GlobalConstants::CH3_PHASE_REM,
+	GlobalConstants::CH4_PHASE_REM,
+	GlobalConstants::CH5_PHASE_REM,
+	GlobalConstants::CH6_PHASE_REM,
+	GlobalConstants::CH7_PHASE_REM,
+	GlobalConstants::CH8_PHASE_REM };
+	/*! All the "main" channel names, main refers to the power and phase traces  */
+	const std::vector<std::string> allChannelTraceNames{
+	GlobalConstants::CH1_AMP_DER,
+	GlobalConstants::CH2_AMP_DER,
+	GlobalConstants::CH3_AMP_DER,
+	GlobalConstants::CH4_AMP_DER,
+	GlobalConstants::CH5_AMP_DER,
+	GlobalConstants::CH6_AMP_DER,
+	GlobalConstants::CH7_AMP_DER,
+	GlobalConstants::CH8_AMP_DER,
+	GlobalConstants::CH1_PHASE_DER,
+	GlobalConstants::CH2_PHASE_DER,
+	GlobalConstants::CH3_PHASE_DER,
+	GlobalConstants::CH4_PHASE_DER,
+	GlobalConstants::CH5_PHASE_DER,
+	GlobalConstants::CH6_PHASE_DER,
+	GlobalConstants::CH7_PHASE_DER,
+	GlobalConstants::CH8_PHASE_DER,
+	GlobalConstants::CH1_PHASE_REM,
+	GlobalConstants::CH2_PHASE_REM,
+	GlobalConstants::CH3_PHASE_REM,
+	GlobalConstants::CH4_PHASE_REM,
+	GlobalConstants::CH5_PHASE_REM,
+	GlobalConstants::CH6_PHASE_REM,
+	GlobalConstants::CH7_PHASE_REM,
+	GlobalConstants::CH8_PHASE_REM,
+	GlobalConstants::CH1_PWR_LOC,
+	GlobalConstants::CH2_PWR_LOC,
+	GlobalConstants::CH3_PWR_LOC,
+	GlobalConstants::CH4_PWR_LOC,
+	GlobalConstants::CH5_PWR_LOC,
+	GlobalConstants::CH6_PWR_LOC,
+	GlobalConstants::CH7_PWR_LOC,
+	GlobalConstants::CH8_PWR_LOC,
+	GlobalConstants::CH1_PWR_REM,
+	GlobalConstants::CH2_PWR_REM,
+	GlobalConstants::CH3_PWR_REM,
+	GlobalConstants::CH4_PWR_REM,
+	GlobalConstants::CH5_PWR_REM,
+	GlobalConstants::CH6_PWR_REM,
+	GlobalConstants::CH7_PWR_REM,
+	GlobalConstants::CH8_PWR_REM };
 
 
 

@@ -55,6 +55,11 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getCavRevPha",&LLRF::getCavRevPha)
 			.def("getCutMean",  &LLRF::getCutMean)
 			.def("getPowerCutMean",  &LLRF::getPowerCutMean_Py)
+
+
+
+			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
+			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
 			
 			
 			
@@ -89,6 +94,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
 			.def("getProbePha",  &LLRF::getProbePha_Py)
 			.def("getProbePwr",  &LLRF::getProbePwr_Py)
+
 			.def("debugMessagesOn", &LLRF::debugMessagesOn)
 			.def("debugMessagesOff", &LLRF::debugMessagesOff)
 			.def("messagesOn", &LLRF::messagesOn)

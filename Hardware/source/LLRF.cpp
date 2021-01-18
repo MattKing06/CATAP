@@ -18,8 +18,8 @@ mean_start_stop_time(std::pair<double, double>(GlobalConstants::double_min, Glob
 //mean_stop_index(GlobalConstants::zero_sizet),
 //trace_cut_mean(GlobalConstants::double_min),
 trace_data_buffer_size(GlobalConstants::two_sizet),
-scan(STATE::UNKNOWN), 
-acqm(STATE::UNKNOWN)
+scan(std::make_pair(epicsTimeStamp(), STATE::ERR)),
+acqm(std::make_pair(epicsTimeStamp(), STATE::ERR))
 {
 
 }
@@ -44,8 +44,8 @@ LLRFInterlock::LLRFInterlock() :
 	u_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	p_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	pdbm_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-	status(false),
-	enable(false)
+	status(std::make_pair(epicsTimeStamp(), false)),
+	enable(std::make_pair(epicsTimeStamp(), false))
 {}
 
 
@@ -66,8 +66,6 @@ trace_data_size(1017)// TODD hardcoded int
 
 LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) :
 	Hardware(paramMap, mode),
-	crest_phase(std::stof(paramMap.find("crest_phase")->second)),
-	trace_data_size(std::stof(paramMap.find("trace_data_size")->second)),
 	// calls copy constructor and destroys 
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
@@ -75,20 +73,16 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	messenger.printDebugMessage("epicsInterface set ownerName ");
 	epicsInterface->ownerName = hardwareName;
 	time_vector.resize(trace_data_size);
+	pulse_shape.second.resize(1024); // magic_number
 	setPVStructs();
-	// TODO name_alias should be in harwdare constructor?? 
-	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+	
 
-
-	buildChannelToTraceSourceMap(paramMap);
+	//buildChannelToTraceSourceMap(paramMap);
 	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
 
-	//does not work???? 
+	setMasterLatticeData(paramMap);
 
-	addDummyTraces(paramMap);
-	setupInterlocks();
-	setupAllTraceACQM();
-	setupAllTraceSCAN();
+	printSetupData();
 }
 
 LLRF::LLRF(const LLRF& copyLLRF) :
@@ -107,6 +101,7 @@ void LLRF::setGunType(const TYPE area) // called from factory
 	messenger.printDebugMessage("NEW Machine Area =  " + machine_area_str);
 	setTraceDataMap();
 }
+
 void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap)
 {
 	buildChannelToTraceSourceMap(paramMap);
@@ -115,41 +110,110 @@ void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap
 
 }
 
+
+void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramMap)
+{
+
+	messenger.printDebugMessage(hardwareName, " find crest_phase");
+	if (GlobalFunctions::entryExists(paramMap, "crest_phase"))
+	{
+		crest_phase = std::stof(paramMap.find("crest_phase")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find crest_phase");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find trace_data_size");
+	if (GlobalFunctions::entryExists(paramMap, "trace_data_size"))
+	{
+		trace_data_size = std::stof(paramMap.find("trace_data_size")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find trace_data_size");
+	}
+	// TODO name_alias should be in harwdare constructor?? 
+	messenger.printDebugMessage(hardwareName, " find name_alias");
+	if (GlobalFunctions::entryExists(paramMap, "name_alias"))
+	{
+		// TODOD white space trimiming probably required here for robustness 
+		boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+
+
+		for (auto&& next_alias : aliases)
+		{
+			messenger.printMessage("Found name alias = \"", next_alias,"\"");
+		}
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find name_alias");
+	}
+
+
+
+	buildChannelToTraceSourceMap(paramMap);
+	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
+
+	//does not work???? 
+
+	addDummyTraces(paramMap);
+	setupInterlocks();
+	setupAllTraceACQM();
+	setupAllTraceSCAN();
+
+}
+
+
 void LLRF::printSetupData()const
 {
-	std::cout << "trace_data_map Keys:" << std::endl;
-	for (auto&& item : trace_data_map)
-	{
-		std::cout << item.first << std::endl;
-	}
-	std::cout << "trace_ACQM_map Keys:" << std::endl;
-	for (auto&& item : trace_ACQM_map)
-	{
-		std::cout << item.first << std::endl;
-	}
-	std::cout << "trace_SCAN_map Keys:" << std::endl;
-	for (auto&& item : trace_SCAN_map)
-	{
-		std::cout << item.first << std::endl;
-	}
-	std::cout << "all_trace_interlocks Keys:" << std::endl;
-	for (auto&& item : all_trace_interlocks)
-	{
-		std::cout << item.first << std::endl;
-	}
+	messenger.printDebugMessage("printSetupData()");
+	messenger.printDebugMessage("printSetupData()");
+	messenger.printDebugMessage("printSetupData()");
 
 
-	messenger.printDebugMessage("printSetupData added these interlocks:");
-	for (auto&& trace : all_trace_interlocks)
+	messenger.printDebugMessage("all_trace_scan.size() = ", all_trace_scan.size(), ", all keys are:");
+	for (auto const &trace : all_trace_scan)
 	{
 		messenger.printDebugMessage(trace.first);
 	}
 
-	std::cout << "power_trace_names Keys:" << std::endl;
-	for (auto&& item : power_trace_names)
+
+	messenger.printDebugMessage("all_trace_acqm.size() = ", all_trace_acqm.size(), ", all keys are:");
+	messenger.printDebugMessage("setupAllTraceACQM added these ACQM:");
+	for (auto&& trace : all_trace_acqm)
 	{
-		std::cout << item << std::endl;
+		messenger.printDebugMessage(trace.first);
 	}
+
+
+	messenger.printDebugMessage("printSetupData FIN");
+
+	//std::cout << "all_trace_scan Keys:" << std::endl;
+	//for (auto&& item : all_trace_scan)
+	//{
+	//	std::cout << item.first << std::endl;
+	//}
+	//std::cout << "all_trace_interlocks Keys:" << std::endl;
+	//for (auto&& item : all_trace_interlocks)
+	//{
+	//	std::cout << item.first << std::endl;
+	//}
+
+
+	//messenger.printDebugMessage("printSetupData added these interlocks:");
+	//for (auto&& trace : all_trace_interlocks)
+	//{
+	//	messenger.printDebugMessage(trace.first);
+	//}
+
+	//std::cout << "power_trace_names Keys:" << std::endl;
+	//for (auto&& item : power_trace_names)
+	//{
+	//	std::cout << item << std::endl;
+	//}
 }
 
 
@@ -157,33 +221,37 @@ void LLRF::setPVStructs()
 {
 	for (auto&& record : LLRFRecords::llrfRecordList)
 	{
-		messenger.printDebugMessage("LLRF PV record = " + record);
-		pvStructs[record] = pvStruct();
-		pvStructs[record].pvRecord = record;
 
-		// TODO NO ERROR CHECKING! (we assum config file is good??? 
-		std::string PV = specificHardwareParameters.find(record)->second.data();
-		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-		//messenger.printDebugMessage("Constructing PV information for ", record);
+		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
+		{
+			messenger.printDebugMessage("LLRF PV record = " + record);
+			pvStructs[record] = pvStruct();
+			pvStructs[record].pvRecord = record;
 
-		/*TODO
-		  This should be put into some general function: generateVirtualPV(PV) or something...
-		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
-		  The config reader level if that is the case.
-		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
-		  */
-		if (mode == STATE::VIRTUAL)
-		{
-			pvStructs[record].fullPVName = "VM-" + PV;
+			// TODO NO ERROR CHECKING! (we assum config file is good??? 
+			std::string PV = specificHardwareParameters.find(record)->second.data();
+			// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+			//messenger.printDebugMessage("Constructing PV information for ", record);
+
+			/*TODO
+			  This should be put into some general function: generateVirtualPV(PV) or something...
+			  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+			  The config reader level if that is the case.
+			  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
+			  */
+			if (mode == STATE::VIRTUAL)
+			{
+				pvStructs[record].fullPVName = "VM-" + PV;
+			}
+			else
+			{
+				pvStructs[record].fullPVName = PV;
+			}
+			messenger.printDebugMessage(record, " = ", "PV  = " + pvStructs[record].fullPVName);
+			//pv.pvRecord = record;
+			//chid, count, mask, chtype are left undefined for now.
+			//pvStructs[pv.pvRecord] = pv;
 		}
-		else
-		{
-			pvStructs[record].fullPVName = PV;
-		}
-		messenger.printDebugMessage(record, " = ","PV  = " + pvStructs[record].fullPVName);
-		//pv.pvRecord = record;
-		//chid, count, mask, chtype are left undefined for now.
-		//pvStructs[pv.pvRecord] = pv;
 	}
 
 }
@@ -232,8 +300,9 @@ bool LLRF::setAmpMW(double value)
 }
 bool LLRF::setAmp(double value)
 {
-	amp_sp.second = value;
-	return true;
+	return epicsInterface->putValue2(pvStructs.at(LLRFRecords::AMP_SP), value);
+	//amp_sp.second = value;
+	//return true;
 }
 double LLRF::getAmp()const
 {
@@ -246,7 +315,7 @@ double LLRF::getAmpMW()const
 
 bool LLRF::setPhi(double value)
 {
-	phi_sp.second = value;
+	return epicsInterface->putValue2(pvStructs.at(LLRFRecords::PHI_SP), value);
 	return true;
 }
 bool LLRF::setPhiDEG(double value)
@@ -775,49 +844,56 @@ void LLRF::setupInterlocks()
 void LLRF::setupAllTraceSCAN()
 {
 	messenger.printDebugMessage("setupAllTraceSCAN");
+	std::pair<epicsTimeStamp, STATE>init_pair = std::make_pair(epicsTimeStamp(), STATE::ERR );
 	using namespace GlobalConstants;
-	all_trace_scan[CH1_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH1_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH1_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH1_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH1_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH2_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH2_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH2_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH2_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH2_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH3_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH3_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH3_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH3_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH3_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH4_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH4_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH4_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH4_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH4_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH5_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH5_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH5_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH5_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH5_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH6_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH6_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH6_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH6_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH6_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH7_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH7_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH7_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH7_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH7_PHASE_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH8_PWR_REM_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH8_AMP_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH8_PHASE_DER_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH8_PWR_LOC_SCAN] = STATE::UNKNOWN;
-	all_trace_scan[CH8_PHASE_REM_SCAN] = STATE::UNKNOWN;
+	all_trace_scan[CH1_PWR_REM] = init_pair;
+	all_trace_scan[CH2_PWR_REM] = init_pair;
+	all_trace_scan[CH3_PWR_REM] = init_pair;
+	all_trace_scan[CH4_PWR_REM] = init_pair;
+	all_trace_scan[CH5_PWR_REM] = init_pair;
+	all_trace_scan[CH6_PWR_REM] = init_pair;
+	all_trace_scan[CH7_PWR_REM] = init_pair;
+	all_trace_scan[CH8_PWR_REM] = init_pair;
 
-	messenger.printDebugMessage("setupAllTraceSCAN added these interlocks:");
+	all_trace_scan[CH1_PHASE_REM] = init_pair;
+	all_trace_scan[CH2_PHASE_REM] = init_pair;
+	all_trace_scan[CH3_PHASE_REM] = init_pair;
+	all_trace_scan[CH4_PHASE_REM] = init_pair;
+	all_trace_scan[CH5_PHASE_REM] = init_pair;
+	all_trace_scan[CH6_PHASE_REM] = init_pair;
+	all_trace_scan[CH7_PHASE_REM] = init_pair;
+	all_trace_scan[CH8_PHASE_REM] = init_pair;
+
+
+	all_trace_scan[CH1_PHASE_DER] = init_pair;
+	all_trace_scan[CH2_PHASE_DER] = init_pair;
+	all_trace_scan[CH3_PHASE_DER] = init_pair;
+	all_trace_scan[CH4_PHASE_DER] = init_pair;
+	all_trace_scan[CH5_PHASE_DER] = init_pair;
+	all_trace_scan[CH6_PHASE_DER] = init_pair;
+	all_trace_scan[CH7_PHASE_DER] = init_pair;
+	all_trace_scan[CH8_PHASE_DER] = init_pair;
+
+	all_trace_scan[CH1_AMP_DER] = init_pair;
+	all_trace_scan[CH2_AMP_DER] = init_pair;
+	all_trace_scan[CH3_AMP_DER] = init_pair;
+	all_trace_scan[CH4_AMP_DER] = init_pair;
+	all_trace_scan[CH5_AMP_DER] = init_pair;
+	all_trace_scan[CH6_AMP_DER] = init_pair;
+	all_trace_scan[CH7_AMP_DER] = init_pair;
+	all_trace_scan[CH8_AMP_DER] = init_pair;
+
+	all_trace_scan[CH1_PWR_LOC] = init_pair;
+	all_trace_scan[CH2_PWR_LOC] = init_pair;
+	all_trace_scan[CH3_PWR_LOC] = init_pair;
+	all_trace_scan[CH4_PWR_LOC] = init_pair;
+	all_trace_scan[CH5_PWR_LOC] = init_pair;
+	all_trace_scan[CH6_PWR_LOC] = init_pair;
+	all_trace_scan[CH7_PWR_LOC] = init_pair;
+	all_trace_scan[CH8_PWR_LOC] = init_pair;
+
+
+	messenger.printDebugMessage("setupAllTraceSCAN added these traces:");
 	for (auto&& trace : all_trace_scan)
 	{
 		messenger.printDebugMessage(trace.first);
@@ -827,105 +903,213 @@ void LLRF::setupAllTraceSCAN()
 void LLRF::setupAllTraceACQM()
 {
 	messenger.printDebugMessage("setupAllTraceACQM");
+	// each MAIn trace also has a trace_data object that also has an ACQM, remember to update that too in the itnerface 
+	std::pair<epicsTimeStamp, STATE>init_pair = std::make_pair(epicsTimeStamp(), STATE::ERR);
 	using namespace GlobalConstants;
-	all_trace_acqm[CH1_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH1_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH2_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH2_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH3_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH3_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH4_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH4_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH5_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH5_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH6_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH6_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH7_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH7_PHASE_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH8_PWR_REM_ACQM] = STATE::UNKNOWN;
-	all_trace_acqm[CH8_PHASE_REM_ACQM] = STATE::UNKNOWN;
-
+	all_trace_acqm[CH1_PWR_REM] = init_pair;
+	all_trace_acqm[CH2_PWR_REM] = init_pair;
+	all_trace_acqm[CH3_PWR_REM] = init_pair;
+	all_trace_acqm[CH4_PWR_REM] = init_pair;
+	all_trace_acqm[CH5_PWR_REM] = init_pair;
+	all_trace_acqm[CH6_PWR_REM] = init_pair;
+	all_trace_acqm[CH7_PWR_REM] = init_pair;
+	all_trace_acqm[CH8_PWR_REM] = init_pair;
+	all_trace_acqm[CH1_PHASE_REM] = init_pair;
+	all_trace_acqm[CH2_PHASE_REM] = init_pair;
+	all_trace_acqm[CH3_PHASE_REM] = init_pair;
+	all_trace_acqm[CH4_PHASE_REM] = init_pair;
+	all_trace_acqm[CH5_PHASE_REM] = init_pair;
+	all_trace_acqm[CH6_PHASE_REM] = init_pair;
+	all_trace_acqm[CH7_PHASE_REM] = init_pair;
+	all_trace_acqm[CH8_PHASE_REM] = init_pair;
+	all_trace_acqm[CH1_PHASE_DER] = init_pair;
+	all_trace_acqm[CH2_PHASE_DER] = init_pair;
+	all_trace_acqm[CH3_PHASE_DER] = init_pair;
+	all_trace_acqm[CH4_PHASE_DER] = init_pair;
+	all_trace_acqm[CH5_PHASE_DER] = init_pair;
+	all_trace_acqm[CH6_PHASE_DER] = init_pair;
+	all_trace_acqm[CH7_PHASE_DER] = init_pair;
+	all_trace_acqm[CH8_PHASE_DER] = init_pair;
+	all_trace_acqm[CH1_AMP_DER] = init_pair;
+	all_trace_acqm[CH2_AMP_DER] = init_pair;
+	all_trace_acqm[CH3_AMP_DER] = init_pair;
+	all_trace_acqm[CH4_AMP_DER] = init_pair;
+	all_trace_acqm[CH5_AMP_DER] = init_pair;
+	all_trace_acqm[CH6_AMP_DER] = init_pair;
+	all_trace_acqm[CH7_AMP_DER] = init_pair;
+	all_trace_acqm[CH8_AMP_DER] = init_pair;
+	all_trace_acqm[CH1_PWR_LOC] = init_pair;
+	all_trace_acqm[CH2_PWR_LOC] = init_pair;
+	all_trace_acqm[CH3_PWR_LOC] = init_pair;
+	all_trace_acqm[CH4_PWR_LOC] = init_pair;
+	all_trace_acqm[CH5_PWR_LOC] = init_pair;
+	all_trace_acqm[CH6_PWR_LOC] = init_pair;
+	all_trace_acqm[CH7_PWR_LOC] = init_pair;
+	all_trace_acqm[CH8_PWR_LOC] = init_pair;
 	messenger.printDebugMessage("setupAllTraceACQM added these ACQM:");
 	for (auto&& trace : all_trace_acqm)
 	{
 		messenger.printDebugMessage(trace.first);
 	}
-
-
 }
 
-void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& args)
+
+std::map<std::string, STATE> LLRF::getAllTraceACQM()const
 {
-	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	// TODO cross check values with real ones, i think this is correct (32bit 64 bit oddities???)
-	STATE new_state;
-	switch ( (unsigned long)tv->value)
+	std::map<std::string, STATE> r;
+	for (auto&& trace : all_trace_acqm)
 	{
-	case 0:
-		new_state = STATE::PASSIVE; break;
-	case 1:
-		new_state = STATE::EVENT; break;
-	case 2:
-		new_state = STATE::IO_INTR; break;
-	case 3:
-		new_state = STATE::TEN; break;
-	case 4:
-		new_state = STATE::FIVE; break;
-	case 5:
-		new_state = STATE::TWO; break;
-	case 6:
-		new_state = STATE::ONE; break;
-	case 7:
-		new_state = STATE::ZERO_POINT_FIVE; break;
-	case 8:
-		new_state = STATE::ZERO_POINT_TWO; break;
-	case 9:
-		new_state = STATE::ZERO_POINT_ONE; break;
-	case 10:
-		new_state = STATE::ZERO_POINT_ZERO_FIVE; break;
-	default:
-		new_state = STATE::UNKNOWN;
+		r[trace.first] = trace.second.second;
 	}
-	if (GlobalFunctions::entryExists(all_trace_scan, ch))
+	return r;
+}
+
+boost::python::dict LLRF::getAllTraceACQM_Py()const
+{
+	return to_py_dict<std::string, STATE>(getAllTraceACQM());
+}
+
+std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
+{
+	std::map<std::string, STATE> r;
+	for (auto&& trace : all_trace_scan)
 	{
-		all_trace_scan.at(ch) = new_state;
-		std::string trace = getTraceFromChannelData(ch);
-		if (GlobalFunctions::entryExists(trace_data_map, trace))
+		r[trace.first] = trace.second.second;
+	}
+	return r;;
+}
+boost::python::dict LLRF::getAllTraceSCAN_Py()const
+{
+	return to_py_dict<std::string, STATE>(getAllTraceSCAN());
+}
+
+bool LLRF::setAllSCANPassive()
+{
+	bool all_set = true;
+	for (auto&& trace : allChannelTraceNames)
+	{
+		if (setSCAN(trace, STATE::PASSIVE))
 		{
-			trace_data_map.at(trace).acqm = new_state;
+		}
+		else
+		{
+			all_set = false;
 		}
 	}
-	//TODO update SCAN in actual TRACES we monitor ... 
-
+	return all_set;
 }
-
-void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& args)
+bool LLRF::setMainSCANPassive()
 {
-	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	// TODO cross check values with real ones, i think this is correct, but incomplete (32bit 64 bit oddities???)
-	STATE new_state;
-	switch ( (unsigned short)tv->value)
+	bool all_set = true;
+	for (auto&& trace : allMainChannelTraceNames)
 	{
-	case 0:
-		new_state = STATE::UNKNOWN; break;
-	case 1:
-		new_state = STATE::NOW; break;
-	case 2:
-		new_state = STATE::EVENT; break;
-	default:
-		new_state = STATE::UNKNOWN;
-	}
-	if (GlobalFunctions::entryExists(all_trace_acqm, ch))
-	{
-		all_trace_acqm.at(ch) = new_state;
-		std::string trace = getTraceFromChannelData(ch);
-		if (GlobalFunctions::entryExists(trace_data_map, trace))
+		if (setSCAN(trace, STATE::PASSIVE))
 		{
-			trace_data_map.at(trace).acqm = new_state;
+		}
+		else
+		{
+			all_set = false;
 		}
 	}
-	//TODO update ACQM in actual TRACES we monitor ... 
+	return all_set;
 }
+bool LLRF::setMainSCAN10Hz()
+{
+	bool all_set = true;
+	for (auto&& trace : allMainChannelTraceNames)
+	{
+		if (setSCAN(trace, STATE::ZERO_POINT_ONE))
+		{
+		}
+		else
+		{
+			all_set = false;
+		}
+	}
+	return all_set;
+}
+
+bool LLRF::setSCAN(const std::string& trace, STATE new_scan)
+{
+	std::string trace_SCAN = trace + "_SCAN";
+	if(GlobalFunctions::entryExists(pvStructs, trace_SCAN))
+	{
+		return epicsInterface->putValue2(pvStructs.at(trace_SCAN), convert_SCAN_to_EPICS_Number(new_scan));
+	}
+	messenger.printDebugMessage("!!WARNING!! ", getHardwareName(), " setSCAN passed unexpecetd trace = \"", trace, "\"");
+	return false;
+}
+bool LLRF::setACQM(const std::string& trace, STATE new_acqm)
+{
+	if (GlobalFunctions::entryExists(all_trace_scan, trace))
+	{
+		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::AMP_SP), convert_ACQM_to_EPICS_Number(new_acqm));
+	}
+	messenger.printDebugMessage("!!WARNING!! ", getHardwareName(), " setACQM passed unexpecetd trace = \"", trace, "\"");
+	return false;
+}
+
+
+int LLRF::convert_SCAN_to_EPICS_Number(STATE scan) const
+{
+	switch (scan)
+	{
+	case STATE::PASSIVE: return 0; 
+	case STATE::EVENT: return 1; 
+	case STATE::IO_INTR: return 2; 
+	case STATE::TEN: return 3; 
+	case STATE::FIVE: return 4;
+	case STATE::TWO: return 5; 
+	case STATE::ONE: return 6; 
+	case STATE::ZERO_POINT_FIVE: return 7; 
+	case STATE::ZERO_POINT_TWO: return 8; 
+	case STATE::ZERO_POINT_ONE: return 9; 
+	case STATE::ZERO_POINT_ZERO_FIVE: return 10; 
+	}
+	messenger.printDebugMessage("!!ERROR!! ", getHardwareName(), " convert_SCAN_to_EPICS_Number passed unexpecetd STATE = \"", ENUM_TO_STRING(scan),"\"");
+	return 10;
+}
+int LLRF::convert_ACQM_to_EPICS_Number(STATE acqm) const
+{
+	switch (acqm)
+	{
+	case STATE::ACQM_NOW: return 1;
+	case STATE::ACQM_EVENT: return 2;
+	}
+	messenger.printDebugMessage("!!ERROR!! ", getHardwareName(), " convert_ACQM_to_EPICS_Number passed unexpecetd STATE = \"", ENUM_TO_STRING(acqm),"\"");
+	return 2;
+}
+
+
+
+
+//void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& args)
+//{
+//	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+//	// TODO cross check values with real ones, i think this is correct, but incomplete (32bit 64 bit oddities???)
+//	STATE new_state;
+//	switch ( (unsigned short)tv->value)
+//	{
+//	case 0:
+//		new_state = STATE::UNKNOWN; break;
+//	case 1:
+//		new_state = STATE::NOW; break;
+//	case 2:
+//		new_state = STATE::EVENT; break;
+//	default:
+//		new_state = STATE::UNKNOWN;
+//	}
+//	if (GlobalFunctions::entryExists(all_trace_acqm, ch))
+//	{
+//		all_trace_acqm.at(ch) = new_state;
+//		std::string trace = getTraceFromChannelData(ch);
+//		if (GlobalFunctions::entryExists(trace_data_map, trace))
+//		{
+//			trace_data_map.at(trace).acqm = new_state;
+//		}
+//	}
+//	//TODO update ACQM in actual TRACES we monitor ... 
+//}
 
 
 

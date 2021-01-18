@@ -16,7 +16,7 @@ public:
     void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 
 
-    static void update_KEEP_ALIVE(const struct event_handler_args args);
+    static void update_HEART_BEAT(const struct event_handler_args args);
     static void update_AMP_FF(const struct event_handler_args args);
     static void update_TRIG_SOURCE(const struct event_handler_args args);
     static void update_AMP_SP(const struct event_handler_args args);
@@ -27,7 +27,7 @@ public:
     static void update_FF_AMP_LOCK_STATE(const struct event_handler_args args);
     static void update_TIME_VECTOR(const struct event_handler_args args);
     static void update_PULSE_OFFSET(const struct event_handler_args args);
-    static void update_PULSE_LENGTH(const struct event_handler_args args);
+    static void update_LLRF_PULSE_DURATION(const struct event_handler_args args);
     static void update_INTERLOCK(const struct event_handler_args args);
     static void update_PULSE_SHAPE(const struct event_handler_args args);
     //static void update_PULSE_SHAPE_APPLY(const struct event_handler_args args);
@@ -74,82 +74,182 @@ public:
     static void update_LLRF_TRACES(const struct event_handler_args args);
     static void update_LLRF_TRACES_SCAN(const struct event_handler_args args);
     static void update_LLRF_TRACES_ACQM(const struct event_handler_args args);
-    static void update_CH1_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH1_PWR_REM(const struct event_handler_args args);
-    static void update_CH1_PWR_REM_ACQM(const struct event_handler_args args);
+
+
     static void update_CH1_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH1_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH1_PHASE_REM(const struct event_handler_args args);
-    static void update_CH1_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH1_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH1_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH2_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH2_PWR_REM(const struct event_handler_args args);
-    static void update_CH2_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH2_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH2_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH2_PHASE_REM(const struct event_handler_args args);
-    static void update_CH2_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH2_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH2_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH3_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH3_PWR_REM(const struct event_handler_args args);
-    static void update_CH3_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH3_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH3_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH3_PHASE_REM(const struct event_handler_args args);
-    static void update_CH3_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH3_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH3_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH4_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH4_PWR_REM(const struct event_handler_args args);
-    static void update_CH4_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH4_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH4_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH4_PHASE_REM(const struct event_handler_args args);
-    static void update_CH4_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH4_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH4_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH5_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH5_PWR_REM(const struct event_handler_args args);
-    static void update_CH5_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH5_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH5_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH5_PHASE_REM(const struct event_handler_args args);
-    static void update_CH5_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH5_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH5_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH6_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH6_PWR_REM(const struct event_handler_args args);
-    static void update_CH6_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH6_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH6_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH6_PHASE_REM(const struct event_handler_args args);
-    static void update_CH6_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH6_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH6_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH7_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH7_PWR_REM(const struct event_handler_args args);
-    static void update_CH7_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH7_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH7_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH7_PHASE_REM(const struct event_handler_args args);
-    static void update_CH7_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH7_PHASE_DER_SCAN(const struct event_handler_args args);
-    static void update_CH7_PWR_LOC_SCAN(const struct event_handler_args args);
-    static void update_CH8_PWR_REM_SCAN(const struct event_handler_args args);
-    static void update_CH8_PWR_REM(const struct event_handler_args args);
-    static void update_CH8_PWR_REM_ACQM(const struct event_handler_args args);
     static void update_CH8_PHASE_REM_SCAN(const struct event_handler_args args);
-    static void update_CH8_PHASE_REM_ACQM(const struct event_handler_args args);
-    static void update_CH8_PHASE_REM(const struct event_handler_args args);
-    static void update_CH8_AMP_DER_SCAN(const struct event_handler_args args);
-    static void update_CH8_PHASE_DER_SCAN(const struct event_handler_args args);
+
+    static void update_CH1_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH2_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH3_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH4_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH5_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH6_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH7_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH8_PWR_REM_SCAN(const struct event_handler_args args);
+    
+    static void update_CH1_PWR_LOC_SCAN(const struct event_handler_args args);
+    static void update_CH2_PWR_LOC_SCAN(const struct event_handler_args args);
+    static void update_CH3_PWR_LOC_SCAN(const struct event_handler_args args);
+    static void update_CH4_PWR_LOC_SCAN(const struct event_handler_args args);
+    static void update_CH5_PWR_LOC_SCAN(const struct event_handler_args args);
+    static void update_CH6_PWR_LOC_SCAN(const struct event_handler_args args);
+    static void update_CH7_PWR_LOC_SCAN(const struct event_handler_args args);
     static void update_CH8_PWR_LOC_SCAN(const struct event_handler_args args);
     
+    
+    static void update_CH1_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH2_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH3_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH4_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH5_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH6_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH7_PHASE_DER_SCAN(const struct event_handler_args args);
+    static void update_CH8_PHASE_DER_SCAN(const struct event_handler_args args);
+    
 
-    static std::map<std::string, STATE> interlock_status_map;
-    static std::map<std::string, STATE> interlock_enable_map;
+    static void update_CH1_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH2_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH3_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH4_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH5_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH6_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH7_AMP_DER_SCAN(const struct event_handler_args args);
+    static void update_CH8_AMP_DER_SCAN(const struct event_handler_args args);
+    
+
+
+    static void update_CH1_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH2_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH3_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH4_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH5_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH6_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH7_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH8_PHASE_REM_ACQM(const struct event_handler_args args);
+
+    static void update_CH1_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH2_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH3_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH4_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH5_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH6_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH7_PWR_REM_ACQM(const struct event_handler_args args);
+    static void update_CH8_PWR_REM_ACQM(const struct event_handler_args args);
+                                   
+    static void update_CH1_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH2_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH3_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH4_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH5_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH6_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH7_PWR_LOC_ACQM(const struct event_handler_args args);
+    static void update_CH8_PWR_LOC_ACQM(const struct event_handler_args args);
+
+    static void update_CH1_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH2_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH3_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH4_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH5_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH6_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH7_PHASE_DER_ACQM(const struct event_handler_args args);
+    static void update_CH8_PHASE_DER_ACQM(const struct event_handler_args args);
+
+    static void update_CH1_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH2_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH3_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH4_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH5_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH6_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH7_AMP_DER_ACQM(const struct event_handler_args args);
+    static void update_CH8_AMP_DER_ACQM(const struct event_handler_args args);
+
+    //static void update_CH1_PWR_REM_ACQM(const struct event_handler_args args);
+   
+    // update_CH1_PHASE_REM
+    
+    static void update_CH1_PWR_REM(const struct event_handler_args args);
+    //static void update_CH1_PHASE_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH1_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH1_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH2_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH1_PHASE_REM(const struct event_handler_args args);
+    static void update_CH2_PWR_REM(const struct event_handler_args args);
+    //static void update_CH2_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH2_PHASE_REM_SCAN(const struct event_handler_args args);
+    //static void update_CH2_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH2_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH2_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH2_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH2_PWR_LOC_SCAN(const struct event_handler_args args);
+    //static void update_CH3_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH3_PWR_REM(const struct event_handler_args args);
+    //static void update_CH3_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH3_PHASE_REM_SCAN(const struct event_handler_args args);
+    //static void update_CH3_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH3_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH3_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH3_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH3_PWR_LOC_SCAN(const struct event_handler_args args);
+    //static void update_CH4_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH4_PWR_REM(const struct event_handler_args args);
+    //static void update_CH4_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH4_PHASE_REM_SCAN(const struct event_handler_args args);
+    //static void update_CH4_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH4_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH4_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH4_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH4_PWR_LOC_SCAN(const struct event_handler_args args);
+    //static void update_CH5_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH5_PWR_REM(const struct event_handler_args args);
+    //static void update_CH5_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH5_PHASE_REM_SCAN(const struct event_handler_args args);
+    //static void update_CH5_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH5_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH5_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH5_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH5_PWR_LOC_SCAN(const struct event_handler_args args);
+    //static void update_CH6_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH6_PWR_REM(const struct event_handler_args args);
+    //static void update_CH6_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH6_PHASE_REM_SCAN(const struct event_handler_args args);
+    //static void update_CH6_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH6_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH6_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH6_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH6_PWR_LOC_SCAN(const struct event_handler_args args);
+    //static void update_CH7_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH7_PWR_REM(const struct event_handler_args args);
+    //static void update_CH7_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH7_PHASE_REM_SCAN(const struct event_handler_args args);
+    //static void update_CH7_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH7_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH7_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH7_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH7_PWR_LOC_SCAN(const struct event_handler_args args);
+    //static void update_CH8_PWR_REM_SCAN(const struct event_handler_args args);
+    static void update_CH8_PWR_REM(const struct event_handler_args args);
+    //static void update_CH8_PWR_REM_ACQM(const struct event_handler_args args);
+    //static void update_CH8_PHASE_REM_SCAN(const struct event_handler_args args);KO
+    //static void update_CH8_PHASE_REM_ACQM(const struct event_handler_args args);
+    static void update_CH8_PHASE_REM(const struct event_handler_args args);
+    //static void update_CH8_AMP_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH8_PHASE_DER_SCAN(const struct event_handler_args args);
+    //static void update_CH8_PWR_LOC_SCAN(const struct event_handler_args args);
+
+
+    static void update_trace_ACQM(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& acqm);
+    static void update_trace_SCAN(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& scan);
+    
+
+    //static std::map<std::string, state> interlock_status_map;
+    //static std::map<std::string, state> interlock_enable_map;
 
 
     static LoggingSystem messenger;
@@ -158,8 +258,8 @@ public:
     // NB this map is to replace the if-else tree typically used. 
     // it seesm in VS you can only have 127 if-else statements 
     // https://stackoverflow.com/questions/11508013/blocks-nested-too-deeply
-    const std::map<std::string, updateFunctionPtr> updateFucntionMap  =  {
-    {LLRFRecords::KEEP_ALIVE , this->update_KEEP_ALIVE                  },
+    const std::map<std::string, updateFunctionPtr> updateFunctionMap  =  {
+    {LLRFRecords::HEART_BEAT , this->update_HEART_BEAT                  },
     {LLRFRecords::AMP_FF, this->update_AMP_FF							},
     {LLRFRecords::TRIG_SOURCE, this->update_TRIG_SOURCE					},
     {LLRFRecords::AMP_SP, this->update_AMP_SP							},
@@ -170,7 +270,7 @@ public:
     {LLRFRecords::FF_AMP_LOCK_STATE, this->update_FF_AMP_LOCK_STATE     },
     {LLRFRecords::TIME_VECTOR, this->update_TIME_VECTOR					},
     {LLRFRecords::PULSE_OFFSET, this->update_PULSE_OFFSET				},
-    {LLRFRecords::PULSE_LENGTH, this->update_PULSE_LENGTH				},
+    {LLRFRecords::LLRF_PULSE_DURATION, this->update_LLRF_PULSE_DURATION				},
     {LLRFRecords::INTERLOCK, this->update_INTERLOCK						},
     {LLRFRecords::PULSE_SHAPE, this->update_PULSE_SHAPE					},
    // {LLRFRecords::PULSE_SHAPE_APPLY,this->update_PULSE_SHAPE_APPLY      },
@@ -215,81 +315,114 @@ public:
     {LLRFRecords::CH8_INTERLOCK_P,            this->update_CH8_INTERLOCK_P},
     {LLRFRecords::CH8_INTERLOCK_PDBM,            this->update_CH8_INTERLOCK_PDBM},
     {LLRFRecords::LLRF_TRACES,            this->update_LLRF_TRACES},
-    {LLRFRecords::LLRF_TRACES_SCAN,            this->update_LLRF_TRACES_SCAN},
-    {LLRFRecords::LLRF_TRACES_ACQM,            this->update_LLRF_TRACES_ACQM},
-    {LLRFRecords::CH1_PWR_REM_SCAN,            this->update_CH1_PWR_REM_SCAN},
     {LLRFRecords::CH1_PWR_REM,            this->update_CH1_PWR_REM},
-    {LLRFRecords::CH1_PWR_REM_ACQM,            this->update_CH1_PWR_REM_ACQM},
-    {LLRFRecords::CH1_PHASE_REM_SCAN,            this->update_CH1_PHASE_REM_SCAN},
-    {LLRFRecords::CH1_PHASE_REM_ACQM,            this->update_CH1_PHASE_REM_ACQM},
     {LLRFRecords::CH1_PHASE_REM,            this->update_CH1_PHASE_REM},
-    {LLRFRecords::CH1_AMP_DER_SCAN,            this->update_CH1_AMP_DER_SCAN},
-    {LLRFRecords::CH1_PHASE_DER_SCAN,            this->update_CH1_PHASE_DER_SCAN},
-    {LLRFRecords::CH1_PWR_LOC_SCAN,            this->update_CH1_PWR_LOC_SCAN},
-    {LLRFRecords::CH2_PWR_REM_SCAN,            this->update_CH2_PWR_REM_SCAN},
     {LLRFRecords::CH2_PWR_REM,            this->update_CH2_PWR_REM},
-    {LLRFRecords::CH2_PWR_REM_ACQM,            this->update_CH2_PWR_REM_ACQM},
-    {LLRFRecords::CH2_PHASE_REM_SCAN,           this->update_CH2_PHASE_REM_SCAN},
-    {LLRFRecords::CH2_PHASE_REM_ACQM,            this->update_CH2_PHASE_REM_ACQM},
     {LLRFRecords::CH2_PHASE_REM,            this->update_CH2_PHASE_REM},
-    {LLRFRecords::CH2_AMP_DER_SCAN,            this->update_CH2_AMP_DER_SCAN},
-    {LLRFRecords::CH2_PHASE_DER_SCAN,           this->update_CH2_PHASE_DER_SCAN},
-    {LLRFRecords::CH2_PWR_LOC_SCAN,            this->update_CH2_PWR_LOC_SCAN},
-    {LLRFRecords::CH3_PWR_REM_SCAN,            this->update_CH3_PWR_REM_SCAN},
     {LLRFRecords::CH3_PWR_REM,            this->update_CH3_PWR_REM},
-    {LLRFRecords::CH3_PWR_REM_ACQM,            this->update_CH3_PWR_REM_ACQM},
-    {LLRFRecords::CH3_PHASE_REM_SCAN,            this->update_CH3_PHASE_REM_SCAN},
-    {LLRFRecords::CH3_PHASE_REM_ACQM,            this->update_CH3_PHASE_REM_ACQM},
     {LLRFRecords::CH3_PHASE_REM,            this->update_CH3_PHASE_REM},
-    {LLRFRecords::CH3_AMP_DER_SCAN,            this->update_CH3_AMP_DER_SCAN},
-    {LLRFRecords::CH3_PHASE_DER_SCAN,            this->update_CH3_PHASE_DER_SCAN},
-    {LLRFRecords::CH3_PWR_LOC_SCAN,            this->update_CH3_PWR_LOC_SCAN},
-    {LLRFRecords::CH4_PWR_REM_SCAN,            this->update_CH4_PWR_REM_SCAN},
     {LLRFRecords::CH4_PWR_REM,            this->update_CH4_PWR_REM},
-    {LLRFRecords::CH4_PWR_REM_ACQM,            this->update_CH4_PWR_REM_ACQM},
-    {LLRFRecords::CH4_PHASE_REM_SCAN,            this->update_CH4_PHASE_REM_SCAN},
-    {LLRFRecords::CH4_PHASE_REM_ACQM,            this->update_CH4_PHASE_REM_ACQM},
     {LLRFRecords::CH4_PHASE_REM,            this->update_CH4_PHASE_REM},
-    {LLRFRecords::CH4_AMP_DER_SCAN,            this->update_CH4_AMP_DER_SCAN},
-    {LLRFRecords::CH4_PHASE_DER_SCAN,            this->update_CH4_PHASE_DER_SCAN},
-    {LLRFRecords::CH4_PWR_LOC_SCAN,            this->update_CH4_PWR_LOC_SCAN},
-    {LLRFRecords::CH5_PWR_REM_SCAN,            this->update_CH5_PWR_REM_SCAN},
     {LLRFRecords::CH5_PWR_REM,                this->update_CH5_PWR_REM},
-    {LLRFRecords::CH5_PWR_REM_ACQM,            this->update_CH5_PWR_REM_ACQM},
-    {LLRFRecords::CH5_PHASE_REM_SCAN,            this->update_CH5_PHASE_REM_SCAN},
-    {LLRFRecords::CH5_PHASE_REM_ACQM,            this->update_CH5_PHASE_REM_ACQM},
     {LLRFRecords::CH5_PHASE_REM,            this->update_CH5_PHASE_REM},
-    {LLRFRecords::CH5_AMP_DER_SCAN,            this->update_CH5_AMP_DER_SCAN},
-    {LLRFRecords::CH5_PHASE_DER_SCAN,            this->update_CH5_PHASE_DER_SCAN},
-    {LLRFRecords::CH5_PWR_LOC_SCAN,            this->update_CH5_PWR_LOC_SCAN},
-    {LLRFRecords::CH6_PWR_REM_SCAN,            this->update_CH6_PWR_REM_SCAN},
     {LLRFRecords::CH6_PWR_REM,            this->update_CH6_PWR_REM},
-    {LLRFRecords::CH6_PWR_REM_ACQM,            this->update_CH6_PWR_REM_ACQM},
-    {LLRFRecords::CH6_PHASE_REM_SCAN,            this->update_CH6_PHASE_REM_SCAN},
-    {LLRFRecords::CH6_PHASE_REM_ACQM,            this->update_CH6_PHASE_REM_ACQM},
     {LLRFRecords::CH6_PHASE_REM,            this->update_CH6_PHASE_REM},
-    {LLRFRecords::CH6_AMP_DER_SCAN,            this->update_CH6_AMP_DER_SCAN},
-    {LLRFRecords::CH6_PHASE_DER_SCAN,            this->update_CH6_PHASE_DER_SCAN},
-    {LLRFRecords::CH6_PWR_LOC_SCAN,            this->update_CH6_PWR_LOC_SCAN},
-    {LLRFRecords::CH7_PWR_REM_SCAN,            this->update_CH7_PWR_REM_SCAN},
     {LLRFRecords::CH7_PWR_REM,            this->update_CH7_PWR_REM},
-    {LLRFRecords::CH7_PWR_REM_ACQM,            this->update_CH7_PWR_REM_ACQM},
-    {LLRFRecords::CH7_PHASE_REM_SCAN,            this->update_CH7_PHASE_REM_SCAN},
-    {LLRFRecords::CH7_PHASE_REM_ACQM,            this->update_CH7_PHASE_REM_ACQM},
     {LLRFRecords::CH7_PHASE_REM,            this->update_CH7_PHASE_REM},
-    {LLRFRecords::CH7_AMP_DER_SCAN,            this->update_CH7_AMP_DER_SCAN},
-    {LLRFRecords::CH7_PHASE_DER_SCAN,            this->update_CH7_PHASE_DER_SCAN},
-    {LLRFRecords::CH7_PWR_LOC_SCAN,            this->update_CH7_PWR_LOC_SCAN},
-    {LLRFRecords::CH8_PWR_REM_SCAN,            this->update_CH8_PWR_REM_SCAN},
     {LLRFRecords::CH8_PWR_REM,            this->update_CH8_PWR_REM},
-    {LLRFRecords::CH8_PWR_REM_ACQM,            this->update_CH8_PWR_REM_ACQM},
-    {LLRFRecords::CH8_PHASE_REM_SCAN,            this->update_CH8_PHASE_REM_SCAN},
-    {LLRFRecords::CH8_PHASE_REM_ACQM,            this->update_CH8_PHASE_REM_ACQM},
-    {LLRFRecords::CH8_PHASE_REM,            this->update_CH8_PHASE_REM},
-    {LLRFRecords::CH8_AMP_DER_SCAN,            this->update_CH8_AMP_DER_SCAN},
-    {LLRFRecords::CH8_PHASE_DER_SCAN,this->update_CH8_PHASE_DER_SCAN },
-    {LLRFRecords::CH8_PWR_LOC_SCAN, this->update_CH8_PWR_LOC_SCAN}
-        };
+
+
+    {LLRFRecords::CH1_PHASE_REM_SCAN, this->update_CH1_PHASE_REM_SCAN},
+    {LLRFRecords::CH2_PHASE_REM_SCAN, this->update_CH2_PHASE_REM_SCAN},
+    {LLRFRecords::CH3_PHASE_REM_SCAN, this->update_CH3_PHASE_REM_SCAN},
+    {LLRFRecords::CH4_PHASE_REM_SCAN, this->update_CH4_PHASE_REM_SCAN},
+    {LLRFRecords::CH5_PHASE_REM_SCAN, this->update_CH5_PHASE_REM_SCAN},
+    {LLRFRecords::CH6_PHASE_REM_SCAN, this->update_CH6_PHASE_REM_SCAN},
+    {LLRFRecords::CH7_PHASE_REM_SCAN, this->update_CH7_PHASE_REM_SCAN},
+    {LLRFRecords::CH8_PHASE_REM_SCAN, this->update_CH8_PHASE_REM_SCAN},
+
+    {LLRFRecords::CH1_PWR_REM_SCAN, this->update_CH1_PWR_REM_SCAN},
+    {LLRFRecords::CH2_PWR_REM_SCAN, this->update_CH2_PWR_REM_SCAN},
+    {LLRFRecords::CH3_PWR_REM_SCAN, this->update_CH3_PWR_REM_SCAN},
+    {LLRFRecords::CH4_PWR_REM_SCAN, this->update_CH4_PWR_REM_SCAN},
+    {LLRFRecords::CH5_PWR_REM_SCAN, this->update_CH5_PWR_REM_SCAN},
+    {LLRFRecords::CH6_PWR_REM_SCAN, this->update_CH6_PWR_REM_SCAN},
+    {LLRFRecords::CH7_PWR_REM_SCAN, this->update_CH7_PWR_REM_SCAN},
+    {LLRFRecords::CH8_PWR_REM_SCAN, this->update_CH8_PWR_REM_SCAN},
+    {LLRFRecords::CH1_PWR_LOC_SCAN, this->update_CH1_PWR_LOC_SCAN},
+    {LLRFRecords::CH2_PWR_LOC_SCAN, this->update_CH2_PWR_LOC_SCAN},
+    {LLRFRecords::CH3_PWR_LOC_SCAN, this->update_CH3_PWR_LOC_SCAN},
+    {LLRFRecords::CH4_PWR_LOC_SCAN, this->update_CH4_PWR_LOC_SCAN},
+    {LLRFRecords::CH5_PWR_LOC_SCAN, this->update_CH5_PWR_LOC_SCAN},
+    {LLRFRecords::CH6_PWR_LOC_SCAN, this->update_CH6_PWR_LOC_SCAN},
+    {LLRFRecords::CH7_PWR_LOC_SCAN, this->update_CH7_PWR_LOC_SCAN},
+    {LLRFRecords::CH8_PWR_LOC_SCAN, this->update_CH8_PWR_LOC_SCAN},
+
+
+
+
+
+    { LLRFRecords::CH1_AMP_DER_SCAN, this->update_CH1_AMP_DER_SCAN },
+    { LLRFRecords::CH2_AMP_DER_SCAN, this->update_CH2_AMP_DER_SCAN },
+    { LLRFRecords::CH3_AMP_DER_SCAN, this->update_CH3_AMP_DER_SCAN },
+    { LLRFRecords::CH4_AMP_DER_SCAN, this->update_CH4_AMP_DER_SCAN },
+    { LLRFRecords::CH5_AMP_DER_SCAN, this->update_CH5_AMP_DER_SCAN },
+    { LLRFRecords::CH6_AMP_DER_SCAN, this->update_CH6_AMP_DER_SCAN },
+    { LLRFRecords::CH7_AMP_DER_SCAN, this->update_CH7_AMP_DER_SCAN },
+    { LLRFRecords::CH8_AMP_DER_SCAN, this->update_CH8_AMP_DER_SCAN},
+
+
+
+    { LLRFRecords::CH1_PHASE_REM_ACQM, this->update_CH1_PHASE_REM_ACQM },
+    { LLRFRecords::CH2_PHASE_REM_ACQM, this->update_CH2_PHASE_REM_ACQM },
+    { LLRFRecords::CH3_PHASE_REM_ACQM, this->update_CH3_PHASE_REM_ACQM },
+    { LLRFRecords::CH4_PHASE_REM_ACQM, this->update_CH4_PHASE_REM_ACQM },
+    { LLRFRecords::CH5_PHASE_REM_ACQM, this->update_CH5_PHASE_REM_ACQM },
+    { LLRFRecords::CH6_PHASE_REM_ACQM, this->update_CH6_PHASE_REM_ACQM },
+    { LLRFRecords::CH7_PHASE_REM_ACQM, this->update_CH7_PHASE_REM_ACQM },
+    { LLRFRecords::CH8_PHASE_REM_ACQM, this->update_CH8_PHASE_REM_ACQM},
+    {LLRFRecords::CH1_PWR_REM_ACQM, this->update_CH1_PWR_REM_ACQM},
+    {LLRFRecords::CH2_PWR_REM_ACQM, this->update_CH2_PWR_REM_ACQM},
+    {LLRFRecords::CH3_PWR_REM_ACQM, this->update_CH3_PWR_REM_ACQM},
+    {LLRFRecords::CH4_PWR_REM_ACQM, this->update_CH4_PWR_REM_ACQM},
+    {LLRFRecords::CH5_PWR_REM_ACQM, this->update_CH5_PWR_REM_ACQM},
+    {LLRFRecords::CH6_PWR_REM_ACQM, this->update_CH6_PWR_REM_ACQM},
+    {LLRFRecords::CH7_PWR_REM_ACQM, this->update_CH7_PWR_REM_ACQM},
+    {LLRFRecords::CH8_PWR_REM_ACQM, this->update_CH8_PWR_REM_ACQM},
+    {LLRFRecords::CH1_PWR_LOC_ACQM, this->update_CH1_PWR_LOC_ACQM},
+    {LLRFRecords::CH2_PWR_LOC_ACQM, this->update_CH2_PWR_LOC_ACQM},
+    {LLRFRecords::CH3_PWR_LOC_ACQM, this->update_CH3_PWR_LOC_ACQM},
+    {LLRFRecords::CH4_PWR_LOC_ACQM, this->update_CH4_PWR_LOC_ACQM},
+    {LLRFRecords::CH5_PWR_LOC_ACQM, this->update_CH5_PWR_LOC_ACQM},
+    {LLRFRecords::CH6_PWR_LOC_ACQM, this->update_CH6_PWR_LOC_ACQM},
+    {LLRFRecords::CH7_PWR_LOC_ACQM, this->update_CH7_PWR_LOC_ACQM},
+    {LLRFRecords::CH8_PWR_LOC_ACQM, this->update_CH8_PWR_LOC_ACQM},
+    {LLRFRecords::CH1_PHASE_DER_ACQM, this->update_CH1_PHASE_DER_ACQM},
+    {LLRFRecords::CH2_PHASE_DER_ACQM, this->update_CH2_PHASE_DER_ACQM},
+    {LLRFRecords::CH3_PHASE_DER_ACQM, this->update_CH3_PHASE_DER_ACQM},
+    {LLRFRecords::CH4_PHASE_DER_ACQM, this->update_CH4_PHASE_DER_ACQM},
+    {LLRFRecords::CH5_PHASE_DER_ACQM, this->update_CH5_PHASE_DER_ACQM},
+    {LLRFRecords::CH6_PHASE_DER_ACQM, this->update_CH6_PHASE_DER_ACQM},
+    {LLRFRecords::CH7_PHASE_DER_ACQM, this->update_CH7_PHASE_DER_ACQM},
+    {LLRFRecords::CH8_PHASE_DER_ACQM, this->update_CH8_PHASE_DER_ACQM},
+    {LLRFRecords::CH1_AMP_DER_ACQM, this->update_CH1_AMP_DER_ACQM},
+    {LLRFRecords::CH2_AMP_DER_ACQM, this->update_CH2_AMP_DER_ACQM},
+    {LLRFRecords::CH3_AMP_DER_ACQM, this->update_CH3_AMP_DER_ACQM},
+    {LLRFRecords::CH4_AMP_DER_ACQM, this->update_CH4_AMP_DER_ACQM},
+    {LLRFRecords::CH5_AMP_DER_ACQM, this->update_CH5_AMP_DER_ACQM},
+    {LLRFRecords::CH6_AMP_DER_ACQM, this->update_CH6_AMP_DER_ACQM},
+    {LLRFRecords::CH7_AMP_DER_ACQM, this->update_CH7_AMP_DER_ACQM},
+    {LLRFRecords::CH8_AMP_DER_ACQM, this->update_CH8_AMP_DER_ACQM},
+    {LLRFRecords::CH1_PHASE_DER_SCAN, this->update_CH1_PHASE_DER_SCAN},
+    {LLRFRecords::CH2_PHASE_DER_SCAN, this->update_CH2_PHASE_DER_SCAN},
+    {LLRFRecords::CH3_PHASE_DER_SCAN, this->update_CH3_PHASE_DER_SCAN},
+    {LLRFRecords::CH4_PHASE_DER_SCAN, this->update_CH4_PHASE_DER_SCAN},
+    {LLRFRecords::CH5_PHASE_DER_SCAN, this->update_CH5_PHASE_DER_SCAN},
+    {LLRFRecords::CH6_PHASE_DER_SCAN, this->update_CH6_PHASE_DER_SCAN},
+    {LLRFRecords::CH7_PHASE_DER_SCAN, this->update_CH7_PHASE_DER_SCAN},
+    {LLRFRecords::CH8_PHASE_DER_SCAN, this->update_CH8_PHASE_DER_SCAN}
+    
+    };
 
 
 

@@ -96,8 +96,6 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	}
 	messenger.printDebugMessage("Calling cutLLRFMapByMachineAreas");
 	cutLLRFMapByMachineAreas();
-
-
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas Finished");
 	setupChannels();
 	EPICSInterface::sendToEPICS();
@@ -126,7 +124,6 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 				if (pv.second.monitor)
 				{
 					llrf.second.epicsInterface->createSubscription(llrf.second, pv.second);
-					//EPICSInterface::sendToEPICS();
 				}
 			}
 			else
@@ -135,6 +132,8 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 			}
 		}
 	}
+	messenger.printMessage("Subscriptions set-up sending request to EPICS");
+	EPICSInterface::sendToEPICS();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
@@ -220,30 +219,32 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 }
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {
-	// first add in the magnet full name
+	// first add in the hardrare full name
 	std::string full_name = llrf.getHardwareName();
-	//messenger.printMessage("updateAliasNameMap ", full_name);
+	messenger.printMessage("updateAliasNameMap ", full_name);
 	if (GlobalFunctions::entryExists(alias_name_map, full_name))
 	{
-		//messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
+		messenger.printMessage("!!ERROR!!   \"", full_name, "\" llrf name already exists! ");
 	}
 	else
 	{
-		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
+		messenger.printMessage("full_name \"", full_name, "\" added to alias_name_map");
 		alias_name_map[full_name] = full_name;
 	}
 	// now add in the aliases
 	std::vector<std::string> aliases = llrf.getAliases();
 	for (auto&& next_alias : aliases)
 	{
+		messenger.printMessage("next_alias = ", next_alias);
+
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
 		{
-			messenger.printMessage("!!ERROR!! ", llrf.getHardwareName(), " alias = ", next_alias, " already exists");
+			messenger.printMessage("!!ERROR!! ", llrf.getHardwareName(), " alias = \"", next_alias, "\" already exists");
 		}
 		else
 		{
 			alias_name_map[next_alias] = full_name;
-			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
+			messenger.printMessage("Added alias \"" + next_alias + "\" for " + full_name);
 		}
 	}
 }
@@ -334,6 +335,7 @@ LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
 	{
 		return LLRFMap.at(full_name);
 	}
+	std::cout << "!!ERROR!! getLLRF can't find llrf_name = " << llrf_name << " a dummy object has been returned."  << std::endl;
 	return dummy_llrf;
 }
 
