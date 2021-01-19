@@ -147,7 +147,9 @@ properties:
     cfpow_mean_end_time : 0.0
     crpow_mean_start_time : 0.0
     crpow_mean_end_time : 0.0
+    # how many elements in a normal trace    
     trace_data_size : 1017
+    one_trace_data_count  : 24576 # all traces data concatenated into 1 record 
   
   
   

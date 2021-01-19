@@ -332,6 +332,7 @@ public:
 	}
 
 
+
 	template<typename T>
 	static bool putArrayValue(const pvStruct& pvStruct, const T& value)
 	{
@@ -353,6 +354,9 @@ public:
 	* @param[in] pointer_to_dbr_type : pointer_to_dbr_type pointer to where got array will be.
 	* @param[out] bool: if command got sent to epics correctls (not if it worked!).*/
 	bool getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const;
+
+
+
 #endif
 protected:
 	/*! NOT IN USE */

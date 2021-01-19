@@ -55,27 +55,41 @@ class TraceData
 			all the trace data goes here (online data)
 		*/
 		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_data_buffer;
-		size_t trace_data_buffer_size;
+
 		std::vector<double> trace_data;
 		// max value in trace
 		double trace_max;
 		// traces indices over which to calculate trace_cut_mean
 		//size_t mean_start_index, mean_stop_index;
 		
+		/*! The start and stop index over which to calculate the trace mean */
 		std::pair<size_t, size_t> mean_start_stop;
+		/*! The start and stop time over which to calculate the trace mean */
 		std::pair<double, double> mean_start_stop_time;
-		
-		size_t  stop_minus_start;
+	
+		size_t  stop_minus_start;    
 		
 		// mean of values between  mean_start_index, mean_stop_index
 		double trace_cut_mean;
 
-		// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor 
+		/*! how mamny elemnts in this trace */
 		size_t  trace_data_size;
-		// the state of the scan and acqm 
+		size_t  trace_data_buffer_size;
+
+		// 
+		/*! the state of the SCAN parameter for this trace */
 		std::pair<epicsTimeStamp, STATE> scan;
+		/*! the state of the ACQM parameter for this trace */
 		std::pair<epicsTimeStamp, STATE> acqm;
-		
+
+		/*! which part of the one-record trace data is this trace (defined in master lattice yaml file) */
+		size_t one_record_part;
+		/*! the starting index for this trace in the one-record trace data  */
+		size_t one_record_start_index;
+		/*! the stopping index for this trace in the one-record trace data */
+		size_t one_record_stop_index;
+
+		/*! Flag ser to true if any of the LLRF interlocks active for this trace */
 		bool interlock_state;
 };
 
@@ -87,6 +101,7 @@ public:
 	LLRF();
 	LLRF(const std::map<std::string, std::string>& paramMap, const  STATE mode);
 	LLRF(const LLRF& copyLLRF);
+	LLRF& operator=(const LLRF&) = default;
 	~LLRF();
 	
 	/*! Both the HRRG and LRRG use the same LLRF box, the main difference is which channels are used for traces 
@@ -97,7 +112,8 @@ public:
 	void setGunType(const TYPE area); // called from factory
 	/*! When the machein area has been correctly set we cna set up the trace data correctly. 
 	Diferent channels numbers refer to different traces. This cannot be done easily   */
-	void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
+	//void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
+	
 	void setPVStructs();
 	/*! For debugging to see if maps and trace names get set correctly */
 	void printSetupData()const;
@@ -170,16 +186,55 @@ public:
 		@param[out] time, time (ms) for the passed index */
 	double getTime(const size_t index) const;
 
+	
+
+
+	/*! Set the size of each TraceData circular buffer 'trace_data_buffer' (default is 5)
+	@param[out] size_t, new buffer size */
+	bool setAllTraceBufferSize(const size_t value);
+	
+	
+	
 	/*! get all the trace data for this LLRF structure (calls a ca_array_get once, to reduce network traffic does not start monitoring of all traces)
 	@param[out] map<string, vector<double>>, */
-	std::map<std::string, std::vector<double>> getNewTraceData();
+	void updateTraceValues();
+	void updateTraceValues_Py();
+
+	void splitOneTraceValues();
+
+
+	//std::map<std::string, std::vector<double>> getNewTraceData();
 	/*! Start trace monitoring (please think about if you reallly need to monitor all traces)
 	@param[out] if the command got sent to epics  (not if setting that value was successfull!) */
-	void startTraceMonitoring()
+	bool startTraceMonitoring();
 	/*! stop the trace monitoring for this object (can significantly reduce network traffic)
 	@param[out] bool, if the monitoring was succesfully stopped */
 	bool stopTraceMonitoring();
+	
+	/*! acquire a single shot of trace data, for all traces
+	@param[out] bool, if the monitoring was succesfully stopped */
+	void getTraceData();
+	///*! acquire a single shot of trace data, for 1 tracetraces
+	//@param[in] string, name of trace to get data for 
+	//@param[out] ... TBC */
+	//void getTraceData(const std::string& trace_name)
+	///*! acquire a single shot of trace data, for multipel traces 
+	//@param[in] vector<string>, names of traces to get data for
+	//@param[out] ... TBC */
+	//void getTraceData(const std::vector<std::string>& trace_names)
+	///*! acquire a single shot of trace data, for all traces, Python version
+	//@param[out] bool, if the monitoring was succesfully stopped */
+	//void getTraceData_Py()
+	///*! acquire a single shot of trace data, for 1 trace, Python version
+	//@param[in] string, name of trace to get data for
+	//@param[out] ... TBC */
+	//void getTraceData_Py(const std::string& trace_name)
+	///*! acquire a single shot of trace data, for multipel traces, Python version
+	//@param[in] list, names of traces to get data for
+	//@param[out] ... TBC */
+	//void getTraceData_Py(const boost::python::list& trace_names)
 
+	
 	/*! get a map of all the trace data 
 		@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	std::map<std::string, std::vector<double>> getAllTraceData()const;
@@ -412,6 +467,9 @@ protected:
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
 	
+
+	/*! Size of circular buffer used to store trace data */
+	size_t trace_data_buffer_size;
 	
 	
 	/*! State of the LLRF trigger, value and epicstimestamp 	*/
@@ -447,9 +505,10 @@ protected:
 	this data is stored for all possible traces in this LLRF box */
 	std::map<std::string, LLRFInterlock> all_trace_interlocks;
 
+	
+	/*! pointer to dbr_time_stuct, used to get timestamped trace data (for all traces in the LLRF */
+	struct dbr_time_double* dbr_all_trace_data;
 
-	/*! pointer to dbr_time_stuct, used to get timestmp for trace data ... NO ?? not sure, maybe */
-	std::pair<epicsTimeStamp, struct dbr_time_long*> all_trace_data;
 
 	// special case for the HRRG_GUN and LRRG_GUN
 	//void setMachineArea(const TYPE area);
@@ -465,9 +524,15 @@ private:
 
 	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
 
+
+	bool getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs);
+
 	void setTraceDataMap();
 	void addToTraceDataMap(const std::string& name);
 	void setTraceDataBufferSize(TraceData& trace_data, const size_t new_size);
+
+
+
 
 	void updateTraceCutMeans();
 	void calculateTraceCutMean(TraceData& trace);
@@ -481,6 +546,9 @@ private:
 	void addDummyTraces(const std::map<std::string, std::string>& paramMap);
 	void addDummyTrace(const std::map<std::string, std::string>& paramMap, 
 		const std::string& trace_name, std::vector< double>& trace_to_update);
+
+	/*! flag for if dbr_all_trace_data poitner has been allocated enough memory */
+	bool dbr_all_trace_data_not_malloced;
 
 	/*! The time for each point on a rf trace */
 	std::vector<double> time_vector;
@@ -538,65 +606,9 @@ private:
 
 
 	/*! All the "main" channel names, main refers to the power and phase traces  */
-	const std::vector<std::string> allMainChannelTraceNames{
-	GlobalConstants::CH1_PWR_REM,
-	GlobalConstants::CH2_PWR_REM,
-	GlobalConstants::CH3_PWR_REM,
-	GlobalConstants::CH4_PWR_REM,
-	GlobalConstants::CH5_PWR_REM,
-	GlobalConstants::CH6_PWR_REM,
-	GlobalConstants::CH7_PWR_REM,
-	GlobalConstants::CH8_PWR_REM,
-	GlobalConstants::CH1_PHASE_REM,
-	GlobalConstants::CH2_PHASE_REM,
-	GlobalConstants::CH3_PHASE_REM,
-	GlobalConstants::CH4_PHASE_REM,
-	GlobalConstants::CH5_PHASE_REM,
-	GlobalConstants::CH6_PHASE_REM,
-	GlobalConstants::CH7_PHASE_REM,
-	GlobalConstants::CH8_PHASE_REM };
+	std::vector<std::string> allMainChannelTraceNames;
 	/*! All the "main" channel names, main refers to the power and phase traces  */
-	const std::vector<std::string> allChannelTraceNames{
-	GlobalConstants::CH1_AMP_DER,
-	GlobalConstants::CH2_AMP_DER,
-	GlobalConstants::CH3_AMP_DER,
-	GlobalConstants::CH4_AMP_DER,
-	GlobalConstants::CH5_AMP_DER,
-	GlobalConstants::CH6_AMP_DER,
-	GlobalConstants::CH7_AMP_DER,
-	GlobalConstants::CH8_AMP_DER,
-	GlobalConstants::CH1_PHASE_DER,
-	GlobalConstants::CH2_PHASE_DER,
-	GlobalConstants::CH3_PHASE_DER,
-	GlobalConstants::CH4_PHASE_DER,
-	GlobalConstants::CH5_PHASE_DER,
-	GlobalConstants::CH6_PHASE_DER,
-	GlobalConstants::CH7_PHASE_DER,
-	GlobalConstants::CH8_PHASE_DER,
-	GlobalConstants::CH1_PHASE_REM,
-	GlobalConstants::CH2_PHASE_REM,
-	GlobalConstants::CH3_PHASE_REM,
-	GlobalConstants::CH4_PHASE_REM,
-	GlobalConstants::CH5_PHASE_REM,
-	GlobalConstants::CH6_PHASE_REM,
-	GlobalConstants::CH7_PHASE_REM,
-	GlobalConstants::CH8_PHASE_REM,
-	GlobalConstants::CH1_PWR_LOC,
-	GlobalConstants::CH2_PWR_LOC,
-	GlobalConstants::CH3_PWR_LOC,
-	GlobalConstants::CH4_PWR_LOC,
-	GlobalConstants::CH5_PWR_LOC,
-	GlobalConstants::CH6_PWR_LOC,
-	GlobalConstants::CH7_PWR_LOC,
-	GlobalConstants::CH8_PWR_LOC,
-	GlobalConstants::CH1_PWR_REM,
-	GlobalConstants::CH2_PWR_REM,
-	GlobalConstants::CH3_PWR_REM,
-	GlobalConstants::CH4_PWR_REM,
-	GlobalConstants::CH5_PWR_REM,
-	GlobalConstants::CH6_PWR_REM,
-	GlobalConstants::CH7_PWR_REM,
-	GlobalConstants::CH8_PWR_REM };
+	std::vector<std::string> allChannelTraceNames;
 
 
 

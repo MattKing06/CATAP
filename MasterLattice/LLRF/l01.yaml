@@ -139,6 +139,7 @@ properties:
     virtual_name: VM-CLA-L01-LRF-CTRL-01
     name_alias: CLA-L01, L01-LLRF,L01
     trace_data_size : 1017
+    one_trace_data_count : 24576
     CH1 :  KLYSTRON_FORWARD
     CH2 :  KLYSTRON_REVERSE
     CH3 :  L01_CAVITY_FORWARD

@@ -10,6 +10,9 @@
 
 TraceData::TraceData():
 trace_data_size(1017),
+one_record_start_index(GlobalConstants::size_zero),
+one_record_stop_index(GlobalConstants::size_zero),
+one_record_part(GlobalConstants::size_zero),
 name("unknown"),
 trace_max(GlobalConstants::double_min),
 mean_start_stop(std::pair<size_t,size_t>( GlobalConstants::nine99999,GlobalConstants::nine99999)),
@@ -66,28 +69,61 @@ trace_data_size(1017)// TODD hardcoded int
 
 LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) :
 	Hardware(paramMap, mode),
+	dbr_all_trace_data_not_malloced(true),
+	allMainChannelTraceNames{ GlobalConstants::CH1_PWR_REM,GlobalConstants::CH2_PWR_REM,
+	GlobalConstants::CH3_PWR_REM,GlobalConstants::CH4_PWR_REM,
+	GlobalConstants::CH5_PWR_REM,GlobalConstants::CH6_PWR_REM,
+	GlobalConstants::CH7_PWR_REM,GlobalConstants::CH8_PWR_REM,
+	GlobalConstants::CH1_PHASE_REM,GlobalConstants::CH2_PHASE_REM,
+	GlobalConstants::CH3_PHASE_REM,GlobalConstants::CH4_PHASE_REM,
+	GlobalConstants::CH5_PHASE_REM,GlobalConstants::CH6_PHASE_REM,
+	GlobalConstants::CH7_PHASE_REM,GlobalConstants::CH8_PHASE_REM},
+	allChannelTraceNames{GlobalConstants::CH1_AMP_DER,GlobalConstants::CH2_AMP_DER,
+	GlobalConstants::CH3_AMP_DER,GlobalConstants::CH4_AMP_DER,
+	GlobalConstants::CH5_AMP_DER,GlobalConstants::CH6_AMP_DER,
+	GlobalConstants::CH7_AMP_DER,GlobalConstants::CH8_AMP_DER,
+	GlobalConstants::CH1_PHASE_DER,GlobalConstants::CH2_PHASE_DER,
+	GlobalConstants::CH3_PHASE_DER,GlobalConstants::CH4_PHASE_DER,
+	GlobalConstants::CH5_PHASE_DER,GlobalConstants::CH6_PHASE_DER,
+	GlobalConstants::CH7_PHASE_DER,GlobalConstants::CH8_PHASE_DER,
+	GlobalConstants::CH1_PHASE_REM,GlobalConstants::CH2_PHASE_REM,
+	GlobalConstants::CH3_PHASE_REM,GlobalConstants::CH4_PHASE_REM,
+	GlobalConstants::CH5_PHASE_REM,GlobalConstants::CH6_PHASE_REM,
+	GlobalConstants::CH7_PHASE_REM,GlobalConstants::CH8_PHASE_REM,
+	GlobalConstants::CH1_PWR_LOC,GlobalConstants::CH2_PWR_LOC,
+	GlobalConstants::CH3_PWR_LOC,GlobalConstants::CH4_PWR_LOC,
+	GlobalConstants::CH5_PWR_LOC,GlobalConstants::CH6_PWR_LOC,
+	GlobalConstants::CH7_PWR_LOC,GlobalConstants::CH8_PWR_LOC,
+	GlobalConstants::CH1_PWR_REM,GlobalConstants::CH2_PWR_REM,
+	GlobalConstants::CH3_PWR_REM,GlobalConstants::CH4_PWR_REM,
+	GlobalConstants::CH5_PWR_REM,GlobalConstants::CH6_PWR_REM,
+	GlobalConstants::CH7_PWR_REM,GlobalConstants::CH8_PWR_REM },
+	dbr_all_trace_data(nullptr),
 	// calls copy constructor and destroys 
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.printDebugMessage("LLRF Constructor");
 	messenger.printDebugMessage("epicsInterface set ownerName ");
 	epicsInterface->ownerName = hardwareName;
+	
+	{
+	 };
+	
+	
 	time_vector.resize(trace_data_size);
 	pulse_shape.second.resize(1024); // magic_number
 	setPVStructs();
 	
-
 	//buildChannelToTraceSourceMap(paramMap);
 	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
 
 	setMasterLatticeData(paramMap);
 
-	printSetupData();
 }
 
 LLRF::LLRF(const LLRF& copyLLRF) :
 	Hardware(copyLLRF),
-	//trace_data_size(copyLLRF.trace_data_size),
+	trace_data_size(copyLLRF.trace_data_size),
 	epicsInterface(copyLLRF.epicsInterface)
 {}
 
@@ -100,20 +136,86 @@ void LLRF::setGunType(const TYPE area) // called from factory
 	machine_area_str = ENUM_TO_STRING(machine_area);
 	messenger.printDebugMessage("NEW Machine Area =  " + machine_area_str);
 	setTraceDataMap();
+
+	// Set up the trace data indexes in the "one-record" concatenated trace-data
+	// the below is nto pretty, i'm going to try adnget it to "work" and then worry about makign it easier to follow / read. 
+	// if me or anyone else comes back to look at this in the far-flung-future its probably going to look crazy af 
+	// part of teh reason fro thsi is taht the gun LLRF actually is for two seperate cavities thata re mutlaly expclusive, (but conatined one file!)
+	// this was probably a bad design chocie ... 
+	// we loop over all possible ONE_TRACE settings and see if they are in the master-lattice file AND in all_trace_data 
+	// 
+	std::vector<std::string>all_one_record_trace_names = {
+	GlobalConstants::ONE_RECORD_KLYSTRON_FORWARD_POWER,
+		GlobalConstants::ONE_RECORD_KLYSTRON_FORWARD_PHASE,
+		GlobalConstants::ONE_RECORD_KLYSTRON_REVERSE_POWER,
+		GlobalConstants::ONE_RECORD_KLYSTRON_REVERSE_PHASE,
+		GlobalConstants::ONE_RECORD_LRRG_CAVITY_FORWARD_POWER,
+		GlobalConstants::ONE_RECORD_LRRG_CAVITY_FORWARD_PHASE,
+		GlobalConstants::ONE_RECORD_LRRG_CAVITY_REVERSE_POWER,
+		GlobalConstants::ONE_RECORD_LRRG_CAVITY_REVERSE_PHASE,
+		GlobalConstants::ONE_RECORD_HRRG_CAVITY_FORWARD_POWER,
+		GlobalConstants::ONE_RECORD_HRRG_CAVITY_FORWARD_PHASE,
+		GlobalConstants::ONE_RECORD_HRRG_CAVITY_REVERSE_POWER,
+		GlobalConstants::ONE_RECORD_HRRG_CAVITY_REVERSE_PHASE,
+		GlobalConstants::ONE_RECORD_HRRG_CAVITY_PROBE_POWER,
+		GlobalConstants::ONE_RECORD_HRRG_CAVITY_PROBE_PHASE,
+		GlobalConstants::ONE_RECORD_L01_CAVITY_FORWARD_POWER,
+		GlobalConstants::ONE_RECORD_L01_CAVITY_FORWARD_PHASE,
+		GlobalConstants::ONE_RECORD_L01_CAVITY_REVERSE_POWER,
+		GlobalConstants::ONE_RECORD_L01_CAVITY_REVERSE_PHASE,
+		GlobalConstants::ONE_RECORD_L01_CAVITY_PROBE_POWER,
+		GlobalConstants::ONE_RECORD_L01_CAVITY_PROBE_PHASE,
+		GlobalConstants::ONE_RECORD_CALIBRATION_POWER,
+		GlobalConstants::ONE_RECORD_CALIBRATION_PHASE };
+
+	std::string one_record_prefix = "ONE_RECORD_";
+	auto one_record_prefix_len = one_record_prefix.length();
+
+	for (auto&& or_tn : all_one_record_trace_names)
+	{
+		std::string or_tn_copy = or_tn;
+		if (GlobalFunctions::entryExists(specificHardwareParameters, or_tn))
+		{
+			messenger.printDebugMessage(or_tn, "  exists in master lattice yaml file ");
+
+			size_t pos = or_tn.find(one_record_prefix);
+			if (pos != std::string::npos)
+			{
+				// If found then erase it from string
+				or_tn_copy.erase(pos, one_record_prefix_len);
+			}
+			messenger.printDebugMessage("Looking in all_trace_data for ", or_tn_copy);
+			if (GlobalFunctions::entryExists(trace_data_map, or_tn_copy))
+			{
+
+				trace_data_map.at(or_tn_copy).one_record_part = std::stoul(specificHardwareParameters.find(or_tn)->second);
+
+				trace_data_map.at(or_tn_copy).one_record_start_index = (trace_data_map.at(or_tn_copy).one_record_part - GlobalConstants::one_sizet) * 1024;
+
+				trace_data_map.at(or_tn_copy).one_record_stop_index = trace_data_map.at(or_tn_copy).one_record_part * 1024 - GlobalConstants::one_sizet;
+
+				messenger.printDebugMessage(or_tn_copy, "  exists in trace_data_map, adding paramters, ", trace_data_map.at(or_tn_copy).one_record_part, " ",
+					trace_data_map.at(or_tn_copy).one_record_start_index, " ", trace_data_map.at(or_tn_copy).one_record_stop_index);
+			}
+			else
+			{
+				messenger.printDebugMessage(or_tn_copy, " does not exists in trace_data_map");
+			}
+		}
+	}
+
 }
 
-void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap)
-{
-	buildChannelToTraceSourceMap(paramMap);
-	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
-	addDummyTraces(paramMap);
-
-}
-
+//void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap)
+//{
+//	buildChannelToTraceSourceMap(paramMap);
+//	boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
+//	addDummyTraces(paramMap);
+//}
 
 void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramMap)
 {
-
+	// "master_hardware" file should check for these too
 	messenger.printDebugMessage(hardwareName, " find crest_phase");
 	if (GlobalFunctions::entryExists(paramMap, "crest_phase"))
 	{
@@ -127,7 +229,7 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 	messenger.printDebugMessage(hardwareName, " find trace_data_size");
 	if (GlobalFunctions::entryExists(paramMap, "trace_data_size"))
 	{
-		trace_data_size = std::stof(paramMap.find("trace_data_size")->second);
+		trace_data_size = std::stoul(paramMap.find("trace_data_size")->second);
 	}
 	else
 	{
@@ -135,7 +237,7 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 	}
 	// TODO name_alias should be in harwdare constructor?? 
 	messenger.printDebugMessage(hardwareName, " find name_alias");
-	if (GlobalFunctions::entryExists(paramMap, "name_alias"))
+	if (GlobalFunctions::entryExists(paramMap, "name_alias")) 
 	{
 		// TODOD white space trimiming probably required here for robustness 
 		boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
@@ -152,11 +254,31 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find name_alias");
 	}
 
+	if (GlobalFunctions::entryExists(paramMap, "one_trace_data_count"))
+	{
+		// TODOD white space trimiming probably required here for robustness 
+		unsigned nBytes = dbr_size_n(DBR_TIME_DOUBLE, std::stoul(paramMap.find("crest_phase")->second));
 
+		dbr_all_trace_data = (struct dbr_time_double*)malloc(nBytes);
+		messenger.printDebugMessage(hardwareName, " dbr_all_trace_data pointer allocated ", nBytes, " BYTES ");
+		dbr_all_trace_data_not_malloced = false;
 
+		for (auto&& next_alias : aliases)
+		{
+			messenger.printMessage("Found name alias = \"", next_alias, "\"");
+		}
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!ERROR!! could not find one_trace_data_count");
+	}
+	
+	//void setMachineArea(const TYPE area);
+
+	
 	buildChannelToTraceSourceMap(paramMap);
 	//boost::split(aliases, paramMap.find("chanel_to_trace_map")->second, [](char c) {return c == ','; });
-
 	//does not work???? 
 
 	addDummyTraces(paramMap);
@@ -170,9 +292,6 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 void LLRF::printSetupData()const
 {
 	messenger.printDebugMessage("printSetupData()");
-	messenger.printDebugMessage("printSetupData()");
-	messenger.printDebugMessage("printSetupData()");
-
 
 	messenger.printDebugMessage("all_trace_scan.size() = ", all_trace_scan.size(), ", all keys are:");
 	for (auto const &trace : all_trace_scan)
@@ -354,6 +473,115 @@ double LLRF::getPhiDEG()const
 }
 
 
+
+
+/*
+
+	ok, htf is tis going to work ??
+
+	we want to be able to get a single shot of trace values - to reduce network lag
+
+	but, always update all trace vlaues + meta- val;yues (mean, max power etc) 
+
+	on every update update all TraceData obejcts 
+
+	so, functions that retunr just teh valeus, and functions that return the tracedata objects
+
+	TraceData will include meta data, TraceValues will just be lists of numbers (keyed by trace name) 
+
+	the have bespoke funcitons that return what the user wants. 
+	
+
+
+*/
+
+
+
+bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs)
+{
+	int status = ca_array_get(DBR_TIME_DOUBLE, 1, pvs.CHID, dbr_struct);
+	EPICSInterface::sendToEPICS();
+	MY_SEVCHK(status);
+	if (status != ECA_NORMAL)
+	{
+		return false;
+	}
+	return true;
+}
+
+
+
+void LLRF::updateTraceValues()
+{
+	
+	auto pvs = pvStructs.at(LLRFRecords::LLRF_TRACES);
+	
+	bool carry_on = getNewTraceValuesFromEPICS(dbr_all_trace_data, pvStructs.at(LLRFRecords::LLRF_TRACES));
+
+	splitOneTraceValues();
+
+	if (carry_on)
+	{
+		messenger.printDebugMessage("updateTraceValues carry_on = true");
+
+	}
+	messenger.printDebugMessage("updateTraceValues carry_on = false");
+
+}
+
+
+void LLRF::splitOneTraceValues()
+{
+	messenger.printDebugMessage(getHardwareName()," has these traces:");
+	for (auto&& td : trace_data_map)
+	{
+		messenger.printDebugMessage(td.first);
+
+	}
+
+
+
+}
+
+
+//void LLRF::getTraceValues(const std::string& trace_name )
+//{
+//
+//}
+//void LLRF::getTraceData(const std::vector<std::string> & trace_names)
+//{
+//	// all the getTraceDta functions will end up here, 
+//
+//	bool carry_on = getNewTraceData(dbr_all_trace_data, pvStructs.at(LLRFRecords::LLRF_TRACES));
+//
+//}
+//
+void LLRF::updateTraceValues_Py()
+{
+	updateTraceValues();
+}
+//
+//void LLRF::getTraceData_Py(const std::string& trace_name)
+//{
+//
+//}
+//void LLRF::getTraceData_Py(const boost::python::list& trace_names)
+//{
+//
+//}
+//
+
+
+bool LLRF::startTraceMonitoring()
+{
+	return false;
+}
+bool LLRF::stopTraceMonitoring()
+{
+	return false;
+}
+
+
 std::map<std::string, std::vector<double>> LLRF::getAllTraceData()const
 {
 	std::map<std::string, std::vector<double>> r;
@@ -493,6 +721,10 @@ boost::python::list LLRF::getProbePwr_Py()const
 {
 	return to_py_list(getProbePwr());
 }
+
+
+
+
 
 
 std::vector<std::string> LLRF::getAliases() const
@@ -891,14 +1123,11 @@ void LLRF::setupAllTraceSCAN()
 	all_trace_scan[CH6_PWR_LOC] = init_pair;
 	all_trace_scan[CH7_PWR_LOC] = init_pair;
 	all_trace_scan[CH8_PWR_LOC] = init_pair;
-
-
-	messenger.printDebugMessage("setupAllTraceSCAN added these traces:");
-	for (auto&& trace : all_trace_scan)
-	{
-		messenger.printDebugMessage(trace.first);
-	}
-
+	//messenger.printDebugMessage("setupAllTraceSCAN added these traces:");
+	//for (auto&& trace : all_trace_scan)
+	//{
+	//	messenger.printDebugMessage(trace.first);
+	//}
 }
 void LLRF::setupAllTraceACQM()
 {
@@ -946,11 +1175,11 @@ void LLRF::setupAllTraceACQM()
 	all_trace_acqm[CH6_PWR_LOC] = init_pair;
 	all_trace_acqm[CH7_PWR_LOC] = init_pair;
 	all_trace_acqm[CH8_PWR_LOC] = init_pair;
-	messenger.printDebugMessage("setupAllTraceACQM added these ACQM:");
-	for (auto&& trace : all_trace_acqm)
-	{
-		messenger.printDebugMessage(trace.first);
-	}
+	//messenger.printDebugMessage("setupAllTraceACQM added these ACQM:");
+	//for (auto&& trace : all_trace_acqm)
+	//{
+	//	messenger.printDebugMessage(trace.first);
+	//}
 }
 
 

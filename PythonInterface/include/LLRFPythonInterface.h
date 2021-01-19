@@ -33,6 +33,10 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getPhiDEG", &LLRF::getPhiDEG)
 			.def("getCrestPhase", &LLRF::getCrestPhase)
 			.def("getOperatingPhase", &LLRF::getOperatingPhase)
+			
+			
+			
+			//.def("setAllTraceBufferSize", &LLRF::setAllTraceBufferSize)
 
 
 			.def("getAliases", &LLRF::getAliases_Py)
@@ -60,6 +64,10 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
 			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
+
+
+
+			.def("updateTraceValues",  &LLRF::updateTraceValues)
 			
 			
 			
@@ -164,7 +172,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getMeanStartTime", &LLRFFactory::getMeanStartTime)
 			.def("getMeanStopTime", &LLRFFactory::getMeanStopTime)
 
-			.def("setTraceDataBufferSize", &LLRFFactory::setTraceDataBufferSize)
+			//.def("setTraceDataBufferSize", &LLRFFactory::setTraceDataBufferSize)
 
 
 			.def("getTraceData", &LLRFFactory::getTraceData_Py)

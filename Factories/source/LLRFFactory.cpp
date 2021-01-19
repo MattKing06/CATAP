@@ -109,6 +109,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
 		for (auto& pv : pvstruct)
 		{
+			messenger.printDebugMessage("Setup ", pv.first);
 			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -119,7 +120,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
 
-				messenger.printDebugMessage(pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
+				messenger.printDebugMessage(pv.first, " ", pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
 					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
