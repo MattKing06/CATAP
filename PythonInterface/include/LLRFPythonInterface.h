@@ -16,7 +16,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
 			
-			.def("printSetupData", &LLRF::printSetupData) // for debugging 
+			//.def("printSetupData", &LLRF::printSetupData) // for debugging 
 		
 			.def("setAmp", &LLRF::setAmp)
 			.def("setAmpMW", &LLRF::setAmpMW)
@@ -62,8 +62,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 
 
-			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
-			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
+			//.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
+			//.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
 
 
 

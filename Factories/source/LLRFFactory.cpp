@@ -168,9 +168,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 		// flag for if we should erase this entry, default to true 
 		bool should_erase = true;
 		// now we loop over every area in machineAreas and checl against isInMachineArea
-
 		messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
-
 		for (auto&& machineArea : machineAreas)
 		{
 			// if this returns true then we should keep the LLRF and can break out the for loop 

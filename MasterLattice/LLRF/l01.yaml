@@ -1,10 +1,11 @@
 controls_information:
     PV: true
     pv_record_map:
-        KEEP_ALIVE : CLA-L01-RF-SCR-01:HB
+        HEART_BEAT : CLA-L01-RF-SCR-01:HB
         AMP_FF : CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
         TRIG_SOURCE : CLA-L01-LRF-CTRL-01:tcm:trig:source
         AMP_SP : CLA-L01-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
+        MAX_AMP_SP : CLA-L01-LRF-CTRL-01:vm:dsp:sp_amp:amplitude.DRVH
         PHI_FF : CLA-L01-LRF-CTRL-01:vm:dsp:ff_ph:phase
         PHI_SP : CLA-L01-LRF-CTRL-01:vm:dsp:sp_ph:phase
         RF_OUTPUT : CLA-L01-LRF-CTRL-01:app:rf_ctrl

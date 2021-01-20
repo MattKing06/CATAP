@@ -88,10 +88,6 @@ class TraceData
 		/*! the stopping index for this trace in the one-record trace data */
 		size_t one_record_stop_index;
 
-		/*! Flag ser to true if any of the LLRF interlocks active for this trace */
-		// the state of the scan and acqm 
-		STATE scan, acqm;
-		
 
 		bool interlock_state;
 
@@ -119,11 +115,9 @@ public:
 	Diferent channels numbers refer to different traces. This cannot be done easily   */
 	//void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
 	
-	void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap);
+	void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
 
 	void setPVStructs();
-	/*! For debugging to see if maps and trace names get set correctly */
-	void printSetupData()const;
 
 
 	// TODO private ?? 
@@ -449,7 +443,7 @@ private:
 
 
 
-
+	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
 
 
 
@@ -509,14 +503,17 @@ private:
 
 	// here we keep all the traces acqm and scan STATEs
 	// actual usable traces also have their own version of this in their trace_data 
-	std::map<std::string, STATE> all_trace_acqm;
-	std::map<std::string, STATE> all_trace_scan;
+	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_acqm;
+	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_scan;
 
 
 
 	void setupInterlocks();
-	void setupAllTraceACQM();
-	void setupAllTraceSCAN();
+
+	void initAllTraceSCANandACQM();
+
+	//void setupAllTraceACQM();
+	//void setupAllTraceSCAN();
 
 	void updateInterLockStatus(const std::string& ch, const struct event_handler_args& args);
 	void updateInterLockEnable(const std::string& ch, const struct event_handler_args& args);
