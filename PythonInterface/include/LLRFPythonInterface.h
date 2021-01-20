@@ -102,7 +102,6 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
 			.def("getProbePha",  &LLRF::getProbePha_Py)
 			.def("getProbePwr",  &LLRF::getProbePwr_Py)
-
 			.def("debugMessagesOn", &LLRF::debugMessagesOn)
 			.def("debugMessagesOff", &LLRF::debugMessagesOff)
 			.def("messagesOn", &LLRF::messagesOn)
