@@ -98,15 +98,12 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	GlobalConstants::CH5_PWR_REM,GlobalConstants::CH6_PWR_REM,
 	GlobalConstants::CH7_PWR_REM,GlobalConstants::CH8_PWR_REM },
 	dbr_all_trace_data(nullptr),
-	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface())),// calls copy constructor and destroys 
-	crest_phase(std::stof(paramMap.find("crest_phase")->second)),
-	trace_data_size(std::stof(paramMap.find("trace_data_size")->second))
+	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.printDebugMessage("LLRF Constructor");
 	messenger.printDebugMessage("epicsInterface set ownerName ");
 	epicsInterface->ownerName = hardwareName;
 	
-	time_vector.resize(trace_data_size);
 	setPVStructs();
 	
 	setMasterLatticeData(paramMap);
@@ -125,12 +122,25 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 
 LLRF::~LLRF(){}
 
-
 void LLRF::setGunType(const TYPE area) // called from factory
 {
 	machine_area = area;
 	machine_area_str = ENUM_TO_STRING(machine_area);
 	messenger.printDebugMessage("NEW Machine Area =  " + machine_area_str);
+}
+
+
+void LLRF::setupAfterMachineAreaSet()
+{
+	this prints all teh value sin teh yaml, so we can use it to set eveyrthing here 
+		re-write all fucitno sso that set0-up is done properly
+		the trace name,s channel names etc,
+		then do the conecitno to epics and update the values 
+	messenger.printDebugMessage("PRINT specificHardwareParameters");
+	for (auto&& it : specificHardwareParameters)
+	{
+		messenger.printDebugMessage(it.first, " = ", it.second);
+	}
 	setTraceDataMap();
 
 	// Set up the trace data indexes in the "one-record" concatenated trace-data
@@ -163,10 +173,8 @@ void LLRF::setGunType(const TYPE area) // called from factory
 		GlobalConstants::ONE_RECORD_L01_CAVITY_PROBE_PHASE,
 		GlobalConstants::ONE_RECORD_CALIBRATION_POWER,
 		GlobalConstants::ONE_RECORD_CALIBRATION_PHASE };
-
 	std::string one_record_prefix = "ONE_RECORD_";
 	auto one_record_prefix_len = one_record_prefix.length();
-
 	for (auto&& or_tn : all_one_record_trace_names)
 	{
 		std::string or_tn_copy = or_tn;
@@ -202,6 +210,179 @@ void LLRF::setGunType(const TYPE area) // called from factory
 
 }
 
+
+
+void LLRF::setTraceDataMap()
+{
+	messenger.printDebugMessage(getHardwareName() + ", Setting the Trace Data Map");
+	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_POWER);
+	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_PHASE);
+	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_POWER);
+	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_PHASE);
+	if (machine_area == TYPE::LRRG)
+	{
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_REVERSE_PHASE);// = TraceData();
+	}
+	else if (machine_area == TYPE::HRRG)
+	{
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_REVERSE_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_PHASE);// = TraceData();
+	}
+	else if (machine_area == TYPE::L01)
+	{
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_FORWARD_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_FORWARD_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_REVERSE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_REVERSE_PHASE);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_PROBE_POWER);// = TraceData();
+		addToTraceDataMap(GlobalConstants::L01_CAVITY_PROBE_PHASE);// = TraceData();
+	}
+	std::stringstream ss;
+	ss << "Added trace names: ";
+	for (auto&& it : trace_data_map)
+	{
+
+		ss << it.first;
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::KLYSTRON_FORWARD_POWER));
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::KLYSTRON_REVERSE_POWER));
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_FORWARD_POWER));
+	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_REVERSE_POWER));
+	if (machine_area != TYPE::LRRG)
+	{
+		power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_PROBE_POWER));
+	}
+}
+void LLRF::addToTraceDataMap(const std::string& name)
+{
+	trace_data_map[name];
+	auto& td = trace_data_map.at(name);
+	td.name = name;
+	setTraceDataBufferSize(td, td.trace_data_buffer_size);
+}
+void LLRF::setTraceDataBufferSize(TraceData& trace_data, const size_t new_size)
+{
+	//  init circular buffer and fill it with dummy data 
+	std::pair<epicsTimeStamp, std::vector<double>> temp_all_trace_item;
+	temp_all_trace_item.first = epicsTimeStamp();
+	std::vector<double> temp2(trace_data.trace_data_size, GlobalConstants::double_min);
+	temp_all_trace_item.second = temp2;
+	trace_data.trace_data_buffer.assign(new_size, temp_all_trace_item);
+}
+bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size)
+{
+	std::string trace_name = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
+	{
+		setTraceDataBufferSize(trace_data_map.at(trace_name), new_size);
+		return true;
+	}
+	return false;
+}
+void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
+{
+	// for each cavity there are dummy traces,
+	// they have been given specific names in the config for each cavity 
+
+	if (machine_area == TYPE::LRRG)
+	{
+		messenger.printDebugMessage("Adding dummy traces for LRRG");
+		addDummyTrace(paramMap, "kfpow_dummy_trace", kfpow_dummy_trace);
+		addDummyTrace(paramMap, "krpow_dummy_trace", krpow_dummy_trace);
+		addDummyTrace(paramMap, "kfpha_dummy_trace", kfpha_dummy_trace);
+		addDummyTrace(paramMap, "krpha_dummy_trace", krpha_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_cfpow_dummy_trace", cfpow_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_crpow_dummy_trace", crpow_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_cfpha_dummy_trace", cfpha_dummy_trace);
+		addDummyTrace(paramMap, "lrrg_crpha_dummy_trace", crpha_dummy_trace);
+		messenger.printDebugMessage("Added Dummy traces ");
+		messenger.printDebugMessage("kfpow_dummy_trace", kfpow_dummy_trace.size());
+		messenger.printDebugMessage("krpow_dummy_trace", krpow_dummy_trace.size());
+		messenger.printDebugMessage("kfpha_dummy_trace", kfpha_dummy_trace.size());
+		messenger.printDebugMessage("krpha_dummy_trace", krpha_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_cfpow_dummy_trace", cfpow_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_crpow_dummy_trace", crpow_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_cfpha_dummy_trace", cfpha_dummy_trace.size());
+		messenger.printDebugMessage("lrrg_crpha_dummy_trace", crpha_dummy_trace.size());
+	}
+	if (machine_area == TYPE::HRRG)
+	{
+		messenger.printDebugMessage("Adding dummy traces for HRRG");
+		addDummyTrace(paramMap, "kfpow_dummy_trace", kfpow_dummy_trace);
+		addDummyTrace(paramMap, "krpow_dummy_trace", krpow_dummy_trace);
+		addDummyTrace(paramMap, "kfpha_dummy_trace", kfpha_dummy_trace);
+		addDummyTrace(paramMap, "krpha_dummy_trace", krpha_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_cfpow_dummy_trace", cfpow_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_crpow_dummy_trace", crpow_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_cfpha_dummy_trace", cfpha_dummy_trace);
+		addDummyTrace(paramMap, "hrrg_crpha_dummy_trace", crpha_dummy_trace);
+		messenger.printDebugMessage("Added Dummy traces ");
+		messenger.printDebugMessage("kfpow_dummy_trace", kfpow_dummy_trace.size());
+		messenger.printDebugMessage("krpow_dummy_trace", krpow_dummy_trace.size());
+		messenger.printDebugMessage("kfpha_dummy_trace", kfpha_dummy_trace.size());
+		messenger.printDebugMessage("krpha_dummy_trace", krpha_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_cfpow_dummy_trace", cfpow_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_crpow_dummy_trace", crpow_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_cfpha_dummy_trace", cfpha_dummy_trace.size());
+		messenger.printDebugMessage("hrrg_crpha_dummy_trace", crpha_dummy_trace.size());
+	}
+	if (machine_area == TYPE::L01)
+	{
+		messenger.printDebugMessage("Adding dummy traces for L01");
+		addDummyTrace(paramMap, "l01_kfpow_dummy_trace", kfpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_krpow_dummy_trace", krpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_kfpha_dummy_trace", kfpha_dummy_trace);
+		addDummyTrace(paramMap, "l01_krpha_dummy_trace", krpha_dummy_trace);
+		addDummyTrace(paramMap, "l01_cfpow_dummy_trace", cfpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_crpow_dummy_trace", crpow_dummy_trace);
+		addDummyTrace(paramMap, "l01_cfpha_dummy_trace", cfpha_dummy_trace);
+		addDummyTrace(paramMap, "l01_crpha_dummy_trace", crpha_dummy_trace);
+
+		messenger.printDebugMessage("Added Dummy traces ");
+		messenger.printDebugMessage("l01_kfpow_dummy_trace", kfpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_krpow_dummy_trace", krpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_kfpha_dummy_trace", kfpha_dummy_trace.size());
+		messenger.printDebugMessage("l01_krpha_dummy_trace", krpha_dummy_trace.size());
+		messenger.printDebugMessage("l01_cfpow_dummy_trace", cfpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_crpow_dummy_trace", crpow_dummy_trace.size());
+		messenger.printDebugMessage("l01_cfpha_dummy_trace", cfpha_dummy_trace.size());
+		messenger.printDebugMessage("l01_crpha_dummy_trace", crpha_dummy_trace.size());
+	}
+	addDummyTrace(paramMap, "time_vector", time_vector);
+}
+void LLRF::addDummyTrace(const std::map<std::string, std::string>& paramMap, const std::string& trace_name, std::vector< double>& trace_to_update)
+{
+	std::vector<std::string> dummy_trace_string;
+	if (GlobalFunctions::entryExists(paramMap, trace_name))
+	{
+		boost::split(dummy_trace_string, paramMap.find(trace_name)->second, [](char c) {return c == ','; });
+		for (auto&& value : dummy_trace_string)
+		{	//messenger.printDebugMessage(value);
+			//if(trace_name == "l01_kfpow_dummy_trace")
+			//{
+			//	messenger.printDebugMessage(value);
+			//}
+			trace_to_update.push_back(std::stof(value));
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage("!!ERROR!! can't find " + trace_name);
+	}
+}
+
+
+
+
 //void LLRF::setupTraceChannels(const std::map<std::string, std::string>& paramMap)
 //{
 //	buildChannelToTraceSourceMap(paramMap);
@@ -230,6 +411,27 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 	else
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find trace_data_size");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find trace_data_size");
+	if (GlobalFunctions::entryExists(paramMap, "trace_data_size"))
+	{
+		trace_data_size = std::stoul(paramMap.find("trace_data_size")->second);
+		time_vector.resize(trace_data_size);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find trace_data_size");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find crest_phase");
+	if (GlobalFunctions::entryExists(paramMap, "crest_phase"))
+	{
+		crest_phase = std::stoul(paramMap.find("crest_phase")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find crest_phase");
 	}
 	// TODO name_alias should be in harwdare constructor?? 
 	messenger.printDebugMessage(hardwareName, " find name_alias");
@@ -344,7 +546,7 @@ void LLRF::setPVStructs()
 
 
 void LLRF::setDefaultPowerTraceMeanTimes()
-// called from factory
+// called from factory as traces need to be set up first ! 
 {
 	setMeanStartEndTime(
 		std::stof(specificHardwareParameters.find("kfpow_mean_start_time")->second),
@@ -459,9 +661,6 @@ double LLRF::getPhiDEG()const
 
 
 */
-
-
-
 bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs)
 {
 	int status = ca_array_get(DBR_TIME_DOUBLE, 1, pvs.CHID, dbr_struct);
@@ -473,9 +672,6 @@ bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const 
 	}
 	return true;
 }
-
-
-
 void LLRF::updateTraceValues()
 {
 	
@@ -501,11 +697,7 @@ void LLRF::splitOneTraceValues()
 	for (auto&& td : trace_data_map)
 	{
 		messenger.printDebugMessage(td.first);
-
 	}
-
-
-
 }
 
 
@@ -1152,7 +1344,7 @@ void LLRF::initAllTraceSCANandACQM()
 
 
 
-
+// TODD updateSCAN to updateInterLockPDBM shoudl be moved to the epics interface (to reduce space in thsi class) 
 void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& args)
 {
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
@@ -1198,7 +1390,6 @@ void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& ar
 	////TODO update SCAN in actual TRACES we monitor ... 
 
 }
-
 void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& args)
 {
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
@@ -1226,9 +1417,6 @@ void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& ar
 	//}
 	//TODO update ACQM in actual TRACES we monitor ... 
 }
-
-
-
 void LLRF::updateInterLockStatus(const std::string& ch,const struct event_handler_args& args)
 {
 	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
@@ -1304,175 +1492,6 @@ void LLRF::updateInterLockPDBM(const std::string& ch, const struct event_handler
 
 
 
-void LLRF::setTraceDataMap()
-{
-	messenger.printDebugMessage(getHardwareName() + ", Setting the Trace Data Map");
-	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_POWER);
-	addToTraceDataMap(GlobalConstants::KLYSTRON_FORWARD_PHASE);
-	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_POWER);
-	addToTraceDataMap(GlobalConstants::KLYSTRON_REVERSE_PHASE);
-	if (machine_area == TYPE::LRRG)
-	{
-		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_FORWARD_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_FORWARD_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_REVERSE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::LRRG_CAVITY_REVERSE_PHASE);// = TraceData();
-	}
-	else if (machine_area == TYPE::HRRG)
-	{
-		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_FORWARD_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_FORWARD_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_REVERSE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::HRRG_CAVITY_REVERSE_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::CAVITY_PROBE_PHASE);// = TraceData();
-	}
-	else if(machine_area == TYPE::L01)
-	{
-		addToTraceDataMap(GlobalConstants::L01_CAVITY_FORWARD_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::L01_CAVITY_FORWARD_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::L01_CAVITY_REVERSE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::L01_CAVITY_REVERSE_PHASE);// = TraceData();
-		addToTraceDataMap(GlobalConstants::L01_CAVITY_PROBE_POWER);// = TraceData();
-		addToTraceDataMap(GlobalConstants::L01_CAVITY_PROBE_PHASE);// = TraceData();
-	}
-	std::stringstream ss;
-	ss << "Added trace names: ";
-	for (auto&& it : trace_data_map)
-	{
-
-		ss << it.first;
-		ss << ", ";
-	}
-	messenger.printDebugMessage(ss.str());
-	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::KLYSTRON_FORWARD_POWER));
-	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::KLYSTRON_REVERSE_POWER));
-	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_FORWARD_POWER));
-	power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_REVERSE_POWER));
-	if (machine_area != TYPE::LRRG)
-	{
-		power_trace_names.push_back(fullLLRFTraceName(GlobalConstants::CAVITY_PROBE_POWER));
-	}
-}
-
-void LLRF::addToTraceDataMap(const std::string& name)
-{
-	trace_data_map[name];
-	auto& td = trace_data_map.at(name);
-	td.name = name;
-	setTraceDataBufferSize(td, td.trace_data_buffer_size);
-}
-
-void LLRF::setTraceDataBufferSize(TraceData& trace_data, const size_t new_size)
-{
-	//  init circular buffer and fill it with dummy data 
-	std::pair<epicsTimeStamp, std::vector<double>> temp_all_trace_item;
-	temp_all_trace_item.first = epicsTimeStamp();
-	std::vector<double> temp2(trace_data.trace_data_size, GlobalConstants::double_min);
-	temp_all_trace_item.second = temp2;
-	trace_data.trace_data_buffer.assign(new_size, temp_all_trace_item);
-}
-bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size)
-{
-	std::string trace_name = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
-	{
-		setTraceDataBufferSize(trace_data_map.at(trace_name), new_size);
-		return true;
-	}
-	return false;
-}
-void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
-{
-	// for each cavity there are dummy traces,
-	// they have been given specific names in the config for each cavity 
-	
-	if (machine_area == TYPE::LRRG)
-	{
-		messenger.printDebugMessage("Adding dummy traces for LRRG");
-		addDummyTrace(paramMap, "kfpow_dummy_trace", kfpow_dummy_trace);
-		addDummyTrace(paramMap, "krpow_dummy_trace", krpow_dummy_trace);
-		addDummyTrace(paramMap, "kfpha_dummy_trace", kfpha_dummy_trace);
-		addDummyTrace(paramMap, "krpha_dummy_trace", krpha_dummy_trace);
-		addDummyTrace(paramMap, "lrrg_cfpow_dummy_trace", cfpow_dummy_trace);
-		addDummyTrace(paramMap, "lrrg_crpow_dummy_trace", crpow_dummy_trace);
-		addDummyTrace(paramMap, "lrrg_cfpha_dummy_trace", cfpha_dummy_trace);
-		addDummyTrace(paramMap, "lrrg_crpha_dummy_trace", crpha_dummy_trace);
-		messenger.printDebugMessage("Added Dummy traces ");
-		messenger.printDebugMessage("kfpow_dummy_trace", kfpow_dummy_trace.size());
-		messenger.printDebugMessage("krpow_dummy_trace", krpow_dummy_trace.size());
-		messenger.printDebugMessage("kfpha_dummy_trace", kfpha_dummy_trace.size());
-		messenger.printDebugMessage("krpha_dummy_trace", krpha_dummy_trace.size());
-		messenger.printDebugMessage("lrrg_cfpow_dummy_trace", cfpow_dummy_trace.size());
-		messenger.printDebugMessage("lrrg_crpow_dummy_trace", crpow_dummy_trace.size());
-		messenger.printDebugMessage("lrrg_cfpha_dummy_trace", cfpha_dummy_trace.size());
-		messenger.printDebugMessage("lrrg_crpha_dummy_trace", crpha_dummy_trace.size());
-	}
-	if (machine_area == TYPE::HRRG)
-	{
-		messenger.printDebugMessage("Adding dummy traces for HRRG");
-		addDummyTrace(paramMap, "kfpow_dummy_trace", kfpow_dummy_trace);
-		addDummyTrace(paramMap, "krpow_dummy_trace", krpow_dummy_trace);
-		addDummyTrace(paramMap, "kfpha_dummy_trace", kfpha_dummy_trace);
-		addDummyTrace(paramMap, "krpha_dummy_trace", krpha_dummy_trace);
-		addDummyTrace(paramMap, "hrrg_cfpow_dummy_trace", cfpow_dummy_trace);
-		addDummyTrace(paramMap, "hrrg_crpow_dummy_trace", crpow_dummy_trace);
-		addDummyTrace(paramMap, "hrrg_cfpha_dummy_trace", cfpha_dummy_trace);
-		addDummyTrace(paramMap, "hrrg_crpha_dummy_trace", crpha_dummy_trace);
-		messenger.printDebugMessage("Added Dummy traces ");
-		messenger.printDebugMessage("kfpow_dummy_trace",kfpow_dummy_trace.size());
-		messenger.printDebugMessage("krpow_dummy_trace", krpow_dummy_trace.size());
-		messenger.printDebugMessage("kfpha_dummy_trace", kfpha_dummy_trace.size());
-		messenger.printDebugMessage("krpha_dummy_trace", krpha_dummy_trace.size());
-		messenger.printDebugMessage("hrrg_cfpow_dummy_trace", cfpow_dummy_trace.size());
-		messenger.printDebugMessage("hrrg_crpow_dummy_trace", crpow_dummy_trace.size());
-		messenger.printDebugMessage("hrrg_cfpha_dummy_trace", cfpha_dummy_trace.size());
-		messenger.printDebugMessage("hrrg_crpha_dummy_trace", crpha_dummy_trace.size());
-	}
-	if (machine_area == TYPE::L01)
-	{
-		messenger.printDebugMessage("Adding dummy traces for L01");
-		addDummyTrace(paramMap, "l01_kfpow_dummy_trace", kfpow_dummy_trace);
-		addDummyTrace(paramMap, "l01_krpow_dummy_trace", krpow_dummy_trace);
-		addDummyTrace(paramMap, "l01_kfpha_dummy_trace", kfpha_dummy_trace);
-		addDummyTrace(paramMap, "l01_krpha_dummy_trace", krpha_dummy_trace);
-		addDummyTrace(paramMap, "l01_cfpow_dummy_trace", cfpow_dummy_trace);
-		addDummyTrace(paramMap, "l01_crpow_dummy_trace", crpow_dummy_trace);
-		addDummyTrace(paramMap, "l01_cfpha_dummy_trace", cfpha_dummy_trace);
-		addDummyTrace(paramMap, "l01_crpha_dummy_trace", crpha_dummy_trace);
-
-		messenger.printDebugMessage("Added Dummy traces ");
-		messenger.printDebugMessage("l01_kfpow_dummy_trace", kfpow_dummy_trace.size());
-		messenger.printDebugMessage("l01_krpow_dummy_trace", krpow_dummy_trace.size());
-		messenger.printDebugMessage("l01_kfpha_dummy_trace", kfpha_dummy_trace.size());
-		messenger.printDebugMessage("l01_krpha_dummy_trace", krpha_dummy_trace.size());
-		messenger.printDebugMessage("l01_cfpow_dummy_trace", cfpow_dummy_trace.size());
-		messenger.printDebugMessage("l01_crpow_dummy_trace", crpow_dummy_trace.size());
-		messenger.printDebugMessage("l01_cfpha_dummy_trace", cfpha_dummy_trace.size());
-		messenger.printDebugMessage("l01_crpha_dummy_trace", crpha_dummy_trace.size());
-	}
-	addDummyTrace(paramMap, "time_vector", time_vector);
-}
-void LLRF::addDummyTrace(const std::map<std::string, std::string>& paramMap, const std::string& trace_name, std::vector< double>& trace_to_update)
-{
-	std::vector<std::string> dummy_trace_string;
-	if (GlobalFunctions::entryExists(paramMap, trace_name))
-	{
-		boost::split(dummy_trace_string, paramMap.find(trace_name)->second, [](char c) {return c == ','; });
-		for (auto&& value : dummy_trace_string)
-		{	//messenger.printDebugMessage(value);
-			//if(trace_name == "l01_kfpow_dummy_trace")
-			//{
-			//	messenger.printDebugMessage(value);
-			//}
-			trace_to_update.push_back(std::stof(value));
-		}
-	}
-	else
-	{
-		messenger.printDebugMessage("!!ERROR!! can't find " + trace_name);
-	}
-}
 
 void LLRF::buildChannelToTraceSourceMap(const std::map<std::string, std::string>& paramMap)
 {

@@ -65,9 +65,24 @@ public:
 	LaserEnergyMeterFactory& getLaserEnergyMeterFactory();
 	LaserHWPFactory& getLaserHWPFactory();
 
+
+	/*! The LLRF Factory requires at least 1 machine area to be instantiatated. 
+	This is due to the ambiguity over which cavity a LLRF computer is driving 
+	(a LLRF computer can dirve mutliple cavities but not simultaneoulsy). 
+	Therefore YOU MUST specifiy which cavities you want to control and monitor 
+	@param[in] TYPE, setup LLRF for a single cavity (machineArea)
+	@param[out] LLRFFactory&, reference to LLRFFactory */
 	LLRFFactory& getLLRFFactory_Single(const TYPE machineArea);
-	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
+	/*! Generate a LLRF factor for multiple machineAreas.
+	@param[in] vector<TYPE>, machineArea
+	@param[out] LLRFFactory&, reference to LLRFFactory */
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
+	/*! Generate a LLRF factor for multiple machineAreas (python version).
+	@param[in] list, machineArea
+	@param[out] LLRFFactory&, reference to LLRFFactory */
+	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
+
+
 
 	ShutterFactory& getShutterFactory();
 

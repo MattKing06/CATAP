@@ -151,8 +151,12 @@ private:
 	ConfigReader reader;
 
 
+	/*! the machine areas (i.e. exactly which cavities) to create LLRF objects for */
 	std::vector<TYPE> machineAreas;
+	/*! cut the LLRFMap to only those in machineAreas  */
 	void cutLLRFMapByMachineAreas();
+	/*! after the LLRFMap is cut the full setup of each LLRF object can be started */
+	void setupLLRFAfterMachineAreaSet();
 
 	void updateAliasNameMap(const LLRF& llrf);
 

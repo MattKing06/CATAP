@@ -73,6 +73,9 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
 		{
 			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG), machineAreas.end());
+
+			messenger.printDebugMessage("!!ERROR!! LLRFFactory::setup requested HRRG and LRRG which are "
+										"mutally exclusive, removing HRRG");
 		}
 	}
 	messenger.printDebugMessage("called LLRF Factory  setup ");
@@ -96,9 +99,13 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	}
 	messenger.printDebugMessage("Calling cutLLRFMapByMachineAreas");
 	cutLLRFMapByMachineAreas();
-
-
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas Finished");
+	
+
+	setupLLRFAfterMachineAreaSet();
+
+
+
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 	for (auto& llrf : LLRFMap)
@@ -139,8 +146,6 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
-
-
 void LLRFFactory::populateLLRFMap()
 {
 	messenger.printDebugMessage("LLRFFactory is populating the LLRF object map");
@@ -157,8 +162,6 @@ void LLRFFactory::populateLLRFMap()
 	messenger.printDebugMessage("LLRFFactory has finished populating "
 		"the LLRF MAP, found ", LLRFMap.size(), " LLRF objects");
 }
-
-
 void LLRFFactory::cutLLRFMapByMachineAreas()
 {
 	size_t start_size = LLRFMap.size();
@@ -217,6 +220,15 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 	size_t end_size = LLRFMap.size();
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas LLRFMap.size() went from ", start_size," to ", end_size);
 }
+
+void LLRFFactory::setupLLRFAfterMachineAreaSet()
+{
+	for (auto& it : LLRFMap)
+	{
+		it.second.setupAfterMachineAreaSet();
+	}
+}
+
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {
 	// first add in the magnet full name

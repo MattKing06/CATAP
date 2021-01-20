@@ -111,10 +111,13 @@ public:
 	@param[in] TYPE, new vlaue to set (currenlty should ONLY be HRRG or LRRG) 
 	*/
 	void setGunType(const TYPE area); // called from factory
+	/*! When the machine area has been correctly set we can setup the rest of this LLRF object (called from factory) */
+	void setupAfterMachineAreaSet();
+
+									  
 	/*! When the machein area has been correctly set we cna set up the trace data correctly. 
 	Diferent channels numbers refer to different traces. This cannot be done easily   */
 	//void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
-	
 	void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
 
 	void setPVStructs();

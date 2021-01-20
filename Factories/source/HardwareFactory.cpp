@@ -120,9 +120,6 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machi
 }
 LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
 {
-	
-	
-	
 	messenger.printMessage("getLLRFFactory Called");
 	if (!llrffactory.hasBeenSetup)
 	{
