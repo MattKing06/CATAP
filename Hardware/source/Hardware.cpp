@@ -131,6 +131,20 @@ STATE Hardware::getMode() const
 	return mode;
 }
 
+bool Hardware::isVirtual()const
+{
+	return getMode() == STATE::VIRTUAL;
+}
+bool Hardware::isPhysical()const
+{
+	return getMode() == STATE::PHYSICAL;
+}
+bool Hardware::isOffline()const
+{
+	return getMode() == STATE::OFFLINE;
+}
+
+
 
 bool Hardware::operator==(Hardware rhs)
 {

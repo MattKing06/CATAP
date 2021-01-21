@@ -43,6 +43,10 @@ public:
 
 
 	STATE getMode() const;
+	bool isVirtual()const;
+	bool isPhysical()const;
+	bool isOffline()const;
+
 
 	// TODO: do we need this? can't an child of these class just access pvStructs,
 	// and no other class should be able ot get this map??? 

@@ -115,11 +115,6 @@ public:
 	void setupAfterMachineAreaSet();
 
 									  
-	/*! When the machein area has been correctly set we cna set up the trace data correctly. 
-	Diferent channels numbers refer to different traces. This cannot be done easily   */
-	//void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
-	void setupTraceChannels(const std::map<std::string, std::string>& paramMap);
-
 	void setPVStructs();
 
 
@@ -194,10 +189,15 @@ public:
 
 
 	/*! Set the size of each TraceData circular buffer 'trace_data_buffer' (default is 5)
-	@param[out] size_t, new buffer size */
-	bool setAllTraceBufferSize(const size_t value);
-	
-	
+	@param[in] size_t, new buffer size */
+	bool setAllTraceDataBufferSize(const size_t value);
+	/*! Set the size of a single TraceData circular buffer 'trace_data_buffer' (default is 5)
+	@param[in] size_t, name TraceData object to set the biuffer size 
+	@param[in] size_t, new buffer size 
+	@param[out] bool, is bugffere size equal requested size */
+	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
+
+
 	
 	/*! get all the trace data for this LLRF structure (calls a ca_array_get once, to reduce network traffic does not start monitoring of all traces)
 	@param[out] map<string, vector<double>>, */
@@ -345,7 +345,7 @@ public:
 
 	std::map<std::string, std::string> getLLRFStateMap()const;
 
-	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
+
 
 
 	/*! Set the current waveform as the pulse shape to be used 
@@ -440,10 +440,21 @@ protected:
 private:
 	double crest_phase;
 	double operating_phase;
-	/*! alternative names for the magnet (usually shorter thna the full PV root), 
+	/*! alternative names for the LLRF (usually shorter thna the full PV root), 
 		defined in the master lattice yaml file	*/
 	std::vector<std::string> aliases;
 
+
+	/*! Set up the trace_data_map for this cavity, called after the cavity TYPE has been set 
+	defined in the master lattice yaml file	*/
+	void setTraceDataMap();
+	/*! This function actually adds a new TraceData object trace_data_map, called from setTraceDataMap */
+	void addToTraceDataMap(const std::string& name);
+	/*! Set the size of each TraceData circular buffer 'trace_data_buffer' (default is 5)
+	This function actally does teh re-size and is private
+	@param[in] TraceData, object to change the buffer size
+	@param[in] size_t, new_size */
+	bool setTraceDataBufferSize(TraceData& trace_data, const size_t new_size);
 
 
 	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
@@ -452,9 +463,6 @@ private:
 
 	bool getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs);
 
-	void setTraceDataMap();
-	void addToTraceDataMap(const std::string& name);
-	void setTraceDataBufferSize(TraceData& trace_data, const size_t new_size);
 
 
 
@@ -502,7 +510,6 @@ private:
 
 	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor ??? 
 	size_t trace_data_size;
-	void setTraceDataBufferSize(const size_t new_size);
 
 	// here we keep all the traces acqm and scan STATEs
 	// actual usable traces also have their own version of this in their trace_data 
@@ -528,7 +535,6 @@ private:
 	void updateACQM(const std::string& ch, const struct event_handler_args& args);
 
 
-	void buildChannelToTraceSourceMap(const std::map<std::string, std::string>& paramMap);
 	std::map<std::string, std::string> channel_to_tracesource_map;
 	std::string getTraceFromChannelData(const std::string& channel_data) const;
 
