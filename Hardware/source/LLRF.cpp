@@ -680,9 +680,12 @@ double LLRF::getPhiDEG()const
 
 	the have bespoke funcitons that return what the user wants. 
 */
-bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs)
+bool LLRF::getNewTraceValuesFromEPICS(const pvStruct& pvs)
 {
-	int status = ca_array_get(DBR_TIME_DOUBLE, 1, pvs.CHID, dbr_struct);
+	if (ca_state(pvs.CHID) == cs_conn)
+	{
+
+	int status = ca_array_get(DBR_TIME_DOUBLE, 24576, pvs.CHID, dbr_all_trace_data);
 	messenger.printDebugMessage("getNewTraceValuesFromEPICS status ", status);
 	EPICSInterface::sendToEPICS();
 	MY_SEVCHK(status);
@@ -691,7 +694,7 @@ bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const 
 	*/
 	const dbr_double_t* pValue;
 
-	pValue = &dbr_struct->value;
+	pValue = &dbr_all_trace_data->value;
 	auto pValueSize = 24576; // sizeof(*pValue) / sizeof(pValue[0]);
 	auto end = &pValue[pValueSize];
 
@@ -710,7 +713,7 @@ bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const 
 
 //	auto sorted_one_record_trace_start_indices_it = &sorted_one_record_trace_start_indices[0];
 
-	auto temp_new_buffer_item = std::make_pair(dbr_struct->stamp, std::vector<double>(1017));
+	auto temp_new_buffer_item = std::make_pair(dbr_all_trace_data->stamp, std::vector<double>(1017));
 
 
 	size_t chunk = 0;
@@ -751,12 +754,20 @@ bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const 
 	{
 		return false;
 	}
+	
+	}
+	else
+	{
+		messenger.printDebugMessage("GET ARRYA PV NOT CONNECTED ");
+	}
+
+
 	return true;
 }
 void LLRF::updateTraceValues()
 {
 	auto pvs = pvStructs.at(LLRFRecords::LLRF_TRACES);
-	bool carry_on = getNewTraceValuesFromEPICS(dbr_all_trace_data, pvStructs.at(LLRFRecords::LLRF_TRACES));
+	bool carry_on = getNewTraceValuesFromEPICS( pvStructs.at(LLRFRecords::LLRF_TRACES));
 	splitOneTraceValues();
 	if (carry_on)
 	{

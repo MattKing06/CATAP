@@ -479,7 +479,7 @@ private:
 	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
 
 
-	bool getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs);
+	bool getNewTraceValuesFromEPICS( const pvStruct& pvs);
 
 	
 	void updateTraceCutMeans();
