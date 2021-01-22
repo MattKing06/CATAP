@@ -103,6 +103,12 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("INTERNAL", STATE::INTERNAL)
 			.value("NOT_ACTIVE", STATE::NOT_ACTIVE)
 			.value("ACTIVE", STATE::ACTIVE)
+			.value("UNKNOWN_ACQM", STATE::UNKNOWN_ACQM)
+			.value("ACQM_NOW", STATE::ACQM_NOW)
+			.value("ACQM_EVENT", STATE::ACQM_EVENT)
+
+
+
 
 			;
 	}

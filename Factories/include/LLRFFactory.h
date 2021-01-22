@@ -14,7 +14,7 @@ public:
 	~LLRFFactory();
 	LoggingSystem messenger;
 
-
+	// There are a variety of 'setup' functions to give operational flexibily
 	/*! default setup function, uses default values to read files and connect to EPICS etc.
 	@param[out] bool, for success or failure	*/
 	bool setup();

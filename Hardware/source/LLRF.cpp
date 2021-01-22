@@ -25,6 +25,7 @@ scan(std::make_pair(epicsTimeStamp(),STATE::UNKNOWN)),
 acqm(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN))
 {
 
+
 }
 
 
@@ -69,35 +70,49 @@ LLRF::LLRF()
 LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) :
 	Hardware(paramMap, mode),
 	dbr_all_trace_data_not_malloced(true),
-	allMainChannelTraceNames{ GlobalConstants::CH1_PWR_REM,GlobalConstants::CH2_PWR_REM,
-	GlobalConstants::CH3_PWR_REM,GlobalConstants::CH4_PWR_REM,
-	GlobalConstants::CH5_PWR_REM,GlobalConstants::CH6_PWR_REM,
-	GlobalConstants::CH7_PWR_REM,GlobalConstants::CH8_PWR_REM,
-	GlobalConstants::CH1_PHASE_REM,GlobalConstants::CH2_PHASE_REM,
-	GlobalConstants::CH3_PHASE_REM,GlobalConstants::CH4_PHASE_REM,
-	GlobalConstants::CH5_PHASE_REM,GlobalConstants::CH6_PHASE_REM,
-	GlobalConstants::CH7_PHASE_REM,GlobalConstants::CH8_PHASE_REM },
-	allChannelTraceNames{ GlobalConstants::CH1_AMP_DER,GlobalConstants::CH2_AMP_DER,
-	GlobalConstants::CH3_AMP_DER,GlobalConstants::CH4_AMP_DER,
-	GlobalConstants::CH5_AMP_DER,GlobalConstants::CH6_AMP_DER,
-	GlobalConstants::CH7_AMP_DER,GlobalConstants::CH8_AMP_DER,
-	GlobalConstants::CH1_PHASE_DER,GlobalConstants::CH2_PHASE_DER,
-	GlobalConstants::CH3_PHASE_DER,GlobalConstants::CH4_PHASE_DER,
-	GlobalConstants::CH5_PHASE_DER,GlobalConstants::CH6_PHASE_DER,
-	GlobalConstants::CH7_PHASE_DER,GlobalConstants::CH8_PHASE_DER,
-	GlobalConstants::CH1_PHASE_REM,GlobalConstants::CH2_PHASE_REM,
-	GlobalConstants::CH3_PHASE_REM,GlobalConstants::CH4_PHASE_REM,
-	GlobalConstants::CH5_PHASE_REM,GlobalConstants::CH6_PHASE_REM,
-	GlobalConstants::CH7_PHASE_REM,GlobalConstants::CH8_PHASE_REM,
-	GlobalConstants::CH1_PWR_LOC,GlobalConstants::CH2_PWR_LOC,
-	GlobalConstants::CH3_PWR_LOC,GlobalConstants::CH4_PWR_LOC,
-	GlobalConstants::CH5_PWR_LOC,GlobalConstants::CH6_PWR_LOC,
-	GlobalConstants::CH7_PWR_LOC,GlobalConstants::CH8_PWR_LOC,
-	GlobalConstants::CH1_PWR_REM,GlobalConstants::CH2_PWR_REM,
-	GlobalConstants::CH3_PWR_REM,GlobalConstants::CH4_PWR_REM,
-	GlobalConstants::CH5_PWR_REM,GlobalConstants::CH6_PWR_REM,
-	GlobalConstants::CH7_PWR_REM,GlobalConstants::CH8_PWR_REM },
+	allMainChannelTraceNames{ LLRFRecords::CH1_PWR_REM,LLRFRecords::CH2_PWR_REM,
+	LLRFRecords::CH3_PWR_REM,LLRFRecords::CH4_PWR_REM,
+	LLRFRecords::CH5_PWR_REM,LLRFRecords::CH6_PWR_REM,
+	LLRFRecords::CH7_PWR_REM,LLRFRecords::CH8_PWR_REM,
+	LLRFRecords::CH1_PHASE_REM,LLRFRecords::CH2_PHASE_REM,
+	LLRFRecords::CH3_PHASE_REM,LLRFRecords::CH4_PHASE_REM,
+	LLRFRecords::CH5_PHASE_REM,LLRFRecords::CH6_PHASE_REM,
+	LLRFRecords::CH7_PHASE_REM,LLRFRecords::CH8_PHASE_REM },
+	allChannelTraceNames{ LLRFRecords::CH1_AMP_DER,LLRFRecords::CH2_AMP_DER,
+	LLRFRecords::CH3_AMP_DER,LLRFRecords::CH4_AMP_DER,
+	LLRFRecords::CH5_AMP_DER,LLRFRecords::CH6_AMP_DER,
+	LLRFRecords::CH7_AMP_DER,LLRFRecords::CH8_AMP_DER,
+	LLRFRecords::CH1_PHASE_DER,LLRFRecords::CH2_PHASE_DER,
+	LLRFRecords::CH3_PHASE_DER,LLRFRecords::CH4_PHASE_DER,
+	LLRFRecords::CH5_PHASE_DER,LLRFRecords::CH6_PHASE_DER,
+	LLRFRecords::CH7_PHASE_DER,LLRFRecords::CH8_PHASE_DER,
+	LLRFRecords::CH1_PHASE_REM,LLRFRecords::CH2_PHASE_REM,
+	LLRFRecords::CH3_PHASE_REM,LLRFRecords::CH4_PHASE_REM,
+	LLRFRecords::CH5_PHASE_REM,LLRFRecords::CH6_PHASE_REM,
+	LLRFRecords::CH7_PHASE_REM,LLRFRecords::CH8_PHASE_REM,
+	LLRFRecords::CH1_PWR_LOC,LLRFRecords::CH2_PWR_LOC,
+	LLRFRecords::CH3_PWR_LOC,LLRFRecords::CH4_PWR_LOC,
+	LLRFRecords::CH5_PWR_LOC,LLRFRecords::CH6_PWR_LOC,
+	LLRFRecords::CH7_PWR_LOC,LLRFRecords::CH8_PWR_LOC,
+	LLRFRecords::CH1_PWR_REM,LLRFRecords::CH2_PWR_REM,
+	LLRFRecords::CH3_PWR_REM,LLRFRecords::CH4_PWR_REM,
+	LLRFRecords::CH5_PWR_REM,LLRFRecords::CH6_PWR_REM,
+	LLRFRecords::CH7_PWR_REM,LLRFRecords::CH8_PWR_REM },
 	dbr_all_trace_data(nullptr),
+	amp_sp(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	amp_ff(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	phi_sp(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	phi_ff(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	amp_MW(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	phi_degrees(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	max_amp_sp(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	llrf_pulse_duration(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	trig_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	interlock_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	rf_output(std::make_pair(epicsTimeStamp(), false)),
+	ff_phase_lock(std::make_pair(epicsTimeStamp(), false)),
+	ff_amp_lock(std::make_pair(epicsTimeStamp(), false)),
+	heartbeat(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.printDebugMessage("LLRF Constructor");
@@ -224,7 +239,7 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 	if (GlobalFunctions::entryExists(paramMap, "one_trace_data_count"))
 	{
 		// TODOD white space trimiming probably required here for robustness 
-		unsigned nBytes = dbr_size_n(DBR_TIME_DOUBLE, std::stoul(paramMap.find("crest_phase")->second));
+		unsigned nBytes = dbr_size_n(DBR_TIME_DOUBLE, std::stoul(paramMap.find("one_trace_data_count")->second));
 
 		dbr_all_trace_data = (struct dbr_time_double*)malloc(nBytes);
 		messenger.printDebugMessage(hardwareName, " dbr_all_trace_data pointer allocated ", nBytes, " BYTES ");
@@ -267,17 +282,17 @@ void LLRF::setupAfterMachineAreaSet()
 	// we loop over all possible ONE_TRACE settings and see if they are in the master-lattice file AND in all_trace_data 
 	// 
 	std::vector<std::string>all_one_record_trace_names = {
-	GlobalConstants::ONE_RECORD_KLYSTRON_FORWARD_POWER, GlobalConstants::ONE_RECORD_KLYSTRON_FORWARD_PHASE,
-		GlobalConstants::ONE_RECORD_KLYSTRON_REVERSE_POWER, GlobalConstants::ONE_RECORD_KLYSTRON_REVERSE_PHASE,
-		GlobalConstants::ONE_RECORD_LRRG_CAVITY_FORWARD_POWER,GlobalConstants::ONE_RECORD_LRRG_CAVITY_FORWARD_PHASE,
-		GlobalConstants::ONE_RECORD_LRRG_CAVITY_REVERSE_POWER,GlobalConstants::ONE_RECORD_LRRG_CAVITY_REVERSE_PHASE,
-		GlobalConstants::ONE_RECORD_HRRG_CAVITY_FORWARD_POWER, GlobalConstants::ONE_RECORD_HRRG_CAVITY_FORWARD_PHASE,
-		GlobalConstants::ONE_RECORD_HRRG_CAVITY_REVERSE_POWER,	GlobalConstants::ONE_RECORD_HRRG_CAVITY_REVERSE_PHASE,
-		GlobalConstants::ONE_RECORD_HRRG_CAVITY_PROBE_POWER,	GlobalConstants::ONE_RECORD_HRRG_CAVITY_PROBE_PHASE,
-		GlobalConstants::ONE_RECORD_L01_CAVITY_FORWARD_POWER,	GlobalConstants::ONE_RECORD_L01_CAVITY_FORWARD_PHASE,
-		GlobalConstants::ONE_RECORD_L01_CAVITY_REVERSE_POWER,	GlobalConstants::ONE_RECORD_L01_CAVITY_REVERSE_PHASE,
-		GlobalConstants::ONE_RECORD_L01_CAVITY_PROBE_POWER,	GlobalConstants::ONE_RECORD_L01_CAVITY_PROBE_PHASE,
-		GlobalConstants::ONE_RECORD_CALIBRATION_POWER,		GlobalConstants::ONE_RECORD_CALIBRATION_PHASE };
+	LLRFRecords::ONE_RECORD_KLYSTRON_FORWARD_POWER, LLRFRecords::ONE_RECORD_KLYSTRON_FORWARD_PHASE,
+		LLRFRecords::ONE_RECORD_KLYSTRON_REVERSE_POWER,	  LLRFRecords::ONE_RECORD_KLYSTRON_REVERSE_PHASE,
+		LLRFRecords::ONE_RECORD_LRRG_CAVITY_FORWARD_POWER,LLRFRecords::ONE_RECORD_LRRG_CAVITY_FORWARD_PHASE,
+		LLRFRecords::ONE_RECORD_LRRG_CAVITY_REVERSE_POWER,LLRFRecords::ONE_RECORD_LRRG_CAVITY_REVERSE_PHASE,
+		LLRFRecords::ONE_RECORD_HRRG_CAVITY_FORWARD_POWER,LLRFRecords::ONE_RECORD_HRRG_CAVITY_FORWARD_PHASE,
+		LLRFRecords::ONE_RECORD_HRRG_CAVITY_REVERSE_POWER,LLRFRecords::ONE_RECORD_HRRG_CAVITY_REVERSE_PHASE,
+		LLRFRecords::ONE_RECORD_HRRG_CAVITY_PROBE_POWER,  LLRFRecords::ONE_RECORD_HRRG_CAVITY_PROBE_PHASE,
+		LLRFRecords::ONE_RECORD_L01_CAVITY_FORWARD_POWER, LLRFRecords::ONE_RECORD_L01_CAVITY_FORWARD_PHASE,
+		LLRFRecords::ONE_RECORD_L01_CAVITY_REVERSE_POWER, LLRFRecords::ONE_RECORD_L01_CAVITY_REVERSE_PHASE,
+		LLRFRecords::ONE_RECORD_L01_CAVITY_PROBE_POWER,	  LLRFRecords::ONE_RECORD_L01_CAVITY_PROBE_PHASE,
+		LLRFRecords::ONE_RECORD_CALIBRATION_POWER,		  LLRFRecords::ONE_RECORD_CALIBRATION_PHASE };
 	std::string one_record_prefix = "ONE_RECORD_";
 	auto one_record_prefix_len = one_record_prefix.length();
 	for (auto&& or_tn : all_one_record_trace_names)
@@ -296,13 +311,10 @@ void LLRF::setupAfterMachineAreaSet()
 			messenger.printDebugMessage("Looking in all_trace_data for ", or_tn_copy);
 			if (GlobalFunctions::entryExists(trace_data_map, or_tn_copy))
 			{
-
 				trace_data_map.at(or_tn_copy).one_record_part = std::stoul(specificHardwareParameters.find(or_tn)->second);
-
 				trace_data_map.at(or_tn_copy).one_record_start_index = (trace_data_map.at(or_tn_copy).one_record_part - GlobalConstants::one_sizet) * 1024;
-
-				trace_data_map.at(or_tn_copy).one_record_stop_index = trace_data_map.at(or_tn_copy).one_record_part * 1024 - GlobalConstants::one_sizet;
-
+				trace_data_map.at(or_tn_copy).one_record_stop_index = trace_data_map.at(or_tn_copy).one_record_part * 1024 - GlobalConstants::one_sizet - 
+					(1024 - 1017);
 				messenger.printDebugMessage(or_tn_copy, "  exists in trace_data_map, adding paramters, ", trace_data_map.at(or_tn_copy).one_record_part, " ",
 					trace_data_map.at(or_tn_copy).one_record_start_index, " ", trace_data_map.at(or_tn_copy).one_record_stop_index);
 			}
@@ -312,6 +324,46 @@ void LLRF::setupAfterMachineAreaSet()
 			}
 		}
 	}
+	// once we have the one_record_start_index and one_record_stop_index we will create a list so that we can iterate once over the 
+	// one_record data copyign values into teh relevant object in trace_data_map 
+
+	for (auto& it : trace_data_map)
+	{
+		sorted_one_record_trace_start_indices.push_back(std::make_pair(it.second.one_record_start_index, it.first));
+	}
+	std::sort(sorted_one_record_trace_start_indices.begin(), sorted_one_record_trace_start_indices.end());
+	size_t current_index = 0;
+	size_t last_index = 0;
+	for (auto& it : sorted_one_record_trace_start_indices)
+	{
+		messenger.printDebugMessage("ITERATOR ", it.first, "  ", it.second);
+		if (current_index > 0)
+		{
+			size_t next_jump = it.first - (sorted_one_record_trace_start_indices[current_index - 1].first + 1017);
+			auto next_pair = std::make_pair(next_jump, it.second);
+			sorted_one_record_trace_iterator_jumps.push_back(next_pair);
+		}
+		else
+		{
+			sorted_one_record_trace_iterator_jumps.push_back(std::make_pair(0, it.second));
+		}
+		current_index += 1;
+		messenger.printDebugMessage("next sorted_one_record_trace_iterator_jumps = ", sorted_one_record_trace_iterator_jumps.back().first );
+	}
+	
+
+
+
+	// now we need the number of elemnts to advance between each
+	//size_t current_it_pos = 0;
+	//std::vector<std::pair<std::string, size_t>> one_record_iterator_advance_steps;
+	//for (auto&& it : sorted_one_record_trace_start_indices)
+	//{
+	//	current_it_pos
+	//	sorted_one_record_trace_start_indices.push_back(std::make_pair(it.second.one_record_start_index, it.first));
+	//}
+
+
 	messenger.printDebugMessage(hardwareName + " is building the channel_to_tracesource_map");
 	const std::vector<std::string> channels{ "CH1","CH2","CH3","CH4","CH5","CH6","CH7","CH8" };
 	for (auto channel : channels)
@@ -631,8 +683,70 @@ double LLRF::getPhiDEG()const
 bool LLRF::getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs)
 {
 	int status = ca_array_get(DBR_TIME_DOUBLE, 1, pvs.CHID, dbr_struct);
+	messenger.printDebugMessage("getNewTraceValuesFromEPICS status ", status);
 	EPICSInterface::sendToEPICS();
 	MY_SEVCHK(status);
+	/*
+		now loop through each 
+	*/
+	const dbr_double_t* pValue;
+
+	pValue = &dbr_struct->value;
+	auto pValueSize = 24576; // sizeof(*pValue) / sizeof(pValue[0]);
+	auto end = &pValue[pValueSize];
+
+
+	messenger.printDebugMessage("Print some numbers ");
+
+	messenger.printDebugMessage("pValueSize = ", pValueSize);
+	messenger.printDebugMessage("stop and take chunk indeces ");
+	for (auto&& it: sorted_one_record_trace_start_indices)
+	{
+		messenger.printDebugMessage(it.first, " = ", it.second);
+	}
+
+
+//	auto one_record_iterator = pValue[0];
+
+//	auto sorted_one_record_trace_start_indices_it = &sorted_one_record_trace_start_indices[0];
+
+	auto temp_new_buffer_item = std::make_pair(dbr_struct->stamp, std::vector<double>(1017));
+
+
+	size_t chunk = 0;
+	size_t counter = 0;
+	for (auto it = pValue; it != end; ++it)
+	{
+		if (counter == sorted_one_record_trace_start_indices[chunk].first)
+		{
+			messenger.printDebugMessage("counter = ", counter);
+			messenger.printDebugMessage("chunk = ", chunk);
+			messenger.printDebugMessage("adding at it value = ", *it);
+			std::copy(it, it + 1017, temp_new_buffer_item.second.begin());
+			trace_data_map.at(sorted_one_record_trace_start_indices[chunk].second).trace_data_buffer.push_back(temp_new_buffer_item);
+			chunk += 1; 
+
+			messenger.printDebugMessage("Next chunk at ", sorted_one_record_trace_start_indices[chunk].first);
+		}
+		counter += 1;
+	}
+	messenger.printDebugMessage("Print some numbers ");
+	for (auto&& it : trace_data_map)
+	{
+		size_t c = 0;
+		messenger.printDebugMessage(it.first);
+		for(auto&& it2 : it.second.trace_data_buffer.back().second)
+		{
+			std::cout << it2 << " ";
+			c += 1;
+			if (c == 10)
+			{ 
+				break;
+			}
+		}
+		std::cout << std::endl;
+	}
+
 	if (status != ECA_NORMAL)
 	{
 		return false;
@@ -1189,6 +1303,9 @@ void LLRF::initAllTraceSCANandACQM()
 
 	std::pair < epicsTimeStamp, STATE> init_pair = std::make_pair(epicsTimeStamp(), STATE::UNKNOWN);
 
+	all_trace_scan[ONE_TRACE_SCAN] = init_pair;
+	
+
 	all_trace_scan[CH1_PWR_REM] = init_pair;
 	all_trace_scan[CH2_PWR_REM] = init_pair;
 	all_trace_scan[CH3_PWR_REM] = init_pair;
@@ -1236,6 +1353,9 @@ void LLRF::initAllTraceSCANandACQM()
 	all_trace_scan[CH7_PHASE_DER] = init_pair;
 	all_trace_scan[CH8_PHASE_DER] = init_pair;
 
+
+
+	all_trace_acqm[ONE_TRACE_ACQM] = init_pair;
 
 	all_trace_acqm[CH1_PWR_REM] = init_pair;
 	all_trace_acqm[CH2_PWR_REM] = init_pair;

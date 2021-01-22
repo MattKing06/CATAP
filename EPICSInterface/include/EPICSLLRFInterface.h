@@ -20,6 +20,7 @@ public:
     static void update_AMP_FF(const struct event_handler_args args);
     static void update_TRIG_SOURCE(const struct event_handler_args args);
     static void update_AMP_SP(const struct event_handler_args args);
+    static void update_MAX_AMP_SP(const struct event_handler_args args);
     static void update_PHI_FF(const struct event_handler_args args);
     static void update_PHI_SP(const struct event_handler_args args);
     static void update_RF_OUTPUT(const struct event_handler_args args);
@@ -27,7 +28,7 @@ public:
     static void update_FF_AMP_LOCK_STATE(const struct event_handler_args args);
     static void update_TIME_VECTOR(const struct event_handler_args args);
     static void update_PULSE_OFFSET(const struct event_handler_args args);
-    static void update_PULSE_LENGTH(const struct event_handler_args args);
+    static void update_LLRF_PULSE_DURATION(const struct event_handler_args args);
     static void update_INTERLOCK(const struct event_handler_args args);
     static void update_PULSE_SHAPE(const struct event_handler_args args);
 
@@ -153,10 +154,16 @@ public:
     //static void update_CH8_PHASE_DER_SCAN(const struct event_handler_args args);
     //static void update_CH8_PWR_LOC_SCAN(const struct event_handler_args args);
     
+    static void update_trace_SCAN(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& scan);
+    static void update_trace_ACQM(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& acqm);
+    
+    static void update_LLRF_TRACES_SCAN(const struct event_handler_args args);
+    static void update_LLRF_TRACES_ACQM(const struct event_handler_args args);
 
     static std::map<std::string, STATE> interlock_status_map;
     static std::map<std::string, STATE> interlock_enable_map;
 
+    void update_LLRF_TRACES(const struct event_handler_args args);
 
     static LoggingSystem messenger;
 
@@ -164,11 +171,12 @@ public:
     // NB this map is to replace the if-else tree typically used. 
     // it seesm in VS you can only have 127 if-else statements 
     // https://stackoverflow.com/questions/11508013/blocks-nested-too-deeply
-    const std::map<std::string, updateFunctionPtr> updateFucntionMap  =  {
+    const std::map<std::string, updateFunctionPtr> updateFunctionMap  =  {
     {LLRFRecords::HEART_BEAT , this->update_HEART_BEAT                  },
     {LLRFRecords::AMP_FF, this->update_AMP_FF							},
     {LLRFRecords::TRIG_SOURCE, this->update_TRIG_SOURCE					},
     {LLRFRecords::AMP_SP, this->update_AMP_SP							},
+    {LLRFRecords::MAX_AMP_SP, this->update_MAX_AMP_SP                   },
     {LLRFRecords::PHI_FF, this->update_PHI_FF							},
     {LLRFRecords::PHI_SP, this->update_PHI_SP							},
     {LLRFRecords::RF_OUTPUT, this->update_RF_OUTPUT						},
@@ -176,10 +184,12 @@ public:
     {LLRFRecords::FF_AMP_LOCK_STATE, this->update_FF_AMP_LOCK_STATE     },
     {LLRFRecords::TIME_VECTOR, this->update_TIME_VECTOR					},
     {LLRFRecords::PULSE_OFFSET, this->update_PULSE_OFFSET				},
-    {LLRFRecords::LLRF_PULSE_DURATION, this->update_PULSE_LENGTH				},
+    {LLRFRecords::LLRF_PULSE_DURATION, this->update_LLRF_PULSE_DURATION },
     {LLRFRecords::INTERLOCK, this->update_INTERLOCK						},
     {LLRFRecords::PULSE_SHAPE, this->update_PULSE_SHAPE					},
-   //// {LLRFRecords::PULSE_SHAPE_APPLY,this->update_PULSE_SHAPE_APPLY      },
+    {LLRFRecords::LLRF_TRACES_SCAN, this->update_LLRF_TRACES_SCAN	    },
+    {LLRFRecords::LLRF_TRACES_ACQM, this->update_LLRF_TRACES_ACQM		},
+    //{LLRFRecords::PULSE_SHAPE_APPLY,this->update_PULSE_SHAPE_APPLY      },
    // {LLRFRecords::CH1_INTERLOCK_STATUS, this->update_CH1_INTERLOCK_STATUS},
    // {LLRFRecords::CH1_INTERLOCK_ENABLE,this->update_CH1_INTERLOCK_ENABLE},
    // {LLRFRecords::CH1_INTERLOCK_U, this->update_CH1_INTERLOCK_U         },

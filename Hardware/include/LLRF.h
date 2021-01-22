@@ -393,6 +393,22 @@ protected:
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_degrees;
 	
+	/*! maximum amp_sp that can be applied (set in the main control system, NOT through CATAP)*/
+	std::pair<epicsTimeStamp, double > max_amp_sp;
+
+	/*! latest phi_ff value and epicstimestamp 	*/
+	std::pair<epicsTimeStamp, std::vector< double>> pulse_shape;
+
+
+	/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
+	std::pair<epicsTimeStamp, double > llrf_pulse_duration;
+
+	/*! pulse offset */
+	std::pair<epicsTimeStamp, double > pulse_offset;
+
+	/*! RF PSS Heartbeat, when in RF mode this signal must keep changing to keep the RF system alive */
+	std::pair<epicsTimeStamp, double > heartbeat;
+
 
 	/*! Size of circular buffer used to store trace data */
 	size_t trace_data_buffer_size;
@@ -445,6 +461,9 @@ private:
 	std::vector<std::string> aliases;
 
 
+	std::vector<std::pair<size_t, std::string>> sorted_one_record_trace_start_indices;
+	std::vector<std::pair<size_t, std::string>> sorted_one_record_trace_iterator_jumps;
+
 	/*! Set up the trace_data_map for this cavity, called after the cavity TYPE has been set 
 	defined in the master lattice yaml file	*/
 	void setTraceDataMap();
@@ -460,13 +479,9 @@ private:
 	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
 
 
-
 	bool getNewTraceValuesFromEPICS(struct dbr_time_double* dbr_struct, const pvStruct& pvs);
 
-
-
-
-
+	
 	void updateTraceCutMeans();
 	void calculateTraceCutMean(TraceData& trace);
 
