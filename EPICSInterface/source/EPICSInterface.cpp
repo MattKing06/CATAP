@@ -236,6 +236,31 @@ bool EPICSInterface::isDebugOn()
 	return messenger.isDebugOn();
 }
 
+bool EPICSInterface::check_ca_state(const pvStruct& pvStruct)
+{
+	if (ca_state(pvStruct.CHID) == cs_conn)
+	{
+		return true;
+	}
+	else
+	{
+		messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
+	}
+	return false;
+}
+
+bool EPICSInterface::check_ca_write_access(const pvStruct& pvStruct)
+{
+	if (ca_write_access(pvStruct.CHID))
+	{
+		return true;
+	}
+	else
+	{
+		messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
+	}
+	return false;
+}
 
 void EPICSInterface::setPVTimeStampFromArgs(pvStruct& pv, const event_handler_args args)
 {

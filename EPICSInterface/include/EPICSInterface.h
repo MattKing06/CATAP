@@ -256,6 +256,18 @@ public:
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
 	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
+
+	/*! Function to check the connection state of a PV
+	* @param[in] pvStruct : PV data to check 
+	* @param[out] bool: true if ca_state returns cs_conn otehrwise false	*/
+	bool check_ca_state(const pvStruct& pvStruct);
+
+	/*! Function to check the write state of a PV
+	* @param[in] pvStruct : PV data to check
+	* @param[out] bool: true if ca_write_access returns true	*/
+	bool check_ca_write_access(const pvStruct& pvStruct);
+
+
 	/*! Send an array to an EPICS PV over Channel Access using ca_put_array.
 	* @param[in] pvStruct : Contains the PV we want to put a value to.
 	* @param[in] value : The array we want to ca_put_array with.*/

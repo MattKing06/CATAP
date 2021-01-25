@@ -234,6 +234,47 @@ extern std::string const CH8_PWR_LOC_SCAN;
 		extern std::string const LLRF_CH8_INTERLOCK;
 
 
+		extern const std::string LRRG_CAVITY_REVERSE_PHASE;
+		extern const std::string HRRG_CAVITY_REVERSE_PHASE;
+		extern const std::string L01_CAVITY_REVERSE_PHASE ;
+		extern const std::string CAVITY_REVERSE_PHASE 	   ;
+		extern const std::string LRRG_CAVITY_FORWARD_PHASE;
+		extern const std::string HRRG_CAVITY_FORWARD_PHASE;
+		extern const std::string L01_CAVITY_FORWARD_PHASE ;
+		extern const std::string CAVITY_FORWARD_PHASE 	   ;
+		extern const std::string LRRG_CAVITY_REVERSE_POWER;
+		extern const std::string HRRG_CAVITY_REVERSE_POWER;
+		extern const std::string L01_CAVITY_REVERSE_POWER ;
+		extern const std::string CAVITY_REVERSE_POWER 	   ;
+		 										   ;
+		extern const std::string LRRG_CAVITY_FORWARD_POWER;
+		extern const std::string HRRG_CAVITY_FORWARD_POWER;
+		extern const std::string L01_CAVITY_FORWARD_POWER ;
+		extern const std::string CAVITY_FORWARD_POWER   ;
+		extern const std::string CAVITY_PROBE_POWER	   ;
+		extern const std::string HRRG_CAVITY_PROBE_POWER  ;
+		extern const std::string L01_CAVITY_PROBE_POWER   ;
+		extern const std::string CAVITY_PROBE_PHASE	   ;
+		extern const std::string HRRG_CAVITY_PROBE_PHASE  ;
+		extern const std::string L01_CAVITY_PROBE_PHASE   ;
+		extern const std::string KLYSTRON_REVERSE_PHASE;
+		extern const std::string KLYSTRON_REVERSE_POWER;
+		extern const std::string KLYSTRON_FORWARD_PHASE;
+		extern const std::string KLYSTRON_FORWARD_POWER;
+
+
+
+		extern const std::string  KRPOW;
+		extern const std::string  KRPHA;
+		extern const std::string  KFPOW;
+		extern const std::string  KFPHA;
+		extern const std::string  CRPOW;
+		extern const std::string  CRPHA;
+		extern const std::string  CPPOW;
+		extern const std::string  CPPHA;
+		extern const std::string  CFPOW;
+		extern const std::string  CFPHA;
+
 
 	/*	const std::string LRRG_CAVITY_REVERSE_PHASE = "LRRG_CAVITY_REVERSE_PHASE";
 		const std::string HRRG_CAVITY_REVERSE_PHASE = "HRRG_CAVITY_REVERSE_PHASE";

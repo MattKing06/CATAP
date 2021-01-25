@@ -35,6 +35,7 @@ void EPICSLLRFInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) con
 	}
 }
 
+
 void EPICSLLRFInterface::update_HEART_BEAT(const struct event_handler_args args)
 {
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);

@@ -80,6 +80,8 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("ENERGYMETER", TYPE::ENERGYMETER)
 			.value("VALVE", TYPE::VALVE)
 			.value("CHARGE", TYPE::CHARGE)
+			.value("POWER", TYPE::POWER)
+			.value("PHASE", TYPE::PHASE)
 			;
 	}
 }

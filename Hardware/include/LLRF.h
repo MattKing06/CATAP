@@ -27,6 +27,9 @@ public:
 	std::pair<epicsTimeStamp, double > p_level;
 	std::pair<epicsTimeStamp, double > pdbm_level;
 
+	/*! is this interlock for a phase or a power trace */
+	TYPE interlock_type;
+
 	bool status, enable;
 };
 
@@ -90,6 +93,10 @@ class TraceData
 
 
 		bool interlock_state;
+
+		/*! is this a phase or a power trace */
+		TYPE trace_type;
+
 
 };
 
@@ -204,7 +211,7 @@ public:
 	void updateTraceValues();
 	void updateTraceValues_Py();
 
-	void splitOneTraceValues();
+
 
 
 	//std::map<std::string, std::vector<double>> getNewTraceData();
@@ -345,7 +352,42 @@ public:
 
 	std::map<std::string, std::string> getLLRFStateMap()const;
 
+	/*! retun active_pulse_kly_power_limit (default 500 W)
+	@param[out] size_t, */
+	size_t getActivePulsePowerLimit() const;
+	/*! Set active_pulse_kly_power_limit (default 500 W)
+	@param[in] double, */
+	void setActivePulsePowerLimit(const size_t value);
+	
+	/*! retun active_pulse_count
+	@param[out] size_t, */
+	size_t getActivePulseCount()const;;
+	/*! Set active_pulse_count to value
+	@param[in] size_t, */
+	void setActivePulseCount(const size_t value);
+	/*! increment active_pulse_count by value
+	@param[in] size_t, */
+	void addActivePulseCountOffset(const size_t value);
 
+	/*! retun inactive_pulse_count
+	@param[out] size_t, */
+	size_t getInactivePulseCount()const;
+	/*! Set inactive_pulse_count to value
+	@param[in] size_t, */
+	void setInactivePulseCount(const size_t value);
+	/*! increment inactive_pulse_count by value
+	@param[in] size_t, */
+	void addInactivePulseCountOffset(const size_t value);
+
+	/*! retun duplicate_pulse_count
+	@param[out] size_t, */
+	size_t getDuplicatePulseCount()const;
+	/*! Set duplicate_pulse_count to value
+	@param[in] size_t, */
+	void setDuplicatePulseCount(const size_t value);
+	/*! increment duplicate_pulse_count by value
+	@param[in] size_t, */
+	void addDuplicatePulseCountOffset(const size_t value);
 
 
 	/*! Set the current waveform as the pulse shape to be used 
@@ -398,6 +440,11 @@ protected:
 
 	/*! latest phi_ff value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, std::vector< double>> pulse_shape;
+
+	/*! maximum kylstron forward power from latest trace*/
+	std::pair<epicsTimeStamp, double > kly_fwd_power_max;
+
+
 
 
 	/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
@@ -523,8 +570,29 @@ private:
 	std::vector<std::string> power_trace_names;
 
 
-	// TODO if we make this a "const size_t  trace_data_size;" it breaks the copy constructor ??? 
+	/*! The number of elements in a regular RF trace (klystron forward power, etc)  */
 	size_t trace_data_size;
+	/*! The number of elements in the concatenated RF trace data  */
+	size_t one_record_trace_data_size;
+
+	/*! If kly_fwd_power_max is above this value can_increase_active_pulses is set to true  */
+	double active_pulse_kly_power_limit;
+	/*! Flag to detemrien if teh pusles count can be increaws3ed (true if kly_fwd_power_max > active_pulse_kly_power_limit  */
+	bool can_increase_active_pulses;
+	/*! kly_fwd_power_max for previous trace, this is important becasue the LLRF box can be in a state where it sends out mutliple copies of the same trace data */
+	double last_kly_fwd_power_max;
+
+	/*! Pulse count where where kly_fwd_power_max > active_pulse_kly_power_limit */
+	size_t active_pulse_count;
+	/*! Pulse count where  where kly_fwd_power_max < active_pulse_kly_power_limit */
+	size_t inactive_pulse_count;
+	/*! Pulse count where kly_fwd_power_max == last_kly_fwd_power_max */
+	size_t duplicate_pulse_count;
+
+
+
+
+	std::pair<epicsTimeStamp, std::vector<double>> temp_TraceData_trace_data_buffer;
 
 	// here we keep all the traces acqm and scan STATEs
 	// actual usable traces also have their own version of this in their trace_data 
@@ -532,6 +600,11 @@ private:
 	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_scan;
 
 
+	/*! after a new one_record_trace_values has been acquired, split it up into the correct TraceData object  */
+	void splitOneTraceValues();
+
+	/*! Each TraceDat has ossociated meta-data (max, mena, etc. that needs updating when a new trace is acquired */
+	void updateTraceMetaData();
 
 	void setupInterlocks();
 
