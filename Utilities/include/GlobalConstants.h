@@ -313,16 +313,18 @@ namespace GlobalConstants
 
 
 
-	/*! Unsigned Integer-type for 0 */
+	/*! Unsigned size_t-type for 0 */
 	const size_t zero_sizet = 0;
-	/*! Unsigned Integer-type for 1 */
+	/*! Unsigned size_t-type for 1 */
 	const size_t one_sizet = 1;
-	/*! Unsigned Integer-type for 2 */
+	/*! Unsigned size_t-type for 2 */
 	const size_t two_sizet = 2;
-	/*! Unsigned Integer-type for 5 */
+	/*! Unsigned size_t-type for 5 */
 	const size_t five_sizet = 5;
-	/*! Unsigned Integer-type for 80 */
+	/*! Unsigned size_t-type for 80 */
 	const size_t eighty_sizet = 80;
+	/*! Unsigned size_t-type for 100 */
+	const size_t one_hundred_sizet = 100;
 	/*! Unsigned Integer-type for 999999 */
 	const size_t nine99999 = 999999;
 

@@ -61,6 +61,10 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getPowerCutMean",  &LLRF::getPowerCutMean_Py)
 
 
+			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
+			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
+
+
 
 			//.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
 			//.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
@@ -68,13 +72,29 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 
 			.def("updateTraceValues",  &LLRF::updateTraceValues)
-			
-			
-			
-			
+
+			.def("getActivePulsePowerLimit",  &LLRF::getActivePulsePowerLimit)
+			.def("setActivePulsePowerLimit",  &LLRF::setActivePulsePowerLimit)
+			.def("getActivePulseCount",  &LLRF::getActivePulseCount)
+			.def("setActivePulseCount",  &LLRF::setActivePulseCount)
+			.def("addActivePulseCountOffset",  &LLRF::addActivePulseCountOffset)
+			.def("getInactivePulseCount",  &LLRF::getInactivePulseCount)
+			.def("setInactivePulseCount",  &LLRF::setInactivePulseCount)
+			.def("addInactivePulseCountOffset",  &LLRF::addInactivePulseCountOffset)
+			.def("getDuplicatePulseCount",  &LLRF::getDuplicatePulseCount)
+			.def("setDuplicatePulseCount",  &LLRF::setDuplicatePulseCount)
+			.def("addDuplicatePulseCountOffset",  &LLRF::addDuplicatePulseCountOffset)
+			.def("getTotalPulseCount",  &LLRF::getTotalPulseCount)
+			.def("setTotalPulseCount",  &LLRF::setTotalPulseCount)
+			.def("addTotalPulseCountOffset",  &LLRF::addTotalPulseCountOffset)
 
 
 
+
+			.def("setNumTracesToEstimateRepRate",  &LLRF::setNumTracesToEstimateRepRate)
+			.def("getNumTracesToEstimateRepRate",  &LLRF::getNumTracesToEstimateRepRate)
+			.def("getTraceRepRate",  &LLRF::getTraceRepRate)
+			
 
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)
 

@@ -11,6 +11,7 @@
 #include <boost/circular_buffer.hpp>
 #include <utility> 
 #include <boost/shared_ptr.hpp>
+#include <chrono> // for the high resolution clock DAQ freq estimate 
 
 class EPICSLLRFInterface;
 typedef boost::shared_ptr<EPICSLLRFInterface> EPICSLLRFInterface_sptr;
@@ -30,7 +31,9 @@ public:
 	/*! is this interlock for a phase or a power trace */
 	TYPE interlock_type;
 
-	bool status, enable;
+	std::pair<epicsTimeStamp, bool > status;
+
+	bool enable;
 };
 
 class TraceData
@@ -91,8 +94,7 @@ class TraceData
 		/*! the stopping index for this trace in the one-record trace data */
 		size_t one_record_stop_index;
 
-
-		bool interlock_state;
+		std::pair<epicsTimeStamp, bool> interlock_state;
 
 		/*! is this a phase or a power trace */
 		TYPE trace_type;
@@ -246,6 +248,13 @@ public:
 	//void getTraceData_Py(const boost::python::list& trace_names)
 
 
+	std::map<std::string, STATE> getAllTraceSCAN()const;
+	boost::python::dict getAllTraceSCAN_Py()const;
+
+	std::map<std::string, STATE> getAllTraceACQM()const;
+	boost::python::dict getAllTraceACQM_Py()const;
+
+
 	/*! get a map of all the trace data 
 		@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	std::map<std::string, std::vector<double>> getAllTraceData()const;
@@ -336,15 +345,18 @@ public:
 	
 	bool setMeanStartIndex(const std::string& name, size_t  value);
 	bool setMeanStopIndex(const std::string& name, size_t  value);
-
-
-
 	size_t getMeanStartIndex(const std::string& name)const;
 	size_t getMeanStopIndex(const std::string& name)const;
 	//double getMean(const std::string& name)const;
 	double getCutMean(const std::string& name)const;
 	std::map<std::string, double> getPowerCutMean()const;
 	boost::python::dict getPowerCutMean_Py()const;
+
+	// DAQ freq getters / settings 
+	void setNumTracesToEstimateRepRate(size_t value);
+	size_t getNumTracesToEstimateRepRate() const;
+	double getTraceRepRate() const;
+
 
 	// don;t use anymore ... 
 	double getMeanStartTime(const std::string& name)const;
@@ -388,6 +400,17 @@ public:
 	/*! increment duplicate_pulse_count by value
 	@param[in] size_t, */
 	void addDuplicatePulseCountOffset(const size_t value);
+
+	/*! retun duplicate_pulse_count
+	@param[out] size_t, */
+	size_t getTotalPulseCount()const;
+	/*! Set total_pulse_count to value
+	@param[in] size_t, */
+	void setTotalPulseCount(const size_t value);
+	/*! increment total_pulse_count by value
+	@param[in] size_t, */
+	void addTotalPulseCountOffset(const size_t value);
+
 
 
 	/*! Set the current waveform as the pulse shape to be used 
@@ -500,6 +523,8 @@ protected:
 	//void setMachineArea(const TYPE area);
 	void setDefaultPowerTraceMeanTimes();
 
+	bool getTraceFromChannelData(const std::string& channel, std::string& string_to_put_trace_name_in);
+
 private:
 	double crest_phase;
 	double operating_phase;
@@ -528,9 +553,28 @@ private:
 
 	bool getNewTraceValuesFromEPICS( const pvStruct& pvs);
 
-	
+
+	void updateKFPowMaxAndPulseCounts();
+	void checkCollectingFutureTraces();
+	void checkForOutsideMaskTraceAndUpdateRollingAverages();
 	void updateTraceCutMeans();
 	void calculateTraceCutMean(TraceData& trace);
+	//----------------------------------------------------------------------------
+	// Checking masks stuff TODO needs to be converted to CATAP and checked 
+	void checkForOutsideMaskTrace();
+	int updateIsTraceInMask(TraceData& trace);
+	void handleTraceInMaskResult(TraceData& trace, int result);
+	void handleFailedMask(TraceData& trace);
+	//----------------------------------------------------------------------------
+
+	//----------------------------------------------------------------------------
+	void updateDAQFreqEstimate();
+	size_t num_traces_to_estimate_rep_rate;
+	double trace_rep_rate;
+	std::vector<std::chrono::high_resolution_clock::time_point> trace_times_for_rep_rate;
+	//----------------------------------------------------------------------------
+
+
 
 	void scaleAllDummyTraces();
 	//void scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace);
@@ -566,9 +610,11 @@ private:
 	/*! Dummy Cavity Reverse Phase trace for use in the Virtual Machine */
 	std::vector<double> crpha_dummy_trace;
 
-	/*!Full Names for the power traces for this LLRF  */ // why do i need these??? 
+	/*! Full Names for the power traces for this LLRF  */ // why do i need these??? 
 	std::vector<std::string> power_trace_names;
 
+	/*! Breakdown detectio Flag set if latest set of traces had an "outside mask" trace  */
+	bool new_outside_mask_event;
 
 	/*! The number of elements in a regular RF trace (klystron forward power, etc)  */
 	size_t trace_data_size;
@@ -588,6 +634,10 @@ private:
 	size_t inactive_pulse_count;
 	/*! Pulse count where kly_fwd_power_max == last_kly_fwd_power_max */
 	size_t duplicate_pulse_count;
+	/*! Pulse count */
+	size_t total_pulse_count;
+
+
 
 
 
@@ -613,14 +663,14 @@ private:
 	//void setupAllTraceACQM();
 	//void setupAllTraceSCAN();
 
-	void updateInterLockStatus(const std::string& ch, const struct event_handler_args& args);
+	//void updateInterLockStatus(const std::string& ch, const struct event_handler_args& args);
 	void updateInterLockEnable(const std::string& ch, const struct event_handler_args& args);
 	void updateInterLockU(const std::string& ch, const struct event_handler_args& args);
 	void updateInterLockP(const std::string& ch, const struct event_handler_args& args);
 	void updateInterLockPDBM(const std::string& ch, const struct event_handler_args& args);
 
-	void updateSCAN(const std::string& ch, const struct event_handler_args& args);
-	void updateACQM(const std::string& ch, const struct event_handler_args& args);
+	//void updateSCAN(const std::string& ch, const struct event_handler_args& args);
+	//void updateACQM(const std::string& ch, const struct event_handler_args& args);
 
 
 	std::map<std::string, std::string> channel_to_tracesource_map;

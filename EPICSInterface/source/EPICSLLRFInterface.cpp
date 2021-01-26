@@ -187,34 +187,7 @@ void EPICSLLRFInterface::update_LLRF_TRACES(const struct event_handler_args args
 
 
 
-void EPICSLLRFInterface::update_trace_SCAN(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& scan)
-{
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
-	scan.first = pairToUpdate.first;
-	switch (pairToUpdate.second)
-	{
-	case 0:			scan.second = STATE::PASSIVE; break;
-	case 1:			scan.second = STATE::EVENT; break;
-	case 2:			scan.second = STATE::IO_INTR; break;
-	case 3:			scan.second = STATE::TEN; break;
-	case 4:			scan.second = STATE::FIVE; break;
-	case 5:			scan.second = STATE::TWO; break;
-	case 6:			scan.second = STATE::ONE; break;
-	case 7:			scan.second = STATE::ZERO_POINT_FIVE; break;
-	case 8:			scan.second = STATE::ZERO_POINT_TWO; break;
-	case 9:			scan.second = STATE::ZERO_POINT_ONE; break;
-	case 10:		scan.second = STATE::ZERO_POINT_ZERO_FIVE; break;
-	default:		scan.second = STATE::UNKNOWN;
-	}
 
-}
-void EPICSLLRFInterface::update_LLRF_TRACES_SCAN(const struct event_handler_args args)
-{
-	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(LLRFRecords::ONE_TRACE_SCAN));
-	messenger.printDebugMessage("update_LLRF_TRACES_SCAN FOR: " + recastLLRF->getHardwareName(),
-		" ", recastLLRF->all_trace_scan.at(LLRFRecords::ONE_TRACE_SCAN).second);
-}
 void EPICSLLRFInterface::update_trace_ACQM(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& acqm)
 {
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
@@ -308,55 +281,99 @@ void EPICSLLRFInterface::update_LLRF_TRACES_ACQM(const struct event_handler_args
 //
 //
 //
-//
-//void EPICSLLRFInterface::update_CH1_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::CH1_INTERLOCK_STATUS, args);
-//}
-//void EPICSLLRFInterface::update_CH2_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH2_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH3_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH3_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH4_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH4_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH5_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH5_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH6_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH6_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH7_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH7_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH8_INTERLOCK_STATUS(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockStatus(LLRFRecords::LLRF_CH8_INTERLOCK, args);
-//}
+
+
+
+
+
+
+void EPICSLLRFInterface::update_CH1_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH1_INTERLOCK, LLRFRecords::CH1, args);
+}
+void EPICSLLRFInterface::update_CH2_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH2_INTERLOCK, LLRFRecords::CH2, args);
+}
+void EPICSLLRFInterface::update_CH3_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH3_INTERLOCK, LLRFRecords::CH3, args);
+}
+void EPICSLLRFInterface::update_CH4_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH4_INTERLOCK, LLRFRecords::CH4, args);
+}
+void EPICSLLRFInterface::update_CH5_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH5_INTERLOCK, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH6_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH6_INTERLOCK, LLRFRecords::CH6, args);
+}
+void EPICSLLRFInterface::update_CH7_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
+	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	updateInterLockStatus(LLRFRecords::LLRF_CH7_INTERLOCK, LLRFRecords::CH7, args);
+}
+void EPICSLLRFInterface::update_CH8_INTERLOCK_STATUS(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
+	updateInterLockStatus(LLRFRecords::LLRF_CH8_INTERLOCK, LLRFRecords::CH8, args);
+}
+
+void EPICSLLRFInterface::updateInterLockStatus(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
+{
+	//messenger.printDebugMessage("updateInterLockStatus");
+	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
+	// but ... THIS works, so only change when eveyrthing else is working 
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
+	{
+		updateTimeStampBoolPair(args,recastLLRF->all_trace_interlocks.at(ch).status);
+		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+		std::string trace;
+		if (recastLLRF->getTraceFromChannelData(CH, trace))
+		{
+			//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+			trace.append("_POWER");
+			//messenger.printDebugMessage("NOW Looking for ", trace);
+			if(GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->trace_data_map.at(trace).interlock_state = recastLLRF->all_trace_interlocks.at(ch).status;
+				//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+			}
+			else
+			{
+				//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	}
+}
+
+
 //
 //
 //
@@ -663,247 +680,314 @@ void EPICSLLRFInterface::update_LLRF_TRACES_ACQM(const struct event_handler_args
 //
 //
 //
-//void EPICSLLRFInterface::update_CH1_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH1_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH1_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH1_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH1_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH1_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH1_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH1_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH1_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH1_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH2_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH2_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH2_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH2_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH2_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH2_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH2_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH2_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH2_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH2_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH3_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH3_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH3_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH3_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH3_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH3_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH3_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH3_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH3_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH3_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH4_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH4_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH4_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH4_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH4_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH4_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH4_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH4_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH4_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH4_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH5_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH5_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH5_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH5_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH5_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH5_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH5_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH5_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH5_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH5_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH6_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH6_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH6_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH6_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH6_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH6_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH6_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH6_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH6_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH6_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH7_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH7_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH7_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH7_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH7_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH7_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH7_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH7_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH7_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH7_PWR_LOC_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH8_PWR_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_PWR_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH8_PWR_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH8_PHASE_REM_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_PHASE_REM_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH8_PHASE_REM_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH8_AMP_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_AMP_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH8_AMP_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH8_PHASE_DER_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_PHASE_DER_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH8_PHASE_DER_SCAN, args);
-//}
-//void EPICSLLRFInterface::update_CH8_PWR_LOC_SCAN(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_PWR_LOC_SCAN");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateSCAN(GlobalConstants::CH8_PWR_LOC_SCAN, args);
-//}
-//
+
+
+
+void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
+{
+	//messenger.printDebugMessage("updateInterLockStatus");
+	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
+	// but ... THIS works, so only change when eveyrthing else is working 
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(ch));
+	messenger.printDebugMessage("updateChannnelSCAN FOR: " + recastLLRF->getHardwareName(),
+		" ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
+
+	// NOW WE FIND OUT I FTHE PASSED SCAN IN IN ALL TRACE DATA 
+	std::string trace;
+	if (recastLLRF->getTraceFromChannelData(CH, trace))
+	{
+		messenger.printDebugMessage(CH, " has a useful name of ", trace);
+
+		if (GlobalFunctions::stringIsSubString(ch, "PWR_REM") )
+		{
+			messenger.printDebugMessage(ch, " is a power remote trace for ", trace);
+			trace.append("_POWER");
+			//recastLLRF->trace_data_map.at(trace.append("_POWER")).scan = recastLLRF->all_trace_scan.at(ch);
+		}
+		else if (GlobalFunctions::stringIsSubString(ch, "PHASE_REM"))
+		{
+			messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
+			trace.append("_PHASE");
+			//recastLLRF->trace_data_map.at(trace.append("_PHASE")).scan = recastLLRF->all_trace_scan.at(ch);
+		}
+
+		if (GlobalFunctions::entryExists(recastLLRF->all_trace_scan, trace))
+		{
+			recastLLRF->trace_data_map.at(trace.append("_PHASE")).scan = recastLLRF->all_trace_scan.at(ch);
+			messenger.printDebugMessage(trace, " all_trace_scan = ", recastLLRF->trace_data_map.at(trace).scan.second);
+		}
+		else
+		{
+			messenger.printDebugMessage(trace, " NOT in trace_data_map");
+		}
+
+	}
+	else
+	{
+		messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+	}
+
+	//if (GlobalFunctions::entryExists(recastLLRF->all_trace_scan, ch))
+	//{
+	//	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(ch));
+	//	
+	//	//updateTimeStampBoolPair(args, recastLLRF->all_trace_scan.at(ch).status);
+	//	//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+	//	std::string trace;
+	//	if (recastLLRF->getTraceFromChannelData(CH, trace))
+	//	{
+	//		//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+	//		trace.append("_POWER");
+	//		//messenger.printDebugMessage("NOW Looking for ", trace);
+	//		if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+	//		{
+	//			recastLLRF->trace_data_map.at(trace).interlock_state = recastLLRF->all_trace_interlocks.at(ch).status;
+	//			//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+	//		}
+	//		else
+	//		{
+	//			//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+	//		}
+	//	}
+	//	else
+	//	{
+	//		//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+	//	}
+	//}
+	//else
+	//{
+	//	//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	//}
+}
+void EPICSLLRFInterface::update_trace_SCAN(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& scan)
+{
+	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
+	scan.first = pairToUpdate.first;
+	switch (pairToUpdate.second)
+	{
+	case 0:			scan.second = STATE::PASSIVE; break;
+	case 1:			scan.second = STATE::EVENT; break;
+	case 2:			scan.second = STATE::IO_INTR; break;
+	case 3:			scan.second = STATE::TEN; break;
+	case 4:			scan.second = STATE::FIVE; break;
+	case 5:			scan.second = STATE::TWO; break;
+	case 6:			scan.second = STATE::ONE; break;
+	case 7:			scan.second = STATE::ZERO_POINT_FIVE; break;
+	case 8:			scan.second = STATE::ZERO_POINT_TWO; break;
+	case 9:			scan.second = STATE::ZERO_POINT_ONE; break;
+	case 10:		scan.second = STATE::ZERO_POINT_ZERO_FIVE; break;
+	default:		scan.second = STATE::UNKNOWN;
+	}
+}
+void EPICSLLRFInterface::update_LLRF_TRACES_SCAN(const struct event_handler_args args)
+{
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(LLRFRecords::ONE_TRACE_SCAN));
+	messenger.printDebugMessage("update_LLRF_TRACES_SCAN FOR: " + recastLLRF->getHardwareName(),
+		" ", recastLLRF->all_trace_scan.at(LLRFRecords::ONE_TRACE_SCAN).second);
+}
+void EPICSLLRFInterface::update_CH1_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH1_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH1_PHASE_REM, LLRFRecords::CH1, args);
+}
+void EPICSLLRFInterface::update_CH1_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH1_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH1_PWR_REM, LLRFRecords::CH1, args);
+}
+void EPICSLLRFInterface::update_CH1_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH1_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH1_AMP_DER, LLRFRecords::CH1, args);
+}
+void EPICSLLRFInterface::update_CH1_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH1_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH1_PHASE_DER, LLRFRecords::CH1, args);
+}
+void EPICSLLRFInterface::update_CH1_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH1_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH1_PWR_LOC, LLRFRecords::CH1, args);
+}
+void EPICSLLRFInterface::update_CH2_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH2_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH2_PWR_REM, LLRFRecords::CH2, args);
+}
+void EPICSLLRFInterface::update_CH2_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH2_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH2_PHASE_REM, LLRFRecords::CH2, args);
+}
+void EPICSLLRFInterface::update_CH2_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH2_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH2_AMP_DER, LLRFRecords::CH2, args);
+}
+void EPICSLLRFInterface::update_CH2_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH2_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH2_PHASE_DER, LLRFRecords::CH2, args);
+}
+void EPICSLLRFInterface::update_CH2_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH2_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH2_PWR_LOC, LLRFRecords::CH2, args);
+}
+void EPICSLLRFInterface::update_CH3_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH3_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH3_PWR_REM, LLRFRecords::CH3, args);
+}
+void EPICSLLRFInterface::update_CH3_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH3_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH3_PHASE_REM, LLRFRecords::CH3, args);
+}
+void EPICSLLRFInterface::update_CH3_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH3_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH3_AMP_DER, LLRFRecords::CH3, args);
+}
+void EPICSLLRFInterface::update_CH3_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH3_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH3_PHASE_DER, LLRFRecords::CH3, args);
+}
+void EPICSLLRFInterface::update_CH3_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH3_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH3_PWR_LOC, LLRFRecords::CH3, args);
+}
+void EPICSLLRFInterface::update_CH4_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH4_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH4_PWR_REM, LLRFRecords::CH4, args);
+}
+void EPICSLLRFInterface::update_CH4_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH4_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH4_PHASE_REM, LLRFRecords::CH4, args);
+}
+void EPICSLLRFInterface::update_CH4_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH4_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH4_AMP_DER, LLRFRecords::CH4, args);
+}
+void EPICSLLRFInterface::update_CH4_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH4_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH4_PHASE_DER, LLRFRecords::CH4, args);
+}
+void EPICSLLRFInterface::update_CH4_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH4_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH4_PWR_LOC, LLRFRecords::CH4, args);
+}
+void EPICSLLRFInterface::update_CH5_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH5_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH5_PWR_REM, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH5_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH5_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH5_PHASE_REM, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH5_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH5_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH5_AMP_DER, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH5_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH5_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH5_PHASE_DER, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH5_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH5_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH5_PWR_LOC, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH6_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH6_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH6_PWR_REM, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH6_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH6_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH6_PHASE_REM, LLRFRecords::CH5, args);
+}
+void EPICSLLRFInterface::update_CH6_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH6_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH6_AMP_DER, LLRFRecords::CH6, args);
+}
+void EPICSLLRFInterface::update_CH6_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH6_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH6_PHASE_DER, LLRFRecords::CH6, args);
+}
+void EPICSLLRFInterface::update_CH6_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH6_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH6_PWR_LOC, LLRFRecords::CH6, args);
+}
+void EPICSLLRFInterface::update_CH7_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH7_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH7_PWR_REM, LLRFRecords::CH7, args);
+}
+void EPICSLLRFInterface::update_CH7_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH7_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH7_PHASE_REM, LLRFRecords::CH7, args);
+}
+void EPICSLLRFInterface::update_CH7_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH7_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH7_AMP_DER, LLRFRecords::CH7, args);
+}
+void EPICSLLRFInterface::update_CH7_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH7_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH7_PHASE_DER, LLRFRecords::CH7, args);
+}
+void EPICSLLRFInterface::update_CH7_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH7_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH7_PWR_LOC, LLRFRecords::CH7, args);
+}
+void EPICSLLRFInterface::update_CH8_PWR_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH8_PWR_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH8_PWR_REM, LLRFRecords::CH8, args);
+}
+void EPICSLLRFInterface::update_CH8_PHASE_REM_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH8_PHASE_REM_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH8_PHASE_REM, LLRFRecords::CH8, args);
+}
+void EPICSLLRFInterface::update_CH8_AMP_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH8_AMP_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH8_AMP_DER, LLRFRecords::CH8, args);
+}
+void EPICSLLRFInterface::update_CH8_PHASE_DER_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH8_PHASE_DER_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH8_PHASE_DER, LLRFRecords::CH8, args);
+}
+void EPICSLLRFInterface::update_CH8_PWR_LOC_SCAN(const struct event_handler_args args)
+{
+	messenger.printDebugMessage("update_CH8_PWR_LOC_SCAN");
+	updateChannnelSCAN(LLRFRecords::CH8_PWR_LOC, LLRFRecords::CH8, args);
+}
+
 //
 
 

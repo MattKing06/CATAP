@@ -15,12 +15,13 @@ one_record_stop_index(GlobalConstants::size_zero),
 one_record_part(GlobalConstants::size_zero),
 name("unknown"),
 trace_max(GlobalConstants::double_min),
-mean_start_stop(std::pair<size_t,size_t>( GlobalConstants::nine99999,GlobalConstants::nine99999)),
-mean_start_stop_time(std::pair<double, double>(GlobalConstants::double_min, GlobalConstants::double_min)),
+mean_start_stop(std::pair<size_t,size_t>( GlobalConstants::size_zero,GlobalConstants::size_zero)), // init to zero
+mean_start_stop_time(std::pair<double, double>(GlobalConstants::zero_double, GlobalConstants::zero_double)), // init to zero
 //mean_start_index(GlobalConstants::zero_sizet),
 //mean_stop_index(GlobalConstants::zero_sizet),
 //trace_cut_mean(GlobalConstants::double_min),
 trace_type(TYPE::UNKNOWN_TYPE),
+interlock_state(std::make_pair(epicsTimeStamp(), false)),
 trace_data_buffer_size(GlobalConstants::five_sizet),
 scan(std::make_pair(epicsTimeStamp(),STATE::UNKNOWN)), 
 acqm(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN))
@@ -49,15 +50,15 @@ LLRFInterlock::LLRFInterlock() :
 	u_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	p_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	pdbm_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	status(std::make_pair(epicsTimeStamp(), false)),
 	interlock_type(TYPE::UNKNOWN_TYPE),
-	status(false),
 	enable(false)
 {}
 
 
 LLRFInterlock::LLRFInterlock(const LLRFInterlock& copy_obj):
 u_level(copy_obj.u_level),
-p_level(copy_obj.p_level),
+p_level(copy_obj.p_level), 
 pdbm_level(copy_obj.pdbm_level),
 status(copy_obj.status),
 enable(copy_obj.enable)
@@ -115,6 +116,14 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	ff_phase_lock(std::make_pair(epicsTimeStamp(), false)),
 	ff_amp_lock(std::make_pair(epicsTimeStamp(), false)),
 	heartbeat(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	new_outside_mask_event(false),
+	trace_rep_rate(GlobalConstants::double_min),
+	//mean_freq(GlobalConstants::double_min),
+	//shot_to_shot_freq(GlobalConstants::double_min),
+	num_traces_to_estimate_rep_rate(GlobalConstants::one_hundred_sizet),
+	duplicate_pulse_count(GlobalConstants::zero_sizet),
+	active_pulse_count(GlobalConstants::zero_sizet),
+	inactive_pulse_count(GlobalConstants::zero_sizet),
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.printDebugMessage("LLRF Constructor");
@@ -380,6 +389,13 @@ void LLRF::setupAfterMachineAreaSet()
 	setupInterlocks();
 	initAllTraceSCANandACQM();
 	setDefaultPowerTraceMeanTimes();
+
+
+
+
+
+
+
 }
 void LLRF::setTraceDataMap()
 {
@@ -866,8 +882,29 @@ void LLRF::splitOneTraceValues()
 
 void LLRF::updateTraceMetaData()
 {
+	messenger.printDebugMessage("updateTraceMetaData ");
 	// First we do the klystron forward power max  (trace_max is set for each trace in splitOneTraceValues
+	updateKFPowMaxAndPulseCounts();
+
+	// If we are 'collecting Future traces' (which happens when collecting breakdown events)  
+	checkCollectingFutureTraces();
+	// Now check for a breakdown event, 
+	checkForOutsideMaskTraceAndUpdateRollingAverages();
+	/*	Update the mean values for a trace */
+	updateTraceCutMeans();
+	/*	estimate trace DAQ frequency */
+	updateDAQFreqEstimate();
+	/* by the time we get to here this MUST be false! */
+	new_outside_mask_event = false;
+}
+
+
+void LLRF::updateKFPowMaxAndPulseCounts()
+{
+	messenger.printDebugMessage("updateTraceMetaData ");
+	total_pulse_count +=1;
 	kly_fwd_power_max.second = trace_data_map.at(LLRFRecords::KLYSTRON_FORWARD_POWER).trace_max;
+	messenger.printDebugMessage("kly_fwd_power_max =  ", kly_fwd_power_max.second);
 	// decide if this pule of trace_data is a duplicate, active or inactive, increment counters  
 	if (last_kly_fwd_power_max == kly_fwd_power_max.second)
 	{
@@ -886,13 +923,76 @@ void LLRF::updateTraceMetaData()
 	}
 	// update last_kly_fwd_power_max
 	last_kly_fwd_power_max = kly_fwd_power_max.second;
-
-
-
+	messenger.printDebugMessage("active, inactive, duplicate, puse,counts = ", active_pulse_count, ", ",
+		inactive_pulse_count, ", ", duplicate_pulse_count);
+}
+void LLRF::checkCollectingFutureTraces()
+{
+	messenger.printDebugMessage("checkCollectingFutureTraces ");
 	// copy pasta from VC controller 
+	//if (llrf.omed.is_collecting)
+	//{
+	//	llrf.omed.num_still_to_collect -= UTL::ONE_SIZET;
+	//	llrf.omed.num_collected += UTL::ONE_SIZET;
 
-	//checkCollectingFutureTraces();
+	//	message("checkCollectingFutureTraces(): Num collected = ", llrf.omed.num_collected, "/",
+	//		llrf.omed.extra_traces_on_outside_mask_event + UTL::THREE_SIZET,
+	//		" (", llrf.omed.num_still_to_collect, ")");
 
+	//	// we now check if there is a breakdown in the future trace
+	//	// this is basically copy-pasta from the main breakdown checking routines,
+	//	// so could be better integrated with those funcitons
+
+	//	if (llrf.can_increase_active_pulses)
+	//	{
+	//		message("checkCollectingFutureTraces(): checking current trace for OMED");
+	//		for (auto& it : llrf.trace_data) // loop over each trace
+	//		{
+	//			// only check the masks we should be checking
+	//			//if(it.second.check_mask && it.second.hi_mask_set && it.second.lo_mask_set)
+	//			if (it.second.hi_mask_set && it.second.lo_mask_set)
+	//			{
+	//				message("Checking future traces for ", it.first);
+	//				int result = updateIsTraceInMask(it.second);
+	//				if (result == UTL::ZERO_INT)
+	//				{
+	//					message("checkCollectingFutureTraces(): found another breakdown in ", it.second.name);
+	//					llrf.omed.num_events += UTL::ONE_SIZET;
+	//					break;
+	//				}
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		message("checkCollectingFutureTraces(): can't check for OMED as llrf.can_increase_active_pulses = FALSE");
+	//	}
+	//	//
+	//	// sanity check
+	//	if (llrf.omed.num_still_to_collect == UTL::ZERO_SIZET)
+	//	{
+	//		if (llrf.omed.num_collected == llrf.omed.extra_traces_on_outside_mask_event + UTL::THREE_SIZET)
+	//		{
+	//			copyTraceDataToOMED();
+	//			llrf.omed.is_collecting = false;
+	//			llrf.omed.can_get_data = true;
+	//			message("FINSHED COLLECTING EXTRA TRACES, can_get_data = True,");
+	//		}
+	//		else
+	//		{
+	//			message("ERROR NEVER SHOW THIS MESSAGE");
+	//		}
+	//	}
+	//	else
+	//	{
+	//		//message("Collecting future traces = ", llrf.omed.num_still_to_collect);
+	//	}
+	//}
+}
+
+void LLRF::checkForOutsideMaskTraceAndUpdateRollingAverages()
+{
+	messenger.printDebugMessage("checkForOutsideMaskTraceAndUpdateRollingAverages ");
 	///* if we have an active pulse .. */
 	//if (llrf.can_increase_active_pulses)
 	//{
@@ -917,19 +1017,6 @@ void LLRF::updateTraceMetaData()
 	//{
 	//	//message("can_increase_active_pulses = false");
 	//}
-	///*
-	//	Update the mean values for a trace
-	//*/
-	//updateTraceCutMeans();
-	///*
-	//	estimate trace DAQ frequency
-	//*/
-	//updateDAQFreqEstimate();
-	///*
-	//	by the time we get to here this MUST be false!
-	//*/
-	//llrf.new_outside_mask_event = false;
-
 }
 
 
@@ -956,13 +1043,188 @@ void LLRF::calculateTraceCutMean(TraceData& trace)
 			std::accumulate(
 				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_stop.first,
 				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_stop.second,
-				//GlobalConstants::zero_double) / (trace.mean_stop_index - trace.mean_start_index);
 				GlobalConstants::zero_double) / trace.stop_minus_start;
 	}
-	messenger.printDebugMessage(trace.name + " New Cut mean = ", trace.trace_cut_mean);
+	messenger.printDebugMessage(trace.name, " New Cut mean = ", trace.trace_cut_mean);
+}
+void LLRF::updateDAQFreqEstimate()
+{
+	// mutex from updateLLRFValue()
+	/* add current time to vetcor of times */
+	trace_times_for_rep_rate.push_back(std::chrono::high_resolution_clock::now());
+	/* if vector has desired number of entries calc rep -rate */
+	if (trace_times_for_rep_rate.size() > num_traces_to_estimate_rep_rate)
+	{
+		/* pop first entry */
+		trace_times_for_rep_rate.erase(trace_times_for_rep_rate.begin());
+		/* time diff (seconds) between first and last entry */
+		std::chrono::duration<double> diff = trace_times_for_rep_rate.back() - trace_times_for_rep_rate.front();
+		/* divide the number of entries by diff to give rep-rate in hertz */
+		trace_rep_rate = (double)trace_times_for_rep_rate.size() / diff.count();
+		//messenger.printDebugMessage(getHardwareName(), "trace_rep_rate = ", trace_rep_rate);
+	}
+}
+void LLRF::setNumTracesToEstimateRepRate(size_t value)
+{
+	num_traces_to_estimate_rep_rate = value;
+}
+size_t LLRF::getNumTracesToEstimateRepRate() const
+{
+	return num_traces_to_estimate_rep_rate;
+}
+double LLRF::getTraceRepRate() const
+{
+	return trace_rep_rate;
+}
+//--------------------------------------------------------------------------------------------------
+
+
+
+
+//--------------------------------------------------------------------------------------------------
+void LLRF::checkForOutsideMaskTrace()
+{
+	//std::chrono::high_resolution_clock::time_point start2 = std::chrono::high_resolution_clock::now();
+	//for (auto& it : llrf.trace_data) // loop over each trace
+	//{
+	//	if (llrf.check_mask && it.second.check_mask && it.second.hi_mask_set && it.second.lo_mask_set) // if everything is ok, check mask
+	//	{
+	//		int result = updateIsTraceInMask(it.second);
+	//		handleTraceInMaskResult(it.second, result);
+	//		if (result == UTL::ZERO_INT)
+	//		{
+	//			message("Found an OME, not checking any more traces this pulse!");
+	//			break;
+	//		}
+	//	}
+	//}
+	//    if(llrf.check_mask)
+	//    {
+	//        std::chrono::high_resolution_clock::time_point end1 = std::chrono::high_resolution_clock::now();
+	//        message("Timing ",std::chrono::duration_cast<std::chrono::nanoseconds>(end1 - start2).count() );
+	//    }
 }
 
+int LLRF::updateIsTraceInMask(TraceData& trace)
+{
+	//outside_mask_trace_message.str("");
+	///* to fail, you must get consecutive points outside the mask */
+	//size_t hi_breakdown_count = UTL::ZERO_INT;
+	//size_t lo_breakdown_count = UTL::ZERO_INT;
+	///* ref for ease of reading */
+	//auto& to_check = trace.data_buffer.back().second;
+	//auto& hi = trace.hi_mask;
+	//auto& lo = trace.lo_mask;
+	///* main loop iterate over the trace values  */
+	//for (auto i = 0; i < to_check.size(); ++i)
+	//{
+	//	/* if we are above the mask floor */
+	//	if (to_check[i] > trace.mask_floor)
+	//	{
+	//		/* if we are above the mask increase hi_breakdown_count */
+	//		if (to_check[i] > hi[i])
+	//		{
+	//			hi_breakdown_count += UTL::ONE_SIZET;
+	//			/* if we have too many consecutive hi_breakdown_count trace fails */
+	//			if (hi_breakdown_count == trace.num_continuous_outside_mask_count)
+	//			{
 
+	//				double t;
+	//				std::string str;
+	//				updateTime(trace.data_buffer.back().first, t, str);
+
+	//				/* write a message*/
+	//				outside_mask_trace_message << trace.name << " HI MASK FAIL: current average = "
+	//					<< trace.rolling_average[i] << ", " << to_check[i] << " > "
+	//					<< hi[i] << " at i = " << i << " us = " << llrf.time_vector[i] << ". Trace time-stamp = " << str;
+	//				trace.outside_mask_index = i;
+	//				trace.outside_mask_trace_message = outside_mask_trace_message.str();
+	//				message("LLRF CONTROLLER MESSAGE: ", trace.outside_mask_trace_message);
+	//				/* return code 0 = FAIL */
+	//				return UTL::ZERO_INT;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			/* if the value is good reset hi_breakdown_count to zero */
+	//			hi_breakdown_count = UTL::ZERO_INT;
+	//		}
+	//		/* if we are belwo the lo mask, increase lo_breakdown_count */
+	//		if (to_check[i] < lo[i])
+	//		{
+	//			lo_breakdown_count += UTL::ONE_INT;
+	//			/* if we have too many consecutive lo_breakdown_count trace fails */
+	//			if (lo_breakdown_count == trace.num_continuous_outside_mask_count)
+	//			{
+	//				double t;
+	//				std::string str;
+	//				updateTime(trace.data_buffer.back().first, t, str);
+	//				/* write a message*/
+	//				outside_mask_trace_message << trace.name << " LO MASK FAIL: current average = "
+	//					<< trace.rolling_average[i] << ", " << to_check[i] << " < "
+	//					<< lo[i] << " at i = " << i << " us = " << llrf.time_vector[i] << ". Trace time-stamp = " << str;
+	//				trace.outside_mask_index = i;
+	//				trace.outside_mask_trace_message = outside_mask_trace_message.str();
+	//				message("LLRF CONTROLLER MESSAGE: ", trace.outside_mask_trace_message);
+	//				/* return code 0 = FAIL */
+	//				return UTL::ZERO_INT;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			/* if the value is good reset lo_breakdown_count to zero */
+	//			lo_breakdown_count = UTL::ZERO_INT;
+	//		}
+
+	//	}//if(to_check[i] > trace.mask_floor)
+
+	//}//for(auto i = 0; i < to_check.size(); ++i)
+	///* return code 1 = PASS */
+	return GlobalConstants::one_int;
+}
+
+void LLRF::handleTraceInMaskResult(TraceData& trace, int result)
+{
+	////message(trace.name, "TraceInMaskResult = ", result );
+	//switch (result)
+	//{
+	//case UTL::ONE_INT: /* passed mask */
+	//{
+	//	handlePassedMask(trace);
+	//	//                if(counter % 1000 == 2)
+	//	//                {
+	//	//                    message(trace.name, " Passed masks ");
+	//	//                    for(auto i = 60; i < 200; ++i)
+	//	//                    {
+	//	//                        std::cout << trace.hi_mask[i] << " ";
+	//	//                    }
+	//	//                    std::cout <<std::endl;
+	//	//                    for(auto i = 60; i < 200; ++i)
+	//	//                    {
+	//	//                        std::cout << trace.lo_mask[i] << " ";
+	//	//                    }
+	//	//                    std::cout <<std::endl;
+	//	//
+	//	//                }
+	//	//                ++counter;
+	//}
+	//break;
+	//case UTL::ZERO_INT: /* failed mask */
+	//{
+	//	//            std::chrono::high_resolution_clock::time_point end2 = std::chrono::high_resolution_clock::now();
+	//	//            message("Timing ",std::chrono::duration_cast<std::chrono::nanoseconds>(end2 - foundbreakdowntime).count() );
+	//	handleFailedMask(trace);
+	//	break;
+	//}
+	//case UTL::MINUS_ONE_INT:
+	//	/* not checking masks or no active pulses */
+	//	break;
+	//}
+}
+void LLRF::handleFailedMask(TraceData& trace)
+{
+}
+//--------------------------------------------------------------------------------------------------
 
 
 
@@ -1009,6 +1271,18 @@ void LLRF::setDuplicatePulseCount(const size_t value)
 void LLRF::addDuplicatePulseCountOffset(const size_t value)
 {
 	duplicate_pulse_count += value;
+}
+size_t LLRF::getTotalPulseCount()const
+{
+	return total_pulse_count;
+}
+void LLRF::setTotalPulseCount(const size_t value)
+{
+	total_pulse_count = value;
+}
+void LLRF::addTotalPulseCountOffset(const size_t value)
+{
+	total_pulse_count += value;
 }
 
 
@@ -1671,99 +1945,120 @@ void LLRF::initAllTraceSCANandACQM()
 }
 
 
-
-
-
-
-
-
-// TODD updateSCAN to updateInterLockPDBM shoudl be moved to the epics interface (to reduce space in thsi class) 
-void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& args)
+std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
 {
-	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	// TODO cross check values with real ones, i think this is correct (32bit 64 bit oddities???)
-	STATE new_state;
-	switch ( (unsigned long)tv->value)
+	messenger.printDebugMessage("getAllTraceSCAN");
+	std::map<std::string, STATE> r;
+	for (auto&& it : all_trace_scan)
 	{
-	case 0:
-		new_state = STATE::PASSIVE; break;
-	case 1:
-		new_state = STATE::EVENT; break;
-	case 2:
-		new_state = STATE::IO_INTR; break;
-	case 3:
-		new_state = STATE::TEN; break;
-	case 4:
-		new_state = STATE::FIVE; break;
-	case 5:
-		new_state = STATE::TWO; break;
-	case 6:
-		new_state = STATE::ONE; break;
-	case 7:
-		new_state = STATE::ZERO_POINT_FIVE; break;
-	case 8:
-		new_state = STATE::ZERO_POINT_TWO; break;
-	case 9:
-		new_state = STATE::ZERO_POINT_ONE; break;
-	case 10:
-		new_state = STATE::ZERO_POINT_ZERO_FIVE; break;
-	default:
-		new_state = STATE::UNKNOWN;
+		r[it.first] = it.second.second;
 	}
-
-	//if (GlobalFunctions::entryExists(all_trace_scan, ch))
-	//{
-	//	all_trace_scan.at(ch) = new_state;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).acqm = new_state;
-	//	}
-	//}
-	////TODO update SCAN in actual TRACES we monitor ... 
-
-}
-void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& args)
-{
-	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	// TODO cross check values with real ones, i think this is correct, but incomplete (32bit 64 bit oddities???)
-	STATE new_state;
-	switch ( (unsigned short)tv->value)
+	for (auto&& it : r)
 	{
-	case 0:
-		new_state = STATE::UNKNOWN; break;
-	case 1:
-		new_state = STATE::NOW; break;
-	case 2:
-		new_state = STATE::EVENT; break;
-	default:
-		new_state = STATE::UNKNOWN;
+		messenger.printDebugMessage(it.first, " = ", ENUM_TO_STRING(it.second));
 	}
-	//if (GlobalFunctions::entryExists(all_trace_acqm, ch))
-	//{
-	//	all_trace_acqm.at(ch) = new_state;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).acqm = new_state;
-	//	}
-	//}
-	//TODO update ACQM in actual TRACES we monitor ... 
+	return r;
 }
-void LLRF::updateInterLockStatus(const std::string& ch,const struct event_handler_args& args)
+boost::python::dict LLRF::getAllTraceSCAN_Py()const
 {
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(all_trace_interlocks, ch))
-	//{
-	//	all_trace_interlocks.at(ch).status = (bool)tv->value;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).interlock.status = all_trace_interlocks.at(ch).status;
-	//	}
-	//}
-	//TODO update in actual TRACES we monitor ... 
+	return to_py_dict<std::string, STATE>(getAllTraceSCAN());
 }
+std::map<std::string, STATE> LLRF::getAllTraceACQM()const
+{
+	messenger.printDebugMessage("getAllTraceACQM");
+	std::map<std::string, STATE> r;
+	for (auto&& it : all_trace_acqm)
+	{
+		r[it.first] = it.second.second;
+	}
+	for (auto&& it : r)
+	{
+		messenger.printDebugMessage(it.first, " = ", ENUM_TO_STRING(it.second));
+	}	
+	return r;
+}
+boost::python::dict LLRF::getAllTraceACQM_Py()const
+{
+	return to_py_dict<std::string, STATE>(getAllTraceACQM());
+}
+
+
+//
+//
+//// TODD updateSCAN to updateInterLockPDBM shoudl be moved to the epics interface (to reduce space in thsi class) 
+//void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& args)
+//{
+//	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+//	// TODO cross check values with real ones, i think this is correct (32bit 64 bit oddities???)
+//	STATE new_state;
+//	switch ( (unsigned long)tv->value)
+//	{
+//	case 0:
+//		new_state = STATE::PASSIVE; break;
+//	case 1:
+//		new_state = STATE::EVENT; break;
+//	case 2:
+//		new_state = STATE::IO_INTR; break;
+//	case 3:
+//		new_state = STATE::TEN; break;
+//	case 4:
+//		new_state = STATE::FIVE; break;
+//	case 5:
+//		new_state = STATE::TWO; break;
+//	case 6:
+//		new_state = STATE::ONE; break;
+//	case 7:
+//		new_state = STATE::ZERO_POINT_FIVE; break;
+//	case 8:
+//		new_state = STATE::ZERO_POINT_TWO; break;
+//	case 9:
+//		new_state = STATE::ZERO_POINT_ONE; break;
+//	case 10:
+//		new_state = STATE::ZERO_POINT_ZERO_FIVE; break;
+//	default:
+//		new_state = STATE::UNKNOWN;
+//	}
+//
+//	//if (GlobalFunctions::entryExists(all_trace_scan, ch))
+//	//{
+//	//	all_trace_scan.at(ch) = new_state;
+//	//	std::string trace = getTraceFromChannelData(ch);
+//	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
+//	//	{
+//	//		trace_data_map.at(trace).acqm = new_state;
+//	//	}
+//	//}
+//	////TODO update SCAN in actual TRACES we monitor ... 
+//
+//}
+//void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& args)
+//{
+//	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+//	// TODO cross check values with real ones, i think this is correct, but incomplete (32bit 64 bit oddities???)
+//	STATE new_state;
+//	switch ( (unsigned short)tv->value)
+//	{
+//	case 0:
+//		new_state = STATE::UNKNOWN; break;
+//	case 1:
+//		new_state = STATE::NOW; break;
+//	case 2:
+//		new_state = STATE::EVENT; break;
+//	default:
+//		new_state = STATE::UNKNOWN;
+//	}
+//	//if (GlobalFunctions::entryExists(all_trace_acqm, ch))
+//	//{
+//	//	all_trace_acqm.at(ch) = new_state;
+//	//	std::string trace = getTraceFromChannelData(ch);
+//	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
+//	//	{
+//	//		trace_data_map.at(trace).acqm = new_state;
+//	//	}
+//	//}
+//	//TODO update ACQM in actual TRACES we monitor ... 
+//}
+
 void LLRF::updateInterLockEnable(const std::string& ch, const struct event_handler_args& args)
 {
 	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
@@ -1822,9 +2117,15 @@ void LLRF::updateInterLockPDBM(const std::string& ch, const struct event_handler
 
 
 
-
-
-
+bool LLRF::getTraceFromChannelData(const std::string& channel, std::string& string_to_put_trace_name_in )
+{
+	if (GlobalFunctions::entryExists(channel_to_tracesource_map, channel))
+	{
+		string_to_put_trace_name_in = channel_to_tracesource_map.at(channel);
+		return true;
+	}
+	return false;
+}
 
 
 std::string LLRF::getTraceFromChannelData(const std::string& channel_data) const
@@ -1868,15 +2169,8 @@ std::map<std::string, std::string> LLRF::getLLRFStateMap()const
 	//for (auto&& trace : trace_data_map)
 	//{
 	//	getMeanStartIndex(trace);
-
-
-	//}
-
-
-
-
-
-	return r;
+		//}
+		return r;
 }
 
 

@@ -71,6 +71,17 @@ extern std::string const LLRF_TRACES_ACQM		;
 
 
 
+extern std::string const CH1;
+extern std::string const CH2;
+extern std::string const CH3;
+extern std::string const CH4;
+extern std::string const CH5;
+extern std::string const CH6;
+extern std::string const CH7;
+extern std::string const CH8;
+
+
+
 extern std::string const CH1_PWR_REM;
 extern std::string const CH2_PWR_REM;
 extern std::string const CH3_PWR_REM;
