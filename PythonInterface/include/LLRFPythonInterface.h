@@ -36,6 +36,15 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			
 			
 			
+			
+			.def("startTraceMonitoring", &LLRF::startTraceMonitoring)
+			.def("stopTraceMonitoring", &LLRF::stopTraceMonitoring)
+			
+
+
+
+			
+			
 			//.def("setAllTraceBufferSize", &LLRF::setAllTraceBufferSize)
 
 

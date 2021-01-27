@@ -117,6 +117,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	ff_amp_lock(std::make_pair(epicsTimeStamp(), false)),
 	heartbeat(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	new_outside_mask_event(false),
+	is_trace_monitoring(false),
 	trace_rep_rate(GlobalConstants::double_min),
 	//mean_freq(GlobalConstants::double_min),
 	//shot_to_shot_freq(GlobalConstants::double_min),
@@ -1317,10 +1318,164 @@ void LLRF::updateTraceValues_Py()
 
 bool LLRF::startTraceMonitoring()
 {
+	if (is_trace_monitoring)
+	{
+		return true;
+	}
+	else
+	{
+		if (GlobalFunctions::entryExists(pvStructs, LLRFRecords::LLRF_TRACES))
+		{
+			pvStruct& pv = pvStructs.at(LLRFRecords::LLRF_TRACES);
+			if (ca_state(pv.CHID) == cs_conn)
+			{
+				epicsInterface->retrieveCHTYPE(pv);
+				epicsInterface->retrieveCOUNT(pv);
+				pv.updateFunction = epicsInterface->update_LLRF_TRACES;
+				//// not sure how to set the mask from EPICS yet.
+				pv.MASK = DBE_VALUE;
+
+				//dbr_all_trace_data
+
+				int status = ca_create_subscription(DBR_TIME_DOUBLE, pv.COUNT, pv.CHID, pv.MASK,
+					pv.updateFunction,(void*)this, &pv.EVID);
+				MY_SEVCHK(status);
+				EPICSInterface::sendToEPICS();
+				if (status == ECA_NORMAL)
+				{
+					is_trace_monitoring = true;
+					return true;
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.fullPVName, " CANNOT CONNECT TO EPICS");
+			}
+		}
+		else
+		{
+			messenger.printMessage("!!ERROR!! ", hardwareName , " can't find pvstruct for ", LLRFRecords::LLRF_TRACES);
+		}
+	}
 	return false;
 }
+
+
+void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
+{
+	messenger.printDebugMessage("splitOneTraceValues", &(*dbr));
+	/*
+		dbr_all_trace_data is a struct, it's 'value' member is a dbr_double_t*
+	*/
+	const dbr_time_double* p_data = (const struct dbr_time_double*)dbr;
+	const dbr_double_t* pValue;
+	pValue = &p_data->value;
+	auto end = &pValue[one_record_trace_data_size];
+
+	// This loop iterates over the one_record_data, 
+	size_t chunk = GlobalConstants::zero_sizet;
+	std::pair<size_t, std::string>& start_index_data = sorted_one_record_trace_start_indices.at(chunk);
+
+	size_t counter = GlobalConstants::zero_sizet;
+	for (auto it = pValue; it != end; ++it)
+	{
+	
+		if (counter == start_index_data.first)
+		{
+			messenger.printDebugMessage("counter = ", counter);
+			messenger.printDebugMessage("chunk = ", chunk);
+			messenger.printDebugMessage("adding at it value = ", *it);
+
+			// (for ease of reading)create a ref to the TraceData we are going to update 
+			TraceData& td = trace_data_map.at(start_index_data.second);
+			// add new elment to end of cricualr buffer 
+			td.trace_data_buffer.push_back(temp_TraceData_trace_data_buffer);
+			// copy raw data into new buffer vector element 
+			std::copy(it, it + trace_data_size, td.trace_data_buffer.back().second.begin());
+						
+
+			// next we have to convert the units into watts and offset the phase by 180, so it goes 0 to 360, not -180 to 180
+
+			if (td.trace_type == TYPE::POWER)
+			{
+				messenger.printDebugMessage(start_index_data.second, " is a power trace ");
+				// reset  trace max
+				td.trace_max = GlobalConstants::double_min;
+				for (auto& v : td.trace_data_buffer.back().second)
+				{
+					/* this is the mthod to convert to watts */
+					v *= v;
+					v /= GlobalConstants::one_hundred_double;
+					/* update the trace max */
+					if (v > td.trace_max)
+					{
+						td.trace_max = v;
+					}
+				}
+			}
+			else if (td.trace_type == TYPE::PHASE)
+			{
+				messenger.printDebugMessage(start_index_data.second, " is a phase trace ");
+
+				size_t temp_counter = 0;
+				for (auto& v : td.trace_data_buffer.back().second)
+				{
+					v += GlobalConstants::one_hundred_and_eighty_double;
+
+					//std::cout << v << " ";
+					temp_counter += 1;
+				}
+				std::cout << temp_counter << "\n";
+				// in gneral unwrapPhaseTrace is not trivial, as we have no idea how many factors of 2*pi to add / subtract ... 
+				//unwrapPhaseTrace(llrf.trace_data.at(it.first));
+			}
+			//increment chunk
+			chunk += GlobalConstants::one_sizet;
+			// update the start index we are now looking for, if we have run out oftrace, thenbreak 
+			if (chunk == sorted_one_record_trace_start_indices.size())
+			{
+				messenger.printDebugMessage("Chunk incremented, but no more traces to update");
+				break;
+			}
+			else
+			{
+				start_index_data = sorted_one_record_trace_start_indices.at(chunk);
+			}
+			messenger.printDebugMessage("Chunk incremented, Next trace pValue index = ", start_index_data.first);
+		}
+		counter += GlobalConstants::one_sizet;
+	}
+	messenger.printDebugMessage("Print some numbers ");
+	for (auto&& it : trace_data_map)
+	{
+		size_t c = GlobalConstants::zero_sizet;
+		messenger.printDebugMessage(it.first);
+		for (auto&& it2 : it.second.trace_data_buffer.back().second)
+		{
+			std::cout << it2 << " ";
+			c += GlobalConstants::one_sizet;
+			if (c == 10)
+			{
+				break;
+			}
+		}
+		std::cout << std::endl;
+	}
+}
+
+
+
 bool LLRF::stopTraceMonitoring()
 {
+	if (is_trace_monitoring)
+	{
+		int status = ca_clear_subscription(pvStructs.at(LLRFRecords::LLRF_TRACES).EVID);
+		if (status == ECA_NORMAL)
+		{
+			return true;
+		}
+
+	}
 	return false;
 }
 // Helper fucntions to get TraceData varibales to Python 
@@ -1980,141 +2135,6 @@ boost::python::dict LLRF::getAllTraceACQM_Py()const
 	return to_py_dict<std::string, STATE>(getAllTraceACQM());
 }
 
-
-
-
-
-//
-//
-//// TODD updateSCAN to updateInterLockPDBM shoudl be moved to the epics interface (to reduce space in thsi class) 
-//void LLRF::updateSCAN(const std::string& ch, const struct event_handler_args& args)
-//{
-//	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-//	// TODO cross check values with real ones, i think this is correct (32bit 64 bit oddities???)
-//	STATE new_state;
-//	switch ( (unsigned long)tv->value)
-//	{
-//	case 0:
-//		new_state = STATE::PASSIVE; break;
-//	case 1:
-//		new_state = STATE::EVENT; break;
-//	case 2:
-//		new_state = STATE::IO_INTR; break;
-//	case 3:
-//		new_state = STATE::TEN; break;
-//	case 4:
-//		new_state = STATE::FIVE; break;
-//	case 5:
-//		new_state = STATE::TWO; break;
-//	case 6:
-//		new_state = STATE::ONE; break;
-//	case 7:
-//		new_state = STATE::ZERO_POINT_FIVE; break;
-//	case 8:
-//		new_state = STATE::ZERO_POINT_TWO; break;
-//	case 9:
-//		new_state = STATE::ZERO_POINT_ONE; break;
-//	case 10:
-//		new_state = STATE::ZERO_POINT_ZERO_FIVE; break;
-//	default:
-//		new_state = STATE::UNKNOWN;
-//	}
-//
-//	//if (GlobalFunctions::entryExists(all_trace_scan, ch))
-//	//{
-//	//	all_trace_scan.at(ch) = new_state;
-//	//	std::string trace = getTraceFromChannelData(ch);
-//	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-//	//	{
-//	//		trace_data_map.at(trace).acqm = new_state;
-//	//	}
-//	//}
-//	////TODO update SCAN in actual TRACES we monitor ... 
-//
-//}
-//void LLRF::updateACQM(const std::string& ch, const struct event_handler_args& args)
-//{
-//	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-//	// TODO cross check values with real ones, i think this is correct, but incomplete (32bit 64 bit oddities???)
-//	STATE new_state;
-//	switch ( (unsigned short)tv->value)
-//	{
-//	case 0:
-//		new_state = STATE::UNKNOWN; break;
-//	case 1:
-//		new_state = STATE::NOW; break;
-//	case 2:
-//		new_state = STATE::EVENT; break;
-//	default:
-//		new_state = STATE::UNKNOWN;
-//	}
-//	//if (GlobalFunctions::entryExists(all_trace_acqm, ch))
-//	//{
-//	//	all_trace_acqm.at(ch) = new_state;
-//	//	std::string trace = getTraceFromChannelData(ch);
-//	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-//	//	{
-//	//		trace_data_map.at(trace).acqm = new_state;
-//	//	}
-//	//}
-//	//TODO update ACQM in actual TRACES we monitor ... 
-//}
-
-void LLRF::updateInterLockEnable(const std::string& ch, const struct event_handler_args& args)
-{
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(all_trace_interlocks, ch))
-	//{
-	//	all_trace_interlocks.at(ch).enable = (bool)tv->value;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).interlock.enable = all_trace_interlocks.at(ch).enable;
-	//	}
-	//}
-	//TODO update in actual TRACES we monitor ... 
-}
-void LLRF::updateInterLockU(const std::string& ch, const struct event_handler_args& args)
-{
-	//const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
-	//if (GlobalFunctions::entryExists(all_trace_interlocks, ch))
-	//{
-	//	epicsInterface->updateTimeStampDoublePair(args, all_trace_interlocks.at(ch).u_level);
-	//	.second = (double)tv->value;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).interlock.p_level = all_trace_interlocks.at(ch).p_level;
-	//	}
-	//}
-	//TODO update in actual TRACES we monitor ... 
-}
-void LLRF::updateInterLockP(const std::string& ch, const struct event_handler_args& args)
-{
-	//const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
-	//if (GlobalFunctions::entryExists(all_trace_interlocks, ch))
-	//{
-	//	all_trace_interlocks.at(ch).p_level = (double)tv->value;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if (GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).interlock.p_level = all_trace_interlocks.at(ch).p_level;
-	//	}
-	//}
-}
-void LLRF::updateInterLockPDBM(const std::string& ch, const struct event_handler_args& args)
-{
-	//const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
-	//if (GlobalFunctions::entryExists(all_trace_interlocks, ch))
-	//{
-	//	all_trace_interlocks.at(ch).pdbm_level = (double)tv->value;
-	//	std::string trace = getTraceFromChannelData(ch);
-	//	if(GlobalFunctions::entryExists(trace_data_map, trace))
-	//	{
-	//		trace_data_map.at(trace).interlock.pdbm_level = all_trace_interlocks.at(ch).pdbm_level;
-	//	}
-	//}
-}
 
 
 

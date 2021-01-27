@@ -201,7 +201,7 @@ public:
     static std::map<std::string, STATE> interlock_status_map;
     static std::map<std::string, STATE> interlock_enable_map;
 
-    void update_LLRF_TRACES(const struct event_handler_args args);
+    static void update_LLRF_TRACES(const struct event_handler_args args);
 
     static LoggingSystem messenger;
 
@@ -225,6 +225,7 @@ public:
     {LLRFRecords::LLRF_PULSE_DURATION, this->update_LLRF_PULSE_DURATION },
     {LLRFRecords::INTERLOCK, this->update_INTERLOCK						},
     {LLRFRecords::PULSE_SHAPE, this->update_PULSE_SHAPE					},
+    //{LLRFRecords::LLRF_TRACES, this->update_LLRF_TRACES },
     {LLRFRecords::LLRF_TRACES_SCAN, this->update_LLRF_TRACES_SCAN	    },
     {LLRFRecords::LLRF_TRACES_ACQM, this->update_LLRF_TRACES_ACQM		},
 

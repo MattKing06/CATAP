@@ -642,7 +642,7 @@ private:
 	size_t total_pulse_count;
 
 
-
+	bool is_trace_monitoring;
 
 
 
@@ -656,6 +656,7 @@ private:
 
 	/*! after a new one_record_trace_values has been acquired, split it up into the correct TraceData object  */
 	void splitOneTraceValues();
+	void splitOneTraceValues(const struct dbr_time_double* dbr);
 
 	/*! Each TraceDat has ossociated meta-data (max, mena, etc. that needs updating when a new trace is acquired */
 	void updateTraceMetaData();
@@ -668,10 +669,10 @@ private:
 	//void setupAllTraceSCAN();
 
 	//void updateInterLockStatus(const std::string& ch, const struct event_handler_args& args);
-	void updateInterLockEnable(const std::string& ch, const struct event_handler_args& args);
-	void updateInterLockU(const std::string& ch, const struct event_handler_args& args);
-	void updateInterLockP(const std::string& ch, const struct event_handler_args& args);
-	void updateInterLockPDBM(const std::string& ch, const struct event_handler_args& args);
+	//void updateInterLockEnable(const std::string& ch, const struct event_handler_args& args);
+	//void updateInterLockU(const std::string& ch, const struct event_handler_args& args);
+	//void updateInterLockP(const std::string& ch, const struct event_handler_args& args);
+	//void updateInterLockPDBM(const std::string& ch, const struct event_handler_args& args);
 
 	//void updateSCAN(const std::string& ch, const struct event_handler_args& args);
 	//void updateACQM(const std::string& ch, const struct event_handler_args& args);

@@ -176,6 +176,22 @@ void EPICSLLRFInterface::update_INTERLOCK(const struct event_handler_args args)
 void EPICSLLRFInterface::update_LLRF_TRACES(const struct event_handler_args args)
 {
 	messenger.printDebugMessage("update_LLRF_TRACES");
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	messenger.printDebugMessage("splitOneTraceValues", args.dbr);
+	
+	//
+	//const dbr_time_double* p_data = (const struct dbr_time_double*)dbr;
+	////pValue = &dbr->value;
+
+	//const dbr_double_t* pValue;
+	//pValue = &p_data->value;
+	//auto end = &pValue[100];
+
+	//for()
+
+	
+	
+	recastLLRF->splitOneTraceValues((const struct dbr_time_double*)args.dbr);
 }
 void EPICSLLRFInterface::update_LLRF_TRACES_ACQM(const struct event_handler_args args)
 {
