@@ -96,6 +96,10 @@ class TraceData
 
 		std::pair<epicsTimeStamp, bool> interlock_state;
 
+		std::pair<epicsTimeStamp, double > u_level;
+		std::pair<epicsTimeStamp, double > p_level;
+		std::pair<epicsTimeStamp, double > pdbm_level;
+
 		/*! is this a phase or a power trace */
 		TYPE trace_type;
 

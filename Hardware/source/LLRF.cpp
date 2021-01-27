@@ -1943,8 +1943,6 @@ void LLRF::initAllTraceSCANandACQM()
 	//	messenger.printDebugMessage(trace.first);
 	//}
 }
-
-
 std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
 {
 	messenger.printDebugMessage("getAllTraceSCAN");
@@ -1981,6 +1979,9 @@ boost::python::dict LLRF::getAllTraceACQM_Py()const
 {
 	return to_py_dict<std::string, STATE>(getAllTraceACQM());
 }
+
+
+
 
 
 //

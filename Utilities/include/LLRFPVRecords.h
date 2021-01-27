@@ -231,6 +231,149 @@ extern std::string const CH8_AMP_DER_SCAN;
 extern std::string const CH8_PHASE_DER_SCAN;
 extern std::string const CH8_PWR_LOC_SCAN;              
 
+
+extern std::string const CH1_PWR_REM_SCAN;
+extern std::string const CH1_PHASE_REM_SCAN;
+extern std::string const CH1_AMP_DER_SCAN;
+extern std::string const CH1_PHASE_DER_SCAN;
+extern std::string const CH1_PWR_LOC_SCAN;
+extern std::string const CH2_PWR_REM_SCAN;
+extern std::string const CH2_PHASE_REM_SCAN;
+extern std::string const CH2_AMP_DER_SCAN;
+extern std::string const CH2_PHASE_DER_SCAN;
+extern std::string const CH2_PWR_LOC_SCAN;
+extern std::string const CH3_PWR_REM_SCAN;
+extern std::string const CH3_PHASE_REM_SCAN;
+extern std::string const CH3_AMP_DER_SCAN;
+extern std::string const CH3_PHASE_DER_SCAN;
+extern std::string const CH3_PWR_LOC_SCAN;
+extern std::string const CH4_PWR_REM_SCAN;
+extern std::string const CH4_PHASE_REM_SCAN;
+extern std::string const CH4_AMP_DER_SCAN;
+extern std::string const CH4_PHASE_DER_SCAN;
+extern std::string const CH4_PWR_LOC_SCAN;
+extern std::string const CH5_PWR_REM_SCAN; 
+extern std::string const CH5_PHASE_REM_SCAN;
+extern std::string const CH5_AMP_DER_SCAN;
+extern std::string const CH5_PHASE_DER_SCAN;
+extern std::string const CH5_PWR_LOC_SCAN;
+extern std::string const CH6_PWR_REM_SCAN;
+extern std::string const CH6_PHASE_REM_SCAN;
+extern std::string const CH6_AMP_DER_SCAN;
+extern std::string const CH6_PHASE_DER_SCAN;
+extern std::string const CH6_PWR_LOC_SCAN;
+extern std::string const CH7_PWR_REM_SCAN;
+extern std::string const CH7_PHASE_REM_SCAN;
+extern std::string const CH7_AMP_DER_SCAN;
+extern std::string const CH7_PHASE_DER_SCAN;
+extern std::string const CH7_PWR_LOC_SCAN;
+extern std::string const CH8_PWR_REM_SCAN;
+extern std::string const CH8_PHASE_REM_SCAN;
+extern std::string const CH8_AMP_DER_SCAN;
+extern std::string const CH8_PHASE_DER_SCAN;
+extern std::string const CH8_PWR_LOC_SCAN;
+
+
+extern std::string const CH1_PWR_REM_ACQM;
+extern std::string const CH1_PHASE_REM_ACQM;
+extern std::string const CH1_AMP_DER_ACQM;
+extern std::string const CH1_PHASE_DER_ACQM;
+extern std::string const CH1_PWR_LOC_ACQM;
+extern std::string const CH2_PWR_REM_ACQM; 
+extern std::string const CH2_PHASE_REM_ACQM;
+extern std::string const CH2_AMP_DER_ACQM;
+extern std::string const CH2_PHASE_DER_ACQM;
+extern std::string const CH2_PWR_LOC_ACQM;
+extern std::string const CH3_PWR_REM_ACQM; 
+extern std::string const CH3_PHASE_REM_ACQM;
+extern std::string const CH3_AMP_DER_ACQM;
+extern std::string const CH3_PHASE_DER_ACQM;
+extern std::string const CH3_PWR_LOC_ACQM;
+extern std::string const CH4_PWR_REM_ACQM; 
+extern std::string const CH4_PHASE_REM_ACQM;
+extern std::string const CH4_AMP_DER_ACQM;
+extern std::string const CH4_PHASE_DER_ACQM;
+extern std::string const CH4_PWR_LOC_ACQM;
+extern std::string const CH5_PWR_REM_ACQM;
+extern std::string const CH5_PHASE_REM_ACQM;
+extern std::string const CH5_AMP_DER_ACQM;
+extern std::string const CH5_PHASE_DER_ACQM;
+extern std::string const CH5_PWR_LOC_ACQM;
+extern std::string const CH6_PWR_REM_ACQM;
+extern std::string const CH6_PHASE_REM_ACQM;
+extern std::string const CH6_AMP_DER_ACQM;
+extern std::string const CH6_PHASE_DER_ACQM;
+extern std::string const CH6_PWR_LOC_ACQM;
+extern std::string const CH7_PWR_REM_ACQM;
+extern std::string const CH7_PHASE_REM_ACQM;
+extern std::string const CH7_AMP_DER_ACQM;
+extern std::string const CH7_PHASE_DER_ACQM;
+extern std::string const CH7_PWR_LOC_ACQM;
+extern std::string const CH8_PWR_REM_ACQM;
+extern std::string const CH8_PHASE_REM_ACQM;
+extern std::string const CH8_AMP_DER_ACQM;
+extern std::string const CH8_PHASE_DER_ACQM;
+extern std::string const CH8_PWR_LOC_ACQM;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	extern const std::vector<std::string> llrfRecordList;
 	extern const std::vector<std::string> llrfMonitorRecordsList;
 
