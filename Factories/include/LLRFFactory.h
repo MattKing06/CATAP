@@ -76,8 +76,9 @@ public:
 	//boost::python::list getAliases_Py() const;
 
 
-	std::map<std::string, std::vector<double>> getAllTraceData(const std::string& llrf_name)const;
-	std::pair<std::string, std::vector<double>> getTraceData(const std::string& llrf_name, const std::string& trace_name)const;
+	//std::map<std::string, std::vector<double>> getAllTraceData(const std::string& llrf_name)const;
+	//std::pair<std::string, std::vector<double>> getTraceNameValuesPair(const std::string& llrf_name, const std::string& trace_name)const;
+	//boost::python::dict getTraceNameValuesPair_Py(const std::string& llrf_name, const std::string& trace_name) const;
 	std::vector<double> getTraceValues(const std::string& name)const;
 	std::vector<double> getCavRevPwr(const std::string& llrf_name)const;
 	std::vector<double> getCavFwdPwr(const std::string& llrf_name)const;
@@ -89,9 +90,9 @@ public:
 	std::vector<double> getKlyFwdPha(const std::string& llrf_name)const;
 	std::vector<double> getProbePwr(const std::string& llrf_name)const;
 	std::vector<double> getProbePha(const std::string& llrf_name)const;
-	boost::python::dict getAllTraceData_Py(const std::string& name);
-	boost::python::dict getTraceData_Py(const std::string& llrf_name, const std::string& trace_name);
-	boost::python::list getTraceValues_Py(const std::string& name)const;
+	//boost::python::dict getAllTraceData_Py(const std::string& name);
+	//boost::python::dict getTraceData_Py(const std::string& llrf_name, const std::string& trace_name);
+	//boost::python::list getTraceValues_Py(const std::string& name)const;
 	boost::python::list getCavRevPwr_Py(const std::string& llrf_name)const;
 	boost::python::list getCavFwdPwr_Py(const std::string& llrf_name)const;
 	boost::python::list getKlyRevPwr_Py(const std::string& llrf_name)const;

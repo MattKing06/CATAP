@@ -1,6 +1,7 @@
 #ifndef LLRF_H_
 #define LLRF_H_
 #include <Hardware.h>
+#include <RunningStats.h>
 #include <EPICSLLRFInterface.h>
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
@@ -24,6 +25,8 @@ public:
 	LLRFInterlock(const LLRFInterlock& copy_trace_data);
 	~LLRFInterlock();
 	
+	std::string name;
+
 	std::pair<epicsTimeStamp, double > u_level;
 	std::pair<epicsTimeStamp, double > p_level;
 	std::pair<epicsTimeStamp, double > pdbm_level;
@@ -42,8 +45,27 @@ class TraceData
 		TraceData();
 		TraceData(const TraceData& copy_trace_data);
 		~TraceData();
-		// name of trace, e.g. LRRG_KLYSTRON_FORWARD_POWER
+		/*! name of trace, e.g. LRRG_KLYSTRON_FORWARD_POWER */
 		std::string name;
+		/*! trace_values latest trace values  */
+		std::vector<double> trace_values;
+		/*! how mamny elements in trace_values */
+		size_t trace_data_size;
+		/*! circular buffer of trace_values, latest values are at the end of the buffer  */
+		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
+		/*! number of traces to keep in trace_values_buffer */
+		size_t  trace_data_buffer_size;
+		/* Maximum value in latest acquired trace */
+		double trace_max;
+		/*! The start and stop index over which to calculate the trace mean */
+		std::pair<size_t, size_t> mean_start_stop;
+		/*! The start and stop time over which to calculate the trace mean */
+		std::pair<double, double> mean_start_stop_time;
+		/*! number of steps between start and stop index, used to calculate mean value */
+		size_t  stop_minus_start;    
+		
+		/*! mean of values between  mean_start_index, mean_stop_index */
+		double trace_cut_mean;
 		/*   __   __                    __                ___  __        __   ___  __
 		    |__) /  \ |    |    | |\ | / _`     /\  \  / |__  |__)  /\  / _` |__  /__`
 			|  \ \__/ |___ |___ | | \| \__>    /~~\  \/  |___ |  \ /~~\ \__> |___ .__/
@@ -52,41 +74,29 @@ class TraceData
 		// when a new trace arrives it adds it to rolling_sum and subtracts traces[sub_trace]
 		// rolling_average is then calculated by dividing rolling_sum by average_size
 		*/
-		//bool keep_rolling_average, has_average;
-		//size_t rolling_average_size, rolling_average_count;
-		//std::vector<double> rolling_average, rolling_sum, rolling_max, rolling_min, rolling_sd;
+		/*! Flag to set if rolling averages should be calcaulted for this trace */
+		bool keep_rolling_average;
+		/*! True if enough rolling_average_count ==  rolling_average_size and a rolling_average has been calculated */
+		bool has_average;
+		/*! The number of traces to use for the rolling average  */
+		size_t rolling_average_size;
+		/*! The number of traces acquired for the rolling average  */
+		size_t rolling_average_count;
+		/*! Rolling average of the last rolling_average_count trace_values */
+		std::vector<double> rolling_average;
+		/*! Rolling sum of the last rolling_average_count trace_values */
+		std::vector<double> rolling_sum;
+		/*! rolling_average_trace_buffer */
+		std::vector<std::vector<double>> rolling_average_trace_buffer;
+		//std::vector<double> rolling_max;
+		//std::vector<double> rolling_min;
+		//std::vector<double> rolling_sd;
 		//std::vector<std::vector<double>> average_trace_values;
-		/*
-			all the trace data goes here (online data)
-		*/
-		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_data_buffer;
-
-		std::vector<double> trace_data;
-		// max value in trace
-		double trace_max;
-		// traces indices over which to calculate trace_cut_mean
-		//size_t mean_start_index, mean_stop_index;
-		
-		/*! The start and stop index over which to calculate the trace mean */
-		std::pair<size_t, size_t> mean_start_stop;
-		/*! The start and stop time over which to calculate the trace mean */
-		std::pair<double, double> mean_start_stop_time;
-	
-		size_t  stop_minus_start;    
-		
-		// mean of values between  mean_start_index, mean_stop_index
-		double trace_cut_mean;
-
-		/*! how mamny elemnts in this trace */
-		size_t  trace_data_size;
-		size_t  trace_data_buffer_size;
-
 		// 
 		/*! the state of the SCAN parameter for this trace */
 		std::pair<epicsTimeStamp, STATE> scan;
 		/*! the state of the ACQM parameter for this trace */
 		std::pair<epicsTimeStamp, STATE> acqm;
-
 		/*! which part of the one-record trace data is this trace (defined in master lattice yaml file) */
 		size_t one_record_part;
 		/*! the starting index for this trace in the one-record trace data  */
@@ -94,16 +104,22 @@ class TraceData
 		/*! the stopping index for this trace in the one-record trace data */
 		size_t one_record_stop_index;
 
+
+		bool check_mask;
+
+
+		// INTERLOCK STUFF (inl;y power traces
+
+		/*! state of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
 		std::pair<epicsTimeStamp, bool> interlock_state;
-
+		/*! u_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
 		std::pair<epicsTimeStamp, double > u_level;
+		/*! p_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
 		std::pair<epicsTimeStamp, double > p_level;
+		/*! pdbm_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
 		std::pair<epicsTimeStamp, double > pdbm_level;
-
-		/*! is this a phase or a power trace */
+		/*! is this a PHASE or a POWER trace */
 		TYPE trace_type;
-
-
 };
 
 
@@ -188,7 +204,6 @@ public:
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
 
-
 	/*! get the index closest to for the passed time on a LLRF trace 
 		@param[in] time, time in ms to convert to an index 
 		@param[out] value, closest index to that time */
@@ -199,27 +214,20 @@ public:
 	double getTime(const size_t index) const;
 
 
-
-
-	/*! Set the size of each TraceData circular buffer 'trace_data_buffer' (default is 5)
+	/*! Set the size of each TraceData circular buffer 'trace_values_buffer' (default is 5)
 	@param[in] size_t, new buffer size */
 	bool setAllTraceDataBufferSize(const size_t value);
-	/*! Set the size of a single TraceData circular buffer 'trace_data_buffer' (default is 5)
+	/*! Set the size of a single TraceData circular buffer 'trace_values_buffer' (default is 5)
 	@param[in] size_t, name TraceData object to set the biuffer size 
 	@param[in] size_t, new buffer size 
 	@param[out] bool, is bugffere size equal requested size */
 	bool setTraceDataBufferSize(const std::string& name, const size_t new_size);
 
-
-	
+		
 	/*! get all the trace data for this LLRF structure (calls a ca_array_get once, to reduce network traffic does not start monitoring of all traces)
 	@param[out] map<string, vector<double>>, */
 	void updateTraceValues();
-	void updateTraceValues_Py();
-
-
-
-
+	
 	//std::map<std::string, std::vector<double>> getNewTraceData();
 	/*! Start trace monitoring (please think about if you reallly need to monitor all traces)
 	@param[out] if the command got sent to epics  (not if setting that value was successfull!) */
@@ -234,7 +242,8 @@ public:
 	///*! acquire a single shot of trace data, for 1 tracetraces
 	//@param[in] string, name of trace to get data for 
 	//@param[out] ... TBC */
-	//void getTraceData(const std::string& trace_name)
+	//void getTraceData(const std::string& trace_name)+
+
 	///*! acquire a single shot of trace data, for multipel traces 
 	//@param[in] vector<string>, names of traces to get data for
 	//@param[out] ... TBC */
@@ -259,59 +268,188 @@ public:
 	boost::python::dict getAllTraceACQM_Py()const;
 
 
-	/*! get a map of all the trace data 
-		@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
-	std::map<std::string, std::vector<double>> getAllTraceData()const;
-	/*! get a pair of a trace_name : trace_data for 1 trace
-		@param[in] name, trace name to get data for 
-		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
-	std::pair<std::string, std::vector<double>> getTraceData(const std::string& name)const;
-	/*! get a trace_data values for requested trace
-		@param[in] name, trace name to get data for
-		@param[out] "trace_data_values" (vector of doubles) */
+
+	// GET ACTUAL TRACE VALUES 
+
+	/*! get a trace_values values for requested trace
+	@param[in] name, trace name to get data for
+	@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getTraceValues(const std::string& name)const;
-	/*! get a cavity reverse power trace_data 
+	/*! get trace_values for requested trace, Python version 
+		@param[in] name, trace name to get data for
+		@param[out] list, trace_values  */
+	boost::python::list getTraceValues_Py(const std::string& name)const;
+	/*! get a pair of a trace_name : trace_values for 1 trace
+	@param[in] name, trace name to get data for
+	@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+	std::pair<std::string, std::vector<double>> getTraceNameValuesPair(const std::string& name)const;
+	/*!  get a dict of a trace_name : trace_values for 1 trace, Python version
+	@param[in] name, trace name to get data for
+	@param[out] dict, "trace_name" (string) and "trace_data_values" (list) */
+	boost::python::dict getTraceNameValuesPair_Py(const std::string& name);
+	///*! get a map of all the trace values 
+	//	@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+	//std::map<std::string, std::vector<double>> getAllTraceValues()const;
+	TraceData& getTraceData(const std::string& trace_name);
+
+	boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const;
+
+	boost::python::dict getAllTraceDataDict() const;
+
+
+
+	///*! get a map of all the trace data */
+	//std::map<std::string, std::vector<double>> getAllTraceData()const;
+
+
+
+	/*! get a dict of all the trace data, python version
+		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
+	boost::python::dict getAllTraceData_Py();
+
+
+	private:
+		void updateRollingAverage(TraceData& data);
+	public:
+		/*! Rest all the rolling average data, clears containers, reset rollign_avergae_count to zero,  (does not change values such as rolling_average_size). */
+		void resetAllRollingAverage();
+		/*! 
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		bool resetRollingAverage(const std::string& name);
+		//void setKeepRollingAverageNoReset(const bool value);
+		//bool setKeepRollingAverageNoReset(const std::string& name, const bool value);
+		
+		/*! 
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		void setShouldKeepRollingAverage();
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		bool setShouldKeepRollingAverage(const std::string& name);
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		void setShouldNotKeepRollingAverage();
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+
+		bool setShouldNotKeepRollingAverage(const std::string& name);
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		bool setKeepRollingAverage(const std::string& name, bool value);
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		bool setRollingAverageSize(const std::string& name, const size_t value);
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		void setAllRollingAverageSize(const size_t value);
+		/*!
+				@param[in] name, trace name to get data for
+				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		std::vector<double> getRollingAverage(const std::string& name)const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		boost::python::list getRollingAverage_Py(const std::string& name)const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		boost::python::dict LLRF::getRollingAverage_Py()const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		std::vector<std::vector<double>> getAllRollingAverage(const std::string& name)const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		size_t getRollingAverageSize(const std::string& name)const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		size_t getRollingAverageCount(const std::string& name)const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		bool isKeepingRollingAverage(const std::string& name)const;
+		/*!
+		@param[in] name, trace name to get data for
+		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+		bool hasRollingAverage(const std::string& name)const;
+		/*! Get the individual traces used to calculate the trace rolling average 
+		@param[in] name, trace name to get data for
+		@param[out] vector<vector<double>> vector of trace_value vectors  */
+		std::vector<std::vector<double>> getRollingAverageTraceBuffer(const std::string& name) const;
+		/*! Get the individual traces used to calculate the trace rolling average, Python Version
+		@param[in] name, trace name to get data for
+		@param[out] list of trace_value lists */
+		boost::python::list LLRF::getRollingAverageTraceBuffer_Py(const std::string& name)const;
+		/*! Get the individual traces used to calculate the trace rolling average for all traces
+		@param[out] map<string, vector<vector<double>> >  map of RollingAverageTraceBuffer keyed by trace name */
+		std::map<std::string, std::vector<std::vector<double>>> getAllRollingAverageTraceBuffer() const;
+		/*! Get the individual traces used to calculate the trace rolling average for all TraceData, Python Version
+		@param[out] dict of RollingAverageTraceBuffer keyed by the trace name */
+		boost::python::dict getAllRollingAverageTraceBuffer_Py()const;
+
+
+
+
+		/*
+			Klystron Forward Power Running Stats. These are the running mean and sigma for the KlyFwdPow
+			Note, they depend on the position of We keep the amp_set vs KLY_FWD_POWER running stat variables
+			m_n, m_oldM, m_oldS, see running_stat.h
+		*/
+		bool keep_kly_fwd_pow_running_stat;
+		void setKeepKlyFwdPwrRS(bool val);
+		void keepKlyFwdPwrRS();
+		void dontKeepKlyFwdPwrRS();
+		// these are the running stats
+		std::map<int, RunningStats> amp_set_kly_fwd_rs;
+		// This is the state of each RunningStat, so we can save and re-apply settings
+		std::map<int, std::tuple<size_t, double, double>> amp_set_kly_fwd_rs_state;
+		std::tuple<size_t, double, double> dummy_amp_set_kly_fwd_rs_state;
+		void update_amp_set_kly_fwd_rs();
+		std::tuple<size_t, double, double> getKlyFwdPwrRSState(int ampSP_setting);
+		void setKlyFwdPwrRSState(int amp_sp, size_t n, double old_mean, double old_variance);
+
+
+	/*! get a cavity reverse power trace_values 
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavRevPwr()const;
-	/*! get a cavity forward power trace_data
+	/*! get a cavity forward power trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavFwdPwr()const;
-	/*! get a klystron reverse power trace_data
+	/*! get a klystron reverse power trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyRevPwr()const;
-	/*! get a klystron forward power trace_data
+	/*! get a klystron forward power trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyFwdPwr()const;
-	/*! get a cavity reverse phase trace_data
+	/*! get a cavity reverse phase trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavRevPha()const;
-	/*! get a cavity forward phase trace_data
+	/*! get a cavity forward phase trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getCavFwdPha()const;
-	/*! get a klystron reverse phase trace_data
+	/*! get a klystron reverse phase trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyRevPha()const;
-	/*! get a klystron forward phase trace_data
+	/*! get a klystron forward phase trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getKlyFwdPha()const;
-	/*! get a cavity probe power trace_data
+	/*! get a cavity probe power trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getProbePwr()const;
-	/*! get a cavity probe phase trace_data
+	/*! get a cavity probe phase trace_values
 		@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getProbePha()const;
 
-	/*! get a dict of all the trace data, python version 
-		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
-	boost::python::dict getAllTraceData_Py();
-	/*! get a dict of all the trace data for 1 trace, python version
-		@param[in] name, trace name to get data for
-		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
-	boost::python::dict getTraceData_Py(const std::string& name);
-	/*! get a trace_data values for requested trace
-		@param[in] name, trace name to get data for
-		@param[out] "trace_data_values" (vector of doubles) */
-	boost::python::list getTraceValues_Py(const std::string& name)const;
+
 	boost::python::list getCavRevPwr_Py()const;
 	boost::python::list getCavFwdPwr_Py()const;
 	boost::python::list getKlyRevPwr_Py()const;
@@ -355,6 +493,9 @@ public:
 	double getCutMean(const std::string& name)const;
 	std::map<std::string, double> getPowerCutMean()const;
 	boost::python::dict getPowerCutMean_Py()const;
+
+	std::map<std::string, double> getAllCutMean()const;
+	boost::python::dict getAllCutMean_Py()const;
 
 	// DAQ freq getters / settings 
 	void setNumTracesToEstimateRepRate(size_t value);
@@ -436,6 +577,9 @@ public:
 	@param[in] list, waveform for new pulse shape
 	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
 	bool setAndApplyPulseShape(boost::python::list& values);
+
+
+
 
 
 
@@ -537,6 +681,9 @@ private:
 	std::vector<std::string> aliases;
 
 
+	TraceData dummy_trace_data;
+
+
 	std::vector<std::pair<size_t, std::string>> sorted_one_record_trace_start_indices;
 	std::vector<std::pair<size_t, std::string>> sorted_one_record_trace_iterator_jumps;
 
@@ -545,12 +692,16 @@ private:
 	void setTraceDataMap();
 	/*! This function actually adds a new TraceData object trace_data_map, called from setTraceDataMap */
 	void addToTraceDataMap(const std::string& name);
-	/*! Set the size of each TraceData circular buffer 'trace_data_buffer' (default is 5)
+	/*! Set the size of each TraceData circular buffer 'trace_values_buffer' (default is 5)
 	This function actally does teh re-size and is private
 	@param[in] TraceData, object to change the buffer size
 	@param[in] size_t, new_size */
-	bool setTraceDataBufferSize(TraceData& trace_data, const size_t new_size);
+	bool setTraceDataBufferSize(TraceData& trace_values, const size_t new_size);
 
+
+	/*! Actually 'clears' and reset the values for TraceDta rolling average. 
+	@param[in] TraceData, object to reset rolling average data */
+	void clearRollingAverage(TraceData& trace);
 
 	void setMasterLatticeData(const std::map<std::string, std::string>& paramMap);
 
@@ -581,7 +732,7 @@ private:
 
 
 	void scaleAllDummyTraces();
-	//void scaleDummyTrace(TraceData& trace_data, const std::vector<double>& dummy_trace);
+	//void scaleDummyTrace(TraceData& trace_values, const std::vector<double>& dummy_trace);
 	void scaleDummyTrace(const std::string& trace_name, const std::vector<double>& dummy_trace);
 
 	std::string fullLLRFTraceName(const std::string& name_in)const;
@@ -649,13 +800,16 @@ private:
 	std::pair<epicsTimeStamp, std::vector<double>> temp_TraceData_trace_data_buffer;
 
 	// here we keep all the traces acqm and scan STATEs
-	// actual usable traces also have their own version of this in their trace_data 
+	// actual usable traces also have their own version of this in their trace_values 
 	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_acqm;
 	std::map<std::string, std::pair<epicsTimeStamp, STATE>> all_trace_scan;
 
 
-	/*! after a new one_record_trace_values has been acquired, split it up into the correct TraceData object  */
-	void splitOneTraceValues();
+	//void splitOneTraceValues();
+	/*! after a new one_record_trace_values has been acquired, split it up into the correct TraceData object  
+	* This function is called when monitoring traces and when just getting a single trace
+		@param[in] const struct dbr_time_double*, pointer to trace data 
+	*/
 	void splitOneTraceValues(const struct dbr_time_double* dbr);
 
 	/*! Each TraceDat has ossociated meta-data (max, mena, etc. that needs updating when a new trace is acquired */

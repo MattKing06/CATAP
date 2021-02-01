@@ -400,31 +400,32 @@ double LLRFFactory::getPhiDEG(const std::string& llrf_name)const
 	//std::cout << name_to_check << " NOT found " << std::endl;
 	return GlobalConstants::double_min;
 }
-std::map<std::string, std::vector<double>> LLRFFactory::getAllTraceData(const std::string& llrf_name)const
-{	
-	std::string full_name = getFullName(llrf_name);
-	if (GlobalFunctions::entryExists(LLRFMap, full_name))
-	{
-		return LLRFMap.at(full_name).getAllTraceData();
-	}
-	return 	std::map<std::string, std::vector<double>>{ { llrf_name, dummy_trace_data}};
-}
+//std::map<std::string, std::vector<double>> LLRFFactory::getAllTraceData(const std::string& llrf_name)const
+//{	
+//	std::string full_name = getFullName(llrf_name);
+//	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+//	{
+//		return LLRFMap.at(full_name).getAllTraceData();
+//	}
+//	return 	std::map<std::string, std::vector<double>>{ { llrf_name, dummy_trace_data}};
+//}
 
-std::pair<std::string, std::vector<double>> LLRFFactory::getTraceData(const std::string& llrf_name, const std::string& trace_name)const
-{
-	std::string full_name = getFullName(llrf_name);
-	if (GlobalFunctions::entryExists(LLRFMap, full_name))
-	{
-		return LLRFMap.at(full_name).getTraceData(trace_name);
-	}
-	return 	std::pair<std::string, std::vector<double>>(llrf_name, dummy_trace_data);
-}
-boost::python::dict LLRFFactory::getTraceData_Py(const std::string& llrf_name, const std::string& trace_name)
-{
-	std::pair<std::string, std::vector<double>> r = getTraceData(llrf_name, trace_name);
-	std::map<std::string, std::vector<double>> r2 { { r.first , r.second }};
-	return to_py_dict<std::string, std::vector<double>>(r2);
-}
+//std::pair<std::string, std::vector<double>> getTraceNameValuesPair(const std::string& llrf_name, const std::string& trace_name)const;
+//std::pair<std::string, std::vector<double>> LLRFFactory::getTraceNameValuesPair(const std::string& llrf_name, const std::string& trace_name)const
+//{
+//	std::string full_name = getFullName(llrf_name);
+//	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+//	{
+//		return LLRFMap.at(full_name).getTraceNameValuesPair(trace_name);
+//	}
+//	return 	std::pair<std::string, std::vector<double>>(llrf_name, dummy_trace_data);
+//}
+//boost::python::dict LLRFFactory::getTraceNameValuesPair_Py(const std::string& llrf_name, const std::string& trace_name)
+//{
+//	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(llrf_name, trace_name);
+//	std::map<std::string, std::vector<double>> r2 { { r.first , r.second }};
+//	return to_py_dict<std::string, std::vector<double>>(r2);
+//}
 
 
 std::vector<double> LLRFFactory::getTraceValues(const std::string& llrf_name)const
@@ -531,15 +532,14 @@ std::vector<double> LLRFFactory::getProbePha(const std::string& llrf_name)const
 	return dummy_trace_data;
 }
 
-boost::python::dict LLRFFactory::getAllTraceData_Py(const std::string& name)
-{
-	return to_py_dict<std::string, std::vector<double>>(getAllTraceData(name));
-}
-
-boost::python::list LLRFFactory::getTraceValues_Py(const std::string& name)const
-{
-	return to_py_list<double>(getTraceValues(name));
-}
+//boost::python::dict LLRFFactory::getAllTraceData_Py(const std::string& name)
+//{
+//	return to_py_dict<std::string, std::vector<double>>(getAllTraceData(name));
+//}
+//boost::python::list LLRFFactory::getTraceValues_Py(const std::string& name)const
+//{
+//	return to_py_list<double>(getTraceValues(name));
+//}
 boost::python::list LLRFFactory::getCavRevPwr_Py(const std::string& llrf_name)const
 {
 	return to_py_list<double>(getCavRevPwr(llrf_name));

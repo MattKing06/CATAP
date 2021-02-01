@@ -50,7 +50,17 @@ boost::python::list to_py_list(const boost::circular_buffer<typeOfVectorToCOnver
 	}
 	return newList;
 }
-
+template<class typeOfVectorToCOnvert>
+inline
+boost::python::list to_py_list_vector_of_vectors(const std::vector<std::vector<typeOfVectorToCOnvert>>& buffer)
+{
+	boost::python::list newList;
+	for (auto&& iter = buffer.begin(); iter != buffer.end(); ++iter)
+	{
+		newList.append( to_py_list<double>(*iter));
+	}
+	return newList;
+}
 template<class value1, class value2>
 inline
 boost::python::list to_py_list(const std::pair<value1, value2>& pair)

@@ -10,6 +10,56 @@
 namespace BOOST_PYTHON_LLRF_INCLUDE
 {
 
+
+	void expose_llrf_trace_data_object()
+	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<TraceData>())->to_python_target_type());
+		if (is_registered) return;
+		boost::python::class_<TraceData>
+			("TraceData", "TraceData Doc String")
+			.add_property("name", &TraceData::name)
+			.add_property("trace_max", &TraceData::trace_max)
+			.add_property("mean_start_stop", &TraceData::mean_start_stop)
+			.add_property("mean_start_stop_time", &TraceData::mean_start_stop_time)
+			.add_property("trace_data_size", &TraceData::trace_data_size)
+			.add_property("trace_data_buffer_size", &TraceData::trace_data_buffer_size)
+			.add_property("one_record_part", &TraceData::one_record_part)
+			.add_property("one_record_start_index", &TraceData::one_record_start_index)
+			.add_property("one_record_stop_index", &TraceData::one_record_stop_index)
+			.add_property("trace_type", &TraceData::trace_type)
+			.add_property("trace_type", &TraceData::trace_type)
+			;
+
+		//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
+		//std::vector<double> trace_values;
+		//std::pair<size_t, size_t> mean_start_stop;
+		//std::pair<double, double> mean_start_stop_time;
+		//std::pair<epicsTimeStamp, STATE> scan;
+		//std::pair<epicsTimeStamp, STATE> acqm;
+		//std::pair<epicsTimeStamp, bool> interlock_state;
+		//std::pair<epicsTimeStamp, double > u_level;
+		//std::pair<epicsTimeStamp, double > p_level;
+		//std::pair<epicsTimeStamp, double > pdbm_level;
+
+	}
+
+	void expose_llrf_interlock_object()
+	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRFInterlock>())->to_python_target_type());
+		if (is_registered) return;
+		boost::python::class_<LLRFInterlock>
+			("LLRFInterlock", "LLRFInterlock Doc String")
+			.add_property("name", &LLRFInterlock::name)
+			.add_property("interlock_type", &LLRFInterlock::interlock_type)
+			.add_property("u_level", &LLRFInterlock::u_level)
+			.add_property("p_level", &LLRFInterlock::p_level)
+			.add_property("pdbm_level", &LLRFInterlock::pdbm_level)
+			.add_property("enable", &LLRFInterlock::enable)
+			;
+
+
+	}
+
 	void expose_llrf_object()
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRF>())->to_python_target_type());
@@ -42,8 +92,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			
 
 
-
-			
+		
 			
 			//.def("setAllTraceBufferSize", &LLRF::setAllTraceBufferSize)
 
@@ -120,7 +169,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			//.def("getProbePha",  &LLRF::getProbePha_Py)
 			//.def("getProbePwr",  &LLRF::getProbePwr_Py)
 
-			.def("getTraceData", &LLRF::getTraceData_Py)
+			//.def("getTraceValues", &LLRF::getTraceValues_Py)
+
 			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
 			.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
@@ -203,7 +253,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			//.def("setTraceDataBufferSize", &LLRFFactory::setTraceDataBufferSize)
 
 
-			.def("getTraceData", &LLRFFactory::getTraceData_Py)
+			//.def("getTraceData", &LLRFFactory::getTraceData_Py)
 			.def("getCavRevPwr", &LLRFFactory::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRFFactory::getCavFwdPwr_Py)
 			.def("getKlyRevPwr", &LLRFFactory::getKlyRevPwr_Py)

@@ -50,13 +50,15 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.add_property("comment", &dburt::comment)
 			.add_property("magnetstates", &dburt::magnetstates)
 			;
+
+
+
+
 	};
 
 	
 	void expose_magnet_object() 
 	{
-
-
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Magnet>())->to_python_target_type());
 		if (is_registered) return;
 		// magnet exposure

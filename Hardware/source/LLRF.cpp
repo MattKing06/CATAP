@@ -4,7 +4,10 @@
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
 #include <numeric>
+#include <mutex>
 
+
+std::mutex llrf_mtx;    // mutex for critical section
 
 
 
@@ -24,7 +27,12 @@ trace_type(TYPE::UNKNOWN_TYPE),
 interlock_state(std::make_pair(epicsTimeStamp(), false)),
 trace_data_buffer_size(GlobalConstants::five_sizet),
 scan(std::make_pair(epicsTimeStamp(),STATE::UNKNOWN)), 
-acqm(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN))
+acqm(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+keep_rolling_average(false),
+has_average(false),
+check_mask(false),
+rolling_average_size(GlobalConstants::one_sizet),
+rolling_average_count(GlobalConstants::one_sizet)
 {
 
 
@@ -47,6 +55,7 @@ TraceData::~TraceData(){}
 
 
 LLRFInterlock::LLRFInterlock() :
+	name("UNKNOWN_NAME"),
 	u_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	p_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	pdbm_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -57,6 +66,7 @@ LLRFInterlock::LLRFInterlock() :
 
 
 LLRFInterlock::LLRFInterlock(const LLRFInterlock& copy_obj):
+	name(copy_obj.name),
 u_level(copy_obj.u_level),
 p_level(copy_obj.p_level), 
 pdbm_level(copy_obj.pdbm_level),
@@ -102,6 +112,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	LLRFRecords::CH5_PWR_REM,LLRFRecords::CH6_PWR_REM,
 	LLRFRecords::CH7_PWR_REM,LLRFRecords::CH8_PWR_REM },
 	dbr_all_trace_data(nullptr),
+	dummy_trace_data(TraceData()),
 	amp_sp(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	amp_ff(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	phi_sp(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -131,6 +142,12 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	messenger.printDebugMessage("epicsInterface set ownerName ");
 	epicsInterface->ownerName = hardwareName;
 	
+	// TODOD add to initilization list 
+	std::get<GlobalConstants::size_zero>(dummy_amp_set_kly_fwd_rs_state) = GlobalConstants::size_zero;
+	std::get<GlobalConstants::size_zero>(dummy_amp_set_kly_fwd_rs_state) = GlobalConstants::size_zero;
+	std::get<GlobalConstants::size_zero>(dummy_amp_set_kly_fwd_rs_state) = GlobalConstants::size_zero;
+
+
 	setPVStructs();
 	
 	setMasterLatticeData(paramMap);
@@ -492,15 +509,15 @@ bool LLRF::setAllTraceDataBufferSize(const size_t new_size)
 	}
 	return all_success;
 }
-bool LLRF::setTraceDataBufferSize(TraceData& trace_data, const size_t new_size)
+bool LLRF::setTraceDataBufferSize(TraceData& trace_values, const size_t new_size)
 {
 	//  init circular buffer and fill it with dummy data 
 	std::pair<epicsTimeStamp, std::vector<double>> temp_all_trace_item;
 	temp_all_trace_item.first = epicsTimeStamp();
-	std::vector<double> temp2(trace_data.trace_data_size, GlobalConstants::double_min);
+	std::vector<double> temp2(trace_values.trace_data_size, GlobalConstants::double_min);
 	temp_all_trace_item.second = temp2;
-	trace_data.trace_data_buffer.assign(new_size, temp_all_trace_item);
-	return trace_data.trace_data_buffer.size() == new_size;
+	trace_values.trace_values_buffer.assign(new_size, temp_all_trace_item);
+	return trace_values.trace_values_buffer.size() == new_size;
 }
 bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size)
 {
@@ -721,46 +738,6 @@ bool LLRF::getNewTraceValuesFromEPICS(const pvStruct& pvs)
 			messenger.printDebugMessage("!!ERROR!! getNewTraceValuesFromEPICS did not return ECA_NORMAL, return false");
 			return false;
 		}
-
-		//const dbr_double_t* pValue;
-		//pValue = &dbr_all_trace_data->value;
-		//auto end = &pValue[one_record_trace_data_size];
-
-		//// This loop iterates over the one_record_data, 
-		//size_t chunk = 0;
-		//size_t counter = 0;
-		//for (auto it = pValue; it != end; ++it)
-		//{
-		//	if (counter == sorted_one_record_trace_start_indices[chunk].first)
-		//	{
-		//		messenger.printDebugMessage("counter = ", counter);
-		//		messenger.printDebugMessage("chunk = ", chunk);
-		//		messenger.printDebugMessage("adding at it value = ", *it);
-		//		trace_data_map.at(sorted_one_record_trace_start_indices[chunk].second).trace_data_buffer.push_back(temp_TraceData_trace_data_buffer);
-		//		std::copy(it, it + trace_data_size, trace_data_map.at(sorted_one_record_trace_start_indices[chunk].second).trace_data_buffer.back().second.begin());
-		//		chunk += 1;
-
-		//		messenger.printDebugMessage("Next chunk at ", sorted_one_record_trace_start_indices[chunk].first);
-		//	}
-		//	counter += 1;
-		//}
-		//messenger.printDebugMessage("Print some numbers ");
-		//for (auto&& it : trace_data_map)
-		//{
-		//	size_t c = 0;
-		//	messenger.printDebugMessage(it.first);
-		//	for (auto&& it2 : it.second.trace_data_buffer.back().second)
-		//	{
-		//		std::cout << it2 << " ";
-		//		c += 1;
-		//		if (c == 10)
-		//		{
-		//			break;
-		//		}
-		//	}
-		//	std::cout << std::endl;
-		//}
-		//messenger.printDebugMessage("getNewTraceValuesFromEPICS return true");
 		return true;
 	}
 	messenger.printDebugMessage("getNewTraceValuesFromEPICS return false");
@@ -773,113 +750,111 @@ void LLRF::updateTraceValues()
 	if (carry_on)
 	{
 		messenger.printDebugMessage("updateTraceValues carry_on = true");
-		splitOneTraceValues();
-
+		splitOneTraceValues(dbr_all_trace_data);
 		updateTraceMetaData();
-
-
 	}
 	messenger.printDebugMessage("updateTraceValues carry_on = false");
 }
-void LLRF::splitOneTraceValues()
-{
-	messenger.printDebugMessage("splitOneTraceValues");
-	/*
-		dbr_all_trace_data is a struct, it's 'value' member is a dbr_double_t*
-	*/
-	const dbr_double_t* pValue;
-	pValue = &dbr_all_trace_data->value;
-	auto end = &pValue[one_record_trace_data_size];
 
-	// This loop iterates over the one_record_data, 
-	size_t chunk = GlobalConstants::zero_sizet;
-	std::pair<size_t, std::string>& start_index_data = sorted_one_record_trace_start_indices.at(chunk);
-
-	size_t counter = GlobalConstants::zero_sizet;
-	for (auto it = pValue; it != end; ++it)
-	{
-		if (counter == start_index_data.first)
-		{
-			messenger.printDebugMessage("counter = ", counter);
-			messenger.printDebugMessage("chunk = ", chunk);
-			messenger.printDebugMessage("adding at it value = ", *it);
-
-			// (for ease of reading)create a ref to the TraceData we are going to update 
-			TraceData& td = trace_data_map.at(start_index_data.second);
-			// add new elment to end of cricualr buffer 
-			td.trace_data_buffer.push_back(temp_TraceData_trace_data_buffer);
-			// copy raw data into new buffer vector element 
-			std::copy(it, it + trace_data_size, td.trace_data_buffer.back().second.begin());
-
-			// next we have to convert the units into watts and offset the phase by 180, so it goes 0 to 360, not -180 to 180
-
-			if (td.trace_type == TYPE::POWER)
-			{
-				messenger.printDebugMessage(start_index_data.second," is a power trace ");
-				// reset  trace max
-				td.trace_max = GlobalConstants::double_min;
-				for (auto& v : td.trace_data_buffer.back().second)
-				{
-					/* this is the mthod to convert to watts */
-					v *= v;
-					v /= GlobalConstants::one_hundred_double;
-					/* update the trace max */
-					if (v > td.trace_max)
-					{
-						td.trace_max = v;
-					}
-				}
-			}
-			else if (td.trace_type == TYPE::PHASE)
-			{
-				messenger.printDebugMessage(start_index_data.second, " is a phase trace ");
-
-				size_t temp_counter = 0;
-				for (auto& v : td.trace_data_buffer.back().second)
-				{
-					v += GlobalConstants::one_hundred_and_eighty_double;
-
-					//std::cout << v << " ";
-					temp_counter += 1;
-				}
-				std::cout << temp_counter << "\n";
-				// in gneral unwrapPhaseTrace is not trivial, as we have no idea how many factors of 2*pi to add / subtract ... 
-				//unwrapPhaseTrace(llrf.trace_data.at(it.first));
-			}
-			//increment chunk
-			chunk += GlobalConstants::one_sizet;
-			// update the start index we are now looking for, if we have run out oftrace, thenbreak 
-			if (chunk == sorted_one_record_trace_start_indices.size())
-			{
-				messenger.printDebugMessage("Chunk incremented, but no more traces to update");
-				break;
-			}
-			else 
-			{
-				start_index_data = sorted_one_record_trace_start_indices.at(chunk);
-			}
-			messenger.printDebugMessage("Chunk incremented, Next trace pValue index = ", start_index_data.first);
-		}
-		counter += GlobalConstants::one_sizet;
-	}
-	messenger.printDebugMessage("Print some numbers ");
-	for (auto&& it : trace_data_map)
-	{
-		size_t c = GlobalConstants::zero_sizet;
-		messenger.printDebugMessage(it.first);
-		for (auto&& it2 : it.second.trace_data_buffer.back().second)
-		{
-			std::cout << it2 << " ";
-			c += GlobalConstants::one_sizet;
-			if (c == 10)
-			{
-				break;
-			}
-		}
-		std::cout << std::endl;
-	}
-}
-
+//
+//void LLRF::splitOneTraceValues()
+//{
+//	messenger.printDebugMessage("splitOneTraceValues");
+//	/*
+//		dbr_all_trace_data is a struct, it's 'value' member is a dbr_double_t*
+//	*/
+//	const dbr_double_t* pValue;
+//	pValue = &dbr_all_trace_data->value;
+//	auto end = &pValue[one_record_trace_data_size];
+//
+//	// This loop iterates over the one_record_data, 
+//	size_t chunk = GlobalConstants::zero_sizet;
+//	std::pair<size_t, std::string>& start_index_data = sorted_one_record_trace_start_indices.at(chunk);
+//
+//	size_t counter = GlobalConstants::zero_sizet;
+//	for (auto it = pValue; it != end; ++it)
+//	{
+//		if (counter == start_index_data.first)
+//		{
+//			messenger.printDebugMessage("counter = ", counter);
+//			messenger.printDebugMessage("chunk = ", chunk);
+//			messenger.printDebugMessage("adding at it value = ", *it);
+//
+//			// (for ease of reading)create a ref to the TraceData we are going to update 
+//			TraceData& td = trace_data_map.at(start_index_data.second);
+//			// add new elment to end of cricualr buffer 
+//			td.trace_values_buffer.push_back(temp_TraceData_trace_data_buffer);
+//			// copy raw data into new buffer vector element 
+//			std::copy(it, it + trace_data_size, td.trace_values_buffer.back().second.begin());
+//
+//			// next we have to convert the units into watts and offset the phase by 180, so it goes 0 to 360, not -180 to 180
+//
+//			if (td.trace_type == TYPE::POWER)
+//			{
+//				messenger.printDebugMessage(start_index_data.second," is a power trace ");
+//				// reset  trace max
+//				td.trace_max = GlobalConstants::double_min;
+//				for (auto& v : td.trace_values_buffer.back().second)
+//				{
+//					/* this is the mthod to convert to watts */
+//					v *= v;
+//					v /= GlobalConstants::one_hundred_double;
+//					/* update the trace max */
+//					if (v > td.trace_max)
+//					{
+//						td.trace_max = v;
+//					}
+//				}
+//			}
+//			else if (td.trace_type == TYPE::PHASE)
+//			{
+//				messenger.printDebugMessage(start_index_data.second, " is a phase trace ");
+//
+//				size_t temp_counter = 0;
+//				for (auto& v : td.trace_values_buffer.back().second)
+//				{
+//					v += GlobalConstants::one_hundred_and_eighty_double;
+//
+//					//std::cout << v << " ";
+//					temp_counter += 1;
+//				}
+//				std::cout << temp_counter << "\n";
+//				// in gneral unwrapPhaseTrace is not trivial, as we have no idea how many factors of 2*pi to add / subtract ... 
+//				//unwrapPhaseTrace(llrf.trace_values.at(it.first));
+//			}
+//			//increment chunk
+//			chunk += GlobalConstants::one_sizet;
+//			// update the start index we are now looking for, if we have run out oftrace, thenbreak 
+//			if (chunk == sorted_one_record_trace_start_indices.size())
+//			{
+//				messenger.printDebugMessage("Chunk incremented, but no more traces to update");
+//				break;
+//			}
+//			else 
+//			{
+//				start_index_data = sorted_one_record_trace_start_indices.at(chunk);
+//			}
+//			messenger.printDebugMessage("Chunk incremented, Next trace pValue index = ", start_index_data.first);
+//		}
+//		counter += GlobalConstants::one_sizet;
+//	}
+//	messenger.printDebugMessage("Print some numbers ");
+//	for (auto&& it : trace_data_map)
+//	{
+//		size_t c = GlobalConstants::zero_sizet;
+//		messenger.printDebugMessage(it.first);
+//		for (auto&& it2 : it.second.trace_values_buffer.back().second)
+//		{
+//			std::cout << it2 << " ";
+//			c += GlobalConstants::one_sizet;
+//			if (c == 10)
+//			{
+//				break;
+//			}
+//		}
+//		std::cout << std::endl;
+//	}
+//}
 
 void LLRF::updateTraceMetaData()
 {
@@ -900,13 +875,17 @@ void LLRF::updateTraceMetaData()
 }
 
 
+
+
+
+
 void LLRF::updateKFPowMaxAndPulseCounts()
 {
 	messenger.printDebugMessage("updateTraceMetaData ");
 	total_pulse_count +=1;
 	kly_fwd_power_max.second = trace_data_map.at(LLRFRecords::KLYSTRON_FORWARD_POWER).trace_max;
 	messenger.printDebugMessage("kly_fwd_power_max =  ", kly_fwd_power_max.second);
-	// decide if this pule of trace_data is a duplicate, active or inactive, increment counters  
+	// decide if this pule of trace_values is a duplicate, active or inactive, increment counters  
 	if (last_kly_fwd_power_max == kly_fwd_power_max.second)
 	{
 		duplicate_pulse_count += GlobalConstants::one_sizet;
@@ -947,7 +926,7 @@ void LLRF::checkCollectingFutureTraces()
 	//	if (llrf.can_increase_active_pulses)
 	//	{
 	//		message("checkCollectingFutureTraces(): checking current trace for OMED");
-	//		for (auto& it : llrf.trace_data) // loop over each trace
+	//		for (auto& it : llrf.trace_values) // loop over each trace
 	//		{
 	//			// only check the masks we should be checking
 	//			//if(it.second.check_mask && it.second.hi_mask_set && it.second.lo_mask_set)
@@ -995,32 +974,45 @@ void LLRF::checkForOutsideMaskTraceAndUpdateRollingAverages()
 {
 	messenger.printDebugMessage("checkForOutsideMaskTraceAndUpdateRollingAverages ");
 	///* if we have an active pulse .. */
-	//if (llrf.can_increase_active_pulses)
-	//{
-	//	/* ... checkForOutsideMaskTrace */
-	//	checkForOutsideMaskTrace();
-	//	/* update masks UNLESS there is a new_outside_mask_event */
-	//	if (llrf.new_outside_mask_event)
-	//	{
-	//		//
-	//	}
-	//	else
-	//	{
-	//		updateRollingAveragesAndMasks();
-	//		/*
-	//			if we have can_increase_active_pulses and there was no
-	//			event, update the amp_set kly_fwd_pwr running stats
-	//		*/
-	//		update_amp_set_kly_fwd_rs();
-	//	}
-	//}
-	//else
-	//{
-	//	//message("can_increase_active_pulses = false");
-	//}
+	if (can_increase_active_pulses)
+	{
+		/* ... checkForOutsideMaskTrace */
+		checkForOutsideMaskTrace();
+		/* update masks UNLESS there is a new_outside_mask_event */
+		if (new_outside_mask_event)
+		{
+			//
+		}
+		else
+		{
+			/*  updates the rolling average for each trace,
+				and then sets maks based on the curren trolling average
+			*/
+			// mutex from updateLLRFVasetMaskStartIndexlue()
+			for (auto&& it : trace_data_map)
+			{
+				updateRollingAverage(it.second);
+				/*
+					we might want to check that the global check mask is true here,
+					we DONT want to update masks when the RF has been switched off.
+				*/
+				if (it.second.check_mask && it.second.has_average)
+				{
+					//setNewMask(it.second);
+				}
+			}
+			/*
+				if we have can_increase_active_pulses and there was no
+				event, update the amp_set kly_fwd_pwr running stats
+			*/
+			//update_amp_set_kly_fwd_rs();
+		}
+	}
+	else
+	{
+		//message("can_increase_active_pulses = false");
+	}
 }
-
-
 void LLRF::updateTraceCutMeans()
 {
 	messenger.printDebugMessage("updateTraceCutMeans");
@@ -1036,14 +1028,14 @@ void LLRF::calculateTraceCutMean(TraceData& trace)
 	*/
 	if (trace.mean_start_stop.first == trace.mean_start_stop.second)
 	{
-		trace.trace_cut_mean = trace.trace_data_buffer.back().second[trace.mean_start_stop.first];
+		trace.trace_cut_mean = trace.trace_values_buffer.back().second[trace.mean_start_stop.first];
 	}
 	else if (trace.mean_start_stop.second > trace.mean_start_stop.first)
 	{
 		trace.trace_cut_mean =
 			std::accumulate(
-				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_stop.first,
-				trace.trace_data_buffer.back().second.cbegin() + trace.mean_start_stop.second,
+				trace.trace_values_buffer.back().second.cbegin() + trace.mean_start_stop.first,
+				trace.trace_values_buffer.back().second.cbegin() + trace.mean_start_stop.second,
 				GlobalConstants::zero_double) / trace.stop_minus_start;
 	}
 	messenger.printDebugMessage(trace.name, " New Cut mean = ", trace.trace_cut_mean);
@@ -1065,6 +1057,64 @@ void LLRF::updateDAQFreqEstimate()
 		//messenger.printDebugMessage(getHardwareName(), "trace_rep_rate = ", trace_rep_rate);
 	}
 }
+
+//--------------------------------------------------------------------------------------------------
+// KFP running stats 
+void LLRF::setKeepKlyFwdPwrRS(bool val)
+{
+	keep_kly_fwd_pow_running_stat = val;
+}
+void LLRF::keepKlyFwdPwrRS()
+{
+	setKeepKlyFwdPwrRS(true);
+}
+void LLRF::dontKeepKlyFwdPwrRS()
+{
+	setKeepKlyFwdPwrRS(false);
+}
+void LLRF::update_amp_set_kly_fwd_rs()
+{	/*
+		The amp_set_kly_fwd_rs is a running stat object of Klystron forward power for different
+		amp sets. It uses the cut_mean, (so if those indices are not set this will potentially garbage
+		It is only updated when there is an active pulse, AND if there was no OME Detected
+	*/	// mutex from updateLLRFValue()
+	if(keep_kly_fwd_pow_running_stat)
+	{
+		RunningStats& rs_ref = amp_set_kly_fwd_rs[(int)amp_sp.second];
+		std::tuple<size_t, double, double>& rs_state_ref = amp_set_kly_fwd_rs_state[(int)amp_sp.second];
+
+		rs_ref.Push(trace_data_map.at(LLRFRecords::KLYSTRON_FORWARD_POWER).trace_cut_mean);
+
+		rs_ref.getCurrentState(std::get<GlobalConstants::size_zero>(rs_state_ref),
+			std::get<GlobalConstants::one_sizet>(rs_state_ref),
+			std::get<GlobalConstants::one_sizet>(rs_state_ref));
+		//
+		//        message("new val  = ", llrf.trace_data.at(UTL::KLYSTRON_FORWARD_POWER).mean,
+		//                ", count    = ", std::get<UTL::ZERO_SIZET>(rs_state_ref),
+		//                ", old_mean = ", std::get<UTL::ONE_SIZET>(rs_state_ref),
+		//                ", old_var  = ", std::get<UTL::TWO_SIZET>(rs_state_ref) );
+	}
+}
+//-------------------------------------------------------------------------------------------------------------------
+std::tuple<size_t, double, double> LLRF::getKlyFwdPwrRSState(int ampSP_setting)
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex mtx.lock();
+	if (GlobalFunctions::entryExists(amp_set_kly_fwd_rs_state, ampSP_setting))
+	{
+		return amp_set_kly_fwd_rs_state.at(ampSP_setting);
+	}
+	return dummy_amp_set_kly_fwd_rs_state;
+}
+//-------------------------------------------------------------------------------------------------------------------
+void LLRF::setKlyFwdPwrRSState(int amp_sp, size_t n, double old_mean, double old_variance)
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex mtx.lock();
+	/* Get ref to running stat object, key is amp_sp*/
+	RunningStats& rs_ref = amp_set_kly_fwd_rs[amp_sp];
+	/* apply passed values to running stat object*/
+	rs_ref.setInitialValues(n, old_mean, old_variance);
+}
+
 void LLRF::setNumTracesToEstimateRepRate(size_t value)
 {
 	num_traces_to_estimate_rep_rate = value;
@@ -1078,7 +1128,263 @@ double LLRF::getTraceRepRate() const
 	return trace_rep_rate;
 }
 //--------------------------------------------------------------------------------------------------
+/*       __   __                    __                ___  __        __   ___  __
+		|__) /  \ |    |    | |\ | / _`     /\  \  / |__  |__)  /\  / _` |__  /__`
+		|  \ \__/ |___ |___ | | \| \__>    /~~\  \/  |___ |  \ /~~\ \__> |___ .__/
 
+// Set the parameters for the rolling avergaes
+*/
+
+void LLRF::updateRollingAverage(TraceData& data)
+{
+	////std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	if (data.keep_rolling_average)
+	{
+		if (data.rolling_average_size == GlobalConstants::size_zero)
+		{	// rolling_average_size of zero means no rolling averages 
+			//messenger.printDebugMessage("rolling_average_size = 0");
+		}
+		else if (data.rolling_average_size == GlobalConstants::one_sizet)
+		{	//messenger.printDebugMessage("rolling_average_size = 1");
+			data.rolling_average = data.trace_values_buffer.back().second;
+			data.rolling_average_count = data.rolling_average_size;
+			data.has_average = true;
+		}
+		else
+		{	// append new data to average_trace_values
+			data.rolling_average_trace_buffer.push_back(data.trace_values_buffer.back().second);
+			// Then update the rolling sum vector with the new data by iterating over each container 
+			// handy refs to the vectors we are going to iterate over
+			std::vector<double>& add = data.rolling_average_trace_buffer.back();
+			std::vector<double>& sum = data.rolling_sum;
+			for (auto&& s_it = sum.begin(), a_it = add.begin(); s_it < sum.end() && a_it < add.end(); ++a_it, ++s_it)
+			{
+				*s_it += *a_it;
+			}
+			// Check if we have acquired enough traces for the rolling average 
+			if (data.rolling_average_trace_buffer.size() < data.rolling_average_size)
+			{
+				data.has_average = false;
+				//message("data.average_trace_values.size() < data.rolling_average_size, data.has_average = false");
+			}
+			else
+			{
+				data.has_average = true;
+				//message("data.average_trace_values.size() !< data.rolling_average_size, data.has_average = true");
+			}
+			// If we have one trace more than required for the average, if so subtract the first trace in average_trace_values from sum
+			if (data.rolling_average_trace_buffer.size() > data.rolling_average_size)
+			{
+				std::vector<double>& sub = data.rolling_average_trace_buffer.front();
+				for (auto i1 = sub.begin(), i2 = sum.begin(); i1 < sub.end() && i2 < sum.end(); ++i1, ++i2)
+				{
+					*i2 -= *i1;
+				}
+				// erase the trace we just subtraced
+				data.rolling_average_trace_buffer.erase(data.rolling_average_trace_buffer.begin());
+			}
+			// calculate the average if enough data has been collected 
+			if (data.has_average)
+			{
+				std::vector<double>& av = data.rolling_average;
+				double s = (double)data.rolling_average_size;
+				for (auto i1 = sum.begin(), i2 = av.begin(); i1 < sum.end() && i2 < av.end(); ++i1, ++i2)
+				{
+					*i2 = *i1 / s;
+				}
+			}
+			// update the rolling_average_count 
+			data.rolling_average_count = data.rolling_average_trace_buffer.size();
+			//message("data.average_trace_values.size() < data.rolling_average_size, data.has_average = False");
+		}
+	}
+}
+void LLRF::resetAllRollingAverage()
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	for (auto& it : trace_data_map)
+	{
+		clearRollingAverage(it.second);
+	}
+}
+bool LLRF::resetRollingAverage(const std::string& name)
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		//std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+		clearRollingAverage(trace_data_map.at(n));
+		return true;
+	}
+	//message("liberallrfInterface ERROR, trace ", n, " does not exist");
+	return false;
+}
+void LLRF::clearRollingAverage(TraceData& trace)
+{	// any function that calls this should have got the lock !!
+	trace.has_average = false;
+	trace.rolling_average_count = GlobalConstants::zero_sizet;
+	trace.rolling_average.clear();
+	trace.rolling_average.resize(trace_data_size);
+	trace.rolling_sum.clear();
+	trace.rolling_sum.resize(trace_data_size);
+	trace.rolling_average_trace_buffer.clear();
+	//trace.average_trace_values = {};
+}
+void LLRF::setShouldKeepRollingAverage()
+{
+	for (auto&& it : trace_data_map)
+	{
+		setKeepRollingAverage(it.first, true);
+	}
+}
+bool LLRF::setShouldKeepRollingAverage(const std::string& name)
+{
+	return setKeepRollingAverage(name, true);
+}
+void LLRF::setShouldNotKeepRollingAverage()
+{
+	for (auto&& it : trace_data_map)
+	{
+		setKeepRollingAverage(it.first, false);
+	}
+}
+bool LLRF::setShouldNotKeepRollingAverage(const std::string& name)
+{
+	return setKeepRollingAverage(name, false);
+}
+bool LLRF::setKeepRollingAverage(const std::string& name, bool value)
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		//std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+		clearRollingAverage(trace_data_map.at(n));
+		trace_data_map.at(n).keep_rolling_average = value;
+		return true;
+	}
+	return false;
+}
+bool LLRF::setRollingAverageSize(const std::string& name, const size_t value)
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		trace_data_map.at(n).rolling_average_count = value;
+		clearRollingAverage(trace_data_map.at(n));
+		return true;
+	}
+	return false;
+}
+void LLRF::setAllRollingAverageSize(const size_t value)
+{
+	for (auto&& it : trace_data_map)
+	{
+		it.second.rolling_average_size = value;
+		clearRollingAverage(it.second);
+	}
+}
+std::vector<double> LLRF::getRollingAverage(const std::string& name)const
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).rolling_average;
+	}
+	std::vector<double> d(trace_data_size, GlobalConstants::double_min);
+	return d;
+}
+boost::python::list LLRF::getRollingAverage_Py(const std::string& name)const
+{
+	return to_py_list<double>(getRollingAverage(name));
+}
+boost::python::dict LLRF::getRollingAverage_Py()const
+{
+	boost::python::dict r;
+	for (auto&& it : trace_data_map)
+	{
+		r[it.first] = to_py_list<double>(it.second.rolling_average);
+	}
+	return r;
+}
+size_t LLRF::getRollingAverageSize(const std::string& name)const
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).rolling_average_size;
+	}
+	return GlobalConstants::one_sizet;
+}
+
+size_t LLRF::getRollingAverageCount(const std::string& name)const
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).rolling_average_count;
+	}
+	return GlobalConstants::one_sizet;
+}
+bool LLRF::isKeepingRollingAverage(const std::string& name)const
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).keep_rolling_average;
+	}
+	return false;
+}
+bool LLRF::hasRollingAverage(const std::string& name)const
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).has_average;
+	}
+	return false;
+}
+std::vector<std::vector<double>> LLRF::getRollingAverageTraceBuffer(const std::string& name)const
+{
+	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).rolling_average_trace_buffer;
+	}
+	std::vector<std::vector<double>> r{};
+	return r;
+}
+boost::python::list LLRF::getRollingAverageTraceBuffer_Py(const std::string& name)const
+{
+	return to_py_list_vector_of_vectors<double>(getRollingAverageTraceBuffer(name));
+}
+std::map<std::string, std::vector<std::vector<double>>> LLRF::getAllRollingAverageTraceBuffer()const
+{
+	std::map<std::string, std::vector<std::vector<double>>> r;
+	for (auto&& it : trace_data_map)
+	{	
+		r[it.first] = it.second.rolling_average_trace_buffer;
+	}
+	return r;
+}
+boost::python::dict LLRF::getAllRollingAverageTraceBuffer_Py()const
+{
+	auto r_cpp = getAllRollingAverageTraceBuffer();
+	boost::python::dict r;
+	for (auto&& it : r_cpp)
+	{
+		r[it.first] = to_py_list_vector_of_vectors<double>(it.second);
+	}
+	return r;
+}
 
 
 
@@ -1086,7 +1392,7 @@ double LLRF::getTraceRepRate() const
 void LLRF::checkForOutsideMaskTrace()
 {
 	//std::chrono::high_resolution_clock::time_point start2 = std::chrono::high_resolution_clock::now();
-	//for (auto& it : llrf.trace_data) // loop over each trace
+	//for (auto& it : llrf.trace_values) // loop over each trace
 	//{
 	//	if (llrf.check_mask && it.second.check_mask && it.second.hi_mask_set && it.second.lo_mask_set) // if everything is ok, check mask
 	//	{
@@ -1288,34 +1594,6 @@ void LLRF::addTotalPulseCountOffset(const size_t value)
 
 
 
-//void LLRF::getTraceValues(const std::string& trace_name )
-//{
-//
-//}
-//void LLRF::getTraceData(const std::vector<std::string> & trace_names)
-//{
-//	// all the getTraceDta functions will end up here, 
-//
-//	bool carry_on = getNewTraceData(dbr_all_trace_data, pvStructs.at(LLRFRecords::LLRF_TRACES));
-//
-//}
-//
-void LLRF::updateTraceValues_Py()
-{
-	updateTraceValues();
-}
-//
-//void LLRF::getTraceData_Py(const std::string& trace_name)
-//{
-//
-//}
-//void LLRF::getTraceData_Py(const boost::python::list& trace_names)
-//{
-//
-//}
-//
-
-
 bool LLRF::startTraceMonitoring()
 {
 	if (is_trace_monitoring)
@@ -1359,6 +1637,20 @@ bool LLRF::startTraceMonitoring()
 	}
 	return false;
 }
+bool LLRF::stopTraceMonitoring()
+{
+	if (is_trace_monitoring)
+	{
+		int status = ca_clear_subscription(pvStructs.at(LLRFRecords::LLRF_TRACES).EVID);
+		if (status == ECA_NORMAL)
+		{
+			return true;
+		}
+
+	}
+	return false;
+}
+
 
 
 void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
@@ -1389,9 +1681,9 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
 			// (for ease of reading)create a ref to the TraceData we are going to update 
 			TraceData& td = trace_data_map.at(start_index_data.second);
 			// add new elment to end of cricualr buffer 
-			td.trace_data_buffer.push_back(temp_TraceData_trace_data_buffer);
+			td.trace_values_buffer.push_back(temp_TraceData_trace_data_buffer);
 			// copy raw data into new buffer vector element 
-			std::copy(it, it + trace_data_size, td.trace_data_buffer.back().second.begin());
+			std::copy(it, it + trace_data_size, td.trace_values_buffer.back().second.begin());
 						
 
 			// next we have to convert the units into watts and offset the phase by 180, so it goes 0 to 360, not -180 to 180
@@ -1401,7 +1693,7 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
 				messenger.printDebugMessage(start_index_data.second, " is a power trace ");
 				// reset  trace max
 				td.trace_max = GlobalConstants::double_min;
-				for (auto& v : td.trace_data_buffer.back().second)
+				for (auto& v : td.trace_values_buffer.back().second)
 				{
 					/* this is the mthod to convert to watts */
 					v *= v;
@@ -1418,7 +1710,7 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
 				messenger.printDebugMessage(start_index_data.second, " is a phase trace ");
 
 				size_t temp_counter = 0;
-				for (auto& v : td.trace_data_buffer.back().second)
+				for (auto& v : td.trace_values_buffer.back().second)
 				{
 					v += GlobalConstants::one_hundred_and_eighty_double;
 
@@ -1427,8 +1719,10 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
 				}
 				std::cout << temp_counter << "\n";
 				// in gneral unwrapPhaseTrace is not trivial, as we have no idea how many factors of 2*pi to add / subtract ... 
-				//unwrapPhaseTrace(llrf.trace_data.at(it.first));
+				//unwrapPhaseTrace(llrf.trace_values.at(it.first));
 			}
+			// TraceData also has a single copy of the trace_values 
+			td.trace_values = td.trace_values_buffer.back().second;
 			//increment chunk
 			chunk += GlobalConstants::one_sizet;
 			// update the start index we are now looking for, if we have run out oftrace, thenbreak 
@@ -1450,7 +1744,7 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
 	{
 		size_t c = GlobalConstants::zero_sizet;
 		messenger.printDebugMessage(it.first);
-		for (auto&& it2 : it.second.trace_data_buffer.back().second)
+		for (auto&& it2 : it.second.trace_values_buffer.back().second)
 		{
 			std::cout << it2 << " ";
 			c += GlobalConstants::one_sizet;
@@ -1463,50 +1757,96 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double *dbr)
 	}
 }
 
-
-
-bool LLRF::stopTraceMonitoring()
-{
-	if (is_trace_monitoring)
-	{
-		int status = ca_clear_subscription(pvStructs.at(LLRFRecords::LLRF_TRACES).EVID);
-		if (status == ECA_NORMAL)
-		{
-			return true;
-		}
-
-	}
-	return false;
-}
-// Helper fucntions to get TraceData varibales to Python 
-std::map<std::string, std::vector<double>> LLRF::getAllTraceData()const
-{
-	std::map<std::string, std::vector<double>> r;
-	for (auto&& data : trace_data_map)
-	{
-		r[data.first] = getTraceValues(data.first);
-	}
-	return r;
-}
-std::pair<std::string, std::vector<double>> LLRF::getTraceData(const std::string& name)const
-{
-	std::pair<std::string, std::vector<double>> r;
-	r.first  = fullLLRFTraceName(name);
-	r.second = getTraceValues(r.first);
-	return r;
-}
 std::vector<double> LLRF::getTraceValues(const std::string& name)const
 {
 	const std::string n = fullLLRFTraceName(name);
-	//messenger.printDebugMessage("getTraceValues trace " + n);
 	if (GlobalFunctions::entryExists(trace_data_map, n))
 	{
-		return trace_data_map.at(n).trace_data_buffer.back().second;
+		return trace_data_map.at(n).trace_values;
 	}
 	messenger.printDebugMessage("LLRF::getTraceValues ERROR, trace ", n, " does not exist");
 	std::vector<double> r(trace_data_size, GlobalConstants::double_min);//MAGIC_NUMBER
 	return r;
 }
+boost::python::list LLRF::getTraceValues_Py(const std::string& name)const
+{
+	return to_py_list<double>(getTraceValues(name));
+}
+
+
+std::pair<std::string, std::vector<double>> LLRF::getTraceNameValuesPair(const std::string& name)const
+{
+	std::pair<std::string, std::vector<double>> r;
+	r.first = fullLLRFTraceName(name);
+	r.second = getTraceValues(r.first);
+	return r;
+}
+boost::python::dict LLRF::getTraceNameValuesPair_Py(const std::string& name)
+{
+	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(name);
+	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
+	return to_py_dict<std::string, std::vector<double>>(r2);
+}
+
+
+TraceData& LLRF::getTraceData(const std::string & trace_name ) 
+{
+	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
+	{
+		return trace_data_map.at(trace_name);
+	}
+	return dummy_trace_data;
+}
+
+
+boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const
+{
+	boost::python::dict r;
+	const TraceData& td = dummy_trace_data;
+	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
+	{
+		const TraceData td = trace_data_map.at(trace_name);
+	}
+	r["name"] = td.name;
+	r["trace_values"] = to_py_list<double>(td.trace_values);
+	r["trace_data_size"] = td.trace_data_size;
+	r["trace_data_buffer_size"] = td.trace_data_buffer_size;
+	r["trace_max"] = td.trace_max;
+	r["mean_start"] = td.mean_start_stop.first;
+	r["mean_stop"] = td.mean_start_stop.second;
+	r["mean_stop_minus_start"] = td.stop_minus_start;
+	r["trace_cut_mean"] = td.trace_cut_mean;
+	r["keep_rolling_average"] = td.keep_rolling_average;
+	r["keep_rolling_average"] = td.keep_rolling_average;
+	r["scan"] = td.scan.second;
+	r["acqm"] = td.acqm.second;
+	r["u_level"] = td.u_level.second;
+	r["p_level"] = td.p_level.second;
+	r["pdbm_level"] = td.pdbm_level.second;
+	r["trace_type"] = td.trace_type;
+	r["one_record_part"] = td.one_record_part;
+	r["one_record_start_index"] = td.one_record_start_index;
+	r["one_record_stop_index"] = td.one_record_stop_index;
+	r["trace_data_buffer_size"] = td.trace_data_buffer_size;
+
+	// TODO add buffer, rollign mean etc 
+	//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
+	return r;
+}
+
+boost::python::dict LLRF::getAllTraceDataDict() const
+{
+	boost::python::dict r;
+	for (auto&& it : trace_data_map)
+	{
+		r[it.first] =  getTraceDataDict(it.first);
+	}
+	return r;
+}
+
+
+
+
 std::vector<double> LLRF::getCavRevPwr()const
 {
 	return getTraceValues(LLRFRecords::CAVITY_REVERSE_POWER);
@@ -1521,7 +1861,7 @@ std::vector<double> LLRF::getKlyRevPwr()const
 }
 std::vector<double> LLRF::getKlyFwdPwr()const
 {
-	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_data_buffer)
+	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_values_buffer)
 	//{
 	//	messenger.printDebugMessage("getKlyFwdPwr NEW TB");
 	//	int jj = 0;
@@ -1561,21 +1901,7 @@ std::vector<double> LLRF::getProbePha()const
 {
 	return getTraceValues(LLRFRecords::CAVITY_PROBE_PHASE);
 }
-//-------------------------------------------------------------------------------
-boost::python::dict LLRF::getAllTraceData_Py()
-{
-	return to_py_dict<std::string, std::vector<double>>(getAllTraceData());
-}
-boost::python::dict LLRF::getTraceData_Py(const std::string& name)
-{
-	std::pair<std::string, std::vector<double>> r = getTraceData(name);
-	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
-	return to_py_dict<std::string, std::vector<double>>(r2);
-}
-boost::python::list LLRF::getTraceValues_Py(const std::string& name)const
-{
-	return to_py_list(getTraceValues(name));
-}
+
 boost::python::list LLRF::getCavRevPwr_Py()const
 {
 	return to_py_list(getCavRevPwr());
@@ -1815,6 +2141,22 @@ double LLRF::getCutMean(const std::string& name)const
 	}
 	return GlobalConstants::double_min;
 }
+std::map<std::string, double> LLRF::getAllCutMean()const
+{
+	std::map<std::string, double> r;
+	for(auto&& trace : trace_data_map)
+	{
+		r[trace.first] = trace.second.trace_cut_mean;
+	}
+	return r;
+}
+boost::python::dict LLRF::getAllCutMean_Py()const
+{
+	return to_py_dict<std::string, double>(getAllCutMean());
+}
+
+
+
 
 std::map<std::string, double> LLRF::getPowerCutMean()const
 {
@@ -1839,7 +2181,7 @@ void  LLRF::scaleAllDummyTraces()
 	using namespace LLRFRecords;
 	scaleDummyTrace(KLYSTRON_FORWARD_POWER, kfpow_dummy_trace);
 	//messenger.printDebugMessage("KLYSTRON_FORWARD_POWER AFTER SCALING");
-	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_data_buffer)
+	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_values_buffer)
 	//{
 	//	messenger.printDebugMessage("scaleAllDummyTraces NEW TB");
 	//	int jj = 0;
@@ -1877,9 +2219,9 @@ void LLRF::scaleDummyTrace(const std::string& trace_name, const std::vector<doub
 		i = i * scale_factor;
 	}
 	// assumes trace_name exists
-	trace_data_map.at(trace_name).trace_data_buffer.push_back(dummy_trace_item);
+	trace_data_map.at(trace_name).trace_values_buffer.push_back(dummy_trace_item);
 	//messenger.printDebugMessage("scaleDummyTrace AFTER SCALING");
-	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_data_buffer)
+	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_values_buffer)
 	//{
 	//	messenger.printDebugMessage("scaleDummyTrace NEW TB");
 	//	int jj = 0;
@@ -1897,7 +2239,7 @@ void LLRF::scaleDummyTrace(const std::string& trace_name, const std::vector<doub
 
 size_t LLRF::getIndex(const double time) const
 {
-	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
+	//std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
 	auto r = std::lower_bound(time_vector.begin(), time_vector.end(), time);
 	return r - time_vector.begin();
 }

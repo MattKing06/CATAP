@@ -78,10 +78,10 @@ public:
 	{
 		return !Full();
 	}
-	/*! updat epassed referecnes with teh latest value
-		@param[in] value to add, !!must be a umerica simple type!!
-		@param[in] value to add, !!must be a umerica simple type!!
-		@param[in] value to add, !!must be a umerica simple type!! */
+	/*! update passed references with the latest value (used for monitoring)
+		@param[in] value to add, !!must be a numerical simple type!!
+		@param[in] value to add, !!must be a numerical simple type!!
+		@param[in] value to add, !!must be a numerical simple type!! */
 	void getCurrentState(size_t& m_n_ret, double& m_oldM_ret, double& m_oldS_ret)
 	{
 		m_n_ret = m_n;
