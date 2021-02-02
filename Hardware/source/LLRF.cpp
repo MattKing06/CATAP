@@ -121,7 +121,7 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	phi_degrees(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	max_amp_sp(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	llrf_pulse_duration(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-	trig_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	trig_source(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	interlock_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	rf_output(std::make_pair(epicsTimeStamp(), false)),
 	ff_phase_lock(std::make_pair(epicsTimeStamp(), false)),
@@ -660,6 +660,10 @@ bool LLRF::setAmpMW(double value)
 }
 bool LLRF::setAmp(double value)
 {
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::AMP_SP), value);
+	}
 	amp_sp.second = value;
 	return true;
 }
@@ -673,6 +677,10 @@ double LLRF::getAmpMW()const
 }
 bool LLRF::setPhi(double value)
 {
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::PHI_SP), value);
+	}
 	phi_sp.second = value;
 	return true;
 }
@@ -1534,7 +1542,7 @@ void LLRF::handleFailedMask(TraceData& trace)
 //--------------------------------------------------------------------------------------------------
 
 
-
+// PULSE COUNTING
 size_t LLRF::getActivePulsePowerLimit() const 
 {
 	return active_pulse_kly_power_limit;
@@ -2571,11 +2579,39 @@ bool LLRF::setAndApplyPulseShape(boost::python::list& values)
 
 
 
+//---------------------------------------------------------------------------------------------------------
+bool LLRF::trigOff()
+{
+	return setTrig(STATE::OFF);
+}
+//____________________________________________________________________________________________
+bool LLRF::trigInt()
+{
+	return setTrig(STATE::INTERNAL);
+}
+//____________________________________________________________________________________________
+bool LLRF::trigExt()
+{
+	return setTrig(STATE::EXTERNAL);
+}
 
-
-
-
-
+bool LLRF::setTrig(const STATE new_state)
+{
+	unsigned short v;
+	const pvStruct& pvs = pvStructs.at(LLRFRecords::TRIG_SOURCE);
+	switch (new_state)
+	{
+		case STATE::OFF:	  v = 0; break;
+		case STATE::EXTERNAL: v = 1; break;
+		case STATE::INTERNAL: v = 2; break;
+		default: return false;
+	}
+	return epicsInterface->putValue2(pvStructs.at(LLRFRecords::TRIG_SOURCE), v);
+}
+STATE LLRF::getTrigSource()const
+{
+	return trig_source.second;
+}
 
 
 

@@ -54,15 +54,15 @@ void EPICSLLRFInterface::update_TRIG_SOURCE(const struct event_handler_args args
 {
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	recastLLRF->trig_state.first = tv->stamp;
+	recastLLRF->trig_source.first = tv->stamp;
 	switch (tv->value)
 	{
-	case 0:		recastLLRF->trig_state.second = STATE::OFF; break;
-	case 1:		recastLLRF->trig_state.second = STATE::EXTERNAL; break;
-	case 2:		recastLLRF->trig_state.second = STATE::INTERNAL; break;
+	case 0:		recastLLRF->trig_source.second = STATE::OFF; break;
+	case 1:		recastLLRF->trig_source.second = STATE::EXTERNAL; break;
+	case 2:		recastLLRF->trig_source.second = STATE::INTERNAL; break;
 	}
 	messenger.printDebugMessage("EPICS update_TRIG_SOURCE FOR: " + recastLLRF->getHardwareName(), 
-		" ", ENUM_TO_STRING(recastLLRF->trig_state.second));
+		" ", ENUM_TO_STRING(recastLLRF->trig_source.second));
 }
 
 void EPICSLLRFInterface::update_PULSE_SHAPE(const struct event_handler_args args)

@@ -34,6 +34,7 @@ public:
 
 
 
+
     static void updateInterLockStatus(const std::string& ch, const std::string& CH, const struct event_handler_args& args);
     static void update_CH1_INTERLOCK_STATUS(const struct event_handler_args args);
     static void update_CH2_INTERLOCK_STATUS(const struct event_handler_args args);

@@ -64,6 +64,17 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRF>())->to_python_target_type());
 		if (is_registered) return;
+
+
+		// function pointers for overloads that are ambiguous when exposing to Python
+		boost::python::list(LLRF::*getRollingAverage_single)(const std::string&)const = &LLRF::getRollingAverage_Py;
+		boost::python::dict(LLRF::*getRollingAverage_multiple)()const = &LLRF::getRollingAverage_Py;
+		bool(LLRF::*setShouldKeepRollingAverage_single)(const std::string&) = &LLRF::setShouldKeepRollingAverage;
+		void(LLRF::*setShouldKeepRollingAverage_multiple)() = &LLRF::setShouldKeepRollingAverage;
+		bool(LLRF::*setShouldNotKeepRollingAverage_single)(const std::string&) = &LLRF::setShouldNotKeepRollingAverage;
+		void(LLRF::*setShouldNotKeepRollingAverage_multiple)() = &LLRF::setShouldNotKeepRollingAverage;
+
+
 		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
 			
 			//.def("printSetupData", &LLRF::printSetupData) // for debugging 
@@ -85,14 +96,40 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getOperatingPhase", &LLRF::getOperatingPhase)
 			
 			
-			
-			
+					
 			.def("startTraceMonitoring", &LLRF::startTraceMonitoring)
 			.def("stopTraceMonitoring", &LLRF::stopTraceMonitoring)
+
+						
+			.def("getRollingAverage", getRollingAverage_single)
+			.def("getRollingAverage", getRollingAverage_multiple)
+			.def("setShouldKeepRollingAverage", setShouldKeepRollingAverage_single)
+			.def("setShouldKeepRollingAverage", setShouldKeepRollingAverage_multiple)
+			.def("setShouldNotKeepRollingAverage", setShouldNotKeepRollingAverage_single)
+			.def("setShouldNotKeepRollingAverage", setShouldNotKeepRollingAverage_multiple)
+			.def("getRollingAverage", getRollingAverage_single)
+			.def("getRollingAverage", getRollingAverage_multiple)
+
+
+			.def("resetAllRollingAverage", &LLRF::resetAllRollingAverage)
+			.def("resetRollingAverage", &LLRF::resetRollingAverage)
+			
+
+			.def("resetAllRollingAverage", &LLRF::resetAllRollingAverage)
+			.def("resetRollingAverage", &LLRF::resetRollingAverage)
+			.def("setKeepRollingAverage", &LLRF::setKeepRollingAverage)
+			.def("setRollingAverageSize", &LLRF::setRollingAverageSize)
+			.def("setAllRollingAverageSize", &LLRF::setAllRollingAverageSize)
+			.def("getRollingAverageSize", &LLRF::getRollingAverageSize)
+			.def("getRollingAverageCount", &LLRF::getRollingAverageCount)
+			.def("isKeepingRollingAverage", &LLRF::isKeepingRollingAverage)
+			.def("hasRollingAverage", &LLRF::hasRollingAverage)
+			.def("getRollingAverageTraceBuffer", &LLRF::getRollingAverageTraceBuffer_Py)
+			.def("getAllRollingAverageTraceBuffer", &LLRF::getAllRollingAverageTraceBuffer_Py)
+
 			
 
 
-		
 			
 			//.def("setAllTraceBufferSize", &LLRF::setAllTraceBufferSize)
 

@@ -308,9 +308,23 @@ public:
 	boost::python::dict getAllTraceData_Py();
 
 
+	//---------------------------------------------------------------------------------------------------------
+	public:
+		bool trigOff();
+		bool trigInt();
+		bool trigExt();
+		STATE getTrigSource()const;
+	private:
+		bool setTrig(const STATE new_state);
+	//---------------------------------------------------------------------------------------------------------
+
 	private:
 		void updateRollingAverage(TraceData& data);
 	public:
+		
+
+		
+		
 		/*! Rest all the rolling average data, clears containers, reset rollign_avergae_count to zero,  (does not change values such as rolling_average_size). */
 		void resetAllRollingAverage();
 		/*! 
@@ -615,9 +629,9 @@ protected:
 	/*! maximum kylstron forward power from latest trace*/
 	std::pair<epicsTimeStamp, double > kly_fwd_power_max;
 
-
-
-
+	/*! source of LLRF trigger one of: OFF, INTERNAL, EXTERNAL */
+	std::pair<epicsTimeStamp, STATE > trig_source;
+		
 	/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
 	std::pair<epicsTimeStamp, double > llrf_pulse_duration;
 
@@ -632,9 +646,6 @@ protected:
 	size_t trace_data_buffer_size;
 	
 	
-	/*! State of the LLRF trigger, value and epicstimestamp 	*/
-	std::pair<epicsTimeStamp, STATE> trig_state;
-
 	/*! State of the top level LLRF interlock, value and epicstimestamp */
 	std::pair<epicsTimeStamp, STATE> interlock_state;
 
