@@ -35,6 +35,23 @@ IMG Class
    :members: IMG
    :undoc-members:
 
+
+===========================
+LaserEnergyMeter
+===========================
+.. automodule:: LaserEnergyMeter
+   :members: LaserEnergyMeter
+   :undoc-members:
+
+
+==========================
+LaserHWP
+==========================
+.. automodule:: LaserHWP
+   :members: LaserHWP
+   :undoc-members:
+
+
 ===========================
 Magnet Class
 ===========================

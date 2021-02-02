@@ -1,0 +1,14 @@
+controls_information:
+    PV: true, false
+    pv_record_map:
+        Open: UNDEFINED
+        Close: UNDEFINED
+        State: UNDEFINED
+        Cmi: UNDEFINED
+properties:
+    machine_area: UNDEFINED
+    hardware_type: Shutter
+    name: UNDEFINED
+    name_alias: UNDEFINED
+    virtual_name: UNDEFINED
+    shutter_interlock_names : element1,element2,element3

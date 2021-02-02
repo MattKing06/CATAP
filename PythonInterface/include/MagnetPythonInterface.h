@@ -38,7 +38,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 	};
 
 
-	void expose_magnet_object() {
+	void expose_magnet_object() 
+	{
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Magnet>())->to_python_target_type());
 		if (is_registered) return;
@@ -63,7 +64,6 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("messagesOn", &Magnet::messagesOn)
 			.def("messagesOff", &Magnet::messagesOff)
 			;
-
 	}
 
 	//typedef std::pair<int, int> IntPair;

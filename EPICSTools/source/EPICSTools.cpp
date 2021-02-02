@@ -464,3 +464,29 @@ boost::python::list EPICSTools::getArray_Py(const std::string& pv)
 		return getterMap[pv].getArray_Py();
 	}
 }
+
+boost::python::list EPICSTools::getArray_Py2(const std::string& pv, unsigned long COUNT)
+{
+	unsigned long count_to_use = COUNT;
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		if (getterMap[pv].pv.COUNT > COUNT)
+		{
+			getterMap[pv].pv.COUNT = COUNT; // this gets reset in the  getArray_Py after the data is got 
+		}
+
+
+		return getterMap[pv].getArray_Py();
+	}
+	else
+	{
+		std::cout << "creating getter for: " << pv << std::endl;
+		getterMap[pv] = Getter(pv, mode);
+		if (getterMap[pv].pv.COUNT > COUNT)
+		{
+			getterMap[pv].pv.COUNT = COUNT; // this gets reset in the  getArray_Py after the data is got 
+		}
+		std::cout << "created getter" << std::endl;
+		return getterMap[pv].getArray_Py();
+	}
+}

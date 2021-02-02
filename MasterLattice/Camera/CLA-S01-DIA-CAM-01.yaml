@@ -48,7 +48,7 @@ controls_information:
         HDF_FileNumber    : CLA-S01-DIA-CAM-01:HDF:FileNumber
         HDF_WriteFile    : CLA-S01-DIA-CAM-01:HDF:WriteFile
         CAM_Acquire    : CLA-S01-DIA-CAM-01:CAM:Acquire
-        CAM_Acquire    : CLA-S01-DIA-CAM-01:CAM:Acquire
+        CAM_Acquire_RBV    : CLA-S01-DIA-CAM-01:CAM:Acquire_RBV
         HDF_Capture    : CLA-S01-DIA-CAM-01:HDF:Capture
         HDF_NumCapture    : CLA-S01-DIA-CAM-01:HDF:NumCapture
         MAGICK_FileName    : CLA-S01-DIA-CAM-01:MAGICK:FileName

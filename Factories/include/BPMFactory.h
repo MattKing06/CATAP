@@ -33,7 +33,7 @@ public:
 	@param[in] copyBPMFactory: the BPMFactory we want to copy over.*/
 	BPMFactory(const BPMFactory& copyBPMFactory);
 	/*! BPMFactory destructor.
-	Goes through all BPM objects in the screenMap and removes connections/subscriptions to EPICS if they exist.*/
+	Goes through all BPM objects in the bpmMap and removes connections/subscriptions to EPICS if they exist.*/
 	~BPMFactory();
 	/*! The main function that sets up EPICS connections and subscriptions to all
 		screens in the BPM map. We set up all channels before sending them to EPICS
