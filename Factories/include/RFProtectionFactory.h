@@ -24,10 +24,11 @@ public:
 	void messagesOff();
 	bool isDebugOn();
 	bool isMessagingOn();
+	bool hasBeenSetup;
+
 private:
 	ConfigReader reader;
 	STATE mode;
-	bool hasBeenSetup;
 	std::map<std::string, RFProtection> RFProtectionMap;
 };
 

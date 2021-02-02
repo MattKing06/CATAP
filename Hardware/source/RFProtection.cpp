@@ -8,12 +8,23 @@ RFProtection::RFProtection()
 RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
 	RFProtectionParamMap(paramMap),
-	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface())),
-	protectionType(string_to_hardware_type_map.at(paramMap.at("prot_type")))
+	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface()))
 {
+	messenger.printMessage("setMasterLatticeData data for: ", hardwareName);
+	setMasterLatticeData();
 	messenger.printMessage("constructing PV data for: ", hardwareName);
 	setPVStructs();
 }
+
+
+void RFProtection::setMasterLatticeData()
+{
+	messenger.printMessage("setMasterLatticeData ", hardwareName);
+	//protectionType(string_to_hardware_type_map.at(RFProtectionParamMap.at("prot_type")))
+}
+
+
+
 
 RFProtection::RFProtection(const RFProtection& copyRFProtection)
 {

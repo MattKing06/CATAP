@@ -18,7 +18,7 @@ public:
 	RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode);
 	RFProtection(const RFProtection& copyRFProtection);
 	~RFProtection();
-	void setPVStructs();
+
 	TYPE getProtectionType() const;
 	std::string getProtectionTypeAsStr() const;
 	EPICSRFProtectionInterface_sptr epicsInterface;
@@ -29,6 +29,11 @@ public:
 	void messagesOff();
 private:
 	TYPE protectionType;
+
+	void setMasterLatticeData();
+
+	void setPVStructs();
+
 };
 
 

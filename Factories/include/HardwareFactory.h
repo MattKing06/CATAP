@@ -11,6 +11,7 @@
 #include "CameraFactory.h"
 #include "LaserEnergyMeterFactory.h"
 #include "LaserHWPFactory.h"
+#include "RFProtectionFactory.h"
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -52,6 +53,12 @@ public:
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
 
 	ShutterFactory& getShutterFactory();
+	
+	
+	RFProtectionFactory& getRFProtectionFactory();
+
+
+
 
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
@@ -73,6 +80,8 @@ public:
 	LaserEnergyMeterFactory laserEnergyMeterFactory;
 	LaserHWPFactory laserHWPFactory;
 	ShutterFactory shutterFactory;
+	RFProtectionFactory rfProtectionFactory;
+
 	// virtual physical or offline
 	STATE mode;
 	LoggingSystem messenger;
