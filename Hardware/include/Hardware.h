@@ -87,6 +87,14 @@ public:
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
 
+	static std::map<std::string, TYPE> create_map()
+	{
+		std::map<std::string, TYPE> m;
+		m["Magnet"] = TYPE::MAGNET;
+		return m;
+	}
+	static const std::map<std::string, TYPE> string_to_hardware_type_map;
+
 	HardwareState state_IO;
 
 // <<<<<<< HEAD

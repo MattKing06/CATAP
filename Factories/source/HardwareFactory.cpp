@@ -16,6 +16,8 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	chargeFactory(ChargeFactory(mode)),
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
+	imgFactory(IMGFactory(mode)),
+	rfProtectionFactory(RFProtectionFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
 	cameraFactory(CameraFactory(mode)),
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
@@ -84,6 +86,32 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 }
 
 
+
+
+
+RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
+{
+	messenger.printMessage("getRFProtectionFactory Called");
+	if (!rfProtectionFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getRFProtectionFactory calling setup");
+		bool setup = rfProtectionFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getRFProtectionFactory Complete");
+			return rfProtectionFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup RFProtectionFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getRFProtectionFactory Complete");
+		return rfProtectionFactory;
+	}
+}
 
 ShutterFactory& HardwareFactory::getShutterFactory()
 {

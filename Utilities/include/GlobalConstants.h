@@ -37,8 +37,17 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::VELA), TYPE::VELA},
 		{ENUM_TO_STRING(TYPE::VELA_GUN), TYPE::VELA_GUN},
 		{ENUM_TO_STRING(TYPE::CLARA_GUN), TYPE::CLARA_GUN},
+
 		{ENUM_TO_STRING(TYPE::HRRG), TYPE::HRRG},
 		{ENUM_TO_STRING(TYPE::LRRG), TYPE::LRRG},
+		{ENUM_TO_STRING(TYPE::CLARA_HRRG), TYPE::CLARA_HRRG},
+		{ENUM_TO_STRING(TYPE::CLARA_LRRG), TYPE::CLARA_LRRG},
+		{ENUM_TO_STRING(TYPE::VELA_HRRG), TYPE::VELA_HRRG},
+		{ENUM_TO_STRING(TYPE::VELA_LRRG), TYPE::VELA_LRRG},
+
+		{ENUM_TO_STRING(TYPE::HRRG_GUN), TYPE::HRRG_GUN},
+		{ENUM_TO_STRING(TYPE::LRRG_GUN), TYPE::LRRG_GUN},
+
 		{ENUM_TO_STRING(TYPE::GUN), TYPE::GUN},
 		{ENUM_TO_STRING(TYPE::L01), TYPE::L01},
 		{ENUM_TO_STRING(TYPE::S01), TYPE::S01},
@@ -98,6 +107,16 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
 		{"llrf", TYPE::LLRF_TYPE},
+
+		// RF PROTECTION
+		{ENUM_TO_STRING(TYPE::RF_PROTECTION), TYPE::RF_PROTECTION},
+		{"RFProtection", TYPE::RF_PROTECTION},
+		{"rfprotection", TYPE::RF_PROTECTION},
+		{ENUM_TO_STRING(TYPE::GENERAL), TYPE::GENERAL},
+		{ENUM_TO_STRING(TYPE::ENABLE), TYPE::ENABLE},
+		{ENUM_TO_STRING(TYPE::RESET), TYPE::RESET},
+		{ENUM_TO_STRING(TYPE::TEST), TYPE::TEST},
+
 
 		{ENUM_TO_STRING(TYPE::ENERGYMETER), TYPE::ENERGYMETER},
 		{"LaserEnergyMeter", TYPE::ENERGYMETER},
@@ -328,12 +347,13 @@ namespace GlobalConstants
 	/*! Unsigned Integer-type for 999999 */
 	const size_t nine99999 = 999999;
 
-
+	const unsigned short zero_us = 0;
+	const unsigned short one_us = 1;
 
 	/*! Unsigned Short-type to represent ACTIVATE to EPICS */
-	const unsigned short EPICS_ACTIVATE = 1;
+	const unsigned short EPICS_ACTIVATE = one_us;
 	/*! Unsigned Short-type to represent SEND to EPICS */
-	const unsigned short EPICS_SEND = 0;
+	const unsigned short EPICS_SEND = zero_us;
 	/*! Unsigned Short-type to represent RESET to EPICS after ACTIVATE and SEND have been sent */
 	const unsigned short EPICS_RESET = 1;
 

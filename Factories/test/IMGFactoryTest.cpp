@@ -8,8 +8,8 @@
 #include <chrono>
 #include <thread>
 
-struct fixture {
-	fixture()
+struct img_fixture {
+	img_fixture()
 	{
 		imgFac = IMGFactory(STATE::VIRTUAL);
 		imgFac.messagesOn();
@@ -17,7 +17,7 @@ struct fixture {
 		BOOST_TEST_MESSAGE("setup fixture");
 		status = imgFac.setup("nominal");
 	}
-	~fixture() { BOOST_TEST_MESSAGE("teardown fixture"); }
+	~img_fixture() { BOOST_TEST_MESSAGE("teardown fixture"); }
 
 	IMGFactory imgFac;
 	bool status;
@@ -25,7 +25,7 @@ struct fixture {
 
 };
 
-BOOST_FIXTURE_TEST_SUITE(IMGFactoryTestSuite, fixture)
+BOOST_FIXTURE_TEST_SUITE(IMGFactoryTestSuite, img_fixture)
 BOOST_AUTO_TEST_CASE(start_test)
 {
 	BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");

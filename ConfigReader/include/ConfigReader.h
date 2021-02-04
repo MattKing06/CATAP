@@ -13,6 +13,7 @@
 #include <LaserEnergyMeter.h>
 #include <LaserHWP.h>
 #include <IMG.h>
+#include <RFProtection.h>
 #include <string>
 #include <fstream>
 #include <iostream>

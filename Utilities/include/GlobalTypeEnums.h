@@ -75,6 +75,12 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(CLARA_GUN)
 	(HRRG)
 	(LRRG)
+	(CLARA_HRRG)
+	(CLARA_LRRG)
+	(VELA_HRRG)
+	(VELA_LRRG)
+	(HRRG_GUN)
+	(LRRG_GUN)
 	(LAS) // TODO change to laser or laser transport ??? 
 	(VELA_LASER)
 	(CLARA_LASER)
@@ -108,9 +114,9 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VERTICAL)
 	(PNEUMATIC)
 	(CHARGE)
-	(BPM_TYPE) // TODO hmm this has the same name as the object !! adn so breaks thigns
+	(BPM_TYPE) // TODO hmm this has the same name as the object !! and so breaks things
 	(VALVE)
-	(IMG_TYPE)
+	(IMG_TYPE) // 
 	(LLRF_TYPE)
 	//
 	(CAMERA_TYPE)
@@ -123,6 +129,12 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 
 	(POWER)
 	(PHASE)
+	// PROT 
+	(RF_PROTECTION)
+	(ENABLE)
+	(GENERAL)
+	(RESET)
+	(TEST)
 
 )
 
