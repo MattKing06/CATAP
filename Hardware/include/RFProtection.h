@@ -6,6 +6,8 @@
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
 
 class EPICSRFProtectionInterface;
 
@@ -19,20 +21,74 @@ public:
 	RFProtection(const RFProtection& copyRFProtection);
 	~RFProtection();
 
+	/*! get the name alises for this RFProtection
+	@param[out] names, vector contianing all the alias names */
+	std::vector<std::string> getAliases() const;
+	/*! get the name alises for this RFProtection (python version)
+		@param[out] names, python list contianing all the alias names */
+	boost::python::list getAliases_Py() const;
+
 	TYPE getProtectionType() const;
 	std::string getProtectionTypeAsStr() const;
 	EPICSRFProtectionInterface_sptr epicsInterface;
-	std::map<std::string, std::string> RFProtectionParamMap;
+	
+
+	long getCmi()const;
+	STATE getStatus()const;
+	std::vector<int> getKeyBits()const;
+	std::vector<bool>  getKeyBitValues()const;
+
+		
+	bool isGood() const;
+	bool isNotGood() const;
+	bool isBad() const;
+
+	bool reset() const;
+	bool enable() const;
+	bool disable() const;
+
+	
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+
+	
+	friend class EPICSRFProtectionInterface;
+	friend class RFProtectionFactory;
+protected:
+	// called from EPICS to update the GETSETI variable! 
+	/*! switch the magnet PSU on	*/
+	//	void updateGETSETI(const double& value);
+	/*! latest readi value and epicstimestamp 	*/
+	std::pair<epicsTimeStamp, long > cmi;
+	
+
+	std::vector<int>  protKeyBits;
+	std::vector<bool> protKeyBitValues;
+	
+	std::pair<epicsTimeStamp, STATE > status;
+
+
+
+
 private:
 	TYPE protectionType;
 
 	void setMasterLatticeData();
 
 	void setPVStructs();
+
+	// TODO put in hardware Object for each type 
+	/*! alternative names for this object */
+	std::vector<std::string> aliases;
+
+	std::map<std::string, std::string> RFProtectionParamMap;
+
+
+	bool sendCmmand();
+
 
 };
 

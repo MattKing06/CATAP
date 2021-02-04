@@ -11,5 +11,5 @@ properties:
   machine_area: LRRG_GUN
   prot_type: VELA_LRRG
   name: CLA-GUN-RF-PROTVL-01
-  name_alias: VELA_LRRG
+  name_alias: GUN-PROTVL
 

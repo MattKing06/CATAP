@@ -13,6 +13,10 @@ public:
 	void retrieveUpdateFunctionForRecord(const pvStruct& pv);
 	static void updateProtectionStatus(const struct event_handler_args args);
 	static void updateProtectionCmi(const struct event_handler_args args);
+
+	bool sendCmmands(const std::vector<const chtype*>& CHTYPE, const std::vector<const chid*>& CHID);
+	
+
 	bool setProtectionOn(const pvStruct& pv);
 	bool setProtectionOff(const pvStruct& pv);
 	bool resetProtection(const pvStruct& pv);

@@ -11,5 +11,5 @@ properties:
   machine_area: GUN
   prot_type: GENERAL
   name: CLA-GUN-RF-PROTG-01
-  name_alias: GUN_GENERAL
+  name_alias: GUN-PROTG
 

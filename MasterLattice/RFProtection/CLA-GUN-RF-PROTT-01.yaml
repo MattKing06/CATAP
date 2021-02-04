@@ -11,5 +11,5 @@ properties:
   machine_area: GUN
   prot_type: TEST
   name: CLA-GUN-RF-PROTT-01
-  name_alias: GUN_TEST
+  name_alias: GUN-PROTT,GUN-TEST
 

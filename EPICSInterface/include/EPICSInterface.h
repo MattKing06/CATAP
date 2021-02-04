@@ -106,6 +106,9 @@ public:
 	void detachFromContext();
 	/*! Used to send the buffered requests to EPICS using ca_pend_io function*/
 	static void sendToEPICS();
+	/*! Used to send the buffered requests to EPICS using ca_pend_io function
+	* @param[out] int : the status returned from epics from the ca_pend_io call	*/
+	static int sendToEPICSReturnStatus();
 	/*! Converts an epicsTimeStamp into a formatted string for printing the timestamp.
 	* @param[in] stamp : The timestamp we want to convert to string
 	* @param[out] stampString : The string representation of the epicsTimeStamp input.*/

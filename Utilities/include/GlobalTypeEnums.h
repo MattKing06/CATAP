@@ -61,7 +61,6 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	/// machine areas  are these "types" ?? YES!!
 	(UNKNOWN_AREA)
 	(ALL_VELA_CLARA)
-	// LLRF and RFProtection Types
 	(VELA_GUN)
 	(CLARA_GUN)
 	(CLARA_HRRG)
@@ -70,10 +69,6 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VELA_LRRG)
 	(HRRG_GUN)
 	(LRRG_GUN)
-	(ENABLE)
-	(GENERAL)
-	(RESET)
-	(TEST)
 	(LAS) // TODO change to laser or laser transport ??? 
 	(VELA_LASER)
 	(CLARA_LASER)
@@ -107,16 +102,23 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VERTICAL)
 	(PNEUMATIC)
 	(CHARGE)
-	(BPM_TYPE) // TODO hmm this has the same name as the object !! adn so breaks thigns
+	(BPM_TYPE) // TODO hmm this has the same name as the object !! and so breaks things
 	(VALVE)
-	(IMG_TYPE)
+	(IMG_TYPE) // 
 	(LLRF_TYPE)
-	(RF_PROTECTION)
 	(CAMERA_TYPE)
 	(HWP)
 	(ENERGYMETER)
 	// shutter objects
 	(SHUTTER)
+
+	// PROT 
+	(RF_PROTECTION)
+	(ENABLE)
+	(GENERAL)
+	(RESET)
+	(TEST)
+
 )
 
 #endif //GLOBAL_TYPE_ENUMS_H_

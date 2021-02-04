@@ -11,4 +11,4 @@ properties:
   machine_area: L01
   prot_type: TEST
   name: CLA-L01-RF-PROTT-01
-  name_alias: L01_TEST
+  name_alias: L01-PROTT

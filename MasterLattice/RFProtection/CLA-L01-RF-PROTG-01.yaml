@@ -11,4 +11,4 @@ properties:
   machine_area: L01
   prot_type: GENERAL
   name: CLA-L01-RF-PROTG-01
-  name_alias: L01_GENERAL
+  name_alias: L01-PROTG

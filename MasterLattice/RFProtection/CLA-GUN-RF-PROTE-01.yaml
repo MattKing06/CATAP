@@ -11,5 +11,5 @@ properties:
   machine_area: GUN
   prot_type: ENABLE
   name: CLA-GUN-RF-PROTE-01
-  name_alias: GUN_ENABLE
+  name_alias: GUN-PROTE
 

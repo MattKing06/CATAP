@@ -11,5 +11,5 @@ properties:
   machine_area: L01
   prot_type: ENABLE
   name: CLA-L01-RF-PROTE-01
-  name_alias: L01_ENABLE
+  name_alias: L01-PROTE
 

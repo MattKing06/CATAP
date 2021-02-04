@@ -11,5 +11,5 @@ properties:
   machine_area: LRRG_GUN
   prot_type: CLARA_LRRG
   name: CLA-GUN-RF-PROTCL-01
-  name_alias: CLARA_LRRG
+  name_alias: GUN-PROTCL
 

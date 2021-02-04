@@ -1,5 +1,10 @@
 #include <RFProtection.h>
 #include <RFProtectionPVRecords.h>
+#include "boost/algorithm/string/split.hpp"
+// CATAP includes
+#include "PythonTypeConversions.h"
+#include "GlobalConstants.h"
+#include "GlobalFunctions.h"
 
 RFProtection::RFProtection()
 {
@@ -15,17 +20,6 @@ RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, S
 	messenger.printMessage("constructing PV data for: ", hardwareName);
 	setPVStructs();
 }
-
-
-void RFProtection::setMasterLatticeData()
-{
-	messenger.printMessage("setMasterLatticeData ", hardwareName);
-	//protectionType(string_to_hardware_type_map.at(RFProtectionParamMap.at("prot_type")))
-}
-
-
-
-
 RFProtection::RFProtection(const RFProtection& copyRFProtection)
 {
 }
@@ -33,6 +27,108 @@ RFProtection::RFProtection(const RFProtection& copyRFProtection)
 RFProtection::~RFProtection()
 {
 }
+
+
+void RFProtection::setMasterLatticeData()
+{
+	messenger.printMessage("setMasterLatticeData ", hardwareName);
+	//protectionType(string_to_hardware_type_map.at(RFProtectionParamMap.at("prot_type")))
+
+	boost::split(aliases, RFProtectionParamMap.find("name_alias")->second, [](char c) {return c == ','; });
+
+
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, RFProtectionParamMap.at("prot_type")))
+	{
+		protectionType = GlobalConstants::stringToTypeMap.at(RFProtectionParamMap.at("prot_type"));
+		messenger.printMessage("protectionType = ", ENUM_TO_STRING(protectionType));
+
+	}
+	else
+	{
+		messenger.printMessage("!!ERROR!! Can't find protectionType = ", RFProtectionParamMap.at("prot_type"));
+	}
+
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, RFProtectionParamMap.at("machine_area")))
+	{
+		machine_area = GlobalConstants::stringToTypeMap.at(RFProtectionParamMap.at("machine_area"));
+		messenger.printMessage("machine_area = ", ENUM_TO_STRING(machine_area));
+
+	}
+	else
+	{
+		messenger.printMessage("!!ERROR!! Can't find machine_area = ", RFProtectionParamMap.at("machine_area"));
+	}
+
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, RFProtectionParamMap.at("hardware_type")))
+	{
+		machine_area = GlobalConstants::stringToTypeMap.at(RFProtectionParamMap.at("hardware_type"));
+		messenger.printMessage("machine_area = ", ENUM_TO_STRING(machine_area));
+
+	}
+	else
+	{
+		messenger.printMessage("!!ERROR!! Can't find hardware_type = ", RFProtectionParamMap.at("hardware_type"));
+	}
+
+
+}
+
+
+
+
+long RFProtection::getCmi()const
+{
+	return cmi.second;
+}
+STATE RFProtection::getStatus()const
+{
+	return status.second;
+}
+std::vector<int>  RFProtection::getKeyBits()const
+{
+	return protKeyBits;
+}
+std::vector<bool> RFProtection::getKeyBitValues() const
+{
+	return protKeyBitValues;
+}
+
+bool RFProtection::isGood() const
+{
+	return status.second == STATE::GOOD;
+}
+bool RFProtection::isNotGood()const
+{
+	return status.second != STATE::GOOD;
+}
+
+bool RFProtection::isBad() const
+{
+	return status.second == STATE::BAD;
+}
+
+bool RFProtection::reset() const
+{
+	return false;
+}
+bool RFProtection::enable() const
+{
+	return false;
+}
+bool RFProtection::disable() const
+{
+	return false;
+}
+
+std::vector<std::string> RFProtection::getAliases() const
+{
+	return aliases;
+}
+boost::python::list RFProtection::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+
 
 void RFProtection::setPVStructs()
 {
@@ -63,6 +159,7 @@ TYPE RFProtection::getProtectionType() const
 
 std::string RFProtection::getProtectionTypeAsStr() const
 {
+
 	return ENUM_TO_STRING(protectionType);
 }
 
