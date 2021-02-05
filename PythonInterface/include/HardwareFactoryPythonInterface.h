@@ -70,6 +70,9 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.add_property("shutterFactory", &HardwareFactory::shutterFactory)
 
 
+			.def("getRFModulatorFactory", &HardwareFactory::getRFModulatorFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+
+
 			.def("getRFProtectionFactory", &HardwareFactory::getRFProtectionFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("shutterFactory", &HardwareFactory::rfProtectionFactory)
 

@@ -23,6 +23,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
 	laserHWPFactory(LaserHWPFactory(mode)),
 	shutterFactory(ShutterFactory(mode)),
+	rfmodulatorFactory(RFModulatorFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -112,6 +113,32 @@ RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
 		return rfProtectionFactory;
 	}
 }
+
+
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory()
+{
+	messenger.printMessage("getRFModulatorFactory Called");
+	if (!rfmodulatorFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getRFModulatorFactory calling setup");
+		bool setup = rfmodulatorFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getRFModulatorFactory Complete");
+			return rfmodulatorFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup getRFModulatorFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getRFModulatorFactory Complete");
+		return rfmodulatorFactory;
+	}
+}
+
 
 ShutterFactory& HardwareFactory::getShutterFactory()
 {

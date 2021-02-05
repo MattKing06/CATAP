@@ -12,6 +12,7 @@
 #include "LaserEnergyMeterFactory.h"
 #include "LaserHWPFactory.h"
 #include "RFProtectionFactory.h"
+#include "RFModulatorFactory.h"
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -89,6 +90,9 @@ public:
 	
 	
 	RFProtectionFactory& getRFProtectionFactory();
+	
+	
+	RFModulatorFactory& getRFModulatorFactory();
 
 
 
@@ -114,6 +118,7 @@ public:
 	LaserHWPFactory laserHWPFactory;
 	ShutterFactory shutterFactory;
 	RFProtectionFactory rfProtectionFactory;
+	RFModulatorFactory rfmodulatorFactory;
 
 	// virtual physical or offline
 	STATE mode;

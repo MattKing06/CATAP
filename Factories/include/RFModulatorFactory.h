@@ -13,15 +13,34 @@ public:
 	RFModulatorFactory(const RFModulatorFactory& copyFactory);
 	~RFModulatorFactory();
 	LoggingSystem messenger;
-	void setup(std::string version);
+	bool setup(std::string version);
 	bool hasBeenSetup;
-	std::map<std::string, RFModulator> RFModulatorMap;
+	void populateRFModulatorMap();
+	std::vector<std::string> getAllRFModulatorNames();
+
+
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
 	bool isDebugOn();
 	bool isMessagingOn();
+
+private:
+	STATE mode;
+	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
+	ConfigReader reader;
+
+
+	void updateNameAliasMap(const RFModulator& prot);
+
+	std::map<std::string, RFModulator> RFModulatorMap;
+
+	std::map<std::string, std::string> alias_name_map;
+
+	// used when we need to return values from a requested rf_prot name that does not exist 
+	RFModulator dummy_prot;
 };
 
 #endif // RF_MODULATOR_FACTORY_H_

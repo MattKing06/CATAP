@@ -4,7 +4,11 @@ RFModulatorFactory::RFModulatorFactory()
 {
 }
 
-RFModulatorFactory::RFModulatorFactory(STATE mode)
+RFModulatorFactory::RFModulatorFactory(STATE mode):
+	messenger(LoggingSystem(true, true)),
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("RFModulator", mode))
 {
 }
 
@@ -16,8 +20,80 @@ RFModulatorFactory::~RFModulatorFactory()
 {
 }
 
-void RFModulatorFactory::setup(std::string version)
+void RFModulatorFactory::populateRFModulatorMap()
 {
+	messenger.printDebugMessage("RFModulatorFactory is populating the RFProtection map");
+	if (!reader.hasMoreFilesToParse())
+	{
+		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
+	}
+	while (reader.hasMoreFilesToParse())
+	{
+		messenger.printDebugMessage("RFModulatorFactorycalling parseNextYamlFile");
+		reader.parseNextYamlFile<RFModulator>(RFModulatorMap);
+	}
+}
+
+std::vector<std::string> RFModulatorFactory::getAllRFModulatorNames()
+{
+	std::vector<std::string> rfProtNames;
+	for (auto& rfProt : RFModulatorMap)
+	{
+		rfProtNames.push_back(rfProt.first);
+	}
+	return rfProtNames;
+}
+
+bool RFModulatorFactory::setup(std::string version)
+{
+	if (hasBeenSetup)
+	{
+		messenger.printMessage("RF Protection Factory has already been setup");
+		return true;
+	}
+	messenger.printMessage("setup populateRFProtectionMap");
+	populateRFModulatorMap();
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		// Could not find any YAML files for configuration..
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
+	messenger.printMessage("setup setupChannels");
+	/*setupChannels();
+	EPICSInterface::sendToEPICS();
+	messenger.printMessage("setup connections");
+	for (auto& prot : RFProtectionMap)
+	{
+		updateNameAliasMap(prot.second);
+		std::map<std::string, pvStruct>& pvStructs = prot.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			messenger.printDebugMessage("Setup ", pv.first);
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				setMonitorStatus(pv.second);
+				prot.second.epicsInterface->retrieveCOUNT(pv.second);
+				prot.second.epicsInterface->retrieveCHTYPE(pv.second);
+				prot.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.first, " ", pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
+					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
+
+				if (pv.second.monitor)
+				{
+					prot.second.epicsInterface->createSubscription(prot.second, pv.second);
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.second.fullPVName, " COULD NOT CONNECT TO EPICS.");
+			}
+		}
+		EPICSInterface::sendToEPICS();
+	}*/
+	hasBeenSetup = true;
+	return hasBeenSetup;
 }
 
 void RFModulatorFactory::debugMessagesOn()

@@ -1,23 +1,54 @@
 #include <RFModulator.h>
+#include <GlobalFunctions.h>
+#include <RFModulatorPVRecords.h>
 
-RFModulator::RFModulator()
+RFModulator::RFModulator() : 
+	Hardware()
 {
 }
 
-RFModulator::RFModulator(const std::map<std::string, std::string>& paramMap, STATE mode)
+RFModulator::RFModulator(const std::map<std::string, std::string>& paramMap, STATE mode) :
+Hardware(paramMap, mode),
+epicsInterface(boost::make_shared<EPICSRFModulatorInterface>(EPICSRFModulatorInterface()))
 {
+	messenger.printMessage("setMasterLatticeData data for: ", hardwareName);
+	//setMasterLatticeData();
+	messenger.printMessage("constructing PV data for: ", hardwareName);
+	setPVStructs();
 }
-
 RFModulator::RFModulator(const RFModulator& copyRFModulator)
 {
 }
+RFModulator::~RFModulator(){}
 
-RFModulator::~RFModulator()
-{
-}
+
+
 
 void RFModulator::setPVStructs()
 {
+	for (auto&& record : RFModulatorRecords::rfProtectionRecordsList)
+	{
+		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
+		{
+			messenger.printDebugMessage(hardwareName, " found ", record);
+			pvStructs[record] = pvStruct();
+			pvStructs[record].pvRecord = record;
+			std::string PV = specificHardwareParameters.find(record)->second;
+			switch (mode)
+			{
+			case(STATE::VIRTUAL):
+				pvStructs[record].fullPVName = "VM-" + PV;
+				break;
+			case(STATE::PHYSICAL):
+				pvStructs[record].fullPVName = PV;
+				break;
+			default:
+				pvStructs[record].fullPVName = PV;
+				break;
+			}
+		}
+
+	}
 }
 
 void RFModulator::debugMessagesOn()

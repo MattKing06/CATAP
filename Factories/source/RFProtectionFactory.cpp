@@ -122,7 +122,7 @@ bool RFProtectionFactory::setup(const std::string& version)
 		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
-	return true;
+	return hasBeenSetup;
 }
 
 
