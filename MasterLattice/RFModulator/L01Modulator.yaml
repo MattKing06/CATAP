@@ -80,5 +80,5 @@ controls_information:
 properties:
   hardware_type: RFModulator 
   machine_area: L01
-  name: CLA-L01-HRF-MOD-01:
+  name: CLA-L01-HRF-MOD-01
   name_alias: L01

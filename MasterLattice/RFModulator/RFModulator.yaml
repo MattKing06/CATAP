@@ -1,8 +1,9 @@
 controls_information:
   PV: true
   pv_record_map:
+    HOLD_RF_ON : dummy
 properties:
   hardware_type: RFModulator 
-  machine_area: L01
-  name: CLA-L01-RF-PROTE-01
-  name_alias: L01-PROTE
+  machine_area: UNKNOWN_AREA
+  name: UNKNOWN_NAME
+  name_alias: dummy

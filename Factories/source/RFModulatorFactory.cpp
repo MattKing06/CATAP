@@ -22,14 +22,14 @@ RFModulatorFactory::~RFModulatorFactory()
 
 void RFModulatorFactory::populateRFModulatorMap()
 {
-	messenger.printDebugMessage("RFModulatorFactory is populating the RFProtection map");
+	messenger.printDebugMessage("RFModulatorFactory is populating the RFModulator map");
 	if (!reader.hasMoreFilesToParse())
 	{
 		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support");
 	}
 	while (reader.hasMoreFilesToParse())
 	{
-		messenger.printDebugMessage("RFModulatorFactorycalling parseNextYamlFile");
+		messenger.printDebugMessage("RFModulatorFactory calling parseNextYamlFile");
 		reader.parseNextYamlFile<RFModulator>(RFModulatorMap);
 	}
 }
@@ -48,10 +48,10 @@ bool RFModulatorFactory::setup(std::string version)
 {
 	if (hasBeenSetup)
 	{
-		messenger.printMessage("RF Protection Factory has already been setup");
+		messenger.printMessage("RF Modulator Factory has already been setup");
 		return true;
 	}
-	messenger.printMessage("setup populateRFProtectionMap");
+	messenger.printMessage("setup populateRFModulatorMap");
 	populateRFModulatorMap();
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{

@@ -89,6 +89,7 @@ public:
 	template<typename HardwareType>
 	void parseYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
+		messenger.printDebugMessage("parseYamlFile");
 		std::ifstream fileInput;
 		YAML::Node config;
 		YAML::Node configTemplate;
@@ -96,6 +97,7 @@ public:
 		try
 		{
 			std::string fn = ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename;
+			messenger.printDebugMessage("fn = ", fn);
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			YAML::Parser parser(fileInput);
 			messenger.printDebugMessage("Calling LoadFile fn = " + fn);

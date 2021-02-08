@@ -33,7 +33,7 @@ controls_information:
     GUN_MOD_PULSE_WIDTH_FWHM_READ  : CLA-GUNS-HRF-MOD-01:Pt:Diag:PlswthFwhmRead
     GUN_MOD_IONP_PRESSURE_READ : CLA-GUNS-HRF-MOD-01:Rf:Ionp:PresRead1
 properties:
-  hardware_type: RFModulator 
-  machine_area: GUN
-  name: CLA-GUNS-HRF-MOD-01
-  name_alias: GUN
+  hardware_type : RFModulator 
+  machine_area : GUN
+  name : CLA-GUNS-HRF-MOD-01
+  name_alias : GUN

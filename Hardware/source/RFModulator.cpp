@@ -2,8 +2,7 @@
 #include <GlobalFunctions.h>
 #include <RFModulatorPVRecords.h>
 
-RFModulator::RFModulator() : 
-	Hardware()
+RFModulator::RFModulator()
 {
 }
 
