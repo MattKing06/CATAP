@@ -32,8 +32,11 @@ private:
 	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
 	ConfigReader reader;
 
-
-	void updateNameAliasMap(const RFModulator& prot);
+	void retrieveUpdateFunctionForRecord();
+	void updateAliasNameMap(const RFModulator& mod);
+	void setMonitorStatus(pvStruct& pvStruct);
+	void setupChannels();
+	//void updateAliasNameMap(const RFModulator& mod);
 
 	std::map<std::string, RFModulator> RFModulatorMap;
 
@@ -41,6 +44,7 @@ private:
 
 	// used when we need to return values from a requested rf_prot name that does not exist 
 	RFModulator dummy_prot;
+
 };
 
 #endif // RF_MODULATOR_FACTORY_H_

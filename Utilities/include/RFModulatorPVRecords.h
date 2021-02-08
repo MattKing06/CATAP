@@ -120,7 +120,17 @@ namespace RFModulatorRecords
 	extern std::string const ERROR_DESC_20;
 
 
-	extern std::vector<std::string> const rfProtectionRecordsList;
+	extern std::vector<std::string> const rf_mod_records_list;
+	extern std::vector<std::string> const rf_mod_monitor_records_list;
+
+
+
+
+	extern std::vector<std::string> const low_level_strings;
+	extern std::vector<std::string> const low_level_values;
+
+
+
 
 }
 

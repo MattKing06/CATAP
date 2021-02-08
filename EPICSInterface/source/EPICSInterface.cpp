@@ -499,6 +499,16 @@ std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUnsignedSh
 }
 
 
+std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair(const struct event_handler_args& args)
+{
+	std::pair < epicsTimeStamp, std::string > r;
+	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = tv->value;
+	return r;
+}
+
+
 std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)
 {
 	if (args.status != ECA_NORMAL)

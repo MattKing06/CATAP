@@ -249,9 +249,14 @@ public:
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the double value returned from EPICS */
 	static std::pair<epicsTimeStamp, double> getTimeStampDoublePair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
 	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUnsignedShortPair(const struct event_handler_args& args);
-	// Add in some more for vectors as we need them ... 
-
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, string pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the string value returned from EPICS */
+	static std::pair < epicsTimeStamp, std::string > getTimeStampStringPair(const struct event_handler_args& args);
 
 	// TODO: what should this functiOn return? and how should that get passed to PYTHON users???
 	/*! Send a value to an EPICS PV over Channel Access using ca_put.
