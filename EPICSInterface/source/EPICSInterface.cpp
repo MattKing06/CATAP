@@ -1,4 +1,5 @@
 #include "EPICSInterface.h"
+#include "GlobalFunctions.h"
 #include <exception>
 #include <iostream>
 #include <cstring>
@@ -190,6 +191,10 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		else if (ca_field_type(pvStruct.CHID) == DBR_CHAR)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_CHAR;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_STRING)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_STRING;
 		}
 		else
 		{
@@ -504,7 +509,8 @@ std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair
 	std::pair < epicsTimeStamp, std::string > r;
 	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
 	r.first = tv->stamp;
-	r.second = tv->value;
+	r.second = std::string((const char*)tv->value, 40); // MAGIC NUMBER ! 
+	GlobalFunctions::rtrim(r.second);
 	return r;
 }
 

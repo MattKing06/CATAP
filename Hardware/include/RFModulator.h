@@ -49,6 +49,11 @@ protected:
 	void updateLowLevelString(const std::string& key, const std::pair < epicsTimeStamp, std::string>& value);
 	void updateLowLevelDouble(const std::string& key, const std::pair < epicsTimeStamp, double>& value);
 
+
+	std::pair<epicsTimeStamp, std::string> main_state_string;
+	std::pair<epicsTimeStamp, STATE> main_state;
+
+
 private:
 
 	void setPVStructs();

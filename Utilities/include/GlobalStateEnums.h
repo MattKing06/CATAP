@@ -141,6 +141,33 @@ DEFINE_ENUM_WITH_STRING_COnVERSIONS(STATE,
 (ACQM_NOW)
 (ACQM_EVENT)
 
+// Gun Modulator 
+
+(GUN_MOD_STATE)
+(NOT_CONNECTED)      //
+(STANDYBY_INTERLOCK) //
+              //
+(OFF_REQUEST)        //
+(HV_INTERLOCK)       //
+(STANDBY_REQUEST)    //
+(STANDBY)            //
+(HV_OFF_REQUEST)     //
+(RF_ON_INTERLOCK)  // f
+(HV_REQUEST)         //
+(HV_ON)              //
+(RF_OFF_REQUEST)   // f
+(RF_ON_REQUEST) 
+(RF_ON)
+(UNKNOWN_STATE)      //
+(GUN_MOD_STATE_SET)
+(SET_OFF)
+(SET_STANDBY)        //
+(SET_HV_ON)       // 
+(SET_RF_ON)    // field
+(UNKNOWN_SET_STATE)
+
+
+
 )
 /*!@}*/
 #endif //GLOBAL_STATE_ENUMS_H_
