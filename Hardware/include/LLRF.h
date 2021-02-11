@@ -292,7 +292,7 @@ public:
 	//std::map<std::string, std::vector<double>> getAllTraceValues()const;
 	TraceData& getTraceData(const std::string& trace_name);
 
-	boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const;
+	boost::python::dict getTraceDataDict(const std::string& trace_name) const;
 
 	boost::python::dict getAllTraceDataDict() const;
 
@@ -374,7 +374,7 @@ public:
 		/*!
 		@param[in] name, trace name to get data for
 		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
-		boost::python::dict LLRF::getRollingAverage_Py()const;
+		boost::python::dict getRollingAverage_Py()const;
 		/*!
 		@param[in] name, trace name to get data for
 		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
