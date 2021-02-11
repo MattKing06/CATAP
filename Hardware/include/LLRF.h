@@ -402,7 +402,7 @@ public:
 		/*! Get the individual traces used to calculate the trace rolling average, Python Version
 		@param[in] name, trace name to get data for
 		@param[out] list of trace_value lists */
-		boost::python::list LLRF::getRollingAverageTraceBuffer_Py(const std::string& name)const;
+		boost::python::list getRollingAverageTraceBuffer_Py(const std::string& name)const;
 		/*! Get the individual traces used to calculate the trace rolling average for all traces
 		@param[out] map<string, vector<vector<double>> >  map of RollingAverageTraceBuffer keyed by trace name */
 		std::map<std::string, std::vector<std::vector<double>>> getAllRollingAverageTraceBuffer() const;
