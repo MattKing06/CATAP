@@ -582,15 +582,15 @@ public:
 	/*! Load the passed waveform as the pulse shape to be used (does not apply it), Python version
 	@param[in] list, waveform for new pulse shape
 	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
-	bool setPulseShape_Py(boost::python::list& values);
+	bool setPulseShape_Py(const boost::python::list& values);
 	/*! Load the passed waveform as the pulse shape to be used and apply it 
 	@param[in]  vector<double>, waveform for new pulse shape
 	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
-	bool setAndApplyPulseShape(std::vector<double>& values);
+	bool setAndApplyPulseShape(const std::vector<double>& values);
 	/*! Load the passed waveform as the pulse shape to be used and apply it, Python version 
 	@param[in] list, waveform for new pulse shape
 	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
-	bool setAndApplyPulseShape(boost::python::list& values);
+	bool setAndApplyPulseShape(const boost::python::list& values);
 
 
 

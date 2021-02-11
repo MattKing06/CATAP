@@ -2556,11 +2556,11 @@ bool LLRF::setPulseShape(std::vector<double>& values)
 {
 	return epicsInterface->putArrayValue(pvStructs.at(LLRFRecords::PULSE_SHAPE_APPLY), values);
 }
-bool LLRF::setPulseShape_Py(boost::python::list& values)
+bool LLRF::setPulseShape_Py(const boost::python::list& values)
 {
 	return setPulseShape(to_std_vector<double>(values));
 }
-bool LLRF::setAndApplyPulseShape(std::vector<double>& values)
+bool LLRF::setAndApplyPulseShape(const std::vector<double>& values)
 {
 	if (setPulseShape(values))
 	{
@@ -2569,7 +2569,7 @@ bool LLRF::setAndApplyPulseShape(std::vector<double>& values)
 	}
 	return false;
 }
-bool LLRF::setAndApplyPulseShape(boost::python::list& values)
+bool LLRF::setAndApplyPulseShape(const boost::python::list& values)
 {
 	return setAndApplyPulseShape(to_std_vector<double>(values));
 }
