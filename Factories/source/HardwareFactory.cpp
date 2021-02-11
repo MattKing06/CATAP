@@ -86,10 +86,6 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	return setup;
 }
 
-
-
-
-
 RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
 {
 	messenger.printMessage("getRFProtectionFactory Called");
@@ -115,21 +111,34 @@ RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
 }
 
 
+
 RFModulatorFactory& HardwareFactory::getRFModulatorFactory()
 {
-	messenger.printMessage("getRFModulatorFactory Called");
+	return 	getRFModulatorFactory_Single(TYPE::ALL_VELA_CLARA);
+}
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory_Single(TYPE machine_areas)
+{
+	return 	getRFModulatorFactory(std::vector<TYPE>{machine_areas});
+}
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory_Py(const boost::python::list& machine_areas)
+{
+	return getRFModulatorFactory(to_std_vector<TYPE>(machine_areas));
+}
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory(const std::vector<TYPE>& machine_areas)
+{
+	messenger.printMessage("getRFProtectionFactory Called");
 	if (!rfmodulatorFactory.hasBeenSetup)
 	{
 		messenger.printMessage("getRFModulatorFactory calling setup");
-		bool setup = rfmodulatorFactory.setup("nominal");
+		bool setup = rfmodulatorFactory.setup("nominal", machine_areas);
 		if (setup)
 		{
-			messenger.printMessage("getRFModulatorFactory Complete");
+			messenger.printMessage("getRFProtectionFactory Complete");
 			return rfmodulatorFactory;
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup getRFModulatorFactory, Hopefully you'll never see this");
+			messenger.printMessage("Unable to setup RFModulatorFactory, Hopefully you'll never see this");
 		}
 	}
 	else
@@ -138,6 +147,9 @@ RFModulatorFactory& HardwareFactory::getRFModulatorFactory()
 		return rfmodulatorFactory;
 	}
 }
+
+
+
 
 
 ShutterFactory& HardwareFactory::getShutterFactory()

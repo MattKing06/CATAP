@@ -123,6 +123,11 @@ public:
 	* @param[in] stamp : The timestamp we want to convert to string
 	* @param[out] stampString : The string representation of the epicsTimeStamp input.*/
 	static std::string getEPICSTime(const epicsTimeStamp& stamp);
+	/*! Converts an epicsTimeStamp into a formatted string for printing the timestamp.
+	* @param[in] stamp : The timestamp we want to convert to string
+	* @param[in] string : string reference in which to write the time-string .*/
+	static void getEPICSTime(const epicsTimeStamp& stamp, std::string& str);
+
 	/*! Sets the time member of pvStruct using the returned value (args) from EPICS.
 	* @param[in] pv : The PV for which we want to set the time member.
 	* @param[in] args : The object returned from EPICS that contains the timestamp.*/
@@ -257,13 +262,15 @@ public:
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the string value returned from EPICS */
 	static std::pair < epicsTimeStamp, std::string > getTimeStampStringPair(const struct event_handler_args& args);
-
-	// TODO: what should this functiOn return? and how should that get passed to PYTHON users???
-	/*! Send a value to an EPICS PV over Channel Access using ca_put.
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
 	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the long value returned from EPICS */
+	static std::pair<epicsTimeStamp, long> getTimeStampLongPair(const struct event_handler_args& args);
+
 
 	/*! Function to check the connection state of a PV
 	* @param[in] pvStruct : PV data to check 

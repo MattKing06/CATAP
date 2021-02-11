@@ -93,6 +93,9 @@ public:
 	
 	
 	RFModulatorFactory& getRFModulatorFactory();
+	RFModulatorFactory& getRFModulatorFactory_Single(TYPE machine_area);
+	RFModulatorFactory& getRFModulatorFactory_Py(const boost::python::list& machine_areas);
+	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 
 
 

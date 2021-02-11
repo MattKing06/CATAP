@@ -119,6 +119,9 @@ namespace RFModulatorRecords
 	extern std::string const ERROR_DESC_19;
 	extern std::string const ERROR_DESC_20;
 
+	// gun mod has a hex code that can be converted to a message 
+	extern std::string const HEX_STATE_MESSAGE;
+
 
 	extern std::vector<std::string> const rf_mod_records_list;
 	extern std::vector<std::string> const rf_mod_monitor_records_list;

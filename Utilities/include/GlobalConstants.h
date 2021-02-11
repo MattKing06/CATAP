@@ -373,6 +373,10 @@ namespace GlobalConstants
 	/*! Unsigned Integer-type for 999999 */
 	const size_t nine99999 = 999999;
 
+	const long zero_long = 0;
+	const long one_long = 1;
+	
+
 	const unsigned short zero_us = 0;
 	const unsigned short one_us = 1;
 

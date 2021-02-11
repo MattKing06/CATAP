@@ -116,22 +116,14 @@ std::string const ERROR_DESC_19 = "ERROR_DESC_19";
 std::string const ERROR_DESC_20 = "ERROR_DESC_20";
 
 
-
-
-
-
-
-
-
-
+// gun mod has a hex code that can be converted to a message 
+std::string const HEX_STATE_MESSAGE = "HEX_STATE_MESSAGE";
 
 	std::vector<std::string> const low_level_strings = { 
 	//gun strings
-	GUN_MOD_ILOCK1,
-	GUN_MOD_ILOCK2,
-	GUN_MOD_ILOCK3,
-	GUN_MOD_ILOCK4,
-	GUN_MOD_ILOCK5,
+	GUN_MOD_ILOCK1,	GUN_MOD_ILOCK2,	GUN_MOD_ILOCK3,
+	GUN_MOD_ILOCK4,	GUN_MOD_ILOCK5, GUN_MOD_ERR_SVAL,
+	HEX_STATE_MESSAGE,
 	// L01 strings 	
 	ERROR_WORD_1,	ERROR_WORD_2,
 	ERROR_WORD_3,	ERROR_WORD_4,

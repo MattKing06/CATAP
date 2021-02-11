@@ -216,6 +216,13 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 	return std::string(timeString);
 }
 
+void EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp, std::string& str)
+{
+	char timeString[37];
+	epicsTimeToStrftime(timeString, sizeof(timeString), "[%a %b %d %Y %H:%M:%S.%f]", &stamp);
+	str = std::string(timeString);
+}
+
 void EPICSInterface::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -513,6 +520,15 @@ std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair
 	GlobalFunctions::rtrim(r.second);
 	return r;
 }
+std::pair < epicsTimeStamp, long > EPICSInterface::getTimeStampLongPair(const struct event_handler_args& args)
+{
+	std::pair < epicsTimeStamp, long > r;
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (long)tv->value; 
+	return r;
+}
+
 
 
 std::string EPICSInterface::returnValueFromArgsAsString(const event_handler_args args)
