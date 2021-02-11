@@ -578,7 +578,7 @@ public:
 	/*! Load the passed waveform as the pulse shape to be used (does not apply it)
 	@param[in] vector<double>, waveform for new pulse shape
 	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
-	bool setPulseShape(std::vector<double>& values);
+	bool setPulseShape(const std::vector<double>& values);
 	/*! Load the passed waveform as the pulse shape to be used (does not apply it), Python version
 	@param[in] list, waveform for new pulse shape
 	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */

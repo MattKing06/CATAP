@@ -2552,7 +2552,7 @@ bool LLRF::applyPulseShape()
 {
 	return epicsInterface->putValue2(pvStructs.at(LLRFRecords::PULSE_SHAPE_APPLY), GlobalConstants::EPICS_ACTIVATE);
 }
-bool LLRF::setPulseShape(std::vector<double>& values)
+bool LLRF::setPulseShape(const std::vector<double>& values)
 {
 	return epicsInterface->putArrayValue(pvStructs.at(LLRFRecords::PULSE_SHAPE_APPLY), values);
 }
