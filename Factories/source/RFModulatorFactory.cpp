@@ -331,7 +331,10 @@ void RFModulatorFactory::eraseFromRFModulatorMap(const std::vector<TYPE>& to_era
 	size_t end_size = RFModulatorMap.size();
 	messenger.printDebugMessage("eraseFromRFModulatorMap RFModulatorMap.size() went from ", start_size, " to ", end_size);
 }
-
+bool RFModulatorFactory::setup(std::string version)
+{
+	return setup(version, std::vector<TYPE>(TYPE::ALL_VELA_CLARA));
+}
 bool RFModulatorFactory::setup(std::string version, const std::vector<TYPE>& machine_areas_in)
 {
 	if (hasBeenSetup)

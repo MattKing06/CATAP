@@ -12,6 +12,13 @@ public:
 	RFModulatorFactory(STATE mode);
 	RFModulatorFactory(const RFModulatorFactory& copyFactory);
 	~RFModulatorFactory();
+	/*! messaneger to print messages to std.out THIS SHOULD BE PUBLIC */
+	LoggingSystem messenger;
+	/*! Set up all modulator objects for this  factory */
+	bool setup(std::string version);
+	/*! Set up modulator objects for this factory based on passed machien areas */
+	bool setup(std::string version, const std::vector<TYPE>& machine_areas_in);
+
 	/*! get the rf modulator object 
 		@param[in] string, name of modulator
 		@param[out] RFModulator,  */
@@ -109,11 +116,6 @@ protected:
 	/*! has the factory been setuiup yet */
 	bool hasBeenSetup;
 private:
-
-	/*! messaneger to print message sto std.out */
-	LoggingSystem messenger;
-	/*! Set up modalator objects fro this factory based on passed machien areas */
-	bool setup(std::string version, const std::vector<TYPE>& machine_areas_in);
 	/*! Fill the object map, based on values passed to set-up */
 	void populateRFModulatorMap();
 	/*! current mode (cirtual, offline, physical */
