@@ -1,0 +1,9 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    KEEP_ALIVE: unknown 
+properties:
+  hardware_type: RFHeartbeat
+  machine_area: UNDEFINED
+  name: UNDEFINED
+  name_alias: UNDEFINED

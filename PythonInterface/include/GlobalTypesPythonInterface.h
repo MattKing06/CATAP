@@ -56,6 +56,8 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("VALVE", TYPE::VALVE)
 			.value("CHARGE", TYPE::CHARGE)
 
+			.value("RFHEARTBEAT", TYPE::RFHEARTBEAT)
+
 			;
 	}
 }

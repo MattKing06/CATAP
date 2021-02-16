@@ -19,8 +19,15 @@ public:
 	RFHeartbeat(const RFHeartbeat& copyRFHeartbeat);
 	~RFHeartbeat();
 	void setPVStructs();
+
+	std::vector <std::string > getAliases()const;
+
 	EPICSRFHeartbeatInterface_sptr epicsInterface;
 	std::map<std::string, std::string> RFHeartbeatParamMap;
+	
+	// TODO shoudl be base claass emmer
+	/*! alternative names for the hearteat (usually shorter thna the full PV root), defined master lattice */
+	std::vector<std::string> aliases;
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

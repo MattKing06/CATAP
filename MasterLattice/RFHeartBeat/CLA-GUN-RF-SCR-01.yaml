@@ -1,0 +1,9 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    KEEP_ALIVE: CLA-GUN-RF-SCR-01:HB 
+properties:
+  hardware_type: RFHeartbeat
+  machine_area: GUN
+  name: CLA-GUN-RF-SCR-01
+  name_alias: GUN

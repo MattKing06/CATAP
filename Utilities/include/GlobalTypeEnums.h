@@ -98,7 +98,7 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VERTICAL)
 	(PNEUMATIC)
 	(CHARGE)
-	(BPM_TYPE) // TODO hmm this has the same name as the object !! adn so breaks thigns
+	(BPM_TYPE) // TODO hmm this has the same name as the object !! and so breaks things
 	(VALVE)
 	(IMG_TYPE)
 	(LLRF_TYPE)
@@ -107,6 +107,10 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(ENERGYMETER)
 	// shutter objects
 	(SHUTTER)
+
+	// RF modulator heartbeats
+	(RFHEARTBEAT)
+
 )
 
 #endif //GLOBAL_TYPE_ENUMS_H_

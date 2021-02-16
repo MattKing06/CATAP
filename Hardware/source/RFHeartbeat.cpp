@@ -20,6 +20,12 @@ void RFHeartbeat::setPVStructs()
 {
 }
 
+
+std::vector < std::string > RFHeartbeat::getAliases()const
+{
+	return aliases;
+}
+
 void RFHeartbeat::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
