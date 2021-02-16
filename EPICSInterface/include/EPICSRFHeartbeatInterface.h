@@ -23,7 +23,7 @@ public:
 	
 
 	std::map<std::string, updateFunctionPtr> updateFunctionMap = 
-	{
+	{ {RFHeartbeatRecords::KEEP_ALIVE, this->update_KEEP_ALIVE }
 		// TODO uncommenting the below line gives a weird linker error 
 		// ??????? 
 
