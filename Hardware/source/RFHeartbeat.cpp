@@ -6,7 +6,8 @@ RFHeartbeat::RFHeartbeat()
 }
 
 RFHeartbeat::RFHeartbeat(const std::map<std::string, std::string>& paramMap, STATE mode) :
-Hardware(paramMap, mode)
+Hardware(paramMap, mode),
+epicsInterface(boost::make_shared<EPICSRFHeartbeatInterface>(EPICSRFHeartbeatInterface())) // calls copy constructor and destroys 
 {
 	setPVStructs();
 }

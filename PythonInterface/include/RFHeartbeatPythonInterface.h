@@ -17,6 +17,11 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 		boost::python::class_<RFHeartbeat, boost::python::bases<Hardware>, boost::noncopyable>("RFHeartbeat", boost::python::no_init)
 			.def("debugMessagesOn", &RFHeartbeat::debugMessagesOn)
 			.def("debugMessagesOff", &RFHeartbeat::debugMessagesOff)
+
+			.def("getValue", &RFHeartbeat::getValue)
+			.def("setValue", &RFHeartbeat::setValue)
+			.def("pulse", &RFHeartbeat::pulse)
+
 			.def("messagesOn", &RFHeartbeat::messagesOn)
 			.def("messagesOff", &RFHeartbeat::messagesOff)
 			.def("isDebugOn", &RFHeartbeat::isDebugOn)
@@ -27,6 +32,16 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFHeartbeatFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<RFHeartbeatFactory, boost::noncopyable>("RFHeartbeatFactory", boost::python::no_init)
+			
+			.def("getValue", &RFHeartbeatFactory::getValue)
+			.def("setValue", &RFHeartbeatFactory::setValue)
+			.def("pulse", &RFHeartbeatFactory::pulse)
+			.def("getHeartbeatNames", &RFHeartbeatFactory::getHeartbeatNames_Py)
+			.def("getFullName", &RFHeartbeatFactory::getFullName)
+	
+			.def("getRFHeartbeat", &RFHeartbeatFactory::getRFHeartbeat, (boost::python::arg("self"), boost::python::arg("name")), boost::python::return_value_policy<boost::python::reference_existing_object>())
+
+			
 			.def("debugMessagesOn", &RFHeartbeatFactory::debugMessagesOn)
 			.def("debugMessagesOff", &RFHeartbeatFactory::debugMessagesOff)
 			.def("messagesOn", &RFHeartbeatFactory::messagesOn)

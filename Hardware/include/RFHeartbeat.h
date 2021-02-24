@@ -6,6 +6,8 @@
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
 
 class EPICSRFHeartbeatInterface;
 
@@ -34,7 +36,6 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
-
 
 
 	friend class EPICSRFHeartbeatInterface;

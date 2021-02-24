@@ -1,5 +1,6 @@
 #include <RFHeartbeatFactory.h>
 #include <GlobalFunctions.h>
+#include <PythonTypeConversions.h>
 
 RFHeartbeatFactory::RFHeartbeatFactory()
 {
@@ -87,13 +88,12 @@ void RFHeartbeatFactory::populateRFHeartbeatMap()
 	}
 	//size_t start_size = rfHeartbeatMap.size();
 }
-void RFHeartbeatFactory::retrieveUpdateFunctionForRecord()
-{
-
-}
 void RFHeartbeatFactory::setMonitorStatus(pvStruct& pvStruct)
-{
-
+{	// only 1 PVs are monitored
+	if (pvStruct.pvRecord == RFHeartbeatRecords::KEEP_ALIVE)
+	{
+		pvStruct.monitor = true;
+	}
 }
 void RFHeartbeatFactory::updateAliasNameMap(const RFHeartbeat& rf_hb)
 {
@@ -124,16 +124,11 @@ void RFHeartbeatFactory::updateAliasNameMap(const RFHeartbeat& rf_hb)
 		}
 	}
 }
-
-
 void RFHeartbeatFactory::setupChannels()
 {
-	messenger.printMessage("RFHeartbeatMap.size() = ", RFHeartbeatMap.size());
 	for (auto& device : RFHeartbeatMap)
 	{
-		messenger.printMessage(device.first, " loop over pvstructs");
 		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
-		messenger.printMessage("pvStructs.size() = ", pvStructs.size());
 		for (auto& pv : pvStructs)
 		{
 			messenger.printMessage("retrieveCHID ", pv.first, " = [", pv.second.fullPVName,"]");
@@ -142,6 +137,69 @@ void RFHeartbeatFactory::setupChannels()
 	}
 }
 
+
+RFHeartbeat& RFHeartbeatFactory::getRFHeartbeat(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFHeartbeatMap, full_name))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return RFHeartbeatMap.at(full_name);
+	}
+	return dummy_rfHeartbeat;
+}
+
+std::vector<std::string> RFHeartbeatFactory::getHeartbeatNames()const
+{
+	std::vector<std::string> r;
+	for (auto&& it : RFHeartbeatMap)
+	{
+		r.push_back(it.first);
+	}
+	return r;
+}
+boost::python::list RFHeartbeatFactory::getHeartbeatNames_Py()const
+{
+	return to_py_list<std::string>(getHeartbeatNames());
+}
+std::string RFHeartbeatFactory::getFullName(const std::string& name_to_check) const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return alias_name_map.at(name_to_check);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return dummy_rfHeartbeat.getHardwareName();
+}
+
+
+
+double RFHeartbeatFactory::getValue(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFHeartbeatMap, full_name))
+	{
+		return RFHeartbeatMap.at(full_name).getValue();
+	}
+}
+void RFHeartbeatFactory::setValue(const std::string& name, double v)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFHeartbeatMap, full_name))
+	{
+		return RFHeartbeatMap.at(full_name).setValue(v);
+	}
+}
+void RFHeartbeatFactory::pulse(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFHeartbeatMap, full_name))
+	{
+		return RFHeartbeatMap.at(full_name).pulse();
+	}
+}
 
 
 void RFHeartbeatFactory::debugMessagesOn()

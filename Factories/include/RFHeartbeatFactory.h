@@ -18,6 +18,16 @@ public:
 	bool setup(std::string version);
 
 
+	RFHeartbeat& getRFHeartbeat(const std::string& name);
+	double getValue(const std::string& name) const;
+	void setValue(const std::string& name, double v);
+	void pulse(const std::string& name);
+
+
+	std::vector<std::string> getHeartbeatNames()const;
+	boost::python::list getHeartbeatNames_Py()const;
+	std::string getFullName(const std::string& name_to_check) const;
+
 
 	void debugMessagesOn();
 	void debugMessagesOff();
