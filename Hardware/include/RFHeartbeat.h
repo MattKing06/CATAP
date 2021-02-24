@@ -23,15 +23,37 @@ public:
 	std::vector <std::string > getAliases()const;
 
 	EPICSRFHeartbeatInterface_sptr epicsInterface;
-	std::map<std::string, std::string> RFHeartbeatParamMap;
+
 	
-	// TODO shoudl be base claass emmer
-	/*! alternative names for the hearteat (usually shorter thna the full PV root), defined master lattice */
-	std::vector<std::string> aliases;
+	double getValue() const;
+	void setValue(double v);
+	void pulse();
+
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+
+
+
+	friend class EPICSRFHeartbeatInterface;
+	friend class RFHeartbeatFactory;
+protected:
+
+
+	/*! latest heartbeat value. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > hb_value;
+
+
+private:
+
+	// TODO should be base class member
+	/*! alternative names for the hearteat (usually shorter thna the full PV root), defined master lattice */
+	std::vector<std::string> aliases;
+
+	std::map<std::string, std::string> RFHeartbeatParamMap;
+
 };
 
 

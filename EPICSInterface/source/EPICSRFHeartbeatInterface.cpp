@@ -15,7 +15,9 @@ EPICSRFHeartbeatInterface::~EPICSRFHeartbeatInterface()
 
 void EPICSRFHeartbeatInterface::update_KEEP_ALIVE(const struct event_handler_args args)
 {
-	messenger.printDebugMessage("update_TRIG_SOURCE");
+	messenger.printDebugMessage("update_KEEP_ALIVE");
+	RFHeartbeat* recastHB = static_cast<RFHeartbeat*>(args.usr);
+	updateTimeStampDoublePair(args, recastHB->hb_value);
 }
 
 void EPICSRFHeartbeatInterface::retrieveUpdateFunctionForRecord(const pvStruct& pv)const

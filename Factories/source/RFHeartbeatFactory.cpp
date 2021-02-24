@@ -36,30 +36,31 @@ bool RFHeartbeatFactory::setup(std::string version)
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
-	messenger.printMessage("setup setupChannels");
+	messenger.printMessage("call setupChannels");
 	setupChannels();
+	messenger.printMessage("sendToEPICS");
 	EPICSInterface::sendToEPICS();
 	messenger.printMessage("setup connections");
-	for (auto& prot : RFHeartbeatMap)
+	for (auto& hb : RFHeartbeatMap)
 	{
-		updateAliasNameMap(prot.second);
-		std::map<std::string, pvStruct>& pvStructs = prot.second.getPVStructs();
+		updateAliasNameMap(hb.second);
+		std::map<std::string, pvStruct>& pvStructs = hb.second.getPVStructs();
 		for (auto& pv : pvStructs)
 		{
 			messenger.printDebugMessage("Setup ", pv.first);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				setMonitorStatus(pv.second);
-				prot.second.epicsInterface->retrieveCOUNT(pv.second);
-				prot.second.epicsInterface->retrieveCHTYPE(pv.second);
-				prot.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				hb.second.epicsInterface->retrieveCOUNT(pv.second);
+				hb.second.epicsInterface->retrieveCHTYPE(pv.second);
+				hb.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 				pv.second.MASK = DBE_VALUE;
 				messenger.printDebugMessage(pv.first, " ", pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
 					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
 
 				if (pv.second.monitor)
 				{
-					prot.second.epicsInterface->createSubscription(prot.second, pv.second);
+					hb.second.epicsInterface->createSubscription(hb.second, pv.second);
 				}
 			}
 			else
@@ -127,12 +128,15 @@ void RFHeartbeatFactory::updateAliasNameMap(const RFHeartbeat& rf_hb)
 
 void RFHeartbeatFactory::setupChannels()
 {
+	messenger.printMessage("RFHeartbeatMap.size() = ", RFHeartbeatMap.size());
 	for (auto& device : RFHeartbeatMap)
 	{
+		messenger.printMessage(device.first, " loop over pvstructs");
 		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
+		messenger.printMessage("pvStructs.size() = ", pvStructs.size());
 		for (auto& pv : pvStructs)
 		{
-			messenger.printMessage(device.first, ", retrieveCHID ", pv.first);
+			messenger.printMessage("retrieveCHID ", pv.first, " = [", pv.second.fullPVName,"]");
 			device.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}

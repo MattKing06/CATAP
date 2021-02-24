@@ -3,7 +3,7 @@ controls_information:
   pv_record_map:
     KEEP_ALIVE: CLA-L01-RF-SCR-01:HB 
 properties:
-  hardware_type: RFHeartbeat
+  hardware_type: RFHEARTBEAT
   machine_area: L01
   name: CLA-L01-RF-SCR-01
-  name_alias: L01
+  name_alias:  L01
