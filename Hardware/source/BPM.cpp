@@ -291,6 +291,118 @@ boost::circular_buffer< std::vector< double > > BPM::getDataBuffer() const
 	return this->dataBuffer;
 }
 
+boost::python::list BPM::getXPVBuffer_Py() const
+{
+	boost::circular_buffer< double > xbuf;
+	xbuf = getXPVBuffer();
+	boost::python::list newPyList = to_py_list(xbuf);
+	return newPyList;
+}
+
+boost::python::list BPM::getYPVBuffer_Py() const
+{
+	boost::circular_buffer< double > ybuf;
+	ybuf = getYPVBuffer();
+	boost::python::list newPyList = to_py_list(ybuf);
+	return newPyList;
+}
+
+boost::python::list BPM::getQBuffer_Py() const
+{
+	boost::circular_buffer< double > qbuf;
+	qbuf = getQBuffer();
+	boost::python::list newPyList = to_py_list(qbuf);
+	return newPyList;
+}
+
+boost::python::list BPM::getDataBuffer_Py() const
+{
+	boost::circular_buffer< std::vector< double > > databuf;
+	databuf = getDataBuffer();
+	boost::python::list newPyList = to_py_list(databuf);
+	return newPyList;
+}
+
+boost::python::list BPM::getXBuffer_Py() const
+{
+	boost::circular_buffer< double > xbuf;
+	xbuf = getXBuffer();
+	boost::python::list newPyList = to_py_list(xbuf);
+	return newPyList;
+}
+
+boost::python::list BPM::getStatusBuffer_Py() const
+{
+	boost::circular_buffer< STATE > stbuf;
+	stbuf = getStatusBuffer();
+	boost::python::list newPyList = to_py_list(stbuf);
+	return newPyList;
+}
+
+boost::python::list BPM::getXPVVector_Py() const
+{
+	std::vector< double > xvec;
+	xvec = getXPVVector();
+	boost::python::list newPyList = to_py_list(xvec);
+	return newPyList;
+}
+
+boost::python::list BPM::getYPVVector_Py() const
+{
+	std::vector< double > yvec;
+	yvec = getYPVVector();
+	boost::python::list newPyList = to_py_list(yvec);
+	return newPyList;
+}
+
+boost::python::list BPM::getQVector_Py() const
+{
+	std::vector< double > qvec;
+	qvec = getQVector();
+	boost::python::list newPyList = to_py_list(qvec);
+	return newPyList;
+}
+
+boost::python::list BPM::getDataVector_Py() const
+{
+	std::vector< std::vector< double > > datavec;
+	datavec = getDataVector();
+	boost::python::list newPyList = to_py_list(datavec);
+	return newPyList;
+}
+
+//boost::python::list BPM::getXVector_Py() const
+//{
+//	std::vector< double > xvec;
+//	xvec = getXVector();
+//	boost::python::list newPyList = to_py_list(xvec);
+//	return newPyList;
+//}
+//
+//boost::python::list BPM::getYVector_Py() const
+//{
+//	std::vector< double > yvec;
+//	yvec = getYPVVector();
+//	boost::python::list newPyList = to_py_list(yvec);
+//	return newPyList;
+//}
+
+boost::python::list BPM::getStatusVector_Py() const
+{
+	std::vector< STATE > stvec;
+	stvec = getStatusVector();
+	boost::python::list newPyList = to_py_list(stvec);
+	return newPyList;
+}
+
+boost::python::list BPM::getData_Py() const
+{
+	std::vector< double > data;
+	data = getData();
+	boost::python::list newPyList = to_py_list(data);
+	return newPyList;
+}
+
 long BPM::getSA1() const
 {
 	return this->sa1.second;
