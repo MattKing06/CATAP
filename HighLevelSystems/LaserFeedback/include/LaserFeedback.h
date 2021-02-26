@@ -15,6 +15,7 @@ public:
 	LaserFeedback();
 	LaserFeedback(STATE mode);
 	LaserFeedback(const LaserFeedback& copyLaserFeedback);
+	bool setup(const std::string& version);
 	~LaserFeedback();
 	LaserMirrorFactory mirrors;
 	ShutterFactory shutters;
