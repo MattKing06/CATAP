@@ -20,7 +20,14 @@ position(std::stod(paramsMap.find("position")->second))
 {
 messenger.printDebugMessage("constructor");
 setPVStructs();
+bufferSize = 10;
+vectorSize = 10;
+shotsvector = 0;
+shotsbuffer = 0;
+energybuffer.resize(bufferSize);
+energyvector.resize(vectorSize);
 acquiring = false;
+monitoring = false;
 epicsInterface = boost::make_shared<EPICSLaserEnergyMeterInterface>(EPICSLaserEnergyMeterInterface());
 epicsInterface->ownerName = hardwareName;
 }
@@ -85,6 +92,11 @@ std::string LaserEnergyMeter::getLaserEnergyMeterName() const
 	return this->name;
 }
 
+bool LaserEnergyMeter::isMonitoring() const
+{
+	return monitoring;
+}
+
 bool LaserEnergyMeter::getAcquiring() const
 {
 	return this->acquiring;
@@ -104,16 +116,6 @@ bool LaserEnergyMeter::setStop()
 	return true;
 }
 
-//bool Laser::setOverRange() const
-//{
-//	overrange.second = true;
-//}
-//
-//bool Laser::setNotOverRange() const
-//{
-//	overrange.second = true;
-//}
-
 bool LaserEnergyMeter::setRange(int set)
 {
 	epicsInterface->setRANGE(set, pvStructs.at(LaserEnergyMeterRecords::RANGESP));
@@ -129,6 +131,93 @@ int LaserEnergyMeter::getRange() const
 int LaserEnergyMeter::getOverRange() const
 {
 	return overrange.second;
+}
+
+double LaserEnergyMeter::getEnergy() const
+{
+	return energy.second;
+}
+
+bool LaserEnergyMeter::setEnergy(const double& value)
+{
+	energy.second = value;
+	energybuffer.push_back(value);
+	shotsbuffer++;
+	if (monitoring)
+	{
+		shotsvector++;
+		if (shotsvector <= energyvector.size())
+		{
+			energyvector[shotsvector - 1] = value;
+		}
+		else
+		{
+			monitoring = false;
+		}
+	}
+	return true;
+}
+
+std::vector< double > LaserEnergyMeter::getEnergyVector() const
+{
+	return energyvector;
+}
+
+boost::circular_buffer< double > LaserEnergyMeter::getEnergyBuffer() const
+{
+	return energybuffer;
+}
+
+bool LaserEnergyMeter::isEnergyVectorFull() const
+{
+	if (shotsvector >= bufferSize)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool LaserEnergyMeter::isEnergyBufferFull() const
+{
+	if (shotsbuffer >= bufferSize)
+	{
+		return true;
+	}
+	return false;
+}
+
+void LaserEnergyMeter::monitorForNShots(const size_t& value)
+{
+	setVectorSize(value);
+	monitoring = true;
+}
+
+void LaserEnergyMeter::setVectorSize(const size_t& value)
+{
+	clearVectors();
+	energyvector.clear();
+	vectorSize = value;
+	energyvector.resize(vectorSize);
+}
+
+void LaserEnergyMeter::setBufferSize(const size_t& value)
+{
+	clearBuffers();
+	energybuffer.clear();
+	bufferSize = value;
+	energybuffer.resize(bufferSize);
+}
+
+void LaserEnergyMeter::clearVectors()
+{
+	shotsvector = 0;
+	energyvector.clear();
+}
+
+void LaserEnergyMeter::clearBuffers()
+{
+	shotsbuffer = 0;
+	energybuffer.clear();
 }
 
 void LaserEnergyMeter::debugMessagesOff()

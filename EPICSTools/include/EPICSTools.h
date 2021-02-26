@@ -115,6 +115,13 @@ public:
 		@param[in] pv : The name of the PV to get
 		@param[out] value : The current array of the PV in EPICS as a python object.*/
 	boost::python::list getArray_Py(const std::string& pv);
+
+	/*! Get the value of an EPICS array PV as a python object, with user specified array size. 
+		(Useful when you know you don't need the full array data from EPICS)
+		@param[in] pv : The name of the PV to get
+		@param[out] value : The current array of the PV in EPICS as a python object.*/
+	boost::python::list getArray_Py2(const std::string& pv, unsigned long COUNT);
+
 	/*! Get the values of a list of EPICS PVs as a python dictionary
 		@param[in] pvList : The names of the PVs to get
 		@param[out] value dict : Key = PV, Value = EPICS PV value.*/
