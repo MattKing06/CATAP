@@ -11,38 +11,27 @@ typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class EPICSRFHeartbeatInterface : public EPICSInterface
 {
 public:
+	/*! Default Constuctor  */
 	EPICSRFHeartbeatInterface();
+	/*! Destructor */
 	~EPICSRFHeartbeatInterface();
+	// TODO copy contructor needed? 
+	
+	/*! hardwar ethat owns this interface */
 	std::string ownerName;
 
+	/* messenger, shared by all interfacess in this particualr factory  */
 	static LoggingSystem messenger;
 
+	// TODO move to base calss? 
+	/*! sets the updat efunciton pointer */
 	void retrieveUpdateFunctionForRecord(const pvStruct& pv)const;
 
+	/*! update the keep alive vlue  */
 	static void update_KEEP_ALIVE(const struct event_handler_args args);
-	
-
+	/*! map of record to update function pointer. Used to link keywords in master lattice to epics update functions*/
 	std::map<std::string, updateFunctionPtr> updateFunctionMap = 
 	{ {RFHeartbeatRecords::KEEP_ALIVE, this->update_KEEP_ALIVE }
-		// TODO uncommenting the below line gives a weird linker error 
-		// ??????? 
-
-		/*
-		
-		Severity	Code	Description	Project	File	Line	Suppression State
-		Error	LNK2019	unresolved external symbol 
-		"class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const RFHeartbeatRecords::KEEP_ALIVE" 
-		(?KEEP_ALIVE@RFHeartbeatRecords@@3V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@B) 
-		referenced in function "public: __cdecl 
-		EPICSRFHeartbeatInterface::EPICSRFHeartbeatInterface(void)" 
-		(??0EPICSRFHeartbeatInterface@@QEAA@XZ)	
-		_RFHeartbeat	
-		C:\Users\dlerlp\Documents\CATAP_Build\PythonInterface\EPICSInterface.lib(EPICSRFHeartbeatInterface.obj)	1
-
-
-		*/
-
-		//{RFHeartbeatRecords::KEEP_ALIVE, this->update_KEEP_ALIVE}
 	};
 
 
