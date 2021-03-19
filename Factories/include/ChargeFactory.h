@@ -82,7 +82,7 @@ public:
 
 	/*! gets the names for all known charge diagnostics
 	@param[out] name list: The names of all charge objects*/
-	boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py();
+	boost::python::list getAllChargeDiagnosticNames_Py();
 
 	/*!sets the buffer size of the given charge object.
 	@param[in] name: sets the size of charge buffers.
