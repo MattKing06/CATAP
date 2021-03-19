@@ -180,7 +180,11 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 			.def("getAllQBuffer", &BPMFactory::getAllQBuffer_Py)
 			.def("getAllStatusBuffer", &BPMFactory::getAllStatusBuffer_Py)
 			.def("getAllDataBuffer", &BPMFactory::getAllDataBuffer_Py)
-			.def("getAllXYPositionVectors", &BPMFactory::getAllXYPositionVectors_Py);
+			.def("getAllXYPositionVectors", &BPMFactory::getAllXYPositionVectors_Py)
+			.def("messagesOn", &BPMFactory::messagesOn)
+			.def("messagesOff", &BPMFactory::messagesOff)
+			.def("debugMessagesOn", &BPMFactory::debugMessagesOn)
+			.def("debugMessagesOff", &BPMFactory::debugMessagesOff);
 
 	}
 

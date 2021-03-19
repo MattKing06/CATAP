@@ -126,7 +126,11 @@ bool BPMFactory::setup(const std::string& VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateBPMMap();
-
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 	for (auto& bpm : bpmMap)
@@ -150,15 +154,15 @@ bool BPMFactory::setup(const std::string& VERSION)
 				{
 					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
 			}
 			else
 			{
 				messenger.printMessage(bpm.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
+		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
