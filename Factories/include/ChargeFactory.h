@@ -79,6 +79,11 @@ public:
 	@param[in] name: the name of the charge object.
 	@param[out] name : the name of the charge object. Not sure why this function is here.*/
 	std::string getChargeDiagnosticName(const std::string& name);
+
+	/*! gets the names for all known charge diagnostics
+	@param[out] name list: The names of all charge objects*/
+	boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py();
+
 	/*!sets the buffer size of the given charge object.
 	@param[in] name: sets the size of charge buffers.
 	@param[in] value: sets the size of charge buffers.*/

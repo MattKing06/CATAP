@@ -51,6 +51,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
 			.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
+			.def("getAllChargeDiagnosticNames", &ChargeFactory::getAllChargeDiagnosticNames_Py)
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots)
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
 			.def("ismonitoring", &ChargeFactory::ismonitoring)
@@ -65,8 +66,11 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
 			.def("getAllQVector", &ChargeFactory::getAllQVector)
 			.def("getAllQBuffer", &ChargeFactory::getAllQBuffer)
-			.def("setBufferSize", &ChargeFactory::setBufferSize);
-
+			.def("setBufferSize", &ChargeFactory::setBufferSize)
+			.def("messagesOn", &ChargeFactory::messagesOn)
+			.def("messagesOff", &ChargeFactory::messagesOff)
+			.def("debugMessagesOn", &ChargeFactory::debugMessagesOn)
+			.def("debugMessagesOff", &ChargeFactory::debugMessagesOff);
 	}
 
 
