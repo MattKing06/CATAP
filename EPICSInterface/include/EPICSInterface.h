@@ -26,7 +26,6 @@
 	{							\
 		ca_message(status);		\
 		SEVCHK(status, NULL);   \
-		exit(status);			\
 	}							\
 }								\
 
