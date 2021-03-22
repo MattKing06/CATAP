@@ -39,7 +39,6 @@ public:
 		@param[in] mode Defines the STATE of IMG we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)
 	*/
 	IMG(const std::map<std::string, std::string>& paramMap, STATE mode);
-	
 	IMG(const IMG& copyIMG);
 	~IMG();
 	std::pair<epicsTimeStamp, double> pressure;
