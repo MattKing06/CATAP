@@ -107,6 +107,14 @@ public:
 	* @param[in] value : The desired vertical delay
 	* @param[in] pv : The pvStruct associated with the BPM PV*/
 	void setSD2(const long& value, const pvStruct& pv);
+	/*! sends a pulse (a double) to set the X PV (virtual only)
+	* @param[in] value : The desired X PV
+	* @param[in] pv : The pvStruct associated with the X PV*/
+	void setX(const double& value, const pvStruct& pv);
+	/*! sends a pulse (a double) to set the Y PV (virtual only)
+	* @param[in] value : The desired Y PV
+	* @param[in] pv : The pvStruct associated with the Y PV*/
+	void setY(const double& value, const pvStruct& pv);
     static LoggingSystem messenger;
 };
 /** \copydoc EPICSInterface*/

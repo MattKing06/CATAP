@@ -44,6 +44,7 @@ degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 //fullPSUName(paramsMap.find("PSU")->second),
 //measurementDataLocation(paramsMap.find("measurement_data_location")->second),
 magneticLength(std::stof(paramsMap.find("magnetic_length")->second)),
+position(std::stof(paramsMap.find("position")->second)),
 GETSETI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 READI( std::make_pair(epicsTimeStamp(), GlobalConstants::double_min) ),
 psuState( std::make_pair(epicsTimeStamp(), STATE::ERR) ),
@@ -65,6 +66,14 @@ isDegaussing(false)
 	{ 
 		degaussValues.push_back(std::stof(value)); 
 	}
+	//convert list of field integral coefficients from strings to floats
+	std::vector<std::string> field_integral_coefficients_STR;
+	boost::split(field_integral_coefficients_STR, paramsMap.find("field_integral_coefficients")->second, [](char c) {return c == ','; });
+	for (auto value : field_integral_coefficients_STR)
+	{
+		field_integral_coefficients.push_back(std::stof(value));
+	}
+
 	// set the magnet_type
 	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
 	{
@@ -205,6 +214,10 @@ std::string Magnet::getMagnetType() const
 {
 	return this->magType;
 }
+double Magnet::getPosition() const
+{
+	return this->position;
+}
 std::string Magnet::getMagnetRevType() const
 {
 	return this->magRevType;
@@ -251,6 +264,17 @@ double Magnet::setDegaussTolerance(const double value)
 {
 	degaussTolerance = value;
 	return degaussTolerance;
+}
+
+
+std::vector<double> Magnet::getFieldIntegralCoefficients() const
+{
+	return field_integral_coefficients;
+}
+
+boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
+{
+	return to_py_list(getFieldIntegralCoefficients());
 }
 
 
