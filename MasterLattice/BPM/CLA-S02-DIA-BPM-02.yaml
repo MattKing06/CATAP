@@ -1,0 +1,33 @@
+controls_information: 
+    PV: true
+    records: SA1,SA2,SD1,SD2,RA1,RA2,RD1,RD2,X,Y,AWAK,RDY,DATA
+    pv_record_map:
+        SA1: CLA-S02-DIA-BPM-02:SA1
+        SA2: CLA-S02-DIA-BPM-02:SA2
+        SD1: CLA-S02-DIA-BPM-02:SD1
+        SD2: CLA-S02-DIA-BPM-02:SD2
+        RA1: CLA-S02-DIA-BPM-02:RA1
+        RA2: CLA-S02-DIA-BPM-02:RA2
+        RD1: CLA-S02-DIA-BPM-02:RD1
+        RD2: CLA-S02-DIA-BPM-02:RD2
+        X: CLA-S02-DIA-BPM-02:X
+        Y: CLA-S02-DIA-BPM-02:Y
+        DATA: CLA-S02-DIA-BPM-02:DATA:B2V.VALA
+        RDY: CLA-S02-DIA-BPM-02:RDY
+        AWAK: CLA-S02-DIA-BPM-02:AWAK
+properties: 
+    machine_area: S02
+    hardware_type: BPM
+    bpm_type: STRIPLINE
+    bpm_set_max_wait_time: 0.5
+    name: CLA-S02-DIA-BPM-02
+    virtual_name: VM-CLA-S02-DIA-BPM-02
+    att1cal: 12
+    att2cal: 12
+    v1cal: 1.04374779034
+    v2cal: 0.964411901508
+    qcal: 70.4992194267
+    mn: 15
+    xn: 0
+    yn: 0
+    position: 3.6228

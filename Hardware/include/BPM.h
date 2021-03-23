@@ -5,10 +5,13 @@
 #include "Hardware.h"
 #endif //HARDWARE_H_
 #include "EPICSBPMInterface.h"
+#include "PythonTypeConversions.h"
 #include "BPMPVRecords.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
 
 class EPICSBPMInterface;
 typedef boost::shared_ptr<EPICSBPMInterface> EPICSBPMInterface_sptr;
@@ -179,6 +182,51 @@ public:
 	/*! returns the charge buffer.
 	@param[out] qbuf: the charge buffer.*/
 	boost::circular_buffer< double > getQBuffer() const;
+	/*! returns the raw data vector as a python list.
+	@param[out] data: the raw data vector.*/
+	boost::python::list getData_Py() const;
+	/*! returns X PV vector (after using monitorForNShots) as a python list.
+	@param[out] xvec: the X PV vector.*/
+	boost::python::list getXPVVector_Py() const;
+	/*! returns Y PV vector (after using monitorForNShots) as a python list.
+	@param[out] yvec: the Y PV vector.*/
+	boost::python::list getYPVVector_Py() const;
+	/*! returns calculacted X vector (after using monitorForNShots) as a python list.
+	@param[out] xvec: the X vector.*/
+	boost::python::list getXVector_Py() const;
+	/*! returns calculated Y vector (after using monitorForNShots) as a python list.
+	@param[out] yvec: the Y vector.*/
+	boost::python::list getYVector_Py() const;
+	/*! returns the raw data vector (after using monitorForNShots) as a python list.
+	@param[out] datavec: the raw data vector.*/
+	boost::python::list getDataVector_Py() const;
+	/*! returns the charge vector (after using monitorForNShots) as a python list.
+	@param[out] datavec: the charge vector.*/
+	boost::python::list getQVector_Py() const;
+	/*! returns the raw data buffer as a python list.
+	@param[out] buf: the raw data buffer.*/
+	boost::python::list getDataBuffer_Py() const;
+	/*! returns the X PV buffer as a python list.
+	@param[out] xbuf: the X PV buffer.*/
+	boost::python::list getXPVBuffer_Py() const;
+	/*! returns the Y PV buffer as a python list.
+	@param[out] ybuf: the X PV buffer.*/
+	boost::python::list getYPVBuffer_Py() const;
+	/*! returns the X buffer (calculated from raw data) as a python list.
+	@param[out] xbuf: the X buffer.*/
+	boost::python::list getXBuffer_Py() const;
+	/*! returns the Y buffer (calculated from raw data) as a python list.
+	@param[out] ybuf: the Y buffer.*/
+	boost::python::list getYBuffer_Py() const;
+	/*! returns the charge buffer as a python list.
+	@param[out] qbuf: the charge buffer.*/
+	boost::python::list getQBuffer_Py() const;
+	/*! returns the status buffer of the BPM (as a python list) based on raw data pickup values.
+	@param[out] states: the status buffer.*/
+	boost::python::list getStatusBuffer_Py() const;
+	/*! returns the status vector of the BPM (as a python list) based on raw data pickup values (after using monitorForNShots).
+	@param[out] states: the status vector.*/
+	boost::python::list getStatusVector_Py() const;
 	/*! returns the horizontal read attenuation.
 	@param[out] long: RA1.*/
 	long getRA1() const;
@@ -243,6 +291,14 @@ public:
 	@param[in] value: desired value.
 	@param[out] bool: true if it worked.*/
 	bool setRDY(const double& value);
+	/*! sets the Y PV (virtual machine only).
+	@param[in] value: desired value.
+	@param[out] bool: true if it worked.*/
+	bool setYPVVirtual(const double& value);
+	/*! sets the X PV (virtual machine only).
+	@param[in] value: desired value.
+	@param[out] bool: true if it worked.*/
+	bool setXPVVirtual(const double& value);
 	/*! sets the X PV (Hardware object only).
 	@param[in] value: desired value.
 	@param[out] bool: true if it worked.*/
