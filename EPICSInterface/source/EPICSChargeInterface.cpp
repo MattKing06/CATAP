@@ -26,3 +26,8 @@ void EPICSChargeInterface::updateQ(const struct event_handler_args args)
 	messenger.printDebugMessage("Q VALUE FOR: " + recastCharge->getHardwareName() + ": "
 		+ std::to_string(recastCharge->q.second));
 }
+
+void EPICSChargeInterface::setQ(const double& value, const pvStruct& pv)
+{
+	putValue2(pv, value);
+}

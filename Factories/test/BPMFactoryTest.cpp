@@ -11,16 +11,29 @@ BOOST_AUTO_TEST_CASE(start_test)
 {
 	BOOST_TEST_MESSAGE("------	RUNNING BPM FACTORY TESTS	------");
 }
+
+
+BOOST_AUTO_TEST_CASE(bpm_factory_set_virtual_x_and_y_test)
+{
+	BPMFactory bpmFac = BPMFactory(STATE::VIRTUAL);
+	bool status = bpmFac.setup("nominal");
+
+	if (status)
+	{
+		std::vector<std::string> bpm_names = bpmFac.getAllBPMNames();
+		for (auto& name : bpm_names)
+		{
+			BPM bpm = bpmFac.getBPM(name);
+			bpm.setXPV(1.0);
+			bpm.setYPV(1.0);
+		}
+	}
+
+}
+
 BOOST_AUTO_TEST_CASE(bpm_factory_set_and_check_sa1_test)
 {
-	std::string testBPMName = "VM-CLA-S01-DIA-BPM-01";
-	char* EPICS_CA_ADDR_LIST_ENV = "EPICS_CA_ADDR_LIST=192.168.83.246";
-	char* EPICS_CA_SERVER_ENV = "EPICS_CA_SERVER_PORT=6000";
-	int envStatus = putenv(EPICS_CA_ADDR_LIST_ENV);
-	envStatus = putenv(EPICS_CA_SERVER_ENV);
-	std::cout << "USING IP ADDRESS: " << std::getenv("EPICS_CA_ADDR_LIST") << std::endl;
-	std::cout << "USING PORT: " << std::getenv("EPICS_CA_SERVER_PORT") << std::endl;
-	// What state should the test work for?? maybe offline, phyiscal and virtual state tests?? 
+	std::string testBPMName = "CLA-S01-DIA-BPM-01";
 	BPMFactory bpmfac = BPMFactory(STATE::VIRTUAL);
 	bpmfac.messagesOn();
 	bool status = bpmfac.setup("nominal");
