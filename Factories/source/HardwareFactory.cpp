@@ -21,6 +21,7 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
 	laserHWPFactory(LaserHWPFactory(mode)),
 	shutterFactory(ShutterFactory(mode)),
+	rfHeartbeatFactory(RFHeartbeatFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
@@ -87,8 +88,6 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	}
 	return setup;
 }
-
-
 
 
 ShutterFactory& HardwareFactory::getShutterFactory()
@@ -321,6 +320,26 @@ LaserHWPFactory& HardwareFactory::getLaserHWPFactory()
 	}
 	return laserHWPFactory;
 }
+
+
+RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
+{
+	if (!rfHeartbeatFactory.hasBeenSetup)
+	{
+		bool setup = rfHeartbeatFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getRFHeartbeatFactory Complete");
+			return rfHeartbeatFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup rfHeartbeatFactory");
+		}
+	}
+	return rfHeartbeatFactory;
+}
+
 
 void HardwareFactory::debugMessagesOn()
 {

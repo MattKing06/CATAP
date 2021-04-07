@@ -1,0 +1,9 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    KEEP_ALIVE: CLA-L01-RF-SCR-01:HB 
+properties:
+  hardware_type: RFHEARTBEAT
+  machine_area: L01
+  name: CLA-L01-RF-SCR-01
+  name_alias:  L01
