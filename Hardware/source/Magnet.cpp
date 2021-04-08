@@ -126,35 +126,39 @@ boost::python::list Magnet::getAliases_Py() const
 void Magnet::setPVStructs()
 {
 	//std::string PV = specificHardwareParameters.find(record)->second.data();
-	for(auto&& record : MagnetRecords::magnetRecordList)
+	for(auto& record : MagnetRecords::magnetRecordList)
 	{
-		std::string PV = specificHardwareParameters.find(record)->second.data();
-		std::cout << "FOUND PV  = " + PV << std::endl;
-		pvStructs[record] = pvStruct();
-		pvStructs[record].pvRecord = record;
-		// TODO NO ERROR CHECKING! (we assum config file is good??? 
-		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-		//messenger.printDebugMessage("Constructing PV information for ", record);
-		/*TODO
-		  This should be put into some general function: generateVirtualPV(PV) or something...
-		  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
-		  The config reader level if that is the case.
-		  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
-		  */
-		if (mode == STATE::VIRTUAL)
+		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
-			pvStructs[record].fullPVName = "VM-" + PV;
-			std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
+			std::string PV = specificHardwareParameters.find(record)->second.data();
+			std::cout << "FOUND PV  = " + PV << std::endl;
+			pvStructs[record] = pvStruct();
+			pvStructs[record].pvRecord = record;
+			// TODO NO ERROR CHECKING! (we assum config file is good??? 
+			// iterate through the list of matches and set up a pvStruct to add to pvStructs.
+			//messenger.printDebugMessage("Constructing PV information for ", record);
+			/*TODO
+			  This should be put into some general function: generateVirtualPV(PV) or something...
+			  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
+			  The config reader level if that is the case.
+			  DJS maybe they should, how certian can we be all virtual PVs will get a VM- prefix???
+			  */
+			if (mode == STATE::VIRTUAL)
+			{
+				pvStructs[record].fullPVName = "VM-" + PV;
+				std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
+			}
+			else
+			{
+				pvStructs[record].fullPVName = PV;
+				std::cout << "Physical Magnet PV " + pvStructs[record].fullPVName << std::endl;
+			}
+			//pv.pvRecord = record;
+			//chid, count, mask, chtype are left undefined for now.
+			//pvStructs[pv.pvRecord] = pv;
 		}
-		else
-		{
-			pvStructs[record].fullPVName = PV;
-			std::cout << "Physical Magnet PV " + pvStructs[record].fullPVName << std::endl;
-		}
-		//pv.pvRecord = record;
-		//chid, count, mask, chtype are left undefined for now.
-		//pvStructs[pv.pvRecord] = pv;
 	}
+		
 }
 
 magnetState Magnet::getMagnetState()const
