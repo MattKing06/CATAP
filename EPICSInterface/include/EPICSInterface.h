@@ -26,7 +26,6 @@
 	{							\
 		printf("CATAP: The requested ca operation didn't complete successfully because \"%s\"\n",ca_message(status)); \
 		SEVCHK(status, NULL);   \
-		exit(status);			\
 	}							\
 }								\
 

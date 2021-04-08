@@ -73,6 +73,9 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getLaserHWPFactory", &HardwareFactory::getLaserHWPFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("hardwareMap", &HardwareFactory::hardwareMap)
 
+			.def("getRFHeartbeatFactory", &HardwareFactory::getRFHeartbeatFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.add_property("rfHeartbeatFactory", &HardwareFactory::rfHeartbeatFactory)
+
 			.def("getShutterFactory", &HardwareFactory::getShutterFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("shutterFactory", &HardwareFactory::shutterFactory)
 

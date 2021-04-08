@@ -38,7 +38,7 @@ bool CameraFactory::setup()
 }
 bool CameraFactory::setup(const std::string& version)
 {
-	return setup(version);
+	return setup(version, TYPE::ALL_VELA_CLARA);
 }
 bool CameraFactory::setup(TYPE machineArea)
 {

@@ -124,6 +124,9 @@ class Magnet : public Hardware
 	/*! get the magnet reverse type, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getMagnetRevType() const;
+	/*! get the magnet lattice position, defined in the master lattice yaml file
+		@param[out] result  */
+		double getPosition() const;
 	/*! get the magnetic length, defined in the master lattice yaml file
 		@param[out] result  */
 		double getMagneticLength() const;
@@ -161,6 +164,7 @@ class Magnet : public Hardware
 		double getMinI()const;
 	/*! get the maximum I value that can be set for this magnet,  defined in the master lattice yaml file*/
 		double getMaxI()const;
+
 	/*! Get the field integral coefficents, defined in the master lattice yaml file
 		@param[out] result  */
 		std::vector<double> getFieldIntegralCoefficients() const;
@@ -181,10 +185,6 @@ class Magnet : public Hardware
 	/*! get the magnet TYPE (quadrupole, dipole, correctoer, solenoid, etc.)
 		@param[out] result  */
 		TYPE getMagType() const;
-
-		/*! get the magnet lattice position, defined in the master lattice yaml file
-		@param[out] result  */
-		double getPosition() const;
 	/*! get the current READI 
 		@param[out] result  */
 		double getREADI() const;

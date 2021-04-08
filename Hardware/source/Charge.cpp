@@ -127,6 +127,22 @@ boost::circular_buffer< double > Charge::getQBuffer() const
 	return this->qBuffer;
 }
 
+boost::python::list Charge::getQBuffer_Py() const
+{
+	boost::circular_buffer< double > qbuf;
+	qbuf = getQBuffer();
+	boost::python::list newPyList = to_py_list(qbuf);
+	return newPyList;
+}
+
+boost::python::list Charge::getQVector_Py() const
+{
+	std::vector< double > qvec;
+	qvec = getQVector();
+	boost::python::list newPyList = to_py_list(qvec);
+	return newPyList;
+}
+
 bool Charge::setQVirtual(const double& value)
 {
 	if (mode == STATE::VIRTUAL)

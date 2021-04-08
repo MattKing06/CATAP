@@ -82,6 +82,7 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("CHARGE", TYPE::CHARGE)
 			.value("POWER", TYPE::POWER)
 			.value("PHASE", TYPE::PHASE)
+			.value("RFHEARTBEAT", TYPE::RFHEARTBEAT)
 			;
 	}
 }

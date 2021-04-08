@@ -5,7 +5,10 @@ find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 add_executable(HardwareTests ${TEST_FILES})
 cmake_policy(SET CMP0023 NEW)
 #link to Boost libs AND whatever else
-target_include_directories(HardwareTests PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/Hardware/include ${CMAKE_SOURCE_DIR}/LoggingSystem/include)
+target_include_directories(HardwareTests PRIVATE ${Boost_INCLUDE_DIRS}
+                                                 ${YAML_PARSER_DIR}/include
+	                                             ${CMAKE_SOURCE_DIR}/Hardware/include
+												 ${CMAKE_SOURCE_DIR}/LoggingSystem/include)
 target_link_libraries(HardwareTests PUBLIC ${Boost_LIBRARIES})
 target_link_libraries(HardwareTests PUBLIC Hardware)
 #move testing binaries to separate folder

@@ -1,8 +1,6 @@
 #ifndef PYTHON_TYPE_CONVERSIONS_H_
 #define PYTHON_TYPE_CONVERSIONS_H_
 
-
-
 #include <boost/python.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
@@ -250,5 +248,5 @@ std::map<mapkey, mapvalue> to_std_map(const boost::python::dict& map_in)
 	return r;
 }
 /*!@}*/
-
 #endif //PYTHON_TYPE_CONVERSIONS_H_
+

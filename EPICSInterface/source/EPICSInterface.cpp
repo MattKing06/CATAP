@@ -74,9 +74,15 @@ void EPICSInterface::detachFromContext()
 
 void EPICSInterface::sendToEPICS()
 {
-	int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-	std::string status_str = "ca_pend_io return status: " + status;
-	SEVCHK(status, status_str.c_str());
+	try
+	{
+		int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK(status);
+	}
+	catch (const std::runtime_error & runtimeError)
+	{
+		std::cout << runtimeError.what() << std::endl;
+	}
 }
 
 
@@ -135,6 +141,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 		//	pv = pvStruct.fullPVName;
 		//}
 		std::string pv = pvStruct.fullPVName;
+		messenger.printDebugMessage("ca_create_channel to  ", pv);
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		

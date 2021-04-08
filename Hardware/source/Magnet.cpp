@@ -39,7 +39,6 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
 	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
 	magnetic_length(std::stof(paramsMap.find("magnetic_length")->second)),
-	
 	min_i(std::stof(paramsMap.find("min_i")->second)),
 	max_i(std::stof(paramsMap.find("max_i")->second)),
 	position(std::stof(paramsMap.find("position")->second)),
@@ -70,6 +69,13 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	{
 		field_integral_coefficients.push_back(std::stof(value));
 	}
+	//convert list of field integral coefficients from strings to floats
+	boost::split(field_integral_coefficients_STR, paramsMap.find("field_integral_coefficients")->second, [](char c) {return c == ','; });
+	for (auto value : field_integral_coefficients_STR)
+	{
+		field_integral_coefficients.push_back(std::stof(value));
+	}
+
 	// set the magnet_type
 	// TODO THIS HAS NOW BEEN REPLACED BY A GLOBALCONSTANT FOR ALL HARDWARE TYPES
 	if(GlobalFunctions::entryExists(paramsMap, "mag_type"))
@@ -193,7 +199,7 @@ magnetState Magnet::getMagnetState()const
 bool Magnet::setMagnetState(const magnetState& ms)
 {
 	bool seti_sent = SETI(ms.seti);
-	GlobalFunctions::pause_50;
+	GlobalFunctions::pause_50();
 	bool psu_sent = setPSUState(ms.psu_state);
 	if (seti_sent && psu_sent)
 	{
@@ -318,7 +324,6 @@ boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
 {
 	return to_py_list(getFieldIntegralCoefficients());
 }
-
 
 
 double Magnet::getMagneticLength() const

@@ -132,7 +132,11 @@ bool BPMFactory::setup(const std::string& VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateBPMMap();
-
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 	for (auto& bpm : bpmMap)
@@ -140,7 +144,6 @@ bool BPMFactory::setup(const std::string& VERSION)
 		std::map<std::string, pvStruct>& bpmPVStructs = bpm.second.getPVStructs();
 		for (auto& pv : bpmPVStructs)
 		{
-			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				retrievemonitorStatus(pv.second);
@@ -156,7 +159,6 @@ bool BPMFactory::setup(const std::string& VERSION)
 				{
 					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
 			}
 			else
 			{
@@ -165,10 +167,10 @@ bool BPMFactory::setup(const std::string& VERSION)
 				//return hasBeenSetup;
 			}
 		}
+		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
-	std::cout << "end" << std::endl;
 }
 
 std::map<std::string, BPM> BPMFactory::getBPMs(std::vector<std::string> bpmNames)

@@ -158,6 +158,23 @@ std::map<std::string, Charge> ChargeFactory::getChargeDiagnostics(std::vector<st
 	return selectedCharges;
 }
 
+boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
+{
+	std::vector<std::string> names;
+	if (!hasBeenSetup)
+	{
+		this->setup("nominal");
+	}
+	else
+	{
+		for (auto& it : chargeMap)
+		{
+			names.push_back(it.first);
+		}
+	}
+	return to_py_list(names);
+}
+
 Charge& ChargeFactory::getChargeDiagnostic(const std::string& fullChargeName)
 {
 	return chargeMap.find(fullChargeName)->second;
@@ -512,12 +529,6 @@ boost::python::dict ChargeFactory::getAllQBuffer_Py()
 	return newPyDict;
 }
 
-boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
-{
-	std::vector<std::string> allnames = getAllChargeDiagnosticNames();
-	boost::python::list newPyList = to_py_list(allnames);
-	return newPyList;
-}
 
 boost::python::dict ChargeFactory::getAllPosition_Py()
 {

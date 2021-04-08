@@ -208,3 +208,4 @@ void EPICSBPMInterface::setY(const double& value, const pvStruct& pv)
 {
 	putValue2(pv, value);
 }
+

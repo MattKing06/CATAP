@@ -17,13 +17,13 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.add_property("name", &Charge::getName)
 			.add_property("charge_type", &Charge::getChargeDiagnosticType)
 			.add_property("q", &Charge::getQ, &Charge::setQVirtual)
-			.add_property("qbuffer", &Charge::getQBuffer)
-			.add_property("qvector", &Charge::getQVector)
+			.add_property("qbuffer", &Charge::getQBuffer_Py)
+			.add_property("qvector", &Charge::getQVector_Py)
 			.add_property("position", &Charge::getPosition)
 			.add_property("buffersize", &Charge::getBufferSize, &Charge::setBufferSize)
 			.def("getQ", &Charge::getQ)
-			.def("getQBuffer", &Charge::getQBuffer)
-			.def("getQVector", &Charge::getQVector)
+			.def("getQBuffer", &Charge::getQBuffer_Py)
+			.def("getQVector", &Charge::getQVector_Py)
 			.def("monitorForNShots", &Charge::monitorForNShots)
 			.def("ismonitoring", &Charge::ismonitoring)
 			.def("setBufferSize", &Charge::setBufferSize);
@@ -66,8 +66,11 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getAllPosition", &ChargeFactory::getAllPosition_Py)
 			.def("getAllQVector", &ChargeFactory::getAllQVector)
 			.def("getAllQBuffer", &ChargeFactory::getAllQBuffer)
-			.def("setBufferSize", &ChargeFactory::setBufferSize);
-
+			.def("setBufferSize", &ChargeFactory::setBufferSize)
+			.def("messagesOn", &ChargeFactory::messagesOn)
+			.def("messagesOff", &ChargeFactory::messagesOff)
+			.def("debugMessagesOn", &ChargeFactory::debugMessagesOn)
+			.def("debugMessagesOff", &ChargeFactory::debugMessagesOff);
 	}
 
 

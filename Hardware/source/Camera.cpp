@@ -180,11 +180,11 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find HAS_LED");
 	if (GlobalFunctions::entryExists(paramMap, "HAS_LED"))
 	{
-		if (std::string(paramMap.find("HAS_LED")->second) == GlobalConstants::TRUE)
+		if (std::string(paramMap.find("HAS_LED")->second) == GlobalConstants::TRUE_STR)
 		{
 			has_led = true;
 		}
-		if (std::string(paramMap.find("HAS_LED")->second) == GlobalConstants::FALSE)
+		if (std::string(paramMap.find("HAS_LED")->second) == GlobalConstants::FALSE_STR)
 		{
 			has_led = false;
 		}
@@ -405,11 +405,11 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find USE_MASK_RAD_LIMITS");
 	if (GlobalFunctions::entryExists(paramMap, "USE_MASK_RAD_LIMITS"))
 	{
-		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::TRUE )
+		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::TRUE_STR )
 		{
 			use_mask_rad_limits = true;
 		}
-		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::FALSE )
+		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::FALSE_STR )
 		{
 			use_mask_rad_limits = false;
 		}

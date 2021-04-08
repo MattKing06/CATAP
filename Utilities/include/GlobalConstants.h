@@ -151,6 +151,7 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::HORIZONTAL), TYPE::HORIZONTAL},
 		{ENUM_TO_STRING(TYPE::VERTICAL), TYPE::VERTICAL},
 
+
 		{ENUM_TO_STRING(TYPE::VALVE), TYPE::VALVE},
 		{"Valve", TYPE::VALVE},
 
@@ -195,9 +196,9 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::CLARA_V_MOVER), TYPE::CLARA_V_MOVER},
 		{ENUM_TO_STRING(TYPE::CLARA_PNEUMATIC), TYPE::CLARA_PNEUMATIC},
 		{ENUM_TO_STRING(TYPE::PNEUMATIC), TYPE::PNEUMATIC},
-		{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE}
-
-
+		{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE},
+		{ENUM_TO_STRING(TYPE::RFHEARTBEAT), TYPE::RFHEARTBEAT},
+		{"RFHeartbeat", TYPE::RFHEARTBEAT}
 
 
 	};
@@ -420,8 +421,9 @@ namespace GlobalConstants
 
 	const std::string UNKNOWN = "UNKNOWN";
 	const std::string nominal = "nominal";
-	const std::string TRUE  = "TRUE";
-	const std::string FALSE  = "FALSE";
+	// MSVC DOES NOT LIKE CONST STRING TRUE/FALSE SO HAD TO RENAME THIS VAR //
+	const std::string TRUE_STR  = "TRUE";
+	const std::string FALSE_STR  = "FALSE";
 	
 	
 
@@ -784,6 +786,6 @@ namespace GlobalConstants
 
 
 
-}
+};
 /*! @}*/
 #endif // GLOBAL_CONSTANTS_H_

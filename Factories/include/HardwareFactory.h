@@ -13,6 +13,7 @@
 #include "LaserHWPFactory.h"
 #include "RFProtectionFactory.h"
 #include "RFModulatorFactory.h"
+#include <RFHeartbeatFactory.h>
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -87,17 +88,13 @@ public:
 
 
 	ShutterFactory& getShutterFactory();
-	
-	
+		
 	RFProtectionFactory& getRFProtectionFactory();
-	
-	
 	RFModulatorFactory& getRFModulatorFactory();
 	RFModulatorFactory& getRFModulatorFactory_Single(TYPE machine_area);
 	RFModulatorFactory& getRFModulatorFactory_Py(const boost::python::list& machine_areas);
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
-
-
+	RFHeartbeatFactory& getRFHeartbeatFactory();
 
 
 
@@ -122,6 +119,7 @@ public:
 	ShutterFactory shutterFactory;
 	RFProtectionFactory rfProtectionFactory;
 	RFModulatorFactory rfmodulatorFactory;
+	RFHeartbeatFactory rfHeartbeatFactory;
 
 	// virtual physical or offline
 	STATE mode;
