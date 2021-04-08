@@ -109,8 +109,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	}
 	getMasterLatticeData(paramMap, mode);
 	setPVStructs();
-	mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
-	mask_keywords_Py = to_py_list(mask_keywords);
+	//mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
+	//mask_keywords_Py = to_py_list(mask_keywords);
 	//roi_keywords_Py = to_py_list(roi_keywords);
 }
 

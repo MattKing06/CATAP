@@ -758,9 +758,9 @@ protected:
 	/* roi_data vector to hold image data */
 	std::pair<epicsTimeStamp, std::vector<long>> roi_data;
 	/*! Keywords used for setting ROI and mask together, python version (OUR PREFFERRED INTERFACE!) */
-	boost::python::list mask_and_roi_keywords_Py;
+	//boost::python::list mask_and_roi_keywords_Py;
 	/*! Keywords used for setting mask, python version  (Not prefferred, use mask and ROI together) */
-	boost::python::list mask_keywords_Py;
+	//boost::python::list mask_keywords_Py;
 	/* Number of shots to buffer for the analysis results*/  
 	size_t running_stats_buffer_size;
 	/* X position (pixels) running stats buffer*/
