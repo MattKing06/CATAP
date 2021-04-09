@@ -18,6 +18,10 @@ epicsInterface(boost::make_shared<EPICSRFModulatorInterface>(EPICSRFModulatorInt
 	setPVStructs();
 }
 RFModulator::RFModulator(const RFModulator& copyRFModulator)
+	: Hardware(copyRFModulator),
+	  epicsInterface(copyRFModulator.epicsInterface),
+	  low_level_values(copyRFModulator.low_level_values),
+	  low_level_strings(copyRFModulator.low_level_strings)
 	//:
 	//good_gun_hex_codes(copyRFModulator.good_gun_hex_codes)
 {

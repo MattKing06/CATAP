@@ -17,7 +17,7 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 		boost::python::class_<RFModulator, boost::python::bases<Hardware>, boost::noncopyable>("RFModulator", boost::python::no_init)
 
 			.def("getLowLevelNumercialData", &RFModulator::getLowLevelNumercialData_Py)
-			.def("getLowLevelStringData", &RFModulator::getLowLevelStringData)
+			.def("getLowLevelStringData", &RFModulator::getLowLevelStringData_Py)
 			.def("getLowLevelData", &RFModulator::getLowLevelData)
 
 			.def("getMainState", &RFModulator::getMainState)
