@@ -12,7 +12,7 @@ struct img_fixture {
 	img_fixture()
 	{
 		imgFac = IMGFactory(STATE::VIRTUAL);
-		imgFac.messagesOn();
+		imgFac.messagesOff();
 		imgFac.debugMessagesOff();
 		BOOST_TEST_MESSAGE("setup fixture");
 		status = imgFac.setup("nominal");
