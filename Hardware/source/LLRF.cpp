@@ -172,13 +172,11 @@ void LLRF::setPVStructs()
 {
 	for (auto&& record : LLRFRecords::llrfRecordList)
 	{
-		messenger.printDebugMessage("LLRF PV record = " + record);
-		pvStructs[record] = pvStruct();
-		pvStructs[record].pvRecord = record;
-
-
 		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
+			messenger.printDebugMessage("LLRF PV record = " + record);
+			pvStructs[record] = pvStruct();
+			pvStructs[record].pvRecord = record;
 			std::string PV = specificHardwareParameters.find(record)->second.data();
 			/*TODO
 			  This should be put into some general function: generateVirtualPV(PV) or something...
