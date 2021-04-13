@@ -8,18 +8,6 @@
 #include <chrono>
 #include <thread>
 
-<<<<<<< HEAD
-struct img_fixture {
-	img_fixture()
-	{
-		imgFac = IMGFactory(STATE::VIRTUAL);
-		imgFac.messagesOff();
-		imgFac.debugMessagesOff();
-		BOOST_TEST_MESSAGE("setup fixture");
-		status = imgFac.setup("nominal");
-	}
-	~img_fixture() { BOOST_TEST_MESSAGE("teardown fixture"); }
-=======
 //struct fixture {
 //	fixture()
 //	{
@@ -33,26 +21,10 @@ struct img_fixture {
 //	pvStruct setPV;
 //
 //};
->>>>>>> master
 
 BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
 
-<<<<<<< HEAD
-};
-
-BOOST_FIXTURE_TEST_SUITE(IMGFactoryTestSuite, img_fixture)
-BOOST_AUTO_TEST_CASE(start_test)
-{
-	BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");
-}
-BOOST_AUTO_TEST_CASE(img_factory_check_values_on_pressure_test)
-{
-	BOOST_TEST_MESSAGE("------	IMG FACTORY: CHECK VALUES ON PRESSURE	------");
-	std::string testIMGName = "EBT-INJ-VAC-IMG-01";
-	if (status)
-=======
 	BOOST_AUTO_TEST_CASE(start_test)
->>>>>>> master
 	{
 		BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");
 	}
