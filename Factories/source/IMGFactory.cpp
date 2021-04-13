@@ -3,8 +3,7 @@
 #include <PythonTypeConversions.h>
 #include <boost/filesystem.hpp>
 
-IMGFactory::IMGFactory() :
-	IMGFactory(STATE::OFFLINE)
+IMGFactory::IMGFactory() : IMGFactory(STATE::OFFLINE)
 {
 	std::cout << "IMGFactory DEFAULT constRUCTOR called " << std::endl;
 }
@@ -12,10 +11,9 @@ IMGFactory::IMGFactory() :
 IMGFactory::IMGFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
-	reader(ConfigReader("IMG", mode))
+	reader(ConfigReader("IMG", mode)),
+	messenger(LoggingSystem(true,true))
 {
-	messenger = LoggingSystem(true, true);
-	//hasBeenSetup = false;
 	messenger.printDebugMessage("IMG Factory constructed");
 }
 
@@ -171,6 +169,7 @@ IMG& IMGFactory::getIMG(const std::string& fullIMGName)
 	{
 		return IMGMap.at(fullName);
 	}
+	messenger.printMessage("COULD NOT FIND ", fullIMGName, " LOADING DUMMY IMG");
 	return dummyIMG;
 }
 std::string IMGFactory::getFullName(const std::string& nameToCheck) const

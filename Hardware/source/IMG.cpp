@@ -20,7 +20,8 @@ IMG::IMG()
 IMG::IMG(const std::map<std::string, std::string>& paramMap, STATE mode) : Hardware(paramMap, mode),
 epicsInterface(boost::make_shared<EPICSIMGInterface>(EPICSIMGInterface())),
 state(std::make_pair(epicsTimeStamp(), STATE::ERR)),
-pressure(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min))
+pressure(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+imgType(paramMap.find("img_type")->second)
 {
 	setPVStructs();
 	messenger = LoggingSystem(true, true);
@@ -34,6 +35,7 @@ IMG::IMG(const IMG& copyIMG):
 	state(copyIMG.state),
 	pressure(copyIMG.pressure),
 	aliases(copyIMG.aliases),
+	imgType(copyIMG.imgType),
 	epicsInterface(copyIMG.epicsInterface)
 {
 }
@@ -82,6 +84,8 @@ void IMG::setIMGState(const STATE& states)
 	switch (states)
 	{
 	case STATE::OK: state.second = STATE::OK; break;
+	case STATE::ON: state.second = STATE::ON; break;
+	case STATE::OFF: state.second = STATE::OFF; break;
 	case STATE::ERR: state.second = STATE::ERR; break;
 	default:
 		state.second = STATE::ERR;

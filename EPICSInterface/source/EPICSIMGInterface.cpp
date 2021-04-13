@@ -44,12 +44,26 @@ void EPICSIMGInterface::updateIMGState(const struct event_handler_args args)
 	IMG* recastIMG = getHardwareFromArgs<IMG>(args);
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampShortPair(args);
 	recastIMG->state.first = pairToUpdate.first;
-	switch (pairToUpdate.second)
+	if (recastIMG->imgType == ENUM_TO_STRING(TYPE::LOAD_LOCK))
 	{
-	case GlobalConstants::zero_int: recastIMG->setIMGState(STATE::OK); break;
-	case GlobalConstants::one_int: recastIMG->setIMGState(STATE::ERR); break;
-	default:
-		recastIMG->setIMGState(STATE::ERR);
+		messenger.printMessage("USING LOADLOCK IMG");
+		switch (pairToUpdate.second)
+		{
+		case GlobalConstants::zero_int: recastIMG->setIMGState(STATE::OFF); break;
+		case GlobalConstants::one_int: recastIMG->setIMGState(STATE::ON); break;
+		default:
+			recastIMG->setIMGState(STATE::ERR);
+		}
+	}
+	else
+	{
+		switch (pairToUpdate.second)
+		{
+		case GlobalConstants::zero_int: recastIMG->setIMGState(STATE::OK); break;
+		case GlobalConstants::one_int: recastIMG->setIMGState(STATE::ERR); break;
+		default:
+			recastIMG->setIMGState(STATE::ERR);
+		}
 	}
 	messenger.printDebugMessage("IMG STATE FOR: " + recastIMG->getHardwareName() + ": "
 		+ ENUM_TO_STRING(recastIMG->state.second));

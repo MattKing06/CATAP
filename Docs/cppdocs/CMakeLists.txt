@@ -10,3 +10,4 @@ if (DOXYGEN_FOUND)
                      ${PROJECT_SOURCE_DIR} ALL)
     set_property(TARGET CATAPDocs PROPERTY FOLDER "Docs")
 endif(DOXYGEN_FOUND)
+
