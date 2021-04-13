@@ -29,8 +29,8 @@ print(img_factory.getPressures(img_name_sub_list))
 for img_name in img_names:
     print(img_name, " : ", img_factory.getState(img_name))
     print("Pressure ",img_name, " : ", img_factory.getPressure(img_name))
-# get a the "INJ-VAC-IMG-01" IMG object
-img_object = img_factory.getIMG("EBT-INJ-VAC-IMG-01")
+# get a the "EBT-LLV-VAC-IMG-01" IMG object
+img_object = img_factory.getIMG("EBT-LLV-VAC-IMG-01")
 # print the name property for the img
 print("IMG Name: ", img_object.name)
 # print the state and pressure property for the img

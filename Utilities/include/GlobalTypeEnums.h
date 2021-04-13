@@ -101,6 +101,7 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(BPM_TYPE) // TODO hmm this has the same name as the object !! and so breaks things
 	(VALVE)
 	(IMG_TYPE)
+	(LOAD_LOCK)
 	(LLRF_TYPE)
 	(CAMERA_TYPE)
 	(HWP)

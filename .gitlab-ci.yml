@@ -11,11 +11,10 @@ before_script:
   - which g++
   - which python3
   - echo $PATH
-  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
-  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
-  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
+#  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
+#  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
+#  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   - ls
-
 cmake:
   stage: cmake
   cache:
@@ -48,6 +47,7 @@ tests:
     paths: 
       - build/*
   script:
+#  - /bin/bash ~/start_vm.script
   - cd build  
   - cd testBin
   - echo 'Running Tests..'

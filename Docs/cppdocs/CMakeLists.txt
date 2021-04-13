@@ -9,6 +9,6 @@ if (DOXYGEN_FOUND)
 	set(DOXYGEN_GENERATE_TREEVIEW YES)
 	doxygen_add_docs(CATAPDocs
 					 ${PROJECT_SOURCE_DIR} ALL)
-endif(DOXYGEN_FOUND)
 
-set_property(TARGET CATAPDocs PROPERTY FOLDER "Docs")
+	set_property(TARGET CATAPDocs PROPERTY FOLDER "Docs")
+endif(DOXYGEN_FOUND)
