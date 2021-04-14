@@ -17,8 +17,9 @@
 class IMGFactory
 {
 public:
+
 	/*! Default constructor for IMGFactory.
-		Calls the custom constructor with mode = OFFLINE.*/
+	Calls the custom constructor with mode = OFFLINE.*/
 	IMGFactory();
 	
 	/*! Custom constructor for IMGFactory
@@ -31,7 +32,6 @@ public:
 	/*! Copy constructor for IMGFactory (used for = operator)
 	@param[in] copyIMGFactory the IMGFactory we want to copy over.*/
 	IMGFactory(const IMGFactory& copyFactory);
-	
 	/*! IMGFactory destructor.
 	Goes through all IMG objects in the imgMap and removes connections/subscriptions to EPICS if they exist.*/
 	~IMGFactory();
@@ -157,6 +157,7 @@ private:
 	
 	/*access IMG functionality without crashing out when we cannot connect to EPICS.*/
 	IMG dummyIMG;
+
 };
 
 /** @}*/

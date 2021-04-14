@@ -3,7 +3,7 @@ controls_information:
   pv_record_map:
     KEEP_ALIVE: unknown 
 properties :
-  hardware_type : RFHEARTBEAT
+  hardware_type : RFHeartbeat
   machine_area : UNDEFINED
   name : UNDEFINED
   name_alias : UNDEFINED

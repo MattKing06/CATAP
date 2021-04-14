@@ -161,6 +161,29 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 LLRF::LLRF(const LLRF& copyLLRF) :
 	Hardware(copyLLRF),
 	trace_data_size(copyLLRF.trace_data_size),
+	amp_sp(copyLLRF.amp_sp),
+	amp_ff(copyLLRF.amp_ff),
+	phi_sp(copyLLRF.phi_sp),
+	phi_ff(copyLLRF.phi_ff),
+	amp_MW(copyLLRF.amp_MW),
+	phi_degrees(copyLLRF.phi_degrees),
+	max_amp_sp(copyLLRF.max_amp_sp),
+	pulse_shape(copyLLRF.pulse_shape),
+	kly_fwd_power_max(copyLLRF.kly_fwd_power_max),
+	trig_source(copyLLRF.trig_source),
+	llrf_pulse_duration(copyLLRF.llrf_pulse_duration),
+	pulse_offset(copyLLRF.pulse_offset),
+	heartbeat(copyLLRF.heartbeat),
+	trace_data_buffer_size(copyLLRF.trace_data_buffer_size),
+	interlock_state(copyLLRF.interlock_state),
+	rf_output(copyLLRF.rf_output),
+	ff_phase_lock(copyLLRF.ff_phase_lock),
+	ff_amp_lock(copyLLRF.ff_amp_lock),
+	trace_data_map(copyLLRF.trace_data_map),
+	trace_ACQM_map(copyLLRF.trace_ACQM_map),
+	trace_SCAN_map(copyLLRF.trace_SCAN_map),
+	all_trace_interlocks(copyLLRF.all_trace_interlocks),
+	dbr_all_trace_data(copyLLRF.dbr_all_trace_data),
 	epicsInterface(copyLLRF.epicsInterface)
 {}
 
@@ -172,13 +195,11 @@ void LLRF::setPVStructs()
 {
 	for (auto&& record : LLRFRecords::llrfRecordList)
 	{
-		messenger.printDebugMessage("LLRF PV record = " + record);
-		pvStructs[record] = pvStruct();
-		pvStructs[record].pvRecord = record;
-
-
 		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
+			messenger.printDebugMessage("LLRF PV record = " + record);
+			pvStructs[record] = pvStruct();
+			pvStructs[record].pvRecord = record;
 			std::string PV = specificHardwareParameters.find(record)->second.data();
 			/*TODO
 			  This should be put into some general function: generateVirtualPV(PV) or something...

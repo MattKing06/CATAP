@@ -315,22 +315,27 @@ void EPICSRFModulatorInterface::update_SYSTEM_STATE_READ(const struct event_hand
 	case 0:
 		mod->main_state.second = STATE::OFF;
 		mod->main_state_string.second = "Off";
+		mod->updateLowLevelString(RFModulatorRecords::SYSTEM_STATE_READ, mod->main_state_string);
 		break;
 	case 1:
 		mod->main_state.second = STATE::STANDBY;
 		mod->main_state_string.second = "STANDBY Interl.";
+		mod->updateLowLevelString(RFModulatorRecords::SYSTEM_STATE_READ, mod->main_state_string);
 		break;
 	case 2:
 		mod->main_state.second = STATE::HV_ON;
 		mod->main_state_string.second = "HV_ON";
+		mod->updateLowLevelString(RFModulatorRecords::SYSTEM_STATE_READ, mod->main_state_string);
 		break;
 	case 3:
 		mod->main_state.second = STATE::RF_ON;
 		mod->main_state_string.second = "RF_ON";
+		mod->updateLowLevelString(RFModulatorRecords::SYSTEM_STATE_READ, mod->main_state_string);
 		break;
 	default:
 		mod->main_state.second = STATE::UNKNOWN_STATE;
 		mod->main_state_string.second = "Unknown";
+		mod->updateLowLevelString(RFModulatorRecords::SYSTEM_STATE_READ, mod->main_state_string);
 	}
 	//messenger.printMessage(mod->getHardwareName(), " state changed to ", ENUM_TO_STRING(mod->main_state.second));
 }
@@ -474,7 +479,7 @@ void EPICSRFModulatorInterface::update_SOLENOID_FLOW_RATE(const struct event_han
 {
 	//messenger.printMessage("update_SOLENOID_3_CURRENT");
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
-	mod->updateLowLevelDouble(RFModulatorRecords::SOLENOID_3_CURRENT, getTimeStampDoublePair(args));
+	mod->updateLowLevelDouble(RFModulatorRecords::SOLENOID_FLOW_RATE, getTimeStampDoublePair(args));
 }
 void EPICSRFModulatorInterface::update_TANK_FLOW_RATE(const struct event_handler_args args)
 {
@@ -516,13 +521,13 @@ void EPICSRFModulatorInterface::update_SOLENOID_1_CURRENT(const struct event_han
 {
 	//messenger.printMessage("update_SOLENOID_3_CURRENT");
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
-	mod->updateLowLevelDouble(RFModulatorRecords::SOLENOID_3_CURRENT, getTimeStampDoublePair(args));
+	mod->updateLowLevelDouble(RFModulatorRecords::SOLENOID_1_CURRENT, getTimeStampDoublePair(args));
 }
 void EPICSRFModulatorInterface::update_SOLENOID_2_CURRENT(const struct event_handler_args args)
 {
 	//messenger.printMessage("update_SOLENOID_3_CURRENT");
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
-	mod->updateLowLevelDouble(RFModulatorRecords::SOLENOID_3_CURRENT, getTimeStampDoublePair(args));
+	mod->updateLowLevelDouble(RFModulatorRecords::SOLENOID_2_CURRENT, getTimeStampDoublePair(args));
 }
 void EPICSRFModulatorInterface::update_SOLENOID_3_CURRENT(const struct event_handler_args args)
 {

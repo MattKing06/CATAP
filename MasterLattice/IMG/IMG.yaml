@@ -6,6 +6,7 @@ controls_information:
 properties:
     machine_area: UNDEFINED
     hardware_type: IMG
+    img_type: UNDEFINED
     name: UNDEFINED
     virtual_name: UNDEFINED
     name_alias: UNDEFINED
