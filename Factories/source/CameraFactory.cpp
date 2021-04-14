@@ -63,16 +63,6 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	machineAreas = machineAreas_IN;
-	//messenger.printDebugMessage("called Camera Factory setup  ");
-	//std::stringstream ss;
-	//ss << "machineAreas = ";
-	//for (auto&& area : machineAreas)
-	//{
-	//	ss << ENUM_TO_STRING(area);
-	//	ss << ", ";
-	//}
-	//messenger.printDebugMessage(ss.str());
-	//GlobalFunctions::pause_2000();
 
 	if (hasBeenSetup)
 	{
@@ -83,9 +73,6 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	// epics valve interface has been initialized in valve constructor
-	// but we have a lot of PV information to retrieve from EPICS first
-	// so we will cycle through the PV structs, and set up their values.
 	populateCameraMap();
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
@@ -163,9 +150,6 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	// epics valve interface has been initialized in valve constructor
-	// but we have a lot of PV information to retrieve from EPICS first
-	// so we will cycle through the PV structs, and set up their values.
 	messenger.printDebugMessage("Calling  populateCameraMap");
 	populateCameraMap();
 	messenger.printDebugMessage("populateCameraMap finished");

@@ -44,40 +44,6 @@ hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardwar
 hardwareName(specificValueMap.find("name")->second)
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
-	// equal_range returns a variable containing start (first) and end (second)
-	// iterators for items in the multimap corresponding to pv records.
-	//if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
-	//{
-	//	if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
-	//	{
-	//		hardware_type = string_to_hardware_type_map.at("Magnet");
-	//	}
-	//}
-/* 	if (hardwareType.compare("Magnet") != 0)
-	{
-		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS TRUE");
-		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
-		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-		std::vector<std::string> pvRecordVec;
-
-		// split a string by commas
-		boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
-
-		//messenger.printDebugMessage("Constructing PV information for ", hardwareName);
-		for (auto record : pvRecordVec)
-		{
-			pvStruct pv = pvStruct();
-			pv.fullPVName = hardwareName;
-			pv.pvRecord = record;
-			//chid, count, mask, chtype are left undefined for now.
-			pvStructs[pv.pvRecord] = pv;
-		}
-	}
-	else
-	{
-		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS FALSE");
-	} */
-	//messenger.printDebugMessage(hardwareName, " Hardware Constructor Finished ");
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :

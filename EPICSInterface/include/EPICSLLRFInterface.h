@@ -175,23 +175,6 @@ public:
     static void update_CH8_PHASE_DER_ACQM(const struct event_handler_args args);
     static void update_CH8_PWR_LOC_ACQM(const struct event_handler_args args);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ////static void update_PULSE_SHAPE_APPLY(const struct event_handler_args args);
 
     static void update_trace_SCAN(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& scan);
@@ -357,9 +340,7 @@ public:
     {LLRFRecords::CH8_AMP_DER_ACQM,      this->update_CH8_AMP_DER_ACQM      },
     {LLRFRecords::CH8_PHASE_DER_ACQM,    this->update_CH8_PHASE_DER_ACQM    },
     {LLRFRecords::CH8_PWR_LOC_ACQM,      this->update_CH8_PWR_LOC_ACQM      }
-
-
-        };
+     };
 
 
 
