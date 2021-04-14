@@ -165,32 +165,11 @@ void EPICSLLRFInterface::update_INTERLOCK(const struct event_handler_args args)
 }
 
 
-
-// don't need this 
-//void EPICSLLRFInterface::update_PULSE_SHAPE_APPLY(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_PULSE_SHAPE_APPLY");
-//}
-
-
 void EPICSLLRFInterface::update_LLRF_TRACES(const struct event_handler_args args)
 {
 	messenger.printDebugMessage("update_LLRF_TRACES");
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	messenger.printDebugMessage("splitOneTraceValues", args.dbr);
-	
-	//
-	//const dbr_time_double* p_data = (const struct dbr_time_double*)dbr;
-	////pValue = &dbr->value;
-
-	//const dbr_double_t* pValue;
-	//pValue = &p_data->value;
-	//auto end = &pValue[100];
-
-	//for()
-
-	
-	
 	recastLLRF->splitOneTraceValues((const struct dbr_time_double*)args.dbr);
 }
 void EPICSLLRFInterface::update_LLRF_TRACES_ACQM(const struct event_handler_args args)
@@ -212,49 +191,34 @@ void EPICSLLRFInterface::update_LLRF_TRACES_SCAN(const struct event_handler_args
 
 void EPICSLLRFInterface::update_CH1_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH1_INTERLOCK, LLRFRecords::CH1, args);
 }
 void EPICSLLRFInterface::update_CH2_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH2_INTERLOCK, LLRFRecords::CH2, args);
 }
 void EPICSLLRFInterface::update_CH3_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH3_INTERLOCK, LLRFRecords::CH3, args);
 }
 void EPICSLLRFInterface::update_CH4_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH4_INTERLOCK, LLRFRecords::CH4, args);
 }
 void EPICSLLRFInterface::update_CH5_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH5_INTERLOCK, LLRFRecords::CH5, args);
 }
 void EPICSLLRFInterface::update_CH6_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH6_INTERLOCK, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH7_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockStatus(LLRFRecords::LLRF_CH7_INTERLOCK, LLRFRecords::CH7, args);
 }
 void EPICSLLRFInterface::update_CH8_INTERLOCK_STATUS(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
 	updateInterLockStatus(LLRFRecords::LLRF_CH8_INTERLOCK, LLRFRecords::CH8, args);
 }
 
@@ -298,49 +262,34 @@ void EPICSLLRFInterface::updateInterLockStatus(const std::string& ch, const std:
 
 void EPICSLLRFInterface::update_CH1_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH1_INTERLOCK, LLRFRecords::CH1, args);
 }
 void EPICSLLRFInterface::update_CH2_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH2_INTERLOCK, LLRFRecords::CH2, args);
 }
 void EPICSLLRFInterface::update_CH3_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH3_INTERLOCK, LLRFRecords::CH3, args);
 }
 void EPICSLLRFInterface::update_CH4_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH4_INTERLOCK, LLRFRecords::CH4, args);
 }
 void EPICSLLRFInterface::update_CH5_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH5_INTERLOCK, LLRFRecords::CH5, args);
 }
 void EPICSLLRFInterface::update_CH6_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH6_INTERLOCK, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH7_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockPDBM(LLRFRecords::LLRF_CH7_INTERLOCK, LLRFRecords::CH7, args);
 }
 void EPICSLLRFInterface::update_CH8_INTERLOCK_PDBM(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
 	updateInterLockPDBM(LLRFRecords::LLRF_CH8_INTERLOCK, LLRFRecords::CH8, args);
 }
 void EPICSLLRFInterface::updateInterLockPDBM(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
@@ -384,49 +333,34 @@ void EPICSLLRFInterface::updateInterLockPDBM(const std::string& ch, const std::s
 
 void EPICSLLRFInterface::update_CH1_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH1_INTERLOCK, LLRFRecords::CH1, args);
 }
 void EPICSLLRFInterface::update_CH2_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH2_INTERLOCK, LLRFRecords::CH2, args);
 }
 void EPICSLLRFInterface::update_CH3_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH3_INTERLOCK, LLRFRecords::CH3, args);
 }
 void EPICSLLRFInterface::update_CH4_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH4_INTERLOCK, LLRFRecords::CH4, args);
 }
 void EPICSLLRFInterface::update_CH5_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH5_INTERLOCK, LLRFRecords::CH5, args);
 }
 void EPICSLLRFInterface::update_CH6_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH6_INTERLOCK, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH7_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockP(LLRFRecords::LLRF_CH7_INTERLOCK, LLRFRecords::CH7, args);
 }
 void EPICSLLRFInterface::update_CH8_INTERLOCK_P(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
 	updateInterLockP(LLRFRecords::LLRF_CH8_INTERLOCK, LLRFRecords::CH8, args);
 }
 void EPICSLLRFInterface::updateInterLockP(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
@@ -470,49 +404,34 @@ void EPICSLLRFInterface::updateInterLockP(const std::string& ch, const std::stri
 
 void EPICSLLRFInterface::update_CH1_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH1_INTERLOCK, LLRFRecords::CH1, args);
 }
 void EPICSLLRFInterface::update_CH2_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH2_INTERLOCK, LLRFRecords::CH2, args);
 }
 void EPICSLLRFInterface::update_CH3_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH3_INTERLOCK, LLRFRecords::CH3, args);
 }
 void EPICSLLRFInterface::update_CH4_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH4_INTERLOCK, LLRFRecords::CH4, args);
 }
 void EPICSLLRFInterface::update_CH5_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH5_INTERLOCK, LLRFRecords::CH5, args);
 }
 void EPICSLLRFInterface::update_CH6_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH6_INTERLOCK, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH7_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockU(LLRFRecords::LLRF_CH7_INTERLOCK, LLRFRecords::CH7, args);
 }
 void EPICSLLRFInterface::update_CH8_INTERLOCK_U(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
 	updateInterLockU(LLRFRecords::LLRF_CH8_INTERLOCK, LLRFRecords::CH8, args);
 }
 void EPICSLLRFInterface::updateInterLockU(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
@@ -559,49 +478,34 @@ void EPICSLLRFInterface::updateInterLockU(const std::string& ch, const std::stri
 
 void EPICSLLRFInterface::update_CH1_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH1_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH1_INTERLOCK, LLRFRecords::CH1, args);
 }
 void EPICSLLRFInterface::update_CH2_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH2_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH2_INTERLOCK, LLRFRecords::CH2, args);
 }
 void EPICSLLRFInterface::update_CH3_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH3_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH3_INTERLOCK, LLRFRecords::CH3, args);
 }
 void EPICSLLRFInterface::update_CH4_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH4_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH4_INTERLOCK, LLRFRecords::CH4, args);
 }
 void EPICSLLRFInterface::update_CH5_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH5_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH5_INTERLOCK, LLRFRecords::CH5, args);
 }
 void EPICSLLRFInterface::update_CH6_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH6_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH6_INTERLOCK, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH7_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH7_INTERLOCK_STATUS");
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	updateInterLockENABLE(LLRFRecords::LLRF_CH7_INTERLOCK, LLRFRecords::CH7, args);
 }
 void EPICSLLRFInterface::update_CH8_INTERLOCK_ENABLE(const struct event_handler_args args)
 {
-	//messenger.printDebugMessage("update_CH8_INTERLOCK_STATUS");
 	updateInterLockENABLE(LLRFRecords::LLRF_CH8_INTERLOCK, LLRFRecords::CH8, args);
 }
 void EPICSLLRFInterface::updateInterLockENABLE(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
@@ -641,317 +545,6 @@ void EPICSLLRFInterface::updateInterLockENABLE(const std::string& ch, const std:
 		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
 	}
 }
-
-
-
-
-//
-//
-//
-//void EPICSLLRFInterface::update_CH1_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH1_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH2_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH2_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH3_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH3_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH4_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH4_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH5_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH5_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH6_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH6_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH7_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH7_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH8_INTERLOCK_ENABLE(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_INTERLOCK_ENABLE");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockEnable(LLRFRecords::LLRF_CH8_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH1_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH1_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH2_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH2_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH3_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH3_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH4_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH4_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH5_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH5_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH6_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH6_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH7_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH7_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH8_INTERLOCK_U(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_INTERLOCK_U");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockU(LLRFRecords::LLRF_CH8_INTERLOCK, args);
-//}
-//
-//
-//
-//void EPICSLLRFInterface::update_CH1_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH1_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH2_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH2_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH3_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH3_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH4_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH4_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH5_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH5_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH6_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH6_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH7_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH7_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH8_INTERLOCK_P(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_INTERLOCK_P");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockP(LLRFRecords::LLRF_CH8_INTERLOCK, args);
-//}
-//
-//
-//void EPICSLLRFInterface::update_CH1_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH1_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH2_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH2_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH3_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH3_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH4_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH4_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH5_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH5_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH6_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH6_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH7_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH7_INTERLOCK, args);
-//}
-//void EPICSLLRFInterface::update_CH8_INTERLOCK_PDBM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_INTERLOCK_PDBM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateInterLockPDBM(LLRFRecords::LLRF_CH8_INTERLOCK, args);
-//}
-
-
-//
-//
-//
-//void EPICSLLRFInterface::update_CH1_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH1_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH2_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH2_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH3_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH3_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH4_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH4_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH5_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH5_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH6_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH6_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH7_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH7_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH8_PWR_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_PWR_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH8_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH1_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH1_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH1_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH2_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH2_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH2_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH3_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH3_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH3_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH4_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH4_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH4_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH5_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH5_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH5_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH6_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH6_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH6_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH7_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH7_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH7_PWR_REM_ACQM, args);
-//}
-//void EPICSLLRFInterface::update_CH8_PHASE_REM_ACQM(const struct event_handler_args args)
-//{
-//	messenger.printDebugMessage("update_CH8_PHASE_REM_ACQM");
-//	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-//	recastLLRF->updateACQM(GlobalConstants::CH8_PWR_REM_ACQM, args);
-//}
-//
-//
-//
-//
-//
-
 
 
 void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::string& CH, const struct event_handler_args& args)

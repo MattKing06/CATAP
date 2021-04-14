@@ -3,8 +3,7 @@
 #include <LoggingSystem.h>
 #if !defined LISTENER_H && !defined GETTER_H && !defined PUTTER_H
 /* if we are using EPICSTools/Listener/Getter/Putter, then
-/* we don't want to include Hardware as it is
-/* unnecessary for EPICSTools/Listener/Getter/Putter */
+/* we don't want to include Hardware */
 #include <Hardware.h>
 #endif // LISTENER_H || GETTER_H || PUTTER_H
 #include <functional>
@@ -110,7 +109,6 @@ public:
 	{
 		int status = ca_flush_io();
 		SEVCHK(status, ca.c_str());
-		//printStatusResult(status, mess1.c_str(), mess2.c_str());
 		return status;
 	}
 
