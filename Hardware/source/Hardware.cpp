@@ -57,6 +57,13 @@ Hardware::Hardware(const Hardware& copyHardware) :
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
+
+	messenger.printDebugMessage(" specificHardwareParameters " );
+	for (auto&& it : specificHardwareParameters)
+	{
+		messenger.printDebugMessage(it.first, " = ", it.second );
+	}
+
 }
 
 std::string Hardware::getMachineAreaStr() const

@@ -47,6 +47,11 @@ public:
 	bool isPhysical()const;
 	bool isOffline()const;
 
+	std::map<std::string, std::string> getSpecificHardwareParameters() const;
+	std::map<std::string, std::string> getProperties()const;
+	void setProperties();
+
+
 
 	// TODO: do we need this? can't an child of these class just access pvStructs,
 	// and no other class should be able ot get this map??? 
@@ -58,7 +63,7 @@ public:
 	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/
 	//virtual void setPVStructs(std::map<std::string, std::string> recordAndPVStructs);
 
-	std::map<std::string, std::string> getSpecificHardwareParameters() const;
+
 	bool operator==(Hardware rhs);
 	virtual void debugMessagesOn();
 	virtual void debugMessagesOff();
