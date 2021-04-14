@@ -11,6 +11,7 @@ set( SOURCE_FILES
     source/CameraPVRecords.cpp
     source/ChargePVRecords.cpp
     source/ScreenPVRecords.cpp
+    source/HardwareState.cpp
     source/IMGPVRecords.cpp
     source/LaserEnergyMeterPVRecords.cpp
     source/LaserHWPPVRecords.cpp
@@ -23,6 +24,7 @@ set( SOURCE_FILES
     source/RFProtectionPVRecords.cpp
     source/StagePVRecords.cpp
     source/ShutterPVRecords.cpp
+    source/RunningStats.cpp
 )
 set( INCLUDE_FILES
      include/PythonTypeConversions.h
@@ -30,6 +32,7 @@ set( INCLUDE_FILES
      include/GlobalTypeEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
+     include/HardwareState.h
      include/MagnetPVRecords.h
      include/ValvePVRecords.h
      include/BPMPVRecords.h
@@ -48,6 +51,7 @@ set( INCLUDE_FILES
      include/RFProtectionPVRecords.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
+     include/RunningStats.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
@@ -60,7 +64,15 @@ IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIR})
 target_include_directories(Utilities PRIVATE ${PYTHON_INCLUDE_DIR})
+target_include_directories(Utilities PUBLIC ${YAML_PARSER_DIR}/include)
 target_include_directories(Utilities PUBLIC include)
+if(WIN32)
+  TARGET_LINK_LIBRARIES(Utilities PUBLIC debug ${YAML_PARSER_LIB_DEBUG_DIR}/libyaml-cppmdd.lib)
+  TARGET_LINK_LIBRARIES(Utilities PUBLIC optimized ${YAML_PARSER_LIB_RELEASE_DIR}/libyaml-cppmd.lib)
+endif(WIN32)
+if(UNIX)
+  TARGET_LINK_LIBRARIES(Utilities PUBLIC general ${YAML_PARSER_LIB_DIR}/libyaml-cpp.so)
+endif(UNIX)
 TARGET_LINK_LIBRARIES(Utilities
 					 PRIVATE
 					 ${Boost_LIBRARIES}

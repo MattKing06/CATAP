@@ -60,7 +60,10 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
-	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state_struct_and_dburt();
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_dburt();
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state();
+	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_states();
+
 	BOOST_PYTHON_RF_HEARTBEAT_INCLUDE::expose_rf_heartbeat_object();
 	BOOST_PYTHON_RF_HEARTBEAT_INCLUDE::expose_rf_heartbeat_factory_object();
 	BOOST_PYTHON_RF_MODULATOR_INCLUDE::expose_rf_modulator_object();

@@ -50,7 +50,7 @@ public:
 	/*! Goes through all PV records stored in BPMRecords namespace, creates pvStructs and sets up their record/fullPVName before
 	inserting them into a vector of pvStructs which is later used by the BPMFactory to setup connections to EPICS.
 	*/
-	void setPVStructs();
+	void setPVStructs(STATE mode);
 	/*! turns debug messaging on for this BPM instance*/
 	void debugMessagesOn();
 	/*! turns debug messaging off for this BPM instance*/

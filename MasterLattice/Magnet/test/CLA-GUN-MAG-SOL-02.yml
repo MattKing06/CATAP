@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: CLA-GUN-MAG-SOL-02:GETSETI
+    READI: CLA-GUN-MAG-SOL-02:READI
+    RILK: CLA-GUN-MAG-SOL-02:RILK
+    RPOWER: CLA-GUN-MAG-SOL-02:RPOWER
+    SETI: CLA-GUN-MAG-SOL-02:SETI
+    SPOWER: CLA-GUN-MAG-SOL-02:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 2.0
+  degauss_values: "250.0,-250.0,150.0,-150.0,100.0,-100.0,50.0,-50.0,25.0,-25.0,0.0"
+  field_integral_coefficients: "2.17321571,-0.858179277,0.172127130,-0.0171033399,6.70371530e-04,-3.53922E-08,1.53138E-05,0.167819191,0.0"
+  hardware_type: MAGNET
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: SOL
+  magnetic_length: 139.5
+  manufacturer: SEF
+  name: CLA-GUN-MAG-SOL-02
+  name_alias: LRG-SOL-02,LRG-SOL02
+  num_degauss_steps: 11
+  position: 0.127
+  ri_tolerance: 0.1
+  serial_number: '01'

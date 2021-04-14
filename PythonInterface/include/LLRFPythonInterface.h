@@ -10,54 +10,204 @@
 namespace BOOST_PYTHON_LLRF_INCLUDE
 {
 
+
+	void expose_llrf_trace_data_object()
+	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<TraceData>())->to_python_target_type());
+		if (is_registered) return;
+		boost::python::class_<TraceData>
+			("TraceData", "TraceData Doc String")
+			.add_property("name", &TraceData::name)
+			.add_property("trace_max", &TraceData::trace_max)
+			.add_property("mean_start_stop", &TraceData::mean_start_stop)
+			.add_property("mean_start_stop_time", &TraceData::mean_start_stop_time)
+			.add_property("trace_data_size", &TraceData::trace_data_size)
+			.add_property("trace_data_buffer_size", &TraceData::trace_data_buffer_size)
+			.add_property("one_record_part", &TraceData::one_record_part)
+			.add_property("one_record_start_index", &TraceData::one_record_start_index)
+			.add_property("one_record_stop_index", &TraceData::one_record_stop_index)
+			.add_property("trace_type", &TraceData::trace_type)
+			.add_property("trace_type", &TraceData::trace_type)
+			;
+
+		//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
+		//std::vector<double> trace_values;
+		//std::pair<size_t, size_t> mean_start_stop;
+		//std::pair<double, double> mean_start_stop_time;
+		//std::pair<epicsTimeStamp, STATE> scan;
+		//std::pair<epicsTimeStamp, STATE> acqm;
+		//std::pair<epicsTimeStamp, bool> interlock_state;
+		//std::pair<epicsTimeStamp, double > u_level;
+		//std::pair<epicsTimeStamp, double > p_level;
+		//std::pair<epicsTimeStamp, double > pdbm_level;
+
+	}
+
+	void expose_llrf_interlock_object()
+	{
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRFInterlock>())->to_python_target_type());
+		if (is_registered) return;
+		boost::python::class_<LLRFInterlock>
+			("LLRFInterlock", "LLRFInterlock Doc String")
+			.add_property("name", &LLRFInterlock::name)
+			.add_property("interlock_type", &LLRFInterlock::interlock_type)
+			.add_property("u_level", &LLRFInterlock::u_level)
+			.add_property("p_level", &LLRFInterlock::p_level)
+			.add_property("pdbm_level", &LLRFInterlock::pdbm_level)
+			.add_property("enable", &LLRFInterlock::enable)
+			;
+
+
+	}
+
 	void expose_llrf_object()
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRF>())->to_python_target_type());
 		if (is_registered) return;
+
+
+		// function pointers for overloads that are ambiguous when exposing to Python
+		boost::python::list(LLRF::*getRollingAverage_single)(const std::string&)const = &LLRF::getRollingAverage_Py;
+		boost::python::dict(LLRF::*getRollingAverage_multiple)()const = &LLRF::getRollingAverage_Py;
+		bool(LLRF::*setShouldKeepRollingAverage_single)(const std::string&) = &LLRF::setShouldKeepRollingAverage;
+		void(LLRF::*setShouldKeepRollingAverage_multiple)() = &LLRF::setShouldKeepRollingAverage;
+		bool(LLRF::*setShouldNotKeepRollingAverage_single)(const std::string&) = &LLRF::setShouldNotKeepRollingAverage;
+		void(LLRF::*setShouldNotKeepRollingAverage_multiple)() = &LLRF::setShouldNotKeepRollingAverage;
+
+
 		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
 			
-
-			.def("setPhi", &LLRF::setPhi)
+			//.def("printSetupData", &LLRF::printSetupData) // for debugging 
+		
 			.def("setAmp", &LLRF::setAmp)
 			.def("setAmpMW", &LLRF::setAmpMW)
-			.def("setPhiDEG", &LLRF::setPhiDEG)
-
-			.def("getPhi", &LLRF::getPhi)
 			.def("getAmp", &LLRF::getAmp)
 			.def("getAmpMW", &LLRF::getAmpMW)
+
+
+			.def("setPhi", &LLRF::setPhi)
+			.def("setPhiDEG", &LLRF::setPhiDEG)
+			.def("setCrestPhase", &LLRF::setCrestPhase)
+			.def("setOperatingPhase", &LLRF::setOperatingPhase)
+
+			.def("getPhi", &LLRF::getPhi)
 			.def("getPhiDEG", &LLRF::getPhiDEG)
+			.def("getCrestPhase", &LLRF::getCrestPhase)
+			.def("getOperatingPhase", &LLRF::getOperatingPhase)
+			
+			
+					
+			.def("startTraceMonitoring", &LLRF::startTraceMonitoring)
+			.def("stopTraceMonitoring", &LLRF::stopTraceMonitoring)
+
+						
+			.def("getRollingAverage", getRollingAverage_single)
+			.def("getRollingAverage", getRollingAverage_multiple)
+			.def("setShouldKeepRollingAverage", setShouldKeepRollingAverage_single)
+			.def("setShouldKeepRollingAverage", setShouldKeepRollingAverage_multiple)
+			.def("setShouldNotKeepRollingAverage", setShouldNotKeepRollingAverage_single)
+			.def("setShouldNotKeepRollingAverage", setShouldNotKeepRollingAverage_multiple)
+			.def("getRollingAverage", getRollingAverage_single)
+			.def("getRollingAverage", getRollingAverage_multiple)
+
+
+			.def("resetAllRollingAverage", &LLRF::resetAllRollingAverage)
+			.def("resetRollingAverage", &LLRF::resetRollingAverage)
+			
+
+			.def("resetAllRollingAverage", &LLRF::resetAllRollingAverage)
+			.def("resetRollingAverage", &LLRF::resetRollingAverage)
+			.def("setKeepRollingAverage", &LLRF::setKeepRollingAverage)
+			.def("setRollingAverageSize", &LLRF::setRollingAverageSize)
+			.def("setAllRollingAverageSize", &LLRF::setAllRollingAverageSize)
+			.def("getRollingAverageSize", &LLRF::getRollingAverageSize)
+			.def("getRollingAverageCount", &LLRF::getRollingAverageCount)
+			.def("isKeepingRollingAverage", &LLRF::isKeepingRollingAverage)
+			.def("hasRollingAverage", &LLRF::hasRollingAverage)
+			.def("getRollingAverageTraceBuffer", &LLRF::getRollingAverageTraceBuffer_Py)
+			.def("getAllRollingAverageTraceBuffer", &LLRF::getAllRollingAverageTraceBuffer_Py)
+
+			
+
+
+			
+			//.def("setAllTraceBufferSize", &LLRF::setAllTraceBufferSize)
+
 
 			.def("getAliases", &LLRF::getAliases_Py)
 
 			.def("getIndex", &LLRF::getIndex)
 			.def("getTime",  &LLRF::getTime)
 
+			.def("setMeanStartEndIndex", &LLRF::setMeanStartEndIndex)
 			.def("setMeanStartEndTime", &LLRF::setMeanStartEndTime)
-			.def("setMeanStartIndex", &LLRF::setMeanStartIndex)
-			.def("setMeanStopIndex",  &LLRF::setMeanStopIndex)
-			.def("getMeanStartIndex", &LLRF::getMeanStartIndex)
+			.def("getMeanStartEndIndex", &LLRF::getMeanStartEndIndex)
+			.def("getMeanStartEndTime", &LLRF::getMeanStartEndTime)
+
+			.def("getTraceMeanIndices", &LLRF::getTraceMeanIndices_Py)
+			.def("getTraceMeanTimes", &LLRF::getTraceMeanTimes_Py)
+			.def("setTraceMeanIndices", &LLRF::setTraceMeanIndices_Py)
+			.def("setTraceMeanTimes", &LLRF::setTraceMeanTimes_Py)
+
+
 			//.def("getMean", &LLRFFactory::getMeanStartIndex)
 			.def("getCavRevPha",&LLRF::getCavRevPha)
 			.def("getCutMean",  &LLRF::getCutMean)
-			.def("getMeanStartTime",&LLRF::getMeanStartTime)
-			.def("getMeanStopTime", &LLRF::getMeanStopTime)
+			.def("getPowerCutMean",  &LLRF::getPowerCutMean_Py)
+
+
+			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
+			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
+
+
+
+			//.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
+			//.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
+
+
+
+			.def("updateTraceValues",  &LLRF::updateTraceValues)
+
+			.def("getActivePulsePowerLimit",  &LLRF::getActivePulsePowerLimit)
+			.def("setActivePulsePowerLimit",  &LLRF::setActivePulsePowerLimit)
+			.def("getActivePulseCount",  &LLRF::getActivePulseCount)
+			.def("setActivePulseCount",  &LLRF::setActivePulseCount)
+			.def("addActivePulseCountOffset",  &LLRF::addActivePulseCountOffset)
+			.def("getInactivePulseCount",  &LLRF::getInactivePulseCount)
+			.def("setInactivePulseCount",  &LLRF::setInactivePulseCount)
+			.def("addInactivePulseCountOffset",  &LLRF::addInactivePulseCountOffset)
+			.def("getDuplicatePulseCount",  &LLRF::getDuplicatePulseCount)
+			.def("setDuplicatePulseCount",  &LLRF::setDuplicatePulseCount)
+			.def("addDuplicatePulseCountOffset",  &LLRF::addDuplicatePulseCountOffset)
+			.def("getTotalPulseCount",  &LLRF::getTotalPulseCount)
+			.def("setTotalPulseCount",  &LLRF::setTotalPulseCount)
+			.def("addTotalPulseCountOffset",  &LLRF::addTotalPulseCountOffset)
+
+
+
+
+			.def("setNumTracesToEstimateRepRate",  &LLRF::setNumTracesToEstimateRepRate)
+			.def("getNumTracesToEstimateRepRate",  &LLRF::getNumTracesToEstimateRepRate)
+			.def("getTraceRepRate",  &LLRF::getTraceRepRate)
+			
 
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)
 
 
-			.def("getTraceData", &LLRF::getTraceData_Py)
-			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
-			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
-			.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
-			.def("getKlyFwdPwr", &LLRF::getKlyFwdPwr_Py)
-			.def("getCavRevPha", &LLRF::getCavRevPha_Py)
-			.def("getCavFwdPha", &LLRF::getCavFwdPha_Py)
-			.def("getKlyRevPha", &LLRF::getKlyRevPha_Py)
-			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
-			.def("getProbePha",  &LLRF::getProbePha_Py)
-			.def("getProbePwr",  &LLRF::getProbePwr_Py)
+			//.def("getTraceData", &LLRF::getTraceData_Py)
+			//.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
+			//.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
+			//.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
+			//.def("getKlyFwdPwr", &LLRF::getKlyFwdPwr_Py)
+			//.def("getCavRevPha", &LLRF::getCavRevPha_Py)
+			//.def("getCavFwdPha", &LLRF::getCavFwdPha_Py)
+			//.def("getKlyRevPha", &LLRF::getKlyRevPha_Py)
+			//.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
+			//.def("getProbePha",  &LLRF::getProbePha_Py)
+			//.def("getProbePwr",  &LLRF::getProbePwr_Py)
 
-			.def("getTraceData", &LLRF::getTraceData_Py)
+			//.def("getTraceValues", &LLRF::getTraceValues_Py)
+
 			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
 			.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
@@ -137,10 +287,10 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getMeanStartTime", &LLRFFactory::getMeanStartTime)
 			.def("getMeanStopTime", &LLRFFactory::getMeanStopTime)
 
-			.def("setTraceDataBufferSize", &LLRFFactory::setTraceDataBufferSize)
+			//.def("setTraceDataBufferSize", &LLRFFactory::setTraceDataBufferSize)
 
 
-			.def("getTraceData", &LLRFFactory::getTraceData_Py)
+			//.def("getTraceData", &LLRFFactory::getTraceData_Py)
 			.def("getCavRevPwr", &LLRFFactory::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRFFactory::getCavFwdPwr_Py)
 			.def("getKlyRevPwr", &LLRFFactory::getKlyRevPwr_Py)

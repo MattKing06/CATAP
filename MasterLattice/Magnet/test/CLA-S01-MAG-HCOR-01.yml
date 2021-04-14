@@ -1,0 +1,26 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: CLA-S01-MAG-HCOR-01:GETSETI
+    READI: CLA-S01-MAG-HCOR-01:READI
+    RILK: CLA-S01-MAG-HCOR-01:RILK
+    RPOWER: CLA-S01-MAG-HCOR-01:RPOWER
+    SETI: CLA-S01-MAG-HCOR-01:SETI
+    SPOWER: CLA-S01-MAG-HCOR-01:SPOWER
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+properties:
+  degauss_tolerance: 0.1
+  degauss_values: "10.0,-10.0,7.0,-7.0,5.0,-5.0,2.5,-2.5,1.0,-1.0,0.0"
+  field_integral_coefficients: "0.023624156190865,0.00354362342862975"
+  hardware_type: MAGNET
+  machine_area: UNDEFINED
+  mag_set_max_wait_time: 45.0
+  mag_type: HCOR
+  magnetic_length: 131.245312171472
+  manufacturer: Danfysik
+  name: CLA-S01-MAG-HCOR-01
+  name_alias: S01-HCOR01,S01-HCOR-01
+  num_degauss_steps: 11
+  position: 0.35482
+  ri_tolerance: 0.1
+  serial_number: '13258'

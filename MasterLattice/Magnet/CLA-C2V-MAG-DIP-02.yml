@@ -7,7 +7,14 @@ controls_information:
     RPOWER: CLA-C2V-MAG-DIP-02:RPOWER
     SETI: CLA-C2V-MAG-DIP-02:SETI
     SPOWER: CLA-C2V-MAG-DIP-02:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    CLA-C2V-MAG-DIP-02:K_DIP_P
+    INT_STR_MM: CLA-C2V-MAG-DIP-02:INT_STR_MM
+    INT_STR:    CLA-C2V-MAG-DIP-02:INT_STR
+    K_SET_P:    CLA-C2V-MAG-DIP-02:K_SET_P
+    K_ANG:      CLA-C2V-MAG-DIP-02:K_ANG
+    K_MRAD:     CLA-C2V-MAG-DIP-02:K_MRAD
+    K_VAL:      CLA-C2V-MAG-DIP-02:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 0.5
   degauss_values: "190.0,-190.0,80.0,-80.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
@@ -15,7 +22,7 @@ properties:
   hardware_type: Magnet
   machine_area: C2V
   mag_set_max_wait_time: 45.0
-  mag_type: DIP
+  mag_type: DIPOLE
   magnetic_length: 397.752
   manufacturer: Danfysik
   name: CLA-C2V-MAG-DIP-02
@@ -24,3 +31,5 @@ properties:
   position: 7.972725978
   ri_tolerance: 0.001
   serial_number: '13257'
+  min_i : -180.0
+  max_i : 180.0

@@ -2,7 +2,7 @@
 #define EPICS_INTERFACE_H
 #include <LoggingSystem.h>
 #if !defined LISTENER_H && !defined GETTER_H && !defined PUTTER_H
-/* if we are using EPICSTools/Listener/Getter/Putter, then 
+/* if we are using EPICSTools/Listener/Getter/Putter, then
 /* we don't want to include Hardware as it is
 /* unnecessary for EPICSTools/Listener/Getter/Putter */
 #include <Hardware.h>
@@ -24,7 +24,7 @@
 {								\
 	if (status != ECA_NORMAL)	\
 	{							\
-		ca_message(status);		\
+		printf("CATAP: The requested ca operation didn't complete successfully because \"%s\"\n",ca_message(status)); \
 		SEVCHK(status, NULL);   \
 	}							\
 }								\
@@ -32,7 +32,7 @@
 
 /** @defgroup epicsInterface EPICS Interfaces
 	@brief A collection of classes responsible for EPICS Channel Access calls.
-	
+
 	*The collection of EPICS Interfaces provide a way of communicating with physical or virtual hardware objects
 	*over EPICS Channel Access. The hardware-specific EPICS Interfaces provide setting, getting, and callback functions
 	*for EPICS PVs that are associated with that hardware type. The general EPICSInterface class is concerned with setting
@@ -53,7 +53,7 @@ public:
 	/*! Retrieves the macro for the time EPICS should wait until it timesout on a request.
 	* @param[out] CA_PEND_IO_TIMEOUT : 5.0*/
 	double get_CA_PEND_IO_TIMEOUT() const;
-	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of 
+	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of
 	* the associated hardware object.*/
 	std::string ownerName;
 	// We also need to create a STATIC messenger in derived epicsinterface claases, 
@@ -66,14 +66,14 @@ public:
 	void messagesOn();
 	/*! turns messaging off for this EPICSInterface instance*/
 	void messagesOff();
-	/*! Checks if messaging flag is on 
+	/*! Checks if messaging flag is on
 	* @param[out] bool : returns true if messenger messagesOn flag is true, false otherwise.*/
 	bool isMessagingOn();
 	/*! Checks if debug flag is on
 	* @param[out] bool : returns true if messenger debugOn flag is true, false otherwise.*/
 	bool isDebugOn();
 	/*! Creates a channel using the pvStruct fullPVName and stores the channel ID in the pvStruct CHID member.
-     * @param[in] pvStruct : Contains the PV we want to create a channel for .*/
+	 * @param[in] pvStruct : Contains the PV we want to create a channel for .*/
 	void retrieveCHID(pvStruct& pvStruct) const;
 	/*! Requests the Channel Type from EPICS using the channel ID assigned in pvStruct, then sets the CHTYPE and monitorCHTYPE
 	*   members in pvStruct. The monitorCHTYPE is forced to be the DBR_TIME equivalent of the CHTYPE retrieved from EPICS.
@@ -105,10 +105,28 @@ public:
 	void detachFromContext();
 	/*! Used to send the buffered requests to EPICS using ca_pend_io function*/
 	static void sendToEPICS();
+	/*! Used to send ca_flush_io after creating a channel */
+	static int caFlushIO(const std::string& ca)
+	{
+		int status = ca_flush_io();
+		SEVCHK(status, ca.c_str());
+		//printStatusResult(status, mess1.c_str(), mess2.c_str());
+		return status;
+	}
+
+
+	/*! Used to send the buffered requests to EPICS using ca_pend_io function
+	* @param[out] int : the status returned from epics from the ca_pend_io call	*/
+	static int sendToEPICSReturnStatus();
 	/*! Converts an epicsTimeStamp into a formatted string for printing the timestamp.
 	* @param[in] stamp : The timestamp we want to convert to string
 	* @param[out] stampString : The string representation of the epicsTimeStamp input.*/
 	static std::string getEPICSTime(const epicsTimeStamp& stamp);
+	/*! Converts an epicsTimeStamp into a formatted string for printing the timestamp.
+	* @param[in] stamp : The timestamp we want to convert to string
+	* @param[in] string : string reference in which to write the time-string .*/
+	static void getEPICSTime(const epicsTimeStamp& stamp, std::string& str);
+
 	/*! Sets the time member of pvStruct using the returned value (args) from EPICS.
 	* @param[in] pv : The PV for which we want to set the time member.
 	* @param[in] args : The object returned from EPICS that contains the timestamp.*/
@@ -178,7 +196,12 @@ public:
 		const std::string& objectName
 		// map_ilck_pvstruct& ILockPVStructs,
 	);
-	
+
+
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, bool pair and sets the Hardware parameter to that pair.
+	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	 * @param[in] pairToUpdate : :pair<epicsTimeStamp, bool objetc to update */
+	static void updateTimeStampBoolPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, bool>& pairToUpdate);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, double pair and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoublePair(const struct event_handler_args& args, std::pair<epicsTimeStamp, double>& pairToUpdate);
@@ -233,9 +256,34 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
 	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
 	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
+	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUnsignedShortPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, string pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the string value returned from EPICS */
+	static std::pair < epicsTimeStamp, std::string > getTimeStampStringPair(const struct event_handler_args& args);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the unsigned short value returned from EPICS */
 	static std::pair<epicsTimeStamp, unsigned short> getTimeStampUShortPair(const struct event_handler_args& args);
-	/*! Send an array to an EPICS PV over Channel Access using ca_put_array. 
-	* @param[in] pvStruct : Contains the PV we want to put a value to. 
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, unsigned short pair and returns that pair.
+	* @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp
+	* @param[out] pair : std::pair containing the EPICS timestamp and the long value returned from EPICS */
+	static std::pair<epicsTimeStamp, long> getTimeStampLongPair(const struct event_handler_args& args);
+
+
+	/*! Function to check the connection state of a PV
+	* @param[in] pvStruct : PV data to check 
+	* @param[out] bool: true if ca_state returns cs_conn otehrwise false	*/
+	bool check_ca_state(const pvStruct& pvStruct);
+
+	/*! Function to check the write state of a PV
+	* @param[in] pvStruct : PV data to check
+	* @param[out] bool: true if ca_write_access returns true	*/
+	bool check_ca_write_access(const pvStruct& pvStruct);
+
+
+	/*! Send an array to an EPICS PV over Channel Access using ca_put_array.
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
 	* @param[in] value : The array we want to ca_put_array with.*/
 	template<typename T>
 	void putArray(const pvStruct& pvStruct, const std::vector<T>& value) const
@@ -299,14 +347,41 @@ public:
 		{
 			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
 			MY_SEVCHK(status);
+			//status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			status = ca_flush_io();
+			MY_SEVCHK(status);
+			return true;
+
+			// we should return true here if the put command got sent correctly 
+		}
+		return false;
+	}
+
+
+
+	template<typename T>
+	static bool putArrayValue(const pvStruct& pvStruct, const T& value)
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			int status = ca_array_put(pvStruct.CHTYPE, pvStruct.COUNT, pvStruct.CHID, &value);
+			MY_SEVCHK(status);
 			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 			MY_SEVCHK(status);
 			return true;
 
-			// we should return true here if the put commadn got sent correctly 
+			// we should return true here if the put command got sent correctly 
 		}
 		return false;
 	}
+	/*! Send an value to an EPICS PV over Channel Access using ca_put.
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
+	* @param[in] count : Contains the PV we want to put a value to.
+	* @param[in] pointer_to_dbr_type : pointer_to_dbr_type pointer to where got array will be.
+	* @param[out] bool: if command got sent to epics correctls (not if it worked!).*/
+	bool getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const;
+
+
 
 #endif
 protected:
@@ -320,4 +395,3 @@ protected:
 /** @}*/
 
 #endif
-

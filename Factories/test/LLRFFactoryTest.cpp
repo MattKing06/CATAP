@@ -6,6 +6,8 @@ BOOST_AUTO_TEST_SUITE(LLRFFactoryTest)
 BOOST_AUTO_TEST_CASE(setting_up_llrf_factory_print_names)
 {
 	LLRFFactory fac = LLRFFactory(STATE::VIRTUAL);
+	fac.messagesOff();
+	fac.debugMessagesOff();
 	fac.setup("nominal");
 	auto names = fac.getLLRFNames();
 	for (auto&& item : fac.getLLRFNames())

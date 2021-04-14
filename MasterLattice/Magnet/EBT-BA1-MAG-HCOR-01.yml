@@ -15,7 +15,7 @@ properties:
   hardware_type: Magnet
   machine_area: BA1
   mag_set_max_wait_time: 45.0
-  mag_type: VCOR
+  mag_type: HORIZONTAL_CORRECTOR
   magnetic_length: 182.2535211
   manufacturer: Scanditronix
   name: EBT-BA1-MAG-HCOR-01

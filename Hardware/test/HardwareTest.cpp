@@ -3,6 +3,7 @@
 #include <boost/bind.hpp>
 #include "Hardware.h"
 #include <vector>
+#include "GlobalTypeEnums.h"
 
 BOOST_AUTO_TEST_SUITE(HardwareTestSuite)
 

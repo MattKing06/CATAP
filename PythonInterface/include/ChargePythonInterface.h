@@ -38,7 +38,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 
 
 
-	
+
 	void expose_charge_factory_object() {
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ChargeFactory>())->to_python_target_type());

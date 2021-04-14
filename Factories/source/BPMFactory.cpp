@@ -15,7 +15,7 @@ BPMFactory::BPMFactory() : BPMFactory(STATE::OFFLINE)
 {
 	std::cout << "BPMFactory DEFAULT constRUCTOR called " << std::endl;
 }
-BPMFactory::BPMFactory(STATE mode):
+BPMFactory::BPMFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("BPM", mode))
@@ -82,8 +82,8 @@ void BPMFactory::populateBPMMap()
 
 void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == BPMRecords::X || 
-		pvStruct.pvRecord == BPMRecords::Y || 
+	if (pvStruct.pvRecord == BPMRecords::X ||
+		pvStruct.pvRecord == BPMRecords::Y ||
 		pvStruct.pvRecord == BPMRecords::SA1 ||
 		pvStruct.pvRecord == BPMRecords::SA2 ||
 		pvStruct.pvRecord == BPMRecords::SD1 ||
@@ -162,7 +162,7 @@ bool BPMFactory::setup(const std::string& VERSION)
 			}
 			else
 			{
-				messenger.printMessage(bpm.first, " CANNOT CONNECT TO EPICS");
+				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
 				//hasBeenSetup = false;
 				//return hasBeenSetup;
 			}

@@ -102,6 +102,7 @@ public:
 	@param[out] bool: true if it worked.*/
 	bool setQVirtual(const double& value);
 	/*! set charge value when updated from EPICS.
+	@param[in] double: charge value
 	@param[out] bool: true if it worked.*/
 	bool setQ(const double& value);
 	/*! check that the buffer is updating.

@@ -16,8 +16,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
 	//std::string testMagnetName = "EBT-INJ-MAG-QUAD-12";
 	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
-	magFac.messagesOn();
-	magFac.debugMessagesOn();
+	magFac.messagesOff();
+	magFac.debugMessagesOff();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
@@ -32,14 +32,14 @@ BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 			magFac.messenger.printDebugMessage("NOT CONNECTED TO EPICS");
 		}
 	}
-}
+} 
 
 BOOST_AUTO_TEST_CASE(magnet_factory_read_i_magnet_test)
 {
 	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
-	magFac.messagesOn();
-	magFac.debugMessagesOn();
+	magFac.messagesOff();
+	magFac.debugMessagesOff();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
@@ -62,7 +62,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_rilk_state_test)
 {
 	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
 	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
-	magFac.messagesOn();
+	magFac.messagesOff();
+	magFac.debugMessagesOff();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{
@@ -81,7 +82,8 @@ BOOST_AUTO_TEST_CASE(magnet_factory_get_all_magnet_currents_test)
 {
 	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
 	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
-	magFac.messagesOn();
+	magFac.messagesOff();
+	magFac.debugMessagesOff();
 	bool status = magFac.setup("nominal");
 	if (status)
 	{

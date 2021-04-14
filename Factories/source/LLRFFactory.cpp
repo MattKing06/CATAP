@@ -67,15 +67,17 @@ bool LLRFFactory::setup(const std::string& version, const boost::python::list& m
 bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	machineAreas = machineAreas_IN;
-	// we CANNOT HAVE HRRG_GUN AND LRG_GUN, default to LRRG_GUN
-	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+	// we CANNOT HAVE HRRG AND LRRG, default to LRRG
+	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG))
 	{
-		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
 		{
-			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG_GUN), machineAreas.end());
+			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG), machineAreas.end());
+
+			messenger.printDebugMessage("!!ERROR!! LLRFFactory::setup requested HRRG and LRRG which are "
+										"mutally exclusive, removing HRRG");
 		}
 	}
-
 	messenger.printDebugMessage("called LLRF Factory  setup ");
 	if (hasBeenSetup)
 	{
@@ -95,48 +97,48 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	messenger.printDebugMessage("Calling cutLLRFMapByMachineAreas");
 	cutLLRFMapByMachineAreas();
-
-	//setupChannels();
-	//EPICSInterface::sendToEPICS();
-
-
+	messenger.printDebugMessage("cutLLRFMapByMachineAreas Finished");
+	setupLLRFAfterMachineAreaSet();
+	setupChannels();
+	EPICSInterface::sendToEPICS();
 	for (auto& llrf : LLRFMap)
 	{
 		// update aliases for valve in map
 		updateAliasNameMap(llrf.second);
+		// update deafult tarce mean indecies 
+		llrf.second.setDefaultPowerTraceMeanTimes();
 		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
-	//	for (auto& pv : pvstruct)
-	//	{
-	//		// sets the monitor state in the pvstruict to true or false
-	//		if (ca_state(pv.second.CHID) == cs_conn)
-	//		{
-	//			retrieveMonitorStatus(pv.second);
-	//			valve.second.epicsInterface->retrieveCHTYPE(pv.second);
-	//			valve.second.epicsInterface->retrieveCOUNT(pv.second);
-	//			valve.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-	//			//// not sure how to set the mask from EPICS yet.
-	//			pv.second.MASK = DBE_VALUE;
-	//			messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-	//				"write", std::to_string(ca_write_access(pv.second.CHID)),
-	//				"state", std::to_string(ca_state(pv.second.CHID)));
-	//			if (pv.second.monitor)
-	//			{
-	//				valve.second.epicsInterface->createSubscription(valve.second, pv.second);
-	//				EPICSInterface::sendToEPICS();
-	//			}
-	//		}
-	//		else
-	//		{
-	//			messenger.printMessage(valve.first, " CANNOT CONNECT TO EPICS");
-	//		}
-	//	}
+		for (auto& pv : pvstruct)
+		{
+			messenger.printDebugMessage("Setup ", pv.first);
+			// sets the monitor state in the pvstruict to true or false
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				retrieveMonitorStatus(pv.second);
+				llrf.second.epicsInterface->retrieveCHTYPE(pv.second);
+				llrf.second.epicsInterface->retrieveCOUNT(pv.second);
+				llrf.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
+				//// not sure how to set the mask from EPICS yet.
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.first, " ", pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
+					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					llrf.second.epicsInterface->createSubscription(llrf.second, pv.second);
+					//EPICSInterface::sendToEPICS();
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
+			}
+		}
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
-
-
 void LLRFFactory::populateLLRFMap()
 {
 	messenger.printDebugMessage("LLRFFactory is populating the LLRF object map");
@@ -153,8 +155,6 @@ void LLRFFactory::populateLLRFMap()
 	messenger.printDebugMessage("LLRFFactory has finished populating "
 		"the LLRF MAP, found ", LLRFMap.size(), " LLRF objects");
 }
-
-
 void LLRFFactory::cutLLRFMapByMachineAreas()
 {
 	size_t start_size = LLRFMap.size();
@@ -164,9 +164,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 		// flag for if we should erase this entry, default to true 
 		bool should_erase = true;
 		// now we loop over every area in machineAreas and checl against isInMachineArea
-
 		messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
-
 		for (auto&& machineArea : machineAreas)
 		{
 			// if this returns true then we should keep the LLRF and can break out the for loop 
@@ -178,15 +176,15 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 			// if this returns true then we should keep the LLRF and can break out the for loop 
 			else if(it->second.getMachineArea() == TYPE::GUN )
 			{
-				if (GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+				if (GlobalFunctions::entryExists(machineAreas, TYPE::HRRG))
 				{
-					it->second.setMachineArea(TYPE::HRRG_GUN);
+					it->second.setGunType(TYPE::HRRG);
 					should_erase = false;
 					break;
 				}
-				else if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
 				{
-					it->second.setMachineArea(TYPE::LRRG_GUN);
+					it->second.setGunType(TYPE::LRRG);
 					should_erase = false;
 					break;
 				}
@@ -199,7 +197,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 			{ 
 			
 			}
-			it->second.setMachineArea(it->second.getMachineArea());
+			//it->second.setMachineArea(it->second.getMachineArea());
 		}
 		// if should_erase is still true, erase object from  magnetMap
 		if (should_erase)
@@ -214,9 +212,14 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 	}
 	size_t end_size = LLRFMap.size();
 	messenger.printDebugMessage("cutLLRFMapByMachineAreas LLRFMap.size() went from ", start_size," to ", end_size);
-
 }
-
+void LLRFFactory::setupLLRFAfterMachineAreaSet()
+{
+	for (auto& it : LLRFMap)
+	{
+		it.second.setupAfterMachineAreaSet();
+	}
+}
 void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 {
 	// first add in the magnet full name
@@ -246,9 +249,33 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 		}
 	}
 }
-
-
-
+void LLRFFactory::setupChannels()
+{
+	for (auto& device : LLRFMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = device.second.getPVStructs();
+		for (auto& pv : pvStructs)
+		{
+			messenger.printMessage(device.first, ", retrieveCHID ", pv.first);
+			device.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+void LLRFFactory::retrieveMonitorStatus(pvStruct& pvStruct)
+{
+	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
+	if (std::find(LLRFRecords::llrfMonitorRecordsList.begin(),
+		LLRFRecords::llrfMonitorRecordsList.end(), pvStruct.pvRecord) != LLRFRecords::llrfMonitorRecordsList.end())
+	{
+		pvStruct.monitor = true;
+		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = true");
+	}
+	else
+	{
+		pvStruct.monitor = false;
+		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = false ");
+	}
+}
 std::vector<std::string> LLRFFactory::getLLRFNames()
 {
 	std::vector<std::string> r;
@@ -258,13 +285,10 @@ std::vector<std::string> LLRFFactory::getLLRFNames()
 	}
 	return r;
 }
-
 boost::python::list LLRFFactory::getLLRFNames_Py()
 {
 	return to_py_list<std::string>(getLLRFNames());
 }
-
-
 LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
 {
 	std::string full_name = getFullName(llrf_name);
@@ -277,13 +301,13 @@ LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
 
 std::string LLRFFactory::getFullName(const std::string& name_to_check) const
 {
-	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	std::cout << "getFullName looking for " << name_to_check << std::endl;
 	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
 	{
-		//std::cout << name_to_check << " found " << std::endl;
+		std::cout << name_to_check << " found " << std::endl;
 		return alias_name_map.at(name_to_check);
 	}
-	//std::cout << name_to_check << " NOT found " << std::endl;
+	std::cout << name_to_check << " NOT found " << std::endl;
 	return dummy_llrf.getHardwareName();
 }
 
@@ -376,31 +400,32 @@ double LLRFFactory::getPhiDEG(const std::string& llrf_name)const
 	//std::cout << name_to_check << " NOT found " << std::endl;
 	return GlobalConstants::double_min;
 }
-std::map<std::string, std::vector<double>> LLRFFactory::getAllTraceData(const std::string& llrf_name)const
-{	
-	std::string full_name = getFullName(llrf_name);
-	if (GlobalFunctions::entryExists(LLRFMap, full_name))
-	{
-		return LLRFMap.at(full_name).getAllTraceData();
-	}
-	return 	std::map<std::string, std::vector<double>>{ { llrf_name, dummy_trace_data}};
-}
+//std::map<std::string, std::vector<double>> LLRFFactory::getAllTraceData(const std::string& llrf_name)const
+//{	
+//	std::string full_name = getFullName(llrf_name);
+//	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+//	{
+//		return LLRFMap.at(full_name).getAllTraceData();
+//	}
+//	return 	std::map<std::string, std::vector<double>>{ { llrf_name, dummy_trace_data}};
+//}
 
-std::pair<std::string, std::vector<double>> LLRFFactory::getTraceData(const std::string& llrf_name, const std::string& trace_name)const
-{
-	std::string full_name = getFullName(llrf_name);
-	if (GlobalFunctions::entryExists(LLRFMap, full_name))
-	{
-		return LLRFMap.at(full_name).getTraceData(trace_name);
-	}
-	return 	std::pair<std::string, std::vector<double>>(llrf_name, dummy_trace_data);
-}
-boost::python::dict LLRFFactory::getTraceData_Py(const std::string& llrf_name, const std::string& trace_name)
-{
-	std::pair<std::string, std::vector<double>> r = getTraceData(llrf_name, trace_name);
-	std::map<std::string, std::vector<double>> r2 { { r.first , r.second }};
-	return to_py_dict<std::string, std::vector<double>>(r2);
-}
+//std::pair<std::string, std::vector<double>> getTraceNameValuesPair(const std::string& llrf_name, const std::string& trace_name)const;
+//std::pair<std::string, std::vector<double>> LLRFFactory::getTraceNameValuesPair(const std::string& llrf_name, const std::string& trace_name)const
+//{
+//	std::string full_name = getFullName(llrf_name);
+//	if (GlobalFunctions::entryExists(LLRFMap, full_name))
+//	{
+//		return LLRFMap.at(full_name).getTraceNameValuesPair(trace_name);
+//	}
+//	return 	std::pair<std::string, std::vector<double>>(llrf_name, dummy_trace_data);
+//}
+//boost::python::dict LLRFFactory::getTraceNameValuesPair_Py(const std::string& llrf_name, const std::string& trace_name)
+//{
+//	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(llrf_name, trace_name);
+//	std::map<std::string, std::vector<double>> r2 { { r.first , r.second }};
+//	return to_py_dict<std::string, std::vector<double>>(r2);
+//}
 
 
 std::vector<double> LLRFFactory::getTraceValues(const std::string& llrf_name)const
@@ -507,15 +532,14 @@ std::vector<double> LLRFFactory::getProbePha(const std::string& llrf_name)const
 	return dummy_trace_data;
 }
 
-boost::python::dict LLRFFactory::getAllTraceData_Py(const std::string& name)
-{
-	return to_py_dict<std::string, std::vector<double>>(getAllTraceData(name));
-}
-
-boost::python::list LLRFFactory::getTraceValues_Py(const std::string& name)const
-{
-	return to_py_list<double>(getTraceValues(name));
-}
+//boost::python::dict LLRFFactory::getAllTraceData_Py(const std::string& name)
+//{
+//	return to_py_dict<std::string, std::vector<double>>(getAllTraceData(name));
+//}
+//boost::python::list LLRFFactory::getTraceValues_Py(const std::string& name)const
+//{
+//	return to_py_list<double>(getTraceValues(name));
+//}
 boost::python::list LLRFFactory::getCavRevPwr_Py(const std::string& llrf_name)const
 {
 	return to_py_list<double>(getCavRevPwr(llrf_name));
@@ -673,11 +697,6 @@ bool LLRFFactory::setTraceDataBufferSize(const std::string& llrf_name, const std
 	}
 	return false;
 }
-
-
-
-
-
 
 
 

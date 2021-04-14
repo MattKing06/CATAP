@@ -1,0 +1,15 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    ON: CLA-GUN-RF-PROTVH-01:On
+    OFF: CLA-GUN-RF-PROTVH-01:Off
+    RESET: CLA-GUN-RF-PROTVH-01:Rst
+    Sta: CLA-GUN-RF-PROTVH-01:Sta
+    Cmi: CLA-GUN-RF-PROTVH-01:Cmi
+properties:
+  hardware_type: RFProtection
+  machine_area: HRRG_GUN
+  prot_type: VELA_HRRG
+  name: CLA-GUN-RF-PROTVH-01
+  name_alias: GUN-PROTVH
+

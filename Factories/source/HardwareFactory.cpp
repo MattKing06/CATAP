@@ -1,4 +1,5 @@
 #include "HardwareFactory.h"
+#include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
@@ -16,28 +17,25 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	screenFactory(ScreenFactory(mode)),
 	valveFactory(ValveFactory(mode)),
 	imgFactory(IMGFactory(mode)),
+	rfProtectionFactory(RFProtectionFactory(mode)),
 	llrffactory(LLRFFactory(mode)),
 	cameraFactory(CameraFactory(mode)),
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
 	laserHWPFactory(LaserHWPFactory(mode)),
 	shutterFactory(ShutterFactory(mode)),
+	rfmodulatorFactory(RFModulatorFactory(mode)),
 	rfHeartbeatFactory(RFHeartbeatFactory(mode)),
 	mode(mode)
 {
 	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
+
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
-	if (hardwareType == "IMG")
-	{
-		if (!imgFactory.hasBeenSetup)
-		{
-			setup = imgFactory.setup(VERSION);
-		}
-	}
-	else if (hardwareType == "Magnet")
+	// TODO these TYPES should be the type ENUM
+	if (hardwareType == "Magnet")
 	{
 		if (!magnetFactory.hasBeenSetup)
 		{
@@ -89,6 +87,69 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 	return setup;
 }
 
+RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
+{
+	messenger.printMessage("getRFProtectionFactory Called");
+	if (!rfProtectionFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getRFProtectionFactory calling setup");
+		bool setup = rfProtectionFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getRFProtectionFactory Complete");
+			return rfProtectionFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup RFProtectionFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getRFProtectionFactory Complete");
+		return rfProtectionFactory;
+	}
+}
+
+
+
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory()
+{
+	return 	getRFModulatorFactory_Single(TYPE::ALL_VELA_CLARA);
+}
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory_Single(TYPE machine_areas)
+{
+	return 	getRFModulatorFactory(std::vector<TYPE>{machine_areas});
+}
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory_Py(const boost::python::list& machine_areas)
+{
+	return getRFModulatorFactory(to_std_vector<TYPE>(machine_areas));
+}
+RFModulatorFactory& HardwareFactory::getRFModulatorFactory(const std::vector<TYPE>& machine_areas)
+{
+	messenger.printMessage("getRFProtectionFactory Called");
+	if (!rfmodulatorFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getRFModulatorFactory calling setup");
+		bool setup = rfmodulatorFactory.setup("nominal", machine_areas);
+		if (setup)
+		{
+			messenger.printMessage("getRFProtectionFactory Complete");
+			return rfmodulatorFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup RFModulatorFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getRFModulatorFactory Complete");
+		return rfmodulatorFactory;
+	}
+}
+
+
 
 ShutterFactory& HardwareFactory::getShutterFactory()
 {
@@ -114,7 +175,7 @@ ShutterFactory& HardwareFactory::getShutterFactory()
 	}
 }
 
-// YOU MUST define a machein area to get a LLRF tfactory, you CANNOT get them all 
+// YOU MUST define a machine area to get a LLRF factory, you CANNOT just get them all
 LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 {
 	return getLLRFFactory(std::vector<TYPE>{machineArea});
@@ -123,7 +184,6 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machi
 {
 	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
 }
-
 LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
 {
 	messenger.printMessage("getLLRFFactory Called");
@@ -132,7 +192,6 @@ LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAre
 		bool setup = llrffactory.setup("nominal", machineAreas);
 		if (setup)
 		{
-			messenger.printMessage("getLLRFFactory Complete");
 			return llrffactory;
 		}
 		else
@@ -142,20 +201,38 @@ LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAre
 	}
 	else
 	{
-		messenger.printMessage("getLLRFFactory Complete");
 		return llrffactory;
 	}
 }
 
+
+
+
 MagnetFactory& HardwareFactory::getMagnetFactory()
+{
+	return getMagnetFactory(std::vector<TYPE>{TYPE::ALL_VELA_CLARA});
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(TYPE machineArea)
+{
+	return getMagnetFactory(std::vector<TYPE>{machineArea});
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(const boost::python::list& machineAreas)
+{
+	return getMagnetFactory(to_std_vector<TYPE>(machineAreas));
+}
+MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machineAreas )
 {
 	if (!magnetFactory.hasBeenSetup)
 	{
-		messenger.printMessage("Setup magnet Factory Nominal");
-		bool setup = magnetFactory.setup("nominal");
+		messenger.printMessage("magnetFactory is being setup");
+		bool setup = magnetFactory.setup(GlobalConstants::nominal, machineAreas);
+
+		// messenger.printMessage("Setup magnet Factory Nominal");
+		// bool setup = magnetFactory.setup("nominal");
+
 		if(setup)
 		{
-			messenger.printMessage("getMagnetFactory Complete");
+			messenger.printMessage("magnetFactory setup complete");
 			return magnetFactory;
 		}
 		else
@@ -165,10 +242,13 @@ MagnetFactory& HardwareFactory::getMagnetFactory()
 	}
 	else
 	{
-		messenger.printMessage("getMagnetFactory Complete");
+		messenger.printMessage("magnetFactory has already been setup");
 		return magnetFactory;
 	}
 }
+
+
+
 ValveFactory& HardwareFactory::getValveFactory()
 {
 	if (!valveFactory.hasBeenSetup)
@@ -210,6 +290,7 @@ IMGFactory& HardwareFactory::getIMGFactory()
 	}
 }
 
+
 BPMFactory& HardwareFactory::getBPMFactory()
 {
 	if (!bpmFactory.hasBeenSetup)
@@ -238,7 +319,7 @@ ChargeFactory& HardwareFactory::getChargeFactory()
 		bool setup = chargeFactory.setup("nominal");
 		if (setup)
 		{
-			messenger.printMessage("getLLRFFactory Complete");
+			messenger.printMessage("getChargeFactory Complete");
 			return chargeFactory;
 		}
 		else
@@ -267,11 +348,76 @@ ScreenFactory& HardwareFactory::getScreenFactory()
 }
 
 
+
+
+
 CameraFactory& HardwareFactory::getCameraFactory()
 {
+	return getCameraFactory_Single(TYPE::ALL_VELA_CLARA);
+}
+CameraFactory& HardwareFactory::getCameraFactory_Single(const TYPE machineArea)
+{
+	const std::vector<TYPE> machineAreas{ machineArea };
+	return getCameraFactory_Mulitple(machineAreas);
+}
+CameraFactory& HardwareFactory::getCameraFactory_Mulitple_Py(const boost::python::list& machineAreas)
+{
+	return getCameraFactory_Mulitple(to_std_vector<TYPE>(machineAreas));
+}
+CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas)
+{
+	messenger.printDebugMessage("");
+	std::stringstream ss;
+	ss << "getCameraFactory_Mulitple  passed machine areas = ";
+	for (auto&& area : machineAreas)
+	{
+		ss << ENUM_TO_STRING(area);
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
 	if (!cameraFactory.hasBeenSetup)
 	{
-		bool setup = cameraFactory.setup("nominal");
+		bool setup = cameraFactory.setup("nominal", machineAreas);
+		if (setup)
+		{
+			messenger.printMessage("getCameraFactory Complete");
+			return cameraFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup cameraFactory");
+		}
+	}
+	else
+	{
+		messenger.printMessage("cameraFactory has already been setup!");
+	}
+	return cameraFactory;
+}
+
+CameraFactory& HardwareFactory::getCameraFactory_ByName(std::string name)
+{
+	const std::vector<std::string> names{ name };
+	return getCameraFactory_ByNames(names);
+}
+CameraFactory& HardwareFactory::getCameraFactory_ByNames_Py(const boost::python::list& names)
+{
+	return getCameraFactory_ByNames(to_std_vector<std::string>(names));
+}
+CameraFactory& HardwareFactory::getCameraFactory_ByNames(const std::vector<std::string>& names)
+{
+	messenger.printDebugMessage("");
+	std::stringstream ss;
+	ss << "getCameraFactory_ByNames  passed names = ";
+	for (auto&& name : names)
+	{
+		ss << name;
+		ss << ", ";
+	}
+	messenger.printDebugMessage(ss.str());
+	if (!cameraFactory.hasBeenSetup)
+	{
+		bool setup = cameraFactory.setup("nominal", names);
 		if (setup)
 		{
 			messenger.printMessage("getCameraFactory Complete");
@@ -284,6 +430,9 @@ CameraFactory& HardwareFactory::getCameraFactory()
 	}
 	return cameraFactory;
 }
+
+
+
 
 LaserEnergyMeterFactory& HardwareFactory::getLaserEnergyMeterFactory()
 {

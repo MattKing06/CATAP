@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
 			{
 				if (ca_state(imgFac.getIMG(imgName).pvStructs.at("P").CHID) == cs_conn)
 				{
-					BOOST_CHECK(pressureMap.at(imgName) != NULL);
+					BOOST_CHECK(pressureMap.at(imgName));
 				}
 				else
 				{
@@ -123,56 +123,5 @@ BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
 		imgFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");
 	}
 
-	BOOST_AUTO_TEST_CASE(img_factory_get_all_pressure_test_several_times)
-	{
-		BOOST_TEST_MESSAGE("------	IMG FACTORY: GET ALL OF PRESSURES OF THE MAP	------");
-		IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
-		imgFac.messagesOn();
-		imgFac.debugMessagesOff();
-		bool status = imgFac.setup("nominal");
-		if (status)
-		{
-			auto allIMGNames = imgFac.getAllIMGNames();
-
-			for (auto img : imgFac.IMGMap)
-			{
-				int i = 1;
-					while (i < 100)
-					{
-
-						if (ca_state(img.second.pvStructs.at("P").CHID) == cs_conn)
-						{
-							std::this_thread::sleep_for(std::chrono::milliseconds(5));
-							BOOST_CHECK(imgFac.getIMGPressure(img.first) != GlobalConstants::double_min);
-							i++;
-						}
-						else
-						{
-							imgFac.messenger.printDebugMessage(img.first, " NOT CONNECTED TO EPICS");
-						}
-					}
-
-			}
-		}
-		imgFac.messenger.dumpToFile("MF_TEST_OUTPUT.txt");
-	}
-
-	BOOST_AUTO_TEST_CASE(img_factory_retrieve_monitor_test)
-	{
-		BOOST_TEST_MESSAGE("------	IMG FACTORY: RETRIEVE MONITOR STATUS	------");
-		IMGFactory imgFac = IMGFactory(STATE::VIRTUAL);
-		imgFac.messagesOn();
-		imgFac.debugMessagesOff();
-		pvStruct setPV;
-		setPV.fullPVName = "VM-EBT-INJ-VAC-IMG-03";
-		setPV.pvRecord = "P";
-		imgFac.messagesOn();
-		bool status = imgFac.setup("nominal");
-		imgFac.retrieveMonitorStatus(setPV);
-		BOOST_CHECK(setPV.monitor == true);
-		setPV.pvRecord = 'Sta';
-		imgFac.retrieveMonitorStatus(setPV);
-		BOOST_CHECK(setPV.monitor == true);
-	}
 
 BOOST_AUTO_TEST_SUITE_END()

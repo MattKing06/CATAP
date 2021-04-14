@@ -2,23 +2,68 @@
 controls_information:
     PV: true
     pv_record_map:
-        HDF_WriteFile_RBV    : EBT-INJ-DIA-CAM-03:HDF:WriteFile_RBV
-        HDF_WriteStatus    : EBT-INJ-DIA-CAM-03:HDF:WriteStatus
-        HDF_WriteMessage    : EBT-INJ-DIA-CAM-03:HDF:WriteMessage
-        HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-03:HDF:NumCaptured_RBV
-        HDF_Capture_RBV    : EBT-INJ-DIA-CAM-03:HDF:Capture_RBV
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-03:CAM:Acquire_RBV
-        HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-03:HDF:NumCapture_RBV
-        MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCaptured_RBV
-        MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:WriteFile_RBV
-        MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-03:MAGICK:WriteStatus
-        MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-03:MAGICK:WriteMessage
-        MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:Capture_RBV
-        MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCapture_RBV
-        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-03:ANA:StepSize_RBV
+        CAM_BlackLevel_RBV : EBT-INJ-DIA-CAM-03:CAM:BlackLevelRaw_RBV
+        CAM_BlackLevel :  EBT-INJ-DIA-CAM-03:CAM:BlackLevelRaw
+        CAM_Gain_RBV : EBT-INJ-DIA-CAM-03:CAM:GainRaw_RBV
+        CAM_Gain : EBT-INJ-DIA-CAM-03:CAM:GainRaw
+        # NO _RBV versions of these PVs 
+        ROIandMask_SetX : EBT-INJ-DIA-CAM-03:ANA:SetX
+        ROIandMask_SetY : EBT-INJ-DIA-CAM-03:ANA:SetY
+        ROIandMask_SetXrad : EBT-INJ-DIA-CAM-03:ANA:SetXRad
+        ROIandMask_SetYrad : EBT-INJ-DIA-CAM-03:ANA:SetYRad 
+        # the "mask" from JW/TP implementation 
+        ANA_MaskXCenter    : EBT-INJ-DIA-CAM-03:ANA:MaskXCenter
+        ANA_MaskXCenter_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskXCenter_RBV
+        ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-03:ANA:CenterX_RBV
+        ANA_CenterX    : EBT-INJ-DIA-CAM-03:ANA:CenterX
+        ANA_CenterY_RBV    : EBT-INJ-DIA-CAM-03:ANA:CenterY_RBV
+        ANA_CenterY    : EBT-INJ-DIA-CAM-03:ANA:CenterY
+        ANA_MaskYCenter    : EBT-INJ-DIA-CAM-03:ANA:MaskYCenter
+        ANA_MaskYCenter_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskYCenter_RBV
+        ANA_MaskXRad_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskXRad_RBV
+        ANA_MaskXRad    : EBT-INJ-DIA-CAM-03:ANA:MaskXRad
+        ANA_MaskYRad_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskYRad_RBV
+        ANA_MaskYRad    : EBT-INJ-DIA-CAM-03:ANA:MaskYRad
+        # ROI SK implementation  
+        ROI1_MinX_RBV : EBT-INJ-DIA-CAM-03:ROI1:MinX_RBV
+        ROI1_MinX : EBT-INJ-DIA-CAM-03:ROI1:MinX
+        ROI1_MinY_RBV : EBT-INJ-DIA-CAM-03:ROI1:MinY_RBV
+        ROI1_MinY : EBT-INJ-DIA-CAM-03:ROI1:MinY
+        ROI1_SizeX_RBV : EBT-INJ-DIA-CAM-03:ROI1:SizeX_RBV
+        ROI1_SizeX : EBT-INJ-DIA-CAM-03:ROI1:SizeX
+        ROI1_SizeY_RBV : EBT-INJ-DIA-CAM-03:ROI1:SizeY_RBV
+        ROI1_SizeY : EBT-INJ-DIA-CAM-03:ROI1:SizeY
+        ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-03:CAM3:ArrayData
+        # start stop acquiring images 
+        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-03:CAM:Start   # VELA CAM is different to CLARA cam!!! 
+        CAM_Stop_Acquire    : EBT-INJ-DIA-CAM-03:CAM:Stop     # VELA CAM is different to CLARA cam!!! 
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-03:CAM:CameraState # VELA CAM is different to CLARA cam!!! 
+        # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-03:ANA:EnableCallbacks_RBV
+        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-03:ANA:EnableCallbacks
+        # the analysis can use a back groun dsubtracted image 
+        ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-03:ANA:NewBkgrnd
         ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-03:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-03:ANA:UseNPoint
+        # the analysis can use "n-point scaling" 
+        ANA_UseNPoint    : EBT-INJ-DIA-CAM-03:ANA:UseNPoint       
+        # The analysis can set a noise floor, pixel values below this are set to zero 
+        ANA_UseFloor : EBT-INJ-DIA-CAM-03:ANA:UseFloor
+        ANA_UseFloor_RBV : EBT-INJ-DIA-CAM-03:ANA:UseFloor_RBV
+        ANA_FloorLevel    : EBT-INJ-DIA-CAM-03:ANA:Floor
+        ANA_FloorLevel_RBV    : EBT-INJ-DIA-CAM-03:ANA:Floor_RBV
+        ANA_FlooredPoints_RBV    : EBT-INJ-DIA-CAM-03:ANA:FLOORED_PTS
+        ANA_FlooredPercent_RBV    : EBT-INJ-DIA-CAM-03:ANA:FLOORED_PCENT
+        # Analysis CPU metrics 
+        ANA_CPU_RBV    : EBT-INJ-DIA-CAM-03:ANA:ANA_CPU
+        ANA_CPU_CropSubMask_RBV    : EBT-INJ-DIA-CAM-03:ANA:CSM_CPU
+        ANA_CPU_Npoint_RBV    : EBT-INJ-DIA-CAM-03:ANA:NP_CPU
+        ANA_CPU_Dot_RBV    : EBT-INJ-DIA-CAM-03:ANA:DP_CPU
+        ANA_PixW_RBV : EBT-INJ-DIA-CAM-03:ANA:PixW_RBV
+        ANA_PixH_RBV : EBT-INJ-DIA-CAM-03:ANA:PixH_RBV
+        ANA_PixMM    : EBT-INJ-DIA-CAM-03:ANA:PixMM
+        ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-03:ANA:PixMM_RBV
+        ANA_StepSize    : EBT-INJ-DIA-CAM-03:ANA:StepSize
+        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-03:ANA:StepSize_RBV
         ANA_X_RBV    : EBT-INJ-DIA-CAM-03:ANA:X_RBV
         ANA_Y_RBV    : EBT-INJ-DIA-CAM-03:ANA:Y_RBV
         ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-03:ANA:SigmaX_RBV
@@ -31,48 +76,47 @@ controls_information:
         ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-03:ANA:SigmaXPix_RBV
         ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-03:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-03:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-03:ANA:PixelResults_RBV
-        ANA_MaskXCenter_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskXCenter_RBV
-        ANA_MaskYCenter_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskYCenter_RBV
-        ANA_MaskXRad_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskXRad_RBV
-        ANA_MaskYRad_RBV    : EBT-INJ-DIA-CAM-03:ANA:MaskYRad_RBV
-        ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-03:ANA:CenterX_RBV
-        ANA_CenterY_RBV    : EBT-INJ-DIA-CAM-03:ANA:CenterY_RBV
-        ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-03:ANA:PixMM_RBV
+        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-03:ANA:PixelResults_RBV 
+        # # actuall array data
+        CAM2_ArrayData    : EBT-INJ-DIA-CAM-03:CAM2:ArrayData
+        HDFB_Buffer_Trigger : EBT-INJ-DIA-CAM-03:CAM:Trigger.PROC
+        HDFB_Buffer_FilePath : EBT-INJ-DIA-CAM-03:HDFB:FilePath
+        HDFB_Buffer_FilePath_RBV : EBT-INJ-DIA-CAM-03:HDFB:FilePath_RBV
+        HDFB_Buffer_FileName : EBT-INJ-DIA-CAM-03:HDFB:FileName
+        HDFB_Buffer_FileName_RBV : EBT-INJ-DIA-CAM-03:HDFB:FileName_RBV
+        HDFB_Buffer_FileNumber : EBT-INJ-DIA-CAM-03:HDFB:FileNumber
+        HDFB_Buffer_FileNumber_RBV : EBT-INJ-DIA-CAM-03:HDFB:FileNumber_RBV
+        # HDF_NumCapture_RBV    : CLA-VCAWws-DIA-CAM-01:HDF:NumCapture_RBV
         CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-03:CAM:AcquireTime_RBV
         CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-03:CAM:AcquirePeriod_RBV
         CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-03:CAM:ArrayRate_RBV
         CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-03:CAM:Temperature_RBV
+        HDF_Capture    : EBT-INJ-DIA-CAM-03:HDF:Capture
+        HDF_NumCapture    : EBT-INJ-DIA-CAM-03:HDF:NumCapture
         HDF_FilePath    : EBT-INJ-DIA-CAM-03:HDF:FilePath
         HDF_FileName    : EBT-INJ-DIA-CAM-03:HDF:FileName
         HDF_FileNumber    : EBT-INJ-DIA-CAM-03:HDF:FileNumber
+        HDF_FileNumber_RBV    : EBT-INJ-DIA-CAM-03:HDF:FileNumber_RBV
+        HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-03:HDF:FilePath_RBV
+        HDF_FileName_RBV    : EBT-INJ-DIA-CAM-03:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-03:HDF:WriteFile
-        CAM_Acquire    : EBT-INJ-DIA-CAM-03:CAM:Acquire
-        CAM_Acquire    : EBT-INJ-DIA-CAM-03:CAM:Acquire
-        HDF_Capture    : EBT-INJ-DIA-CAM-03:HDF:Capture
-        HDF_NumCapture    : EBT-INJ-DIA-CAM-03:HDF:NumCapture
-        MAGICK_FileName    : EBT-INJ-DIA-CAM-03:MAGICK:FileName
-        MAGICK_FilePath    : EBT-INJ-DIA-CAM-03:MAGICK:FilePath
-        MAGICK_FileNumber    : EBT-INJ-DIA-CAM-03:MAGICK:FileNumber
-        MAGICK_Capture    : EBT-INJ-DIA-CAM-03:MAGICK:Capture
-        MAGICK_WriteFile    : EBT-INJ-DIA-CAM-03:MAGICK:WriteFile
-        MAGICK_NumCapture    : EBT-INJ-DIA-CAM-03:MAGICK:NumCapture
-        ANA_StepSize    : EBT-INJ-DIA-CAM-03:ANA:StepSize
-        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-03:ANA:EnableCallbacks
-        ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-03:ANA:NewBkgrnd
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-03:ANA:UseBkgrnd
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-03:ANA:UseNPoint
-        CAM2_ArrayData    : EBT-INJ-DIA-CAM-03:CAM2:ArrayData
-        ANA_MaskXCenter    : EBT-INJ-DIA-CAM-03:ANA:MaskXCenter
-        ANA_MaskYCenter    : EBT-INJ-DIA-CAM-03:ANA:MaskYCenter
-        ANA_MaskXRad    : EBT-INJ-DIA-CAM-03:ANA:MaskXRad
-        ANA_MaskYRad    : EBT-INJ-DIA-CAM-03:ANA:MaskYRad
-        ANA_CenterX    : EBT-INJ-DIA-CAM-03:ANA:CenterX
-        ANA_CenterY    : EBT-INJ-DIA-CAM-03:ANA:CenterY
+        # MAGICK_FileName    : EBT-INJ-DIA-CAM-03:MAGICK:FileName
+        # MAGICK_FilePath    : EBT-INJ-DIA-CAM-03:MAGICK:FilePath
+        # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-03:MAGICK:FileNumber
+        # MAGICK_Capture    : EBT-INJ-DIA-CAM-03:MAGICK:Capture
+        # MAGICK_WriteFile    : EBT-INJ-DIA-CAM-03:MAGICK:WriteFile
+        # MAGICK_NumCapture    : EBT-INJ-DIA-CAM-03:MAGICK:NumCapture
+        # MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCaptured_RBV
+        # MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:WriteFile_RBV
+        # MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-03:MAGICK:WriteStatus
+        # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-03:MAGICK:WriteMessage
+        # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:Capture_RBV
+        # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-03:MAGICK:NumCapture_RBV
         ANA_PixMM    : EBT-INJ-DIA-CAM-03:ANA:PixMM
-        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    :    CLA-LAS-DIA-LED-01:Off
-        LED_On    : CLA-LAS-DIA-LED-01:On
+        LED_Sta    : EBT-INJ-DIA-LED-01:Sta
+        LED_Off    : EBT-INJ-DIA-LED-01:Off
+        LED_On    : EBT-INJ-DIA-LED-01:Sta
+
 
 properties:
     hardware_type: Camera

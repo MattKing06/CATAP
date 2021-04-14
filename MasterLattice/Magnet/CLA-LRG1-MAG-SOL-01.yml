@@ -7,20 +7,29 @@ controls_information:
     RPOWER: CLA-LRG1-MAG-SOL-01:RPOWER
     SETI: CLA-LRG1-MAG-SOL-01:SETI
     SPOWER: CLA-LRG1-MAG-SOL-01:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    CLA-LRG1-MAG-SOL-01:K_DIP_P
+    INT_STR_MM: CLA-LRG1-MAG-SOL-01:INT_STR_MM
+    INT_STR:    CLA-LRG1-MAG-SOL-01:INT_STR
+    K_SET_P:    CLA-LRG1-MAG-SOL-01:K_SET_P
+    K_ANG:      CLA-LRG1-MAG-SOL-01:K_ANG
+    K_MRAD:     CLA-LRG1-MAG-SOL-01:K_MRAD
+    K_VAL:      CLA-LRG1-MAG-SOL-01:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
-  degauss_tolerance: 0.1
-  degauss_values: "225.0,-225.0,150.0,-150.0,100.0,-100.0,50.0,-50.0,25.0,-25.0,0.0"
-  field_integral_coefficients: "0.000513431,-1.27695E-07,1.61655E-10,-0.032733798,-4.29885E-06,2.28967E-08,0.001833327,-2.5354E-06,-1.04715E-09,-1.61177E-12,-2.94837E-05,2.13938E-07,-0.003957362,0.246073139,-4.393602393,0.0"
+  degauss_tolerance: 2.0
+  degauss_values: "250.0,-250.0,150.0,-150.0,100.0,-100.0,50.0,-50.0,25.0,-25.0,0.0"
+  field_integral_coefficients: "2.17321571,-0.858179277,0.172127130,-0.0171033399,6.70371530e-04,-3.53922E-08,1.53138E-05,0.167819191,0.0"
   hardware_type: Magnet
   machine_area: GUN
   mag_set_max_wait_time: 45.0
-  mag_type: SOL
-  magnetic_length: 12.5
-  manufacturer: Danfysik
+  mag_type: SOLENOID
+  magnetic_length: 139.5
+  manufacturer: SEF
   name: CLA-LRG1-MAG-SOL-01
-  name_alias: LRG-SOL-01,LRG-SOL01,LRG-BSOL-01,LRG-BSOL01
+  name_alias: LRG-SOL-01,LRG-SOL01
   num_degauss_steps: 11
-  position: -0.072
+  position: 0.127
   ri_tolerance: 0.1
-  serial_number: XXX
+  serial_number: '01'
+  min_i : -250.0
+  max_i : 250.0
