@@ -47,7 +47,8 @@ public:
 	// these are currently hard-coded, we should get the folder names from
 	// MasterLattice directory to initialize the map
 	const static std::map<std::string, std::string> allowedHardwareTypes;
-
+	std::map<std::string, std::string> offlineProperties;
+	std::map<std::string, std::string> onlineProperties;
 
 	LoggingSystem messenger;
 	void debugMessagesOn();
@@ -120,21 +121,21 @@ public:
 					throw InvalidFileException(ConfigReader::yamlFilename, missingEntriesFromFile);
 				}
 				messenger.printDebugMessage("extractHardwareInformationIntoMap");
-				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
+				offlineProperties = extractHardwareInformationIntoMap(config);
 				messenger.printDebugMessage("extractRecordsIntoMap");
-				auto recordsMap = extractRecordsIntoMap(config);
-				parameters.insert(recordsMap.begin(), recordsMap.end());
-				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
+				onlineProperties = extractRecordsIntoMap(config);
+				parameters.insert(onlineProperties.begin(), onlineProperties.end());
+				parameters.insert(offlineProperties.begin(), offlineProperties.end());
 				messenger.printDebugMessage("Constuct Hardware, mode = ", ENUM_TO_STRING(mode));
 
 				HardwareType freshHardware = HardwareType(parameters, mode);
-
+				freshHardware.setOnlineProperties(onlineProperties);
+				freshHardware.setOfflineProperties(offlineProperties);
 				messenger.printDebugMessage("Add New harwdare to hardwareMapToFill");
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
-
 				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill"
 				 + " current size = ", hardwareMapToFill.size());
 

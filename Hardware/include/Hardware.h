@@ -9,6 +9,7 @@
 #include <GlobalStateEnums.h>
 #include <GlobalTypeEnums.h>
 #include "GlobalConstants.h"
+#include <boost/python/dict.hpp>
 #include "HardwareState.h"
 
 /** @defgroup hardware Hardware
@@ -48,11 +49,16 @@ public:
 	bool isOffline()const;
 
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
-	std::map<std::string, std::string> getProperties()const;
-	void setProperties();
+	std::map<std::string, std::string> getOfflineProperties()const;
+	boost::python::dict getOfflineProperties_Py();
+	void setOfflineProperties(const std::map<std::string, std::string>& properties);
+	std::map<std::string, std::string> getOnlineProperties()const;
+	boost::python::dict getOnlineProperties_Py();
+	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
 
-
+	std::map<std::string, std::string> offlineProperties;
+	std::map<std::string, std::string> onlineProperties;
 	// TODO: do we need this? can't an child of these class just access pvStructs,
 	// and no other class should be able ot get this map??? 
 	std::map<std::string, pvStruct>& getPVStructs();

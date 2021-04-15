@@ -11,6 +11,22 @@ BOOST_AUTO_TEST_CASE(start_test)
 {
 	BOOST_TEST_MESSAGE("------	RUNNING MAGNET FACTORY TESTS	------");
 }
+
+BOOST_AUTO_TEST_CASE(magnet_factory_get_magnet_properties_test)
+{
+	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
+	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
+	bool status = magFac.setup("nominal");
+	if (status)
+	{
+		Magnet HCOR = magFac.getMagnet(testMagnetName);
+		auto onlineProperties = HCOR.getOnlineProperties();
+		auto offlineProperties = HCOR.getOfflineProperties();
+		BOOST_CHECK(!onlineProperties.empty());
+		BOOST_CHECK(!offlineProperties.empty());
+	}
+}
+
 BOOST_AUTO_TEST_CASE(magnet_factory_turn_on_magnet_test)
 {
 	std::string testMagnetName = "CLA-C2V-MAG-HCOR-01";
