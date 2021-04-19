@@ -117,7 +117,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getFullPSUName", &Magnet::getFullPSUName)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
 			.def("setMagnetState", &Magnet::setMagnetState)
-			.def("getMagnetState", &Magnet::getMagnetState)
+			.def("getMagnetState", &Magnet::getState_Py)
 			.def("isInState", &Magnet::isInState)
 			.def("isInSETIandPSUState", &Magnet::isInSETIandPSUState)
 			.def("getManufacturer", &Magnet::getManufacturer)

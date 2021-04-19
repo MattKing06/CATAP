@@ -120,6 +120,16 @@ void Hardware::setOnlineProperties(const std::map<std::string, std::string>& pro
 	onlineProperties = properties;
 }
 
+std::map<std::string, std::string> Hardware::getState()
+{
+	return onlineProperties;
+}
+
+boost::python::dict Hardware::getState_Py()
+{
+	return to_py_dict(onlineProperties);
+}
+
 std::map<std::string, std::string> Hardware::getOfflineProperties() const
 {
 	return offlineProperties;

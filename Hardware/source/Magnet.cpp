@@ -685,6 +685,18 @@ bool Magnet::offlineSetIlkState(const STATE value)
 	return false;
 }
 
+std::map<std::string, std::string> Magnet::getState()
+{
+	magnetState currentState = getMagnetState();
+	std::map<std::string, std::string> stateMap = to_std_map<std::string, std::string>(currentState.state_dict);
+	return stateMap;
+}
+
+boost::python::dict Magnet::getState_Py()
+{
+	magnetState currentState = getMagnetState();
+	return currentState.state_dict;
+}
 
 void Magnet::debugMessagesOff()
 {

@@ -29,6 +29,7 @@ namespace BOOST_PYTHON_HARDWARE_INCLUDE
 			.def("messagesOff", &Hardware::messagesOff)
 			.def("getOnlineProperties", &Hardware::getOnlineProperties_Py)
 			.def("getOfflineProperties", &Hardware::getOfflineProperties_Py)
+			.def("getState", &Hardware::getState_Py)
 			.def("getSpecificHardwareParameters", &Hardware::getSpecificHardwareParameters);
 	}
 }
