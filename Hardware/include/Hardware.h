@@ -56,7 +56,7 @@ public:
 	boost::python::dict getOnlineProperties_Py();
 	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
-	virtual std::map<std::string, std::string> getState();
+	virtual HardwareState getState();
 	virtual boost::python::dict getState_Py();
 	std::map<std::string, std::string> offlineProperties;
 	std::map<std::string, std::string> onlineProperties;
@@ -107,7 +107,7 @@ public:
 	}
 	static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
-	HardwareState state_IO;
+	HardwareState currentState;
 };
 /** @}*/
 #endif //HARDWARE_H_

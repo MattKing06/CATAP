@@ -14,7 +14,8 @@ Hardware::Hardware() :
 	machine_area(TYPE::UNKNOWN_TYPE),
 	hardware_type(TYPE::UNKNOWN_TYPE),
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
-	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
+	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	currentState(HardwareState())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
@@ -24,6 +25,7 @@ Hardware::Hardware(STATE mode) :
 	hardware_type(TYPE::UNKNOWN_TYPE),
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
 	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	currentState(HardwareState()),
 	mode(mode)
 {
 	//messenger.printDebugMessage("Constructing Hardware (with no config)");
@@ -44,7 +46,8 @@ hardware_type_str(specificValueMap.find("hardware_type")->second),
 hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second),
 onlineProperties(std::map<std::string, std::string>()),
-offlineProperties(std::map<std::string, std::string>())
+offlineProperties(std::map<std::string, std::string>()),
+currentState(HardwareState())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
@@ -58,7 +61,8 @@ Hardware::Hardware(const Hardware& copyHardware) :
 	hardware_type_str(copyHardware.hardware_type_str),
 	machine_area_str(copyHardware.machine_area_str),
 	onlineProperties(copyHardware.onlineProperties),
-	offlineProperties(copyHardware.offlineProperties)
+	offlineProperties(copyHardware.offlineProperties),
+	currentState(copyHardware.currentState)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
@@ -120,14 +124,14 @@ void Hardware::setOnlineProperties(const std::map<std::string, std::string>& pro
 	onlineProperties = properties;
 }
 
-std::map<std::string, std::string> Hardware::getState()
+HardwareState Hardware::getState()
 {
-	return onlineProperties;
+	return currentState;
 }
 
 boost::python::dict Hardware::getState_Py()
 {
-	return to_py_dict(onlineProperties);
+	return currentState.getState_Py();
 }
 
 std::map<std::string, std::string> Hardware::getOfflineProperties() const
