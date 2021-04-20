@@ -95,8 +95,8 @@ class Magnet : public Hardware
 		@param[out] magnetState structured data									*/
 		magnetState getMagnetState()const;
 
-		std::map<std::string, std::string> getState();
-		boost::python::dict getState_Py();
+		//HardwareState getState();
+		//boost::python::dict getState_Py();
 	/*! set a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 		@param[in] magnetState structured data to set
 		@param[out] bool, for if commands successfully got sent to EPICS		*/
