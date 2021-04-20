@@ -14,6 +14,18 @@ BOOST_AUTO_TEST_CASE(setting_up_valve_factory_and_get_states)
 }
 
 
+BOOST_AUTO_TEST_CASE(getting_hardware_state_from_valve_factory)
+{
+	ValveFactory valvFac = ValveFactory(STATE::PHYSICAL);
+	valvFac.setup("nominal");
+	auto stateMap = valvFac.getStates();
+	for (auto&& item : stateMap)
+	{
+		std::string name = item.first;
+		STATE state = item.second.get<STATE>(name);
+	}
+}
+
 
 
 BOOST_AUTO_TEST_SUITE_END()

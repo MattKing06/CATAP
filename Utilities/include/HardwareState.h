@@ -35,6 +35,7 @@ public:
 	
 	std::map<std::string, boost::variant<STATE, TYPE, double, long, int, unsigned short, std::string>> state;
 	
+
 	template<typename T>
 	T get(const std::string PV)
 	{

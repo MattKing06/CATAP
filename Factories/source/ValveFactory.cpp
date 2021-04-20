@@ -372,16 +372,15 @@ std::map<std::string, HardwareState> ValveFactory::getStates()
 	std::map<std::string, HardwareState> allValveStates;
 	for (auto& item : valveMap)
 	{
-		allValveStates[item.first] = item.second.currentState;
+		allValveStates[item.first] = item.second.getState();
 	}
 	return allValveStates;
 }
 
 boost::python::dict ValveFactory::getStates_Py()
 {
-	std::map<std::string, HardwareState> allValveStates = getStates();
 	std::map<std::string, boost::python::dict> allValveStatesDict;
-	for (auto& item : allValveStates)
+	for (auto& item : valveMap)
 	{
 		allValveStatesDict[item.first] = item.second.getState_Py();
 	}

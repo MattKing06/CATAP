@@ -38,19 +38,16 @@ void EPICSValveInterface::updateValveState(const struct event_handler_args args)
 	case GlobalConstants::zero_int: 
 	{
 		recastValve->setValveState(STATE::CLOSED);
-		recastValve->currentState.update(ValveRecords::Sta, STATE::CLOSED);
 		break;
 	}
 	case GlobalConstants::one_int:
 	{
 		recastValve->setValveState(STATE::OPEN);
-		recastValve->currentState.update(ValveRecords::Sta, STATE::OPEN);
 		break;
 	}
 	default:
 	{
 		recastValve->setValveState(STATE::ERR);
-		recastValve->currentState.update(ValveRecords::Sta, STATE::ERR);
 		break;
 	}
 	}

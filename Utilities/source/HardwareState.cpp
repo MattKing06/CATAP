@@ -5,6 +5,7 @@ HardwareState::HardwareState()
 }
 
 HardwareState::HardwareState(const HardwareState& copyHardwareState)
+	: state(copyHardwareState.state)
 {
 }
 

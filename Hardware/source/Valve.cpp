@@ -69,6 +69,18 @@ void Valve::close()
 	}
 }
 
+HardwareState Valve::getState() 
+{
+	currentState.update(hardwareName, valveState.second);
+	return currentState;
+}
+
+boost::python::dict Valve::getState_Py()
+{
+	currentState.update(hardwareName, valveState.second);
+	return currentState.getState_Py();
+}
+
 void Valve::setValveState(const STATE& state)
 {
 	switch (state)
