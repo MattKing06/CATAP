@@ -54,6 +54,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 			.def("debugMessagesOff", &ValveFactory::debugMessagesOff, (boost::python::arg("self")))
 			.def("messagesOn", &ValveFactory::messagesOn, (boost::python::arg("self")))
 			.def("messagesOff", &ValveFactory::messagesOff, (boost::python::arg("self")))
+			.def("getStates", &ValveFactory::getStates_Py, (boost::python::args("self")))
 			;
 	}
 

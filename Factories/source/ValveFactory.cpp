@@ -366,3 +366,24 @@ bool ValveFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }
+
+std::map<std::string, HardwareState> ValveFactory::getStates()
+{
+	std::map<std::string, HardwareState> allValveStates;
+	for (auto& item : valveMap)
+	{
+		allValveStates[item.first] = item.second.currentState;
+	}
+	return allValveStates;
+}
+
+boost::python::dict ValveFactory::getStates_Py()
+{
+	std::map<std::string, HardwareState> allValveStates = getStates();
+	std::map<std::string, boost::python::dict> allValveStatesDict;
+	for (auto& item : allValveStates)
+	{
+		allValveStatesDict[item.first] = item.second.getState_Py();
+	}
+	return to_py_dict(allValveStatesDict);
+}

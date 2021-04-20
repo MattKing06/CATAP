@@ -143,7 +143,8 @@ public:
 	/*! returns true if messenger messages flag is true, false otherwise*/
 	bool isMessagingOn();
 
-
+	std::map<std::string, HardwareState> getStates();
+	boost::python::dict getStates_Py();
 
 	/*! gets all valve names as python list*/
 	boost::python::list getAllValveNames_Py() const;
