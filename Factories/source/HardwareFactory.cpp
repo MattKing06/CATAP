@@ -489,6 +489,19 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 	return rfHeartbeatFactory;
 }
 
+bool HardwareFactory::saveStateToYAML()
+{
+	std::string now = GlobalFunctions::getTimeAndDateString();
+	const std::string stateLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineState\\" + now;
+	boost::filesystem::path saveLocation = stateLocation;
+	boost::filesystem::create_directory(saveLocation);
+	if (valveFactory.hasBeenSetup)
+	{
+		valveFactory.exportStateToYAML(saveLocation.string(), "Valves.yaml");
+	}
+	return false;
+}
+
 
 void HardwareFactory::debugMessagesOn()
 {

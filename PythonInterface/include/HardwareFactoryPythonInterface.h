@@ -93,7 +93,7 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getRFProtectionFactory", &HardwareFactory::getRFProtectionFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("shutterFactory", &HardwareFactory::rfProtectionFactory)
 
-
+			.def("saveMachineState", &HardwareFactory::saveStateToYAML)
 			.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &HardwareFactory::messagesOn, boost::python::arg("self"))

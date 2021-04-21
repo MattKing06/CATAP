@@ -386,13 +386,13 @@ bool ValveFactory::exportStateToYAML(const std::string& location, const std::str
 	YAML::Node outputNode;
 	for (auto& item : valveMap)
 	{
-		HardwareState state = item.second.getState();
+		HardwareState currentState = item.second.getState();
 		
-		for (auto& stateItem : state.state)
+		for (auto& stateItem : currentState.state)
 		{
 			if (stateItem.first == ValveRecords::Sta)
 			{
-				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(state.get<STATE>(stateItem.first));
+				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
 			}
 		}
 	}
@@ -404,8 +404,9 @@ bool ValveFactory::exportStateToYAML(const std::string& location, const std::str
 bool ValveFactory::importStateToValves(const std::string location, const std::string& stateFile)
 {
 	const std::string fullpath = location + "/" + stateFile;
+	std::ifstream inFile(fullpath.c_str());
+	if (!inFile) { return false; }
 	messenger.printMessage("FULL PATH: ", fullpath);
-	//# TODO: check if file exists and return false if not found..
 	YAML::Node stateInfo = YAML::LoadFile(fullpath);
 	for (auto&& valve : valveMap)
 	{
