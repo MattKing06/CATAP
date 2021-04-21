@@ -1,6 +1,7 @@
 #include <ValveFactory.h>
 #include <GlobalFunctions.h>
 #include <PythonTypeConversions.h>
+#include <fstream>
 #include <boost/filesystem.hpp>
 ValveFactory::ValveFactory() :
 	ValveFactory(STATE::OFFLINE)
@@ -376,6 +377,53 @@ std::map<std::string, HardwareState> ValveFactory::getStates()
 	}
 	return allValveStates;
 }
+
+bool ValveFactory::exportStateToYAML(const std::string& location, const std::string& filename)
+{
+	const std::string fullpath = location + "/" + filename;
+	std::ofstream outFile(fullpath.c_str());
+	if (!outFile) { return false; }
+	YAML::Node outputNode;
+	for (auto& item : valveMap)
+	{
+		HardwareState state = item.second.getState();
+		
+		for (auto& stateItem : state.state)
+		{
+			if (stateItem.first == ValveRecords::Sta)
+			{
+				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(state.get<STATE>(stateItem.first));
+			}
+		}
+	}
+	outFile << "#YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
+	outFile << outputNode << std::endl;
+	return true;
+}
+
+bool ValveFactory::importStateToValves(const std::string location, const std::string& stateFile)
+{
+	const std::string fullpath = location + "/" + stateFile;
+	messenger.printMessage("FULL PATH: ", fullpath);
+	//# TODO: check if file exists and return false if not found..
+	YAML::Node stateInfo = YAML::LoadFile(fullpath);
+	for (auto&& valve : valveMap)
+	{
+		auto stateEntry = stateInfo[valve.first].as < std::map < std::string, std::string> >();
+		for (auto&& item : stateEntry)
+		{
+			if (item.first == ValveRecords::Sta)
+			{
+				valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
+			}
+			
+		}
+	}
+	return true;
+}
+
+
+
 
 boost::python::dict ValveFactory::getStates_Py()
 {

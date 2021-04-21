@@ -55,6 +55,8 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 			.def("messagesOn", &ValveFactory::messagesOn, (boost::python::arg("self")))
 			.def("messagesOff", &ValveFactory::messagesOff, (boost::python::arg("self")))
 			.def("getStates", &ValveFactory::getStates_Py, (boost::python::args("self")))
+			.def("saveStates", &ValveFactory::exportStateToYAML, (boost::python::args("self"), boost::python::args("location"), boost::python::args("filename")))
+			.def("loadStates", &ValveFactory::importStateToValves)
 			;
 	}
 
