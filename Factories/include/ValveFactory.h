@@ -147,6 +147,8 @@ public:
 	boost::python::dict getStates_Py();
 	bool exportStateToYAML(const std::string& location, const std::string& filename);
 	bool importStateToValves(const std::string location, const std::string& stateFile);
+
+
 	/*! gets all valve names as python list*/
 	boost::python::list getAllValveNames_Py() const;
 	/*! gets valve states by name from the python list parameter, and returns a dict with key,value pairs of valve-name and state*/

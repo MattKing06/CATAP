@@ -337,6 +337,64 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 //
 //}
 
+std::map<std::string, HardwareState> MagnetFactory::getStates()const
+{
+	std::map<std::string, HardwareState> allStates;
+	for (auto& item : magnetMap)
+	{
+		allStates[item.first] = item.second.getState();
+	}
+	return allStates;
+}
+boost::python::dict MagnetFactory::getStates_Py()const
+{
+	return to_py_dict(getStates());
+}
+
+bool MagnetFactory::exportStateToYAML(const std::string& location, const std::string& filename)
+{
+	const std::string fullpath = location + "/" + filename;
+	std::ofstream outFile(fullpath.c_str());
+	if (!outFile) { return false; }
+	YAML::Node outputNode;
+	for (auto& item : magnetMap)
+	{
+		HardwareState currentState = item.second.getState();
+
+		for (auto& stateItem : currentState.state)
+		{
+			if (stateItem.first == ValveRecords::Sta)
+			{
+				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+			}
+		}
+	}
+	outFile << "#YAML VELA/CLARA MAGNET SETTINGS SAVE FILE: VERSION 1" << std::endl;
+	outFile << outputNode << std::endl;
+	return true;
+}
+bool MagnetFactory::importStateToValves(const std::string location, const std::string& stateFile)
+{
+	const std::string fullpath = location + "/" + stateFile;
+	std::ifstream inFile(fullpath.c_str());
+	if (!inFile) { return false; }
+	messenger.printMessage("FULL PATH: ", fullpath);
+	YAML::Node stateInfo = YAML::LoadFile(fullpath);
+	for (auto&& magnet : magnetMap)
+	{
+		auto stateEntry = stateInfo[magnet.first].as <std::map<std::string, std::string>>();
+		for (auto&& item : stateEntry)
+		{
+			if (item.first == MagnetRecords::SPOWER)
+			{
+				magnet.second.setPSUState(GlobalConstants::stringToStateMap.at(item.second));
+			}
+		}
+	}
+	return true;
+}
+
+
 void MagnetFactory::updateAliasNameMap(const Magnet& magnet)
 {
 	// first add in the magnet full name

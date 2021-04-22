@@ -48,8 +48,9 @@ public:
 	If we have an Offline valve then the valve state variable is simply set to CLOSED. */
 	void close();
 
-	HardwareState getState() override;
-	boost::python::dict getState_Py() override;
+	HardwareState getSettings() const  override;
+	boost::python::dict getSettings_Py() const override;
+
 	/*! directly sets the valveState variable.
 	This is mainly called by the EPICSValveInterface when updating the valveState from EPICS callback function
 	@param[in] state the state which we wish to set the valve to (OPEN,CLOSED,ERR)

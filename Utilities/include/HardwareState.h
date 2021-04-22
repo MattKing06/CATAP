@@ -37,21 +37,21 @@ public:
 	
 
 	template<typename T>
-	T get(const std::string PV)
+	T get(const std::string PV)const
 	{
 		if (GlobalFunctions::entryExists(state, PV))
 		{
-			return boost::get<T>(state[PV]);
+			return boost::get<T>(state.at(PV));
 		}
 	}
 
-	boost::python::dict getState_Py()
+	boost::python::dict getSettings_Py()const 
 	{
 		std::map < std::string, boost::python::object> pyValueMap;
 		for (auto& item : state)
 		{
 			const std::string name = item.first;
-			boost::python::object pyValue = boost::apply_visitor(convert_to_py{}, state[name]);
+			boost::python::object pyValue = boost::apply_visitor(convert_to_py{}, state.at(name));
 			pyValueMap[name] = pyValue;
 		}
 		return to_py_dict(pyValueMap);
@@ -59,7 +59,7 @@ public:
 	}
 
 	template<typename T>
-	void update(const std::string& PV, T value)
+	void update(const std::string& PV, T value)  
 	{
 		if (GlobalFunctions::entryExists(state, PV))
 		{
@@ -72,24 +72,18 @@ public:
 	}
 
 	template<typename T>
-	void add(const std::string& PV, T value)
+	void add(const std::string& PV, T value) 
 	{
 		if (GlobalFunctions::entryExists(state, PV))
 		{
 			update(PV, value);
 		}
-
 		else
 		{
 			std::pair<std::string, T> PVandValue(PV, value);
 			state.insert(PVandValue);
 		}
 	}
-
-
-
-
-
 
 	// Probably need to find the most appropriate map structure for nested states.
 	std::map<std::string, std::string> readStateFromYaml();

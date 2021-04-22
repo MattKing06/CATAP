@@ -161,8 +161,30 @@ void Magnet::setPVStructs()
 		
 }
 
-magnetState Magnet::getMagnetState()const
+
+
+HardwareState Magnet::getSettings()
 {
+	currentState.update(MagnetRecords::GETSETI , GETSETI.second);
+	currentState.update(MagnetRecords::READI, READI.second);
+	currentState.update(MagnetRecords::RILK, ilk_state.second);
+	currentState.update(MagnetRecords::RPOWER, psu_state.second);
+	currentState.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
+	currentState.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
+	currentState.update(MagnetRecords::INT_STR, INT_STR.second);
+	currentState.update(MagnetRecords::K_SET_P, K_SET_P.second);
+	currentState.update(MagnetRecords::K_ANG, K_ANG.second);
+	currentState.update(MagnetRecords::K_MRAD, K_MRAD.second);
+	currentState.update(MagnetRecords::K_VAL, K_VAL.second);
+	return currentState;
+}
+boost::python::dict Magnet::getSettings_Py() 
+{
+	return getSettings().getSettings_Py();
+}
+
+magnetState Magnet::getMagnetState()const
+{	// TODO this functionality is now deprecated and we have implemented more general "getState" method 
 	magnetState r;
 	r.readi = getREADI();
 	r.seti = getSETI();

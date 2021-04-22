@@ -91,16 +91,20 @@ class Magnet : public Hardware
 	/*! Copy constructor for Magnet object
 		@param[in] copyMagnet references to magnet to be copied					*/
 		Magnet(const Magnet& copyMagnet);
+	
+		HardwareState getSettings()override;
+		boost::python::dict getSettings_Py()override;
+		
 	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 		@param[out] magnetState structured data									*/
 		magnetState getMagnetState()const;
-
-		//HardwareState getState();
-		//boost::python::dict getState_Py();
 	/*! set a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 		@param[in] magnetState structured data to set
 		@param[out] bool, for if commands successfully got sent to EPICS		*/
 		bool setMagnetState(const magnetState& ms);
+
+		
+		
 	/*! check if the current magnet state is the same as the passed in state 
 		@param[in] magnetState structured data to check
 		@param[out] bool, for if in same state or not							*/

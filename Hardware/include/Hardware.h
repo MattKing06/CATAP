@@ -56,8 +56,8 @@ public:
 	boost::python::dict getOnlineProperties_Py();
 	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
-	virtual HardwareState getState();
-	virtual boost::python::dict getState_Py();
+	virtual HardwareState getSettings()const;
+	virtual boost::python::dict getSettings_Py()const;
 	std::map<std::string, std::string> offlineProperties;
 	std::map<std::string, std::string> onlineProperties;
 	// TODO: do we need this? can't an child of these class just access pvStructs,
@@ -98,14 +98,14 @@ public:
 
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
-
-	static std::map<std::string, TYPE> create_map()
-	{
-		std::map<std::string, TYPE> m;
-		m["Magnet"] = TYPE::MAGNET;
-		return m;
-	}
-	static const std::map<std::string, TYPE> string_to_hardware_type_map;
+	// This now exists in globalConstants 
+	//static std::map<std::string, TYPE> create_map()
+	//{
+	//	std::map<std::string, TYPE> m;
+	//	m["Magnet"] = TYPE::MAGNET;
+	//	return m;
+	//}
+	//static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
 	HardwareState currentState;
 };
