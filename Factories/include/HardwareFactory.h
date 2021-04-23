@@ -98,7 +98,7 @@ public:
 
 
 	bool saveStateToYAML();
-
+	bool loadStateFromYAML(const std::string& location);
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();

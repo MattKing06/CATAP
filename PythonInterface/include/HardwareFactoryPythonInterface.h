@@ -94,6 +94,7 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.add_property("shutterFactory", &HardwareFactory::rfProtectionFactory)
 
 			.def("saveMachineState", &HardwareFactory::saveStateToYAML)
+			.def("loadMachineState", &HardwareFactory::loadStateFromYAML)
 			.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &HardwareFactory::messagesOn, boost::python::arg("self"))

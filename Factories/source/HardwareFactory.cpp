@@ -502,6 +502,57 @@ bool HardwareFactory::saveStateToYAML()
 	return false;
 }
 
+std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {})
+{
+	std::vector<std::string> fileList;
+	try
+	{
+		if (boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath))
+		{
+			boost::filesystem::recursive_directory_iterator iter(dirPath);
+			boost::filesystem::recursive_directory_iterator end;
+			while (iter != end)
+			{
+				if (boost::filesystem::is_directory(iter->path()) &&
+					(std::find(skipList.begin(), skipList.end(), iter->path().filename()) != skipList.end()))
+				{
+					iter.no_push();
+				}
+				else
+				{
+					fileList.push_back(iter->path().string());
+					std::cout << "FOUND: " << iter->path().string();
+					boost::system::error_code ec;
+					iter.increment(ec);
+					if (ec)
+					{
+						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
+					}
+				}
+			}
+		}
+		else
+		{
+			std::cout << " DOES NOT EXIST " << std::endl;
+		}
+	}
+	catch (std::system_error & e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	return fileList;
+}
+
+bool HardwareFactory::loadStateFromYAML(const std::string& location="")
+{
+	std::vector<std::string> fileList = getAllFilesInDirectory(location);
+	for (auto file : fileList)
+	{
+		messenger.printMessage(file);
+	}
+	return true;
+}
+
 
 void HardwareFactory::debugMessagesOn()
 {
