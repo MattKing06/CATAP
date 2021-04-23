@@ -348,7 +348,19 @@ std::map<std::string, HardwareState> MagnetFactory::getSnapshot()
 }
 boost::python::dict MagnetFactory::getSnapshot_Py()
 {
-	return to_py_dict(getSnapshot());
+	messenger.printMessage("MagnetFactory::getSnapshot_Py");
+	//boost::python::dict my_dict;
+	std::map<std::string, boost::python::dict> snapshot_dict;
+	for (auto& item : magnetMap)
+	{
+		snapshot_dict[item.first] = item.second.getSnapshot_Py();
+
+
+
+		//my_dict[item.first] = 2;
+	}
+	messenger.printMessage("convert to dict");
+	return to_py_dict<std::string, boost::python::dict>(snapshot_dict);
 }
 
 bool MagnetFactory::exportSnapshotToYAML(const std::string& location, const std::string& filename)
@@ -363,10 +375,46 @@ bool MagnetFactory::exportSnapshotToYAML(const std::string& location, const std:
 
 		for (auto& stateItem : currentState.state)
 		{
-			//if (stateItem.first == ValveRecords::Sta)
-			//{
-			//	outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
-			//}
+			if (stateItem.first == MagnetRecords::K_VAL)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::K_MRAD)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::K_ANG)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::K_SET_P)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::K_DIP_P)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::INT_STR)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::INT_STR_MM)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::READI)
+			{
+				outputNode[item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+			}
+			if (stateItem.first == MagnetRecords::RPOWER)
+			{
+				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+			}
+			if (stateItem.first == MagnetRecords::RILK)
+			{
+				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+			}
 		}
 	}
 	outFile << "#YAML VELA/CLARA MAGNET SETTINGS SAVE FILE: VERSION 1" << std::endl;

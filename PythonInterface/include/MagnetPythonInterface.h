@@ -116,8 +116,10 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getMagnetType", &Magnet::getMagnetType)
 			.def("getFullPSUName", &Magnet::getFullPSUName)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
+			
 			//.def("setMagnetState", &Magnet::setMagnetState)
 			//.def("getMagnetState", &Magnet::getState_Py)
+			
 			.def("isInState", &Magnet::isInState)
 			.def("isInSETIandPSUState", &Magnet::isInSETIandPSUState)
 			.def("getManufacturer", &Magnet::getManufacturer)
@@ -350,6 +352,10 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getMagnetState", & MagnetFactory::getMagnetState_Py)
 			.def("getAllMagnetState", & MagnetFactory::getAllMagnetState_Py)
 
+
+			.def("getSnapshot", &MagnetFactory::getSnapshot_Py, (boost::python::args("self")))
+			.def("saveSnapshot", &MagnetFactory::exportSnapshotToYAML, (boost::python::args("self"), boost::python::args("location"), boost::python::args("filename")))
+			.def("loadSnapshot", &MagnetFactory::importSnapshotToMagnets)
 
 		//boost::python::dict getNumberOfDegaussSteps_Py(const boost::python::list & name) const;
 		//boost::python::list getDegaussValues_Py1(const std::string & name) const;
