@@ -368,17 +368,17 @@ bool ValveFactory::isMessagingOn()
 	return messenger.isMessagingOn();
 }
 
-std::map<std::string, HardwareState> ValveFactory::getStates()
+std::map<std::string, HardwareState> ValveFactory::getSnapshot()
 {
 	std::map<std::string, HardwareState> allValveStates;
 	for (auto& item : valveMap)
 	{
-		allValveStates[item.first] = item.second.getState();
+		allValveStates[item.first] = item.second.getSnapshot();
 	}
 	return allValveStates;
 }
 
-bool ValveFactory::exportStateToYAML(const std::string& location, const std::string& filename)
+bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::string& filename)
 {
 	const std::string fullpath = location + "/" + filename;
 	std::ofstream outFile(fullpath.c_str());
@@ -386,7 +386,7 @@ bool ValveFactory::exportStateToYAML(const std::string& location, const std::str
 	YAML::Node outputNode;
 	for (auto& item : valveMap)
 	{
-		HardwareState currentState = item.second.getState();
+		HardwareState currentState = item.second.getSnapshot();
 		
 		for (auto& stateItem : currentState.state)
 		{
@@ -401,7 +401,7 @@ bool ValveFactory::exportStateToYAML(const std::string& location, const std::str
 	return true;
 }
 
-bool ValveFactory::importStateToValves(const std::string location, const std::string& stateFile)
+bool ValveFactory::importSnapshotToValves(const std::string location, const std::string& stateFile)
 {
 	const std::string fullpath = location + "/" + stateFile;
 	std::ifstream inFile(fullpath.c_str());
@@ -410,15 +410,14 @@ bool ValveFactory::importStateToValves(const std::string location, const std::st
 	YAML::Node stateInfo = YAML::LoadFile(fullpath);
 	for (auto&& valve : valveMap)
 	{
-		auto stateEntry = stateInfo[valve.first].as < std::map < std::string, std::string> >();
-		for (auto&& item : stateEntry)
-		{
-			if (item.first == ValveRecords::Sta)
-			{
-				valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
-			}
-			
-		}
+		//auto stateEntry = stateInfo[valve.first].as < std::map < std::string, std::string> >();
+		//for (auto&& item : stateEntry)
+		//{
+		//	if (item.first == ValveRecords::Sta)
+		//	{
+		//		valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
+		//	}
+		//}
 	}
 	return true;
 }
@@ -426,12 +425,12 @@ bool ValveFactory::importStateToValves(const std::string location, const std::st
 
 
 
-boost::python::dict ValveFactory::getStates_Py()
+boost::python::dict ValveFactory::getSnapshot_Py()
 {
 	std::map<std::string, boost::python::dict> allValveStatesDict;
 	for (auto& item : valveMap)
 	{
-		allValveStatesDict[item.first] = item.second.getState_Py();
+		allValveStatesDict[item.first] = item.second.getSnapshot_Py();
 	}
 	return to_py_dict(allValveStatesDict);
 }

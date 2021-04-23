@@ -92,10 +92,10 @@ class MagnetFactory
 		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
-		std::map<std::string, HardwareState> getStates()const;
-		boost::python::dict getStates_Py()const;
-		bool exportStateToYAML(const std::string& location, const std::string& filename);
-		bool importStateToMagnets(const std::string location, const std::string& stateFile);
+		std::map<std::string, HardwareState> getSnapshot();
+		boost::python::dict getSnapshot_Py();
+		bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
+		bool importSnapshotToMagnets(const std::string location, const std::string& stateFile);
 
 
 

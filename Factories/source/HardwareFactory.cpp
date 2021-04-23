@@ -497,7 +497,7 @@ bool HardwareFactory::saveStateToYAML()
 	boost::filesystem::create_directory(saveLocation);
 	if (valveFactory.hasBeenSetup)
 	{
-		valveFactory.exportStateToYAML(saveLocation.string(), "Valves.yaml");
+		valveFactory.exportSnapshotToYAML(saveLocation.string(), "Valves.yaml");
 	}
 	return false;
 }

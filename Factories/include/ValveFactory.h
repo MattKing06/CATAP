@@ -143,10 +143,10 @@ public:
 	/*! returns true if messenger messages flag is true, false otherwise*/
 	bool isMessagingOn();
 
-	std::map<std::string, HardwareState> getStates();
-	boost::python::dict getStates_Py();
-	bool exportStateToYAML(const std::string& location, const std::string& filename);
-	bool importStateToValves(const std::string location, const std::string& stateFile);
+	std::map<std::string, HardwareState> getSnapshot();
+	boost::python::dict getSnapshot_Py();
+	bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
+	bool importSnapshotToValves(const std::string location, const std::string& stateFile);
 
 
 	/*! gets all valve names as python list*/

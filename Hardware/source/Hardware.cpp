@@ -124,18 +124,16 @@ void Hardware::setOnlineProperties(const std::map<std::string, std::string>& pro
 	onlineProperties = properties;
 }
 
-HardwareState Hardware::getSettings()
+HardwareState Hardware::getSnapshot()
 {
 	std::cout << "BASE CLASS CALLED" << std::endl;
 	return this->currentState;
 }
-
-boost::python::dict Hardware::getSettings_Py() 
+boost::python::dict Hardware::getSnapshot_Py() 
 {
 	std::cout << "BASE CLASS CALLED" << std::endl;
-	return this->currentState.getSettings_Py();
+	return this->currentState.getSnapshot_Py();
 }
-
 std::map<std::string, std::string> Hardware::getOfflineProperties() const
 {
 	return offlineProperties;

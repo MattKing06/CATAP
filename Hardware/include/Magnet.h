@@ -92,8 +92,8 @@ class Magnet : public Hardware
 		@param[in] copyMagnet references to magnet to be copied					*/
 		Magnet(const Magnet& copyMagnet);
 	
-		HardwareState getSettings()override;
-		boost::python::dict getSettings_Py()override;
+		HardwareState getSnapshot()override;
+		boost::python::dict getSnapshot_Py()override;
 		
 	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 		@param[out] magnetState structured data									*/

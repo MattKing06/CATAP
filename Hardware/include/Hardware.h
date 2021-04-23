@@ -56,8 +56,8 @@ public:
 	boost::python::dict getOnlineProperties_Py();
 	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
-	virtual HardwareState getSettings()const;
-	virtual boost::python::dict getSettings_Py()const;
+	virtual HardwareState getSnapshot();
+	virtual boost::python::dict getSnapshot_Py();
 	std::map<std::string, std::string> offlineProperties;
 	std::map<std::string, std::string> onlineProperties;
 	// TODO: do we need this? can't an child of these class just access pvStructs,

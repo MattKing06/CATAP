@@ -337,21 +337,21 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 //
 //}
 
-std::map<std::string, HardwareState> MagnetFactory::getStates()const
+std::map<std::string, HardwareState> MagnetFactory::getSnapshot()
 {
 	std::map<std::string, HardwareState> allStates;
 	for (auto& item : magnetMap)
 	{
-		allStates[item.first] = item.second.getState();
+		allStates[item.first] = item.second.getSnapshot();
 	}
 	return allStates;
 }
-boost::python::dict MagnetFactory::getStates_Py()const
+boost::python::dict MagnetFactory::getSnapshot_Py()
 {
-	return to_py_dict(getStates());
+	return to_py_dict(getSnapshot());
 }
 
-bool MagnetFactory::exportStateToYAML(const std::string& location, const std::string& filename)
+bool MagnetFactory::exportSnapshotToYAML(const std::string& location, const std::string& filename)
 {
 	const std::string fullpath = location + "/" + filename;
 	std::ofstream outFile(fullpath.c_str());
@@ -359,21 +359,21 @@ bool MagnetFactory::exportStateToYAML(const std::string& location, const std::st
 	YAML::Node outputNode;
 	for (auto& item : magnetMap)
 	{
-		HardwareState currentState = item.second.getState();
+		HardwareState currentState = item.second.getSnapshot();
 
 		for (auto& stateItem : currentState.state)
 		{
-			if (stateItem.first == ValveRecords::Sta)
-			{
-				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
-			}
+			//if (stateItem.first == ValveRecords::Sta)
+			//{
+			//	outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+			//}
 		}
 	}
 	outFile << "#YAML VELA/CLARA MAGNET SETTINGS SAVE FILE: VERSION 1" << std::endl;
 	outFile << outputNode << std::endl;
 	return true;
 }
-bool MagnetFactory::importStateToValves(const std::string location, const std::string& stateFile)
+bool MagnetFactory::importSnapshotToMagnets(const std::string location, const std::string& stateFile)
 {
 	const std::string fullpath = location + "/" + stateFile;
 	std::ifstream inFile(fullpath.c_str());
@@ -382,7 +382,7 @@ bool MagnetFactory::importStateToValves(const std::string location, const std::s
 	YAML::Node stateInfo = YAML::LoadFile(fullpath);
 	for (auto&& magnet : magnetMap)
 	{
-		auto stateEntry = stateInfo[magnet.first].as <std::map<std::string, std::string>>();
+		auto stateEntry = stateInfo[magnet.first].as<std::map<std::string, std::string>>();
 		for (auto&& item : stateEntry)
 		{
 			if (item.first == MagnetRecords::SPOWER)

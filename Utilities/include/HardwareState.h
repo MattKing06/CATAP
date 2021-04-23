@@ -45,7 +45,7 @@ public:
 		}
 	}
 
-	boost::python::dict getSettings_Py()const 
+	boost::python::dict getSnapshot_Py()const 
 	{
 		std::map < std::string, boost::python::object> pyValueMap;
 		for (auto& item : state)
@@ -84,7 +84,6 @@ public:
 			state.insert(PVandValue);
 		}
 	}
-
 	// Probably need to find the most appropriate map structure for nested states.
 	std::map<std::string, std::string> readStateFromYaml();
 	void writeStateFromMap(std::map<std::string, std::string> mapToWrite);

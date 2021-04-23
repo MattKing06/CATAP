@@ -48,8 +48,10 @@ public:
 	If we have an Offline valve then the valve state variable is simply set to CLOSED. */
 	void close();
 
-	HardwareState getSettings() const  override;
-	boost::python::dict getSettings_Py() const override;
+
+	// THESE CAN'T BE const as theere is the call an "update" of the map which is necessarily non const 
+	HardwareState getSnapshot()  override;
+	boost::python::dict getSnapshot_Py() override;
 
 	/*! directly sets the valveState variable.
 	This is mainly called by the EPICSValveInterface when updating the valveState from EPICS callback function

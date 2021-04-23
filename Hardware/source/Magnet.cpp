@@ -163,7 +163,7 @@ void Magnet::setPVStructs()
 
 
 
-HardwareState Magnet::getSettings()
+HardwareState Magnet::getSnapshot()
 {
 	currentState.update(MagnetRecords::GETSETI , GETSETI.second);
 	currentState.update(MagnetRecords::READI, READI.second);
@@ -178,9 +178,9 @@ HardwareState Magnet::getSettings()
 	currentState.update(MagnetRecords::K_VAL, K_VAL.second);
 	return currentState;
 }
-boost::python::dict Magnet::getSettings_Py() 
+boost::python::dict Magnet::getSnapshot_Py()
 {
-	return getSettings().getSettings_Py();
+	return getSnapshot().getSnapshot_Py();
 }
 
 magnetState Magnet::getMagnetState()const
