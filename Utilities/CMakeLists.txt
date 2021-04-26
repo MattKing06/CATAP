@@ -11,7 +11,7 @@ set( SOURCE_FILES
     source/CameraPVRecords.cpp
     source/ChargePVRecords.cpp
     source/ScreenPVRecords.cpp
-    source/HardwareState.cpp
+    source/HardwareSnapshot.cpp
     source/IMGPVRecords.cpp
     source/LaserEnergyMeterPVRecords.cpp
     source/LaserHWPPVRecords.cpp
@@ -32,7 +32,7 @@ set( INCLUDE_FILES
      include/GlobalTypeEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
-     include/HardwareState.h
+     include/HardwareSnapshot.h
      include/MagnetPVRecords.h
      include/ValvePVRecords.h
      include/BPMPVRecords.h

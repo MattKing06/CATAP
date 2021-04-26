@@ -143,7 +143,7 @@ public:
 	/*! returns true if messenger messages flag is true, false otherwise*/
 	bool isMessagingOn();
 
-	std::map<std::string, HardwareState> getSnapshot();
+	std::map<std::string, HardwareSnapshot> getSnapshot();
 	boost::python::dict getSnapshot_Py();
 	bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
 	bool importSnapshotToValves(const std::string location, const std::string& stateFile);

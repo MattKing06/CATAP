@@ -15,7 +15,7 @@ Hardware::Hardware() :
 	hardware_type(TYPE::UNKNOWN_TYPE),
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
 	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
-	currentState(HardwareState())
+	currentSnapshot(HardwareSnapshot())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
@@ -25,7 +25,7 @@ Hardware::Hardware(STATE mode) :
 	hardware_type(TYPE::UNKNOWN_TYPE),
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
 	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
-	currentState(HardwareState()),
+	currentSnapshot(HardwareSnapshot()),
 	mode(mode)
 {
 	//messenger.printDebugMessage("Constructing Hardware (with no config)");
@@ -47,7 +47,7 @@ hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardwar
 hardwareName(specificValueMap.find("name")->second),
 onlineProperties(std::map<std::string, std::string>()),
 offlineProperties(std::map<std::string, std::string>()),
-currentState(HardwareState())
+currentSnapshot(HardwareSnapshot())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
@@ -62,7 +62,7 @@ Hardware::Hardware(const Hardware& copyHardware) :
 	machine_area_str(copyHardware.machine_area_str),
 	onlineProperties(copyHardware.onlineProperties),
 	offlineProperties(copyHardware.offlineProperties),
-	currentState(copyHardware.currentState)
+	currentSnapshot(copyHardware.currentSnapshot)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
@@ -124,15 +124,15 @@ void Hardware::setOnlineProperties(const std::map<std::string, std::string>& pro
 	onlineProperties = properties;
 }
 
-HardwareState Hardware::getSnapshot()
+HardwareSnapshot Hardware::getSnapshot()
 {
 	std::cout << "BASE CLASS CALLED" << std::endl;
-	return this->currentState;
+	return this->currentSnapshot;
 }
 boost::python::dict Hardware::getSnapshot_Py() 
 {
 	std::cout << "BASE CLASS CALLED" << std::endl;
-	return this->currentState.getSnapshot_Py();
+	return this->currentSnapshot.getSnapshot_Py();
 }
 std::map<std::string, std::string> Hardware::getOfflineProperties() const
 {

@@ -68,15 +68,15 @@ void Valve::close()
 		offlineSetValveState(STATE::CLOSED);
 	}
 }
-HardwareState Valve::getSnapshot()
+HardwareSnapshot Valve::getSnapshot()
 {
-	currentState.update(ValveRecords::Sta, valveState.second);
-	return currentState;
+	currentSnapshot.update(ValveRecords::Sta, valveState.second);
+	return currentSnapshot;
 }
 boost::python::dict Valve::getSnapshot_Py()
 {
-	currentState.update(ValveRecords::Sta, valveState.second);
-	return currentState.getSnapshot_Py();
+	getSnapshot();
+	return currentSnapshot.getSnapshot_Py();
 }
 
 void Valve::setValveState(const STATE& state)

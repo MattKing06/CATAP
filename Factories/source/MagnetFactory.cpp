@@ -337,9 +337,9 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 //
 //}
 
-std::map<std::string, HardwareState> MagnetFactory::getSnapshot()
+std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot()
 {
-	std::map<std::string, HardwareState> allStates;
+	std::map<std::string, HardwareSnapshot> allStates;
 	for (auto& item : magnetMap)
 	{
 		allStates[item.first] = item.second.getSnapshot();
@@ -371,7 +371,7 @@ bool MagnetFactory::exportSnapshotToYAML(const std::string& location, const std:
 	YAML::Node outputNode;
 	for (auto& item : magnetMap)
 	{
-		HardwareState currentState = item.second.getSnapshot();
+		HardwareSnapshot currentState = item.second.getSnapshot();
 
 		for (auto& stateItem : currentState.state)
 		{

@@ -368,9 +368,9 @@ bool ValveFactory::isMessagingOn()
 	return messenger.isMessagingOn();
 }
 
-std::map<std::string, HardwareState> ValveFactory::getSnapshot()
+std::map<std::string, HardwareSnapshot> ValveFactory::getSnapshot()
 {
-	std::map<std::string, HardwareState> allValveStates;
+	std::map<std::string, HardwareSnapshot> allValveStates;
 	for (auto& item : valveMap)
 	{
 		allValveStates[item.first] = item.second.getSnapshot();
@@ -386,7 +386,7 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 	YAML::Node outputNode;
 	for (auto& item : valveMap)
 	{
-		HardwareState currentState = item.second.getSnapshot();
+		HardwareSnapshot currentState = item.second.getSnapshot();
 		
 		for (auto& stateItem : currentState.state)
 		{
