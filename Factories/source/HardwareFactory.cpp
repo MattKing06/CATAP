@@ -489,11 +489,11 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 	return rfHeartbeatFactory;
 }
 
-bool HardwareFactory::saveStateToYAML()
+bool HardwareFactory::saveSnapshotToYAML()
 {
 	std::string now = GlobalFunctions::getTimeAndDateString();
-	const std::string stateLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineState\\" + now;
-	boost::filesystem::path saveLocation = stateLocation;
+	const std::string snapshotLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineState\\" + now;
+	boost::filesystem::path saveLocation = snapshotLocation;
 	boost::filesystem::create_directory(saveLocation);
 	if (valveFactory.hasBeenSetup)
 	{
@@ -543,7 +543,7 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 	return fileList;
 }
 
-bool HardwareFactory::loadStateFromYAML(const std::string& location="")
+bool HardwareFactory::loadSnapshotFromYAML(const std::string& location="")
 {
 	std::vector<std::string> fileList = getAllFilesInDirectory(location);
 	for (auto file : fileList)
