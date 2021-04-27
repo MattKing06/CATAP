@@ -92,7 +92,7 @@ class MagnetFactory
 		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
-		std::map<std::string, HardwareState> getSnapshot();
+		std::map<std::string, HardwareSnapshot> getSnapshot();
 		boost::python::dict getSnapshot_Py();
 		bool saveSnapshot(const std::string& location, const std::string& filename);
 		bool importSnapshotToMagnets(const std::string location, const std::string& stateFile);

@@ -163,20 +163,20 @@ void Magnet::setPVStructs()
 
 
 
-HardwareState Magnet::getSnapshot()
+HardwareSnapshot Magnet::getSnapshot()
 {
-	currentState.update(MagnetRecords::GETSETI , GETSETI.second);
-	currentState.update(MagnetRecords::READI, READI.second);
-	currentState.update(MagnetRecords::RILK, ilk_state.second);
-	currentState.update(MagnetRecords::RPOWER, psu_state.second);
-	currentState.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
-	currentState.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
-	currentState.update(MagnetRecords::INT_STR, INT_STR.second);
-	currentState.update(MagnetRecords::K_SET_P, K_SET_P.second);
-	currentState.update(MagnetRecords::K_ANG, K_ANG.second);
-	currentState.update(MagnetRecords::K_MRAD, K_MRAD.second);
-	currentState.update(MagnetRecords::K_VAL, K_VAL.second);
-	return currentState;
+	currentSnapshot.update(MagnetRecords::GETSETI , GETSETI.second);
+	currentSnapshot.update(MagnetRecords::READI, READI.second);
+	currentSnapshot.update(MagnetRecords::RILK, ilk_state.second);
+	currentSnapshot.update(MagnetRecords::RPOWER, psu_state.second);
+	currentSnapshot.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
+	currentSnapshot.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
+	currentSnapshot.update(MagnetRecords::INT_STR, INT_STR.second);
+	currentSnapshot.update(MagnetRecords::K_SET_P, K_SET_P.second);
+	currentSnapshot.update(MagnetRecords::K_ANG, K_ANG.second);
+	currentSnapshot.update(MagnetRecords::K_MRAD, K_MRAD.second);
+	currentSnapshot.update(MagnetRecords::K_VAL, K_VAL.second);
+	return currentSnapshot;
 }
 boost::python::dict Magnet::getSnapshot_Py()
 {
@@ -192,7 +192,7 @@ boost::python::dict Magnet::getSnapshot_Py()
 	//currentState.update(MagnetRecords::K_MRAD, K_MRAD.second);
 	//currentState.update(MagnetRecords::K_VAL, K_VAL.second);
 	getSnapshot();
-	return currentState.getSnapshot_Py();
+	return currentSnapshot.getSnapshot_Py();
 }
 
 

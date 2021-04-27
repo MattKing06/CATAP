@@ -26,12 +26,12 @@ struct convert_to_py : public boost::static_visitor<boost::python::object>
 	//std::string operator()(std::string value) { return value; }
 };
 
-class HardwareState
+class HardwareSnapshot
 {
 public:
-	HardwareState();
-	HardwareState(const HardwareState& copyHardwareState);
-	~HardwareState();
+	HardwareSnapshot();
+	HardwareSnapshot(const HardwareSnapshot& copyHardwareState);
+	~HardwareSnapshot();
 	
 	std::map<std::string, boost::variant<STATE, TYPE, double, long, int, unsigned short, std::string>> state;
 	

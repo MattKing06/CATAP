@@ -50,7 +50,7 @@ public:
 
 
 	// THESE CAN'T BE const as theere is the call an "update" of the map which is necessarily non const 
-	HardwareState getSnapshot()  override;
+	HardwareSnapshot getSnapshot()  override;
 	boost::python::dict getSnapshot_Py() override;
 
 	/*! directly sets the valveState variable.

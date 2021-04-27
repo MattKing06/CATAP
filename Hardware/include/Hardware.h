@@ -10,7 +10,7 @@
 #include <GlobalTypeEnums.h>
 #include "GlobalConstants.h"
 #include <boost/python/dict.hpp>
-#include "HardwareState.h"
+#include <HardwareSnapshot.h>
 
 /** @defgroup hardware Hardware
  *  @brief A collection of classes that represent hardware components of VELA/CLARA with parameters defined by configuration files.
@@ -56,7 +56,7 @@ public:
 	boost::python::dict getOnlineProperties_Py();
 	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
-	virtual HardwareState getSnapshot();
+	virtual HardwareSnapshot getSnapshot();
 	virtual boost::python::dict getSnapshot_Py();
 	std::map<std::string, std::string> offlineProperties;
 	std::map<std::string, std::string> onlineProperties;
@@ -107,7 +107,7 @@ public:
 	//}
 	//static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
-	HardwareState currentState;
+	HardwareSnapshot currentSnapshot;
 };
 /** @}*/
 #endif //HARDWARE_H_
