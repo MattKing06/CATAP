@@ -363,11 +363,21 @@ boost::python::dict MagnetFactory::getSnapshot_Py()
 	return to_py_dict<std::string, boost::python::dict>(snapshot_dict);
 }
 
-bool MagnetFactory::exportSnapshotToYAML(const std::string& location, const std::string& filename)
+bool MagnetFactory::saveSnapshot(const std::string& location, const std::string& filename)
 {
-	const std::string fullpath = location + "/" + filename;
-	std::ofstream outFile(fullpath.c_str());
-	if (!outFile) { return false; }
+	messenger.printMessage("MagnetFactory::exportSnapshotToYAML");
+
+	const boost::filesystem::path directory(location);
+	const boost::filesystem::path file(filename);
+	const boost::filesystem::path full_path = directory / file;
+	//const std::string fullpath = location + "/" + filename;
+	std::ofstream outFile(full_path.c_str());
+	messenger.printMessage("Full path = ", full_path);
+	if (!outFile)
+	{ 
+		messenger.printMessage("Error creating output file stream");
+		return false; 
+	}
 	YAML::Node outputNode;
 	for (auto& item : magnetMap)
 	{
@@ -419,6 +429,9 @@ bool MagnetFactory::exportSnapshotToYAML(const std::string& location, const std:
 	}
 	outFile << "#YAML VELA/CLARA MAGNET SETTINGS SAVE FILE: VERSION 1" << std::endl;
 	outFile << outputNode << std::endl;
+
+	messenger.printMessage("File Written ???");
+
 	return true;
 }
 bool MagnetFactory::importSnapshotToMagnets(const std::string location, const std::string& stateFile)
