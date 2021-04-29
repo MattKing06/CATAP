@@ -505,20 +505,27 @@ bool HardwareFactory::saveSnapshotToYAML()
 std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {})
 {
 	std::vector<std::string> fileList;
+	const std::vector<std::string> extensions = {".yml", ".yaml", ".YML", ".YAML"};
 	try
 	{
 		if (boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath))
 		{
-			boost::filesystem::recursive_directory_iterator iter(dirPath);
-			boost::filesystem::recursive_directory_iterator end;
+			boost::filesystem::directory_iterator iter(dirPath);
+			boost::filesystem::directory_iterator end;
 			while (iter != end)
 			{
 				if (boost::filesystem::is_directory(iter->path()) &&
 					(std::find(skipList.begin(), skipList.end(), iter->path().filename()) != skipList.end()))
 				{
-					iter.no_push();
+					boost::system::error_code ec;
+					iter.increment(ec);
+					if (ec)
+					{
+						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
+					}
 				}
-				else
+				else if (std::find(extensions.begin(), extensions.end(), iter->path().extension().string())
+						 != extensions.end())
 				{
 					fileList.push_back(iter->path().string());
 					std::cout << "FOUND: " << iter->path().string();
@@ -529,8 +536,15 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
 					}
 				}
+				else
+				{
+					boost::system::error_code ec;
+					iter.increment(ec);
+					std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
+				}
+					std::cout << "Wrong Format." << std::endl;
+				}
 			}
-		}
 		else
 		{
 			std::cout << " DOES NOT EXIST " << std::endl;
