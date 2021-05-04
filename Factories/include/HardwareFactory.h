@@ -97,8 +97,10 @@ public:
 	RFHeartbeatFactory& getRFHeartbeatFactory();
 
 
-	bool saveSnapshotToYAML();
-	bool loadSnapshotFromYAML(const std::string& location);
+
+	bool saveMachineSnapshot();
+	bool loadMachineSnapshot(const std::string& location);
+
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();

@@ -78,6 +78,7 @@ public:
 	void messagesOn();
 	/*! turns messaging off for this Valve instance*/
 	void messagesOff();
+
 	friend class EPICSValveInterface;
 protected:
 	/*! vector containing aliases of this Valve instance*/

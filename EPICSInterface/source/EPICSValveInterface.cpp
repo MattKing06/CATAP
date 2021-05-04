@@ -17,7 +17,7 @@ void EPICSValveInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) co
 {
 	if (pvStruct.monitor)
 	{
-		if (pvStruct.pvRecord == ValveRecords::Sta)
+		if (pvStruct.pvRecord == ValveRecords::STA)
 		{
 			pvStruct.updateFunction = updateValveState;
 		}

@@ -489,7 +489,7 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 	return rfHeartbeatFactory;
 }
 
-bool HardwareFactory::saveSnapshotToYAML()
+bool HardwareFactory::saveMachineSnapshot()
 {
 	std::string now = GlobalFunctions::getTimeAndDateString();
 	const std::string snapshotLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineState\\" + now;
@@ -556,7 +556,8 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 	return fileList;
 }
 
-bool HardwareFactory::loadSnapshotFromYAML(const std::string& location="")
+
+bool HardwareFactory::loadMachineSnapshot(const std::string& location="")
 {
 	std::vector<std::string> fileList = getAllFilesInDirectory(location);
 	for (auto file : fileList)
