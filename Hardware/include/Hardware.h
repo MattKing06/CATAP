@@ -2,12 +2,14 @@
 #define HARDWARE_H_
 #include <map>
 #include <iostream>
+#include <boost/variant.hpp>
 #include <LoggingSystem.h>
 #ifndef PV_H_
 #include <PV.h>
 #endif
 #include <GlobalStateEnums.h>
 #include <GlobalTypeEnums.h>
+#include <GlobalFunctions.h>
 #include "GlobalConstants.h"
 #include <boost/python/dict.hpp>
 #include <HardwareSnapshot.h>
@@ -65,6 +67,11 @@ public:
 	std::map<std::string, pvStruct>& getPVStructs();
 	// TODO  for some reaons i think these should be keyed by an enum giving their type 
 	//std::map<int, pvStruct>& getPVStructs2();
+	HardwareSnapshot currentSnapshot;
+
+	HardwareSnapshot getHardwareSnapshot();
+	boost::python::dict getHardwareSnapshot_Py();
+
 
 
 	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/
@@ -96,18 +103,8 @@ public:
 	std::map<std::string, std::string> specificHardwareParameters;
 	LoggingSystem messenger;
 
-	STATE mode; // PHYSICAL VIRTUAL OFFLINE
+	STATE mode; // PHYSICAL, VIRTUAL, OFFLINE
 
-	// This now exists in globalConstants 
-	//static std::map<std::string, TYPE> create_map()
-	//{
-	//	std::map<std::string, TYPE> m;
-	//	m["Magnet"] = TYPE::MAGNET;
-	//	return m;
-	//}
-	//static const std::map<std::string, TYPE> string_to_hardware_type_map;
-
-	HardwareSnapshot currentSnapshot;
 };
 /** @}*/
 #endif //HARDWARE_H_

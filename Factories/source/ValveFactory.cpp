@@ -146,7 +146,7 @@ bool ValveFactory::setup(const std::string& VERSION)
 
 void ValveFactory::retrieveMonitorStatus(pvStruct& pvStruct) const
 {
-	if (pvStruct.pvRecord == ValveRecords::Sta)
+	if (pvStruct.pvRecord == ValveRecords::STA)
 	{
 		pvStruct.monitor = true;
 	}
@@ -390,7 +390,7 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 		
 		for (auto& stateItem : currentState.state)
 		{
-			if (stateItem.first == ValveRecords::Sta)
+			if (stateItem.first == ValveRecords::STA)
 			{
 				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
 			}
