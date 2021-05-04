@@ -505,7 +505,7 @@ bool HardwareFactory::saveSnapshotToYAML()
 std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {})
 {
 	std::vector<std::string> fileList;
-	const std::vector<std::string> extensions = {".yml", ".yaml", ".YML", ".YAML"};
+	const std::vector<std::string> extensions = {"yml", "yaml", "YML", "YAML"};
 	try
 	{
 		if (boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath))
@@ -528,7 +528,7 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 						 != extensions.end())
 				{
 					fileList.push_back(iter->path().string());
-					std::cout << "FOUND: " << iter->path().string();
+					std::cout << "FOUND: " << iter->path().string() << std::endl;
 					boost::system::error_code ec;
 					iter.increment(ec);
 					if (ec)
@@ -540,9 +540,8 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 				{
 					boost::system::error_code ec;
 					iter.increment(ec);
-					std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
+					std::cout << iter->path().string() << " is in the wrong Format." << std::endl;
 				}
-					std::cout << "Wrong Format." << std::endl;
 				}
 			}
 		else
