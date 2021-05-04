@@ -524,8 +524,8 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
 					}
 				}
-				else if (std::find(extensions.begin(), extensions.end(), iter->path().extension().string())
-						 != extensions.end())
+				else if (std::find(extensions.begin(), extensions.end(),
+						 iter->path().extension().string()) != extensions.end())
 				{
 					fileList.push_back(iter->path().string());
 					std::cout << "FOUND: " << iter->path().string() << std::endl;
@@ -540,7 +540,7 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 				{
 					boost::system::error_code ec;
 					iter.increment(ec);
-					std::cout << iter->path().string() << " is in the wrong Format." << std::endl;
+					std::cout << iter->path().string() << " is in the wrong format (no yaml files found...)" << std::endl;
 				}
 				}
 			}
@@ -556,9 +556,12 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 	return fileList;
 }
 
-
-bool HardwareFactory::loadMachineSnapshot(const std::string& location="")
+bool HardwareFactory::loadMachineSnapshot(const std::string& location)
 {
+	if (std::empty(location))
+	{
+		return false;
+	}
 	std::vector<std::string> fileList = getAllFilesInDirectory(location);
 	for (auto file : fileList)
 	{
