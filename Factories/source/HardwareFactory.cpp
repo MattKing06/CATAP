@@ -558,8 +558,9 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 
 bool HardwareFactory::loadMachineSnapshot(const std::string& location)
 {
-	if (std::empty(location))
+	if (location.empty())
 	{
+		messenger.printMessage("Please provide a snapshot folder for loading.");
 		return false;
 	}
 	std::vector<std::string> fileList = getAllFilesInDirectory(location);
