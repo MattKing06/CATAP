@@ -55,7 +55,6 @@ public:
 			pyValueMap[name] = pyValue;
 		}
 		return to_py_dict(pyValueMap);
-
 	}
 
 	template<typename T>
