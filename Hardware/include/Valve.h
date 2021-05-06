@@ -27,6 +27,8 @@ public:
 		@param[in] mode Defines the STATE of Valve we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)
 	*/
 	Valve(const std::map<std::string, std::string>& valveParameterMap, STATE mode);
+
+	Valve(const Valve& copyValve);
 	/*! EPICSValveInterface for valve-specifc calls to EPICS, includes setting open/closed state and monitoring current states*/
 	EPICSValveInterface_sptr epicsInterface;
 	/*! A map for storing the parameters extracted from YAML config files and their values */

@@ -571,6 +571,11 @@ bool HardwareFactory::loadMachineSnapshot(const std::string& location)
 	return true;
 }
 
+bool HardwareFactory::applySnapshot(const std::string& filename)
+{
+	return false;
+}
+
 
 void HardwareFactory::debugMessagesOn()
 {

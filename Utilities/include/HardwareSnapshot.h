@@ -15,15 +15,8 @@
 
 struct convert_to_py : public boost::static_visitor<boost::python::object>
 {
-	//STATE, TYPE, double, long, int, unsigned short, const std::string
 	template<typename T>
 	boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
-	//TYPE operator()(TYPE value) { return value; }
-	//double operator()(double value) { return value; }
-	//long operator()(long value) { return value; }
-	//int operator()(int value) { return value; }
-	//unsigned short operator()(unsigned short value) { return value; }
-	//std::string operator()(std::string value) { return value; }
 };
 
 class HardwareSnapshot

@@ -100,7 +100,9 @@ public:
 
 	bool saveMachineSnapshot();
 	bool loadMachineSnapshot(const std::string& location);
-
+	bool applySnapshot(const std::string& filename);
+	bool applySnapshot(YAML::Node settings);
+	bool applySnapshot(boost::python::dict settings);
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();

@@ -15,6 +15,14 @@ Valve::Valve(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	messenger = LoggingSystem(true, true);
 }
 
+Valve::Valve(const Valve& copyValve) :
+	Hardware(copyValve),
+	valveState(copyValve.valveState),
+	epicsInterface(copyValve.epicsInterface)
+{
+
+}
+
 void Valve::setPVStructs() 
 {
 	for (auto&& record : ValveRecords::valveRecordList)
@@ -75,7 +83,7 @@ HardwareSnapshot Valve::getSnapshot()
 }
 boost::python::dict Valve::getSnapshot_Py()
 {
-	getSnapshot();
+	currentSnapshot.update(ValveRecords::STA, valveState.second);
 	return currentSnapshot.getSnapshot_Py();
 }
 

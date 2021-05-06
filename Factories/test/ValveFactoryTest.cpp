@@ -6,24 +6,40 @@ BOOST_AUTO_TEST_CASE(setting_up_valve_factory_and_get_states)
 {
 	ValveFactory valvFac = ValveFactory(STATE::VIRTUAL);
 	valvFac.setup("nominal");
-	auto stateMap = valvFac.getAllValveStates();
-	for (auto&& item : stateMap)
+	if (valvFac.hasBeenSetup)
 	{
-		valvFac.messenger.printDebugMessage(item.first, " : ", ENUM_TO_STRING(item.second));
+		auto stateMap = valvFac.getAllValveStates();
+		for (auto&& item : stateMap)
+		{
+			BOOST_CHECK_NE(item.second, STATE::ERR);
+		}
+	}
+	else
+	{
+		valvFac.messenger.printMessage("Could not set up valve factory");
 	}
 }
 
 
 BOOST_AUTO_TEST_CASE(getting_hardware_state_from_valve_factory)
 {
-	ValveFactory valvFac = ValveFactory(STATE::PHYSICAL);
+	ValveFactory valvFac = ValveFactory(STATE::VIRTUAL);
 	valvFac.setup("nominal");
-	auto stateMap = valvFac.getSnapshot();
-	for (auto&& item : stateMap)
+	if (valvFac.hasBeenSetup)
 	{
-		std::string name = item.first;
-		STATE state = item.second.get<STATE>(name);
+		auto stateMap = valvFac.getSnapshot();
+		for (auto& item : stateMap)
+		{
+			std::string name = item.first;
+			STATE state = item.second.get<STATE>(name);
+			BOOST_CHECK_EQUAL(state, valvFac.getValveState(name));
+		}
 	}
+	else
+	{
+		valvFac.messenger.printMessage("Could not set up valve factory");
+	}
+
 }
 
 
