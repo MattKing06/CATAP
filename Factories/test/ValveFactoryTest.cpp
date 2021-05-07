@@ -9,10 +9,17 @@ BOOST_AUTO_TEST_CASE(setting_up_valve_factory_and_get_states)
 	std::this_thread::sleep_for(std::chrono::seconds(5));
 	if (valvFac.hasBeenSetup)
 	{
-		auto stateMap = valvFac.getAllValveStates();
-		for (auto&& item : stateMap)
+		for (auto&& valve : valvFac.valveMap)
 		{
-			BOOST_CHECK(item.second != STATE::ERR);
+			if (ca_state(valve.second.pvStructs.at(ValveRecords::STA).CHID) == cs_conn)
+			{
+				auto state = valvFac.getValveState(valve.first);
+				BOOST_CHECK_NE(state, STATE::ERR);
+			}
+			else
+			{
+				valvFac.messenger.printMessage(valve.first, ValveRecords::STA, " could not connect to EPICS");
+			}
 		}
 	}
 	else

@@ -11,7 +11,7 @@ BOOST_AUTO_TEST_CASE(start_shutter_factory_tests)
 
 BOOST_AUTO_TEST_CASE(setting_up_shutter_factory_and_get_get_shutterstate_dictionaries)
 {
-	ShutterFactory shut_fac = ShutterFactory(STATE::PHYSICAL);
+	ShutterFactory shut_fac = ShutterFactory(STATE::VIRTUAL);
 	shut_fac.setup("nominal");
 	//auto map = shut_fac.getShutterStateDictionaries();
 	auto t = shut_fac.getShutterStates();
