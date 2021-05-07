@@ -36,6 +36,7 @@ public:
 		{
 			return boost::get<T>(state.at(PV));
 		}
+
 	}
 
 	boost::python::dict getSnapshot_Py()const 

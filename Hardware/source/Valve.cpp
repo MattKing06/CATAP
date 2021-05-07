@@ -94,7 +94,7 @@ void Valve::setValveState(const STATE& state)
 	case STATE::OPEN: valveState.second = STATE::OPEN; break;
 	case STATE::CLOSED: valveState.second = STATE::CLOSED; break;
 	default:
-		valveState.second = STATE::ERR; break;
+		valveState.second = STATE::ERR;  break;
 	}
 }
 
