@@ -97,8 +97,8 @@ public:
 	RFHeartbeatFactory& getRFHeartbeatFactory();
 
 
-
-	bool saveMachineSnapshot();
+	std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList);
+	bool saveMachineSnapshot(std::string location);
 	bool loadMachineSnapshot(const std::string& location);
 	bool applySnapshot(const std::string& filename);
 	bool applySnapshot(YAML::Node settings);

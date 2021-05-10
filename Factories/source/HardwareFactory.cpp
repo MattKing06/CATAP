@@ -1,4 +1,5 @@
 #include "HardwareFactory.h"
+#include <boost/filesystem/convenience.hpp>
 #include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
 
@@ -489,28 +490,49 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 	return rfHeartbeatFactory;
 }
 
-bool HardwareFactory::saveMachineSnapshot()
+bool HardwareFactory::saveMachineSnapshot(std::string location)
 {
-	std::string now = GlobalFunctions::getTimeAndDateString();
-	const std::string snapshotLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineState\\" + now;
-	boost::filesystem::path saveLocation = snapshotLocation;
-	boost::filesystem::create_directory(saveLocation);
-	if (valveFactory.hasBeenSetup)
-	{
-		valveFactory.exportSnapshotToYAML(saveLocation.string(), "Valves.yaml");
+	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
+	boost::filesystem::path snapshotLocation;
+	boost::system::error_code returnedError;
+	if (location.empty())
+	{ 
+		const std::string defaultLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineSnapshot\\";
+		snapshotLocation = boost::filesystem::path(defaultLocation) / now;
 	}
+	else 
+	{
+		snapshotLocation = boost::filesystem::path(location) / now;
+	}
+	boost::filesystem::create_directory(snapshotLocation, returnedError);
+	if (returnedError)
+	{
+		messenger.printMessage("Could not fine snapshot location: ", snapshotLocation.string());
+		return false;
+	}
+	else
+	{
+		if (valveFactory.hasBeenSetup)
+		{
+			valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+			return true;
+		}
+		return false;
+	}
+
 	return false;
 }
 
-std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {})
+std::vector<std::string> HardwareFactory::getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {})
 {
 	std::vector<std::string> fileList;
-	const std::vector<std::string> extensions = {"yml", "yaml", "YML", "YAML"};
+	boost::filesystem::path path(dirPath);
+	const std::vector<std::string> extensions = {".yml", ".yaml", ".YML", ".YAML"};
 	try
 	{
-		if (boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath))
+		if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
 		{
-			boost::filesystem::directory_iterator iter(dirPath);
+			boost::filesystem::directory_iterator iter(path);
 			boost::filesystem::directory_iterator end;
 			while (iter != end)
 			{
@@ -521,32 +543,27 @@ std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, cons
 					iter.increment(ec);
 					if (ec)
 					{
-						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
+						messenger.printMessage(" COULD NOT ACCESS : ", iter->path().string());
 					}
 				}
 				else if (std::find(extensions.begin(), extensions.end(),
 						 iter->path().extension().string()) != extensions.end())
 				{
 					fileList.push_back(iter->path().string());
-					std::cout << "FOUND: " << iter->path().string() << std::endl;
 					boost::system::error_code ec;
 					iter.increment(ec);
 					if (ec)
 					{
-						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
+						messenger.printMessage(" COULD NOT ACCESS : ", iter->path().string());
 					}
 				}
 				else
 				{
 					boost::system::error_code ec;
 					iter.increment(ec);
-					std::cout << iter->path().string() << " is in the wrong format (no yaml files found...)" << std::endl;
-				}
+					messenger.printMessage(iter->path().string(), " is in the wrong format (no yaml files found...)");
 				}
 			}
-		else
-		{
-			std::cout << " DOES NOT EXIST " << std::endl;
 		}
 	}
 	catch (std::system_error & e)
@@ -564,6 +581,11 @@ bool HardwareFactory::loadMachineSnapshot(const std::string& location)
 		return false;
 	}
 	std::vector<std::string> fileList = getAllFilesInDirectory(location);
+	if (fileList.empty())
+	{
+		messenger.printMessage("Could not find machine snapshot files at: ", location, ". Please provide another directory.");
+		return false;
+	}
 	for (auto file : fileList)
 	{
 		messenger.printMessage(file);

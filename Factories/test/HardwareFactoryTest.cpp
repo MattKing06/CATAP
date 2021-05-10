@@ -85,3 +85,15 @@ BOOST_AUTO_TEST_CASE(setting_up_camera_factory_print_names)
 }
 
 
+BOOST_AUTO_TEST_CASE(load_machine_snapshot_from_hardware_factory_test)
+{
+	HardwareFactory HF = HardwareFactory(STATE::VIRTUAL);
+	bool status = HF.setup("Valve", "nominal");
+	if (status)
+	{
+		bool loaded = HF.loadMachineSnapshot("E:\\Documents\\MachineSnapshots\\10-05-2021 13-05-00");
+		BOOST_CHECK(loaded);
+	}
+}
+
+
