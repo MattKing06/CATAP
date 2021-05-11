@@ -31,11 +31,13 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 
 		bool(HardwareFactory:: * setup_all)(const std::string&)= &HardwareFactory::setup;
 		bool(HardwareFactory:: * setup_single)(const std::string&, const std::string&) = &HardwareFactory::setup;
+		bool(HardwareFactory:: * setup_multiple)(const boost::python::list&, const std::string&) = &HardwareFactory::setup;
 
 		// Hardware Factory Exposure
 		boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"), boost::python::args("mode"))))
 			.def("setup", setup_single, (boost::python::arg("self"), boost::python::arg("hardwareType"), boost::python::arg("version")))
 			.def("setup", setup_all, (boost::python::arg("self"), boost::python::arg("version")))
+			.def("setup", setup_multiple, (boost::python::arg("self"), boost::python::arg("hardwareTypes"), boost::python::arg("version")))
 			.add_property("llrfFactory", &HardwareFactory::llrffactory)
 			.def("getLLRFFactory", &HardwareFactory::getLLRFFactory_Single, boost::python::arg("self"), boost::python::arg("machine_area"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getLLRFFactory", &HardwareFactory::getLLRFFactory_Py, boost::python::arg("self"), boost::python::arg("machine_areas"), boost::python::return_value_policy<boost::python::reference_existing_object>())

@@ -45,7 +45,7 @@ public:
 	bool setup(const TYPE hardwareType, const std::string& VERSION);
 	bool setup(const std::vector<TYPE> hardwareTypes, const std::string& VERSION);
 	bool setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION);
-	bool setup_Py(const boost::python::list& hardwareTypes, const std::string& VERSION);
+	bool setup(const boost::python::list& hardwareTypes, const std::string& VERSION);
 
 	MagnetFactory& getMagnetFactory();
 	MagnetFactory& getMagnetFactory(TYPE machineArea);

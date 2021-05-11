@@ -84,6 +84,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = magnetFactory.setup(VERSION);
 		}
+		messenger.printMessage("MagnetFactory has been setup.");
 	}
 	else if (hardwareType == "BPM")
 	{
@@ -91,6 +92,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = bpmFactory.setup(VERSION);
 		}
+		messenger.printMessage("BPMFactory has been setup.");
 	}
 	else if (hardwareType == "Charge")
 	{
@@ -98,6 +100,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = chargeFactory.setup(VERSION);
 		}
+		messenger.printMessage("ChargeFactory has been setup.");
 	}
 	else if (hardwareType == "Screen")
 	{
@@ -105,6 +108,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = screenFactory.setup(VERSION);
 		}
+		messenger.printMessage("ScreenFactory has been setup.");
 	}
 	else if (hardwareType == "Valve")
 	{
@@ -112,6 +116,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = valveFactory.setup(VERSION);
 		}
+		messenger.printMessage("ValveFactory has been setup.");
 	}
 	else if (hardwareType == "Laser Energy Meter")
 	{
@@ -119,6 +124,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = laserEnergyMeterFactory.setup(VERSION);
 		}
+		messenger.printMessage("LaserEnergyMeterFactory has been setup.");
 	}
 	else if (hardwareType == "Laser HWP")
 	{
@@ -126,8 +132,25 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = laserHWPFactory.setup(VERSION);
 		}
+		messenger.printMessage("LaserHWPFactory has been setup.");
 	}
 	return setup;
+}
+
+bool HardwareFactory::setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION)
+{
+	for (auto&& hardware : hardwareTypes)
+	{
+		bool status = setup(hardware, VERSION);
+	}
+	return false;
+}
+
+bool HardwareFactory::setup(const boost::python::list& hardwareTypes, const std::string& VERSION)
+{
+	std::vector<std::string> hardware = to_std_vector<std::string>(hardwareTypes);
+	setup(hardware, VERSION);
+	return false;
 }
 
 RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
