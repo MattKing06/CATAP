@@ -146,8 +146,8 @@ public:
 	std::map<std::string, HardwareSnapshot> getSnapshot();
 	boost::python::dict getSnapshot_Py();
 	bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
-	bool importSnapshotToValves(const std::string location, const std::string& stateFile);
-
+	bool loadSnapshot(const std::string& location);
+	bool loadSnapshot(const YAML::Node& settings);
 
 	/*! gets all valve names as python list*/
 	boost::python::list getAllValveNames_Py() const;

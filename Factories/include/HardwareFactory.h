@@ -101,6 +101,7 @@ public:
 	bool saveMachineSnapshot(std::string location);
 	bool loadMachineSnapshot(const std::string& location);
 	bool applySnapshot(const std::string& filename);
+	bool applySnapshot(const std::map<std::string, std::string> settings);
 	bool applySnapshot(YAML::Node settings);
 	bool applySnapshot(boost::python::dict settings);
 

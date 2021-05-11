@@ -392,7 +392,7 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 		{
 			if (stateItem.first == ValveRecords::STA)
 			{
-				outputNode[item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
 			}
 		}
 	}
@@ -401,27 +401,40 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 	return true;
 }
 
-bool ValveFactory::importSnapshotToValves(const std::string location, const std::string& stateFile)
+bool ValveFactory::loadSnapshot(const std::string& location)
 {
-	const std::string fullpath = location + "/" + stateFile;
-	std::ifstream inFile(fullpath.c_str());
+	std::ifstream inFile(location);
 	if (!inFile) { return false; }
-	messenger.printMessage("FULL PATH: ", fullpath);
-	YAML::Node stateInfo = YAML::LoadFile(fullpath);
+	messenger.printMessage("FULL PATH: ", location);
+	YAML::Node stateInfo = YAML::LoadFile(location);
 	for (auto&& valve : valveMap)
 	{
-		//auto stateEntry = stateInfo[valve.first].as < std::map < std::string, std::string> >();
-		//for (auto&& item : stateEntry)
-		//{
-		//	if (item.first == ValveRecords::Sta)
-		//	{
-		//		valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
-		//	}
-		//}
+		auto stateEntry = stateInfo[valve.first].as < std::map < std::string, std::string> >();
+		for (auto&& item : stateEntry)
+		{
+			if (item.first == ValveRecords::STA)
+			{
+				valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
+			}
+		}
 	}
 	return true;
 }
 
+bool ValveFactory::loadSnapshot(const YAML::Node& settings)
+{
+	for (auto&& valve : valveMap)
+	{
+		auto stateEntry = settings[valve.first].as< std::map < std::string, std::string> >();
+		for (auto&& item : stateEntry)
+		{
+			if (item.first == ValveRecords::STA)
+			{
+				valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
+			}
+		}
+	}
+}
 
 
 

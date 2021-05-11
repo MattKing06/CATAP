@@ -589,11 +589,36 @@ bool HardwareFactory::loadMachineSnapshot(const std::string& location)
 	for (auto file : fileList)
 	{
 		messenger.printMessage(file);
+		applySnapshot(file);
 	}
 	return true;
 }
 
 bool HardwareFactory::applySnapshot(const std::string& filename)
+{
+	std::ifstream inFile(filename);
+	if (!inFile) { return false; }
+	messenger.printMessage("FULL PATH: ", filename);
+	YAML::Node stateInfo = YAML::LoadFile(filename);
+	for (auto&& item : stateInfo)
+	{
+		TYPE hardwareType = GlobalConstants::stringToTypeMap.at(item.first.as<std::string>());
+		switch (hardwareType)
+		{
+		case(TYPE::VALVE):
+		{
+			messenger.printMessage("APPLYING VALVE SNAPSHOT");
+			messenger.printMessage("ENTRY: ", item.second);
+			valveFactory.loadSnapshot(item.second);
+			break;
+		}
+		}
+	}
+
+	return false;
+}
+
+bool HardwareFactory::applySnapshot(const std::map<std::string, std::string> settings)
 {
 	return false;
 }
