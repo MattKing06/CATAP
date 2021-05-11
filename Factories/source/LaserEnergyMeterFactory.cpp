@@ -143,8 +143,6 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 			else
 			{
 				messenger.printMessage(laser.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
 			}
 		}
 	}

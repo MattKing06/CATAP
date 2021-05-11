@@ -32,6 +32,48 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
 
+bool HardwareFactory::setup(const std::string& VERSION)
+{
+	bool setup = false;
+	// TODO these TYPES should be the type ENUM
+	if (!magnetFactory.hasBeenSetup)
+	{
+		setup = magnetFactory.setup(VERSION);
+	}
+	messenger.printMessage("MagnetFactory has been setup.");
+	if (!bpmFactory.hasBeenSetup)
+	{
+		setup = bpmFactory.setup(VERSION);
+	}
+	messenger.printMessage("BPMFactory has been setup.");
+	if (!chargeFactory.hasBeenSetup)
+	{
+		setup = chargeFactory.setup(VERSION);
+	}
+	messenger.printMessage("ChargeFactory has been setup.");
+	if (!screenFactory.hasBeenSetup)
+	{
+		setup = screenFactory.setup(VERSION);
+	}
+	messenger.printMessage("ScreenFactory has been setup.");
+	if (!valveFactory.hasBeenSetup)
+	{
+		setup = valveFactory.setup(VERSION);
+	}
+	messenger.printMessage("ValveFactory has been setup.");
+	if (!laserEnergyMeterFactory.hasBeenSetup)
+	{
+		setup = laserEnergyMeterFactory.setup(VERSION);
+	}
+	messenger.printMessage("LaserEnergyMeterFactory has been setup.");
+	if (!laserHWPFactory.hasBeenSetup)
+	{
+		setup = laserHWPFactory.setup(VERSION);
+	}
+	messenger.printMessage("LaserHWPFactory has been setup.");
+	return setup;
+}
+
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;

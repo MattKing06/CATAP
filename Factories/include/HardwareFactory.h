@@ -40,7 +40,12 @@ public:
 	HardwareFactory(STATE mode);
 	//HardwareFactory(std::string hardwareType, std::string VERSION);
 	~HardwareFactory();
+	bool setup(const std::string& VERSION);
 	bool setup(const std::string& hardwareType, const std::string& VERSION);
+	bool setup(const TYPE hardwareType, const std::string& VERSION);
+	bool setup(const std::vector<TYPE> hardwareTypes, const std::string& VERSION);
+	bool setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION);
+	bool setup_Py(const boost::python::list& hardwareTypes, const std::string& VERSION);
 
 	MagnetFactory& getMagnetFactory();
 	MagnetFactory& getMagnetFactory(TYPE machineArea);
