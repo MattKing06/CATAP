@@ -1859,7 +1859,7 @@ bool MagnetFactory::saveSnapshot(const std::string& location, const std::string&
 
 	return true;
 }
-bool MagnetFactory::importSnapshotToMagnets(const std::string location, const std::string& stateFile)
+bool MagnetFactory::loadSnapshot(const std::string location, const std::string& stateFile)
 {
 	const std::string fullpath = location + "/" + stateFile;
 	std::ifstream inFile(fullpath.c_str());

@@ -355,7 +355,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 			.def("getSnapshot", &MagnetFactory::getSnapshot_Py, (boost::python::args("self")))
 			.def("saveSnapshot", &MagnetFactory::saveSnapshot, (boost::python::args("self"), boost::python::args("location"), boost::python::args("filename")))
-			.def("loadSnapshot", &MagnetFactory::importSnapshotToMagnets)
+			.def("loadSnapshot", &MagnetFactory::loadSnapshot)
 
 		//boost::python::dict getNumberOfDegaussSteps_Py(const boost::python::list & name) const;
 		//boost::python::list getDegaussValues_Py1(const std::string & name) const;
