@@ -396,7 +396,8 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 			}
 		}
 	}
-	outFile << "#YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
+	outFile << "# YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
+	outFile << "# THIS SNAPSHOT WAS CREATED IN: " << ENUM_TO_STRING(mode) << " MODE." << std::endl;
 	outFile << outputNode << std::endl;
 	return true;
 }
