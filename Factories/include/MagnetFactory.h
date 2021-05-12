@@ -95,8 +95,12 @@ class MagnetFactory
 		std::map<std::string, HardwareSnapshot> getSnapshot();
 		boost::python::dict getSnapshot_Py();
 		bool saveSnapshot(const std::string& location, const std::string& filename);
-		bool importSnapshotToMagnets(const std::string location, const std::string& stateFile);
+		bool loadSnapshot(const std::string location, const std::string& stateFile);
 
+		//bool applySnapshot(std::map<std::string, HardwareSnapshot>& snap);
+		bool applySnapshot_Py(boost::python::dict& snap);
+
+		std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
 
 
 		/*! Get a reference to magnet object, will return a dummy_magnet if magnetName is not found  

@@ -97,7 +97,7 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 	{
 		case GlobalConstants::zero_ushort: recastMagnet->psu_state.second = STATE::OFF; break;
 		case GlobalConstants::one_ushort:  recastMagnet->psu_state.second = STATE::ON; break;
-		// TODO: WTF is going on here, thsi is from the virtual machine, but is only visiible in CATAP  ??
+		// TODO: WTF is going on here, this is from the virtual machine, but is only visibile in CATAP  ??
 		case 256:  recastMagnet->psu_state.second = STATE::ON; break;
 		default: recastMagnet->psu_state.second = STATE::ERR;
 		//messenger.printDebugMessage("!!WARNING!! EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ",a);
