@@ -435,6 +435,7 @@ bool ValveFactory::loadSnapshot(const YAML::Node& settings)
 			}
 		}
 	}
+	return true;
 }
 
 
