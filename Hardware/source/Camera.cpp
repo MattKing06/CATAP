@@ -55,7 +55,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	cam_type(TYPE::UNKNOWN_TYPE),
-	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
+	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "y_size" }),  //MAGIC STRING TOD better place for these ??? 
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
 	//roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
 	image_data_has_not_malloced(true),
@@ -866,10 +866,11 @@ bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
 }
 bool Camera::setROI(std::map<std::string, long> settings)
 {
-	if (GlobalFunctions::entriesExist(settings, mask_keywords))
+	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("roi_rad_x"), settings.at("roi_rad_y"));
+		return setROI(settings.at("x_pos"), settings.at("y_pos"), settings.at("x_size"), settings.at("y_size"));
 	}
+	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_pos, y_pos, x_size, y_size");
 	return false;
 }
 bool Camera::setROI_Py(boost::python::dict settings)
@@ -999,7 +1000,7 @@ std::map<std::string, long> Camera::getMask()const
 	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
 	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
 	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
-	r["mask_rad_x"] = getMaskYRadius();// MAGIC STRING
+	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getMask_Py()const
