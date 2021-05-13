@@ -62,8 +62,8 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
+	messenger.printDebugMessage("setup Camera Factory with vector of machine areas");
 	machineAreas = machineAreas_IN;
-
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
@@ -79,8 +79,19 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	for (auto& item : camera_map)
+	{
+		std::string name(item.second.getHardwareName());
+		messenger.printDebugMessage("calling updateAliasNameMap for , ", item.first, ", ", name);
+		// update aliases for camera item in map
+		updateAliasNameMap(item.second);
+	}
+	messenger.printDebugMessage("setup by areas calling cutLHarwdareMapByMachineAreas");
 	cutLHarwdareMapByMachineAreas();
+	// TODOD the below needs to be a seperate fun ction as i have copied and pasted this into the otehr setup by names function !
+	messenger.printDebugMessage("setup by areas calling setupChannels");
 	setupChannels();
+	messenger.printDebugMessage("setup by areas calling sendToEPICS");
 	EPICSInterface::sendToEPICS();
 
 	for (auto& item : camera_map)
@@ -88,7 +99,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		std::string name(item.second.getHardwareName());
 		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
-		updateAliasNameMap(item.second);
+		//updateAliasNameMap(item.second);
 
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
@@ -129,18 +140,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
-	//machineAreas = machineAreas_IN;
-	//messenger.printDebugMessage("called Camera Factory setup  ");
-	//std::stringstream ss;
-	//ss << "machineAreas = ";
-	//for (auto&& area : machineAreas)
-	//{
-	//	ss << ENUM_TO_STRING(area);
-	//	ss << ", ";
-	//}
-	//messenger.printDebugMessage(ss.str());
-	//GlobalFunctions::pause_2000();
-
+	messenger.printDebugMessage("setup Camera Factory with vector of camera names");
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
@@ -150,25 +150,34 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	messenger.printDebugMessage("Calling  populateCameraMap");
+	messenger.printDebugMessage("setup_names calling populateCameraMap");	
 	populateCameraMap();
-	messenger.printDebugMessage("populateCameraMap finished");
+	messenger.printDebugMessage("setup_names calling populateCameraMap finished");
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
-	messenger.printDebugMessage("Calling cutLHarwdareMapByNames");
-	cutLHarwdareMapByNames(names);
-	messenger.printDebugMessage("cutLHarwdareMapByNames Finished");
-	setupChannels();
-	EPICSInterface::sendToEPICS();
 	for (auto& item : camera_map)
 	{
 		std::string name(item.second.getHardwareName());
 		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
+	}
+	messenger.printDebugMessage("setup by names calling cutLHarwdareMapByNames");
+	cutLHarwdareMapByNames(names);
+	messenger.printDebugMessage("setup by names calling setupChannels");
+	setupChannels();
+	messenger.printDebugMessage("setup by names calling sendToEPICS");
+	EPICSInterface::sendToEPICS();
+	messenger.printDebugMessage("setup by names doign detailed setup and connections");
+	for (auto& item : camera_map)
+	{
+		std::string name(item.second.getHardwareName());
+		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
+		// update aliases for camera item in map
+		// updateAliasNameMap(item.second);
 
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
@@ -213,6 +222,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
@@ -2412,7 +2422,7 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 {
 	// first add in the magnet full name
 	std::string full_name = camera.getHardwareName();
-	//messenger.printMessage("updateAliasNameMap ", full_name);
+	messenger.printMessage("updateAliasNameMap ", full_name);
 	if (GlobalFunctions::entryExists(alias_name_map, full_name))
 	{
 		// Not necessarily an error, screen_name goes in the alias map too 
@@ -2557,7 +2567,11 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 		//messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
 		for (auto&& name : names)
 		{
-			if (it->first == name )
+			std::string full_name = getFullName(name);
+
+
+
+			if (it->first == full_name)
 			{
 				should_erase = false;
 				break;

@@ -565,7 +565,6 @@ void EPICSCameraInterface::update_ANA_MaskYCenter_RBV(const struct event_handler
 	updateTimeStampLongPair(args, recastCamera->mask_y_center);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_MaskYCenter_RBV = ",
 		recastCamera->mask_y_center.second);
-
 }
 void EPICSCameraInterface::update_ANA_MaskXRad_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);

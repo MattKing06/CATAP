@@ -116,6 +116,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 
 void Camera::getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode)
 {
+	messenger.printDebugMessage("getMasterLatticeData");
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_X_PIX_2_MM");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_X_PIX_2_MM"))
 	{
