@@ -606,6 +606,26 @@ long CameraFactory::getGain(const std::string& name)const
 }
 
 
+size_t CameraFactory::getPixelCountX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getPixelCountX();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getPixelCountY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getPixelCountY();
+	}
+	return GlobalConstants::size_zero;
+}
+
+
 long CameraFactory::getCPUTotal(const std::string& name)const
 {
 	std::string full_name = getFullName(name);

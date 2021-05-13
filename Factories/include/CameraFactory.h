@@ -88,6 +88,17 @@ public:
 	@param[out] long, latest value */
 	long getGain(const std::string& name )const;
 
+	/*! Get the total number of pixels in X 
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getPixelCountX(const std::string& name)const;
+
+	/*! Get the total number of pixels in Y
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getPixelCountY(const std::string& name)const;
+
+
 	/*! get the name alises for this Camera
 	@param[in] std::string, name
 	@param[out] names, vector containing  all the alias names */

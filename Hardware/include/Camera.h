@@ -90,15 +90,23 @@ public:
 	/*! Get the pixels to mm in x(horizontal) direction. (First set from the yaml config file) 
 	@param[out] double, value */
 	double getpix2mmX()const;
-	/*! Get the pixels to mm in y (horizontal) direction. (First set from the yaml config file)
+	/*! Get the pixels to mm in y (vertical) direction. (First set from the yaml config file)
 	@param[out] double, value */
 	double getpix2mmY()const;
 	/*! Set the pixels to mm in x(horizontal) direction. 
 	@param[in] double, new value */
 	double setpix2mmX(double value);
-	/*! Set the pixels to mm in y(horizontal) direction.
+	/*! Set the pixels to mm in y(vertical) direction.
 	@param[in] double, new value */
 	double setpix2mmY(double value);
+
+
+	/*! Get the number of pixels in the y direction .
+	@param[out] size_t, value*/
+	size_t getPixelCountX()const;
+	/*! Get the number of pixels in the y direction .
+	@param[out] size_t, value*/
+	size_t getPixelCountY()const;
 
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).

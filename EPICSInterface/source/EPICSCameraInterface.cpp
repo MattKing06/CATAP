@@ -841,8 +841,8 @@ void EPICSCameraInterface::update_ANA_CPU_CropSubMask_RBV(const struct event_han
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->cpu_crop_sub_mask);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_CropSubMask_RBV = ",
-		recastCamera->cpu_crop_sub_mask.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_CropSubMask_RBV = ",
+	//	recastCamera->cpu_crop_sub_mask.second);
 
 }
 void EPICSCameraInterface::update_ANA_CPU_Npoint_RBV(const struct event_handler_args args)
@@ -850,23 +850,22 @@ void EPICSCameraInterface::update_ANA_CPU_Npoint_RBV(const struct event_handler_
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//std::pair<epicsTimeStamp, long> cpu_npoint;
 	updateTimeStampLongPair(args, recastCamera->cpu_npoint);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Npoint_RBV = ",
-		recastCamera->cpu_npoint.second);
-
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Npoint_RBV = ",
+	//	recastCamera->cpu_npoint.second);
 }
 void EPICSCameraInterface::update_ANA_CPU_Dot_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->cpu_dot);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Dot_RBV = ",
-		recastCamera->cpu_dot.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Dot_RBV = ",
+	//	recastCamera->cpu_dot.second);
 }
 void EPICSCameraInterface::update_ANA_PixW_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->pixel_width);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixW_RBV = ",
-		recastCamera->pixel_width.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixW_RBV = ",
+	//	recastCamera->pixel_width.second);
 }
 void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args args)
 {

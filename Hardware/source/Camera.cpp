@@ -476,6 +476,17 @@ TYPE Camera::getCamType()const
 {
 	return cam_type;
 }
+
+
+size_t Camera::getPixelCountX()const
+{
+	return array_data_num_pix_x;
+}
+size_t Camera::getPixelCountY()const
+{
+	return array_data_num_pix_y;
+}
+
 double Camera::pix2mmX(double value)const
 {
 	return value / pix2mmX_ratio;
