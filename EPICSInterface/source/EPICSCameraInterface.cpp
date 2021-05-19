@@ -763,12 +763,21 @@ void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args 
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinX_RBV = ",
 		recastCamera->roi_min_x.second);
 
+
+	recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
+		recastCamera->roi_max_x);
 }
 void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, long> roi_min_y;
 	updateTimeStampLongPair(args, recastCamera->roi_min_y);
+
+	recastCamera->roi_max_y = recastCamera->roi_min_y.second + recastCamera->roi_size_y.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max Y = ",
+		recastCamera->roi_max_y);
+
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinY_RBV = ",
 		recastCamera->roi_min_y.second);
 
@@ -779,6 +788,15 @@ void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args
 	updateTimeStampLongPair(args, recastCamera->roi_size_x);
 	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ",
 		recastCamera->roi_size_x.second);
+
+	recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
+		recastCamera->roi_max_x);
+
+	recastCamera->roi_total_pixel_count = recastCamera->roi_size_x.second * recastCamera->roi_size_y.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " roi_total_pixel_count = ",
+		recastCamera->roi_total_pixel_count);
+
 }
 void EPICSCameraInterface::update_ROI1_SizeY_RBV(const struct event_handler_args args)
 {
@@ -786,6 +804,15 @@ void EPICSCameraInterface::update_ROI1_SizeY_RBV(const struct event_handler_args
 	updateTimeStampLongPair(args, recastCamera->roi_size_y);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_SizeY_RBV = ",
 		recastCamera->roi_size_y.second);
+
+
+	recastCamera->roi_max_y = recastCamera->roi_min_y.second + recastCamera->roi_size_y.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max Y = ",
+		recastCamera->roi_max_y);
+
+	recastCamera->roi_total_pixel_count = recastCamera->roi_size_x.second * recastCamera->roi_size_y.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " roi_total_pixel_count = ",
+		recastCamera->roi_total_pixel_count);
 }
 void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
 {

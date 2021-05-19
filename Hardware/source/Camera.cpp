@@ -65,6 +65,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	array_data_num_pix_x(GlobalConstants::size_zero),
 	array_data_num_pix_y(GlobalConstants::size_zero),
 	array_data_pixel_count(GlobalConstants::size_zero),
+	roi_total_pixel_count(GlobalConstants::size_zero),
 	binary_num_pix_x(GlobalConstants::size_zero),
 	binary_num_pix_y(GlobalConstants::size_zero),
 	binary_data_pixel_count(GlobalConstants::size_zero),
@@ -860,13 +861,13 @@ bool Camera::setROISizeY(long val)
 }
 bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
 {
-	if (setMaskXCenter(roi_x))
+	if (setMaskAndROIxPos(roi_x))
 	{
-		if (setMaskYCenter(roi_y))
+		if (setMaskAndROIyPos(roi_y))
 		{
-			if (setMaskXRadius(roi_rad_x))
+			if (setMaskAndROIxSize(roi_rad_x))
 			{
-				if (setMaskYRadius(roi_rad_y))
+				if (setMaskAndROIySize(roi_rad_y))
 				{
 					return true;
 				}
@@ -1037,10 +1038,14 @@ long Camera::getROISizeY()const
 std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX(); // MAGIC STRING
-	r["y_pos"] = getROIMinY(); // MAGIC STRING
+	r["x_pos"] = getROIMinX() + getROISizeX();   // MAGIC STRING
+	r["y_pos"] = getROIMinY() + getROISizeY(); // MAGIC STRING
 	r["x_size"] = getROISizeX();// MAGIC STRING
 	r["y_size"] = getROISizeY();// MAGIC STRING
+	r["x_min"] = getROIMinX();// MAGIC STRING
+	r["y_min"] = getROIMinY();// MAGIC STRING
+	r["x_max"] = roi_max_x;// MAGIC STRING
+	r["y_max"] = roi_max_y;// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getROI_Py()const
@@ -1050,10 +1055,18 @@ boost::python::dict Camera::getROI_Py()const
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX(); // MAGIC STRING
-	r["y_pos"] = getROIMinY(); // MAGIC STRING
+	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
+	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
+	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
+	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
+	r["x_pos"] = getROIMinX() + getROISizeX();   // MAGIC STRING
+	r["y_pos"] = getROIMinY() + getROISizeY(); // MAGIC STRING
 	r["x_size"] = getROISizeX();// MAGIC STRING
 	r["y_size"] = getROISizeY();// MAGIC STRING
+	r["x_min"] = getROIMinX();// MAGIC STRING
+	r["y_min"] = getROIMinY();// MAGIC STRING
+	r["x_max"] = roi_max_x;// MAGIC STRING
+	r["y_max"] = roi_max_y;// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getMaskandROI_Py()const
@@ -1880,8 +1893,12 @@ bool Camera::updateROIData()
 	if (!roi_data_has_not_vector_resized)
 	{
 		auto start = std::chrono::high_resolution_clock::now();
+		//bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
+		//	, roi_data.second.size());
+
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
-			, roi_data.second.size());
+			, roi_total_pixel_count);
+
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");

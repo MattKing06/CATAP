@@ -812,6 +812,17 @@ private:
 	size_t binary_num_pix_y;
 	/* total number of pixels in the full binary image data*/
 	size_t binary_data_pixel_count;
+	
+	/*! Number of pixels in the Region Of Interest data, (from ROI1:SizeX * ROI1:SizeY) */
+	size_t roi_total_pixel_count;
+
+
+	size_t roi_max_x;
+	size_t roi_max_y;
+
+
+	/* total number of pixels in the image array data*/
+
 	/*! scaling from array_data num pixels to binary image data num pixels for 'horizontal' axis. */
 	size_t x_pix_scale_factor;
 	/*! scaling from array_data num pixels to binary image data num pixels for 'vertical' axis. */
@@ -908,7 +919,7 @@ private:
 	@param[in] size_t, count of array elemnts to get (for ROI this changes depend on the size of the ROI  
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool getArrayValue(std::vector<long>& data_vec, const pvStruct& pvs, size_t count);
-	/*! Resize vetcor to array_data_pixel_count size, (to save memory only done on request) 
+	/*! Resize vector to array_data_pixel_count size, (to save memory only done on request) 
 	@param[in] std::vector<long>&, vector to resize
 	@param[out] bool, if resize succeeded */
 	bool vector_resize(std::vector<long>& vec);
