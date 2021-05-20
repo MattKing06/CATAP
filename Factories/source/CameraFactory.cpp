@@ -1235,21 +1235,21 @@ boost::python::dict CameraFactory::getMask_Py(const std::string& name)const
 	}
 	return to_py_dict<std::string, long>(CameraFactory::getMask(name));
 }
-bool CameraFactory::setMaskAndROIxPos(const std::string& name, long val)
+bool CameraFactory::setMaskAndROIxMax(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setMaskAndROIxPos(val);
+		return camera_map.at(full_name).setMaskAndROIxMax(val);
 	}
 	return GlobalConstants::double_min;
 }
-bool CameraFactory::setMaskAndROIyPos(const std::string& name, long val)
+bool CameraFactory::setMaskAndROIyMax(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setMaskAndROIyPos(val);
+		return camera_map.at(full_name).setMaskAndROIyMax(val);
 	}
 	return GlobalConstants::double_min;
 }
@@ -1271,21 +1271,21 @@ bool CameraFactory::setMaskAndROIySize(const std::string& name, long val)
 	}
 	return GlobalConstants::double_min;
 }
-long CameraFactory::getMaskAndROIxPos(const std::string& name )const
+long CameraFactory::getMaskAndROIxMax(const std::string& name )const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getMaskAndROIxPos();
+		return camera_map.at(full_name).getMaskAndROIxMax();
 	}
 	return GlobalConstants::long_min;
 }
-long CameraFactory::getMaskAndROIyPos(const std::string& name )const
+long CameraFactory::getMaskAndROIyMax(const std::string& name )const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getMaskAndROIyPos();
+		return camera_map.at(full_name).getMaskAndROIyMax();
 	}
 	return GlobalConstants::long_min;
 }

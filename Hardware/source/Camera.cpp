@@ -55,7 +55,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	cam_type(TYPE::UNKNOWN_TYPE),
-	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "y_size" }),  //MAGIC STRING TOD better place for these ??? 
+	mask_and_roi_keywords({ "x_max", "y_max", "x_rad", "y_rad" }),  //MAGIC STRING TOD better place for these ??? 
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
 	//roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
 	image_data_has_not_malloced(true),
@@ -859,15 +859,15 @@ bool Camera::setROISizeY(long val)
 {
 	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_SizeY), (dbr_long_t)val);
 }
-bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
+bool Camera::setROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
-	if (setMaskAndROIxPos(roi_x))
+	if (setMaskAndROIxMax(x_max))
 	{
-		if (setMaskAndROIyPos(roi_y))
+		if (setMaskAndROIyMax(y_max))
 		{
-			if (setMaskAndROIxSize(roi_rad_x))
+			if (setMaskAndROIxSize(x_rad))
 			{
-				if (setMaskAndROIySize(roi_rad_y))
+				if (setMaskAndROIySize(y_rad))
 				{
 					return true;
 				}
@@ -880,9 +880,9 @@ bool Camera::setROI(std::map<std::string, long> settings)
 {
 	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setROI(settings.at("x_pos"), settings.at("y_pos"), settings.at("x_size"), settings.at("y_size"));
+		return setROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
 	}
-	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_pos, y_pos, x_size, y_size");
+	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_max, y_max, x_rad, y_rad");
 	return false;
 }
 bool Camera::setROI_Py(boost::python::dict settings)
@@ -890,11 +890,11 @@ bool Camera::setROI_Py(boost::python::dict settings)
 	return setROI(to_std_map<std::string, long>(settings));
 
 }
-long Camera::getMaskAndROIxPos()const
+long Camera::getMaskAndROIxMax()const
 {
 	return roi_and_mask_centre_x.second; // NEEDS CHECKING
 }
-long Camera::getMaskAndROIyPos()const
+long Camera::getMaskAndROIyMax()const
 {
 	return roi_and_mask_centre_y.second; // NEEDS CHECKING
 }
@@ -906,11 +906,11 @@ long Camera::getMaskAndROIySize()const
 {
 	return roi_and_mask_radius_y.second; // NEEDS CHECKING
 }
-bool Camera::setMaskAndROIxPos(long val)
+bool Camera::setMaskAndROIxMax(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetX), (double)val);
 }
-bool Camera::setMaskAndROIyPos(long val)
+bool Camera::setMaskAndROIyMax(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetY), (double)val);
 }
@@ -924,9 +924,9 @@ bool Camera::setMaskAndROIySize(long val)
 }
 bool Camera::setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size)
 {
-	if(setMaskAndROIxPos(x_pos))
+	if(setMaskAndROIxMax(x_pos))
 	{
-		if (setMaskAndROIyPos(y_pos))
+		if (setMaskAndROIyMax(y_pos))
 		{
 			if (setMaskAndROIxSize(x_size))
 			{
@@ -1038,14 +1038,12 @@ long Camera::getROISizeY()const
 std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX() + getROISizeX();   // MAGIC STRING
-	r["y_pos"] = getROIMinY() + getROISizeY(); // MAGIC STRING
+	r["x_max"] = roi_max_x;   // MAGIC STRING
+	r["y_max"] = roi_max_y; // MAGIC STRING
 	r["x_size"] = getROISizeX();// MAGIC STRING
 	r["y_size"] = getROISizeY();// MAGIC STRING
 	r["x_min"] = getROIMinX();// MAGIC STRING
 	r["y_min"] = getROIMinY();// MAGIC STRING
-	r["x_max"] = roi_max_x;// MAGIC STRING
-	r["y_max"] = roi_max_y;// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getROI_Py()const
@@ -1059,14 +1057,12 @@ std::map<std::string, long> Camera::getMaskandROI()const
 	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
 	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
 	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
-	r["x_pos"] = getROIMinX() + getROISizeX();   // MAGIC STRING
-	r["y_pos"] = getROIMinY() + getROISizeY(); // MAGIC STRING
+	r["x_max"] = getROIMinX() + getROISizeX();   // MAGIC STRING
+	r["y_max"] = getROIMinY() + getROISizeY(); // MAGIC STRING
 	r["x_size"] = getROISizeX();// MAGIC STRING
 	r["y_size"] = getROISizeY();// MAGIC STRING
 	r["x_min"] = getROIMinX();// MAGIC STRING
 	r["y_min"] = getROIMinY();// MAGIC STRING
-	r["x_max"] = roi_max_x;// MAGIC STRING
-	r["y_max"] = roi_max_y;// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getMaskandROI_Py()const
@@ -1896,6 +1892,10 @@ bool Camera::updateROIData()
 		//bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 		//	, roi_data.second.size());
 
+		roi_total_pixel_count = roi_size_x.second * roi_size_y.second;
+
+		messenger.printDebugMessage("roi_total_pixel_count = ", roi_total_pixel_count);
+
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_total_pixel_count);
 
@@ -1982,7 +1982,7 @@ std::vector<long> Camera::getROIData()const
 }
 boost::python::list Camera::getROIData_Py()const
 {
-	return to_py_list<long>(getROIData());
+	return to_py_list<long>(GlobalFunctions::slice(getROIData(),GlobalConstants::zero_int, roi_total_pixel_count-1));
 }
 std::vector<long>& Camera::getImageDataConstRef()
 {

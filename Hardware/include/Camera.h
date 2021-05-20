@@ -223,30 +223,30 @@ public:
 	@param[in] long, new val
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROIMinX(long val);
-	/*! Set the Region Of Interest minimum y pixel.
+	/*! Set the Region Of Interest minimum y pixel, !!WARNING!! This function does not move the analysis MASK and should only be used by experts. 
 	@param[in] long, new val
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROIMinY(long val);
-	/*! Set the Region Of Interest size in x pixels.
+	/*! Set the Region Of Interest size in x pixels, !!WARNING!! This function does not move the analysis MASK and should only be used by experts 
 	@param[in] long, new val
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROISizeX(long val);
-	/*! Set the Region Of Interest size in y pixels.
+	/*! Set the Region Of Interest size in y pixels, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] long, new val 
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROISizeY(long val);
-	/*! Set the 4 Region Of Interest size in y pixels.
+	/*! Set the 4 Region Of Interest size in y pixels, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] long, new x_pos value
 	@param[in] long, new y_pos value 
 	@param[in] long, new x_size value
 	@param[in] long, new y_size value
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI(long x, long  y, long x_size, long y_size);
-	/*! Set the Region Of Interest parameters.
+	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] map<std::string, long>, with new values (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI(std::map<std::string, long> settings);
-	/*! Set the Region Of Interest parameters. 
+	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] long, dict with new values, (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI_Py(boost::python::dict settings);
@@ -256,10 +256,10 @@ public:
 	/*! Get the Region Of Interest minimum y (pixels).
 	@param[out] long, value*/
 	long getROIMinY()const;
-	/*! Get the Region Of Interest minimum x (pixels).
+	/*! Get the Region Of Interest x size (pixels).
 	@param[out] long, value*/
 	long getROISizeX()const;
-	/*! Get the Region Of Interest minimum y (pixels).
+	/*! Get the Region Of Interest y size (pixels).
 	@param[out] long, value*/
 	long getROISizeY()const;
 	/*! Get the Region Of Interest values.
@@ -414,11 +414,11 @@ public:
 	/*! Set the mask and ROI x position,  
 	@param[in] long, value (lower left hand pixel of ROI) 
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIxPos(long val);
+	bool setMaskAndROIxMax(long val);
 	/*! Set the mask and ROI y position,
 	@param[in] long, value (left-most pixel of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIyPos(long val);
+	bool setMaskAndROIyMax(long val);
 	/*! Set the mask and ROI x size,
 	@param[in] long, value (width of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -429,10 +429,10 @@ public:
 	bool setMaskAndROIySize(long val);
 	/*! Set the mask and ROI x position,
 	@param[out] long, value	*/
-	long getMaskAndROIxPos()const;
+	long getMaskAndROIxMax()const;
 	/*! Set the mask and ROI y position,
 	@param[out] long, value	*/
-	long getMaskAndROIyPos()const;
+	long getMaskAndROIyMax()const;
 	/*! Set the mask and ROI x size,
 	@param[out] long, value	*/
 	long getMaskAndROIxSize()const;

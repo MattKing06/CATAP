@@ -555,12 +555,12 @@ public:
 	@param[in] std::string, name
 	@param[in] long, value (lower left hand pixel of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIxPos(const std::string& name, long val);
+	bool setMaskAndROIxMax(const std::string& name, long val);
 	/*! Set the mask and ROI y position,
 	@param[in] std::string, name
 	@param[in] long, value (left-most pixel of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIyPos(const std::string& name, long val);
+	bool setMaskAndROIyMax(const std::string& name, long val);
 	/*! Set the mask and ROI x size,
 	@param[in] std::string, name
 	@param[in] long, value (width of ROI)
@@ -574,11 +574,11 @@ public:
 	/*! Set the mask and ROI x position,
 	@param[in] std::string, name
 	@param[out] long, value	*/
-	long getMaskAndROIxPos(const std::string& name)const;
+	long getMaskAndROIxMax(const std::string& name)const;
 	/*! Set the mask and ROI y position,
 	@param[in] std::string, name
 	@param[out] long, value	*/
-	long getMaskAndROIyPos(const std::string& name)const;
+	long getMaskAndROIyMax(const std::string& name)const;
 	/*! Set the mask and ROI x size,
 	@param[in] std::string, name
 	@param[out] long, value	*/

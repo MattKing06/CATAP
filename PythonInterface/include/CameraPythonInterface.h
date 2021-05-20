@@ -84,8 +84,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROISizeX", &Camera::getROISizeX)
 			.def("getROISizeY", &Camera::getROISizeY)
 			.def("getROI", &Camera::getROI_Py)
-			.def("getMaskAndROIxPos", &Camera::getMaskAndROIxPos)
-			.def("getMaskAndROIyPos", &Camera::getMaskAndROIyPos)
+			.def("getMaskAndROIxMax", &Camera::getMaskAndROIxMax)
+			.def("getMaskAndROIyMax", &Camera::getMaskAndROIyMax)
 			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
 			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
@@ -97,8 +97,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getImageData", &Camera::getImageData_Py)
 			.def("getROIData", &Camera::getROIData_Py)
-			.def("setMaskAndROIxPos", &Camera::setMaskAndROIxPos) 			// use these for setting mask AND ROI 
-			.def("setMaskAndROIyPos", &Camera::setMaskAndROIyPos)
+			.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
+			.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
 			.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
 			.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
 			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
@@ -285,8 +285,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROISizeX", &CameraFactory::getROISizeX)
 			.def("getROISizeY", &CameraFactory::getROISizeY)
 			.def("getROI", &CameraFactory::getROI_Py)
-			.def("getMaskAndROIxPos", &CameraFactory::getMaskAndROIxPos)
-			.def("getMaskAndROIyPos", &CameraFactory::getMaskAndROIyPos)
+			.def("getMaskAndROIxMax", &CameraFactory::getMaskAndROIxMax)
+			.def("getMaskAndROIyMax", &CameraFactory::getMaskAndROIyMax)
 			.def("getMaskAndROIxSize", &CameraFactory::getMaskAndROIxSize)
 			.def("getMaskAndROIySize", &CameraFactory::getMaskAndROIySize)
 			.def("getMaskandROI", &CameraFactory::getMaskandROI_Py)
@@ -298,8 +298,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROIDataConstRef", &CameraFactory::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getImageData", &CameraFactory::getImageData_Py)
 			.def("getROIData", &CameraFactory::getROIData_Py)
-			.def("setMaskAndROIxPos", &CameraFactory::setMaskAndROIxPos) 			// use these for setting mask AND ROI 
-			.def("setMaskAndROIyPos", &CameraFactory::setMaskAndROIyPos)
+			.def("setMaskAndROIxMax", &CameraFactory::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
+			.def("setMaskAndROIyMax", &CameraFactory::setMaskAndROIyMax)
 			.def("setMaskAndROIxSize", &CameraFactory::setMaskAndROIxSize)
 			.def("setMaskAndROIySize", &CameraFactory::setMaskAndROIySize)
 			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)

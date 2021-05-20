@@ -81,6 +81,16 @@ namespace GlobalFunctions {
 		}
 	}
 
+
+	template<typename T>
+	std::vector<T> slice(std::vector<T> const& v, int m, int n)
+	{
+		auto first = v.cbegin() + m;
+		auto last = v.cbegin() + n + 1;
+		std::vector<T> vec(first, last);
+		return vec;
+	}
+
 	template<typename T = int>
 	bool areSame(const std::vector<T> a, const std::vector<T> b, const T epsilon = 0) 
 	{
