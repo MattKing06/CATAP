@@ -103,10 +103,10 @@ public:
 
 	/*! Get the number of pixels in the y direction .
 	@param[out] size_t, value*/
-	size_t getPixelCountX()const;
+	size_t getArrayDataPixelCountX()const;
 	/*! Get the number of pixels in the y direction .
 	@param[out] size_t, value*/
-	size_t getPixelCountY()const;
+	size_t getArrayDataPixelCountY()const;
 
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).

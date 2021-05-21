@@ -479,11 +479,11 @@ TYPE Camera::getCamType()const
 }
 
 
-size_t Camera::getPixelCountX()const
+size_t Camera::getArrayDataPixelCountX()const
 {
 	return array_data_num_pix_x;
 }
-size_t Camera::getPixelCountY()const
+size_t Camera::getArrayDataPixelCountY()const
 {
 	return array_data_num_pix_y;
 }
@@ -2017,6 +2017,8 @@ long Camera::getGain()const
 {
 	return gain.second;
 }
+
+
 
 
 

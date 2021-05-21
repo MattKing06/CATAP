@@ -35,8 +35,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
 			.def("getCamType", &Camera::getCamType)
-			.def("getPixelCountX", &Camera::getPixelCountX)
-			.def("getPixelCountY", &Camera::getPixelCountY)
+			.def("getArrayDataPixelCountX", &Camera::getArrayDataPixelCountX)
+			.def("getArrayDataPixelCountY", &Camera::getArrayDataPixelCountY)
 			.def("getPix2mm", &Camera::getPix2mm        )
 			.def("pix2mmX", &Camera::pix2mmX        )
 			.def("pix2mmY", &Camera::pix2mmY		)
@@ -236,8 +236,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>() )
 
 			.def("getCamType", &CameraFactory::getCamType)
-			.def("getPixelCountX", &CameraFactory::getPixelCountX)
-			.def("getPixelCountY", &CameraFactory::getPixelCountY)
+			.def("getArrayDataPixelCountX", &CameraFactory::getArrayDataPixelCountX)
+			.def("getArrayDataPixelCountY", &CameraFactory::getArrayDataPixelCountY)
 			.def("getPix2mm", &CameraFactory::getPix2mm)
 			.def("pix2mmX", &CameraFactory::pix2mmX)
 			.def("pix2mmY", &CameraFactory::pix2mmY)

@@ -606,21 +606,21 @@ long CameraFactory::getGain(const std::string& name)const
 }
 
 
-size_t CameraFactory::getPixelCountX(const std::string& name)const
+size_t CameraFactory::getArrayDataPixelCountX(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getPixelCountX();
+		return camera_map.at(full_name).getArrayDataPixelCountX();
 	}
 	return GlobalConstants::size_zero;
 }
-size_t CameraFactory::getPixelCountY(const std::string& name)const
+size_t CameraFactory::getArrayDataPixelCountY(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getPixelCountY();
+		return camera_map.at(full_name).getArrayDataPixelCountY();
 	}
 	return GlobalConstants::size_zero;
 }
