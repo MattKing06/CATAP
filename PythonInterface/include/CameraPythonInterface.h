@@ -37,6 +37,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getCamType", &Camera::getCamType)
 			.def("getArrayDataPixelCountX", &Camera::getArrayDataPixelCountX)
 			.def("getArrayDataPixelCountY", &Camera::getArrayDataPixelCountY)
+
+			.def("getBinaryDataPixelCountX", &Camera::getBinaryDataPixelCountX)
+			.def("getBinaryDataPixelCountY", &Camera::getBinaryDataPixelCountY)
 			.def("getPix2mm", &Camera::getPix2mm        )
 			.def("pix2mmX", &Camera::pix2mmX        )
 			.def("pix2mmY", &Camera::pix2mmY		)
@@ -238,6 +241,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getCamType", &CameraFactory::getCamType)
 			.def("getArrayDataPixelCountX", &CameraFactory::getArrayDataPixelCountX)
 			.def("getArrayDataPixelCountY", &CameraFactory::getArrayDataPixelCountY)
+			.def("getBinaryDataPixelCountX", &CameraFactory::getBinaryDataPixelCountX)
+			.def("getBinaryDataPixelCountY", &CameraFactory::getBinaryDataPixelCountY)
 			.def("getPix2mm", &CameraFactory::getPix2mm)
 			.def("pix2mmX", &CameraFactory::pix2mmX)
 			.def("pix2mmY", &CameraFactory::pix2mmY)

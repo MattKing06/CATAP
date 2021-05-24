@@ -624,7 +624,24 @@ size_t CameraFactory::getArrayDataPixelCountY(const std::string& name)const
 	}
 	return GlobalConstants::size_zero;
 }
-
+size_t CameraFactory::getBinaryDataPixelCountX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBinaryDataPixelCountX();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getBinaryDataPixelCountY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBinaryDataPixelCountY();
+	}
+	return GlobalConstants::size_zero;
+}
 
 long CameraFactory::getCPUTotal(const std::string& name)const
 {

@@ -101,12 +101,19 @@ public:
 	double setpix2mmY(double value);
 
 
-	/*! Get the number of pixels in the y direction .
+	/*! Get the number of pixels in the x direction for the "standard" image array sent over the network
 	@param[out] size_t, value*/
 	size_t getArrayDataPixelCountX()const;
-	/*! Get the number of pixels in the y direction .
+	/*! Get the number of pixels in the y direction for the "standard" image array sent over the network.
 	@param[out] size_t, value*/
 	size_t getArrayDataPixelCountY()const;
+
+	/*! Get the number of pixels in the x direction for the full image array saved to disk.
+	@param[out] size_t, value*/
+	size_t getBinaryDataPixelCountX()const;
+	/*!  Get the number of pixels in the x direction for the full image array saved to disk.
+	@param[out] size_t, value*/
+	size_t getBinaryDataPixelCountY()const;
 
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).

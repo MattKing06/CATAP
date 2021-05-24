@@ -87,18 +87,22 @@ public:
 	@param[in] std::string, name
 	@param[out] long, latest value */
 	long getGain(const std::string& name )const;
-
-	/*! Get the total number of pixels in X 
+	/*! Get the total number of pixels in X for the standard image sent over the network 
 	@param[in] std::string, name
 	@param[out] size_t, value */
 	size_t getArrayDataPixelCountX(const std::string& name)const;
-
-	/*! Get the total number of pixels in Y
+	/*! Get the total number of pixels in Y for the standard image sent over the network 
 	@param[in] std::string, name
 	@param[out] size_t, value */
 	size_t getArrayDataPixelCountY(const std::string& name)const;
-
-
+	/*! Get the total number of pixels in X for the full binary image saved to disc
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getBinaryDataPixelCountX(const std::string& name)const;
+	/*! Get the total number of pixels in Y for the full binary image saved to disc
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getBinaryDataPixelCountY(const std::string& name)const;
 	/*! get the name alises for this Camera
 	@param[in] std::string, name
 	@param[out] names, vector containing  all the alias names */

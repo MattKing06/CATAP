@@ -487,6 +487,14 @@ size_t Camera::getArrayDataPixelCountY()const
 {
 	return array_data_num_pix_y;
 }
+size_t Camera::getBinaryDataPixelCountX()const
+{
+	return binary_num_pix_x;
+}
+size_t Camera::getBinaryDataPixelCountY()const
+{
+	return binary_num_pix_y;
+}
 
 double Camera::pix2mmX(double value)const
 {
