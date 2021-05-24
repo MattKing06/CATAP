@@ -840,10 +840,18 @@ bool Camera::setMask(std::map<std::string, long> settings)
 	{
 		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
 	}
-	else
+	std::cout << "!!ERROR!! wrong setMask keywords: ";
+	for (auto&& item : settings)
 	{
-		messenger.printMessage("setMask passed map with incorrect keywords");
+		std::cout << item.first << ", ";
 	}
+	std::cout << std::endl;
+	std::cout << "Expecting: ";
+	for (auto&& item : mask_keywords)
+	{
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
 	return false;
 }
 bool Camera::setMask_Py(boost::python::dict settings)
@@ -930,15 +938,15 @@ bool Camera::setMaskAndROIySize(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (double)val);
 }
-bool Camera::setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size)
+bool Camera::setMaskandROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
-	if(setMaskAndROIxMax(x_pos))
+	if(setMaskAndROIxMax(x_max))
 	{
-		if (setMaskAndROIyMax(y_pos))
+		if (setMaskAndROIyMax(y_max))
 		{
-			if (setMaskAndROIxSize(x_size))
+			if (setMaskAndROIxSize(x_rad))
 			{
-				if (setMaskAndROIySize(y_size))
+				if (setMaskAndROIySize(y_rad))
 				{
 					return true;
 				}
@@ -951,8 +959,20 @@ bool Camera::setMaskandROI(std::map<std::string, long> settings)
 {
 	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setMaskandROI(settings.at("x_pos"), settings.at("y_pos"), settings.at("x_size"), settings.at("y_size"));
+		return setMaskandROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
 	}
+	std::cout << "!!ERROR!! wrong setMaskandROI keywords: ";  
+	for (auto&& item : settings)
+	{
+		std::cout << item.first << ", ";
+	}
+	std::cout << std::endl;
+	std::cout << "Expecting: ";
+	for (auto&& item : mask_and_roi_keywords)
+	{
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
 	return false;
 }
 bool Camera::setMaskandROI_Py(boost::python::dict settings)
@@ -1056,7 +1076,7 @@ std::map<std::string, long> Camera::getROI()const
 }
 boost::python::dict Camera::getROI_Py()const
 {
-	return  to_py_dict<std::string, long>(getMaskandROI());
+	return  to_py_dict<std::string, long>(getROI());
 }
 std::map<std::string, long> Camera::getMaskandROI()const
 {
