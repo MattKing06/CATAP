@@ -275,8 +275,6 @@ std::map<primary_key, std::pair<secondary_key, value>> to_std_map_pair(const boo
 				std::map<secondary_key, value> entry = to_std_map<secondary_key, value>(items);
 				for (auto& item : entry)
 				{
-					std::cout << "KEY: " << item.first << std::endl;
-					std::cout << "VALUES: " << item.second << std::endl;
 					std::pair<secondary_key, value> pair(item.first, item.second);
 					r[key] = pair;
 				}
