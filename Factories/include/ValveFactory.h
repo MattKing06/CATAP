@@ -148,7 +148,7 @@ public:
 	bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
 	bool loadSnapshot(const std::string& location);
 	bool loadSnapshot(const YAML::Node& settings);
-
+	bool loadSnapshot_Py(const boost::python::dict& settings);
 	/*! gets all valve names as python list*/
 	boost::python::list getAllValveNames_Py() const;
 	/*! gets valve states by name from the python list parameter, and returns a dict with key,value pairs of valve-name and state*/

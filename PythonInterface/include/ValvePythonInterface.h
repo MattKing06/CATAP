@@ -56,7 +56,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 			.def("messagesOff", &ValveFactory::messagesOff, (boost::python::arg("self")))
 			.def("getSnapshot", &ValveFactory::getSnapshot_Py, (boost::python::args("self")))
 			.def("saveSnapshot", &ValveFactory::exportSnapshotToYAML, (boost::python::args("self"), boost::python::args("location"), boost::python::args("filename")))
-			//.def("loadSnapshot", &ValveFactory::loadSnapshot)
+			.def("loadSnapshot", &ValveFactory::loadSnapshot_Py)
 			;
 	}
 

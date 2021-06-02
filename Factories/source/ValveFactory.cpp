@@ -438,7 +438,30 @@ bool ValveFactory::loadSnapshot(const YAML::Node& settings)
 	return true;
 }
 
-
+bool ValveFactory::loadSnapshot_Py(const boost::python::dict& settings)
+{
+	messenger.printMessage("IN LOAD_SNAPSHOT PY DICT");
+	std::map<std::string, std::pair<std::string, STATE>> settingsMap = to_std_map_pair<std::string, std::string, STATE>(settings);
+	messenger.printMessage("converted dict to map of pairs");
+	messenger.printMessage("SIZE: ", settingsMap.size());
+	for (auto&& valve : valveMap)
+	{
+		std::pair<std::string, STATE> snapshotEntry = settingsMap.at(valve.first);
+		if (snapshotEntry.first == ValveRecords::STA)
+		{
+			STATE setState = snapshotEntry.second;
+			if (setState != STATE::ERR)
+			{
+				valve.second.setValveState(setState);
+			}
+			else
+			{
+				messenger.printMessage("Could not apply snapshot for: ", valve.first, ":", ValveRecords::STA);
+			}
+		}
+	}
+	return true;
+}
 
 boost::python::dict ValveFactory::getSnapshot_Py()
 {
