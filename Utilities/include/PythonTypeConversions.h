@@ -270,6 +270,7 @@ boost::python::dict to_py_dict(const std::pair<std::string, std::vector<mapvalue
 }
 
 template<typename mapkey, typename mapvalue>
+inline
 std::map<mapkey, mapvalue> to_std_map(const boost::python::dict& map_in)
 {
 	std::map<mapkey, mapvalue> r;
