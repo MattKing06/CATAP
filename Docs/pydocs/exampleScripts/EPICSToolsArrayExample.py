@@ -20,6 +20,8 @@ print(epics_info)
 # To access the monitor object, it can be retrieved using EPICSTools:
 time_vector_monitor = ET.getMonitor(array_pv)
 
+print(array_pv, " connected? : ", time_vector_monitor.isConnected())
+
 # Example for Putting to array, getting array value from the monitor,
 # and getting the buffer of arrays from the monitor object:
 for i in range(0,5):

@@ -86,6 +86,18 @@ std::string Listener::getEPICSPVName(const std::string& pv)
 	}
 }
 
+bool Listener::isConnected()
+{
+	if (ca_state(pv.CHID) == cs_conn)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void Listener::stopListening()
 {
 	if (pv.monitor)

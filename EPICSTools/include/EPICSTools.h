@@ -36,7 +36,7 @@ public:
 	/*! Constructs a Listener object using the pv and then passes this to createSubscription in EPICSInterface
 		to begin monitoring. The Listener object is then stored in the listenerMap with pv as the key.
 		@param[in] pv : The PV to monitor*/
-	void monitor(const std::string& pv);
+	bool monitor(const std::string& pv);
 	/*! Constructs multiple Listener objects using the pvList and then passes these to createSubscription in EPICSInterface
 		to begin monitoring. The Listener objects are then stored in the listenerMap with their pv as the key.
 		@param[in] pvList : vector of PVs to monitor*/
