@@ -250,7 +250,7 @@ std::map<mapkey, mapvalue> to_std_map(const boost::python::dict& map_in)
 
 template<class primary_key, class secondary_key, class value>
 inline
-std::map<primary_key, std::pair<secondary_key, value>> to_std_map_pair(const boost::python::dict& dict)
+std::map<primary_key, std::pair<secondary_key, value>> to_nested_std_map(const boost::python::dict& dict)
 {    // TODO this is well dodgy
 	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
 	std::map<primary_key, std::pair<secondary_key, value>> r;

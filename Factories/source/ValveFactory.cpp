@@ -441,7 +441,7 @@ bool ValveFactory::loadSnapshot(const YAML::Node& settings)
 bool ValveFactory::loadSnapshot_Py(const boost::python::dict& settings)
 {
 	messenger.printMessage("IN LOAD_SNAPSHOT PY DICT");
-	std::map<std::string, std::pair<std::string, STATE>> settingsMap = to_std_map_pair<std::string, std::string, STATE>(settings);
+	std::map<std::string, std::pair<std::string, STATE>> settingsMap = to_nested_std_map<std::string, std::string, STATE>(settings);
 	messenger.printMessage("converted dict to map of pairs");
 	messenger.printMessage("SIZE: ", settingsMap.size());
 	for (auto&& valve : valveMap)
