@@ -551,8 +551,34 @@ void EPICSCameraInterface::update_ANA_CovXYPix_RBV(const struct event_handler_ar
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CovXYPix_RBV = ", 
 	//	recastCamera->sigma_xy_pix.second);
 }
-void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handler_args args) {
+void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handler_args args) 
+{
 	//messenger.printDebugMessage("update_ANA_PixelResults_RBV ");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
+	/*	
+		Pointer to the data + timestamp 
+	*/
+	const dbr_time_double* p_data = (const struct dbr_time_double*)args.dbr;
+	/*
+		Get timestamp and add to data_buffer
+	*/
+	recastCamera -> analysis_data.first = p_data->stamp;
+	/*
+		Get the data and add to data_buffer, this assumes the data is 'new'
+		there is a way to set up the LLRF such that it sends the same data multiple times
+	*/
+	const dbr_double_t* pValue;
+	pValue = &p_data->value;
+
+	std::copy(pValue, pValue + recastCamera->analysis_data.second.size(), 
+		recastCamera->analysis_data.second.begin());
+
+
+
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixelResults_RBV [0] = ",
+		recastCamera->analysis_data.second[0]);
+
 }
 void EPICSCameraInterface::update_ANA_MaskXCenter_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -609,8 +635,8 @@ void EPICSCameraInterface::update_CAM_ArrayRate_RBV(const struct event_handler_a
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->array_rate);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_ArrayRate_RBV = ",
-		recastCamera->array_rate.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_ArrayRate_RBV = ",
+	//	recastCamera->array_rate.second);
 }
 void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler_args args)
 {
@@ -787,10 +813,9 @@ void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args
 	updateTimeStampLongPair(args, recastCamera->roi_size_x);
 	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ",
 		recastCamera->roi_size_x.second);
-
-	//recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
-	//messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
-	//	recastCamera->roi_max_x);
+	recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
+		recastCamera->roi_max_x);
 
 
 

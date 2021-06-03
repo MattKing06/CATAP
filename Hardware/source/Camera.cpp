@@ -10,6 +10,7 @@
 std::mutex mtx;           // mutex for critical section
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
+#include <boost/range/combine.hpp>
 #include "GlobalConstants.h"
 
 
@@ -55,7 +56,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	cam_type(TYPE::UNKNOWN_TYPE),
-	mask_and_roi_keywords({ "x_max", "y_max", "x_rad", "y_rad" }),  //MAGIC STRING TOD better place for these ??? 
+	mask_and_roi_keywords({ "roi_x", "roi_y", "x_rad", "y_rad" }),  //MAGIC STRING TOD better place for these ??? 
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
 	//roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
 	image_data_has_not_malloced(true),
@@ -420,6 +421,61 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find USE_MASK_RAD_LIMITS");
 	}
+	//-------------------------------------------------------------------------------------------------
+	// This is really overworked, but does mean you can change names form the config file , if you want to, 
+	// TODO in the future I would like more of the analysis results to go into this analysis_data array, also the analyis settings, etc  
+	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "RESULTS_COUNT"))
+	{
+		analysis_data.second.resize( (size_t)std::stof(paramMap.find("RESULTS_COUNT")->second));
+		analysis_data_names.resize( (size_t)std::stof(paramMap.find("RESULTS_COUNT")->second));
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
+	}
+
+	if (GlobalFunctions::entryExists(paramMap, "X_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("X_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "X_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("X_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "Y_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("Y_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "Y_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("Y_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("X_SIGMA_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("X_SIGMA_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("Y_SIGMA_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("Y_SIGMA_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "COV_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("COV_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "COV_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
+		}
+	}
+
 }
 
 
@@ -478,6 +534,24 @@ TYPE Camera::getCamType()const
 	return cam_type;
 }
 
+
+
+std::map<std::string, double> Camera::getAnalysisResultsPixels()const
+{
+	std::map<std::string, double> r;
+	std::string n;
+	double v;
+	for (auto it : boost::combine(analysis_data_names, analysis_data.second)) {
+		;
+		boost::tie(n, v) = it;
+		r[n] = v;
+	}
+	return r;
+}
+boost::python::dict Camera::getAnalysisResultsPixels_Py()const
+{
+	return  to_py_dict<std::string, double>(getAnalysisResultsPixels());
+}
 
 size_t Camera::getArrayDataPixelCountX()const
 {
@@ -959,7 +1033,7 @@ bool Camera::setMaskandROI(std::map<std::string, long> settings)
 {
 	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setMaskandROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
+		return setMaskandROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("x_rad"), settings.at("y_rad"));
 	}
 	std::cout << "!!ERROR!! wrong setMaskandROI keywords: ";  
 	for (auto&& item : settings)
@@ -2047,6 +2121,58 @@ long Camera::getGain()const
 }
 
 
+std::map<std::string, double> Camera::getAnalayisData() const
+{
+	std::map < std::string, double> r;
+	r["x_pix"] = getXPix();
+	r["y_pix"] = getYPix();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["x_mm"] = getX();
+	r["y_mm"] = getY();
+	r["sigma_x_mm"] = getSigX();
+	r["sigma_y_mm"] = getSigY();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["pix2mmX"] = getpix2mmX();
+	r["pix2mmY"] = getpix2mmY();
+	r["floor_state"] = getUseFloorState();
+	r["floor_level"] = getFloorLevel();
+	r["npoint_state"] = getNPointState();
+	r["step_size"] = getStepSize();
+	r["using_background_state"] = getUsingBackgroundState();
+	r["avg_intensity"] = getAvgIntensity();
+	r["avg_intensity"] = getAvgIntensity();
 
+	return r;
+}
+boost::python::dict Camera::getAnalayisData_Py() const
+{
+	boost::python::dict r;
+	r["x_pix"] = getXPix();
+	r["y_pix"] = getYPix();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["x_mm"] = getX();
+	r["y_mm"] = getY();
+	r["sigma_x_mm"] = getSigX();
+	r["sigma_y_mm"] = getSigY();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["pix2mmX"] = getpix2mmX();
+	r["pix2mmY"] = getpix2mmY();
+	r["floor_state"] = getUseFloorState();
+	r["floor_level"] = getFloorLevel();
+	r["npoint_state"] = getNPointState();
+	r["npoint_state"] = getNPointState();
+	r["npoint_step_size"] = getStepSize();
+	r["using_background_state"] = getUsingBackgroundState();
+	r["sum_intensity"] = getSumIntensity();
+	r["avg_intensity"] = getAvgIntensity();
 
-
+	return r;
+}

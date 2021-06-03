@@ -179,19 +179,19 @@ public:
 	@param[out] double, value */
 	long getBufferFileNumber()const;
 
-	// TODO sort this out and neaten it
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIminX()const;
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIminY()const;
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIsizeX()const;
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIsizeY()const;
+	/*! Get relevant analysis data in a map 
+	@param[out] std::map<std::string, double> */
+	std::map<std::string, double> getAnalayisData() const;
+	boost::python::dict getAnalayisData_Py() const;
+
+
+	/*! get Anlaysis results in pixels 
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	std::map<std::string, double> getAnalysisResultsPixels()const;
+	/*! get Anlaysis results in pixels, Python version
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	boost::python::dict getAnalysisResultsPixels_Py()const;
+
 
 	/*! Get the total CPU usage of the camera.
 	@param[out] long, value */
@@ -330,7 +330,7 @@ public:
 	/*! check if analysis is Not using a background data
 	@param[out] bool, true if NOT  using background image during analysis*/
 	bool isNotUsingBackground()const;
-	/*! get the latest pixel sum for the image
+	/*! get the Npoint scaling stepsize 
 	@param[out] long, value */
 	long getStepSize()const;
 	/*! set the Npoint scaling stepsize 
@@ -764,14 +764,22 @@ protected:
 	std::pair<epicsTimeStamp, double> pixel_to_mm;
 	/*! Number of images to capture. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> num_capture;
-	/* pointer to dbr_time_stuct, used to get timestmp for images*/
+	/*! pointer to dbr_time_stuct, used to get timestmp for images*/
 	struct dbr_time_long* dbr_image_data;
-	/* image_data vector to hold image data */
+	/*! image_data vector to hold image data */
 	std::pair<epicsTimeStamp, std::vector<long>> image_data;
-	/* pointer to dbr_time_stuct, used to get timestmp for roi*/
+	/*! pointer to dbr_time_stuct, used to get timestmp for roi*/
 	struct dbr_time_long* dbr_roi_data;
-	/* roi_data vector to hold image data */
+	/*! roi_data vector to hold image data */
 	std::pair<epicsTimeStamp, std::vector<long>> roi_data;
+
+
+	/*! analysis data results, x, y , sigma_x, sigma_y, sigma_xy (can be re-defined in config file ) */
+	std::pair<epicsTimeStamp, std::vector<double>> analysis_data;
+	/*! names for each element in the pixel results array, defined in the master lattice config file  */
+	std::vector<std::string> analysis_data_names;
+
+
 	/*! Keywords used for setting ROI and mask together, python version (OUR PREFFERRED INTERFACE!) */
 	//boost::python::list mask_and_roi_keywords_Py;
 	/*! Keywords used for setting mask, python version  (Not prefferred, use mask and ROI together) */

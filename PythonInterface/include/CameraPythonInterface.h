@@ -168,6 +168,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAvgIntensity", &Camera::getAvgIntensity)
 			.def("setSumIntensity", &Camera::setSumIntensity)
 			.def("setAvgIntensity", &Camera::setAvgIntensity)
+			.def("getAnalysisData", &Camera::getAnalayisData_Py)
 			.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastDirectory", &Camera::getLastDirectory)
@@ -212,6 +213,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getGain", &Camera::getGain)
 			.def("setBlackLevel", &Camera::setBlackLevel)
 			.def("getBlackLevel", &Camera::getBlackLevel)
+			
+				
+			.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)
 
 
 
@@ -410,6 +414,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("clearBuffers", &CameraFactory::clearBuffers)
 			.def("getRunningStats", &CameraFactory::getRunningStats)
 			.def("getScreen", &CameraFactory::getScreen)
+
+
+			.def("getAnalysisResultsPixels", &CameraFactory::getAnalysisResultsPixels_Py)
 
 
 			.def("setGain", &CameraFactory::setGain)

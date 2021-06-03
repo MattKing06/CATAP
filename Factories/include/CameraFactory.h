@@ -70,6 +70,15 @@ public:
 	
 
 
+	/*! get Anlaysis results in pixels
+	@param[in] std::string, name
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	std::map<std::string, double> getAnalysisResultsPixels(const std::string& name)const;
+	/*! get Anlaysis results in pixels, Python version
+	@param[in] std::string, name
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	boost::python::dict getAnalysisResultsPixels_Py(const std::string& name)const;
+
 	/*! Set the black level (for vela camera types only),
 	@param[in] std::string, name
 	@param[in] long, values

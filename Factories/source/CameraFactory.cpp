@@ -841,6 +841,22 @@ long CameraFactory::getROISizeY(const std::string& name )const
 	}
 	return GlobalConstants::long_min;
 }
+std::map<std::string, double> CameraFactory::getAnalysisResultsPixels(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAnalysisResultsPixels();
+	}
+	std::map<std::string, double> r;
+	r["ERROR"] = GlobalConstants::double_min; // MAGIC STRING
+	return r;
+}
+boost::python::dict CameraFactory::getAnalysisResultsPixels_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, double>(getAnalysisResultsPixels(name));
+}
+
 std::map<std::string, long> CameraFactory::getROI(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
