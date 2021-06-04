@@ -18,6 +18,7 @@ set( SOURCE_FILES
     source/LaserMirrorPythonInterface.cpp
     source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
+    source/LinacPIDPythonInterface.cpp
     source/LLRFPythonInterface.cpp
     source/RFHeartbeatPythonInterface.cpp
     source/RFModulatorPythonInterface.cpp
@@ -50,6 +51,7 @@ set( INCLUDE_FILES
     include/LaserMirrorPythonInterface.h
     include/LEDPythonInterface.h
     include/LightingPythonInterface.h
+    include/LinacPIDPythonInterface.h
     include/LLRFPythonInterface.h
     include/RFHeartbeatPythonInterface.h
     include/RFModulatorPythonInterface.h

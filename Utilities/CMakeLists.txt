@@ -18,6 +18,7 @@ set( SOURCE_FILES
     source/LaserMirrorPVRecords.cpp
     source/LEDPVRecords.cpp
     source/LightingPVRecords.cpp
+    source/LinacPIDPVRecords.cpp
     source/LLRFPVRecords.cpp
     source/RFHeartbeatPVRecords.cpp
     source/RFModulatorPVRecords.cpp
@@ -45,6 +46,7 @@ set( INCLUDE_FILES
      include/LaserMirrorPVRecords.h
      include/LEDPVRecords.h
      include/LightingPVRecords.h
+     include/LinacPIDPVRecords.h
      include/LLRFPVRecords.h
      include/RFHeartbeatPVRecords.h
      include/RFModulatorPVRecords.h
