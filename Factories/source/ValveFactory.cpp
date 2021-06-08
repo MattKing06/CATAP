@@ -450,13 +450,13 @@ bool ValveFactory::loadSnapshot_Py(const boost::python::dict& settings)
 		if (snapshotEntry.first == ValveRecords::STA)
 		{
 			STATE setState = snapshotEntry.second;
-			if (setState != STATE::ERR)
+			if (setState == STATE::OPEN || setState == STATE::CLOSED)
 			{
 				valve.second.setValveState(setState);
 			}
 			else
 			{
-				messenger.printMessage("Could not apply snapshot for: ", valve.first, ":", ValveRecords::STA);
+				messenger.printMessage("Could not apply snapshot value: ", setState ," for: ", valve.first, ":", ValveRecords::STA);
 			}
 		}
 	}
