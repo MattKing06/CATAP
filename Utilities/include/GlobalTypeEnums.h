@@ -140,6 +140,8 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(TEST)
 	// RF modulator heartbeats
 	(RFHEARTBEAT)
+	//Linac PID 
+	(LINAC_PID)
 
 
 )
