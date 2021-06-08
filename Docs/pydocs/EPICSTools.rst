@@ -1,15 +1,12 @@
 EPICSTools
 ===========================
 
-
-
 ===========================
 EPICSTools
 ===========================
 .. automodule:: EPICSTools
    :members: EPICSTools
    :undoc-members:
-
 
 
 
