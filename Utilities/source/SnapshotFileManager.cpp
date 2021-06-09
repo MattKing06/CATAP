@@ -2,9 +2,9 @@
 #include <iostream>
 namespace SnapshotFileManager
 {
-	std::string const SnapshotFileManager::defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet";
+	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet";
 	
-	std::vector<std::string> SnapshotFileManager::getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList)
+	std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList)
 	{
 		std::vector<std::string> fileList;
 		boost::filesystem::path path(dirPath);
