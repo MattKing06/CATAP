@@ -22,6 +22,7 @@ set( SOURCE_FILES
     source/RFHeartbeatPVRecords.cpp
     source/RFModulatorPVRecords.cpp
     source/RFProtectionPVRecords.cpp
+    source/SnapshotFileManager.cpp
     source/StagePVRecords.cpp
     source/ShutterPVRecords.cpp
     source/RunningStats.cpp
@@ -49,6 +50,7 @@ set( INCLUDE_FILES
      include/RFHeartbeatPVRecords.h
      include/RFModulatorPVRecords.h
      include/RFProtectionPVRecords.h
+     include/SnapshotFileManager.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
      include/RunningStats.h

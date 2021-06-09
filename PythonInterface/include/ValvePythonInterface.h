@@ -34,6 +34,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 		if (is_registered) return;
 		void(ValveFactory:: * openSingle)(const std::string&) = &ValveFactory::open;
 		void(ValveFactory:: * closeSingle)(const std::string&) = &ValveFactory::close;
+		bool(ValveFactory:: * loadSnapshotFile)(const std::string&) = &ValveFactory::loadSnapshot;
 		boost::python::class_<ValveFactory, boost::noncopyable>("ValveFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
 			.def("setup", &ValveFactory::setup,(boost::python::arg("self"), boost::python::arg("version")))
@@ -56,6 +57,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 			.def("messagesOff", &ValveFactory::messagesOff, (boost::python::arg("self")))
 			.def("getSnapshot", &ValveFactory::getSnapshot_Py, (boost::python::args("self")))
 			.def("saveSnapshot", &ValveFactory::exportSnapshotToYAML, (boost::python::args("self"), boost::python::args("location"), boost::python::args("filename")))
+			.def("loadSnapshot", loadSnapshotFile)
 			.def("loadSnapshot", &ValveFactory::loadSnapshot_Py)
 			;
 	}

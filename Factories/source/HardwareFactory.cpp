@@ -2,6 +2,7 @@
 #include <boost/filesystem/convenience.hpp>
 #include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
+#include <SnapshotFileManager.h>
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -645,7 +646,7 @@ bool HardwareFactory::loadMachineSnapshot(const std::string& location)
 		messenger.printMessage("Please provide a snapshot folder for loading.");
 		return false;
 	}
-	std::vector<std::string> fileList = getAllFilesInDirectory(location);
+	std::vector<std::string> fileList = SnapshotFileManager::getAllFilesInDirectory(location);
 	if (fileList.empty())
 	{
 		messenger.printMessage("Could not find machine snapshot files at: ", location, ". Please provide another directory.");
