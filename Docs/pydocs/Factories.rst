@@ -6,6 +6,15 @@ Factories
 ===========================
 HardwareFactory
 ===========================
+
+The HardwareFactory module has been provided for users that wish
+to interact with multiple types of hardware in their applications.
+
+All of the Factories documented below can be retrieved as objects
+from the HardwareFactory class. The mode (PHYSICAL, VIRTUAL, OFFLINE)
+that is used when HardwareFactory is created is passed to all of the other
+factories.
+
 .. automodule:: HardwareFactory
    :members: HardwareFactory
    :undoc-members:
@@ -18,7 +27,16 @@ BPMFactory
 .. automodule:: BPM
    :members: BPMFactory
    :undoc-members:
-   :show-inheritance:
+   
+
+
+===========================
+CameraFactory
+===========================
+.. automodule:: Camera
+   :members: CameraFactory
+   :undoc-members:
+   
 
 
 ===========================
@@ -27,7 +45,7 @@ ChargeFactory
 .. automodule:: Charge
    :members: ChargeFactory
    :undoc-members:
-   :show-inheritance:
+   
 
 ===========================
 IMGFactory
@@ -35,7 +53,15 @@ IMGFactory
 .. automodule:: IMG
    :members: IMGFactory
    :undoc-members:
-   :show-inheritance:
+
+
+===========================
+LLRFFactory
+===========================
+.. automodule:: LLRF
+   :members: LLRFFactory
+   :undoc-members:
+
 
 ===========================
 LaserEnergyMeterFactory
@@ -43,7 +69,7 @@ LaserEnergyMeterFactory
 .. automodule:: LaserEnergyMeter
    :members: LaserEnergyMeterFactory
    :undoc-members:
-   :show-inheritance:
+   
 
 
 ==========================
@@ -52,7 +78,37 @@ LaserHWPFactory
 .. automodule:: LaserHWP
    :members: LaserHWPFactory
    :undoc-members:
-   :show-inheritance:
+   
+==========================
+LaserMirrorFactory
+==========================
+.. automodule:: LaserMirror
+   :members: LaserMirrorFactory
+   :undoc-members:
+
+
+==========================
+RFHeartbeatFactory
+==========================
+.. automodule:: RFHeartbeat
+   :members: RFHeartbeatFactory
+   :undoc-members:
+   
+==========================
+RFModulatorFactory
+==========================
+.. automodule:: RFModulator
+   :members: RFModulatorFactory
+   :undoc-members:
+
+
+==========================
+RFProtectionFactory
+==========================
+.. automodule:: RFProtection
+   :members: RFProtectionFactory
+   :undoc-members:
+
 
 ===========================
 MagnetFactory
@@ -60,7 +116,7 @@ MagnetFactory
 .. automodule:: Magnet
    :members: MagnetFactory
    :undoc-members:
-   :show-inheritance:
+   
 
 ===========================
 ScreenFactory
@@ -68,7 +124,23 @@ ScreenFactory
 .. automodule:: Screen
    :members: ScreenFactory
    :undoc-members:
-   :show-inheritance:
+
+
+===========================
+ShutterFactory
+===========================
+.. automodule:: Shutter
+   :members: ShutterFactory
+   :undoc-members:
+
+
+===========================
+StageFactory
+===========================
+.. automodule:: Stage
+   :members: StageFactory
+   :undoc-members:
+
 
 ===========================
 ValveFactory
@@ -76,7 +148,7 @@ ValveFactory
 .. automodule:: Valve
    :members: ValveFactory
    :undoc-members:
-   :show-inheritance:
+   
 
 
 

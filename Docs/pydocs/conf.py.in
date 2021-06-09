@@ -20,16 +20,30 @@ print(sys.path)
 
 from CATAP.GlobalStates import *
 from CATAP.GlobalTypes import *
+from CATAP.EPICSTools import *
+
 from CATAP.BPM import *
-from CATAP.IMG import *
 from CATAP.Charge import *
-from CATAP.Magnet import *
-from CATAP.Valve import *
-from CATAP.Screen import *
+from CATAP.Camera import *
+
+
+
+from CATAP.IMG import *
 from CATAP.LaserEnergyMeter import *
 from CATAP.LaserHWP import *
+from CATAP.LaserMirror import *
+from CATAP.LLRF import *
+from CATAP.Magnet import *
+from CATAP.RFHeartbeat import *
+from CATAP.RFModulator import *
+from CATAP.RFProtection import *
+from CATAP.Screen import *
+from CATAP.Shutter import *
+from CATAP.Stage import *
+from CATAP.Valve import *
+
 from CATAP.HardwareFactory import *
-from CATAP.EPICSTools import *
+
 
 
 # -- Project information -----------------------------------------------------

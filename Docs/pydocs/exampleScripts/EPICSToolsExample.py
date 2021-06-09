@@ -15,7 +15,7 @@ ET.monitor(readi_pv)
 # To access the monitor object, it can be accessed via EPICSTools:
 readi_monitor = ET.getMonitor(readi_pv)
 print("Current READI Value: ", readi_monitor.getValue())
-
+print(readi_pv, " connected? : ", readi_monitor.isConnected())
 
 # Putting to a PV can only be done through the EPICSTools object
 seti_pv = "CLA-C2V-MAG-HCOR-01:SETI"
