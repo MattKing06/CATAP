@@ -410,7 +410,7 @@ bool ValveFactory::loadSnapshot(const std::string& location)
 	YAML::Node stateInfo = YAML::LoadFile(location);
 	for (auto&& valve : valveMap)
 	{
-		auto stateEntry = stateInfo[valve.first].as < std::map < std::string, std::string> >();
+		auto stateEntry = stateInfo[ENUM_TO_STRING(TYPE::VALVE)][valve.first].as < std::map < std::string, std::string> >();
 		for (auto&& item : stateEntry)
 		{
 			if (item.first == ValveRecords::STA)
