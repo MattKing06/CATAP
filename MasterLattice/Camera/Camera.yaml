@@ -69,6 +69,9 @@ controls_information:
         # LED_Sta    : CLA-LAS-DIA-LED-01:Sta
         # LED_Off    :    CLA-LAS-DIA-LED-01:Off
         # LED_On    : CLA-LAS-DIA-LED-01:On
+        # OVERLAY_CROSS_HAIR : EBT-INJ-DIA-CAM-20:OVER:1:Use 
+        # OVERLAY_CENTRE_OF_MASS : EBT-INJ-DIA-CAM-20:OVER:2:Use 
+        # OVERLAY_MASK : EBT-INJ-DIA-CAM-20:OVER:3:Use 
 properties:
     hardware_type : Camera
     machine_area : value

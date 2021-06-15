@@ -579,7 +579,6 @@ public:
 	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
-
 	boost::python::list getROIData_Py()const;
 	/*! Get a reference to the current image data. Gives access to image data without copying 
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
@@ -614,6 +613,38 @@ public:
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
+	/*! Enable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?) 
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool enableAnalysisMaskOverlay();
+	/*! Enable the Cross Hair Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool enableCrossHairOverlay();
+	/*! Enable the Center Of Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool enableCentreOfMassOverlay();
+	/*! Disable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableAnalysisMaskOverlay();
+	/*! Disable the Cross Hair Overlay in the Camera Image data,
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableCrossHairOverlay();
+	/*! Disable the Centre of Mass Overlay in the Camera Image data,
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableCentreOfMassOverlay();
+	/*! Disable all overlays in the Camera Image data,
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableAllOverlay();
+	/*! Get the state of the Analysis Mask Overlay 
+	@param[out] STATE, one of ON, OFF, ERR, or UNKNONWN */
+	STATE getAnalysisMaskOverlayState()const;
+	/*! Get the state of the Cross Hair Overlay 
+	@param[out] STATE, one of ON, OFF, ERR, or UNKNONWN */
+	STATE getCrossHairOverlayState()const;
+	/*! Get the state of the Center of Mass Overlay
+	@param[out] STATE, one of ON, OFF, ERR, or UNKNONWN */
+	STATE getCentreOfMassOverlayState()const;
+
+
 	/* Enable debug messages*/
 	void debugMessagesOn();
 	/* Disbale debug messages*/
@@ -779,6 +810,10 @@ protected:
 	/*! names for each element in the pixel results array, defined in the master lattice config file  */
 	std::vector<std::string> analysis_data_names;
 
+
+	std::pair<epicsTimeStamp, STATE> cross_hair_overlay;
+	std::pair<epicsTimeStamp, STATE> center_of_mass_overlay;
+	std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
 
 	/*! Keywords used for setting ROI and mask together, python version (OUR PREFFERRED INTERFACE!) */
 	//boost::python::list mask_and_roi_keywords_Py;

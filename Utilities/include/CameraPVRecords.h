@@ -126,6 +126,10 @@ namespace CameraRecords
 	extern std::string const CAM_Gain;
 	extern std::string const CAM_Gain_RBV;
 
+	extern std::string const OVERLAY_CROSS_HAIR;
+	extern std::string const OVERLAY_CENTRE_OF_MASS;
+	extern std::string const OVERLAY_MASK;
+
 
 
 	extern std::vector<std::string> cameraRecordList;

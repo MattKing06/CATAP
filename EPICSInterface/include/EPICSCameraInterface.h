@@ -98,6 +98,10 @@ public:
     static void update_BlackLevel_RBV(const struct event_handler_args args);
     static void update_Gain_RBV(const struct event_handler_args args);
 
+    static void update_OVERLAY_CROSS_HAIR(const struct event_handler_args args);
+    static void update_OVERLAY_CENTRE_OF_MASS(const struct event_handler_args args);
+    static void update_OVERLAY_MASK(const struct event_handler_args args);
+
 
 };
 #endif //EPICS_CAMERA_INTERFACE_H_

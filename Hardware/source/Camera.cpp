@@ -52,6 +52,9 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	cross_hair_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	center_of_mass_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	analysis_mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -1171,6 +1174,69 @@ boost::python::dict Camera::getMaskandROI_Py()const
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
+bool Camera::enableAnalysisMaskOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::one_ushort);
+}
+bool Camera::enableCrossHairOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CROSS_HAIR), GlobalConstants::one_ushort);
+}
+bool Camera::enableCentreOfMassOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CENTRE_OF_MASS), GlobalConstants::one_ushort);
+}
+bool Camera::disableAnalysisMaskOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+}
+bool Camera::disableCrossHairOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+}
+bool Camera::disableCentreOfMassOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+}
+bool Camera::disableAllOverlay()
+{
+	bool r = true;
+	if(disableAnalysisMaskOverlay())	{
+	}
+	else{
+		r = false;
+	}
+	if (disableCrossHairOverlay()) {
+	}
+	else {
+		r = false;
+	}
+	if (disableCentreOfMassOverlay()) {
+	}
+	else {
+		r = false;
+	}
+	return r;
+}
+STATE Camera::getAnalysisMaskOverlayState()const
+{
+	return cross_hair_overlay.second;
+}
+STATE Camera::getCrossHairOverlayState()const
+{
+	return cross_hair_overlay.second;
+}
+STATE Camera::getCentreOfMassOverlayState()const
+{
+	return cross_hair_overlay.second;
+}
+
+std::pair<epicsTimeStamp, STATE> ;
+std::pair<epicsTimeStamp, STATE> center_of_mass_overlay;
+std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
+
+
+
 boost::python::dict Camera::getRunningStats()const
 {
 	boost::python::dict r;

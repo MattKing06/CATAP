@@ -113,6 +113,10 @@ namespace CameraRecords
 	std::string const LED_Off = "LED_Off";
 	std::string const LED_On = "LED_On";
 
+	std::string const OVERLAY_CROSS_HAIR = "OVERLAY_CROSS_HAIR";
+	std::string const OVERLAY_CENTRE_OF_MASS = "OVERLAY_CENTRE_OF_MASS";
+	std::string const OVERLAY_MASK = "OVERLAY_MASK";
+
 	std::vector<std::string> cameraRecordList = { 
 	CAM_Gain,
 	CAM_Gain_RBV,
@@ -222,7 +226,10 @@ namespace CameraRecords
 	ANA_PixMM ,
 	LED_Sta,
 	LED_Off,
-	LED_On };                  
+	LED_On,
+	OVERLAY_CROSS_HAIR,
+	OVERLAY_CENTRE_OF_MASS,
+	OVERLAY_MASK };                  
 
 
 	std::vector<std::string> cameraMonitorRecordsList
@@ -295,9 +302,10 @@ namespace CameraRecords
 		CAM_ArrayRate_RBV,
 		CAM_Temperature_RBV,
 		ANA_UseNPoint,
-		ANA_UseBkgrnd
-
-
+		ANA_UseBkgrnd,
+		OVERLAY_CROSS_HAIR,
+		OVERLAY_CENTRE_OF_MASS,
+		OVERLAY_MASK 
 	};
 
 };

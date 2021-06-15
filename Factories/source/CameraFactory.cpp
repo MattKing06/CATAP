@@ -1758,7 +1758,119 @@ boost::python::dict CameraFactory::getRunningStats(const std::string& name)const
 	return boost::python::dict();
 }
 
-
+bool CameraFactory::enableAnalysisMaskOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).enableAnalysisMaskOverlay();
+	}
+	return false;
+}
+bool CameraFactory::enableCrossHairOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).enableCrossHairOverlay();
+	}
+	return false;
+}
+bool CameraFactory::enableCentreOfMassOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).enableCentreOfMassOverlay();
+	}
+	return false;
+}
+bool CameraFactory::disableAnalysisMaskOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableAnalysisMaskOverlay();
+	}
+	return false;
+}
+bool CameraFactory::disableCrossHairOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableCrossHairOverlay();
+	}
+	return false;
+}
+bool CameraFactory::disableCentreOfMassOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableCentreOfMassOverlay();
+	}
+	return false;
+}
+bool CameraFactory::disableAllOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableAllOverlay();
+	}
+	return false;
+}
+bool CameraFactory::disableAllOverlay()
+{
+	bool r = true;
+	for (auto&& it : camera_map)
+	{
+		bool s = disableAllOverlay();
+		if (s == false)
+		{
+			r = false;
+		}
+	}
+	return r;
+}
+STATE CameraFactory::getAnalysisMaskOverlayState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAnalysisMaskOverlayState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+STATE CameraFactory::getCrossHairOverlayState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getCrossHairOverlayState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+STATE CameraFactory::getCentreOfMassOverlayState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getCentreOfMassOverlayState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+std::map<std::string, STATE> CameraFactory::getAllOverlayStates()const
+{
+	std::map<std::string, STATE> r;
+	return r;
+}
+boost::python::dict CameraFactory::getAllOverlayStates_Py()const
+{
+	boost::python::dict r;
+	return r;
+}
 
 
 
@@ -2671,6 +2783,15 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 	messenger.printDebugMessage("cutLHarwdareMapByNames camera_map.size() went from ", start_size, " to ", end_size);
 	GlobalFunctions::pause_2000();
 }
+
+
+
+
+
+
+
+
+
 
 void CameraFactory::debugMessagesOn()
 {

@@ -298,6 +298,18 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 		pvStruct.updateFunction = this->update_Gain_RBV;
 	}
+	else if (pvStruct.pvRecord == OVERLAY_CROSS_HAIR)
+	{
+		pvStruct.updateFunction = this->update_OVERLAY_CROSS_HAIR;
+	}
+	else if (pvStruct.pvRecord == OVERLAY_CENTRE_OF_MASS)
+	{
+		pvStruct.updateFunction = this->update_OVERLAY_CENTRE_OF_MASS;
+	}
+	else if (pvStruct.pvRecord == OVERLAY_MASK)
+	{
+		pvStruct.updateFunction = this->update_OVERLAY_MASK;
+	}
 	else
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
@@ -576,8 +588,8 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 
 
 
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixelResults_RBV [0] = ",
-		recastCamera->analysis_data.second[0]);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixelResults_RBV [0] = ",
+	//	recastCamera->analysis_data.second[0]);
 
 }
 void EPICSCameraInterface::update_ANA_MaskXCenter_RBV(const struct event_handler_args args) {
@@ -935,15 +947,51 @@ void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args a
 
 
 
-
-
-
-
-
-
-
-
-
+void EPICSCameraInterface::update_OVERLAY_CROSS_HAIR(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->cross_hair_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->cross_hair_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->cross_hair_overlay.second = STATE::ON; break;
+	default:
+		recastCamera->cross_hair_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_CROSS_HAIR = ",
+		ENUM_TO_STRING(recastCamera->cross_hair_overlay.second));
+}
+void EPICSCameraInterface::update_OVERLAY_CENTRE_OF_MASS(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->center_of_mass_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->center_of_mass_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->center_of_mass_overlay.second = STATE::ON; break;
+	default:
+		recastCamera->center_of_mass_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_CENTRE_OF_MASS = ",
+		ENUM_TO_STRING(recastCamera->center_of_mass_overlay.second));
+}
+void EPICSCameraInterface::update_OVERLAY_MASK(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->analysis_mask_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->analysis_mask_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->analysis_mask_overlay.second = STATE::ON; break;
+	default:
+		recastCamera->analysis_mask_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_MASK = ",
+		ENUM_TO_STRING(recastCamera->analysis_mask_overlay.second));
+}
 
 
 void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
