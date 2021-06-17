@@ -55,6 +55,10 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getMagnetFactory", getMagnetFactory_noArea, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getMagnetFactory", getMagnetFactory_oneArea, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getMagnetFactory", getMagnetFactory_listOfAreas, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			
+			
+			.add_property("linacPIDFactory", &HardwareFactory::linacPIDFactory)
+			.def("getLinacPIDFactory", &HardwareFactory::getLinacPIDFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 
 
 			.add_property("bpmFactory", &HardwareFactory::bpmFactory)
@@ -87,8 +91,6 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 
 			
 			
-
-
 
 			.def("getRFProtectionFactory", &HardwareFactory::getRFProtectionFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("shutterFactory", &HardwareFactory::rfProtectionFactory)

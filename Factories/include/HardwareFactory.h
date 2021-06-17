@@ -14,6 +14,7 @@
 #include "RFProtectionFactory.h"
 #include "RFModulatorFactory.h"
 #include <RFHeartbeatFactory.h>
+#include "LinacPIDFactory.h"
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -95,6 +96,11 @@ public:
 	RFModulatorFactory& getRFModulatorFactory_Py(const boost::python::list& machine_areas);
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 	RFHeartbeatFactory& getRFHeartbeatFactory();
+	
+	
+	LinacPIDFactory& getLinacPIDFactory();
+
+
 
 
 
@@ -120,6 +126,7 @@ public:
 	RFProtectionFactory rfProtectionFactory;
 	RFModulatorFactory rfmodulatorFactory;
 	RFHeartbeatFactory rfHeartbeatFactory;
+	LinacPIDFactory linacPIDFactory;
 
 	// virtual physical or offline
 	STATE mode;

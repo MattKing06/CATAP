@@ -347,7 +347,27 @@ ScreenFactory& HardwareFactory::getScreenFactory()
 	return screenFactory;
 }
 
-
+LinacPIDFactory& HardwareFactory::getLinacPIDFactory()
+{
+	if (!linacPIDFactory.hasBeenSetup)
+	{
+		bool setup = linacPIDFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("linacPIDFactory Complete");
+			return linacPIDFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup linacPIDFactory");
+		}
+	}
+	else
+	{
+		messenger.printMessage("linacPIDFactory Complete");
+		return linacPIDFactory;
+	}
+}
 
 
 

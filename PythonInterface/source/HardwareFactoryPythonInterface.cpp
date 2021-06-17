@@ -9,6 +9,7 @@
 #include <LaserMirrorPythonInterface.h>
 #include <LEDPythonInterface.h>
 #include <LightingPythonInterface.h>
+#include <LinacPIDPythonInterface.h>
 #include <LLRFPythonInterface.h>
 #include <MagnetPythonInterface.h>
 #include <RFHeartbeatPythonInterface.h>
@@ -52,6 +53,10 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_factory_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_factory_object();
+
+	BOOST_PYTHON_LINAC_PID_INCLUDE::exposeLinacPIDObject();
+	BOOST_PYTHON_LINAC_PID_INCLUDE::exposeLinacPIDFactoryObject();
+
 
 
 	BOOST_PYTHON_SHUTTER_INCLUDE::expose_shutter_state_struct();
