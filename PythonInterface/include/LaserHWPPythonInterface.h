@@ -42,6 +42,6 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 			.def("getHWPRead", &LaserHWPFactory::getHWPRead);
 	}
 
-
+	
 }
 #endif

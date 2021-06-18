@@ -21,6 +21,18 @@ public:
 	~EPICSLinacPIDInterface();
 	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct) const;
 
+	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
+	// EPICS calls these functiOns to update a variable
+	static void update_AVG_PHASE(const struct event_handler_args args);
+	static void update_FORWARD_PHASE_WEIGHT(const struct event_handler_args args);
+	static void update_PROBE_PHASE_WEIGHT(const struct event_handler_args args);
+	static void update_SCAN(const struct event_handler_args args);
+	static void update_PID_OVAL(const struct event_handler_args args);
+	static void update_FORWARD_PHASE_WRAPPED(const struct event_handler_args args);
+	static void update_PROBE_PHASE_WRAPPED(const struct event_handler_args args);
+
+
+	
 	/*! messenger object for EPICSLinacPIDInterface messaging. */
 	static LoggingSystem static_messenger;
 	/*! turns debug messaging on for this EPICSLinacPIDInterface instance*/
