@@ -14,4 +14,9 @@ namespace LinacPIDRecords
 	std::vector<std::string> linacPIDRecordList = { AVG_PHASE, PROBE_PHASE_WEIGHT, PROBE_PHASE_WRAPPED,
 													   SCAN, PID_OVAL, FORWARD_PHASE_WRAPPED,
 													   FORWARD_PHASE_WEIGHT };
+
+	std::vector<std::string> linacMonitorRecordsList{ AVG_PHASE, PROBE_PHASE_WEIGHT, PROBE_PHASE_WRAPPED,
+													   SCAN, PID_OVAL, FORWARD_PHASE_WRAPPED,
+													   FORWARD_PHASE_WEIGHT };
+
 }

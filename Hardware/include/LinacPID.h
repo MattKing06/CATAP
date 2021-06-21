@@ -141,8 +141,9 @@ protected:
 	std::pair<epicsTimeStamp, double > probe_phase_weight;
 	/*! OVAL. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > oval;
+
 	/*! State of the phase controller, e.g. ENABLED, DISABLED.	*/
-	std::pair<epicsTimeStamp, STATE > state;
+	std::pair<epicsTimeStamp, unsigned short > scan;
 private:
 	/*! Name aliased for this hardwareobject.	*/ // TODO aliases should to be in hardware base class ??!! 
 	std::vector<std::string> aliases;
@@ -163,6 +164,16 @@ private:
 	double min_phase_weight;
 	/*! Maximum value of the phase weight.*/
 	double max_phase_weight;
+
+	/*! The scan parameter as a STATE enum .*/
+	STATE scan_enum;
+	STATE enable_state;
+
+	// FROM MASTER LATTICE
+	STATE ml_enable_state;
+	STATE ml_disable_state;
+	unsigned short ml_enable_number;
+	unsigned short ml_disable_number;
 
 
 };

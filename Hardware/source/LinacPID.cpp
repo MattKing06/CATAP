@@ -28,6 +28,39 @@ LinacPID::LinacPID(const std::map<std::string, std::string>& paramMap, STATE mod
 	epicsInterface->ownerName = hardwareName;
 	messenger = LoggingSystem(true, true);
 
+	messenger.printDebugMessage(hardwareName, " find enable");
+	if (GlobalFunctions::entryExists(paramMap, "enable"))
+	{
+		ml_enable_state = GlobalFunctions::stringToSTATE(paramMap.find("enable")->second);
+		ml_enable_number = GlobalFunctions::scanSTATEToNumber(ml_enable_state);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!ERROR!! could not find enable");
+		// TODO THROW AN EXCEPTION HERE
+	}
+	messenger.printDebugMessage(hardwareName, " find disable");
+	if (GlobalFunctions::entryExists(paramMap, "disable"))
+	{
+		ml_disable_state = GlobalFunctions::stringToSTATE(paramMap.find("disable")->second);
+		ml_disable_number = GlobalFunctions::scanSTATEToNumber(ml_disable_state);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!ERROR!! could not find disable");
+		// TODO THROW AN EXCEPTION HERE
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find name_alias");
+	if (GlobalFunctions::entryExists(paramMap, "name_alias"))
+	{
+		boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+		for (auto& name : aliases)
+		{
+			name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+			messenger.printDebugMessage(hardwareName, " added aliase " + name);
+		}
+	}
 	messenger.printDebugMessage(hardwareName, " find forward_channel");
 	if (GlobalFunctions::entryExists(paramMap, "forward_channel"))
 	{
@@ -81,7 +114,7 @@ void LinacPID::setPVStructs()
 
 bool LinacPID::setPhase(double value)
 {
-	return false;
+	return epicsInterface->putValue2(pvStructs.at(LinacPIDRecords::AVG_PHASE), value);
 }
 double LinacPID::getPhase()const
 {
@@ -105,7 +138,7 @@ double LinacPID::getOperatingPhase()const
 }
 bool LinacPID::setForwardPhaseWeight(double value)
 {
-	return false;
+	return epicsInterface->putValue2(pvStructs.at(LinacPIDRecords::FORWARD_PHASE_WEIGHT), value);
 }
 double LinacPID::getForwardPhaseWeight()const
 {
@@ -117,7 +150,7 @@ double LinacPID::getForwardPhaseWrapped()const
 }
 bool LinacPID::setProbePhaseWeight(double value)
 {
-	return false;
+	return epicsInterface->putValue2(pvStructs.at(LinacPIDRecords::PROBE_PHASE_WEIGHT), value);
 }
 double LinacPID::getProbePhaseWeight()const
 {
@@ -133,23 +166,25 @@ double LinacPID::getOVAL()const
 }
 bool LinacPID::enable()
 {
-	return false;
+	messenger.printDebugMessage(hardwareName, " - send enable");
+	return 	epicsInterface->putValue2(pvStructs.at(LinacPIDRecords::SCAN), ml_enable_number);
 }
 bool LinacPID::disable()
 {
-	return false;
+	messenger.printDebugMessage(hardwareName, " - send disable");
+	return 	epicsInterface->putValue2(pvStructs.at(LinacPIDRecords::SCAN), ml_disable_number);
 }
 bool LinacPID::isEnabled()const
 {
-	return state.second == STATE::ENABLED;
+	return enable_state == STATE::ENABLED;
 }
 bool LinacPID::isDisabled()const
 {
-	return state.second == STATE::DISABLED;
+	return enable_state == STATE::DISABLED;
 }
 STATE LinacPID::getEnabledState()const
 {
-	return state.second;
+	return enable_state;
 }
 double LinacPID::getMaxPhase()const
 {

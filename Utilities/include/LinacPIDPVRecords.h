@@ -18,6 +18,8 @@ namespace LinacPIDRecords
 	extern std::string const PROBE_PHASE_WRAPPED;
 
 	extern std::vector<std::string> linacPIDRecordList;
+	extern std::vector<std::string> linacMonitorRecordsList;	
+
 }
 
 /*!@}*/

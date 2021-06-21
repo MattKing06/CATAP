@@ -118,19 +118,25 @@ bool LinacPIDFactory::setup(const std::string& VERSION)
 			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				retrieveMonitorStatus(pv.second);
+				setMonitorStatus(pv.second);
 				linacPID.second.epicsInterface->retrieveCHTYPE(pv.second);
 				linacPID.second.epicsInterface->retrieveCOUNT(pv.second);
+				messenger.printMessage("retrieveUpdateFunctionForRecord");
 				linacPID.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-					"write", std::to_string(ca_write_access(pv.second.CHID)),
-					"state", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": read = ", std::to_string(ca_read_access(pv.second.CHID)),
+					"write = ", std::to_string(ca_write_access(pv.second.CHID)),
+					"state = ", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
+					messenger.printMessage(linacPID.first, " createSubscription to ", pv.second.pvRecord);
 					linacPID.second.epicsInterface->createSubscription(linacPID.second, pv.second);
 					EPICSInterface::sendToEPICS();
+				}
+				else
+				{
+					messenger.printMessage(linacPID.first, " IS NOT creating a Subscription to ", pv.second.pvRecord);
 				}
 			}
 			else
@@ -143,9 +149,19 @@ bool LinacPIDFactory::setup(const std::string& VERSION)
 	return hasBeenSetup;
 }
 
-void LinacPIDFactory::retrieveMonitorStatus(pvStruct& pvStruct) const
+void LinacPIDFactory::setMonitorStatus(pvStruct& pvStruct) const
 {
-
+	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
+	if (GlobalFunctions::entryExists<std::string>(LinacPIDRecords::linacMonitorRecordsList, pvStruct.pvRecord))
+	{
+		pvStruct.monitor = true;
+		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = true");
+	}
+	else
+	{
+		pvStruct.monitor = false;
+		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = false ");
+	}
 }
 
 LinacPID& LinacPIDFactory::getLinacPID(const std::string& fullLinacPIDName)
@@ -215,6 +231,103 @@ void LinacPIDFactory::updateAliasNameMap(const LinacPID& linacPID)
 		}
 	}
 }
+
+
+
+
+
+bool LinacPIDFactory::setPhase(const std::string& name, const double& value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).setPhase();
+	}
+	return false;
+}
+bool LinacPIDFactory::setPhase(const std::map<std::string, double>& name_value_map)
+{
+	bool r = true;
+	for (auto&& item : name_value_map)
+	{
+		bool temp_r = setPhase();
+		if (temp_r == false)
+		{
+			r = false;
+		}
+	}
+	return r;
+}
+//
+double LinacPIDFactory::getPhase(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getPhase();
+	}
+	return GlobalConstants::double_min;
+}
+std::map<std::string, double> LinacPIDFactory::getPhase()const
+{
+	std::map<std::string, double>  r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getPhase();
+	}
+	return r;
+}
+boost::python::dict LinacPIDFactory::getPhase_Py()const
+{
+	return to_py_dict<std::string, double>(getPhase());
+}
+bool LinacPIDFactory::setForwardPhaseWeight(const std::string& name, double value)
+{
+
+}
+double LinacPIDFactory::getForwardPhaseWeight(const std::string& name)const
+{
+
+}
+std::map<std::string, double> LinacPIDFactory::getForwardPhaseWeight()const
+boost::python::dict LinacPIDFactory::getForwardPhaseWeight_Py()const
+double LinacPIDFactory::getForwardPhaseWrapped(const std::string& name)const
+std::map<std::string, double> LinacPIDFactory::getForwardPhaseWrapped()const
+boost::python::dict LinacPIDFactory::getForwardPhaseWrapped_Py()const
+bool LinacPIDFactory::setProbePhaseWeight(const std::string& name, double value)
+double LinacPIDFactory::getProbePhaseWeight(const std::string& name)const
+std::map<std::string, double> LinacPIDFactory::getProbePhaseWeight()const
+boost::python::dict  LinacPIDFactory::getProbePhaseWeight_Py(const std::string& name)const
+double LinacPIDFactory::getProbePhaseWrapped(const std::string& name)const
+std::map<std::string, double> LinacPIDFactory::getProbePhaseWrapped()const
+boost::python::dict  LinacPIDFactory::getProbePhaseWrapped_Py(const std::string& name)const
+double LinacPIDFactory::getOVAL(const std::string& name)const
+std::map<std::string, double> LinacPIDFactory::getOVAL()const
+boost::python::dict  LinacPIDFactory::getOVAL_Py(const std::string& name)const
+bool LinacPIDFactory::enable(const std::string& name)
+bool LinacPIDFactory::enableAll()
+bool LinacPIDFactory::disable(const std::string& name)
+bool LinacPIDFactory::disableAll()
+bool LinacPIDFactory::isEnabled(const std::string& name)const
+bool LinacPIDFactory::isDisabled(const std::string& name)const
+STATE LinacPIDFactory::getEnabledState(const std::string& name)const
+std::map<std::string, STATE> LinacPIDFactory::getEnabledState()const
+boost::python::dict  LinacPIDFactory::getEnabledState_Py(const std::string& name)const
+double LinacPIDFactory::getMaxPhase(const std::string& name)const
+double LinacPIDFactory::getMinPhase(const std::string& name)const
+double LinacPIDFactory::getMaxPhaseWeight(const std::string& name)const
+double LinacPIDFactory::getMinPhaseWeight(const std::string& name)const
+
+
+
+
+
+
+
+
+
+
+
 
 void LinacPIDFactory::debugMessagesOn()
 {

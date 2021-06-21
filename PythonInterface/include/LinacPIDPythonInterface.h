@@ -21,10 +21,13 @@ namespace BOOST_PYTHON_LINAC_PID_INCLUDE
 			.def("setCrestPhase", &LinacPID::setCrestPhase, boost::python::arg("self"))
 			.def("getCrestPhase", &LinacPID::getCrestPhase, boost::python::arg("self"))
 			.def("setOperatingPhase", &LinacPID::setOperatingPhase, boost::python::arg("self"))
+			.def("getOperatingPhase", &LinacPID::getOperatingPhase, boost::python::arg("self"))
+
 			.def("setForwardPhaseWeight", &LinacPID::setForwardPhaseWeight, boost::python::arg("self"))
 			.def("getForwardPhaseWeight", &LinacPID::getForwardPhaseWeight, boost::python::arg("self"))
 			.def("getForwardPhaseWrapped", &LinacPID::getForwardPhaseWrapped, boost::python::arg("self"))
 			.def("setProbePhaseWeight", &LinacPID::setProbePhaseWeight, boost::python::arg("self"))
+			.def("getProbePhaseWeight", &LinacPID::getProbePhaseWeight, boost::python::arg("self"))
 			.def("getProbePhaseWrapped", &LinacPID::getProbePhaseWrapped, boost::python::arg("self"))
 			.def("getOVAL", &LinacPID::getOVAL, boost::python::arg("self"))
 			.def("enable", &LinacPID::enable, boost::python::arg("self"))
@@ -36,6 +39,7 @@ namespace BOOST_PYTHON_LINAC_PID_INCLUDE
 			.def("getMinPhase", &LinacPID::getMinPhase, boost::python::arg("self"))
 			.def("getMaxPhaseWeight", &LinacPID::getMaxPhaseWeight, boost::python::arg("self"))
 			.def("getMinPhaseWeight", &LinacPID::getMinPhaseWeight, boost::python::arg("self"))
+
 			.def("debugMessagesOn", &LinacPID::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &LinacPID::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &LinacPID::messagesOn, boost::python::arg("self"))
