@@ -140,6 +140,9 @@ public:
 	/*! returns the status of the BPM based on raw data pickup values.
 	@param[out] state: the status.*/
 	STATE getStatus() const;
+	/*! returns the status of the BPM based on raw data pickup values.
+	@param[out] state: the status.*/
+	std::string getStatus() const;
 	/*! returns the status buffer of the BPM based on raw data pickup values.
 	@param[out] states: the status buffer.*/
 	boost::circular_buffer< STATE > getStatusBuffer() const;
