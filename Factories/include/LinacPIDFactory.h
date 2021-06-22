@@ -20,11 +20,11 @@ public:
 	LinacPIDFactory(STATE mode);
 	LinacPIDFactory(const LinacPIDFactory& copyLinacPIDFactory);
 	~LinacPIDFactory();
-	STATE mode;
+
+
+	// TODO move to private write setter/getter ??? 
 	bool hasBeenSetup;
-	std::map<std::string, LinacPID> linacPIDMap;
-	ConfigReader reader;
-	LoggingSystem messenger;
+
 	bool setup(const std::string& version);
 	void populateLinacPIDMap();
 	void setupChannels();
@@ -38,12 +38,28 @@ public:
 
 
 
-
-	bool setPhase(const std::string& name, const double& value);
+	/*! Set the Cavity phase
+	*	@param[in] string, name of cavity to set
+	*	@param[in] double, value to set
+	*	@param[out] bool, true if value got sent to epics (not if it was received) */
+	bool setPhase(const std::string& name, const double value);
+	/*! Set multiple Cavity phases
+	*	@param[in] map<string, double>, map of names of cavities to set and the values to apply
+	*	@param[out] bool, true if all values got sent to epics (not if it was received) */
 	bool setPhase(const std::map<std::string, double>& name_value_map);
-	//
+	/*! Set multiple Cavity phases, Python version 
+	*	@param[in] dict, dictionary of names of cavities to set and the values to apply
+	*	@param[out] bool, true if all values got sent to epics (not if it was received) */
+	bool setPhase_Py(const boost::python::dict& name_value_map);
+	/*! Get the Cavity phase 
+	*	@param[in] string, name of cavity to get 
+	*	@param[out] double, value */
 	double getPhase(const std::string& name)const;
+	/*! Get the phase for each cavity in teh factory
+	*	@param[out] map<string, double>, map of phase values, keyed by the cavity names */
 	std::map<std::string, double> getPhase()const;
+	/*! Get the phase for each cavity in teh factory, Python version 
+	*	@param[out] dict, dictionary of phase values, keyed by the cavity names */
 	boost::python::dict getPhase_Py()const;
 
 
@@ -102,7 +118,7 @@ public:
 	std::map<std::string, double> getProbePhaseWrapped()const;
 	/*! Get the Cavity Probe phase wrapped values for each cavity, Python version
 	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict  getProbePhaseWrapped_Py(const std::string& name)const;
+	boost::python::dict  getProbePhaseWrapped_Py()const;
 
 	/*! Get the current OVAL
 	* 	@param[in] string, name of cavity to get value for
@@ -113,7 +129,7 @@ public:
 	std::map<std::string, double> getOVAL()const;
 	/*! Get the current OVAL for all cavities, Python version 
 	* @param[out] double, value */
-	boost::python::dict  getOVAL_Py(const std::string& name)const;
+	boost::python::dict  getOVAL_Py()const;
 
 	/*! Enable the phase control feedback
 	* 	@param[in] string, name of cavity to enable
@@ -151,7 +167,7 @@ public:
 	std::map<std::string, STATE> getEnabledState()const;
 	/*! Get the current state of the Phase control feedback for each cavity, Python version
 	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict  getEnabledState_Py(const std::string& name)const;
+	boost::python::dict  getEnabledState_Py()const;
 
 
 	/*! Get the maximum phase that can be set (defined in the master lattice).
@@ -170,61 +186,6 @@ public:
 	* 	@param[in] string, name of cavity to get value for
 	*	@param[out] double, value */
 	double getMinPhaseWeight(const std::string& name)const;
-
-
-
-	//bool setCh3PhaseWeight(const std::string& name, const double& value);
-
-	//double getCh3PhaseWeight(const std::string& name)const;
-	//std::map<std::string, double> getCh3PhaseWeight()const;
-	//boost::python::dict getCh3PhaseWeight_Py()const;
-
-	//bool setCh6PhaseWeight(const std::string& name, const double& value);
-	//double getCh6PhaseWeight(const std::string& name)const;
-	//std::map<std::string, double> getCh6PhaseWeight()const;
-	//boost::python::dict getCh6PhaseWeight_Py()const;
-
-	//boost::python::dict getPhaseWeights()const;
-
-	//bool enable(const std::string& name);
-	//bool enable();
-	//bool disable(const std::string& name);
-	//bool disable();
-
-	//bool isEnabled(const std::string& name)const;
-	//std::map<std::string, bool> isEnabled()const;
-	//boost::python::dict isEnabled_Py()const;
-
-	//bool isDisabled(const std::string& name)const;
-	//std::map<std::string, bool> isDisabled()const;
-	//boost::python::dict isDisabled_Py()const;
-
-
-	//bool getEnabledState(const std::string& name)const;
-	//std::map<std::string, STATE> getEnabledState()const;
-	//boost::python::dict getEnabledState_Py()const;
-
-	//double getCh3PhaseWrapped(const std::string& name)const;
-	//std::map<std::string, double> getCh6PhaseWeight()const;
-	//boost::python::dict getCh6PhaseWeight_Py()const;
-
-	//double getCh6PhaseWrapped(const std::string& name)const;
-
-
-	/// TODO  for futre LLRF boxes the channel Numbers are likely to be different, so perhaps not hardcode the Channel NUmbers
-	/// use more descriptive Names, Forward Reverse 
-	
-
-
-
-
-	std::map<std::string, double> getPhaseWrapped()const;
-	boost::python::dict getCh6PhaseWrapped_Py()const;
-		
-	double getOVAL(const std::string& name)const;
-	std::map<std::string, double> getOVAL()const;
-	boost::python::dict getOVAL_Py()const;
-
 		
 
 	/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/
@@ -245,6 +206,15 @@ private:
 	void updateAliasNameMap(const LinacPID& linacPID);
 	/*! a map that provides the link between full names and associated aliases.*/
 	std::map<std::string, std::string> aliasNameMap;
+
+
+	STATE mode; // TODO NOT IN HARDWARE BASE CLASS???
+
+	std::map<std::string, LinacPID> linacPIDMap;
+	ConfigReader reader;
+	LoggingSystem messenger;
+
+
 };
 
 #endif // !LINAC_PID_FACTORY_H_

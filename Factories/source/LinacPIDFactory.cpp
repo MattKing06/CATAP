@@ -236,12 +236,12 @@ void LinacPIDFactory::updateAliasNameMap(const LinacPID& linacPID)
 
 
 
-bool LinacPIDFactory::setPhase(const std::string& name, const double& value)
+bool LinacPIDFactory::setPhase(const std::string& name, const double value)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
 	{
-		return linacPIDMap.at(full_name).setPhase();
+		return linacPIDMap.at(full_name).setPhase(value);
 	}
 	return false;
 }
@@ -250,13 +250,29 @@ bool LinacPIDFactory::setPhase(const std::map<std::string, double>& name_value_m
 	bool r = true;
 	for (auto&& item : name_value_map)
 	{
-		bool temp_r = setPhase();
+		bool temp_r = setPhase(item.first, item.second);
 		if (temp_r == false)
 		{
 			r = false;
 		}
 	}
 	return r;
+}
+bool LinacPIDFactory::setPhase_Py(const boost::python::dict& name_value_map)
+{
+	// meh, its doing stuff like this, or use the map_indexing_suite, or re-design 
+	std::map<std::string, double> r;
+	boost::python::list keys = boost::python::list(name_value_map.keys());
+	boost::python::list values = boost::python::list(name_value_map.values());
+	for (int i = 0; i < len(keys); ++i)
+	{
+		boost::python::extract<std::string> k_extractor(keys[i]);
+		boost::python::extract<double> v_extractor(values[i]);
+		std::string k = k_extractor();
+		double v = v_extractor();
+		r[k] = v;
+	}
+	return setPhase(r);
 }
 //
 double LinacPIDFactory::getPhase(const std::string& name)const
@@ -283,40 +299,256 @@ boost::python::dict LinacPIDFactory::getPhase_Py()const
 }
 bool LinacPIDFactory::setForwardPhaseWeight(const std::string& name, double value)
 {
-
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).setForwardPhaseWeight(value);
+	}
+	return false;
 }
 double LinacPIDFactory::getForwardPhaseWeight(const std::string& name)const
 {
-
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getForwardPhaseWeight();
+	}
+	return GlobalConstants::double_min;
 }
 std::map<std::string, double> LinacPIDFactory::getForwardPhaseWeight()const
+{
+	std::map<std::string, double> r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getForwardPhaseWeight();
+	}
+	return r;
+}
 boost::python::dict LinacPIDFactory::getForwardPhaseWeight_Py()const
+{
+	return to_py_dict<std::string, double>(getForwardPhaseWeight());
+}
 double LinacPIDFactory::getForwardPhaseWrapped(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getForwardPhaseWrapped();
+	}
+	return GlobalConstants::double_min;
+}
 std::map<std::string, double> LinacPIDFactory::getForwardPhaseWrapped()const
+{
+	std::map<std::string, double> r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getForwardPhaseWrapped();
+	}
+	return r;
+}
 boost::python::dict LinacPIDFactory::getForwardPhaseWrapped_Py()const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
 bool LinacPIDFactory::setProbePhaseWeight(const std::string& name, double value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).setProbePhaseWeight(value);
+	}
+	return false;
+}
+
 double LinacPIDFactory::getProbePhaseWeight(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getProbePhaseWeight();
+	}
+	return GlobalConstants::double_min;
+}
 std::map<std::string, double> LinacPIDFactory::getProbePhaseWeight()const
+{
+	std::map<std::string, double> r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getProbePhaseWeight();
+	}
+	return r;
+}
 boost::python::dict  LinacPIDFactory::getProbePhaseWeight_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
 double LinacPIDFactory::getProbePhaseWrapped(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getProbePhaseWrapped();
+	}
+	return GlobalConstants::double_min;
+}
 std::map<std::string, double> LinacPIDFactory::getProbePhaseWrapped()const
-boost::python::dict  LinacPIDFactory::getProbePhaseWrapped_Py(const std::string& name)const
+{
+	std::map<std::string, double> r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getProbePhaseWrapped();
+	}
+	return r;
+}
+boost::python::dict  LinacPIDFactory::getProbePhaseWrapped_Py()const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
 double LinacPIDFactory::getOVAL(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getProbePhaseWrapped();
+	}
+	return GlobalConstants::double_min;
+}
+
 std::map<std::string, double> LinacPIDFactory::getOVAL()const
-boost::python::dict  LinacPIDFactory::getOVAL_Py(const std::string& name)const
+{
+	std::map<std::string, double> r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getProbePhaseWrapped();
+	}
+	return r;
+}
+boost::python::dict  LinacPIDFactory::getOVAL_Py()const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
 bool LinacPIDFactory::enable(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).enable();
+	}
+	return false;
+}
 bool LinacPIDFactory::enableAll()
+{
+	bool r = false;
+	for (auto&& item : linacPIDMap)
+	{
+		bool temp = item.second.enable();
+		if (temp == false)
+		{
+			r = false;
+		}
+	}
+	return r;
+}
 bool LinacPIDFactory::disable(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).disable();
+	}
+	return false;
+}
 bool LinacPIDFactory::disableAll()
+{
+	bool r = false;
+	for (auto&& item : linacPIDMap)
+	{
+		bool temp = item.second.disable();
+		if (temp == false)
+		{
+			r = false;
+		}
+	}
+	return r;
+}
 bool LinacPIDFactory::isEnabled(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).isEnabled();
+	}
+	return false;
+}
 bool LinacPIDFactory::isDisabled(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).isDisabled();
+	}
+	return false;
+}
+
 STATE LinacPIDFactory::getEnabledState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getEnabledState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+
 std::map<std::string, STATE> LinacPIDFactory::getEnabledState()const
-boost::python::dict  LinacPIDFactory::getEnabledState_Py(const std::string& name)const
+{
+	std::map<std::string, STATE> r;
+	for (auto&& item : linacPIDMap)
+	{
+		r[item.first] = item.second.getEnabledState();
+	}
+	return r;
+}
+boost::python::dict  LinacPIDFactory::getEnabledState_Py()const
+{
+	return to_py_dict<std::string, STATE>(getEnabledState());
+}
 double LinacPIDFactory::getMaxPhase(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getMaxPhase();
+	}
+	return GlobalConstants::double_min;
+}
 double LinacPIDFactory::getMinPhase(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getMinPhase();
+	}
+	return GlobalConstants::double_min;
+}
 double LinacPIDFactory::getMaxPhaseWeight(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getMaxPhaseWeight();
+	}
+	return GlobalConstants::double_min;
+}
 double LinacPIDFactory::getMinPhaseWeight(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(linacPIDMap, full_name))
+	{
+		return linacPIDMap.at(full_name).getMinPhaseWeight();
+	}
+	return GlobalConstants::double_min;
+}
 
 
 
