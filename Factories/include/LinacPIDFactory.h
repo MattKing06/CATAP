@@ -200,6 +200,10 @@ public:
 	bool isDebugOn();
 	/*! returns true if messenger messages flag is true, false otherwise*/
 	bool isMessagingOn();
+
+
+	LoggingSystem messenger;
+
 private:
 	/*! function to update map of aliases to full-names of valves
 	* @param[in] valve : The Valve object we want to update the alias map with.*/
@@ -212,7 +216,7 @@ private:
 
 	std::map<std::string, LinacPID> linacPIDMap;
 	ConfigReader reader;
-	LoggingSystem messenger;
+
 
 
 };
