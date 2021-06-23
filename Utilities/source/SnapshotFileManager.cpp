@@ -2,13 +2,43 @@
 #include <iostream>
 namespace SnapshotFileManager
 {
-	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet";
+	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet\\MachineSnapshots";
+	const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
+
+	bool isFormatValid(const std::string& fileExtension) 
+	{
+		if (std::find(SnapshotFileManager::extensions.begin(), SnapshotFileManager::extensions.end(),
+			fileExtension) != SnapshotFileManager::extensions.end())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode)
+	{
+		const std::string fullpath = location + "/" + filename;
+		std::ofstream outFile(fullpath.c_str());
+		if (!outFile) { return false; }
+		// COULD GET THE HARDWARE TYPE FROM OutputNode, NEED TO ENFORCE HARDWARE TYPE AS FIRST ELEMENT.
+		outFile << "# YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
+		outFile << "# THIS SNAPSHOT WAS CREATED IN: " << ENUM_TO_STRING(mode) << " MODE." << std::endl;
+		outFile << outputNode << std::endl;
+		return true;
+	}
+
+	boost::system::error_code createMachineSnapshotDirectory()
+	{
+		return boost::system::error_code();
+	}
 	
 	std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList)
 	{
 		std::vector<std::string> fileList;
 		boost::filesystem::path path(dirPath);
-		const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
 		try
 		{
 			if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
@@ -27,8 +57,7 @@ namespace SnapshotFileManager
 							std::cout << " COULD NOT ACCESS : " <<  iter->path().string() << std::endl;
 						}
 					}
-					else if (std::find(extensions.begin(), extensions.end(),
-						iter->path().extension().string()) != extensions.end())
+					else if (isFormatValid(iter->path().extension().string()))
 					{
 						fileList.push_back(iter->path().string());
 						boost::system::error_code ec;

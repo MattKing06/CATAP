@@ -9,6 +9,7 @@
 #include <vector>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <SnapshotFileManager.h>
 
 /** @addtogroup factories 
  @{*/

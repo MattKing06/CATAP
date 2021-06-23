@@ -101,14 +101,14 @@ public:
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 	RFHeartbeatFactory& getRFHeartbeatFactory();
 
-
-	std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList);
-	bool saveMachineSnapshot(std::string location);
+	bool saveMachineSnapshot();
+	bool saveMachineSnapshot(const std::string& location);
 	bool loadMachineSnapshot(const std::string& location);
 	bool applySnapshot(const std::string& filename);
 	bool applySnapshot(const std::map<std::string, std::string> settings);
 	bool applySnapshot(YAML::Node settings);
 	bool applySnapshot(boost::python::dict settings);
+	std::string getDefaultSnapshotLocation() const;
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();

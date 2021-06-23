@@ -556,15 +556,54 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 	return rfHeartbeatFactory;
 }
 
-bool HardwareFactory::saveMachineSnapshot(std::string location)
+
+bool HardwareFactory::saveMachineSnapshot()
+{
+	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
+	boost::filesystem::path snapshotLocation;
+	boost::system::error_code returnedError;
+	snapshotLocation = boost::filesystem::path(SnapshotFileManager::defaultMachineSnapshotLocation) / now;
+	boost::filesystem::create_directory(snapshotLocation, returnedError);
+	if (returnedError)
+	{
+		messenger.printMessage("Could not fine snapshot location: ", snapshotLocation.string());
+		return false;
+	}
+	else
+	{
+		if (valveFactory.hasBeenSetup)
+		{
+			valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+			return true;
+		}
+		else
+		{
+			bool status = valveFactory.setup("nominal");
+			if (status)
+			{
+				valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+				return true;
+			}
+			else
+			{
+				messenger.printMessage("Failed to setup ValveFactory, cannot save snapshot for Valves.");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	return false;
+}
+
+bool HardwareFactory::saveMachineSnapshot(const std::string& location)
 {
 	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
 	boost::filesystem::path snapshotLocation;
 	boost::system::error_code returnedError;
 	if (location.empty())
 	{ 
-		const std::string defaultLocation = "\\\\claraserv3\\claranet\\test\\CATAP\\MachineSnapshot\\";
-		snapshotLocation = boost::filesystem::path(defaultLocation) / now;
+		snapshotLocation = boost::filesystem::path(SnapshotFileManager::defaultMachineSnapshotLocation) / now;
 	}
 	else 
 	{
@@ -587,56 +626,6 @@ bool HardwareFactory::saveMachineSnapshot(std::string location)
 	}
 
 	return false;
-}
-
-std::vector<std::string> HardwareFactory::getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {})
-{
-	std::vector<std::string> fileList;
-	boost::filesystem::path path(dirPath);
-	const std::vector<std::string> extensions = {".yml", ".yaml", ".YML", ".YAML"};
-	try
-	{
-		if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
-		{
-			boost::filesystem::directory_iterator iter(path);
-			boost::filesystem::directory_iterator end;
-			while (iter != end)
-			{
-				if (boost::filesystem::is_directory(iter->path()) &&
-					(std::find(skipList.begin(), skipList.end(), iter->path().filename()) != skipList.end()))
-				{
-					boost::system::error_code ec;
-					iter.increment(ec);
-					if (ec)
-					{
-						messenger.printMessage(" COULD NOT ACCESS : ", iter->path().string());
-					}
-				}
-				else if (std::find(extensions.begin(), extensions.end(),
-						 iter->path().extension().string()) != extensions.end())
-				{
-					fileList.push_back(iter->path().string());
-					boost::system::error_code ec;
-					iter.increment(ec);
-					if (ec)
-					{
-						messenger.printMessage(" COULD NOT ACCESS : ", iter->path().string());
-					}
-				}
-				else
-				{
-					boost::system::error_code ec;
-					iter.increment(ec);
-					messenger.printMessage(iter->path().string(), " is in the wrong format (no yaml files found...)");
-				}
-			}
-		}
-	}
-	catch (std::system_error & e)
-	{
-		std::cout << e.what() << std::endl;
-	}
-	return fileList;
 }
 
 bool HardwareFactory::loadMachineSnapshot(const std::string& location)
@@ -682,6 +671,11 @@ bool HardwareFactory::applySnapshot(const std::string& filename)
 bool HardwareFactory::applySnapshot(const std::map<std::string, std::string> settings)
 {
 	return false;
+}
+
+std::string HardwareFactory::getDefaultSnapshotLocation() const
+{
+	return SnapshotFileManager::defaultMachineSnapshotLocation;
 }
 
 
@@ -742,6 +736,8 @@ bool HardwareFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
+
+
 
 bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 {

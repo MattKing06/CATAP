@@ -380,9 +380,6 @@ std::map<std::string, HardwareSnapshot> ValveFactory::getSnapshot()
 
 bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::string& filename)
 {
-	const std::string fullpath = location + "/" + filename;
-	std::ofstream outFile(fullpath.c_str());
-	if (!outFile) { return false; }
 	YAML::Node outputNode;
 	for (auto& item : valveMap)
 	{
@@ -396,10 +393,7 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 			}
 		}
 	}
-	outFile << "# YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
-	outFile << "# THIS SNAPSHOT WAS CREATED IN: " << ENUM_TO_STRING(mode) << " MODE." << std::endl;
-	outFile << outputNode << std::endl;
-	return true;
+	return SnapshotFileManager::writeSnapshotToYAML(location, filename, outputNode, mode);
 }
 
 bool ValveFactory::loadSnapshot(const std::string& location)
