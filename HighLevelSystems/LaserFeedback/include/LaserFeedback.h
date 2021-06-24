@@ -1,8 +1,9 @@
-#include <MagnetFactory.h>
-#include <BPMFactory.h>
+#include <LaserEnergyMeterFactory.h>
+#include <ChargeFactory.h>
 #include <CameraFactory.h>
 #include <LaserMirrorFactory.h>
 #include <ShutterFactory.h>
+#include <LaserHWPFactory.h>
 #include <LoggingSystem.h>
 #include <GlobalTypeEnums.h>
 #include <GlobalStateEnums.h>
@@ -21,9 +22,10 @@ public:
 	std::vector<std::string> getCameraName();
 	boost::python::list getCameraName_Py();
 	LaserMirrorFactory mirrors;
+	LaserEnergyMeterFactory laserEnergyMeter;
+	LaserHWPFactory halfWavePlate;
 	ShutterFactory shutters;
 	CameraFactory cameras;
-	MagnetFactory magnets;
-	BPMFactory bpms;
+	ChargeFactory charge;
 	LoggingSystem messenger;
 };
