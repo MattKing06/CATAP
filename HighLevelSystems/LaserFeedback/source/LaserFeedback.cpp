@@ -14,7 +14,7 @@ LaserFeedback::LaserFeedback(STATE mode) :
 
 bool LaserFeedback::setup(const std::string& version)
 {
-	cameras.setup(version);
+	cameras.setup(version, TYPE::CLARA_LASER);
 	mirrors.setup(version);
 	shutters.setup(version);
 	magnets.setup(version);
@@ -31,3 +31,13 @@ bool LaserFeedback::setup(const std::string& version)
 
 
 LaserFeedback::~LaserFeedback() {}
+
+std::vector<std::string> LaserFeedback::getCameraName()
+{
+	return cameras.getCameraNames();
+}
+
+boost::python::list LaserFeedback::getCameraName_Py()
+{
+	return to_py_list(getCameraName());
+}

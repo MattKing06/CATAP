@@ -14,6 +14,7 @@ namespace BOOST_PYTHON_LASER_FEEDBACK_INCLUDE
 		boost::python::class_<LaserFeedback, boost::noncopyable>("LaserFeedback", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::args("mode")))
 			.def("setup", &LaserFeedback::setup, (boost::python::arg("self"), boost::python::arg("version")))
+			.def("getCameraName", &LaserFeedback::getCameraName_Py)
 			;
 	}
 

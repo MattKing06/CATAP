@@ -8,6 +8,7 @@
 #include <GlobalStateEnums.h>
 #include <GlobalConstants.h>
 #include <GlobalFunctions.h>
+#include <PythonTypeConversions.h>
 
 class LaserFeedback
 {
@@ -17,6 +18,8 @@ public:
 	LaserFeedback(const LaserFeedback& copyLaserFeedback);
 	bool setup(const std::string& version);
 	~LaserFeedback();
+	std::vector<std::string> getCameraName();
+	boost::python::list getCameraName_Py();
 	LaserMirrorFactory mirrors;
 	ShutterFactory shutters;
 	CameraFactory cameras;
