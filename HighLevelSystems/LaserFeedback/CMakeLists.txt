@@ -13,6 +13,9 @@ set(TEST_FILES
 
 cmake_policy(SET CMP0022 NEW)
 add_library(LaserFeedback STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
+IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+  SET_TARGET_PROPERTIES(LaserFeedback PROPERTIES COMPILE_FLAGS "-fPIC")
+ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 target_include_directories(LaserFeedback PUBLIC ${Boost_INCLUDE_DIR})
 # target_include_directories(${LIBNAME} PUBLIC ${PYTHON_INCLUDE_DIR})
 target_include_directories(LaserFeedback PRIVATE include)
