@@ -147,7 +147,7 @@ boost::python::dict EPICSTools::getBufferAverage_Py(boost::python::list pvList)
 	return to_py_dict(pvBufferAverageMap);
 }
 
-void EPICSTools::monitor(const std::string& pv)
+bool EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv, mode);
 	if (ca_state(listenerMap[pv].pv.CHID) == cs_conn)
@@ -157,8 +157,11 @@ void EPICSTools::monitor(const std::string& pv)
 	}
 	else
 	{
+		//listenerMap.erase(pv);
 		std::cout << pv << " COULD NOT CONNECT TO EPICS " << std::endl;
+		return false;
 	}
+	return true;
 }
 
 void EPICSTools::monitor(std::vector<std::string> pvList)

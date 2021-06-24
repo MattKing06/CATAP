@@ -9,6 +9,7 @@
 #include <GlobalStateEnums.h>
 #include <GlobalTypeEnums.h>
 #include "GlobalConstants.h"
+#include "HardwareState.h"
 
 /** @defgroup hardware Hardware
  *  @brief A collection of classes that represent hardware components of VELA/CLARA with parameters defined by configuration files.
@@ -24,7 +25,7 @@ public:
 	Hardware();
 
 	// for creating "proper" objects that are defeined in a yaml file 
-	Hardware(const std::map<std::string, std::string>& paramMap, STATE mode);
+	Hardware(const std::map<std::string, std::string>& specificValueMap, STATE mode);
 	
 	// for creating hardware objects that do not have yaml files (used specifically for the EPICSTools construction)
 	Hardware(STATE mode);
@@ -37,8 +38,15 @@ public:
 	TYPE getMachineArea() const;
 	std::string getHardwareTypeStr() const;
 	TYPE getHardwareType() const;
+
 	std::string getHardwareName() const;
+
+
 	STATE getMode() const;
+	bool isVirtual()const;
+	bool isPhysical()const;
+	bool isOffline()const;
+
 
 	// TODO: do we need this? can't an child of these class just access pvStructs,
 	// and no other class should be able ot get this map??? 
@@ -78,6 +86,7 @@ public:
 
 	STATE mode; // PHYSICAL VIRTUAL OFFLINE
 
+
 	static std::map<std::string, TYPE> create_map()
 	{
 		std::map<std::string, TYPE> m;
@@ -86,6 +95,7 @@ public:
 	}
 	static const std::map<std::string, TYPE> string_to_hardware_type_map;
 
+	HardwareState state_IO;
 };
 /** @}*/
 #endif //HARDWARE_H_

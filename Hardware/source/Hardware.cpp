@@ -7,8 +7,7 @@
 
 
 // map to convert yaml file strings to magnet TYPE enums
-const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
-
+//const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
 
 Hardware::Hardware() :
 	machine_area(TYPE::UNKNOWN_TYPE),
@@ -34,53 +33,17 @@ Hardware::Hardware(const std::map<std::string, std::string>& specificValueMap, S
 mode(mode),
 messenger(LoggingSystem(true, true)),
 specificHardwareParameters(specificValueMap),
-// TODO exceptions?? shoudl be more robut, 
-// TODO we DONT need teh string verions machine_area  and hardware_type they are ENUMS
-// TODO is hardware type and machine area in al hardware files ?? 
-
+// TODO exceptions?? should be more robust, 
+// TODO we DONT need the string verions machine_area  and hardware_type they are ENUMS
+// TODO is hardware type and machine area in all hardware files ?? 
 machine_area_str(specificValueMap.find("machine_area")->second),
+// this will NOT be set correctly if your machine_area type is not defined in GlobalTypeEnums AND in GlobalFunctions::stringToType
 machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
-
 hardware_type_str(specificValueMap.find("hardware_type")->second),
 hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 hardwareName(specificValueMap.find("name")->second)
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
-	// equal_range returns a variable containing start (first) and end (second)
-	// iterators for items in the multimap corresponding to pv records.
-	if (GlobalFunctions::entryExists(specificValueMap, "hardware_type"))
-	{
-		if (GlobalFunctions::entryExists(string_to_hardware_type_map, "Magnet"))
-		{
-			hardware_type = string_to_hardware_type_map.at("Magnet");
-		}
-	}
-
-/* 	if (hardwareType.compare("Magnet") != 0)
-	{
-		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS TRUE");
-		std::string pvRecordsStr = specificHardwareParameters.find(hardwareName)->second.data();
-		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
-		std::vector<std::string> pvRecordVec;
-
-		// split a string by commas
-		boost::algorithm::split(pvRecordVec, pvRecordsStr, [](char c) {return c == ','; });
-
-		//messenger.printDebugMessage("Constructing PV information for ", hardwareName);
-		for (auto record : pvRecordVec)
-		{
-			pvStruct pv = pvStruct();
-			pv.fullPVName = hardwareName;
-			pv.pvRecord = record;
-			//chid, count, mask, chtype are left undefined for now.
-			pvStructs[pv.pvRecord] = pv;
-		}
-	}
-	else
-	{
-		//messenger.printDebugMessage("hardwareType.compare(Magnet) != 0  IS FALSE");
-	} */
-	//messenger.printDebugMessage(hardwareName, " Hardware Constructor Finished ");
 }
 
 Hardware::Hardware(const Hardware& copyHardware) :
@@ -105,7 +68,6 @@ TYPE Hardware::getMachineArea() const
 {
 	return machine_area;
 }
-
 std::string Hardware::getHardwareTypeStr() const
 {
 	return hardware_type_str;
@@ -134,6 +96,20 @@ STATE Hardware::getMode() const
 {
 	return mode;
 }
+
+bool Hardware::isVirtual()const
+{
+	return getMode() == STATE::VIRTUAL;
+}
+bool Hardware::isPhysical()const
+{
+	return getMode() == STATE::PHYSICAL;
+}
+bool Hardware::isOffline()const
+{
+	return getMode() == STATE::OFFLINE;
+}
+
 
 
 bool Hardware::operator==(Hardware rhs)

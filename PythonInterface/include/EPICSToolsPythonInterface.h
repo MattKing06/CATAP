@@ -15,6 +15,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
 			.add_property("PV", &Listener::pvToMonitor)
+			.add_property("connected", &Listener::isConnected, "connected status of PV")
+			.def("isConnected", &Listener::isConnected, boost::python::args("self"), "get connected status (true/false)")
 			.def("getValue", &Listener::getValue_Py, (boost::python::arg("self")), "get current value of the monitor")
 			.def("getArray", &Listener::getArray_Py, boost::python::arg("self"), "get current array of the monitor")
 			.def("setBufferSize", &Listener::setBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the buffer (default size is 10)")
@@ -28,7 +30,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 	}
 	void expose_epics_tools_object() 
 	{
-		void(EPICSTools:: * monitor_single)(const std::string&) = &EPICSTools::monitor;
+		bool(EPICSTools:: * monitor_single)(const std::string&) = &EPICSTools::monitor;
 		boost::python::object(EPICSTools:: * get_single)(const std::string&) = &EPICSTools::get_Py;
 		boost::python::dict(EPICSTools:: * get_multiple)(boost::python::list) = &EPICSTools::get_Py;
 		void(EPICSTools:: * put_single)(const std::string&, boost::python::object) = &EPICSTools::put_Py;

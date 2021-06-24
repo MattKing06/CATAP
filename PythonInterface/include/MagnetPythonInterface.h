@@ -1,5 +1,6 @@
 #ifndef MAGNET_PYTHON_INTERFACE_H_
 #define MAGNET_PYTHON_INTERFACE_H_
+
 #include "Magnet.h"
 #include "MagnetFactory.h"
 #include "PythonTypeConversions.h"
@@ -10,57 +11,120 @@
 //using namespace boost;
 namespace BOOST_PYTHON_MAGNET_INCLUDE
 {
-	//class MagnetFactory;
-	//boost::python::dict getAllPSUState_Py()
-	//{
-	//	return to_py_dict(MagnetFactory::getAllPSUState())
-	//}
+	void expose_magnet_state() {
 
-	/// one-stop shop for magnet state
-	void expose_magnet_state_struct_and_dburt() {
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<magnetState>())->to_python_target_type());
+		if (is_registered) return;
+
+		boost::python::class_<magnetState>
+			("magnetStateStruct", "magnetStateStruct Doc String")
+			.add_property("name", &magnetState::name)
+			.add_property("psu_state", &magnetState::psu_state)
+			.add_property("ilk_state", &magnetState::ilk_state)
+			
+			// TODO old naming style, get rid 
+			.add_property("psuState", &magnetState::psu_state)
+			.add_property("ilkState", &magnetState::ilk_state)
+
+			.add_property("seti", &magnetState::seti)
+			.add_property("readi", &magnetState::readi)
+			;
+	};
+	void expose_magnet_states() {
  
-		//boost::python::class_<magnetStateStruct>
-		//	("magnetStateStruct", "magnetStateStruct Doc String")
-		//	.add_property("numMags", &magnetStateStruct::numMags)
-		//	.add_property("magNames", &magnetStateStruct::magNames_Py)
-		//	.add_property("psuStates", &magnetStateStruct::psuStates_Py)
-		//	.add_property("setiValues", &magnetStateStruct::setiValues_Py)
-		//	.add_property("readiValues", &magnetStateStruct::readiValues_Py)
-		//	;
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<magnetStates>())->to_python_target_type());
+		if (is_registered) return;
+		boost::python::class_<magnetStates>
+			("dburt", "dburt Doc String")
+			.add_property("numMags", &magnetStates::magnet_count)
+			.add_property("magnetStateMap_Py", &magnetStates::magnet_states_map)
+			;
+	};
+
+	void expose_magnet_dburt() {
+
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<dburt>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<dburt>
 			("dburt", "dburt Doc String")
 			.add_property("comment", &dburt::comment)
-			.add_property("timestamp", &dburt::timestamp)
 			.add_property("magnetstates", &dburt::magnetstates)
 			;
+
+
+
+
 	};
 
-
+	
 	void expose_magnet_object() 
 	{
-
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Magnet>())->to_python_target_type());
 		if (is_registered) return;
 		// magnet exposure
-		boost::python::class_<Magnet, boost::python::bases<Hardware>, boost::noncopyable>("Magnet", boost::python::no_init)
+		boost::python::class_<Magnet, boost::python::bases<Hardware>, 
+			boost::noncopyable>("Magnet", boost::python::no_init)
+			// Note some variables are exposed as properties and with functions 
+			// TODO make these complete 
 			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
+			.add_property("K_SET_P", &Magnet::getKSetP, &Magnet::setKSetP)
+
+			.def("K_DIP_P", &Magnet::getKDipP)
+			.def("INT_STR_MM", &Magnet::getIntStr_mm)
+			.def("INT_STR", &Magnet::getIntStr)
+			.def("K_ANG", &Magnet::getKAng)
+			.def("K_VAL", &Magnet::getKVal)
+			.def("K_MRAD", &Magnet::getKmrad)
+
 			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
 			.add_property("READI", &Magnet::getREADI)
 			.add_property("name", &Magnet::getHardwareName)
 			.add_property("manufacturer", &Magnet::getManufacturer)
 			.add_property("serial_number", &Magnet::getSerialNumber)
+			.add_property("min_i", &Magnet::getMinI)
+			.add_property("max_i", &Magnet::getMaxI)
+			.add_property("is_degaussing", &Magnet::isDegaussing)
+			.add_property("position", &Magnet::getPosition)
+			.add_property("magnetic_length", &Magnet::getMagneticLength)
+			.add_property("mag_type", &Magnet::getMagType)
 			.add_property("magnet_type", &Magnet::getMagnetType)
+			.add_property("position", &Magnet::getPosition)
+			.add_property("magnetic_length", &Magnet::getMagneticLength)
 			//.add_property("epicsInterface", &Magnet::epicsInterface)
 			.def("switchOff", &Magnet::switchOff)
 			.def("switchOn", &Magnet::switchOn)
+			.def("setPSUState", &Magnet::setPSUState)
 			.def("getSETI", &Magnet::getSETI)
+			.def("SETIZero", &Magnet::SETIZero)
 			.def("SETI", &Magnet::SETI)
+			.def("getFieldIntegralCoefficients", &Magnet::getFieldIntegralCoefficients_Py)
 			.def("getREADI", &Magnet::getREADI)
+			.def("getREADITolerance", &Magnet::getREADITolerance)
+			.def("setREADITolerance", &Magnet::setREADITolerance)
+			.def("getMinI", &Magnet::getMinI)
+			.def("getMaxI", &Magnet::getMaxI)
 			.def("degauss", &Magnet::degauss)
-			.def("debugMessagesOn", &Magnet::debugMessagesOn)
+			.def("isDegaussing", &Magnet::isDegaussing)
+			.def("getDegaussValues", &Magnet::getDegaussValues_Py)
+			.def("getDegaussTolerance", &Magnet::getDegaussTolerance)
+			.def("getFieldIntegralCoefficients", &Magnet::getFieldIntegralCoefficients_Py)
+			.def("setDegaussValues", &Magnet::setDegaussValues_Py)
+			.def("setDegaussTolerance", &Magnet::setDegaussTolerance)
+			.def("setREADITolerance", &Magnet::setREADITolerance)
+			.def("offlineSetILKState", &Magnet::offlineSetIlkState)
+			.def("offlineSetILKState", &Magnet::getFullPSUName)
+			.def("getMagnetType", &Magnet::getMagnetType)
+			.def("getFullPSUName", &Magnet::getFullPSUName)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
+			.def("setMagnetState", &Magnet::setMagnetState)
+			.def("getMagnetState", &Magnet::getMagnetState)
+			.def("isInState", &Magnet::isInState)
+			.def("isInSETIandPSUState", &Magnet::isInSETIandPSUState)
+			.def("getManufacturer", &Magnet::getManufacturer)
+			.def("getMagneticLength", &Magnet::getMagneticLength)
+			.def("getMagneticLength", &Magnet::getMagneticLength)
+			
+			.def("getAliases", &Magnet::getAliases_Py)
 			.def("messagesOn", &Magnet::messagesOn)
 			.def("messagesOff", &Magnet::messagesOff)
 			;
@@ -97,8 +161,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 
 		std::string(MagnetFactory::*getManufacturer_single)(const std::string&)const = &MagnetFactory::getManufacturer;
-		//int(MagnetFactory::*getSerialNumber_single)(const std::string&)const = &MagnetFactory::getSerialNumber;
-		std::string(MagnetFactory::*getMagnetType_single)(const std::string&)const = &MagnetFactory::getMagnetType;
+		//int(MagnetFactory::*getserial_number_single)(const std::string&)const = &MagnetFactory::getserial_number;
+		TYPE(MagnetFactory::*getMagnetType_single)(const std::string&)const = &MagnetFactory::getMagnetType;
 		std::string(MagnetFactory::*getMagnetRevType_single)(const std::string&)const = &MagnetFactory::getMagnetRevType;
 		std::string(MagnetFactory::*getFullPSUName_single)(const std::string&)const = &MagnetFactory::getFullPSUName;
 		std::string(MagnetFactory::*getMeasurementDataLocation_single)(const std::string&)const = &MagnetFactory::getMeasurementDataLocation;
@@ -112,23 +176,108 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 
 
-		Magnet& getMagnet(const std::string & fullMagnetName);
-		//boost::python::list getAllMagnetNames_Py()const;
-
-		// getSETI
+		//Magnet& getMagnet(const std::string & fullMagnetName);
 
 		bool(MagnetFactory::*degauss_single)(const std::string &, const bool)= &MagnetFactory::degauss;
 
+		// OVERLOADED SETUP FUNCTIONS TO ALLOW USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
+		bool (MagnetFactory::* setup_NoArg)() = &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_VersionArg)(const std::string&) = &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_TypeArg)(TYPE)= &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_VersionTypeArg)(const std::string&, TYPE  )= &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_ListArg)(const boost::python::list&) = &MagnetFactory::setup;
+		bool (MagnetFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &MagnetFactory::setup;
+
+		bool (MagnetFactory::* applyDBURT_filename)(const std::string&) = &MagnetFactory::applyDBURT;
+		bool (MagnetFactory::* applyDBURTQuadOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
+		bool (MagnetFactory::* applyDBURTCorOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTCorOnly;
+		bool (MagnetFactory::* applyDBURT_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURT;
+		bool (MagnetFactory::* applyDBURTQuadOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
+		bool (MagnetFactory::* applyDBURTCorOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTCorOnly;
+
+
+		// woot fuctcion pointers 
+		STATE(MagnetFactory:: * setKSetP_name)(const std::string & name, const double value) = &MagnetFactory::setKSetP;
+		//STATE(MagnetFactory:: * setKSetP_names)(const std::vector<std::string> & names, const double value) = &MagnetFactory::setKSetP;
+		//STATE MagnetFactory::setKSetP(const std::string & name, const double value)
+		//std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<std::string> & names, const double value)
+
+		/*NEED constRUCTOR THAT TAKES VERSION??*/
+		//MagnetFactory(std::string VERSION);
+
+
+
 
 		boost::python::class_<MagnetFactory, boost::noncopyable>("MagnetFactory", boost::python::no_init)
-			.def(boost::python::init<STATE>())
-			.def("setup", &MagnetFactory::setup)
+			//.def(boost::python::init<STATE>())
+			//.def(boost::python::init<STATE, TYPE>())
+			//.def(boost::python::init<STATE, boost::python::list>())
+			.def("setup", setup_NoArg)
+			.def("setup", setup_VersionArg)
+			.def("setup", setup_TypeArg)
+			.def("setup", setup_VersionTypeArg)
+			.def("setup", setup_ListArg)
+			.def("setup", setup_VersionListArg)
 			//.add_property("magnetMap", &MagnetFactory::magnetMap)
 			.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			// NO you can't do this is you can't create a map of Magnet references 
 			//.def("getMagnets", &MagnetFactory::getMagnets_Py, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			
+			.def("setKSetP",setKSetP_name)
+			.def("setKSetP",&MagnetFactory::setKSetP_Py)
+			.def("setKSetP",&MagnetFactory::setKSetP_area_Py)
+			.def("setKSetP",&MagnetFactory::setKSetP_Areas_py)
+
+
+			.def("getKDipP", &MagnetFactory::getKDipP)
+			.def("getKDipP", &MagnetFactory::getKDipPs_Py)
+			.def("getKDipP", &MagnetFactory::getAllKDipP_Py)
+
+			.def("getIntStr_mm", &MagnetFactory::getIntStr_mm)
+			.def("getIntStr_mm", &MagnetFactory::getIntStrs_mm_Py)
+			.def("getIntStr_mm", &MagnetFactory::getAllIntStr_mm_Py)
+
+			.def("getIntStr", &MagnetFactory::getIntStr)
+			.def("getIntStr", &MagnetFactory::getIntStrs_Py)
+			.def("getIntStr", &MagnetFactory::getAllIntStr_Py)
+
+
+			.def("getKSetP", &MagnetFactory::getKSetP)
+			.def("getKSetP", &MagnetFactory::getKSetPs_Py)
+			.def("getKSetP", &MagnetFactory::getAllKSetP_Py)
+
+			.def("getKAng", &MagnetFactory::getKAng)
+			.def("getKAng", &MagnetFactory::getKAngs_Py)
+			.def("getKAng", &MagnetFactory::getAllKAng_Py)
+			.def("getAllDipoleKAng", &MagnetFactory::getAllDipoleKAng_Py)
+
+
+
+			.def("getKmrad", &MagnetFactory::getKmrad)
+			.def("getKmrad", &MagnetFactory::getKmrad_Py)
+			.def("getKmrad", &MagnetFactory::getAllKmrad_Py)
+			.def("getAllCorrectorKmrad", &MagnetFactory::getAllCorrectorKmrad_Py)
+			.def("getAllHCorrectorKmrad", &MagnetFactory::getAllHCorrKmrad_Py)
+			.def("getAllVCorrectorKmrad", &MagnetFactory::getAllVCorrKmrad_Py)
+
+
+			.def("getKVal", &MagnetFactory::getKVal)
+			.def("getKVal", &MagnetFactory::getKVals_Py)
+			.def("getKVal", &MagnetFactory::getAllKVal_Py)
+			.def("getAllQuadKVals", &MagnetFactory::getAllQuadKVals_Py)
+
+
 			.def("getAllMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
+			.def("getAllVCorrectorNames",&MagnetFactory::getAllVCorrectorNames_Py)
+			.def("getAllHCorrectorNames",&MagnetFactory::getAllHCorrectorNames_Py)
+			.def("getAllCorrectorNames",&MagnetFactory::getAllCorrectorNames_Py)
+			.def("getAllQuadNames",&MagnetFactory::getAllQuadNames_Py)
+			.def("getAllSolNames",&MagnetFactory::getAllSolNames_Py)
+			.def("getAllDipoleNames",&MagnetFactory::getAllDipoleNames_Py)
+
+
+			// for backwards compatability with VC_Controllers
+			.def("getMagnetNames",&MagnetFactory::getAllMagnetNames_Py)
 					
 			.def("getPSUState", &MagnetFactory::getPSUState)
 			.def("getPSUState", &MagnetFactory::getPSUState_Py)
@@ -170,8 +319,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getManufacturer", getManufacturer_single)
 			.def("getManufacturer_Py", &MagnetFactory::getManufacturer_Py)
 
-			//.def("getSerialNumber", getSerialNumber_single)
-			//.def("getSerialNumber", &MagnetFactory::getSerialNumber_Py)
+			//.def("getserial_number", getserial_number_single)
+			//.def("getserial_number", &MagnetFactory::getserial_number_Py)
 
 			.def("getMagnetType", getMagnetType_single)
 			.def("getMagnetType", &MagnetFactory::getMagnetType_Py)
@@ -187,6 +336,19 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 			.def("getNumberOfDegaussSteps", getNumberOfDegaussSteps_single)
 			.def("getNumberOfDegaussSteps", &MagnetFactory::getNumberOfDegaussSteps_Py)
+
+			.def("isAType", &MagnetFactory::isAType)
+			.def("isAQuad", &MagnetFactory::isAQuad)
+			.def("isADip", &MagnetFactory::isADip)
+			.def("isASol", &MagnetFactory::isASol)
+			.def("isABSol", &MagnetFactory::isABSol)
+			.def("isAVCor", &MagnetFactory::isAVCor)
+			.def("isAHCor", &MagnetFactory::isAHCor)
+			.def("isACor", &MagnetFactory::isACor)
+			
+
+			.def("getMagnetState", & MagnetFactory::getMagnetState_Py)
+			.def("getAllMagnetState", & MagnetFactory::getAllMagnetState_Py)
 
 
 		//boost::python::dict getNumberOfDegaussSteps_Py(const boost::python::list & name) const;
@@ -207,15 +369,22 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		//bool readAndApplyDBURT(const std::string & fileName);
 		//bool isMagnetStateEqualDBURT(const std::string & fileName);
 		//std::string getFullName(const std::string & name_to_check) const;
-		
-
 
 			.def("readDBURT", readDBURTT_file)
 			.def("readDBURT", readDBURT_path_file)
 			.def("writeDBURT", writeDBURT_file)
 			.def("writeDBURT", writeDBURT_file_comment)
 			.def("writeDBURT", writeDBURT_path_file_comment)
-			.def("readAndApplyDBURT", &MagnetFactory::readAndApplyDBURT)
+			
+			.def("applyDBURT",			applyDBURT_filename)
+			.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filename)
+			.def("applyDBURTCorOnly",	applyDBURTCorOnly_filename)
+
+			.def("applyDBURT",			applyDBURT_filepath_filename)
+			.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filepath_filename)
+			.def("applyDBURTCorOnly",	applyDBURTCorOnly_filepath_filename)
+
+
 			.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)
 			.def("debugMessagesOff", &MagnetFactory::debugMessagesOff)
 			.def("messagesOn", &MagnetFactory::messagesOn)

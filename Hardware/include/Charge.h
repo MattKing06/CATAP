@@ -6,11 +6,14 @@
 #endif //HARDWARE_H_
 #ifndef EPICS_CHARGE_INTERFACE_H_
 #include "EPICSChargeInterface.h"
+#include "PythonTypeConversions.h"
 #endif //EPICS_CHARGE_INTERFACE_H_
 #include "ChargePVRecords.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
+#include <boost/python/dict.hpp>
+#include <boost/python/list.hpp>
 
 class EPICSChargeInterface;
 typedef boost::shared_ptr<EPICSChargeInterface> EPICSChargeInterface_sptr;
@@ -88,7 +91,18 @@ public:
 	/*! get the buffer of charge values.
 	@param[out] values: charge buffer.*/
 	boost::circular_buffer< double > getQBuffer() const;
+	/*! get the vector of charge values (after using monitorForNShots) as a python list
+	@param[out] values: charge vector.*/
+	boost::python::list getQVector_Py() const;
+	/*! get the buffer of charge values as a python list.
+	@param[out] values: charge buffer.*/
+	boost::python::list getQBuffer_Py() const;
+	/*! set charge value (virtual only).
+	@param[in] double: charge value.
+	@param[out] bool: true if it worked.*/
+	bool setQVirtual(const double& value);
 	/*! set charge value when updated from EPICS.
+	@param[in] double: charge value
 	@param[out] bool: true if it worked.*/
 	bool setQ(const double& value);
 	/*! check that the buffer is updating.

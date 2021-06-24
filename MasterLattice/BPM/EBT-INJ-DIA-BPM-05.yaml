@@ -1,0 +1,33 @@
+controls_information: 
+    PV: true
+    records: SA1,SA2,SD1,SD2,RA1,RA2,RD1,RD2,X,Y,AWAK,RDY,DATA
+    pv_record_map:
+        SA1: EBT-INJ-DIA-BPM-05:SA1
+        SA2: EBT-INJ-DIA-BPM-05:SA2
+        SD1: EBT-INJ-DIA-BPM-05:SD1
+        SD2: EBT-INJ-DIA-BPM-05:SD2
+        RA1: EBT-INJ-DIA-BPM-05:RA1
+        RA2: EBT-INJ-DIA-BPM-05:RA2
+        RD1: EBT-INJ-DIA-BPM-05:RD1
+        RD2: EBT-INJ-DIA-BPM-05:RD2
+        X: EBT-INJ-DIA-BPM-05:X
+        Y: EBT-INJ-DIA-BPM-05:Y
+        DATA: EBT-INJ-DIA-BPM-05:DATA:B2V.VALA
+        RDY: EBT-INJ-DIA-BPM-05:RDY
+        AWAK: EBT-INJ-DIA-BPM-05:AWAK
+properties: 
+    machine_area: INJ
+    hardware_type: BPM
+    bpm_type: STRIPLINE
+    bpm_set_max_wait_time: 0.5
+    name: EBT-INJ-DIA-BPM-05
+    virtual_name: VM-EBT-INJ-DIA-BPM-05
+    att1cal: 12
+    att2cal: 12
+    v1cal: 1.04374779034
+    v2cal: 0.964411901508
+    qcal: 70.4992194267
+    mn: 15
+    xn: 0
+    yn: 0
+    position: 3.6228

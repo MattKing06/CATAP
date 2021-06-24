@@ -73,7 +73,6 @@ void Getter::setValueFromEPICS()
 			}
 			else
 			{
-				
 				std::vector<double> d_array(pv.COUNT);
 				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &d_array[0]);
 				EPICSInterface::sendToEPICS();

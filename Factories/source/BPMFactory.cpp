@@ -15,7 +15,7 @@ BPMFactory::BPMFactory() : BPMFactory(STATE::OFFLINE)
 {
 	std::cout << "BPMFactory DEFAULT constRUCTOR called " << std::endl;
 }
-BPMFactory::BPMFactory(STATE mode):
+BPMFactory::BPMFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("BPM", mode))
@@ -49,11 +49,17 @@ BPMFactory::~BPMFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					bpm.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID)
+					{
+						bpm.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
-				bpm.second.epicsInterface->removeChannel(pvStruct.second);
-				ca_pend_io(CA_PEND_IO_TIMEOUT);
+				if (pvStruct.second.CHID)
+				{
+					bpm.second.epicsInterface->removeChannel(pvStruct.second);
+					ca_pend_io(CA_PEND_IO_TIMEOUT);
+				}
 			}
 		}
 	}
@@ -76,8 +82,8 @@ void BPMFactory::populateBPMMap()
 
 void BPMFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == BPMRecords::X || 
-		pvStruct.pvRecord == BPMRecords::Y || 
+	if (pvStruct.pvRecord == BPMRecords::X ||
+		pvStruct.pvRecord == BPMRecords::Y ||
 		pvStruct.pvRecord == BPMRecords::SA1 ||
 		pvStruct.pvRecord == BPMRecords::SA2 ||
 		pvStruct.pvRecord == BPMRecords::SD1 ||
@@ -126,7 +132,11 @@ bool BPMFactory::setup(const std::string& VERSION)
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateBPMMap();
-
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 	for (auto& bpm : bpmMap)
@@ -134,7 +144,6 @@ bool BPMFactory::setup(const std::string& VERSION)
 		std::map<std::string, pvStruct>& bpmPVStructs = bpm.second.getPVStructs();
 		for (auto& pv : bpmPVStructs)
 		{
-			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				retrievemonitorStatus(pv.second);
@@ -150,19 +159,18 @@ bool BPMFactory::setup(const std::string& VERSION)
 				{
 					bpm.second.epicsInterface->createSubscription(bpm.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
 			}
 			else
 			{
-				messenger.printMessage(bpm.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
+		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
-	std::cout << "end" << std::endl;
 }
 
 std::map<std::string, BPM> BPMFactory::getBPMs(std::vector<std::string> bpmNames)

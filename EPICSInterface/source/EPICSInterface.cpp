@@ -1,4 +1,5 @@
 #include "EPICSInterface.h"
+#include "GlobalFunctions.h"
 #include <exception>
 #include <iostream>
 #include <cstring>
@@ -6,9 +7,22 @@
 #include <chrono>
 
 
+
+//std::map<int, std::string> EPICSInterface::status_to_string = {
+//	{ECA_NORMAL, "ECA_NORMAL"},
+//	{ECA_TIMEOUT, "ECA_TIMEOUT"},
+//	{ECA_BADTYPE, "ECA_BADTYPE"},
+//	{ECA_BADCHID, "ECA_BADCHID"},
+//	{ECA_BADCOUNT, "ECA_BADCOUNT"},
+//	{ECA_GETFAIL, "ECA_GETFAIL"},
+//	{ECA_NORDACCESS, "ECA_NORDACCESS"},
+//	{ECA_DISCONN, "ECA_DISCONN"}
+//};
+
+
 EPICSInterface::EPICSInterface() : 
 thisCaContext(nullptr),
-messenger(LoggingSystem(false, false))
+messenger(LoggingSystem(true, true))
 {
 	int status;
 	/* 
@@ -24,6 +38,9 @@ messenger(LoggingSystem(false, false))
 	}
 
 	thisCaContext = ca_current_context();
+
+	messenger.printDebugMessage("EPICSInterface constuctor ");
+
 }
 
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine):
@@ -57,9 +74,24 @@ void EPICSInterface::detachFromContext()
 
 void EPICSInterface::sendToEPICS()
 {
+	try
+	{
+		int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK(status);
+	}
+	catch (const std::runtime_error & runtimeError)
+	{
+		std::cout << runtimeError.what() << std::endl;
+	}
+}
+
+
+int EPICSInterface::sendToEPICSReturnStatus()
+{
 	int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 	std::string status_str = "ca_pend_io return status: " + status;
 	SEVCHK(status, status_str.c_str());
+	return status;
 }
 
 void EPICSInterface::attachTo_thisCaContext()
@@ -70,9 +102,21 @@ void EPICSInterface::attachTo_thisCaContext()
 	}
 }
 
+void EPICSInterface::detachFrom_thisCaContext()
+{
+	ca_detach_context();
+}
+//void EPICSInterface::createSubscription(Hardware& hardware, pvStruct& pvStruct) const
+//{
+//	int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
+//										pvStruct.CHID, pvStruct.MASK,
+//										pvStruct.updateFunction,
+//										(void*)&hardware, 
+//										&pvStruct.EVID);
+//	MY_SEVCHK(status);
+//}
 
-
-void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
+void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is a better name ?? 
 {
 	try
 	{
@@ -97,6 +141,7 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		//	pv = pvStruct.fullPVName;
 		//}
 		std::string pv = pvStruct.fullPVName;
+		messenger.printDebugMessage("ca_create_channel to  ", pv);
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
 		
@@ -122,7 +167,10 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const
 		std::cout << e.what() << std::endl;
 	}
 
+
 }
+
+
 void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 {
 	if (pvStruct.monitor)
@@ -147,6 +195,14 @@ void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_INT;
 		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_CHAR)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_CHAR;
+		}
+		else if (ca_field_type(pvStruct.CHID) == DBR_STRING)
+		{
+			pvStruct.monitorCHTYPE = DBR_TIME_STRING;
+		}
 		else
 		{
 			pvStruct.monitorCHTYPE = ca_field_type(pvStruct.CHID);
@@ -164,7 +220,14 @@ std::string EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp)
 {
 	char timeString[37];
 	epicsTimeToStrftime(timeString, sizeof(timeString), "[%a %b %d %Y %H:%M:%S.%f]", &stamp);
-	return timeString;
+	return std::string(timeString);
+}
+
+void EPICSInterface::getEPICSTime(const epicsTimeStamp& stamp, std::string& str)
+{
+	char timeString[37];
+	epicsTimeToStrftime(timeString, sizeof(timeString), "[%a %b %d %Y %H:%M:%S.%f]", &stamp);
+	str = std::string(timeString);
 }
 
 void EPICSInterface::debugMessagesOn()
@@ -201,6 +264,31 @@ bool EPICSInterface::isDebugOn()
 	return messenger.isDebugOn();
 }
 
+bool EPICSInterface::check_ca_state(const pvStruct& pvStruct)
+{
+	if (ca_state(pvStruct.CHID) == cs_conn)
+	{
+		return true;
+	}
+	else
+	{
+		messenger.printMessage(pvStruct.fullPVName, " could not connect to EPICS. ");
+	}
+	return false;
+}
+
+bool EPICSInterface::check_ca_write_access(const pvStruct& pvStruct)
+{
+	if (ca_write_access(pvStruct.CHID))
+	{
+		return true;
+	}
+	else
+	{
+		messenger.printMessage(pvStruct.fullPVName, " does not have write access.");
+	}
+	return false;
+}
 
 void EPICSInterface::setPVTimeStampFromArgs(pvStruct& pv, const event_handler_args args)
 {
@@ -214,6 +302,29 @@ void EPICSInterface::updateTimeStampDoublePair(const struct event_handler_args& 
 	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
 	pairToUpdate.first = tv->stamp;
 	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, long>& pairToUpdate)
+{
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	pairToUpdate.second = tv->value;
+}
+
+void EPICSInterface::updateTimeStampBoolPair(const struct event_handler_args& args,
+	std::pair<epicsTimeStamp, bool>& pairToUpdate)
+{
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if(tv->value == GlobalConstants::one_int)
+	{
+		pairToUpdate.second = true;
+	}
+	else
+	{
+		pairToUpdate.second = false;
+	}
+	pairToUpdate.first = tv->stamp;
 }
 
 void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,
@@ -326,13 +437,6 @@ void EPICSInterface::updateTimeStampUShortPair(const struct event_handler_args& 
 }
 
 
-void EPICSInterface::updateTimeStampLongPair(const struct event_handler_args& args,
-	std::pair<epicsTimeStamp, long>& pairToUpdate)
-{
-	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
-	pairToUpdate.first = tv->stamp;
-	pairToUpdate.second = tv->value;
-}
 
 void EPICSInterface::updateTimeStampStringPair(const struct event_handler_args& args,
 	std::pair<epicsTimeStamp, std::string>& pairToUpdate)
@@ -363,9 +467,11 @@ std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUShortPair
 	std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	dbr_enum_t a = tv->value;
-	//std::cout << "tv->value  = " << a << std::endl;
+	//std::cout << "tv->value  = " << a << " sizeof(a) " << sizeof(a) << std::endl;
 	r.first  = tv->stamp;
 	r.second = (unsigned short)a;
+	//std::cout << "r.second   = " << r.second  << " sizeof(r.second ) " << sizeof(r.second ) << std::endl;
+
 /* 
 	std::pair<epicsTimeStamp, short> r;
 	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
@@ -399,6 +505,34 @@ std::pair<epicsTimeStamp, double> EPICSInterface::getTimeStampDoublePair(const s
 	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
 	r.first = tv->stamp;
 	r.second = tv->value;
+	return r;
+}
+
+std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUnsignedShortPair(const struct event_handler_args& args)
+{
+	std::pair<epicsTimeStamp, unsigned short> r;
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (unsigned short)tv->value;
+	return r;
+}
+
+
+std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair(const struct event_handler_args& args)
+{
+	std::pair < epicsTimeStamp, std::string > r;
+	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = std::string((const char*)tv->value, 40); // MAGIC NUMBER ! 
+	GlobalFunctions::rtrim(r.second);
+	return r;
+}
+std::pair < epicsTimeStamp, long > EPICSInterface::getTimeStampLongPair(const struct event_handler_args& args)
+{
+	std::pair < epicsTimeStamp, long > r;
+	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+	r.first = tv->stamp;
+	r.second = (long)tv->value; 
 	return r;
 }
 
@@ -560,4 +694,36 @@ std::vector<std::string> EPICSInterface::returnValueFromArgsAsStringVector(const
 		++i;
 	}
 	return rawVectorContainer;
+}
+
+bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const
+{
+	std::cout << "getArrayUserCount, count = " << count << std::endl;
+	std::cout << "ECA_NORMAL check  " << ECA_NORMAL << std::endl;
+		
+	if (ca_state(pvStruct.CHID) == cs_conn)
+	{
+		std::cout << "ca_state(pvStruct.CHID) == cs_conn " << std::endl;
+		int status = ca_array_get(pvStruct.CHTYPE, count, pvStruct.CHID, pointer_to_dbr_type);
+		std::cout << "ca_array_get complete status =  " << status << std::endl;
+		MY_SEVCHK(status);
+		if ( status == ECA_NORMAL)
+		{
+			std::cout << "status == ECA_NORMAL " << std::endl;
+			//int status2 = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			int status2 = ca_flush_io();
+			std::cout << "ca_flush_io complete, status = " << status2 << std::endl;
+			MY_SEVCHK(status2);
+			if (status2 == ECA_NORMAL)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			std::cout << "ca_array_get did not return  ECA_NORMAL " << std::endl;
+		}
+
+	}
+	return false;
 }

@@ -30,6 +30,10 @@ public:
 								  when the subscription was set up in the EPICSInterface createSubscription function.
 	*/
 	static void updateQ(const struct event_handler_args args);
+	/*! sends a pulse (a double) to set the charge PV (virtual only)
+	* @param[in] value : The desired charge value
+	* @param[in] pv : The pvStruct associated with the charge PV*/
+	void setQ(const double& value, const pvStruct& pv);
 	static LoggingSystem messenger;
 };
 /** \copydoc EPICSInterface*/

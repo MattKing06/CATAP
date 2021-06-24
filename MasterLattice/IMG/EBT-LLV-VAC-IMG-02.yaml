@@ -1,0 +1,12 @@
+controls_information:
+    PV: true
+    pv_record_map:
+        Sta: EBT-LLV-VAC-IMG-02:EMIS_RB
+        P: EBT-LLV-VAC-IMG-02:PRES
+properties:
+    machine_area: INJ
+    hardware_type: IMG
+    img_type: LOAD_LOCK
+    name: EBT-LLV-VAC-IMG-02
+    virtual_name: VM-EBT-LLV-VAC-IMG-02
+    name_alias: "LLV-IMG-02"

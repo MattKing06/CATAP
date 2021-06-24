@@ -1,10 +1,7 @@
 #ifndef GLOBAL_TYPE_ENUMS_H_
 #define GLOBAL_TYPE_ENUMS_H_
-
 #include <boost/preprocessor.hpp>
 #include <string>
-
-
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //                                                                            \
     /// This macro creates an enum and also enables us to                     \
@@ -36,11 +33,24 @@
 
 
 /*
-						**************** README *********************
+  ___ ___   _   ___  __  __ ___
+ | _ \ __| /_\ |   \|  \/  | __|
+ |   / _| / _ \| |) | |\/| | _|
+ |_|_\___/_/ \_\___/|_|  |_|___|
+
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
 	
 	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
-		 
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalTypesPythonInterface.h
+	 
 	IF ADDING A MACHINE_AREA THAT IS AN AGGREGATE OF MANY AREAS UPDATE  GlobalfUNCTIONS::isInMachineArea
+
+	DON'T FORGET YOU PROBABLY ALSO NEED TO UPDATE the python exposure functions
+
+
 */
 DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD ERROR IN THIS SCHEME!!! (With MSVC)
 	(UNKNOWN_TYPE)
@@ -63,6 +73,12 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(ALL_VELA_CLARA)
 	(VELA_GUN)
 	(CLARA_GUN)
+	(HRRG)
+	(LRRG)
+	(CLARA_HRRG)
+	(CLARA_LRRG)
+	(VELA_HRRG)
+	(VELA_LRRG)
 	(HRRG_GUN)
 	(LRRG_GUN)
 	(LAS) // TODO change to laser or laser transport ??? 
@@ -98,15 +114,34 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VERTICAL)
 	(PNEUMATIC)
 	(CHARGE)
-	(BPM_TYPE) // TODO hmm this has the same name as the object !! adn so breaks thigns
+	(BPM_TYPE) // TODO hmm this has the same name as the object !! and so breaks things
 	(VALVE)
 	(IMG_TYPE)
+	(LOAD_LOCK)
 	(LLRF_TYPE)
+	//
 	(CAMERA_TYPE)
+	(CLARA_CAMERA)
+	(VELA_CAMERA)
 	(HWP)
 	(ENERGYMETER)
 	// shutter objects
 	(SHUTTER)
+	(POWER)
+	(PHASE)
+	// RF MODULATOR
+	(RF_MODULATOR)
+
+	// PROT 
+	(RF_PROTECTION)
+	(ENABLE)
+	(GENERAL)
+	(RESET)
+	(TEST)
+	// RF modulator heartbeats
+	(RFHEARTBEAT)
+
+
 )
 
 #endif //GLOBAL_TYPE_ENUMS_H_

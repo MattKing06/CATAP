@@ -7,7 +7,14 @@ controls_information:
     RPOWER: EBT-INJ-MAG-QUAD-09:RPOWER
     SETI: EBT-INJ-MAG-QUAD-09:SETI
     SPOWER: EBT-INJ-MAG-QUAD-09:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    EBT-INJ-MAG-QUAD-09:K_DIP_P
+    INT_STR_MM: EBT-INJ-MAG-QUAD-09:INT_STR_MM
+    INT_STR:    EBT-INJ-MAG-QUAD-09:INT_STR
+    K_SET_P:    EBT-INJ-MAG-QUAD-09:K_SET_P
+    K_ANG:      EBT-INJ-MAG-QUAD-09:K_ANG
+    K_MRAD:     EBT-INJ-MAG-QUAD-09:K_MRAD
+    K_VAL:      EBT-INJ-MAG-QUAD-09:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 0.1
   degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
@@ -15,7 +22,7 @@ properties:
   hardware_type: Magnet
   machine_area: INJ
   mag_set_max_wait_time: 45.0
-  mag_type: QUAD
+  mag_type: QUADRUPOLE
   magnetic_length: 70.4236023746139
   manufacturer: Scanditronix
   name: EBT-INJ-MAG-QUAD-09
@@ -24,3 +31,5 @@ properties:
   position: 9.972
   ri_tolerance: 0.001
   serial_number: EMDQM06
+  min_i : -10.5
+  max_i : 10.5

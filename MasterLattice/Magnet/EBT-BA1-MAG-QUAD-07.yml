@@ -7,7 +7,14 @@ controls_information:
     RPOWER: EBT-BA1-MAG-QUAD-07:RPOWER
     SETI: EBT-BA1-MAG-QUAD-07:SETI
     SPOWER: EBT-BA1-MAG-QUAD-07:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    EBT-BA1-MAG-QUAD-07:K_DIP_P
+    INT_STR_MM: EBT-BA1-MAG-QUAD-07:INT_STR_MM
+    INT_STR:    EBT-BA1-MAG-QUAD-07:INT_STR
+    K_SET_P:    EBT-BA1-MAG-QUAD-07:K_SET_P
+    K_ANG:      EBT-BA1-MAG-QUAD-07:K_ANG
+    K_MRAD:     EBT-BA1-MAG-QUAD-07:K_MRAD
+    K_VAL:      EBT-BA1-MAG-QUAD-07:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 0.1
   degauss_values: "5.995,-5.995,4.50,-4.50,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
@@ -15,7 +22,7 @@ properties:
   hardware_type: Magnet
   machine_area: BA1
   mag_set_max_wait_time: 45.0
-  mag_type: QUAD
+  mag_type: QUADRUPOLE
   magnetic_length: -1.0
   manufacturer: Scanditronix
   name: EBT-BA1-MAG-QUAD-07
@@ -24,3 +31,5 @@ properties:
   position: 0.0
   ri_tolerance: 0.001
   serial_number: E9999999
+  min_i : -6.0
+  max_i : 6.0

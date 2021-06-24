@@ -65,9 +65,23 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)
 {
 	HardwareFactory hardwareFactory(STATE::VIRTUAL);
+	hardwareFactory.debugMessagesOff();
+	hardwareFactory.messagesOff();
 	hardwareFactory.setup("Magnet", "nominal");
 	hardwareFactory.debugMessagesOn();
 }
 
+BOOST_AUTO_TEST_CASE(setting_up_camera_factory_print_names)
+{
+	HardwareFactory hardwareFactory(STATE::PHYSICAL);
+	hardwareFactory.debugMessagesOff();
+	hardwareFactory.messagesOff();
+	CameraFactory& camFactory = hardwareFactory.getCameraFactory();
+
+	for (auto&& item : camFactory.getCameraNames())
+	{
+		camFactory.messenger.printDebugMessage("Camera Object name : " + item);
+	}
+}
 
 

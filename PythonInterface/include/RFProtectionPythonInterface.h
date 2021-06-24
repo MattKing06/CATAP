@@ -15,7 +15,23 @@ namespace BOOST_PYTHON_RF_PROTECTION_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFProtection>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<RFProtection, boost::python::bases<Hardware>, boost::noncopyable>("RFProtection", boost::python::no_init)
-			.def("debugMessagesOn", &RFProtection::debugMessagesOn)
+			
+			
+			.def("getCmi", &RFProtection::getCmi)
+			.def("getStatus", &RFProtection::getStatus)
+			.def("isGood", &RFProtection::isGood)
+			.def("isNotGood", &RFProtection::isNotGood)
+			.def("isBad", &RFProtection::isBad)
+			.def("reset", &RFProtection::reset)
+			.def("enable", &RFProtection::enable)
+			.def("disable", &RFProtection::disable)
+
+
+
+
+
+			
+
 			.def("debugMessagesOff", &RFProtection::debugMessagesOff)
 			.def("messagesOn", &RFProtection::messagesOn)
 			.def("messagesOff", &RFProtection::messagesOff)
@@ -27,6 +43,15 @@ namespace BOOST_PYTHON_RF_PROTECTION_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFProtectionFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<RFProtectionFactory, boost::noncopyable>("RFProtectionFactory", boost::python::no_init)
+			
+			
+			.def("resetGun", &RFProtectionFactory::resetGun)
+			.def("resetL01", &RFProtectionFactory::resetL01)
+			.def("enableGun", &RFProtectionFactory::enableGun)
+			.def("enableL01", &RFProtectionFactory::enableL01)
+			.def("disableGun", &RFProtectionFactory::disableGun)
+			.def("disableL01", &RFProtectionFactory::disableL01)
+			
 			.def("debugMessagesOn", &RFProtectionFactory::debugMessagesOn)
 			.def("debugMessagesOff", &RFProtectionFactory::debugMessagesOff)
 			.def("messagesOn", &RFProtectionFactory::messagesOn)

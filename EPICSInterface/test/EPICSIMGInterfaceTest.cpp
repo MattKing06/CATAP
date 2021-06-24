@@ -13,11 +13,13 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_get_pressure_test)
 	BOOST_TEST_MESSAGE("------	IMG INTERFACE: GET PRESSURE TEST	------");
 	EPICSIMGInterface epicsInterface = EPICSIMGInterface();
 	pvStruct setPV;
-	setPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
-	setPV.pvRecord = "P";
+	setPV.fullPVName = "VM-EBT-LLV-VAC-IMG-01:PRES";
 	epicsInterface.retrieveCHID(setPV);
 	epicsInterface.retrieveCHTYPE(setPV);
 	epicsInterface.retrieveCOUNT(setPV);
+	std::cout << "SENDING TO EPICS..." << std::endl;
+	EPICSInterface::sendToEPICS();
+	std::cout << "SENT TO EPICS..." << std::endl;
 	if (ca_state(setPV.CHID) == cs_conn)
 	{
 		BOOST_CHECK_EQUAL(ca_read_access(setPV.CHID), 1);
@@ -29,7 +31,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_get_pressure_test)
 	}
 	else
 	{
-		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage(setPV.fullPVName + ": CANNOT CONNECT TO EPICS");
 	}
 }
 
@@ -38,7 +40,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	BOOST_TEST_MESSAGE("------	IMG INTERFACE: MONITOR CHANNEL TYPE TEST	------");
 	EPICSIMGInterface epicsInterface = EPICSIMGInterface();
 	pvStruct getPPV;
-	getPPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
+	getPPV.fullPVName = "VM-EBT-INJ-VAC-IMG-03:P";
 	getPPV.pvRecord = "P";
 	getPPV.monitor = true;
 	epicsInterface.retrieveCHID(getPPV);
@@ -46,8 +48,8 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	epicsInterface.retrieveCOUNT(getPPV);
 
 	pvStruct getStaPV;
-	getStaPV.fullPVName = "VM-EBT-INJ-VAC-IMG-01";
-	getStaPV.pvRecord = "Sta";
+	getStaPV.fullPVName = "VM-EBT-INJ-VAC-IMG-03:STA";
+	getStaPV.pvRecord = "STA";
 	getStaPV.monitor = true;
 	epicsInterface.retrieveCHID(getStaPV);
 	epicsInterface.retrieveCHTYPE(getStaPV);
@@ -60,7 +62,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	}
 	else
 	{
-		epicsInterface.messenger.printMessage("CANNOT CONNECT TO EPICS");
+		epicsInterface.messenger.printMessage(getStaPV.fullPVName + ": CANNOT CONNECT TO EPICS");
 	}
 }
 BOOST_AUTO_TEST_SUITE_END()

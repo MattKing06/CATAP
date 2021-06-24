@@ -9,7 +9,13 @@
 
 namespace RFProtectionRecords
 {
+	extern std::string const Sta;
+	extern std::string const Cmi;
+	extern std::string const ON;
+	extern std::string const OFF;
+	extern std::string const RST;
 
+	extern std::vector<std::string> const rfProtectionRecordsList;
 }
 
 namespace RFProtectionState

@@ -52,6 +52,11 @@ public:
 		@param[in] pv : The name of the PV to virtualize
 		@param[out] virtualPV : pv with VM- prepended to it*/
 	std::string getEPICSPVName(const std::string& pv);
+
+	/*! Returns the bool status of whether a PV is connected or not
+		@param[in] pv : The name of the PV to check
+		@param[out] status : whether or not the PV is connected */
+	bool isConnected();
 	/*! Removes the subscription to the EPICS PV record*/
 	void stopListening();
 	/*! Restarts the subscription to the EPICS PV record*/

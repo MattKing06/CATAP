@@ -7,7 +7,15 @@ controls_information:
     RPOWER: EBT-BA1-MAG-HCOR-03:RPOWER
     SETI: EBT-BA1-MAG-HCOR-03:SETI
     SPOWER: EBT-BA1-MAG-HCOR-03:SPOWER
-  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
+    K_DIP_P:    EBT-BA1-MAG-HCOR-03:K_DIP_P
+    INT_STR_MM: EBT-BA1-MAG-HCOR-03:INT_STR_MM
+    INT_STR:    EBT-BA1-MAG-HCOR-03:INT_STR
+    K_SET_P:    EBT-BA1-MAG-HCOR-03:K_SET_P
+    K_ANG:      EBT-BA1-MAG-HCOR-03:K_ANG
+    K_MRAD:     EBT-BA1-MAG-HCOR-03:K_MRAD
+    #K_VAL:      EBT-BA1-MAG-HCOR-03:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD
+  #, K_VAL
 properties:
   degauss_tolerance: 0.1
   degauss_values: "7.0,-7.0,4.5,-4.5,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
@@ -15,7 +23,7 @@ properties:
   hardware_type: Magnet
   machine_area: BA1
   mag_set_max_wait_time: 45.0
-  mag_type: VCOR
+  mag_type: HORIZONTAL_CORRECTOR
   magnetic_length: 182.2535211
   manufacturer: Scanditronix
   name: EBT-BA1-MAG-HCOR-03

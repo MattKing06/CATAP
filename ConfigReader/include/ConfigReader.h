@@ -13,6 +13,7 @@
 #include <LaserEnergyMeter.h>
 #include <LaserHWP.h>
 #include <IMG.h>
+#include <RFProtection.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -84,9 +85,11 @@ public:
 		}
 	}
 
+	// TODO can we have some more information printed to help correct Master Lattice errors 
 	template<typename HardwareType>
 	void parseYamlFile(std::map<std::string, HardwareType>& hardwareMapToFill)
 	{
+		messenger.printDebugMessage("parseYamlFile");
 		std::ifstream fileInput;
 		YAML::Node config;
 		YAML::Node configTemplate;
@@ -94,6 +97,7 @@ public:
 		try
 		{
 			std::string fn = ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename;
+			messenger.printDebugMessage("fn = ", fn);
 			fileInput = std::ifstream(ConfigReader::yamlFileDestination + SEPARATOR + ConfigReader::yamlFilename);
 			YAML::Parser parser(fileInput);
 			messenger.printDebugMessage("Calling LoadFile fn = " + fn);
@@ -107,7 +111,7 @@ public:
 				/*****HARDCODED .yaml WHEN CONFIG FILE HAD EXTENSION .yml CAUSED FAIL TO LOAD TEMPLATE******/
 				configTemplate = YAML::LoadFile(hardwareTemplateFilename);
 
-				messenger.printDebugMessage("LoadFile got template");
+				messenger.printDebugMessage("LoadFile got template, comparing ");
 
 
 				std::vector<std::string> missingEntriesFromFile = compareFileWithTemplate(configTemplate, config);
@@ -129,8 +133,7 @@ public:
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
-				hardwareMapToFill[freshHardware.getHardwareName()] 
-					= freshHardware;
+				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
 
 				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill"
 				 + " current size = ", hardwareMapToFill.size());
@@ -145,6 +148,8 @@ public:
 			}
 		}
 		// POTENTIAL EXCEPTIONS //
+		// TODO can we have some more infomration about what these are and maybe print some hints on 
+		// how to fix the issue if it is raised 
 		catch (std::length_error EmptyFileException)
 		{
 			messenger.printMessage("Problem with file (" + ConfigReader::yamlFileDestination,
