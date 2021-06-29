@@ -36,9 +36,9 @@ namespace MagnetPSUValueToState
 namespace MagnetState /* TODO THIS IS ALSO DEFINE IN TH EMAGNET CLASS :(  */ 
 //TODO: i don't think this is used anymore, DJS re-done in magnet and magnetFactory objects
 {
-	struct magnetStateStruct
+	struct MagnetSnapshottruct
 	{   // proviude a default constructor
-		magnetStateStruct() :
+		MagnetSnapshottruct() :
 			numMags(GlobalConstants::zero_sizet)
 			//, 
 			//machineArea(HWC_ENUM::MACHINE_AREA::UNKNOWN_AREA) 

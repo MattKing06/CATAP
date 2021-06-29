@@ -198,87 +198,87 @@ boost::python::dict Magnet::getSnapshot_Py()
 
 
 // TODO get rid 
-magnetState Magnet::getMagnetState()const
-{	// TODO this functionality is now deprecated and we have implemented more general "getState" method 
-	magnetState r;
-	r.readi = getREADI();
-	r.seti = getSETI();
-	r.ilk_state= getIlkState();
-	r.psu_state = getPSUState();
-	r.name = getHardwareName();
-	r.k_dip_p = getKDipP();
-	r.int_str_mm = getIntStr_mm();
-	r.int_str = getIntStr();
-	r.k_set_p = getKSetP();
-	r.k_ang = getKAng();
-	r.k_mrad = getKmrad();
-	r.k_val = getKVal();
-
-	r.field_integral_coefficients = getFieldIntegralCoefficients();
-	r.magnetic_length = getMagneticLength();
-
-	boost::python::dict d;
-	r.state_dict["readi"] =       r.readi;
-	r.state_dict["seti"] = 		  r.seti;
-	r.state_dict["ilkState"] =	  r.ilk_state;
-	r.state_dict["psu_state"] =	  r.psu_state;
-	r.state_dict["name"] =		  r.name;
-	r.state_dict["k_dip_p"] =	  r.k_dip_p;
-	r.state_dict["int_str_mm"] =  r.int_str_mm;
-	r.state_dict["int_str"] =	  r.int_str;
-	r.state_dict["k_set_p"] =	  r.k_set_p;
-	r.state_dict["k_ang"] =		  r.k_ang;
-	r.state_dict["k_mrad"] =	  r.k_mrad;
-	r.state_dict["k_val"] =		  r.k_val;
-	r.state_dict["field_integral_coefficients"] = getFieldIntegralCoefficients_Py();
-	r.state_dict["magnetic_length"] = r.magnetic_length;
-
-	return r;
-}
+//magnetState Magnet::getMagnetState()const
+//{	// TODO this functionality is now deprecated and we have implemented more general "getState" method 
+//	magnetState r;
+//	r.readi = getREADI();
+//	r.seti = getSETI();
+//	r.ilk_state= getIlkState();
+//	r.psu_state = getPSUState();
+//	r.name = getHardwareName();
+//	r.k_dip_p = getKDipP();
+//	r.int_str_mm = getIntStr_mm();
+//	r.int_str = getIntStr();
+//	r.k_set_p = getKSetP();
+//	r.k_ang = getKAng();
+//	r.k_mrad = getKmrad();
+//	r.k_val = getKVal();
+//
+//	r.field_integral_coefficients = getFieldIntegralCoefficients();
+//	r.magnetic_length = getMagneticLength();
+//
+//	boost::python::dict d;
+//	r.state_dict["readi"] =       r.readi;
+//	r.state_dict["seti"] = 		  r.seti;
+//	r.state_dict["ilkState"] =	  r.ilk_state;
+//	r.state_dict["psu_state"] =	  r.psu_state;
+//	r.state_dict["name"] =		  r.name;
+//	r.state_dict["k_dip_p"] =	  r.k_dip_p;
+//	r.state_dict["int_str_mm"] =  r.int_str_mm;
+//	r.state_dict["int_str"] =	  r.int_str;
+//	r.state_dict["k_set_p"] =	  r.k_set_p;
+//	r.state_dict["k_ang"] =		  r.k_ang;
+//	r.state_dict["k_mrad"] =	  r.k_mrad;
+//	r.state_dict["k_val"] =		  r.k_val;
+//	r.state_dict["field_integral_coefficients"] = getFieldIntegralCoefficients_Py();
+//	r.state_dict["magnetic_length"] = r.magnetic_length;
+//
+//	return r;
+//}
 // TODO get rid 
-bool Magnet::setMagnetState(const magnetState& ms)
+//bool Magnet::setMagnetState(const magnetState& ms)
+//{
+//	bool seti_sent = SETI(ms.seti);
+//	GlobalFunctions::pause_50();
+//	bool psu_sent = setPSUState(ms.psu_state);
+//	if (seti_sent && psu_sent)
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+
+
+
+bool Magnet::matchesSnapshot()const
 {
-	bool seti_sent = SETI(ms.seti);
-	GlobalFunctions::pause_50();
-	bool psu_sent = setPSUState(ms.psu_state);
-	if (seti_sent && psu_sent)
-	{
-		return true;
-	}
+//	if (isREADIequalValue(ms.readi, READI_tolerance))
+//	{
+//		if (ms.seti == getSETI())
+//		{
+//			if (ms.psu_state == getPSUState())
+//			{
+//				if (ms.psu_state == getIlkState())
+//				{
+//					return true;
+//				}
+//			}
+//		}
+//	}
 	return false;
 }
 
-
-
-bool Magnet::isInState(const magnetState& ms)const
-{
-	if (isREADIequalValue(ms.readi, READI_tolerance))
-	{
-		if (ms.seti == getSETI())
-		{
-			if (ms.psu_state == getPSUState())
-			{
-				if (ms.psu_state == getIlkState())
-				{
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-
-bool Magnet::isInSETIandPSUState(const magnetState& ms)const
-{
-	if (ms.seti == getSETI())
-	{
-		if (ms.psu_state == getPSUState())
-		{
-			return true;
-		}
-	}
-	return false;
-}
+//bool Magnet::isInSETIandPSUState(const magnetState& ms)const
+//{
+//	if (ms.seti == getSETI())
+//	{
+//		if (ms.psu_state == getPSUState())
+//		{ 
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
 double Magnet::getMinI()const
 {
@@ -451,6 +451,12 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 
 	ds.magnet->last_degauss_success = degauss_success;
 	ds.magnet->is_degaussing = false;
+}
+
+
+bool Magnet::isREADIequalValue(const double value) const
+{
+	return GlobalFunctions::areSame(value, READI_tolerance);
 }
 
 

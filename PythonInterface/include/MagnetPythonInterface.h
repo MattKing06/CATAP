@@ -59,6 +59,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 	
 	void expose_magnet_object() 
 	{
+		bool(Magnet::*isREADIequalValue_ml_tolerance)(const double)const = &Magnet::isREADIequalValue;
+		bool(Magnet::*isREADIequalValue_passed_tolerance)(const double, const double)const = &Magnet::isREADIequalValue;
+		
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Magnet>())->to_python_target_type());
 		if (is_registered) return;
 		// magnet exposure
@@ -117,14 +120,14 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getFullPSUName", &Magnet::getFullPSUName)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
 
-			.def("setMagnetSnapshot", &Magnet::setMagnetSnapshot)
-			.def("getMagnetSnapshot", &Magnet::getMagnetSnapshot)
+			//.def("setMagnetSnapshot", &Magnet::setMagnetSnapshot)
+			//.def("getMagnetSnapshot", &Magnet::getMagnetSnapshot)
 			
-			//.def("setMagnetState", &Magnet::setMagnetState)
-			//.def("getMagnetState", &Magnet::getState_Py)
+			.def("isREADIequalValue", isREADIequalValue_ml_tolerance)
+			.def("isREADIequalValue", isREADIequalValue_passed_tolerance)
 			
-			.def("isInState", &Magnet::isInState)
-			.def("isInSETIandPSUState", &Magnet::isInSETIandPSUState)
+			.def("matchesSnapshot", &Magnet::matchesSnapshot)
+			//.def("isInSETIandPSUState", &Magnet::isInSETIandPSUState)
 			.def("getManufacturer", &Magnet::getManufacturer)
 			.def("getMagneticLength", &Magnet::getMagneticLength)
 			.def("getMagneticLength", &Magnet::getMagneticLength)
