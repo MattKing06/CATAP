@@ -18,28 +18,28 @@
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
 /// one-stop shop for magnet state
-struct magnetStates
-{   
-	/*! Default constructor call for magnetStates */
-	magnetStates():
-		magnet_count(GlobalConstants::zero_sizet)
-		{};
-	size_t magnet_count;
-	std::map<std::string, magnetState> magnet_states_map;
-	boost::python::dict magnet_states_dict;
-};
-/// DBURTs are magnet-states plus comment and timestamp 
-struct MagnetFactorySnapshot
-{   /*! Default constructor call for MagnetFactorySnapshot */
-	MagnetFactorySnapshot() :
-		comment("NO COMMENT"),
-		timestamp("NO TIME")
-	{};
-	std::string comment;
-	std::string timestamp;
-	magnetStates magnetstates;
-	//magnetStateStruct magnetstates_Py;
-};
+//struct magnetStates
+//{   
+//	/*! Default constructor call for magnetStates */
+//	magnetStates():
+//		magnet_count(GlobalConstants::zero_sizet)
+//		{};
+//	size_t magnet_count;
+//	std::map<std::string, magnetState> magnet_states_map;
+//	boost::python::dict magnet_states_dict;
+//};
+///// DBURTs are magnet-states plus comment and timestamp 
+//struct MagnetFactorySnapshot
+//{   /*! Default constructor call for MagnetFactorySnapshot */
+//	MagnetFactorySnapshot() :
+//		comment("NO COMMENT"),
+//		timestamp("NO TIME")
+//	{};
+//	std::string comment;
+//	std::string timestamp;
+//	magnetStates magnetstates;
+//	//magnetStateStruct magnetstates_Py;
+//};
 
 class MagnetFactory
 {
@@ -91,16 +91,23 @@ class MagnetFactory
 		@param[out] bool, for success or failure	*/
 		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
+		
+		void readVCCDBURTFile(const boost::filesystem::path& full_path) const;
+		void readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const;
+
+		bool saveSnapshot(const std::string& location, const std::string& filename);
+
+
+		bool loadSnapshot(const std::string location, const std::string& stateFile);
+
 
 		std::map<std::string, HardwareSnapshot> getSnapshot();
 		boost::python::dict getSnapshot_Py();
-		bool saveSnapshot(const std::string& location, const std::string& filename);
-		bool loadSnapshot(const std::string location, const std::string& stateFile);
-
 		//bool applySnapshot(std::map<std::string, HardwareSnapshot>& snap);
 		bool applySnapshot_Py(boost::python::dict& snap);
-
 		std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
+
+
 
 
 		/*! Get a reference to magnet object, will return a dummy_magnet if magnetName is not found  
@@ -596,6 +603,17 @@ class MagnetFactory
 		@param[out] python::dict of magnet READI tolerances  keyed by the passed names */
 		boost::python::dict setREADITolerance_Py(const boost::python::list& names, const double value);
 
+
+		/*! check if the current READI is equal to a value, to within the Master Lattice  defeind tolerance
+		@param[in]  value to compare with READI
+		@param[out] bool, true if value is equal READI, otherwise false 		*/
+		bool isREADIequalValue(const std::string& name, const double value) const;
+		/*! check if the current READI is equal to a value, to within a tolerance
+			@param[in]  value to compare with READI
+			@param[in]  tolerance for comparisaon
+			@param[out] bool, true if value is equal READI, otherwise false 		*/
+		bool isREADIequalValue(const std::string& name, const double value, const double tolerance) const;
+
 		/*! Get the minimum SETI value that can be applied, as defined in the config file.
 		@param[in] name, full-name or name-alias of magnet object
 		@param[out] minimum SETI */
@@ -875,35 +893,97 @@ class MagnetFactory
 		@param[out] bool, result of comparison */
 		bool isACor(const std::string& name)const;
 
-		/*! Return a magnetstate object for a magnet, a magnetsatte object defines the main settings accessed through EPICS,
-		(SETI, READ, psue_state, see magnetstate for more info)
-		@param[in] name, full-name or name-aliase of magnet
-		@param[out] magnetstate*/
-		magnetState getMagnetState(const std::string& name)const;
-		/*! Return a magnetStates object for all magnets in the factory, a magnetStates has the magnetState for multiple magnets 
-		@param[out] magnetsates */
-		magnetStates getMagnetStates() const;
-
-		/*! Return a magnetState as a python dictrionary  
-		@param[in] name of magnet to get state for  
-		@param[out] magnetState as pythjon dict  */
-		boost::python::dict getMagnetState_Py(const std::string& name)const;
-		/*! Return magnetState for all magnets in the factory, 
-		@param[out] python dictionary version of a magnetStates */
-		boost::python::dict getAllMagnetState_Py() const;
-
-
-		/*! Set the magnet states for a magnet 
-		@param[in] magnetsate to be applied  
-		@param[out] bool, TRUE if magnet could be found in Factory and magnet.setMagnetState returns TRUE, otherwise FALSE */
-		bool setMagnetState(const magnetState& ms) ;
-
-		/*! Set the magnet states for all magnets defined in the magnetstate object, that are of a TYPE passed 
-		@param[in] magnet states to be applied
-		@param[in] types, std::vector of magnet TYPE that a magnetstate will be applied to 
-		@param[out] magnetsate */
-		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types);
-							   
+//
+//		/*! Return a magnetstate object for a magnet, a magnetsatte object defines the main settings accessed through EPICS,
+//		(SETI, READ, psue_state, see magnetstate for more info)
+//		@param[in] name, full-name or name-aliase of magnet
+//		@param[out] magnetstate*/
+//		magnetState getMagnetState(const std::string& name)const;
+//		/*! Return a magnetStates object for all magnets in the factory, a magnetStates has the magnetState for multiple magnets 
+//		@param[out] magnetsates */
+//		magnetStates getMagnetStates() const;
+//		/*! Return a magnetState as a python dictrionary  
+//		@param[in] name of magnet to get state for  
+//		@param[out] magnetState as pythjon dict  */
+//		boost::python::dict getMagnetState_Py(const std::string& name)const;
+//		/*! Return magnetState for all magnets in the factory, 
+//		@param[out] python dictionary version of a magnetStates */
+//		boost::python::dict getAllMagnetState_Py() const;
+//		/*! Set the magnet states for a magnet 
+//		@param[in] magnetsate to be applied  
+//		@param[out] bool, TRUE if magnet could be found in Factory and magnet.setMagnetState returns TRUE, otherwise FALSE */
+//		bool setMagnetState(const magnetState& ms) ;
+//		/*! Set the magnet states for all magnets defined in the magnetstate object, that are of a TYPE passed 
+//		@param[in] magnet states to be applied
+//		@param[in] types, std::vector of magnet TYPE that a magnetstate will be applied to 
+//		@param[out] magnetsate */
+//		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types);
+//
+//		/*! Read a MagnetFactorySnapshot file from the default location
+//@param[in] MagnetFactorySnapshot filename to read
+//@param[out] MagnetFactorySnapshot, MagnetFactorySnapshot object generated after file has been parsed */
+//		MagnetFactorySnapshot readMagnetFactorySnapshot(const std::string& fileName)const;
+//		/*! Read a MagnetFactorySnapshot file from a passed location
+//		@param[in] MagnetFactorySnapshot filepath to look for file
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] MagnetFactorySnapshot, MagnetFactorySnapshot object generated after file has been parsed */
+//		MagnetFactorySnapshot readMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName)const;
+//
+//
+//		/*! Write a MagnetFactorySnapshot file to the default location
+//		@param[in] MagnetFactorySnapshot filename to write
+//		@param[out] bool, if file was succesfully wwritten or not */
+//		bool writeMagnetFactorySnapshot(const std::string& fileName)const;
+//		/*! Write a MagnetFactorySnapshot file to the default location with passed comments
+//		@param[in] MagnetFactorySnapshot filename to write
+//		@param[in] MagnetFactorySnapshot comments to write to file
+//		@param[out] bool, if file was succesfully wwritten or not */
+//		bool writeMagnetFactorySnapshot(const std::string& fileName, const std::string& commment)const;
+//		/*! Write a MagnetFactorySnapshot file to the passed location with passed comments
+//		@param[in] MagnetFactorySnapshot filepath, location wher efile will be written
+//		@param[in] MagnetFactorySnapshot filename to write
+//		@param[in] MagnetFactorySnapshot comments to write to file
+//		@param[out] bool, if file was succesfully wwritten or not */
+//		bool writeMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName, const std::string& commment)const;
+//
+//
+//
+//		/*! Apply a MagnetFactorySnapshot file from passed location
+//		@param[in] MagnetFactorySnapshot filepath to file
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot was applied */
+//		bool applyMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName);
+//		/*! Apply a MagnetFactorySnapshot file to quadrupole magnets only  from passed location
+//		@param[in] MagnetFactorySnapshot filepath to file
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot was applied */
+//		bool applyMagnetFactorySnapshotQuadOnly(const std::string& filePath, const std::string& fileName);
+//		/*! Apply a MagnetFactorySnapshot file to corrector magnets only from passed location
+//		@param[in] MagnetFactorySnapshot filepath to file
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot was applied */
+//		bool applyMagnetFactorySnapshotCorOnly(const std::string& filePath, const std::string& fileName);
+//
+//		/*! Apply a MagnetFactorySnapshot file from the default location
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot was applied */
+//		bool applyMagnetFactorySnapshot(const std::string& fileName);
+//		/*! Apply a MagnetFactorySnapshot file to quadrupole magnets only  from passed location
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot was applied */
+//		bool applyMagnetFactorySnapshotQuadOnly(const std::string& fileName);
+//		/*! Apply a MagnetFactorySnapshot file to corrector magnets only from passed location
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot was applied */
+//		bool applyMagnetFactorySnapshotCorOnly(const std::string& fileName);
+//
+//		/*! Compare a MagnetFactorySnapshot file in teh default lcoation to the curent maget settings
+//		@param[in] MagnetFactorySnapshot filename to read
+//		@param[out] bool, if MagnetFactorySnapshot file matches current settings */
+//		bool isMagnetStateEqualMagnetFactorySnapshot(const std::string& fileName);
+//
+//		
+		
 
 		/*! Get the names of the magnets that are in an area 
 		@param[in] TYPE, area 
@@ -922,66 +1002,6 @@ class MagnetFactory
 		@param[out] boost::python::list, names of magnets found in area  */
 		boost::python::list getNamesInAreas_Py(const boost::python::list& areas) const;
 
-
-		/*! Write a MagnetFactorySnapshot file to the default location 
-		@param[in] MagnetFactorySnapshot filename to write
-		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeMagnetFactorySnapshot(const std::string& fileName)const;
-		/*! Write a MagnetFactorySnapshot file to the default location with passed comments 
-		@param[in] MagnetFactorySnapshot filename to write
-		@param[in] MagnetFactorySnapshot comments to write to file 
-		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeMagnetFactorySnapshot(const std::string& fileName, const std::string& commment)const;
-		/*! Write a MagnetFactorySnapshot file to the passed location with passed comments
-		@param[in] MagnetFactorySnapshot filepath, location wher efile will be written 
-		@param[in] MagnetFactorySnapshot filename to write
-		@param[in] MagnetFactorySnapshot comments to write to file
-		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName, const std::string& commment)const;
-
-		/*! Read a MagnetFactorySnapshot file from the default location
-		@param[in] MagnetFactorySnapshot filename to read 
-		@param[out] MagnetFactorySnapshot, MagnetFactorySnapshot object generated after file has been parsed */
-		MagnetFactorySnapshot readMagnetFactorySnapshot(const std::string& fileName)const;
-		/*! Read a MagnetFactorySnapshot file from a passed location 
-		@param[in] MagnetFactorySnapshot filepath to look for file 
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] MagnetFactorySnapshot, MagnetFactorySnapshot object generated after file has been parsed */
-		MagnetFactorySnapshot readMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName)const;
-
-		/*! Apply a MagnetFactorySnapshot file from passed location
-		@param[in] MagnetFactorySnapshot filepath to file 
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot was applied */
-		bool applyMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName);
-		/*! Apply a MagnetFactorySnapshot file to quadrupole magnets only  from passed location
-		@param[in] MagnetFactorySnapshot filepath to file
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot was applied */
-		bool applyMagnetFactorySnapshotQuadOnly(const std::string& filePath,  const std::string& fileName);
-		/*! Apply a MagnetFactorySnapshot file to corrector magnets only from passed location
-		@param[in] MagnetFactorySnapshot filepath to file
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot was applied */
-		bool applyMagnetFactorySnapshotCorOnly(const std::string& filePath, const std::string& fileName);
-
-		/*! Apply a MagnetFactorySnapshot file from the default location 
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot was applied */
-		bool applyMagnetFactorySnapshot(const std::string& fileName);
-		/*! Apply a MagnetFactorySnapshot file to quadrupole magnets only  from passed location
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot was applied */
-		bool applyMagnetFactorySnapshotQuadOnly(const std::string& fileName);
-		/*! Apply a MagnetFactorySnapshot file to corrector magnets only from passed location
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot was applied */
-		bool applyMagnetFactorySnapshotCorOnly(const std::string& fileName);
-
-		/*! Compare a MagnetFactorySnapshot file in teh default lcoation to the curent maget settings 
-		@param[in] MagnetFactorySnapshot filename to read
-		@param[out] bool, if MagnetFactorySnapshot file matches current settings */
-		bool isMagnetStateEqualMagnetFactorySnapshot(const std::string& fileName);
 
 
 		/*! Get the full name of a magnet 
@@ -1018,23 +1038,19 @@ private:
 		std::map<std::string, Magnet> magnetMap;
 
 
-
-		MagnetFactorySnapshot readVCCMagnetFactorySnapshotFile(const boost::filesystem::path& full_path) const;
-		MagnetFactorySnapshot readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const;
-
 		/*! setup the EPCIS channels */
 		void setupChannels();
 
-		/*! Write a MagnetFactorySnapshot file to disk, private function that does the actual writing
-		@param[in] path object 
-		@param[in] MagnetFactorySnapshot data 
-		@param[out] successfully written */
-		bool writeMagnetFactorySnapshotToFile(const boost::filesystem::path& full_path, const MagnetFactorySnapshot& MagnetFactorySnapshot_to_write) const;
-		/*! Read a MagnetFactorySnapshot file from disk, private function that does the actual reading
-		@param[in] path object
-		@param[out] MagnetFactorySnapshot data*/
-		MagnetFactorySnapshot readMagnetFactorySnapshotFile(const boost::filesystem::path& full_path) const;
-		std::pair<bool, std::string> isMagnetFactorySnapshotFileAlias(const std::string& full_path)const;
+		///*! Write a MagnetFactorySnapshot file to disk, private function that does the actual writing
+		//@param[in] path object 
+		//@param[in] MagnetFactorySnapshot data 
+		//@param[out] successfully written */
+		//bool writeMagnetFactorySnapshotToFile(const boost::filesystem::path& full_path, const MagnetFactorySnapshot& MagnetFactorySnapshot_to_write) const;
+		///*! Read a MagnetFactorySnapshot file from disk, private function that does the actual reading
+		//@param[in] path object
+		//@param[out] MagnetFactorySnapshot data*/
+		//MagnetFactorySnapshot readMagnetFactorySnapshotFile(const boost::filesystem::path& full_path) const;
+		//std::pair<bool, std::string> isMagnetFactorySnapshotFileAlias(const std::string& full_path)const;
 
 		/*! Update the alias-name-map, 
 		@param[in] magnet object top updat emap with */
@@ -1050,7 +1066,9 @@ private:
 		void cutMagnetMapByMachineAreas();
 
 
-		std::string LEGACY_MagnetFactorySnapshot_IDENT;
+		std::string LEGACY_DBURT_IDENT;
+
+
 
 
 		// private

@@ -203,4 +203,76 @@ namespace GlobalFunctions {
 	}
 
 
+	std::string trimAllWhiteSpace(std::string strIN)
+	{
+		std::string str = strIN;
+		str.erase(std::remove_if(str.begin(), str.end(), isspace), str.end());
+		return str;
+	}
+
+	std::string trimAllWhiteSpaceExceptBetweenDoubleQuotes(std::string strIN)
+	{   /*
+			Does exactly what the function name says.
+			Used so that user strings with spaces in can be passed
+			from the config files,
+			This will have to change if we want to inlcude special characters
+			in the config file strings
+		*/
+		// whether to ignore the current character or not
+		std::string str = strIN;
+		bool ignore = false;
+
+		// a kind of NULL pointer
+		std::string::iterator endVal = str.end();
+		// a  "
+		std::string::iterator type = endVal;
+
+		for (std::string::iterator it = str.begin(); it != str.end();)
+		{
+			if ((*it) == GlobalConstants::DOUBLE_QUOTE_C) // we're in a string!
+			{
+				if (ignore)
+				{
+					if (type != endVal && (*it) == (*type))
+					{   // end of the string
+						ignore = false;
+						type = endVal;
+					}
+				}
+				else /// this must be the start of a quoted string
+				{
+					ignore = true;
+					type = it;
+				}
+				if ((*it) == GlobalConstants::DOUBLE_QUOTE_C)
+				{
+					it = str.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+			else
+			{
+				if (!ignore)
+				{
+					if ((*it) == GlobalConstants::SPACE_C || (*it) == GlobalConstants::TAB_C)
+					{
+						it = str.erase(it);
+					}
+					else
+					{
+						it++;
+					}
+				}
+				else
+				{
+					it++;
+				}
+			}
+		}
+		return str;
+	}
+
 }

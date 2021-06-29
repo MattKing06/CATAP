@@ -406,13 +406,6 @@ namespace GlobalConstants
 	/*! Arithmetic time-type capable of representing time 60 */
 	const time_t TIMET_60 = 60;
 
-	const std::string COMMENT = "COMMENT";
-	const std::string TIMESTAMP = "TIMESTAMP";
-	const std::string HEADER = "HEADER";
-	const std::string FILE_ALIAS = "FILE_ALIAS";
-
-	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
-	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
 	const std::string UNKNOWN = "UNKNOWN";
@@ -424,10 +417,37 @@ namespace GlobalConstants
 	
 
 
-
-
-
-
+	// legacy magnet dburt stuff 
+	const std::string VELA_CLARA_DBURT_ALIAS_V1 = "VELA-CLARA DBURT ALIAS FILE v1";
+	const std::string DBURT_HEADER_V2 = "VELA DBURT (MAGNET SAVE FILE) v2.0";
+	const std::string VELA_MAGNET_SAVE_FILE_v1 = "VELA MAGNET SAVE FILE v1.0"; 
+	const std::string DBURT_HEADER_V3 = "VELA-CLARA DBURT (MAGNET SAVE FILE) v3";
+	const std::string DBURT_HEADER_V4 = "VELA-CLARA DBURT (MAGNET SAVE FILE) v4";
+	const std::string dotdburt= ".dburt";
+	const std::string dotDBURT = ".DBURT";
+	const std::string DBURT_HEADER_DT = "DATE_TIME:";
+	const std::string DBURT_HEADER_COM = "COMMENTS:";
+	const std::string DBURT_HEADER_AREA = "BEAM_AREA:";
+	const std::string DBURT_HEADER_KEYW = "KEY_WORDS:";
+	const std::string COMMENT = "COMMENT";
+	const std::string TIMESTAMP = "TIMESTAMP";
+	const std::string HEADER = "HEADER";
+	const std::string FILE_ALIAS = "FILE_ALIAS";
+	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
+	const std::string DUMMY_NAME = "DUMMY_NAME";
+	const std::string DBURT_EOF_V1 = "END OF FILE";
+	const std::string DBURT_EOF_V3 = "END_OF_DATA"; 
+	const std::string DBURT_EOF_V4 = "END_OF_DATA";
+	const std::string END_OF_LINE = ";";
+	const char EQUALS_SIGN_C = '=';
+	const char COLON_C = ':';
+	const char DOUBLE_QUOTE_C = '"';
+	const char SPACE_C = ' ';
+	const char TAB_C = '\t';
+	const char COMMA_C = ',';
+	const char SLASH_SLASH_C = '\\';
+	const std::string SLASH_SLASH = "\\";
+	// end
 
 
 

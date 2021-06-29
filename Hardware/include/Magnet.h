@@ -267,12 +267,12 @@ class Magnet : public Hardware
 		@param[in]  value to compare with READI
 		@param[out] bool, true if value is equal READI, otherwise false 		*/
 	bool isREADIequalValue(const double value) const;
-
 	/*! check if the current READI is equal to a value, to within a tolerance
 		@param[in]  value to compare with READI
 		@param[in]  tolerance for comparisaon
 		@param[out] bool, true if value is equal READI, otherwise false 		*/
 	bool isREADIequalValue(const double value, const double tolerance) const;
+	
 	/*! wait up to waitTime for the magnet READI to reach a value (to within a tolerance) or the magnet PSU on to STATE value
 		@param[in] value to wait for READI to reach
 		@param[in] tolerance for comparison

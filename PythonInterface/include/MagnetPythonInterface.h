@@ -11,50 +11,46 @@
 //using namespace boost;
 namespace BOOST_PYTHON_MAGNET_INCLUDE
 {
-	void expose_MagnetSnapshot() {
+	//void expose_MagnetSnapshot() {
 
-		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetSnapshot>())->to_python_target_type());
-		if (is_registered) return;
+	//	bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetSnapshot>())->to_python_target_type());
+	//	if (is_registered) return;
 
-		boost::python::class_<MagnetSnapshot>
-			("MagnetSnapshot", "MagnetSnapshot Doc String")
-			.add_property("name", &MagnetSnapshot::name)
-			.add_property("psu_state", &MagnetSnapshot::psu_state)
-			.add_property("ilk_state", &MagnetSnapshot::ilk_state)
-			
-			// TODO old naming style, get rid 
-			.add_property("psuState", &MagnetSnapshot::psu_state)
-			.add_property("ilkState", &MagnetSnapshot::ilk_state)
+	//	boost::python::class_<MagnetSnapshot>
+	//		("MagnetSnapshot", "MagnetSnapshot Doc String")
+	//		.add_property("name", &MagnetSnapshot::name)
+	//		.add_property("psu_state", &MagnetSnapshot::psu_state)
+	//		.add_property("ilk_state", &MagnetSnapshot::ilk_state)
+	//		
+	//		// TODO old naming style, get rid 
+	//		.add_property("psuState", &MagnetSnapshot::psu_state)
+	//		.add_property("ilkState", &MagnetSnapshot::ilk_state)
 
-			.add_property("seti", &MagnetSnapshot::seti)
-			.add_property("readi", &MagnetSnapshot::readi)
-			;
-	};
-	void expose_magnet_states() {
- 
-		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetSnapshot>())->to_python_target_type());
-		if (is_registered) return;
-		boost::python::class_<MagnetSnapshot>
-			("dburt", "dburt Doc String")
-			.add_property("numMags", &MagnetSnapshot::magnet_count)
-			.add_property("MagnetSnapshotMap_Py", &MagnetSnapshot::magnet_states_map)
-			;
-	};
+	//		.add_property("seti", &MagnetSnapshot::seti)
+	//		.add_property("readi", &MagnetSnapshot::readi)
+	//		;
+	//};
+	//void expose_magnet_states() {
+ //
+	//	bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetSnapshot>())->to_python_target_type());
+	//	if (is_registered) return;
+	//	boost::python::class_<MagnetSnapshot>
+	//		("dburt", "dburt Doc String")
+	//		.add_property("numMags", &MagnetSnapshot::magnet_count)
+	//		.add_property("MagnetSnapshotMap_Py", &MagnetSnapshot::magnet_states_map)
+	//		;
+	//};
 
-	void expose_magnet_dburt() {
+	//void expose_magnet_dburt() {
 
-		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<dburt>())->to_python_target_type());
-		if (is_registered) return;
-		boost::python::class_<dburt>
-			("dburt", "dburt Doc String")
-			.add_property("comment", &dburt::comment)
-			.add_property("MagnetSnapshot", &dburt::MagnetSnapshot)
-			;
-
-
-
-
-	};
+	//	bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<dburt>())->to_python_target_type());
+	//	if (is_registered) return;
+	//	boost::python::class_<dburt>
+	//		("dburt", "dburt Doc String")
+	//		.add_property("comment", &dburt::comment)
+	//		.add_property("MagnetSnapshot", &dburt::MagnetSnapshot)
+	//		;
+	//};
 
 	
 	void expose_magnet_object() 
@@ -148,7 +144,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 
 	
-	void expose_magnet_factory_object() {
+	void expose_magnet_factory_object() 
+	{
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetFactory>())->to_python_target_type());
 		if (is_registered) return;
@@ -160,12 +157,12 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		//void(MagnetFactory::*SETIMultiple)(const std::string&, const double&) = &MagnetFactory::SETI;
 
 
-		bool(MagnetFactory::*writeDBURT_file)(const std::string&)const = &MagnetFactory::writeDBURT;
-		bool(MagnetFactory::*writeDBURT_file_comment)(const std::string&, const std::string&)const = &MagnetFactory::writeDBURT;
-		bool(MagnetFactory::*writeDBURT_path_file_comment)(const std::string&, const std::string&, const std::string&)const = &MagnetFactory::writeDBURT;
+		//bool(MagnetFactory::*writeDBURT_file)(const std::string&)const = &MagnetFactory::writeDBURT;
+		//bool(MagnetFactory::*writeDBURT_file_comment)(const std::string&, const std::string&)const = &MagnetFactory::writeDBURT;
+		//bool(MagnetFactory::*writeDBURT_path_file_comment)(const std::string&, const std::string&, const std::string&)const = &MagnetFactory::writeDBURT;
 
-		dburt(MagnetFactory::*readDBURTT_file)(const std::string&)const = &MagnetFactory::readDBURT;
-		dburt(MagnetFactory::*readDBURT_path_file)(const std::string&, const std::string&)const = &MagnetFactory::readDBURT;
+		//dburt(MagnetFactory::*readDBURTT_file)(const std::string&)const = &MagnetFactory::readDBURT;
+		//dburt(MagnetFactory::*readDBURT_path_file)(const std::string&, const std::string&)const = &MagnetFactory::readDBURT;
 
 
 		std::string(MagnetFactory::*getManufacturer_single)(const std::string&)const = &MagnetFactory::getManufacturer;
@@ -196,12 +193,12 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		bool (MagnetFactory::* setup_ListArg)(const boost::python::list&) = &MagnetFactory::setup;
 		bool (MagnetFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &MagnetFactory::setup;
 
-		bool (MagnetFactory::* applyDBURT_filename)(const std::string&) = &MagnetFactory::applyDBURT;
-		bool (MagnetFactory::* applyDBURTQuadOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
-		bool (MagnetFactory::* applyDBURTCorOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTCorOnly;
-		bool (MagnetFactory::* applyDBURT_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURT;
-		bool (MagnetFactory::* applyDBURTQuadOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
-		bool (MagnetFactory::* applyDBURTCorOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTCorOnly;
+		//bool (MagnetFactory::* applyDBURT_filename)(const std::string&) = &MagnetFactory::applyDBURT;
+		//bool (MagnetFactory::* applyDBURTQuadOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
+		//bool (MagnetFactory::* applyDBURTCorOnly_filename)(const std::string&) = &MagnetFactory::applyDBURTCorOnly;
+		//bool (MagnetFactory::* applyDBURT_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURT;
+		//bool (MagnetFactory::* applyDBURTQuadOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTQuadOnly;
+		//bool (MagnetFactory::* applyDBURTCorOnly_filepath_filename)(const std::string&, const std::string&) = &MagnetFactory::applyDBURTCorOnly;
 
 
 		// woot fuctcion pointers 
@@ -355,8 +352,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("isACor", &MagnetFactory::isACor)
 			
 
-			.def("getMagnetSnapshot", & MagnetFactory::getMagnetSnapshot_Py)
-			.def("getAllMagnetSnapshot", & MagnetFactory::getAllMagnetSnapshot_Py)
+			//.def("getMagnetSnapshot", & MagnetFactory::getMagnetSnapshot_Py)
+			//.def("getAllMagnetSnapshot", & MagnetFactory::getAllMagnetSnapshot_Py)
 
 
 			.def("getSnapshot", &MagnetFactory::getSnapshot_Py, (boost::python::args("self")))
@@ -382,34 +379,34 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		//bool isMagnetSnapshotEqualDBURT(const std::string & fileName);
 		//std::string getFullName(const std::string & name_to_check) const;
 
-			.def("readDBURT", readDBURTT_file)
-			.def("readDBURT", readDBURT_path_file)
-			.def("writeDBURT", writeDBURT_file)
-			.def("writeDBURT", writeDBURT_file_comment)
-			.def("writeDBURT", writeDBURT_path_file_comment)
+			//.def("readDBURT", readDBURTT_file)
+			//.def("readDBURT", readDBURT_path_file)
+			//.def("writeDBURT", writeDBURT_file)
+			//.def("writeDBURT", writeDBURT_file_comment)
+			//.def("writeDBURT", writeDBURT_path_file_comment)
 
-			.def("applyDBURT", applyDBURT_filename)
-			.def("applyDBURTQuadOnly", applyDBURTQuadOnly_filename)
-			.def("applyDBURTCorOnly", applyDBURTCorOnly_filename)
+			//.def("applyDBURT", applyDBURT_filename)
+			//.def("applyDBURTQuadOnly", applyDBURTQuadOnly_filename)
+			//.def("applyDBURTCorOnly", applyDBURTCorOnly_filename)
 
-			.def("applyDBURT", applyDBURT_filepath_filename)
-			.def("applyDBURTQuadOnly", applyDBURTQuadOnly_filepath_filename)
-			.def("applyDBURTCorOnly", applyDBURTCorOnly_filepath_filename)
+			//.def("applyDBURT", applyDBURT_filepath_filename)
+			//.def("applyDBURTQuadOnly", applyDBURTQuadOnly_filepath_filename)
+			//.def("applyDBURTCorOnly", applyDBURTCorOnly_filepath_filename)
 
 
-			.def("readDBURT", readDBURTT_file)
-			.def("readDBURT", readDBURT_path_file)
-			.def("writeDBURT", writeDBURT_file)
-			.def("writeDBURT", writeDBURT_file_comment)
-			.def("writeDBURT", writeDBURT_path_file_comment)
-			
-			.def("applyDBURT",			applyDBURT_filename)
-			.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filename)
-			.def("applyDBURTCorOnly",	applyDBURTCorOnly_filename)
+			//.def("readDBURT", readDBURTT_file)
+			//.def("readDBURT", readDBURT_path_file)
+			//.def("writeDBURT", writeDBURT_file)
+			//.def("writeDBURT", writeDBURT_file_comment)
+			//.def("writeDBURT", writeDBURT_path_file_comment)
+			//
+			//.def("applyDBURT",			applyDBURT_filename)
+			//.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filename)
+			//.def("applyDBURTCorOnly",	applyDBURTCorOnly_filename)
 
-			.def("applyDBURT",			applyDBURT_filepath_filename)
-			.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filepath_filename)
-			.def("applyDBURTCorOnly",	applyDBURTCorOnly_filepath_filename)
+			//.def("applyDBURT",			applyDBURT_filepath_filename)
+			//.def("applyDBURTQuadOnly",	applyDBURTQuadOnly_filepath_filename)
+			//.def("applyDBURTCorOnly",	applyDBURTCorOnly_filepath_filename)
 
 
 			.def("debugMessagesOn", &MagnetFactory::debugMessagesOn)

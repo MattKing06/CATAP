@@ -1,4 +1,5 @@
 #include "MagnetFactory.h"
+#include "SnapshotFileManager.h"
 #include <map>
 #include <iostream>
 #include <iomanip>
@@ -22,7 +23,7 @@ MagnetFactory::MagnetFactory(STATE mode) :
 	hasBeenSetup(false),
 	reader(ConfigReader("Magnet", mode)),
 	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
-	LEGACY_DBURT_IDENT("VELA - CLARA DBURT(MAGNET SAVE FILE)")
+	LEGACY_DBURT_IDENT(".dburt")
 {
 	// messenger.printDebugMessage("Magnet Factory constructed");
 }
@@ -1393,6 +1394,25 @@ boost::python::dict MagnetFactory::setREADITolerance_Py(const boost::python::lis
 	return to_py_dict <std::string, double>(setREADITolerance(to_std_vector<std::string>(names), value));
 }
 
+bool MagnetFactory::isREADIequalValue(const std::string& name, const double value) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).isREADIequalValue(value);
+	}
+	return false;
+}
+bool MagnetFactory::isREADIequalValue(const std::string& name, const double value, const double tolerance) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).isREADIequalValue(value, tolerance);
+	}
+	return false;
+}
+
 
 double MagnetFactory::getMagneticLength(const std::string& name) const
 {
@@ -1646,6 +1666,117 @@ boost::python::list MagnetFactory::getNamesInAreas_Py(const boost::python::list&
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
+
+
+
+
+
+void MagnetFactory::readVCCDBURTFile(const boost::filesystem::path& full_path) const
+{
+
+}
+void MagnetFactory::readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const
+{
+	//dburt read_dburt;
+	std::ifstream fileInput;
+	fileInput = std::ifstream(full_path.string());
+	YAML::Parser parser(fileInput);
+	YAML::Node file_data = YAML::LoadFile(full_path.string());
+
+	////int i = 0;
+	//for (auto&& it : file_data)
+	//{
+	//	// If the first string is "HEADER" get header info
+	//	if (it.first.as<std::string>() == GlobalConstants::HEADER)
+	//	{
+	//		for (auto&& it2 : it.second)
+	//		{
+	//			std::string record = it2.first.as<std::string>();
+	//			if (record == GlobalConstants::TIMESTAMP)
+	//			{
+	//				read_dburt.timestamp = it2.second.as<std::string>();
+	//			}
+	//			else if (record == GlobalConstants::COMMENT)
+	//			{
+	//				read_dburt.comment = it2.second.as<std::string>();
+	//			}
+	//		}
+
+	//		messenger.printDebugMessage("timestamp: ", read_dburt.timestamp);
+	//		messenger.printDebugMessage("comment: ", read_dburt.comment);
+	//	}
+	//	else // If the string **must** be a magnet name
+	//	{
+	//		// The First 
+	//		magnetState mag_state_to_fill = magnetState();
+	//		//read_dburt.magnetstates.magNames.push_back(it.first.as<std::string>());
+	//		mag_state_to_fill.name = it.first.as<std::string>();
+	//		for (auto&& it2 : it.second)
+	//		{
+	//			std::string record = it2.first.as<std::string>();
+	//			//std::cout << record << " = " << it2.second << std::endl;
+	//			if (MagnetRecords::SETI == record)
+	//			{
+	//				//std::cout << record << " is " << MagnetRecords::SETI << std::endl;
+	//				mag_state_to_fill.seti = it2.second.as<double>();
+	//			}
+	//			else if (MagnetRecords::READI == record)
+	//			{
+	//				//std::cout << record << " is " << MagnetRecords::READI << std::endl;
+	//				mag_state_to_fill.readi = it2.second.as<double>();
+	//			}
+	//			else if (MagnetRecords::RPOWER == record)
+	//			{
+	//				std::string val = it2.second.as<std::string>();
+	//				if (val == "ON")
+	//				{
+	//					//std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
+	//					mag_state_to_fill.psu_state = STATE::ON;
+	//				}
+	//				else
+	//				{
+	//					mag_state_to_fill.psu_state = STATE::OFF;
+	//				}
+	//			}
+	//		}
+	//		// update the magnetStatesMap with the magnetState for this magnet 
+	//		read_dburt.magnetstates.magnet_states_map[mag_state_to_fill.name] = mag_state_to_fill;
+	//		std::cout << "added " << mag_state_to_fill.name << " to magnetStatesMap" << std::endl;
+	//		std::cout << ENUM_TO_STRING(mag_state_to_fill.psu_state) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
+	//	}
+	//}
+	/*read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
+	read_dburt.magnetstates.magNames_Py = to_py_list<std::string>(read_dburt.magnetstates.magNames);
+	read_dburt.magnetstates.psuStates_Py = to_py_list<STATE>(read_dburt.magnetstates.psuStates);
+	read_dburt.magnetstates.readiValues_Py = to_py_list<double>(read_dburt.magnetstates.readiValues);
+	read_dburt.magnetstates.setiValues_Py = to_py_list<double>(read_dburt.magnetstates.setiValues);*/
+	//return read_dburt;
+}
+//std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
+//{
+//	//messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path);
+//	//std::ifstream fileInput;
+//	//fileInput = std::ifstream(full_path);
+//	//YAML::Parser parser(fileInput);
+//	//YAML::Node file_data = YAML::LoadFile(full_path);
+//
+//	std::pair<bool, std::string> r(false, "");
+//
+//	//for (auto&& it : file_data)
+//	//{
+//	//	if (it.first.as<std::string>() == GlobalConstants::FILE_ALIAS)
+//	//	{
+//	//		r.first = true;
+//	//		r.second = it.second.as<std::string>();
+//	//		messenger.printDebugMessage("isDBURTFileAlias found FILE_ALIAS pointing to " + r.second);
+//	//	}
+//	//}
+//	//messenger.printDebugMessage("isDBURTFileAlias returning ", r.first);
+//	return r;
+//}
+
+
+
 std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot()
 {
 	std::map<std::string, HardwareSnapshot> allStates;
@@ -1860,488 +1991,310 @@ bool MagnetFactory::saveSnapshot(const std::string& location, const std::string&
 
 	return true;
 }
-bool MagnetFactory::loadSnapshot(const std::string location, const std::string& stateFile)
+bool MagnetFactory::loadSnapshot(const std::string location, const std::string& snapFile)
 {
-	const std::string fullpath = location + "/" + stateFile;
-	std::ifstream inFile(fullpath.c_str());
-	if (!inFile) { return false; }
-	messenger.printMessage("FULL PATH: ", fullpath);
-	YAML::Node snapshot_data = YAML::LoadFile(fullpath);
-	messenger.printMessage("Calling yamlNodeToHardwareSnapshotMap");
-	yamlNodeToHardwareSnapshotMap(snapshot_data);
-	return true;
+	if (SnapshotFileManager::containsDBURTExtension(snapFile) )
+	{
+		std::cout << "is DBURT FILE" <<std::endl;
+	}
+	else
+	{
+		std::cout << "is Snapshot FILE" << std::endl;
+
+	}
+
+	//const std::string fullpath = location + "/" + stateFile;
+	//std::ifstream inFile(fullpath.c_str());
+	//if (!inFile) { return false; }
+	//messenger.printMessage("FULL PATH: ", fullpath);
+	//YAML::Node snapshot_data = YAML::LoadFile(fullpath);
+	//messenger.printMessage("Calling yamlNodeToHardwareSnapshotMap");
+	//yamlNodeToHardwareSnapshotMap(snapshot_data);
+	return false;
 }
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 // TODO ALL THE BELOW IS DEPRACTED AND COULD BE REMOVED... or some backwards compatabiliity????? 
-magnetState MagnetFactory::getMagnetState(const std::string& name)const
-{
-	if (GlobalFunctions::entryExists(magnetMap, name))
-	{
-		return magnetMap.at(name).getMagnetState();
-	}
-	return magnetState();
-}
-magnetStates MagnetFactory::getMagnetStates()const
-{
-	magnetStates ms;
-	for (auto&& magnet : getAllMagnetNames())
-	{
-		ms.magnet_states_map[magnet] = getMagnetState(magnet);
-	}
-	ms.magnet_count = ms.magnet_states_map.size();
-	return ms;
-}
-boost::python::dict MagnetFactory::getMagnetState_Py(const std::string& name)const
-{
-	magnetState r = getMagnetState(name);
-	return r.state_dict;
-}
-/*! Return magnetState for all magnets in the factory,
-@param[out] python dictionary version of a magnetStates */
-boost::python::dict MagnetFactory::getAllMagnetState_Py() const
-{
-	magnetStates s = getMagnetStates();
-	boost::python::dict r;
-	// do we need this - i don't think so  ... 
-	//r["magnet_count"] = s.magnet_count;
-	for (auto&& item : s.magnet_states_map)
-	{
-		r[item.first] = item.second.state_dict;
-	}
-	return r;
-}
-bool MagnetFactory::setMagnetState(const magnetState& ms)
-{
-	if (GlobalFunctions::entryExists(magnetMap, ms.name))
-	{
-		return magnetMap.at(ms.name).setMagnetState(ms);
-	}
-	return false;
-}
-std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types)
-{
-	std::cout << "applyMagnetStates " << std::endl;
-	std::map<std::string, bool> r;
-	for (auto&& mag_state : ms.magnet_states_map)
-	{
-		if (GlobalFunctions::entryExists(types, getMagnetType(mag_state.second.name)))
-		{
-			std::cout << "APPLY magnet State for " << mag_state.second.name << std::endl;
-			r[mag_state.first] = setMagnetState(mag_state.second);
-		}
-	}
-	return r;
-}
-bool MagnetFactory::applyDBURT(const std::string& fileName)
-{
-	std::vector<TYPE> types {TYPE::QUADRUPOLE, TYPE::DIPOLE, TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR,
-		TYPE::SOLENOID, TYPE::BUCKING_SOLENOID};
-	std::cout << "applyDBURT " << std::endl;
-	std::map<std::string, std::map<std::string, STATE>> r;
-	auto db = readDBURT(fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates, types);
-	return true;
-}
-bool MagnetFactory::applyDBURTQuadOnly(const std::string& fileName)
-{
-	std::vector<TYPE> types{ TYPE::QUADRUPOLE};
-	std::cout << "applyDBURTQuadOnly " << std::endl;
-	std::map<std::string, std::map<std::string, STATE>> r;
-	auto db = readDBURT(fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates, types);
-	return true;
-}
-bool MagnetFactory::applyDBURTCorOnly(const std::string& fileName)
-{
-	std::vector<TYPE> types{ TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR};
-	std::cout << "applyDBURTCorOnly " << std::endl;
-	std::map<std::string, std::map<std::string, STATE>> r;
-	auto db = readDBURT(fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates, types);
-	return true;
-}
-bool MagnetFactory::applyDBURT(const std::string& filePath, const std::string& fileName)
-{
-	std::vector<TYPE> types{ TYPE::QUADRUPOLE, TYPE::DIPOLE, TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR,
-		TYPE::SOLENOID, TYPE::BUCKING_SOLENOID };
-	std::cout << "applyDBURT fp fn" << std::endl;
-	std::map<std::string, std::map<std::string, STATE>> r;
-	auto db = readDBURT(filePath, fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates, types);
-	return true;
-}
-bool MagnetFactory::applyDBURTQuadOnly(const std::string& filePath, const std::string& fileName)
-{
-	std::vector<TYPE> types{ TYPE::QUADRUPOLE };
-	std::cout << "applyDBURTQuadOnly " << std::endl;
-	std::map<std::string, std::map<std::string, STATE>> r;
-	auto db = readDBURT(filePath,fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates, types);
-	return true;
-}
-bool MagnetFactory::applyDBURTCorOnly(const std::string& filePath, const std::string& fileName)
-{
-	std::vector<TYPE> types{ TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR };
-	std::cout << "applyDBURTCorOnly " << std::endl;
-	std::map<std::string, std::map<std::string, STATE>> r;
-	auto db = readDBURT(filePath, fileName);
-	auto apply_result = applyMagnetStates(db.magnetstates, types);
-	return true;
-}
-bool MagnetFactory::isMagnetStateEqualDBURT(const std::string& fileName)
-{
-	auto db = readDBURT(fileName);
-	auto ms = getMagnetStates();
-
-	//auto& db_ms = db.magnetstates;
-	//auto& ms_ms = ms;
-
-	//std::vector<std::string> magNames;
-	//std::vector<STATE> psuStates;
-	//std::vector<double> setiValues, readiValues;
-
-	//if (db_ms.numMags == ms_ms.numMags)
-	//{
-
-	//}
-	//else
-	//{ 
-	//	
-	//}
-
-	//for(auto i = 0; i< )
-
-	return false;
-}
-bool MagnetFactory::writeDBURT(const std::string& fileName)const
-{
-	return writeDBURT(fileName, "NO COMMENT");
-}
-bool MagnetFactory::writeDBURT(const std::string& fileName, const std::string& commment)const
-{
-	return writeDBURT(GlobalConstants::DBURT_FILEPATH, fileName, commment);
-}
-bool MagnetFactory::writeDBURT(const std::string& filePath, const std::string& fileName, const std::string& commment)const
-{
-	dburt db;
-	db.comment = commment;
-	db.timestamp = GlobalFunctions::getTimeAndDateString();
-	db.magnetstates = getMagnetStates();
-
-	boost::filesystem::path directory(filePath);
-	boost::filesystem::path file(fileName);
-	boost::filesystem::path full_path = directory / file;
-	return writeDBURTToFile(full_path, db);
-}
-bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, const dburt& dburt_to_write) const
-{
-	std::ofstream fout(full_path.c_str());
-	if (!fout)
-	{
-		messenger.printDebugMessage("writeDBURT failed to open file at ", full_path);
-		return false;
-	}
-	// temp objects for header to write to file 
-	std::map<std::string, std::string> header_data;
-	std::map<std::string, std::map<std::string, std::string> > header_data_to_write;
-
-	// WRITE HEADER FIRST
-	header_data[GlobalConstants::COMMENT] = dburt_to_write.comment;
-	header_data[GlobalConstants::TIMESTAMP] = dburt_to_write.timestamp;
-	header_data_to_write[GlobalConstants::HEADER] = header_data;
-	YAML::Node header_node(header_data_to_write);
-	// write a header; TODO: maybe this version comment should be defeind in a better place
-	fout << "#YAML VELA/CLARA Magnet Settings Save File VERSION 1" << std::endl;
-	fout << header_node;
-	fout << std::endl;
-
-	// empty magnet data to write 
-	std::map<std::string, std::string> magnet_data;
-	std::map<std::string, std::map<std::string, std::string> > magnet_data_to_write;
-
-	// dburt_to_write.magnetstates.magnetStatesMap
-
-	//std::map<std::string, magnetState>::iterator magnetStatesMap_it = dburt_to_write.magnetstates.magnetStatesMap.begin();
-
-	for (auto&& mag_state : dburt_to_write.magnetstates.magnet_states_map)
-	{
-		magnet_data.clear();
-
-		// FIX THE NUMEBR OF DECIMAL PLACES IN SETI TO 3 
-		std::stringstream stream;
-		stream << std::fixed << std::setprecision(3) << mag_state.second.seti;
-		std::string s = stream.str();
-
-		magnet_data[MagnetRecords::SETI] = stream.str();;
-		magnet_data[MagnetRecords::READI] = std::to_string(mag_state.second.readi);
-		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psu_state);
-		magnet_data_to_write[mag_state.first] = magnet_data;
-	}
-	YAML::Node data_node(magnet_data_to_write);
-	fout << data_node;
-	messenger.printDebugMessage("writeDBURT generated DBURT at ", full_path);
-	return true;
-}
-dburt MagnetFactory::readDBURT(const std::string& fileName)const
-{
-	return readDBURT(GlobalConstants::DBURT_FILEPATH, fileName);
-}
-dburt MagnetFactory::readDBURT(const std::string& filePath, const std::string& fileName)const
-{
-	boost::filesystem::path directory(filePath);
-	boost::filesystem::path file(fileName);
-	boost::filesystem::path full_path = directory / file;
-	return readDBURTFile(full_path);
-}
-
-
-
-
-dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) const
-{
-	messenger.printDebugMessage("readDBURTFile passed " + full_path.string());
-	// Check if BURT file  magnet data or alias
-	std::pair<bool, std::string> r = isDBURTFileAlias(full_path.string());
-	if (r.first)
-	{
-
-		messenger.printDebugMessage(full_path.string(), " is a dburt alias");
-		boost::filesystem::path alias_path(r.second);
-		//TODO potential infinte loop ??? 
-		return readDBURTFile(alias_path);
-	}
-	else
-	{
-		messenger.printDebugMessage(full_path.string(), " is a dburt data file");
-	}
-
-
-	// NOW WE CHeck if its a new file or a legacy 
-
-	std::ifstream fileInput;
-	fileInput = std::ifstream(full_path.string());
-
-	if (fileInput.is_open())
-	{
-		/// as a quick check to provide some backwards compatbility we will read the first line 		
-		std::string first_line;
-		getline(fileInput, first_line);
-		if (GlobalFunctions::stringIsSubString(LEGACY_DBURT_IDENT, first_line) )
-		{
-			bool is_legacy_file = true;
-			return readVCCDBURTFile(full_path);
-
-		}
-		else
-		{
-			bool is_legacy_file = false;
-			return readCATAPSnapshotYAML(full_path);
-
-		}
-		//std::cout << fileInput.rdbuf() << std::endl;
-
-	}
-	else
-	{
-		std::cout << "ERROR READING FILE  readDBURTFile" << std::endl;
-	}
-
-	return readVCCDBURTFile(full_path);
-
-}
-
-dburt MagnetFactory::readVCCDBURTFile(const boost::filesystem::path& full_path) const
-{
-	std::string pathandfile = getFilePathFromINputs(filePath, fileName);
-
-	message("\n", "**** Attempting to Read ", pathandfile, " ****");
-
-	std::string line, trimmedLine;
-
-	std::ifstream inputFile;
-
-	configVersion = -1;
-
-	inputFile.open(pathandfile, std::ios::in);
-	if (inputFile)
-	{
-		message("File Opened from ", pathandfile);
-		while (std::getline(inputFile, line)) /// Go through, reading file line by line
-		{
-			trimmedLine = trimAllWhiteSpace(trimToDelimiter(line, UTL::END_OF_LINE));
-
-			message(line);
-
-			if (stringIsSubString(line, UTL::VELA_MAGNET_SAVE_FILE_v1))
-			{
-				configVersion = 1;
-				break;
-			}
-			else if (stringIsSubString(line, UTL::DBURT_HEADER_V3))
-			{
-				configVersion = 3;// version 2 got lost around October 2015
-				break;
-			}
-			else if (stringIsSubString(line, UTL::DBURT_HEADER_V4))
-			{
-				configVersion = 4;// version 2 got lost around October 2015
-				break;
-			}
-			else if (stringIsSubString(line, UTL::VERSION))
-			{
-				if (stringIsSubString(trimmedLine, UTL::VERSION))
-					getVersion(trimmedLine);
-			}
-			else if (stringIsSubString(line, UTL::VELA_CLARA_DBURT_ALIAS_V1))
-			{
-				message("stringIsSubString(line, UTL::VELA_CLARA_DBURT_ALIAS_V1)");
-				std::getline(inputFile, line);
-				trimmedLine = trimAllWhiteSpace(trimToDelimiter(line, UTL::END_OF_LINE));
-				std::vector<std::string> keyvalue = getKeyVal(trimmedLine, UTL::EQUALS_SIGN_C);
-
-				message(keyvalue[0]);
-				message(keyvalue[1]);
-				pathandfile = getFilePathFromINputs(trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[0]),
-					trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[1]));
-				message(pathandfile);
-				configVersion = 4;
-			}
-		}
-	}
-	debugMessage("Finished preprocessing file");
-	inputFile.close();
-	magnetStructs::magnetStateStruct magState;
-	switch (configVersion)
-	{
-	case -1:
-		debugMessage("NO DBURT VERSION FOUND EXIT");
-		break;
-
-	case 1:
-		debugMessage("VERSION 1 DBURT FOUND");
-		//magState = readDBURTv1(filePath);
-		break;
-	case 2:
-		//debugMessage("VERSION 2 DBURT FOUND");
-		break;
-	case 3:
-		debugMessage("VERSION 3 DBURT FOUND");
-		//magState = readDBURTv3(filePath);
-		break;
-	case 4:
-		debugMessage("VERSION 4 DBURT FOUND");
-		magState = readDBURTv4(pathandfile);
-		break;
-	default:
-		debugMessage("UNEXPECTED DBURT VERSION, ", configVersion, ", FOUND");
-
-	}
-	return magState;
-}
+//magnetState MagnetFactory::getMagnetState(const std::string& name)const
+//{
+//	if (GlobalFunctions::entryExists(magnetMap, name))
+//	{
+//		return magnetMap.at(name).getMagnetState();
+//	}
+//	return magnetState();
+//}
+//magnetStates MagnetFactory::getMagnetStates()const
+//{
+//	magnetStates ms;
+//	for (auto&& magnet : getAllMagnetNames())
+//	{
+//		ms.magnet_states_map[magnet] = getMagnetState(magnet);
+//	}
+//	ms.magnet_count = ms.magnet_states_map.size();
+//	return ms;
+//}
+//boost::python::dict MagnetFactory::getMagnetState_Py(const std::string& name)const
+//{
+//	magnetState r = getMagnetState(name);
+//	return r.state_dict;
+//}
+///*! Return magnetState for all magnets in the factory,
+//@param[out] python dictionary version of a magnetStates */
+//boost::python::dict MagnetFactory::getAllMagnetState_Py() const
+//{
+//	magnetStates s = getMagnetStates();
+//	boost::python::dict r;
+//	// do we need this - i don't think so  ... 
+//	//r["magnet_count"] = s.magnet_count;
+//	for (auto&& item : s.magnet_states_map)
+//	{
+//		r[item.first] = item.second.state_dict;
+//	}
+//	return r;
+//}
+//bool MagnetFactory::setMagnetState(const magnetState& ms)
+//{
+//	if (GlobalFunctions::entryExists(magnetMap, ms.name))
+//	{
+//		return magnetMap.at(ms.name).setMagnetState(ms);
+//	}
+//	return false;
+//}
+//std::map<std::string, bool> MagnetFactory::applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types)
+//{
+//	std::cout << "applyMagnetStates " << std::endl;
+//	std::map<std::string, bool> r;
+//	for (auto&& mag_state : ms.magnet_states_map)
+//	{
+//		if (GlobalFunctions::entryExists(types, getMagnetType(mag_state.second.name)))
+//		{
+//			std::cout << "APPLY magnet State for " << mag_state.second.name << std::endl;
+//			r[mag_state.first] = setMagnetState(mag_state.second);
+//		}
+//	}
+//	return r;
+//}
+//bool MagnetFactory::applyDBURT(const std::string& fileName)
+//{
+//	std::vector<TYPE> types {TYPE::QUADRUPOLE, TYPE::DIPOLE, TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR,
+//		TYPE::SOLENOID, TYPE::BUCKING_SOLENOID};
+//	std::cout << "applyDBURT " << std::endl;
+//	std::map<std::string, std::map<std::string, STATE>> r;
+//	auto db = readDBURT(fileName);
+//	auto apply_result = applyMagnetStates(db.magnetstates, types);
+//	return true;
+//}
+//bool MagnetFactory::applyDBURTQuadOnly(const std::string& fileName)
+//{
+//	std::vector<TYPE> types{ TYPE::QUADRUPOLE};
+//	std::cout << "applyDBURTQuadOnly " << std::endl;
+//	std::map<std::string, std::map<std::string, STATE>> r;
+//	auto db = readDBURT(fileName);
+//	auto apply_result = applyMagnetStates(db.magnetstates, types);
+//	return true;
+//}
+//bool MagnetFactory::applyDBURTCorOnly(const std::string& fileName)
+//{
+//	std::vector<TYPE> types{ TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR};
+//	std::cout << "applyDBURTCorOnly " << std::endl;
+//	std::map<std::string, std::map<std::string, STATE>> r;
+//	auto db = readDBURT(fileName);
+//	auto apply_result = applyMagnetStates(db.magnetstates, types);
+//	return true;
+//}
+//bool MagnetFactory::applyDBURT(const std::string& filePath, const std::string& fileName)
+//{
+//	std::vector<TYPE> types{ TYPE::QUADRUPOLE, TYPE::DIPOLE, TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR,
+//		TYPE::SOLENOID, TYPE::BUCKING_SOLENOID };
+//	std::cout << "applyDBURT fp fn" << std::endl;
+//	std::map<std::string, std::map<std::string, STATE>> r;
+//	auto db = readDBURT(filePath, fileName);
+//	auto apply_result = applyMagnetStates(db.magnetstates, types);
+//	return true;
+//}
+//bool MagnetFactory::applyDBURTQuadOnly(const std::string& filePath, const std::string& fileName)
+//{
+//	std::vector<TYPE> types{ TYPE::QUADRUPOLE };
+//	std::cout << "applyDBURTQuadOnly " << std::endl;
+//	std::map<std::string, std::map<std::string, STATE>> r;
+//	auto db = readDBURT(filePath,fileName);
+//	auto apply_result = applyMagnetStates(db.magnetstates, types);
+//	return true;
+//}
+//bool MagnetFactory::applyDBURTCorOnly(const std::string& filePath, const std::string& fileName)
+//{
+//	std::vector<TYPE> types{ TYPE::VERTICAL_CORRECTOR, TYPE::HORIZONTAL_CORRECTOR };
+//	std::cout << "applyDBURTCorOnly " << std::endl;
+//	std::map<std::string, std::map<std::string, STATE>> r;
+//	auto db = readDBURT(filePath, fileName);
+//	auto apply_result = applyMagnetStates(db.magnetstates, types);
+//	return true;
+//}
+//bool MagnetFactory::isMagnetStateEqualDBURT(const std::string& fileName)
+//{
+//	auto db = readDBURT(fileName);
+//	auto ms = getMagnetStates();
+//
+//	//auto& db_ms = db.magnetstates;
+//	//auto& ms_ms = ms;
+//
+//	//std::vector<std::string> magNames;
+//	//std::vector<STATE> psuStates;
+//	//std::vector<double> setiValues, readiValues;
+//
+//	//if (db_ms.numMags == ms_ms.numMags)
+//	//{
+//
+//	//}
+//	//else
+//	//{ 
+//	//	
+//	//}
+//
+//	//for(auto i = 0; i< )
+//
+//	return false;
+//}
+//bool MagnetFactory::writeDBURT(const std::string& fileName)const
+//{
+//	return writeDBURT(fileName, "NO COMMENT");
+//}
+//bool MagnetFactory::writeDBURT(const std::string& fileName, const std::string& commment)const
+//{
+//	return writeDBURT(GlobalConstants::DBURT_FILEPATH, fileName, commment);
+//}
+//bool MagnetFactory::writeDBURT(const std::string& filePath, const std::string& fileName, const std::string& commment)const
+//{
+//	dburt db;
+//	db.comment = commment;
+//	db.timestamp = GlobalFunctions::getTimeAndDateString();
+//	db.magnetstates = getMagnetStates();
+//
+//	boost::filesystem::path directory(filePath);
+//	boost::filesystem::path file(fileName);
+//	boost::filesystem::path full_path = directory / file;
+//	return writeDBURTToFile(full_path, db);
+//}
+//bool MagnetFactory::writeDBURTToFile(const boost::filesystem::path& full_path, const dburt& dburt_to_write) const
+//{
+//	std::ofstream fout(full_path.c_str());
+//	if (!fout)
+//	{
+//		messenger.printDebugMessage("writeDBURT failed to open file at ", full_path);
+//		return false;
+//	}
+//	// temp objects for header to write to file 
+//	std::map<std::string, std::string> header_data;
+//	std::map<std::string, std::map<std::string, std::string> > header_data_to_write;
+//
+//	// WRITE HEADER FIRST
+//	header_data[GlobalConstants::COMMENT] = dburt_to_write.comment;
+//	header_data[GlobalConstants::TIMESTAMP] = dburt_to_write.timestamp;
+//	header_data_to_write[GlobalConstants::HEADER] = header_data;
+//	YAML::Node header_node(header_data_to_write);
+//	// write a header; TODO: maybe this version comment should be defeind in a better place
+//	fout << "#YAML VELA/CLARA Magnet Settings Save File VERSION 1" << std::endl;
+//	fout << header_node;
+//	fout << std::endl;
+//
+//	// empty magnet data to write 
+//	std::map<std::string, std::string> magnet_data;
+//	std::map<std::string, std::map<std::string, std::string> > magnet_data_to_write;
+//
+//	// dburt_to_write.magnetstates.magnetStatesMap
+//
+//	//std::map<std::string, magnetState>::iterator magnetStatesMap_it = dburt_to_write.magnetstates.magnetStatesMap.begin();
+//
+//	for (auto&& mag_state : dburt_to_write.magnetstates.magnet_states_map)
+//	{
+//		magnet_data.clear();
+//
+//		// FIX THE NUMEBR OF DECIMAL PLACES IN SETI TO 3 
+//		std::stringstream stream;
+//		stream << std::fixed << std::setprecision(3) << mag_state.second.seti;
+//		std::string s = stream.str();
+//
+//		magnet_data[MagnetRecords::SETI] = stream.str();;
+//		magnet_data[MagnetRecords::READI] = std::to_string(mag_state.second.readi);
+//		magnet_data[MagnetRecords::RPOWER] = ENUM_TO_STRING(mag_state.second.psu_state);
+//		magnet_data_to_write[mag_state.first] = magnet_data;
+//	}
+//	YAML::Node data_node(magnet_data_to_write);
+//	fout << data_node;
+//	messenger.printDebugMessage("writeDBURT generated DBURT at ", full_path);
+//	return true;
+//}
+//dburt MagnetFactory::readDBURT(const std::string& fileName)const
+//{
+//	return readDBURT(GlobalConstants::DBURT_FILEPATH, fileName);
+//}
+//dburt MagnetFactory::readDBURT(const std::string& filePath, const std::string& fileName)const
+//{
+//	boost::filesystem::path directory(filePath);
+//	boost::filesystem::path file(fileName);
+//	boost::filesystem::path full_path = directory / file;
+//	return readDBURTFile(full_path);
+//}
+//
+//
+//
+//
+//dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) const
+//{
+//	messenger.printDebugMessage("readDBURTFile passed " + full_path.string());
+//	// Check if BURT file  magnet data or alias
+//	std::pair<bool, std::string> r = isDBURTFileAlias(full_path.string());
+//	if (r.first)
+//	{
+//
+//		messenger.printDebugMessage(full_path.string(), " is a dburt alias");
+//		boost::filesystem::path alias_path(r.second);
+//		//TODO potential infinte loop ??? 
+//		return readDBURTFile(alias_path);
+//	}
+//	else
+//	{
+//		messenger.printDebugMessage(full_path.string(), " is a dburt data file");
+//	}
+//
+//
+//	// NOW WE CHeck if its a new file or a legacy 
+//
+//	std::ifstream fileInput;
+//	fileInput = std::ifstream(full_path.string());
+//
+//	if (fileInput.is_open())
+//	{
+//		/// as a quick check to provide some backwards compatbility we will read the first line 		
+//		std::string first_line;
+//		getline(fileInput, first_line);
+//		if (GlobalFunctions::stringIsSubString(LEGACY_DBURT_IDENT, first_line) )
+//		{
+//			bool is_legacy_file = true;
+//			return readVCCDBURTFile(full_path);
+//
+//		}
+//		else
+//		{
+//			bool is_legacy_file = false;
+//			return readCATAPSnapshotYAML(full_path);
+//
+//		}
+//		//std::cout << fileInput.rdbuf() << std::endl;
+//
+//	}
+//	else
+//	{
+//		std::cout << "ERROR READING FILE  readDBURTFile" << std::endl;
+//	}
+//
+//	return readVCCDBURTFile(full_path);
+//
+//}
 
 
-dburt MagnetFactory::readCATAPSnapshotYAML(const boost::filesystem::path & full_path) const
-{
-	dburt read_dburt;
-	std::ifstream fileInput;
-	fileInput = std::ifstream(full_path.string());
-	YAML::Parser parser(fileInput);
-	YAML::Node file_data = YAML::LoadFile(full_path.string());
-
-	//int i = 0;
-	for (auto&& it : file_data)
-	{
-		// If the first string is "HEADER" get header info
-		if (it.first.as<std::string>() == GlobalConstants::HEADER)
-		{
-			for (auto&& it2 : it.second)
-			{
-				std::string record = it2.first.as<std::string>();
-				if (record == GlobalConstants::TIMESTAMP)
-				{
-					read_dburt.timestamp = it2.second.as<std::string>();
-				}
-				else if (record == GlobalConstants::COMMENT)
-				{
-					read_dburt.comment = it2.second.as<std::string>();
-				}
-			}
-
-			messenger.printDebugMessage("timestamp: ", read_dburt.timestamp);
-			messenger.printDebugMessage("comment: ", read_dburt.comment);
-		}
-		else // If the string **must** be a magnet name
-		{
-			// The First 
-			magnetState mag_state_to_fill = magnetState();
-			//read_dburt.magnetstates.magNames.push_back(it.first.as<std::string>());
-			mag_state_to_fill.name = it.first.as<std::string>();
-			for (auto&& it2 : it.second)
-			{
-				std::string record = it2.first.as<std::string>();
-				//std::cout << record << " = " << it2.second << std::endl;
-				if (MagnetRecords::SETI == record)
-				{
-					//std::cout << record << " is " << MagnetRecords::SETI << std::endl;
-					mag_state_to_fill.seti = it2.second.as<double>();
-				}
-				else if (MagnetRecords::READI == record)
-				{
-					//std::cout << record << " is " << MagnetRecords::READI << std::endl;
-					mag_state_to_fill.readi = it2.second.as<double>();
-				}
-				else if (MagnetRecords::RPOWER == record)
-				{
-					std::string val = it2.second.as<std::string>();
-					if (val == "ON")
-					{
-						//std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
-						mag_state_to_fill.psu_state = STATE::ON;
-					}
-					else
-					{
-						mag_state_to_fill.psu_state = STATE::OFF;
-					}
-				}
-			}
-			// update the magnetStatesMap with the magnetState for this magnet 
-			read_dburt.magnetstates.magnet_states_map[mag_state_to_fill.name] = mag_state_to_fill;
-			std::cout << "added " << mag_state_to_fill.name << " to magnetStatesMap" << std::endl;
-			std::cout << ENUM_TO_STRING(mag_state_to_fill.psu_state) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
-		}
-	}
-	/*read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
-	read_dburt.magnetstates.magNames_Py = to_py_list<std::string>(read_dburt.magnetstates.magNames);
-	read_dburt.magnetstates.psuStates_Py = to_py_list<STATE>(read_dburt.magnetstates.psuStates);
-	read_dburt.magnetstates.readiValues_Py = to_py_list<double>(read_dburt.magnetstates.readiValues);
-	read_dburt.magnetstates.setiValues_Py = to_py_list<double>(read_dburt.magnetstates.setiValues);*/
-	return read_dburt;
-}
-std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
-{
-	messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path);
-	std::ifstream fileInput;
-	fileInput = std::ifstream(full_path);
-	YAML::Parser parser(fileInput);
-	YAML::Node file_data = YAML::LoadFile(full_path);
-
-	std::pair<bool, std::string> r(false, "");
-
-	for (auto&& it : file_data)
-	{
-		if (it.first.as<std::string>() == GlobalConstants::FILE_ALIAS)
-		{
-			r.first = true;
-			r.second = it.second.as<std::string>();
-			messenger.printDebugMessage("isDBURTFileAlias found FILE_ALIAS pointing to " + r.second);
-		}
-	}
-	messenger.printDebugMessage("isDBURTFileAlias returning ", r.first);
-	return r;
-}
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
