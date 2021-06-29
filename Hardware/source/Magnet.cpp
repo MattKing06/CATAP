@@ -161,8 +161,45 @@ void Magnet::setPVStructs()
 		
 }
 
-magnetState Magnet::getMagnetState()const
+
+
+HardwareSnapshot Magnet::getSnapshot()
 {
+	currentSnapshot.update(MagnetRecords::GETSETI , GETSETI.second);
+	currentSnapshot.update(MagnetRecords::READI, READI.second);
+	currentSnapshot.update(MagnetRecords::RILK, ilk_state.second);
+	currentSnapshot.update(MagnetRecords::RPOWER, psu_state.second);
+	currentSnapshot.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
+	currentSnapshot.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
+	currentSnapshot.update(MagnetRecords::INT_STR, INT_STR.second);
+	currentSnapshot.update(MagnetRecords::K_SET_P, K_SET_P.second);
+	currentSnapshot.update(MagnetRecords::K_ANG, K_ANG.second);
+	currentSnapshot.update(MagnetRecords::K_MRAD, K_MRAD.second);
+	currentSnapshot.update(MagnetRecords::K_VAL, K_VAL.second);
+	return currentSnapshot;
+}
+boost::python::dict Magnet::getSnapshot_Py()
+{
+	//currentState.update(MagnetRecords::GETSETI, GETSETI.second);
+	//currentState.update(MagnetRecords::READI, READI.second);
+	//currentState.update(MagnetRecords::RILK, ilk_state.second);
+	//currentState.update(MagnetRecords::RPOWER, psu_state.second);
+	//currentState.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
+	//currentState.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
+	//currentState.update(MagnetRecords::INT_STR, INT_STR.second);
+	//currentState.update(MagnetRecords::K_SET_P, K_SET_P.second);
+	//currentState.update(MagnetRecords::K_ANG, K_ANG.second);
+	//currentState.update(MagnetRecords::K_MRAD, K_MRAD.second);
+	//currentState.update(MagnetRecords::K_VAL, K_VAL.second);
+	getSnapshot();
+	return currentSnapshot.getSnapshot_Py();
+}
+
+
+
+// TODO get rid 
+magnetState Magnet::getMagnetState()const
+{	// TODO this functionality is now deprecated and we have implemented more general "getState" method 
 	magnetState r;
 	r.readi = getREADI();
 	r.seti = getSETI();
@@ -198,8 +235,7 @@ magnetState Magnet::getMagnetState()const
 
 	return r;
 }
-
-
+// TODO get rid 
 bool Magnet::setMagnetState(const magnetState& ms)
 {
 	bool seti_sent = SETI(ms.seti);
@@ -211,6 +247,8 @@ bool Magnet::setMagnetState(const magnetState& ms)
 	}
 	return false;
 }
+
+
 
 bool Magnet::isInState(const magnetState& ms)const
 {
@@ -685,6 +723,18 @@ bool Magnet::offlineSetIlkState(const STATE value)
 	return false;
 }
 
+//std::map<std::string, std::string> Magnet::getState()
+//{
+//	magnetState currentState = getMagnetState();
+//	std::map<std::string, std::string> stateMap = to_std_map<std::string, std::string>(currentState.state_dict);
+//	return stateMap;
+//}
+//
+//boost::python::dict Magnet::getState_Py()
+//{
+//	magnetState currentState = getMagnetState();
+//	return currentState.state_dict;
+//}
 
 void Magnet::debugMessagesOff()
 {

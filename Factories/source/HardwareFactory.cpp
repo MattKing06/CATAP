@@ -1,6 +1,8 @@
 #include "HardwareFactory.h"
+#include <boost/filesystem/convenience.hpp>
 #include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
+#include <SnapshotFileManager.h>
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -31,6 +33,48 @@ HardwareFactory::HardwareFactory(STATE mode) :
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
 
+bool HardwareFactory::setup(const std::string& VERSION)
+{
+	bool setup = false;
+	// TODO these TYPES should be the type ENUM
+	if (!magnetFactory.hasBeenSetup)
+	{
+		setup = magnetFactory.setup(VERSION);
+	}
+	messenger.printMessage("MagnetFactory has been setup.");
+	if (!bpmFactory.hasBeenSetup)
+	{
+		setup = bpmFactory.setup(VERSION);
+	}
+	messenger.printMessage("BPMFactory has been setup.");
+	if (!chargeFactory.hasBeenSetup)
+	{
+		setup = chargeFactory.setup(VERSION);
+	}
+	messenger.printMessage("ChargeFactory has been setup.");
+	if (!screenFactory.hasBeenSetup)
+	{
+		setup = screenFactory.setup(VERSION);
+	}
+	messenger.printMessage("ScreenFactory has been setup.");
+	if (!valveFactory.hasBeenSetup)
+	{
+		setup = valveFactory.setup(VERSION);
+	}
+	messenger.printMessage("ValveFactory has been setup.");
+	if (!laserEnergyMeterFactory.hasBeenSetup)
+	{
+		setup = laserEnergyMeterFactory.setup(VERSION);
+	}
+	messenger.printMessage("LaserEnergyMeterFactory has been setup.");
+	if (!laserHWPFactory.hasBeenSetup)
+	{
+		setup = laserHWPFactory.setup(VERSION);
+	}
+	messenger.printMessage("LaserHWPFactory has been setup.");
+	return setup;
+}
+
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
 {
 	bool setup = false;
@@ -41,6 +85,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = magnetFactory.setup(VERSION);
 		}
+		messenger.printMessage("MagnetFactory has been setup.");
 	}
 	else if (hardwareType == "BPM")
 	{
@@ -48,6 +93,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = bpmFactory.setup(VERSION);
 		}
+		messenger.printMessage("BPMFactory has been setup.");
 	}
 	else if (hardwareType == "Charge")
 	{
@@ -55,6 +101,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = chargeFactory.setup(VERSION);
 		}
+		messenger.printMessage("ChargeFactory has been setup.");
 	}
 	else if (hardwareType == "Screen")
 	{
@@ -62,6 +109,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = screenFactory.setup(VERSION);
 		}
+		messenger.printMessage("ScreenFactory has been setup.");
 	}
 	else if (hardwareType == "Valve")
 	{
@@ -69,6 +117,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = valveFactory.setup(VERSION);
 		}
+		messenger.printMessage("ValveFactory has been setup.");
 	}
 	else if (hardwareType == "Laser Energy Meter")
 	{
@@ -76,6 +125,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = laserEnergyMeterFactory.setup(VERSION);
 		}
+		messenger.printMessage("LaserEnergyMeterFactory has been setup.");
 	}
 	else if (hardwareType == "Laser HWP")
 	{
@@ -83,8 +133,25 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = laserHWPFactory.setup(VERSION);
 		}
+		messenger.printMessage("LaserHWPFactory has been setup.");
 	}
 	return setup;
+}
+
+bool HardwareFactory::setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION)
+{
+	for (auto&& hardware : hardwareTypes)
+	{
+		bool status = setup(hardware, VERSION);
+	}
+	return false;
+}
+
+bool HardwareFactory::setup(const boost::python::list& hardwareTypes, const std::string& VERSION)
+{
+	std::vector<std::string> hardware = to_std_vector<std::string>(hardwareTypes);
+	setup(hardware, VERSION);
+	return false;
 }
 
 RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
@@ -490,6 +557,128 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 }
 
 
+bool HardwareFactory::saveMachineSnapshot()
+{
+	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
+	boost::filesystem::path snapshotLocation;
+	boost::system::error_code returnedError;
+	snapshotLocation = boost::filesystem::path(SnapshotFileManager::defaultMachineSnapshotLocation) / now;
+	boost::filesystem::create_directory(snapshotLocation, returnedError);
+	if (returnedError)
+	{
+		messenger.printMessage("Could not fine snapshot location: ", snapshotLocation.string());
+		return false;
+	}
+	else
+	{
+		if (valveFactory.hasBeenSetup)
+		{
+			valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+			return true;
+		}
+		else
+		{
+			bool status = valveFactory.setup("nominal");
+			if (status)
+			{
+				valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+				return true;
+			}
+			else
+			{
+				messenger.printMessage("Failed to setup ValveFactory, cannot save snapshot for Valves.");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	return false;
+}
+
+bool HardwareFactory::saveMachineSnapshot(const std::string& location)
+{
+	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
+	boost::filesystem::path snapshotLocation;
+	boost::system::error_code returnedError;
+	if (location.empty())
+	{ 
+		snapshotLocation = boost::filesystem::path(SnapshotFileManager::defaultMachineSnapshotLocation) / now;
+	}
+	else 
+	{
+		snapshotLocation = boost::filesystem::path(location) / now;
+	}
+	boost::filesystem::create_directory(snapshotLocation, returnedError);
+	if (returnedError)
+	{
+		messenger.printMessage("Could not fine snapshot location: ", snapshotLocation.string());
+		return false;
+	}
+	else
+	{
+		if (valveFactory.hasBeenSetup)
+		{
+			valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+			return true;
+		}
+		return false;
+	}
+
+	return false;
+}
+
+bool HardwareFactory::loadMachineSnapshot(const std::string& location)
+{
+	if (location.empty())
+	{
+		messenger.printMessage("Please provide a snapshot folder for loading.");
+		return false;
+	}
+	std::vector<std::string> fileList = SnapshotFileManager::getAllFilesInDirectory(location);
+	if (fileList.empty())
+	{
+		messenger.printMessage("Could not find machine snapshot files at: ", location, ". Please provide another directory.");
+		return false;
+	}
+	for (auto file : fileList)
+	{
+		messenger.printMessage(file);
+		applySnapshot(file);
+	}
+	return true;
+}
+
+bool HardwareFactory::applySnapshot(const std::string& filename)
+{
+	std::ifstream inFile(filename);
+	if (!inFile) { return false; }
+	messenger.printMessage("FULL PATH: ", filename);
+	YAML::Node snapshotInfo = YAML::LoadFile(filename);
+	for (auto&& item : snapshotInfo)
+	{
+		TYPE hardwareType = GlobalConstants::stringToTypeMap.at(item.first.as<std::string>());
+		switch (hardwareType)
+		{
+			case(TYPE::VALVE):
+			{ valveFactory.loadSnapshot(item.second); break; }
+		}
+	}
+
+	return false;
+}
+
+bool HardwareFactory::applySnapshot(const std::map<std::string, std::string> settings)
+{
+	return false;
+}
+
+std::string HardwareFactory::getDefaultSnapshotLocation() const
+{
+	return SnapshotFileManager::defaultMachineSnapshotLocation;
+}
+
+
 void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -547,6 +736,8 @@ bool HardwareFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
+
+
 
 bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 {

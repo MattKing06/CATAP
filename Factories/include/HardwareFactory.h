@@ -40,7 +40,12 @@ public:
 	HardwareFactory(STATE mode);
 	//HardwareFactory(std::string hardwareType, std::string VERSION);
 	~HardwareFactory();
+	bool setup(const std::string& VERSION);
 	bool setup(const std::string& hardwareType, const std::string& VERSION);
+	bool setup(const TYPE hardwareType, const std::string& VERSION);
+	bool setup(const std::vector<TYPE> hardwareTypes, const std::string& VERSION);
+	bool setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION);
+	bool setup(const boost::python::list& hardwareTypes, const std::string& VERSION);
 
 	MagnetFactory& getMagnetFactory();
 	MagnetFactory& getMagnetFactory(TYPE machineArea);
@@ -96,7 +101,14 @@ public:
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 	RFHeartbeatFactory& getRFHeartbeatFactory();
 
-
+	bool saveMachineSnapshot();
+	bool saveMachineSnapshot(const std::string& location);
+	bool loadMachineSnapshot(const std::string& location);
+	bool applySnapshot(const std::string& filename);
+	bool applySnapshot(const std::map<std::string, std::string> settings);
+	bool applySnapshot(YAML::Node settings);
+	bool applySnapshot(boost::python::dict settings);
+	std::string getDefaultSnapshotLocation() const;
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;
 	void debugMessagesOn();

@@ -92,6 +92,17 @@ class MagnetFactory
 		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 
+		std::map<std::string, HardwareSnapshot> getSnapshot();
+		boost::python::dict getSnapshot_Py();
+		bool saveSnapshot(const std::string& location, const std::string& filename);
+		bool loadSnapshot(const std::string location, const std::string& stateFile);
+
+		//bool applySnapshot(std::map<std::string, HardwareSnapshot>& snap);
+		bool applySnapshot_Py(boost::python::dict& snap);
+
+		std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
+
+
 		/*! Get a reference to magnet object, will return a dummy_magnet if magnetName is not found  
 		@param[in] magnetName, full-name or name-alias of magnet object to return 
 		@param[out] Magnet&, returned magnet object */
@@ -145,8 +156,6 @@ class MagnetFactory
 		/*! Get the full name of every vertical corrector magnet in the factory (python version)
 		@param[out] python::list of magnet names*/
 		boost::python::list getAllVCorrectorNames_Py()const;
-
-
 
 		/*! Returns the GETSETI value for a magnet. GETSETI is the requested set current.  
 		@param[in] name, full-name or name-alias of magnet object 

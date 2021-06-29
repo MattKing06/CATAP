@@ -198,7 +198,6 @@ std::map<strin, std::pair<value, value>> to_std_map_pair(const boost::python::di
 }
 
 
-
 //template<class key, std::vector<class value>>
 template<class mapkey, class mapvalue>
 inline
@@ -232,6 +231,7 @@ boost::python::dict to_py_dict(const std::pair<std::string, std::vector<mapvalue
 }
 
 template<typename mapkey, typename mapvalue>
+inline
 std::map<mapkey, mapvalue> to_std_map(const boost::python::dict& map_in)
 {
 	std::map<mapkey, mapvalue> r;
@@ -247,6 +247,44 @@ std::map<mapkey, mapvalue> to_std_map(const boost::python::dict& map_in)
 	}
 	return r;
 }
+
+template<class primary_key, class secondary_key, class value>
+inline
+std::map<primary_key, std::pair<secondary_key, value>> to_nested_std_map(const boost::python::dict& dict)
+{    // TODO this is well dodgy
+	//https://stackoverflow.com/questions/57114920/boost-python-3-iterate-over-dict
+	std::map<primary_key, std::pair<secondary_key, value>> r;
+	boost::python::list keys = boost::python::list(dict.keys());
+	for (int i = 0; i < len(keys); ++i)
+	{
+		boost::python::extract<std::string> extractor(keys[i]);
+		if (extractor.check())
+		{
+			std::string key = extractor();
+			boost::python::object o = boost::python::object(dict[key]);
+			boost::python::list l = boost::python::list(dict[key]);
+			if (len(l) == 2)
+			{
+				std::vector<value> v = to_std_vector<value>(l);
+				std::pair<value, value> p(v[0], v[1]);
+				r[key] = p;
+			}
+			else
+			{
+				boost::python::dict items(o);
+				std::map<secondary_key, value> entry = to_std_map<secondary_key, value>(items);
+				for (auto& item : entry)
+				{
+					std::pair<secondary_key, value> pair(item.first, item.second);
+					r[key] = pair;
+				}
+			}
+		}
+	}
+	return r;
+}
+
+
 /*!@}*/
 #endif //PYTHON_TYPE_CONVERSIONS_H_
 
