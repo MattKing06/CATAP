@@ -29,9 +29,9 @@ struct magnetStates
 	boost::python::dict magnet_states_dict;
 };
 /// DBURTs are magnet-states plus comment and timestamp 
-struct dburt
-{   /*! Default constructor call for dburt */
-	dburt() :
+struct MagnetFactorySnapshot
+{   /*! Default constructor call for MagnetFactorySnapshot */
+	MagnetFactorySnapshot() :
 		comment("NO COMMENT"),
 		timestamp("NO TIME")
 	{};
@@ -914,75 +914,71 @@ class MagnetFactory
 		boost::python::list getNamesInAreas_Py(const boost::python::list& areas) const;
 
 
-		/*! Write a DBURT file to the default location 
-		@param[in] DBURT filename to write
+		/*! Write a MagnetFactorySnapshot file to the default location 
+		@param[in] MagnetFactorySnapshot filename to write
 		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeDBURT(const std::string& fileName)const;
-		/*! Write a DBURT file to the default location with passed comments 
-		@param[in] DBURT filename to write
-		@param[in] DBURT comments to write to file 
+		bool writeMagnetFactorySnapshot(const std::string& fileName)const;
+		/*! Write a MagnetFactorySnapshot file to the default location with passed comments 
+		@param[in] MagnetFactorySnapshot filename to write
+		@param[in] MagnetFactorySnapshot comments to write to file 
 		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeDBURT(const std::string& fileName, const std::string& commment)const;
-		/*! Write a DBURT file to the passed location with passed comments
-		@param[in] DBURT filepath, location wher efile will be written 
-		@param[in] DBURT filename to write
-		@param[in] DBURT comments to write to file
+		bool writeMagnetFactorySnapshot(const std::string& fileName, const std::string& commment)const;
+		/*! Write a MagnetFactorySnapshot file to the passed location with passed comments
+		@param[in] MagnetFactorySnapshot filepath, location wher efile will be written 
+		@param[in] MagnetFactorySnapshot filename to write
+		@param[in] MagnetFactorySnapshot comments to write to file
 		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeDBURT(const std::string& filePath, const std::string& fileName, const std::string& commment)const;
+		bool writeMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName, const std::string& commment)const;
 
-		/*! Read a DBURT file from the default location
-		@param[in] DBURT filename to read 
-		@param[out] dburt, dburt object generated after file has been parsed */
-		dburt readDBURT(const std::string& fileName)const;
-		/*! Read a DBURT file from a passed location 
-		@param[in] DBURT filepath to look for file 
-		@param[in] DBURT filename to read
-		@param[out] dburt, dburt object generated after file has been parsed */
-		dburt readDBURT(const std::string& filePath, const std::string& fileName)const;
+		/*! Read a MagnetFactorySnapshot file from the default location
+		@param[in] MagnetFactorySnapshot filename to read 
+		@param[out] MagnetFactorySnapshot, MagnetFactorySnapshot object generated after file has been parsed */
+		MagnetFactorySnapshot readMagnetFactorySnapshot(const std::string& fileName)const;
+		/*! Read a MagnetFactorySnapshot file from a passed location 
+		@param[in] MagnetFactorySnapshot filepath to look for file 
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] MagnetFactorySnapshot, MagnetFactorySnapshot object generated after file has been parsed */
+		MagnetFactorySnapshot readMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName)const;
 
-		/*! Apply a DBURT file from passed location
-		@param[in] DBURT filepath to file 
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURT(const std::string& filePath, const std::string& fileName);
-		/*! Apply a DBURT file to quadrupole magnets only  from passed location
-		@param[in] DBURT filepath to file
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTQuadOnly(const std::string& filePath,  const std::string& fileName);
-		/*! Apply a DBURT file to corrector magnets only from passed location
-		@param[in] DBURT filepath to file
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTCorOnly(const std::string& filePath, const std::string& fileName);
+		/*! Apply a MagnetFactorySnapshot file from passed location
+		@param[in] MagnetFactorySnapshot filepath to file 
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot was applied */
+		bool applyMagnetFactorySnapshot(const std::string& filePath, const std::string& fileName);
+		/*! Apply a MagnetFactorySnapshot file to quadrupole magnets only  from passed location
+		@param[in] MagnetFactorySnapshot filepath to file
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot was applied */
+		bool applyMagnetFactorySnapshotQuadOnly(const std::string& filePath,  const std::string& fileName);
+		/*! Apply a MagnetFactorySnapshot file to corrector magnets only from passed location
+		@param[in] MagnetFactorySnapshot filepath to file
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot was applied */
+		bool applyMagnetFactorySnapshotCorOnly(const std::string& filePath, const std::string& fileName);
 
-		/*! Apply a DBURT file from the default location 
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURT(const std::string& fileName);
-		/*! Apply a DBURT file to quadrupole magnets only  from passed location
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTQuadOnly(const std::string& fileName);
-		/*! Apply a DBURT file to corrector magnets only from passed location
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTCorOnly(const std::string& fileName);
+		/*! Apply a MagnetFactorySnapshot file from the default location 
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot was applied */
+		bool applyMagnetFactorySnapshot(const std::string& fileName);
+		/*! Apply a MagnetFactorySnapshot file to quadrupole magnets only  from passed location
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot was applied */
+		bool applyMagnetFactorySnapshotQuadOnly(const std::string& fileName);
+		/*! Apply a MagnetFactorySnapshot file to corrector magnets only from passed location
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot was applied */
+		bool applyMagnetFactorySnapshotCorOnly(const std::string& fileName);
 
-		/*! Compare a DBURT file in teh default lcoation to the curent maget settings 
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt file matches current settings */
-		bool isMagnetStateEqualDBURT(const std::string& fileName);
+		/*! Compare a MagnetFactorySnapshot file in teh default lcoation to the curent maget settings 
+		@param[in] MagnetFactorySnapshot filename to read
+		@param[out] bool, if MagnetFactorySnapshot file matches current settings */
+		bool isMagnetStateEqualMagnetFactorySnapshot(const std::string& fileName);
 
 
 		/*! Get the full name of a magnet 
 		@param[in] name to lookup 
 		@param[out] fullname of magnet, or dummy magnet name if passed name does not exist*/
 		std::string getFullName(const std::string& name_to_check) const;
-
-
-
-
 
 
 		// private
@@ -1013,19 +1009,23 @@ private:
 		std::map<std::string, Magnet> magnetMap;
 
 
+
+		MagnetFactorySnapshot readVCCMagnetFactorySnapshotFile(const boost::filesystem::path& full_path) const;
+		MagnetFactorySnapshot readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const;
+
 		/*! setup the EPCIS channels */
 		void setupChannels();
 
-		/*! Write a dburt file to disk, private function that does the actual writing
+		/*! Write a MagnetFactorySnapshot file to disk, private function that does the actual writing
 		@param[in] path object 
-		@param[in] dburt data 
+		@param[in] MagnetFactorySnapshot data 
 		@param[out] successfully written */
-		bool writeDBURTToFile(const boost::filesystem::path& full_path, const dburt& dburt_to_write) const;
-		/*! Read a dburt file from disk, private function that does the actual reading
+		bool writeMagnetFactorySnapshotToFile(const boost::filesystem::path& full_path, const MagnetFactorySnapshot& MagnetFactorySnapshot_to_write) const;
+		/*! Read a MagnetFactorySnapshot file from disk, private function that does the actual reading
 		@param[in] path object
-		@param[out] dburt data*/
-		dburt readDBURTFile(const boost::filesystem::path& full_path) const;
-		std::pair<bool, std::string> isDBURTFileAlias(const std::string& full_path)const;
+		@param[out] MagnetFactorySnapshot data*/
+		MagnetFactorySnapshot readMagnetFactorySnapshotFile(const boost::filesystem::path& full_path) const;
+		std::pair<bool, std::string> isMagnetFactorySnapshotFileAlias(const std::string& full_path)const;
 
 		/*! Update the alias-name-map, 
 		@param[in] magnet object top updat emap with */
@@ -1039,6 +1039,10 @@ private:
 		std::vector<TYPE> machineAreas;
 		/*! Delete magnet objects that are not of the machineArea TYPE for this factory, called during setup*/
 		void cutMagnetMapByMachineAreas();
+
+
+		std::string LEGACY_MagnetFactorySnapshot_IDENT;
+
 
 		// private
 		ConfigReader reader;

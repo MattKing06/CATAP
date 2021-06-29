@@ -11,33 +11,33 @@
 //using namespace boost;
 namespace BOOST_PYTHON_MAGNET_INCLUDE
 {
-	void expose_magnet_state() {
+	void expose_MagnetSnapshot() {
 
-		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<magnetState>())->to_python_target_type());
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetSnapshot>())->to_python_target_type());
 		if (is_registered) return;
 
-		boost::python::class_<magnetState>
-			("magnetStateStruct", "magnetStateStruct Doc String")
-			.add_property("name", &magnetState::name)
-			.add_property("psu_state", &magnetState::psu_state)
-			.add_property("ilk_state", &magnetState::ilk_state)
+		boost::python::class_<MagnetSnapshot>
+			("MagnetSnapshot", "MagnetSnapshot Doc String")
+			.add_property("name", &MagnetSnapshot::name)
+			.add_property("psu_state", &MagnetSnapshot::psu_state)
+			.add_property("ilk_state", &MagnetSnapshot::ilk_state)
 			
 			// TODO old naming style, get rid 
-			.add_property("psuState", &magnetState::psu_state)
-			.add_property("ilkState", &magnetState::ilk_state)
+			.add_property("psuState", &MagnetSnapshot::psu_state)
+			.add_property("ilkState", &MagnetSnapshot::ilk_state)
 
-			.add_property("seti", &magnetState::seti)
-			.add_property("readi", &magnetState::readi)
+			.add_property("seti", &MagnetSnapshot::seti)
+			.add_property("readi", &MagnetSnapshot::readi)
 			;
 	};
 	void expose_magnet_states() {
  
-		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<magnetStates>())->to_python_target_type());
+		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<MagnetSnapshot>())->to_python_target_type());
 		if (is_registered) return;
-		boost::python::class_<magnetStates>
+		boost::python::class_<MagnetSnapshot>
 			("dburt", "dburt Doc String")
-			.add_property("numMags", &magnetStates::magnet_count)
-			.add_property("magnetStateMap_Py", &magnetStates::magnet_states_map)
+			.add_property("numMags", &MagnetSnapshot::magnet_count)
+			.add_property("MagnetSnapshotMap_Py", &MagnetSnapshot::magnet_states_map)
 			;
 	};
 
@@ -48,7 +48,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		boost::python::class_<dburt>
 			("dburt", "dburt Doc String")
 			.add_property("comment", &dburt::comment)
-			.add_property("magnetstates", &dburt::magnetstates)
+			.add_property("MagnetSnapshot", &dburt::MagnetSnapshot)
 			;
 
 
@@ -116,8 +116,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getMagnetType", &Magnet::getMagnetType)
 			.def("getFullPSUName", &Magnet::getFullPSUName)
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
-			.def("setMagnetState", &Magnet::setMagnetState)
-			.def("getMagnetState", &Magnet::getMagnetState)
+			.def("setMagnetSnapshot", &Magnet::setMagnetSnapshot)
+			.def("getMagnetSnapshot", &Magnet::getMagnetSnapshot)
 			.def("isInState", &Magnet::isInState)
 			.def("isInSETIandPSUState", &Magnet::isInSETIandPSUState)
 			.def("getManufacturer", &Magnet::getManufacturer)
@@ -347,8 +347,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("isACor", &MagnetFactory::isACor)
 			
 
-			.def("getMagnetState", & MagnetFactory::getMagnetState_Py)
-			.def("getAllMagnetState", & MagnetFactory::getAllMagnetState_Py)
+			.def("getMagnetSnapshot", & MagnetFactory::getMagnetSnapshot_Py)
+			.def("getAllMagnetSnapshot", & MagnetFactory::getAllMagnetSnapshot_Py)
 
 
 		//boost::python::dict getNumberOfDegaussSteps_Py(const boost::python::list & name) const;
@@ -361,14 +361,29 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		//bool SETIZero(const std::string & name);
 		//bool setPSUState(const std::string & name, const STATE value);
 		//bool offlineSetILKState(const std::string & name, const STATE value);
-		//magnetState getMagnetState(const std::string & name)const;
-		//magnetStates getMagnetStates() const;
-		//bool setMagnetState(const magnetState & ms);
+		//MagnetSnapshot getMagnetSnapshot(const std::string & name)const;
+		//MagnetSnapshot getMagnetSnapshot() const;
+		//bool setMagnetSnapshot(const MagnetSnapshot & ms);
 		//dburt readDBURT(const std::string & fileName)const;
 		//dburt readDBURT(const std::string & filePath, const std::string & fileName)const;
 		//bool readAndApplyDBURT(const std::string & fileName);
-		//bool isMagnetStateEqualDBURT(const std::string & fileName);
+		//bool isMagnetSnapshotEqualDBURT(const std::string & fileName);
 		//std::string getFullName(const std::string & name_to_check) const;
+
+			.def("readDBURT", readDBURTT_file)
+			.def("readDBURT", readDBURT_path_file)
+			.def("writeDBURT", writeDBURT_file)
+			.def("writeDBURT", writeDBURT_file_comment)
+			.def("writeDBURT", writeDBURT_path_file_comment)
+
+			.def("applyDBURT", applyDBURT_filename)
+			.def("applyDBURTQuadOnly", applyDBURTQuadOnly_filename)
+			.def("applyDBURTCorOnly", applyDBURTCorOnly_filename)
+
+			.def("applyDBURT", applyDBURT_filepath_filename)
+			.def("applyDBURTQuadOnly", applyDBURTQuadOnly_filepath_filename)
+			.def("applyDBURTCorOnly", applyDBURTCorOnly_filepath_filename)
+
 
 			.def("readDBURT", readDBURTT_file)
 			.def("readDBURT", readDBURT_path_file)

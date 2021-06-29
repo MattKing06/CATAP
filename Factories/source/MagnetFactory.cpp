@@ -22,7 +22,8 @@ MagnetFactory::MagnetFactory(STATE mode) :
 	mode(mode),
 	hasBeenSetup(false),
 	reader(ConfigReader("Magnet", mode)),
-	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
+	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
+	LEGACY_DBURT_IDENT("VELA - CLARA DBURT(MAGNET SAVE FILE)")
 {
 	// messenger.printDebugMessage("Magnet Factory constructed");
 }
@@ -1703,15 +1704,18 @@ dburt MagnetFactory::readDBURT(const std::string& filePath, const std::string& f
 	boost::filesystem::path full_path = directory / file;
 	return readDBURTFile(full_path);
 }
+
+
+
+
 dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) const
 {
 	messenger.printDebugMessage("readDBURTFile passed " + full_path.string());
 	// Check if BURT file  magnet data or alias
 	std::pair<bool, std::string> r = isDBURTFileAlias(full_path.string());
-
-
 	if (r.first)
 	{
+
 		messenger.printDebugMessage(full_path.string(), " is a dburt alias");
 		boost::filesystem::path alias_path(r.second);
 		//TODO potential infinte loop ??? 
@@ -1721,7 +1725,133 @@ dburt MagnetFactory::readDBURTFile(const boost::filesystem::path& full_path) con
 	{
 		messenger.printDebugMessage(full_path.string(), " is a dburt data file");
 	}
-	
+
+	// NOW WE CHeck if its a new file or a legacy 
+
+	std::ifstream fileInput;
+	fileInput = std::ifstream(full_path.string());
+
+	if (fileInput.is_open())
+	{
+		/// as a quick check to provide some backwards compatbility we will read the first line 		
+		std::string first_line;
+		getline(fileInput, first_line);
+		if (GlobalFunctions::stringIsSubString(LEGACY_DBURT_IDENT, first_line) )
+		{
+			bool is_legacy_file = true;
+			return readVCCDBURTFile(full_path);
+
+		}
+		else
+		{
+			bool is_legacy_file = false;
+			return readCATAPSnapshotYAML(full_path);
+
+		}
+		//std::cout << fileInput.rdbuf() << std::endl;
+
+	}
+	else
+	{
+		std::cout << "ERROR READING FILE  readDBURTFile" << std::endl;
+	}
+
+	return readVCCDBURTFile(full_path);
+
+}
+
+dburt MagnetFactory::readVCCDBURTFile(const boost::filesystem::path& full_path) const
+{
+	std::string pathandfile = getFilePathFromINputs(filePath, fileName);
+
+	message("\n", "**** Attempting to Read ", pathandfile, " ****");
+
+	std::string line, trimmedLine;
+
+	std::ifstream inputFile;
+
+	configVersion = -1;
+
+	inputFile.open(pathandfile, std::ios::in);
+	if (inputFile)
+	{
+		message("File Opened from ", pathandfile);
+		while (std::getline(inputFile, line)) /// Go through, reading file line by line
+		{
+			trimmedLine = trimAllWhiteSpace(trimToDelimiter(line, UTL::END_OF_LINE));
+
+			message(line);
+
+			if (stringIsSubString(line, UTL::VELA_MAGNET_SAVE_FILE_v1))
+			{
+				configVersion = 1;
+				break;
+			}
+			else if (stringIsSubString(line, UTL::DBURT_HEADER_V3))
+			{
+				configVersion = 3;// version 2 got lost around October 2015
+				break;
+			}
+			else if (stringIsSubString(line, UTL::DBURT_HEADER_V4))
+			{
+				configVersion = 4;// version 2 got lost around October 2015
+				break;
+			}
+			else if (stringIsSubString(line, UTL::VERSION))
+			{
+				if (stringIsSubString(trimmedLine, UTL::VERSION))
+					getVersion(trimmedLine);
+			}
+			else if (stringIsSubString(line, UTL::VELA_CLARA_DBURT_ALIAS_V1))
+			{
+				message("stringIsSubString(line, UTL::VELA_CLARA_DBURT_ALIAS_V1)");
+				std::getline(inputFile, line);
+				trimmedLine = trimAllWhiteSpace(trimToDelimiter(line, UTL::END_OF_LINE));
+				std::vector<std::string> keyvalue = getKeyVal(trimmedLine, UTL::EQUALS_SIGN_C);
+
+				message(keyvalue[0]);
+				message(keyvalue[1]);
+				pathandfile = getFilePathFromINputs(trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[0]),
+					trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[1]));
+				message(pathandfile);
+				configVersion = 4;
+			}
+		}
+	}
+	debugMessage("Finished preprocessing file");
+	inputFile.close();
+	magnetStructs::magnetStateStruct magState;
+	switch (configVersion)
+	{
+	case -1:
+		debugMessage("NO DBURT VERSION FOUND EXIT");
+		break;
+
+	case 1:
+		debugMessage("VERSION 1 DBURT FOUND");
+		//magState = readDBURTv1(filePath);
+		break;
+	case 2:
+		//debugMessage("VERSION 2 DBURT FOUND");
+		break;
+	case 3:
+		debugMessage("VERSION 3 DBURT FOUND");
+		//magState = readDBURTv3(filePath);
+		break;
+	case 4:
+		debugMessage("VERSION 4 DBURT FOUND");
+		magState = readDBURTv4(pathandfile);
+		break;
+	default:
+		debugMessage("UNEXPECTED DBURT VERSION, ", configVersion, ", FOUND");
+
+	}
+	return magState;
+}
+
+
+dburt MagnetFactory::readCATAPSnapshotYAML(const boost::filesystem::path & full_path) const
+{
 	dburt read_dburt;
 	std::ifstream fileInput;
 	fileInput = std::ifstream(full_path.string());

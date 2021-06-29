@@ -7,11 +7,12 @@
 #ifndef EPICS_MAGNET_INTERFACE_H_
 #include "EPICSMagnetInterface.h"
 #endif //EPICS_MAGNET_INTERFACE_H_
-#include <boost/shared_ptr.hpp>
 #include <vector>
+#include <thread>
 #include "MagnetPVRecords.h"
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
+#include <boost/shared_ptr.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 
@@ -24,9 +25,9 @@ class Magnet;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
 
 
-struct magnetState
+struct MagnetSnapshot
 {   // provide a default constructor
-	magnetState() :
+	MagnetSnapshot() :
 		name(GlobalConstants::DUMMY_NAME),
 		psu_state(STATE::ERR),
 		ilk_state(STATE::ERR),
@@ -55,7 +56,7 @@ struct magnetState
 
 };
 
-#include <thread>
+
 
 class Degauss
 {   
