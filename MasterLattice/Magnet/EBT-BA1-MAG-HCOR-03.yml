@@ -32,3 +32,5 @@ properties:
   position: 0.0
   ri_tolerance: 0.01
   serial_number: 0000-00000-0000
+  min_i: -10.0
+  max_i: 10.0
