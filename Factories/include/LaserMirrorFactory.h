@@ -4,6 +4,7 @@
 #include <ConfigReader.h>
 #include <LaserMirror.h>
 #include <GlobalStateEnums.h>
+#include <GlobalFunctions.h>
 #include <vector>
 class LaserMirrorFactory
 {
@@ -12,17 +13,23 @@ public:
 	LaserMirrorFactory(STATE mode);
 	LaserMirrorFactory(const LaserMirrorFactory& copyFactory);
 	~LaserMirrorFactory();
-	LoggingSystem messenger;
-	ConfigReader reader;
-	void setup(std::string version);
-	bool hasBeenSetup;
-	std::map<std::string, LaserMirror> LaserMirrorMap;
+	
+	bool setup(const std::string& version);
+	void populateLaserMirrorMap();
+	void retrieveMonitorStatus(pvStruct& pvStruct);
+	void setupChannels();
+	LaserMirror& getLaserMirror(const std::string& name);
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
 	bool isDebugOn();
 	bool isMessagingOn();
+	LoggingSystem messenger;
+	ConfigReader reader;
+	bool hasBeenSetup;
+	STATE mode;
+	std::map<std::string, LaserMirror> laserMirrorMap;
 };
 
 #endif // LASER_MIRROR_FACTORY_H_

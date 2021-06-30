@@ -3,6 +3,7 @@
 
 #include <Hardware.h>
 #include <EPICSLaserMirrorInterface.h>
+#include <LaserMirrorPVRecords.h>
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
@@ -21,6 +22,26 @@ public:
 	void setPVStructs();
 	EPICSLaserMirrorInterface_sptr epicsInterface;
 	std::map<std::string, std::string> LaserMirrorParamMap;
+	std::pair<epicsTimeStamp, double> currentHorizontalPosition;
+	std::pair<epicsTimeStamp, double> currentVerticalPosition;
+	double maximumStepSize;
+	double leftSense;
+	double rightSense;
+	double upSense;
+	double downSense;
+
+
+	bool moveHorizontalRelative(const double& delta);
+	bool moveVeritcalRelative(const double& detla);
+	double getCurrentHorizontalPosition();
+	double getCurrentVerticalPosition();
+	bool updatePositions();
+	double getMaximumStepSize();
+	double getLeftSense();
+	double getRightSense();
+	double getUpSense();
+	double getDownSense();
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

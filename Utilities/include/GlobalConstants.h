@@ -103,6 +103,9 @@ namespace GlobalConstants
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},
 
+		{ENUM_TO_STRING(TYPE::LASER_MIRROR), TYPE::LASER_MIRROR},
+		{"LaserMirror", TYPE::LASER_MIRROR},
+		{"laser_mirror", TYPE::LASER_MIRROR},
 				
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
