@@ -26,7 +26,7 @@ properties:
   magnetic_length: 399.216
   manufacturer: Danfysik
   name: CLA-C2V-MAG-DIP-01
-  name_alias: C2V-DIP01,C2V-DIP-01
+  name_alias: C2V-DIP01,C2V-DIP-01, C2V-DIP1
   num_degauss_steps: 11
   position: 6.226873613
   ri_tolerance: 0.05

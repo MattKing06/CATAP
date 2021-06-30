@@ -227,6 +227,7 @@ namespace GlobalFunctions {
 
 
 	extern TYPE stringToType(const std::string& string_to_compare);
+	extern STATE stringToState(const std::string& string_to_compare);
 
 	// isInMahineArea
 

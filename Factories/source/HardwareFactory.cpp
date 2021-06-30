@@ -628,17 +628,17 @@ bool HardwareFactory::saveMachineSnapshot(const std::string& location)
 	return false;
 }
 
-bool HardwareFactory::loadMachineSnapshot(const std::string& location)
+bool HardwareFactory::loadMachineSnapshot(const std::string& directory_location)
 {
-	if (location.empty())
+	if (directory_location.empty())
 	{
 		messenger.printMessage("Please provide a snapshot folder for loading.");
 		return false;
 	}
-	std::vector<std::string> fileList = SnapshotFileManager::getAllFilesInDirectory(location);
+	std::vector<std::string> fileList = SnapshotFileManager::getAllFilesInDirectory(directory_location);
 	if (fileList.empty())
 	{
-		messenger.printMessage("Could not find machine snapshot files at: ", location, ". Please provide another directory.");
+		messenger.printMessage("Could not find machine snapshot files at: ", directory_location, ". Please provide another directory.");
 		return false;
 	}
 	for (auto file : fileList)
@@ -655,6 +655,9 @@ bool HardwareFactory::applySnapshot(const std::string& filename)
 	if (!inFile) { return false; }
 	messenger.printMessage("FULL PATH: ", filename);
 	YAML::Node snapshotInfo = YAML::LoadFile(filename);
+
+
+
 	for (auto&& item : snapshotInfo)
 	{
 		TYPE hardwareType = GlobalConstants::stringToTypeMap.at(item.first.as<std::string>());

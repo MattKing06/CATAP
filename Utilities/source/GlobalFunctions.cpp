@@ -123,12 +123,24 @@ namespace GlobalFunctions {
 
 	TYPE stringToType(const std::string& string_to_check)
 	{
+		// TODO convert to upper case string_to_check
 		auto it = GlobalConstants::stringToTypeMap.find(string_to_check);
 		if (it != GlobalConstants::stringToTypeMap.end())
 		{
 			return GlobalConstants::stringToTypeMap.at(string_to_check);
 		}
 		return TYPE::UNKNOWN_TYPE;
+	}
+
+	STATE stringToState(const std::string& string_to_check)
+	{
+		// TODO convert to upper case string_to_check
+		auto it = GlobalConstants::stringToStateMap.find(string_to_check);
+		if (it != GlobalConstants::stringToStateMap.end())
+		{
+			return GlobalConstants::stringToStateMap.at(string_to_check);
+		}
+		return STATE::UNKNOWN;
 	}
 
 	bool isInMachineArea(TYPE testArea, TYPE area)

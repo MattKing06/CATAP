@@ -201,6 +201,7 @@ namespace GlobalConstants
 
 	const std::map<std::string, STATE> stringToStateMap =
 	{
+			{ENUM_TO_STRING(STATE::ON), STATE::ON},
 			{ENUM_TO_STRING(STATE::OFF), STATE::OFF},
 			{ENUM_TO_STRING(STATE::UNKNOWN_NAME), STATE::UNKNOWN_NAME},
 			{ENUM_TO_STRING(STATE::SUCCESS), STATE::SUCCESS},

@@ -112,20 +112,16 @@ namespace SnapshotFileManager
 		std::string item;
 		std::vector<std::string> entry;
 		while (std::getline(ss, item, delim))
+		{
+			//std::cout << "splitter adding " << item << std::endl;
 			entry.push_back(item);
+		}
 		return entry;
 	}
 
 	std::pair<bool, std::string> isDBURTFileAlias(const std::string& full_path)
 	{
-		//std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
-		//{
-			//messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path);
-			//YAML::Parser parser(fileInput);
-			//YAML::Node file_data = YAML::LoadFile(full_path);
-
 		std::pair<bool, std::string> r(false, "");
-
 
 		std::ifstream fileInput;
 		fileInput = std::ifstream(full_path);
@@ -167,16 +163,17 @@ namespace SnapshotFileManager
 
 	YAML::Node DBURT2YAMLNode(const boost::filesystem::path& full_path)
 	{
+		std::cout << "DBURT2YAMLNode, is checking for an alias file " << std::endl;
 		std::pair<bool, std::string> alias_file = isDBURTFileAlias(full_path.string());
 		if (alias_file.first)
 		{
+			std::cout << "Alias file points to: " << alias_file.second << std::endl;
 			return DBURT2YAMLNode(alias_file.second);
 		}
-
+		std::cout << "Reading file data into yaml node " << std::endl;
 		YAML::Node node;
-
-		node["MAGNET"] = YAML::Null;
-
+		//node["MAGNET"] = YAML::Null; //TODO what is the canonical name for this hardware??  it should be defined somewhere!
+		node["MAGNET"] = YAML::Null; //TODO what is the canonical name for this hardware??  it should be defined somewhere!
 		std::string line;
 		std::string trimmedLine;
 		std::ifstream inputFile;
@@ -184,7 +181,7 @@ namespace SnapshotFileManager
 		inputFile.open(full_path.string(), std::ios::in);
 		if (inputFile)
 		{
-			std::cout << "File Opened from " << full_path.string();
+			//std::cout << "File Opened from " << full_path.string();
 			while (std::getline(inputFile, line)) /// Go through, reading file line by line
 			{
 				trimmedLine = GlobalFunctions::trimAllWhiteSpace(trimToDelimiter(line, GlobalConstants::END_OF_LINE));
@@ -204,49 +201,42 @@ namespace SnapshotFileManager
 					configVersion = 4;// version 2 got lost around October 2015
 					break;
 				}
-				else if (GlobalFunctions::stringIsSubString(line, GlobalConstants::VELA_CLARA_DBURT_ALIAS_V1))
-				{
-					//std::getline(inputFile, line);
-					//trimmedLine = GlobalFunctions::trimAllWhiteSpace(trimToDelimiter(line, GlobalConstants::END_OF_LINE));
-					//std::vector<std::string> keyvalue = getKeyVal(trimmedLine, GlobalConstants::EQUALS_SIGN_C);
-					//pathandfile = getFilePathFromINputs(trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[0]),
-					//	trimAllWhiteSpaceExceptBetweenDoubleQuotes(keyvalue[1]));
-					//message(pathandfile);
-					//configVersion = 4;
-				}
 			}
 		}
-		std::cout << "Finished preprocessing file" << std::endl;
+		std::cout << "Finished Pre-Processing File" << std::endl;
 		inputFile.close();
 
 		std::vector<std::string> keyvalue;
 		bool readingParameters ;
 		int  linenumber;
-
+		size_t file_num_objects = 0;
+		size_t found_num_objects = 0;
 //		magnetStructs::magnetStateStruct magState;
 		switch (configVersion)
 		{
 		case -1:
-			std::cout << "NO DBURT VERSION FOUND, EXIT" << std::endl;
+			std::cout << "!!FILE ERROR!! NO DBURT VERSION FOUND, EXIT" << std::endl;
 			break;
 
 		case 1:
-			std::cout << "VERSION 1 DBURT FOUND, FILE TOO OLD NOT SUPPORTED ANYMORE" << std::endl;
+			std::cout << "VERSION 1 DBURT FOUND, FILE TOO OLD, NOT SUPPORTED ANYMORE" << std::endl;
 			break;
 		case 2:
-			std::cout << "VERSION 2 DBURT FOUND, FILE TOO OLD NOT SUPPORTED ANYMORE" << std::endl;
+			std::cout << "VERSION 2 DBURT FOUND, FILE TOO OLD, NOT SUPPORTED ANYMORE" << std::endl;
 			break;
 		case 3:
-			std::cout << "VERSION 3 DBURT FOUND, FILE TOO OLD NOT SUPPORTED ANYMORE" << std::endl;
+			std::cout << "VERSION 3 DBURT FOUND, FILE TOO OLD, NOT SUPPORTED ANYMORE" << std::endl;
 			break;
 		case 4:
 		{
-			std::cout << "VERSION 4 DBURT FOUND" << std::endl;
+			std::cout << "VERSION 4 DBURT FOUND, CONTINUING" << std::endl;
 
 			std::string line, trimmedLine;
 			std::ifstream inputFile;
 
 			std::vector<std::string> keyvalue;
+
+
 
 			configVersion = -1;
 			inputFile.open(full_path.string(), std::ios::in);
@@ -259,6 +249,10 @@ namespace SnapshotFileManager
 				{
 					std::stringstream iss(line); /// make a stream of the line and then do some tests
 					++linenumber;
+
+					std::cout << "Next line:" << std::endl;
+					std::cout << iss.str() << std::endl;
+
 					if (GlobalFunctions::stringIsSubString(iss.str(), GlobalConstants::DBURT_EOF_V4))
 					{
 						std::cout << "FOUND END OF FILE" << std::endl;
@@ -269,37 +263,82 @@ namespace SnapshotFileManager
 					{
 						trimmedLine = GlobalFunctions::trimAllWhiteSpace(trimToDelimiter(line, GlobalConstants::END_OF_LINE));
 
+						std::cout << "readingParameters: " << trimmedLine << std::endl;
+
 						std::vector<std::string> keyvalue = getDBURTKeyVal(trimmedLine, GlobalConstants::COLON_C);
+
+						std::cout << "keyvalue.size(): " << keyvalue.size() << std::endl;
 
 						if (keyvalue.size() == 4)
 						{
 
-							std::cout << "FOUND " << keyvalue[0] << ", psu state = " << keyvalue[1] <<
-								", SI = " << keyvalue[2] <<
-								", RI = " << keyvalue[3] << std::endl;
+							std::cout << "FOUND " << keyvalue[0] << ", PSU state = " << keyvalue[1] <<
+								", SETI = " << keyvalue[2] <<
+								", READI = " << keyvalue[3] << std::endl;
 
-							YAML::Node mag_snap_node;
+							//YAML::Node mag_snap_node;
+							//mag_snap_node[MagnetRecords::RPOWER] = keyvalue[1];
+							//mag_snap_node[MagnetRecords::SETI] = keyvalue[2];
+							//mag_snap_node[MagnetRecords::READI] = keyvalue[3];
 
-							mag_snap_node[MagnetRecords::RPOWER] = keyvalue[1];
-							mag_snap_node[MagnetRecords::SETI] = keyvalue[2];
-							mag_snap_node[MagnetRecords::READI] = keyvalue[3];
+							node["MAGNET"][keyvalue[0]][MagnetRecords::RPOWER] = keyvalue[1];
+							node["MAGNET"][keyvalue[0]][MagnetRecords::SETI] = keyvalue[2];
+							node["MAGNET"][keyvalue[0]][MagnetRecords::READI] = keyvalue[3];
+								
+								
+							//	.push_back(mag_snap_node);
+							//node["MAGNET"][keyvalue[0]].push_back(mag_snap_node);
 
-
-							node["MAGNET"][keyvalue[0]].push_back(mag_snap_node);
+							found_num_objects += 1;
 
 						}
-					} // if(readingParameters)_END
-				} // while
-			//magState = readDBURTv4(pathandfile);
-				break;
+						else if (keyvalue.size() == 2)
+						{
+							if (keyvalue[0] == "NUMBER_OF_OBJECTS")
+							{
+								file_num_objects = size_t(std::stoi(keyvalue[1]));
+							}
+							std::cout << "file has " << file_num_objects << " objects " << std::endl;
+						}
+					}
+					if (GlobalFunctions::stringIsSubString(iss.str(), "START_OF_DATA"))
+					{
+						std::cout << "FOUND START_OF_DATA" << std::endl;
+						readingParameters = true;
+					}
 
+
+
+				} // if(readingParameters)_END
+			} // while
+			if (file_num_objects != found_num_objects)
+			{
+				std::cout << "!!ERROR!! Failed Object Count Sanity check: " << file_num_objects << " (expected) != " << found_num_objects << "(found)" << std::endl;
 			}
+			//magState = readDBURTv4(pathandfile);
+			break;
+
 		}
+
 		default:
 			std::cout << "UNEXPECTED DBURT VERSION, " << std::endl;
 		}
-			return node;
-		
+		std::cout << "DBURT2YAMLNode complete returning yaml-node with " << found_num_objects << " objects." << std::endl;
+
+
+		std::cout << std::endl;
+		std::cout << std::endl;
+		std::cout << std::endl;
+		std::cout << node << std::endl;
+
+		std::cout << std::endl;
+		std::cout << std::endl;
+		std::cout << std::endl;
+
+		std::cout << node["MAGNET"]["S02-VCOR3"] << std::endl;
+		std::cout << node["MAGNET"]["S02-VCOR3"]["RPOWER"] << std::endl;
+
+		return node;
 	}
 
 	// for legacy DBURTS, don't use execpt for in the DBURT stuff 
