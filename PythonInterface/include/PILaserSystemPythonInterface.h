@@ -16,7 +16,8 @@ namespace BOOST_PYTHON_LASER_FEEDBACK_INCLUDE
 			.def("setup", &PILaserSystem::setup, (boost::python::arg("self"), boost::python::arg("version")))
 			.def("getCameraName", &PILaserSystem::getCameraName_Py)
 			.def("getQ", &PILaserSystem::getQ)
-			.def("getEnergyMeterReadback", &PILaserSystem::getEnergyMeterReadback)
+			.def("getEnergy", &PILaserSystem::getEnergy)
+			.def("getEnergyRange", &PILaserSystem::getEnergyRange)
 			.def("openShutter", &PILaserSystem::openLaserShutter)
 			;
 	}
