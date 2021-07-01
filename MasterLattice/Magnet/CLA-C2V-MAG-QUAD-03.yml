@@ -26,7 +26,7 @@ properties:
   magnetic_length: 121.550749828396
   manufacturer: Danfysik
   name: CLA-C2V-MAG-QUAD-03
-  name_alias: C2V-QUAD03,C2V-QUAD-03, C2V-QUAD3
+  name_alias: C2V-QUAD03,C2V-QUAD-03,C2V-QUAD3
   num_degauss_steps: 11
   position: 7.240148145
   ri_tolerance: 0.1

@@ -95,10 +95,10 @@ class MagnetFactory
 		void readVCCDBURTFile(const boost::filesystem::path& full_path) const;
 		void readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const;
 
-		bool saveSnapshot(const std::string& location, const std::string& filename);
+		STATE saveSnapshot(const std::string& location, const std::string& filename);
 
 
-		bool loadSnapshot(const std::string location, const std::string& stateFile);
+		STATE loadSnapshot(const std::string location, const std::string& stateFile);
 
 
 		std::map<std::string, HardwareSnapshot> getSnapshot();
@@ -1069,7 +1069,16 @@ private:
 		std::string LEGACY_DBURT_IDENT;
 
 
+		/*! apply a snapshot contained in YAML node 
+		@param[in] YAML::Node, The node must be formatted correctly for a magnet snapshot. 
+		@param[out] STATE, descirbing the relative successive of the operation. */
+		STATE applyYAMLNode(const YAML::Node& input_node);
 
+
+		// TODO base class member ??? 
+		/*! Snapshot files are processed into thsi YAML::NOde and then applied. Keeping a copy allows for comparison 
+		after the snapshot has been applied to */
+		YAML::Node last_snapshot_yaml_node_read;
 
 		// private
 		ConfigReader reader;
