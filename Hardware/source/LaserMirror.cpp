@@ -86,7 +86,7 @@ void LaserMirror::messagesOff()
 
 void LaserMirror::setHStep(const double& value)
 {
-	if (std::fabs(value) <= maximumStepSize)
+	if (std::abs(value) <= maximumStepSize)
 	{
 		hStep = value;
 	}
@@ -105,7 +105,7 @@ void LaserMirror::setHStep(const double& value)
 
 void LaserMirror::setVStep(const double& value)
 {
-	if (std::fabs(value) <= maximumStepSize)
+	if (std::abs(value) <= maximumStepSize)
 	{
 		vStep = value;
 	}
