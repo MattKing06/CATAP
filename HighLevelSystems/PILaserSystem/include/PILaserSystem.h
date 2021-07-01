@@ -28,13 +28,18 @@ public:
 	LoggingSystem messenger;
 	std::string wallCurrentMonitorName = "CLA-S01-DIA-WCM-01";
 	std::string energyMeterName = "CLA-LAS-DIA-EM-06";
+	std::string mirrorName = "CLA-LAS-OPT-PICO-4C-PM-4";
 	std::vector<std::string> shutterNames = { "EBT-INJ-LSR-SHUT-01","EBT-INJ-LSR-SHUT-02" };
 	std::string virtualCathodeCameraName = ENUM_TO_STRING(TYPE::CLARA_LASER);
 	std::vector<std::string> getCameraName();
 	boost::python::list getCameraName_Py();
 	double getQ();
-	double getEnergyMeterReadback();
+	double getEnergy();
+	std::string getEnergyRange();
+	double setEnergyRange();
 	bool openLaserShutter(const std::string& shutterName);
 	bool closeLaserShutter(const std::string& shutterName);
+
+
 
 };

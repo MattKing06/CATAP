@@ -52,10 +52,37 @@ double PILaserSystem::getQ()
 	return charge.getQ(wallCurrentMonitorName);
 }
 
-double PILaserSystem::getEnergyMeterReadback()
+double PILaserSystem::getEnergy()
 {
 	return laserEnergyMeter.getEnergy(energyMeterName);
 }
+
+std::string PILaserSystem::getEnergyRange()
+{
+	int rangeEnum = laserEnergyMeter.getRange(energyMeterName);
+	switch (rangeEnum)
+	{
+	case(0):
+		return "20nJ";
+		break;
+	case(1):
+		return "200nJ";
+		break;
+	case(2):
+		return "2uJ";
+		break;
+	case(3):
+		return "20uJ";
+		break;
+	}
+}
+
+
+// NOT SURE HOW BEST TO DO THIS YET..
+//double PILaserSystem::setEnergyRange()
+//{
+//	laserEnergyMeter.
+//}
 
 bool PILaserSystem::openLaserShutter(const std::string& shutterName)
 {
