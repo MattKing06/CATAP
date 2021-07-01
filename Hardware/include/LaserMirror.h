@@ -24,15 +24,22 @@ public:
 	std::map<std::string, std::string> LaserMirrorParamMap;
 	std::pair<epicsTimeStamp, double> currentHorizontalPosition;
 	std::pair<epicsTimeStamp, double> currentVerticalPosition;
+	double hStep;
+	double vStep;
 	double maximumStepSize;
 	double leftSense;
 	double rightSense;
 	double upSense;
 	double downSense;
 
-
-	bool moveHorizontalRelative(const double& delta);
-	bool moveVeritcalRelative(const double& detla);
+	void setHStep(const double& value);
+	void setVStep(const double& value);
+	bool moveHorizontally();
+	bool moveVertically();
+	bool moveLeft(const double& value);
+	bool moveRight(const double& value);
+	bool moveUp(const double& value);
+	bool moveDown(const double& value);
 	double getCurrentHorizontalPosition();
 	double getCurrentVerticalPosition();
 	bool updatePositions();

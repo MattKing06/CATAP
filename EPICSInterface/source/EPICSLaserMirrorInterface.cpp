@@ -38,27 +38,13 @@ void EPICSLaserMirrorInterface::updateVerticalPosition(const struct event_handle
 	std::cout << "UPDATED VERTICAL POSITION" << std::endl;
 }
 
-void EPICSLaserMirrorInterface::setNewHorizontalPosition(const double& value, const pvStruct& pv)
+bool EPICSLaserMirrorInterface::setNewHorizontalPosition(const double& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	return putValue2(pv, value);
 }
 
-void EPICSLaserMirrorInterface::setNewVerticalPosition(const double& value, const pvStruct& pv)
+bool EPICSLaserMirrorInterface::setNewVerticalPosition(const double& value, const pvStruct& pv)
 {
-	putValue(pv, value);
+	return putValue2(pv, value);
 }
 
-void EPICSLaserMirrorInterface::moveHorizontal(const pvStruct& pv)
-{
-	
-	putValue<unsigned short>(pv, GlobalConstants::EPICS_ACTIVATE);
-	GlobalConstants::PAUSE_1000;
-	putValue<unsigned short>(pv, GlobalConstants::EPICS_SEND);
-}
-
-void EPICSLaserMirrorInterface::moveVertical(const pvStruct& pv)
-{
-	putValue<unsigned short>(pv, GlobalConstants::EPICS_ACTIVATE);
-	GlobalConstants::PAUSE_1000;
-	putValue<unsigned short>(pv, GlobalConstants::EPICS_SEND);
-}

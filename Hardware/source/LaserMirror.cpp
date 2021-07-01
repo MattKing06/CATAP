@@ -84,16 +84,76 @@ void LaserMirror::messagesOff()
 
 }
 
-bool LaserMirror::moveHorizontalRelative(const double& delta)
+void LaserMirror::setHStep(const double& value)
 {
-	epicsInterface->setNewHorizontalPosition(delta, pvStructs.at(LaserMirrorRecords::H_MREL));
-	epicsInterface->moveHorizontal(pvStructs.at(LaserMirrorRecords::POSBTN));
+	if (fabs(value) <= maximumStepSize)
+	{
+		hStep = value;
+	}
+	else
+	{
+		if (value < GlobalConstants::zero_double)
+		{
+			hStep = -maximumStepSize;
+		}
+		else
+		{
+			hStep = maximumStepSize;
+		}
+	}
 }
 
-bool LaserMirror::moveVeritcalRelative(const double& delta)
+void LaserMirror::setVStep(const double& value)
 {
-	epicsInterface->setNewVerticalPosition(delta, pvStructs.at(LaserMirrorRecords::V_MREL));
-	epicsInterface->moveVertical(pvStructs.at(LaserMirrorRecords::POSBTN));
+	if (fabs(value) <= maximumStepSize)
+	{
+		vStep = value;
+	}
+	else
+	{
+		if (value < GlobalConstants::zero_double)
+		{
+			vStep = -maximumStepSize;
+		}
+		else
+		{
+			vStep = maximumStepSize;
+		}
+	}
+}
+
+bool LaserMirror::moveHorizontally()
+{
+	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::H_MREL));
+}
+
+bool LaserMirror::moveVertically()
+{
+	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::V_MREL));
+}
+
+bool LaserMirror::moveLeft(const double& value)
+{
+	setHStep(value * leftSense);
+	return moveHorizontally();
+}
+
+bool LaserMirror::moveRight(const double& value)
+{
+	setHStep(value * rightSense);
+	return moveVertically();
+}
+
+bool LaserMirror::moveUp(const double& value)
+{
+	setHStep(value * upSense);
+	return false;
+}
+
+bool LaserMirror::moveDown(const double& value)
+{
+	setHStep(value * downSense);
+	return false;
 }
 
 double LaserMirror::getCurrentHorizontalPosition()
