@@ -17,6 +17,8 @@ namespace BOOST_PYTHON_LASER_MIRROR_INCLUDE
 		boost::python::class_<LaserMirror, boost::python::bases<Hardware>, boost::noncopyable>("LaserMirror", boost::python::no_init)
 			.def("getHorizontalPosition", &LaserMirror::getCurrentHorizontalPosition)
 			.def("getVerticalPosition", &LaserMirror::getCurrentVerticalPosition)
+			.def("moveVerticalPosition", &LaserMirror::moveVeritcalRelative)
+			.def("moveHorizontalPosition", &LaserMirror::moveHorizontalRelative)
 			.def("debugMessagesOn", &LaserMirror::debugMessagesOn)
 			.def("debugMessagesOff", &LaserMirror::debugMessagesOff)
 			.def("messagesOn", &LaserMirror::messagesOn)

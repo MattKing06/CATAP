@@ -5,7 +5,7 @@ controls_information:
         V_MREL : CLA-LAS-OPT-PICO-4C-PM-4:V:MREL
         H_POS : CLA-LAS-OPT-PICO-4C-PM-4:H:POS
         V_POS : CLA-LAS-OPT-PICO-4C-PM-4:V:POS
-        POSBTN : CLA-LAS-OPT-PICO-4C-PM-4:POSBTN
+        POSBTN : CLA-LAS-OPT-PICO-4C:POSBTN
     records : H_MREL, V_MREL, H_POS, V_POS
 properties:
     hardware_type : LaserMirror

@@ -82,6 +82,7 @@ void LaserMirrorFactory::setupChannels()
 			mirror.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}
+	EPICSInterface::sendToEPICS();
 }
 
 LaserMirror& LaserMirrorFactory::getLaserMirror(const std::string& name)
@@ -108,6 +109,7 @@ bool LaserMirrorFactory::setup(const std::string& version)
 		{
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				std::cout << " CONNECTED " << std::endl;
 				retrieveMonitorStatus(pv.second);
 				mirror.second.epicsInterface->retrieveCHTYPE(pv.second);
 				mirror.second.epicsInterface->retrieveCOUNT(pv.second);
@@ -115,6 +117,7 @@ bool LaserMirrorFactory::setup(const std::string& version)
 				pv.second.MASK = DBE_VALUE;
 				if (pv.second.monitor)
 				{
+					std::cout << " MONITORING: " << pv.first << std::endl;
 					mirror.second.epicsInterface->createSubscription(mirror.second, pv.second);
 				}
 				EPICSInterface::sendToEPICS();

@@ -6,16 +6,24 @@ LaserMirror::LaserMirror()
 
 LaserMirror::LaserMirror(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
+	currentHorizontalPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
+	currentVerticalPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
 	maximumStepSize(std::stod(paramMap.find("step_max")->second)),
 	leftSense(std::stod(paramMap.find("left_sense")->second)),
 	rightSense(std::stod(paramMap.find("right_sense")->second)),
 	upSense(std::stod(paramMap.find("up_sense")->second)),
 	downSense(std::stod(paramMap.find("down_sense")->second))
 {
+	setPVStructs();
+	epicsInterface = boost::make_shared<EPICSLaserMirrorInterface>(EPICSLaserMirrorInterface());
+	epicsInterface->ownerName = hardwareName;
 }
 
 LaserMirror::LaserMirror(const LaserMirror& copyLaserMirror) :
 	Hardware(copyLaserMirror),
+	epicsInterface(copyLaserMirror.epicsInterface),
+	currentHorizontalPosition(copyLaserMirror.currentHorizontalPosition),
+	currentVerticalPosition(copyLaserMirror.currentVerticalPosition),
 	maximumStepSize(copyLaserMirror.maximumStepSize),
 	leftSense(copyLaserMirror.leftSense),
 	rightSense(copyLaserMirror.rightSense),
@@ -78,12 +86,14 @@ void LaserMirror::messagesOff()
 
 bool LaserMirror::moveHorizontalRelative(const double& delta)
 {
-	return false;
+	epicsInterface->setNewHorizontalPosition(delta, pvStructs.at(LaserMirrorRecords::H_MREL));
+	epicsInterface->moveHorizontal(pvStructs.at(LaserMirrorRecords::POSBTN));
 }
 
-bool LaserMirror::moveVeritcalRelative(const double& detla)
+bool LaserMirror::moveVeritcalRelative(const double& delta)
 {
-	return false;
+	epicsInterface->setNewVerticalPosition(delta, pvStructs.at(LaserMirrorRecords::V_MREL));
+	epicsInterface->moveVertical(pvStructs.at(LaserMirrorRecords::POSBTN));
 }
 
 double LaserMirror::getCurrentHorizontalPosition()
