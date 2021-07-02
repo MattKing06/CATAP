@@ -67,7 +67,7 @@ set( TEST_FILES
 )
 
 cmake_policy(SET CMP0022 NEW)
-find_package(Boost 1.63 REQUIRED COMPONENTS filesystem python3)
+find_package(Boost 1.76 REQUIRED COMPONENTS filesystem python38)
 add_library(Factories STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(Factories PROPERTIES COMPILE_FLAGS "-fPIC")

@@ -65,18 +65,18 @@ set( TEST_FILES
 
 if(WIN32)
 	set(THIRD_PARTY_DEBUG_LIB_DIRS
-		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-gd-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-gd-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-gd-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_system-vc140-mt-gd-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_filesystem-vc142-mt-gd-x64-1_76.dll
+		#${Boost_LIBRARY_DIRS}/boost_python-vc142-mt-gd-x64-1_76.dll
+		${Boost_LIBRARY_DIRS}/boost_python38-vc142-mt-x64-1_76.dll
+		${Boost_LIBRARY_DIRS}/boost_system-vc142-mt-gd-x64-1_76.dll
 		${EPICS_COM_DLL}
 		${EPICS_CA_DLL}
 		)
 	set(THIRD_PARTY_RELEASE_LIB_DIRS
-		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_system-vc140-mt-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_filesystem-vc142-mt-x64-1_76.dll
+		${Boost_LIBRARY_DIRS}/boost_python38-vc142-mt-x64-1_76.dll
+		#${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-1_63.dll
+		${Boost_LIBRARY_DIRS}/boost_system-vc142-mt-x64-1_76.dll
 		${EPICS_COM_DLL}
 		${EPICS_CA_DLL}
 		)
@@ -93,7 +93,7 @@ if(UNIX)
 endif(UNIX)
 cmake_policy(SET CMP0022 NEW)
 find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS python3)
+find_package(Boost 1.76 REQUIRED COMPONENTS python38)
 if(MSVC)
 	# This definition is added because _HardwareFactory exposes a lot objects
 	# so MSVC compiler requires that we define the bigobj flag in the compiler definitions.

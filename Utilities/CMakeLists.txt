@@ -56,7 +56,7 @@ set( INCLUDE_FILES
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
 find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS python3)
+find_package(Boost 1.76 REQUIRED COMPONENTS python38)
 add_library(Utilities ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   message("COMPILING PYTHON INTERFACE WITH -fPIC")
