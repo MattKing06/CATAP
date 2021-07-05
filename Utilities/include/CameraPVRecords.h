@@ -141,14 +141,14 @@ namespace CameraRecords
 
 }
 
-namespace CameraState
-{
-	struct CameraStateStruct
-	{   // proviude a default constructor
-		CameraStateStruct()
-
-		{};
-	};
-}
+//namespace CameraState
+//{
+//	struct CameraStateStruct
+//	{   // proviude a default constructor
+//		CameraStateStruct()
+//
+//		{};
+//	};
+//}
 
 #endif // CAMERA_PV_RECORDS_

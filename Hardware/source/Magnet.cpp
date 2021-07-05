@@ -44,8 +44,8 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	position(std::stof(paramsMap.find("position")->second)),
 	GETSETI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	READI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-	psu_state(std::make_pair(epicsTimeStamp(), STATE::ERR)),
-	ilk_state(std::make_pair(epicsTimeStamp(), STATE::ERR)),
+	psu_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
+	ilk_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
 	is_degaussing(false)
 {
 	messenger.printDebugMessage("Magnet Constructor");
@@ -727,6 +727,13 @@ bool Magnet::offlineSetIlkState(const STATE value)
 		return true;
 	}
 	return false;
+}
+
+
+bool Magnet::resetILK() const
+{
+	// TODO assumes this exists! 
+	return epicsInterface->resetILK(pvStructs.at(MagnetRecords::ILK_RESET));
 }
 
 //std::map<std::string, std::string> Magnet::getState()

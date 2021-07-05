@@ -144,19 +144,15 @@ void MagnetFactory::cutMagnetMapByMachineAreas()
 // TODO move to  MagnetRecords 
 void MagnetFactory::setMonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == MagnetRecords::GETSETI ||
-		pvStruct.pvRecord == MagnetRecords::RPOWER ||
-		pvStruct.pvRecord == MagnetRecords::READI ||
-		pvStruct.pvRecord == MagnetRecords::K_DIP_P ||
-		pvStruct.pvRecord == MagnetRecords::INT_STR_MM ||
-		pvStruct.pvRecord == MagnetRecords::INT_STR ||
-		pvStruct.pvRecord == MagnetRecords::K_SET_P ||
-		pvStruct.pvRecord == MagnetRecords::K_ANG ||
-		pvStruct.pvRecord == MagnetRecords::K_MRAD ||
-		pvStruct.pvRecord == MagnetRecords::K_VAL ||
-		pvStruct.pvRecord == MagnetRecords::RILK)
+	if( GlobalFunctions::entryExists(MagnetRecords::magnetMonitorRecordList,pvStruct.pvRecord) )
 	{
 		pvStruct.monitor = true;
+		messenger.printDebugMessage("monitor = true");
+	}
+	else
+	{
+		pvStruct.monitor = false;
+		messenger.printDebugMessage("monitor = false");
 	}
 }
 
@@ -169,7 +165,8 @@ void MagnetFactory::setupChannels()
 		std::map<std::string, pvStruct>& pvStructs = magnet.second.getPVStructs();
 		for (auto& pv : pvStructs)
 		{
-			// thsi is connecting to a CHID
+			// this is connecting to a CHID
+			messenger.printMessage("Connect ", pv.first);
 			magnet.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}
@@ -265,7 +262,8 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	*/
 	for (auto& magnet : magnetMap)
 	{
-		//messenger.printMessage("Set up EPICS suscriptions for " + magnet.second.getHardwareName());
+		std::cout << std::endl;
+		messenger.printMessage(magnet.second.getHardwareName(), " Subscriptions");
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
 		*/
@@ -273,6 +271,7 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		std::map<std::string, pvStruct>& magPVStructs = magnet.second.getPVStructs();
 		for (auto& pv : magPVStructs)
 		{
+			messenger.printMessage("Set up " + pv.first);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				//messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
@@ -282,9 +281,9 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				magnet.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				//messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-				//	"write", std::to_string(ca_write_access(pv.second.CHID)),
-				//	"state", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": can_read = ", std::to_string(ca_read_access(pv.second.CHID)),
+					", can_write = ", std::to_string(ca_write_access(pv.second.CHID)),
+					", state = ", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
 					magnet.second.epicsInterface->createSubscription(magnet.second, pv.second);
@@ -297,37 +296,39 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				//return hasBeenSetup;
 			}
 		}
-		int status = EPICSInterface::caFlushIO("ca_create_subscription");
-		switch (status)
-		{
-		case ECA_NORMAL:
-			messenger.printMessage("success");
-			break;
-		case ECA_TIMEOUT:
-			messenger.printMessage("timeout");
-			break;
-		case ECA_BADTYPE:
-			messenger.printMessage("Invalid DBR_XXXX type");
-			break;
-		case ECA_BADCHID:
-			messenger.printMessage("Corrupted CHID");
-			break;
-		case ECA_BADCOUNT:
-			messenger.printMessage("Requested count larger than native element count");
-			break;
-		case ECA_GETFAIL:
-			messenger.printMessage("A local database get failed");
-			break;
-		case ECA_NORDACCESS:
-			messenger.printMessage("Read access denied");
-			break;
-		case ECA_DISCONN:
-			messenger.printMessage("Unable to allocate memory");
-			break;
-		default:
-			messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
-		}
 	}
+	//int status = EPICSInterface::caFlushIO("ca_create_subscription");
+	int status = EPICSInterface::sendToEPICSReturnStatus();
+	switch (status)
+	{
+	case ECA_NORMAL:
+		messenger.printMessage("success");
+		break;
+	case ECA_TIMEOUT:
+		messenger.printMessage("timeout");
+		break;
+	case ECA_BADTYPE:
+		messenger.printMessage("Invalid DBR_XXXX type");
+		break;
+	case ECA_BADCHID:
+		messenger.printMessage("Corrupted CHID");
+		break;
+	case ECA_BADCOUNT:
+		messenger.printMessage("Requested count larger than native element count");
+		break;
+	case ECA_GETFAIL:
+		messenger.printMessage("A local database get failed");
+		break;
+	case ECA_NORDACCESS:
+		messenger.printMessage("Read access denied");
+		break;
+	case ECA_DISCONN:
+		messenger.printMessage("Unable to allocate memory");
+		break;
+	default:
+		messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
+	}
+
 	hasBeenSetup = true;
 	//std::cout << "hasBeenSetup = true " << std::endl;
 	return hasBeenSetup;
@@ -1605,9 +1606,10 @@ boost::python::dict MagnetFactory::switchOn_Py(const boost::python::list names)
 }
 STATE MagnetFactory::switchOff(const std::string& name)
 {
-	if (GlobalFunctions::entryExists(magnetMap, name))
+	std::string  full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, full_name))
 	{
-		if (magnetMap.at(name).switchOff())
+		if (magnetMap.at(full_name).switchOff())
 		{
 			return STATE::SUCCESS;
 		}
@@ -1663,6 +1665,46 @@ boost::python::list MagnetFactory::getNamesInAreas_Py(const boost::python::list&
 	return to_py_list<std::string>(getNamesInAreas(to_std_vector<TYPE>(areas)));
 }
 
+
+
+
+STATE MagnetFactory::resetILK(const std::string& name) const
+{
+	std::string  full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, full_name))
+	{
+		if (magnetMap.at(full_name).resetILK())
+		{
+			return STATE::SUCCESS;
+		}
+		return STATE::FAIL;
+	}
+	return STATE::UNKNOWN_NAME;
+}
+
+STATE MagnetFactory::resetAllILK() const
+{
+	messenger.printDebugMessage("resetAllILK  ");
+	STATE r = STATE::UNKNOWN_STATE;
+	for (auto& mag : magnetMap)
+	{
+		messenger.printDebugMessage("Reset  ", mag.first);
+		if (mag.second.resetILK()) 
+		{
+		}
+		else
+		{ 
+			r = STATE::FAIL; 
+		}
+		messenger.printDebugMessage("Move to Next Magnet ");
+
+	}
+	if (r != STATE::FAIL) 
+	{ 
+		return STATE::SUCCESS; 
+	}
+	return r;
+}
 
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------

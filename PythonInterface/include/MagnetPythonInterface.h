@@ -114,6 +114,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("offlineSetILKState", &Magnet::getFullPSUName)
 			.def("getMagnetType", &Magnet::getMagnetType)
 			.def("getFullPSUName", &Magnet::getFullPSUName)
+
+			.def("resetILK", &Magnet::resetILK)
+
 			.def("debugMessagesOff", &Magnet::debugMessagesOff)
 
 			//.def("setMagnetSnapshot", &Magnet::setMagnetSnapshot)
@@ -316,6 +319,12 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		
 			.def("degauss", degauss_single)
 			.def("degauss", &MagnetFactory::degauss_Py)
+
+
+
+			.def("resetILK", &MagnetFactory::resetILK)
+			.def("resetAllILK", &MagnetFactory::resetAllILK)
+
 			
 			.def("getAliases", &MagnetFactory::getAliases_Py1)
 			.def("getAliases", &MagnetFactory::getAliases_Py2)

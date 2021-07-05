@@ -281,6 +281,11 @@ class Magnet : public Hardware
 	bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
 
 
+	/*! Reset the magnet PSU external interlocks 
+		@param[out] bool, true if commands got sent to EPICS */
+	bool resetILK() const;
+
+
 	/*! enable debug-messages for this magnet 	*/
 		void debugMessagesOn();
 	/*! disbale debug0messages for this magnet 	*/

@@ -248,6 +248,14 @@ class MagnetFactory
 		@param[out] std::map of <name, value>, if name can't be found std::min is returned */
 		//bool offlineSetILKState(const std::string& name, const STATE value);
 
+		/*! Reset the magnet PSU external interlocks
+		* 	@param[in] names, full-names or name-aliases of magnets
+		*	@param[out] bool, true if commands got sent to EPICS */
+		STATE resetILK(const std::string& name) const;
+		/*! Reset all magnet PSU external interlocks
+		@param[out] bool, true if commands got sent to EPICS */
+		STATE resetAllILK() const;
+
 
 
 
