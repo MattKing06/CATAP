@@ -93,6 +93,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("switchOff", &Magnet::switchOff)
 			.def("switchOn", &Magnet::switchOn)
 			.def("setPSUState", &Magnet::setPSUState)
+			.def("getPSUState", &Magnet::getPSUState)
 			.def("getSETI", &Magnet::getSETI)
 			.def("SETIZero", &Magnet::SETIZero)
 			.def("SETI", &Magnet::SETI)
