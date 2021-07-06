@@ -1,0 +1,113 @@
+Saving Sanpshot DATA   From CATAP
+
+A HardwareFactory will always write data for every factory that has succesfully setup
+
+It will create a NEW folder \\\\claraserv3\\claranet\\Snapshots\Machine
+Name will be time stamp, YEAR-MONTH-DAY HOUR-MINUTE-SECOND
+With folder there will be a yaml for each harwdarefactory 
+
+
+A specificy factory (e.g. magnets) will only write magnet data 
+It will write to a FILE in \\\\claraserv3\\claranet\\Snapshots\\Magnets
+The file name will be, YEAR-MONTH-DAY HOUR-MINUTE-SECOND
+The file will have exportSnapshotToYAML DATA
+
+REFERENCE FILES
+For defining "standard setups" Eg., "GUN_CREST_BURT",  "BA1_STEERING"
+We will have REFERENCE files 
+SNAPSHOT_FILE_REFERENCE: "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Magnets\\x_y_z.yaml"
+
+
+
+
+SnapshotFileManager
+
+basic functionality, 
+load file (passed path to a file) to yaml node, and pass to to caller 
+passed yaml-node adn will save to to file 
+
+
+Function names:
+each Hardware Factory ALMOST CERTAINLY requires These functions:
+
+STATE saveSnapshot();
+STATE saveSnapshot(const std::string& filepath, const std::string& filename);
+STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict);
+STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& d);
+
+STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
+STATE loadSnapshot_Py(const boost::python::dict& d); // put d into hardwareSnapshotMap
+
+boost::python::dict getSnapshot_Py1(); // return current state as py dict 
+boost::python::dict getSnapshot_Py2(const std::string& filepath, const std::string& filename); // return file contents as py dict 
+
+STATE applySnaphot(const boost::python::dict& d);
+STATE applySnaphot(const std::string& filepath, const std::string& filename);
+
+// (PURE C++) 
+std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+applySnapshot(filepath) - weill load and APPLY as snapshot from file 
+applySnapshot_PY(py_dict ) - will load and APPLY a python dictionary 
+
+loadSnapshot(file_path) // LOAD A FILE, but don't apply it  (check it work, member-variable 
+{
+	filepath;
+	filename;
+	yaml_node, Snapshot_manager::file_to_yaml_node;
+	mapHardwareSnaps = yamlNodeToHardwaresanpshotmay(yaml_node)
+}
+loadSnapshot_Py(  )  // LOAD A for a python dictionary, but don't apply it  (check it work, sets a member-variable, for diaplsy etc)
+{
+	file_path
+}
+loadSnapshot( py ) // LOAD A FILE, but don't apply it  (check it work, member-variable 
+{
+}
+
+saveSnaphot()
+saveSnaphot_Py(boost::python::dict)
+
+
+getSnapshot actually returns the curren state of the hardware objects as py dict 
+getSnapshot_PY() // returns a dict of current snapshot 
+{
+	filepath;
+	filename;
+	yaml_node, Snapshot_manager::file_to_yaml_node;
+	dict = yamlNodeToPydict(yaml_node)
+	return dict 
+}
+
+
+// generic?? 
+yamlNodeToPydict 
+// generic?? 
+PydictToHardwareSnapshot 
+// generic?? 
+PydictToYAMLNode  
+
+Snapshot_manager
+yaml_node_to_file 
+file_to_yaml_node
+
+
+
+  
+
+ 

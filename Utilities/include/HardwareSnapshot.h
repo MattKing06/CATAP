@@ -39,6 +39,8 @@ public:
 
 	}
 
+
+	// TODO this could be renamed, maybe to convertHarwdraeSnapshotToPYDict or something more explanatory 
 	boost::python::dict getSnapshot_Py()const 
 	{
 		std::map < std::string, boost::python::object> pyValueMap;

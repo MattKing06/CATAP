@@ -559,6 +559,7 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 
 bool HardwareFactory::saveMachineSnapshot()
 {
+	// TOD this couldn't this just call bool HardwareFactory::saveMachineSnapshot(const std::string& location) ???
 	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
 	boost::filesystem::path snapshotLocation;
 	boost::system::error_code returnedError;
@@ -655,9 +656,6 @@ bool HardwareFactory::applySnapshot(const std::string& filename)
 	if (!inFile) { return false; }
 	messenger.printMessage("FULL PATH: ", filename);
 	YAML::Node snapshotInfo = YAML::LoadFile(filename);
-
-
-
 	for (auto&& item : snapshotInfo)
 	{
 		TYPE hardwareType = GlobalConstants::stringToTypeMap.at(item.first.as<std::string>());
@@ -667,7 +665,6 @@ bool HardwareFactory::applySnapshot(const std::string& filename)
 			{ valveFactory.loadSnapshot(item.second); break; }
 		}
 	}
-
 	return false;
 }
 

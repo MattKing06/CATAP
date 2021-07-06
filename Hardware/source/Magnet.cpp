@@ -682,10 +682,8 @@ bool Magnet::setPSUState(const STATE value)
 	case STATE::PHYSICAL:
 		messenger.printDebugMessage(ENUM_TO_STRING(value), " PSU " + hardwareName);
 		return 	epicsInterface->setNewPSUState(value, pvStructs.at(MagnetRecords::SPOWER));
-		break;
 	case STATE::VIRTUAL:
 		return 	epicsInterface->setNewPSUState(value, pvStructs.at(MagnetRecords::SPOWER));
-		break;
 	case STATE::OFFLINE:
 		return offlineSetPSUState(value);
 	}

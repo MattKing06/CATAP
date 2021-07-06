@@ -221,17 +221,17 @@ bool EPICSMagnetInterface::setNewPSUState(const STATE value, const pvStruct& pv)
 
 	messenger.printDebugMessage("Set STATE =  ", epics_value);
 
-	return putValue2(pv, epics_value);
+	return putValue2<unsigned short>(pv, epics_value);
 }
 
 
 // TODO rename 
 bool EPICSMagnetInterface::resetILK(const pvStruct& pv) const
 {
-	if (putValue2(pv, GlobalConstants::one_ushort))
+	if (putValue2<unsigned short>(pv, GlobalConstants::one_ushort))
 	{
 		GlobalFunctions::pause_50(); // meh 
-		return putValue2(pv, GlobalConstants::zero_ushort);
+		return putValue2<unsigned short>(pv, GlobalConstants::zero_ushort);
 	}
 	return false;
 

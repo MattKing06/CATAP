@@ -5,7 +5,10 @@
 #include <iostream>
 namespace SnapshotFileManager
 {
-	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet\\MachineSnapshots";
+	// TODO 
+	// have this address as the IP and domain name and test if they work  
+	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet\\Snapshots";
+	const std::string snapshot_file_reference = "SNAPSHOT_FILE_REFERENCE";
 	const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
 
 	bool isFormatValid(const std::string& fileExtension)

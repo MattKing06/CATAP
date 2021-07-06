@@ -1715,366 +1715,537 @@ STATE MagnetFactory::resetAllILK() const
 
 
 
-void MagnetFactory::readVCCDBURTFile(const boost::filesystem::path& full_path) const
+STATE MagnetFactory::saveSnapshot()
 {
-
+	return STATE::UNKNOWN;
 }
-void MagnetFactory::readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const
+STATE MagnetFactory::saveSnapshot(const std::string& filepath, const std::string& filename)
 {
-	//dburt read_dburt;
-	std::ifstream fileInput;
-	fileInput = std::ifstream(full_path.string());
-	YAML::Parser parser(fileInput);
-	YAML::Node file_data = YAML::LoadFile(full_path.string());
-
-	////int i = 0;
-	//for (auto&& it : file_data)
-	//{
-	//	// If the first string is "HEADER" get header info
-	//	if (it.first.as<std::string>() == GlobalConstants::HEADER)
-	//	{
-	//		for (auto&& it2 : it.second)
-	//		{
-	//			std::string record = it2.first.as<std::string>();
-	//			if (record == GlobalConstants::TIMESTAMP)
-	//			{
-	//				read_dburt.timestamp = it2.second.as<std::string>();
-	//			}
-	//			else if (record == GlobalConstants::COMMENT)
-	//			{
-	//				read_dburt.comment = it2.second.as<std::string>();
-	//			}
-	//		}
-
-	//		messenger.printDebugMessage("timestamp: ", read_dburt.timestamp);
-	//		messenger.printDebugMessage("comment: ", read_dburt.comment);
-	//	}
-	//	else // If the string **must** be a magnet name
-	//	{
-	//		// The First 
-	//		magnetState mag_state_to_fill = magnetState();
-	//		//read_dburt.magnetstates.magNames.push_back(it.first.as<std::string>());
-	//		mag_state_to_fill.name = it.first.as<std::string>();
-	//		for (auto&& it2 : it.second)
-	//		{
-	//			std::string record = it2.first.as<std::string>();
-	//			//std::cout << record << " = " << it2.second << std::endl;
-	//			if (MagnetRecords::SETI == record)
-	//			{
-	//				//std::cout << record << " is " << MagnetRecords::SETI << std::endl;
-	//				mag_state_to_fill.seti = it2.second.as<double>();
-	//			}
-	//			else if (MagnetRecords::READI == record)
-	//			{
-	//				//std::cout << record << " is " << MagnetRecords::READI << std::endl;
-	//				mag_state_to_fill.readi = it2.second.as<double>();
-	//			}
-	//			else if (MagnetRecords::RPOWER == record)
-	//			{
-	//				std::string val = it2.second.as<std::string>();
-	//				if (val == "ON")
-	//				{
-	//					//std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
-	//					mag_state_to_fill.psu_state = STATE::ON;
-	//				}
-	//				else
-	//				{
-	//					mag_state_to_fill.psu_state = STATE::OFF;
-	//				}
-	//			}
-	//		}
-	//		// update the magnetStatesMap with the magnetState for this magnet 
-	//		read_dburt.magnetstates.magnet_states_map[mag_state_to_fill.name] = mag_state_to_fill;
-	//		std::cout << "added " << mag_state_to_fill.name << " to magnetStatesMap" << std::endl;
-	//		std::cout << ENUM_TO_STRING(mag_state_to_fill.psu_state) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
-	//	}
-	//}
-	/*read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
-	read_dburt.magnetstates.magNames_Py = to_py_list<std::string>(read_dburt.magnetstates.magNames);
-	read_dburt.magnetstates.psuStates_Py = to_py_list<STATE>(read_dburt.magnetstates.psuStates);
-	read_dburt.magnetstates.readiValues_Py = to_py_list<double>(read_dburt.magnetstates.readiValues);
-	read_dburt.magnetstates.setiValues_Py = to_py_list<double>(read_dburt.magnetstates.setiValues);*/
-	//return read_dburt;
+	return STATE::UNKNOWN;
 }
-//std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
-//{
-//	//messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path);
-//	//std::ifstream fileInput;
-//	//fileInput = std::ifstream(full_path);
-//	//YAML::Parser parser(fileInput);
-//	//YAML::Node file_data = YAML::LoadFile(full_path);
-//
-//	std::pair<bool, std::string> r(false, "");
-//
-//	//for (auto&& it : file_data)
-//	//{
-//	//	if (it.first.as<std::string>() == GlobalConstants::FILE_ALIAS)
-//	//	{
-//	//		r.first = true;
-//	//		r.second = it.second.as<std::string>();
-//	//		messenger.printDebugMessage("isDBURTFileAlias found FILE_ALIAS pointing to " + r.second);
-//	//	}
-//	//}
-//	//messenger.printDebugMessage("isDBURTFileAlias returning ", r.first);
-//	return r;
-//}
-
-
-
-std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot()
+STATE MagnetFactory::saveSnapshot_Pydict(const boost::python::dict& snapshot_dict)
 {
-	std::map<std::string, HardwareSnapshot> allStates;
+	return STATE::UNKNOWN;
+}
+STATE MagnetFactory::saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict)
+{
+	return STATE::UNKNOWN;
+}
+STATE MagnetFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
+{
+	return STATE::UNKNOWN;
+}
+STATE MagnetFactory::loadSnapshot_Py(const boost::python::dict& d) // put d into hardwareSnapshotMap
+{
+	return STATE::UNKNOWN;
+}
+std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot() // c++ version 
+{
+	std::map<std::string, HardwareSnapshot> snapshot_map;
 	for (auto& item : magnetMap)
 	{
-		allStates[item.first] = item.second.getSnapshot();
+		snapshot_map[item.first] = item.second.getSnapshot();
 	}
-	return allStates;
+	return snapshot_map;
 }
-boost::python::dict MagnetFactory::getSnapshot_Py()
+boost::python::dict MagnetFactory::getSnapshot_Py() // return current state as py dict 
 {
-	std::map<std::string, boost::python::dict> snapshot_dict;
-	for (auto& item : magnetMap)
+	// FIRST GET A snaphot that is current! 
+	std::map<std::string, HardwareSnapshot> current_snapshot =  getSnapshot();
+	boost::python::dict r;
+	for (auto&& item : current_snapshot)
 	{
-		snapshot_dict[item.first] = item.second.getSnapshot_Py();
+		// THIS IS NOT UPDATEING ANY DATA IN THE HARDWARE SNAPSHOT _ ITS CONVERTING WHAT ALREADY EXIST "
+		r[item.first] = item.second.getSnapshot_Py();
 	}
-	return to_py_dict<std::string, boost::python::dict>(snapshot_dict);
-}
-bool MagnetFactory::applySnapshot_Py(boost::python::dict& snap)
-{
-	return false;
-}
-
-
-STATE MagnetFactory::applyYAMLNode(const YAML::Node& input_node)
-{
-	STATE r = STATE::UNKNOWN_STATE;
-	messenger.printMessage("loop over input_node ");
-	for (auto& it : input_node["MAGNET"])
-	{
-		std::string object_name = getFullName(it.first.as<std::string>());
-		std::cout << "(objectname) key = " << object_name << std::endl;
-		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
-		//return_map[object_name] = HardwareSnapshot();
-		for (auto&& map_it : value)
-		{
-			std::string record = map_it.first;
-			//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
-			//std::cout  << "record = " << record  << std::endl;
-			if (record == MagnetRecords::K_VAL) {}
-			else if (record == MagnetRecords::SPOWER) {}
-			else if (record == MagnetRecords::RILK) {}
-			else if (record == MagnetRecords::K_MRAD) {}
-			else if (record == MagnetRecords::K_ANG) {}
-			else if (record == MagnetRecords::K_SET_P) {}
-			else if (record == MagnetRecords::K_DIP_P) {}
-			else if (record == MagnetRecords::INT_STR) {}
-			else if (record == MagnetRecords::INT_STR_MM) {}
-			else if (record == MagnetRecords::READI) {}
-			else if (record == MagnetRecords::RPOWER)
-			{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
-				STATE new_val = GlobalFunctions::stringToState(map_it.second);
-				//std::cout << "new_val is " << new_val << ", " <<  ENUM_TO_STRING(new_val) << std::endl;
-				if (new_val == STATE::ON)
-				{
-					messenger.printMessage("loop over Magnet snapshot data");
-					switchOn(object_name);
-				}
-				else
-				{
-					switchOff(object_name);
-				}
-			}
-			if (record == MagnetRecords::SETI)
-			{
-				std::cout << "record is MagnetRecords::SETI" << std::endl;
-				double new_val = std::stod(map_it.second);
-				//std::cout << "ADDED " << record << " = " << return_map[object_name].get<double>(record) << std::endl;
-				SETI(object_name, new_val);
-			}
-		}
-	}	// loop over each node (map) in the YAML.NODE
-	messenger.printMessage("applyYAMLNode COMPLETE");
 	return r;
 }
-STATE MagnetFactory::loadSnapshot(const std::string location, const std::string& snapFile)
+boost::python::dict MagnetFactory::getSnapshotFromFile_Py(const std::string& location, const std::string& filename) // return file contents as py dict 
 {
-	STATE r_state = STATE::FAIL;
-	/* combine the path and file name */
-	const boost::filesystem::path directory(location);
-	const boost::filesystem::path file(snapFile);
-	const boost::filesystem::path full_path = directory / file;
-	messenger.printMessage("loadSnapshot location - snapfile:", location," - ", snapFile);
-	/* Next parse file data into  YAML node, For magnets (ONLY!) we provide backwards compatability with VCC */
-	last_snapshot_yaml_node_read.reset();
-	if (SnapshotFileManager::containsDBURTExtension(snapFile) )
+	loadSnapshot(location, filename);
+	boost::python::dict r;
+	for (auto&& item : hardwareSnapshotMap)
 	{
-		messenger.printMessage("This file is a legacy DBURT file, converting to YAML::Node");
-		last_snapshot_yaml_node_read = SnapshotFileManager::DBURT2YAMLNode(full_path);
+		// THIS IS NOT UPDTAEING ANY DATA IN TH EHARDWRAE SNAPSHOT _ ITS CONVERTING WAHT ALREADY EXIST "
+		r[item.first] = item.second.getSnapshot_Py();
 	}
-	else
-	{
-		messenger.printMessage("This file is a CATAP snapshot file");
-		std::ifstream inFile(full_path.c_str());
-		if (!inFile) { return r_state; }
-		last_snapshot_yaml_node_read = YAML::LoadFile(full_path.string());
-	}
-	// APPLY TO THE MACHINE 
-	if (last_snapshot_yaml_node_read[ENUM_TO_STRING(TYPE::MAGNET)]) {
-		messenger.printMessage("YAML::Node has magnet Data, passing to applyYAMLNode");
-		r_state = applyYAMLNode(last_snapshot_yaml_node_read);
-	}
-	//yamlNodeToHardwareSnapshotMap(snapshot_data["MAGNET"]); // todo MAGIC_STRING
-	return r_state;
+	return r;
 }
-
-STATE MagnetFactory::saveSnapshot(const std::string& location, const std::string& filename)
+STATE MagnetFactory::applySnaphot(const boost::python::dict& snapshot_dict)
 {
-	STATE r_state = STATE::FAIL;
-
-	std::cout << "MagnetFactory::saveSnapshot" << std::endl;
-
-	messenger.printMessage("MagnetFactory::saveSnapshot");
-
-	const boost::filesystem::path directory(location);
-	const boost::filesystem::path file(filename);
-	const boost::filesystem::path full_path = directory / file;
-	//const std::string fullpath = location + "/" + filename;
-	std::ofstream outFile(full_path.c_str());
-	messenger.printMessage("Full path = ", full_path);
-	if (!outFile)
-	{
-		messenger.printMessage("Error creating output file stream");
-		return	r_state;
-	}
-	YAML::Node outputNode;
-	for (auto& item : magnetMap)
-	{
-		HardwareSnapshot currentState = item.second.getSnapshot();
-
-		for (auto& stateItem : currentState.state)
-		{
-			if (stateItem.first == MagnetRecords::K_VAL)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::K_MRAD)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::K_ANG)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::K_SET_P)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::K_DIP_P)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::INT_STR)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::INT_STR_MM)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::READI)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
-			}
-			else if (stateItem.first == MagnetRecords::RPOWER)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
-			}
-			else if (stateItem.first == MagnetRecords::RILK)
-			{
-				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
-			}
-		}
-		//messenger.printMessage(item.first, " DATA ");
-		//for (auto&& thing : outputNode[item.first])
-		//{
-		//	messenger.printMessage(thing.first, " = ", thing.second);
-		//}
-	}
-	messenger.printMessage("Writign File");
-	SnapshotFileManager::writeSnapshotToYAML(location, filename, outputNode, mode);
-	return r_state;
+	return STATE::UNKNOWN;
+}
+STATE MagnetFactory::applySnaphot(const std::string& filepath, const std::string& filename)
+{
+	return STATE::UNKNOWN;
 }
 
 
-std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
-{
-	// This function returns a map of <OBJECT NAME: snap parameters> 
-	// We fill it from the yaml node data 
-	// map of < hardwarename, HardwareSnapshot > 
-	// each HardwareSnapshot will be passed to its correpsonding hardware object in another function  
-	//
-	// Without reading more of the manual, it seem that you can access "nodes within the main node" 
-	//  so auto& lower_level_node = snapshot_data[ENUM_TO_STRING(TYPE::MAGNET)] APPEARS NOT TO WORK!!! 
-	// (BUT IT MIGHT IF YOU DO IT CORRECTLY) 
-	//
-	//std::cout << "snapshot_data from yamlNodeToHardwareSnapshotMap " << std::endl;
-	//std::cout << input_node << std::endl;
-	//std::cout << std::endl;
-	std::map<std::string, HardwareSnapshot> return_map;
-	messenger.printMessage("loop over input_node ");
-	for (auto& it : input_node["MAGNET"])
-	{
-		std::string object_name = getFullName(it.first.as<std::string>());
-		std::cout << "(objectname) key = " << object_name << std::endl;
-		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
-		//return_map[object_name] = HardwareSnapshot();
-		for (auto&& map_it : value)
-		{
-			std::string record = map_it.first;
-			//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
-			//std::cout  << "record = " << record  << std::endl;
-			if (record == MagnetRecords::K_VAL) {}
-			else if (record == MagnetRecords::SPOWER) {}
-			else if (record == MagnetRecords::RILK) {}
-			else if (record == MagnetRecords::K_MRAD) {}
-			else if (record == MagnetRecords::K_ANG) {}
-			else if (record == MagnetRecords::K_SET_P) {}
-			else if (record == MagnetRecords::K_DIP_P) {}
-			else if (record == MagnetRecords::INT_STR) {}
-			else if (record == MagnetRecords::INT_STR_MM) {}
-			else if (record == MagnetRecords::READI) {}
-			else if (record == MagnetRecords::RPOWER)
-			{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
-				STATE new_val = GlobalFunctions::stringToState(map_it.second);
-				//std::cout << "new_val is " << new_val << ", " <<  ENUM_TO_STRING(new_val) << std::endl;
-				if (new_val == STATE::ON)
-				{
-					return_map[object_name].update(record, new_val);
-					messenger.printMessage("loop over Magnet snapshot data");
-					switchOn(object_name);
-				}
-				else
-				{
-					return_map[object_name].update(record, STATE::OFF);
-					switchOff(object_name);
-				}
-			}
-			if (record == MagnetRecords::SETI)
-			{
-				std::cout << "record is MagnetRecords::SETI" << std::endl;
-				double new_val = std::stod(map_it.second);
-				return_map[object_name].update(record, new_val);
-				//std::cout << "ADDED " << record << " = " << return_map[object_name].get<double>(record) << std::endl;
-				SETI(object_name, new_val);
-			}
-			//			return_map[map_it.first].add(MagnetRecords::RPOWER, new_val);
-		}
-	}
-	// loop over each node (map) in the YAML.NODE
-	messenger.printMessage("loop over Magnet snapshot data");
-	std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
-	return return_map;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//
+//
+//loadSnapshot(file_path) // LOAD A FILE, but don't apply it  (check it work, member-variable 
+//{
+//	filepath;
+//	filename;
+//	yaml_node, Snapshot_manager::file_to_yaml_node;
+//	mapHardwareSnaps = yamlNodeToHardwaresanpshotmay(yaml_node)
+//}
+//
+//
+//
+//void MagnetFactory::readVCCDBURTFile(const boost::filesystem::path& full_path) const
+//{
+//
+//}
+//void MagnetFactory::readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const
+//{
+//	//dburt read_dburt;
+//	std::ifstream fileInput;
+//	fileInput = std::ifstream(full_path.string());
+//	YAML::Parser parser(fileInput);
+//	YAML::Node file_data = YAML::LoadFile(full_path.string());
+//
+//	////int i = 0;
+//	//for (auto&& it : file_data)
+//	//{
+//	//	// If the first string is "HEADER" get header info
+//	//	if (it.first.as<std::string>() == GlobalConstants::HEADER)
+//	//	{
+//	//		for (auto&& it2 : it.second)
+//	//		{
+//	//			std::string record = it2.first.as<std::string>();
+//	//			if (record == GlobalConstants::TIMESTAMP)
+//	//			{
+//	//				read_dburt.timestamp = it2.second.as<std::string>();
+//	//			}
+//	//			else if (record == GlobalConstants::COMMENT)
+//	//			{
+//	//				read_dburt.comment = it2.second.as<std::string>();
+//	//			}
+//	//		}
+//
+//	//		messenger.printDebugMessage("timestamp: ", read_dburt.timestamp);
+//	//		messenger.printDebugMessage("comment: ", read_dburt.comment);
+//	//	}
+//	//	else // If the string **must** be a magnet name
+//	//	{
+//	//		// The First 
+//	//		magnetState mag_state_to_fill = magnetState();
+//	//		//read_dburt.magnetstates.magNames.push_back(it.first.as<std::string>());
+//	//		mag_state_to_fill.name = it.first.as<std::string>();
+//	//		for (auto&& it2 : it.second)
+//	//		{
+//	//			std::string record = it2.first.as<std::string>();
+//	//			//std::cout << record << " = " << it2.second << std::endl;
+//	//			if (MagnetRecords::SETI == record)
+//	//			{
+//	//				//std::cout << record << " is " << MagnetRecords::SETI << std::endl;
+//	//				mag_state_to_fill.seti = it2.second.as<double>();
+//	//			}
+//	//			else if (MagnetRecords::READI == record)
+//	//			{
+//	//				//std::cout << record << " is " << MagnetRecords::READI << std::endl;
+//	//				mag_state_to_fill.readi = it2.second.as<double>();
+//	//			}
+//	//			else if (MagnetRecords::RPOWER == record)
+//	//			{
+//	//				std::string val = it2.second.as<std::string>();
+//	//				if (val == "ON")
+//	//				{
+//	//					//std::cout << record << " is " << MagnetRecords::RPOWER << std::endl;
+//	//					mag_state_to_fill.psu_state = STATE::ON;
+//	//				}
+//	//				else
+//	//				{
+//	//					mag_state_to_fill.psu_state = STATE::OFF;
+//	//				}
+//	//			}
+//	//		}
+//	//		// update the magnetStatesMap with the magnetState for this magnet 
+//	//		read_dburt.magnetstates.magnet_states_map[mag_state_to_fill.name] = mag_state_to_fill;
+//	//		std::cout << "added " << mag_state_to_fill.name << " to magnetStatesMap" << std::endl;
+//	//		std::cout << ENUM_TO_STRING(mag_state_to_fill.psu_state) << " " << mag_state_to_fill.seti << " " << mag_state_to_fill.readi << std::endl;
+//	//	}
+//	//}
+//	/*read_dburt.magnetstates.numMags = read_dburt.magnetstates.magNames.size();
+//	read_dburt.magnetstates.magNames_Py = to_py_list<std::string>(read_dburt.magnetstates.magNames);
+//	read_dburt.magnetstates.psuStates_Py = to_py_list<STATE>(read_dburt.magnetstates.psuStates);
+//	read_dburt.magnetstates.readiValues_Py = to_py_list<double>(read_dburt.magnetstates.readiValues);
+//	read_dburt.magnetstates.setiValues_Py = to_py_list<double>(read_dburt.magnetstates.setiValues);*/
+//	//return read_dburt;
+//}
+////std::pair<bool, std::string> MagnetFactory::isDBURTFileAlias(const std::string& full_path)const
+////{
+////	//messenger.printDebugMessage("isDBURTFileAlias checking file: ", full_path);
+////	//std::ifstream fileInput;
+////	//fileInput = std::ifstream(full_path);
+////	//YAML::Parser parser(fileInput);
+////	//YAML::Node file_data = YAML::LoadFile(full_path);
+////
+////	std::pair<bool, std::string> r(false, "");
+////
+////	//for (auto&& it : file_data)
+////	//{
+////	//	if (it.first.as<std::string>() == GlobalConstants::FILE_ALIAS)
+////	//	{
+////	//		r.first = true;
+////	//		r.second = it.second.as<std::string>();
+////	//		messenger.printDebugMessage("isDBURTFileAlias found FILE_ALIAS pointing to " + r.second);
+////	//	}
+////	//}
+////	//messenger.printDebugMessage("isDBURTFileAlias returning ", r.first);
+////	return r;
+////}
+//
+//
+//
+//boost::python::dict MagnetFactory::getSnapshot_Py()
+//{
+//	std::map<std::string, boost::python::dict> snapshot_dict;
+//	for (auto& item : magnetMap)
+//	{
+//		snapshot_dict[item.first] = item.second.getSnapshot_Py();
+//	}
+//	return to_py_dict<std::string, boost::python::dict>(snapshot_dict);
+//}
+//bool MagnetFactory::applySnapshot_Py(boost::python::dict& snap)
+//{
+//	return false;
+//}
+//
+//
+//STATE MagnetFactory::applyYAMLNode(const YAML::Node& input_node)
+//{
+//	STATE r = STATE::UNKNOWN_STATE;
+//	messenger.printMessage("loop over input_node ");
+//	for (auto& it : input_node["MAGNET"])
+//	{
+//		std::string object_name = getFullName(it.first.as<std::string>());
+//		std::cout << "(objectname) key = " << object_name << std::endl;
+//		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
+//		//return_map[object_name] = HardwareSnapshot();
+//		for (auto&& map_it : value)
+//		{
+//			std::string record = map_it.first;
+//			//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
+//			//std::cout  << "record = " << record  << std::endl;
+//			if (record == MagnetRecords::K_VAL) {}
+//			else if (record == MagnetRecords::SPOWER) {}
+//			else if (record == MagnetRecords::RILK) {}
+//			else if (record == MagnetRecords::K_MRAD) {}
+//			else if (record == MagnetRecords::K_ANG) {}
+//			else if (record == MagnetRecords::K_SET_P) {}
+//			else if (record == MagnetRecords::K_DIP_P) {}
+//			else if (record == MagnetRecords::INT_STR) {}
+//			else if (record == MagnetRecords::INT_STR_MM) {}
+//			else if (record == MagnetRecords::READI) {}
+//			else if (record == MagnetRecords::RPOWER)
+//			{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
+//				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+//				//std::cout << "new_val is " << new_val << ", " <<  ENUM_TO_STRING(new_val) << std::endl;
+//				if (new_val == STATE::ON)
+//				{
+//					messenger.printMessage("loop over Magnet snapshot data");
+//					switchOn(object_name);
+//				}
+//				else
+//				{
+//					switchOff(object_name);
+//				}
+//			}
+//			if (record == MagnetRecords::SETI)
+//			{
+//				std::cout << "record is MagnetRecords::SETI" << std::endl;
+//				double new_val = std::stod(map_it.second);
+//				//std::cout << "ADDED " << record << " = " << return_map[object_name].get<double>(record) << std::endl;
+//				SETI(object_name, new_val);
+//			}
+//		}
+//	}	// loop over each node (map) in the YAML.NODE
+//	messenger.printMessage("applyYAMLNode COMPLETE");
+//	return r;
+//}
+//STATE MagnetFactory::loadSnapshot(const std::string location, const std::string& snapFile)
+//{
+//	STATE r_state = STATE::FAIL;
+//	/* combine the path and file name */
+//	const boost::filesystem::path directory(location);
+//	const boost::filesystem::path file(snapFile);
+//	const boost::filesystem::path full_path = directory / file;
+//	messenger.printMessage("loadSnapshot location - snapfile:", location," - ", snapFile);
+//	/* Next parse file data into  YAML node, For magnets (ONLY!) we provide backwards compatability with VCC */
+//	last_snapshot_yaml_node_read.reset();
+//	if (SnapshotFileManager::containsDBURTExtension(snapFile) )
+//	{
+//		messenger.printMessage("This file is a legacy DBURT file, converting to YAML::Node");
+//		last_snapshot_yaml_node_read = SnapshotFileManager::DBURT2YAMLNode(full_path);
+//	}
+//	else
+//	{
+//		messenger.printMessage("This file is a CATAP snapshot file");
+//		std::ifstream inFile(full_path.c_str());
+//		if (!inFile) { return r_state; }
+//		last_snapshot_yaml_node_read = YAML::LoadFile(full_path.string());
+//	}
+//	// APPLY TO THE MACHINE 
+//	if (last_snapshot_yaml_node_read[ENUM_TO_STRING(TYPE::MAGNET)]) {
+//		messenger.printMessage("YAML::Node has magnet Data, passing to applyYAMLNode");
+//		r_state = applyYAMLNode(last_snapshot_yaml_node_read);
+//	}
+//	//yamlNodeToHardwareSnapshotMap(snapshot_data["MAGNET"]); // todo MAGIC_STRING
+//	return r_state;
+//}
+//
+//
+//// exists in factory as it requires live settings 
+////getSnapshotAsYAMLNode - write current HardwareSnapshot into YAML NODE 
+////yamlNodeToHardwaresanpshotmay 
+////
+////
+////// generic?? 
+////yamlNodeToPydict 
+////// generic?? 
+////PydictToHardwareSnapshot 
+////// generic?? 
+////PydictToYAMLNode  
+////
+////Snapshot_manager
+////yaml_node_to_file 
+////file_to_yaml_node
+////
+////
+////
+////applySnapshot() - weill load and APPLY 
+////applySnapshot_PY() - weill load and APPLY 
+////
+////
+////
+////loadSnapshot() // LOAD A FILE
+////{
+////	filepath;
+////	filename;
+////	yaml_node, Snapshot_manager::file_to_yaml_node;
+////	mapHardwareSnaps = yamlNodeToHardwaresanpshotmay(yaml_node)
+////	//ApplyHardwaresanpshotmay(mapHardwareSnaps)
+////}
+////loadSnapshot() // LOAD A Python Dictionary
+////{
+////	filepath;
+////	filename;
+////	yaml_node, Snapshot_manager::file_to_yaml_node;
+////	mapHardwareSnaps = yamlNodeToHardwaresanpshotmay(yaml_node)
+////		ApplyHardwaresanpshotmay(mapHardwareSnaps)
+////}
+////getSnapshot_PY() // returns a dict opf current snapshot 
+////{
+////	filepath;
+////	filename;
+////	yaml_node, Snapshot_manager::file_to_yaml_node;
+////	dict = yamlNodeToPydict(yaml_node)
+////	return dict 
+////}
+////getSnapshotFromFIle_PY() // returns a dict from the file 
+////{
+////	filepath;
+////	filename;
+////	yaml_node, Snapshot_manager::file_to_yaml_node;
+////	dict = yamlNodeToPydict(yaml_node);
+////	return dict
+////}
+////
+////saveSnapshot() - saves the current set-up to a file
+////saveSnapshot_Py(dict, filenam) - saves a passed dictionary to a file
+//
+//
+//
+//
+//
+//
+//std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot()
+//{
+//	std::map<std::string, HardwareSnapshot> allStates;
+//	for (auto& item : magnetMap)
+//	{
+//		allStates[item.first] = item.second.getSnapshot();
+//	}
+//	return allStates;
+//}
+//
+//YAML::Node MagnetFactory::getSnapshotAsYAMLNode()
+//{
+//	YAML::Node outputNode;
+//	for (auto& item : magnetMap)
+//	{
+//		HardwareSnapshot currentState = item.second.getSnapshot();
+//
+//		for (auto& stateItem : currentState.state)
+//		{
+//			if (stateItem.first == MagnetRecords::K_VAL)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::K_MRAD)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::K_ANG)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::K_SET_P)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::K_DIP_P)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::INT_STR)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::INT_STR_MM)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::READI)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = currentState.get<double>(stateItem.first);
+//			}
+//			else if (stateItem.first == MagnetRecords::RPOWER)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+//			}
+//			else if (stateItem.first == MagnetRecords::RILK)
+//			{
+//				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+//			}
+//		}
+//}
+//
+//
+//STATE MagnetFactory::saveSnapshot(const std::string& location, const std::string& filename)
+//{
+//	STATE r_state = STATE::FAIL;
+//
+//	std::cout << "MagnetFactory::saveSnapshot" << std::endl;
+//
+//	messenger.printMessage("MagnetFactory::saveSnapshot");
+//
+///*
+//	Don't check path here, Snapshot manager doe sthat 
+//	const boost::filesystem::path directory(location);
+//	const boost::filesystem::path file(filename);
+//	const boost::filesystem::path full_path = directory / file;
+//	//const std::string fullpath = location + "/" + filename;
+//	std::ofstream outFile(full_path.c_str());
+//	messenger.printMessage("Full path = ", full_path);
+//	if (!outFile)
+//	{
+//		messenger.printMessage("Error creating output file stream");
+//		return	r_state;
+//	}
+//*/
+//
+//
+//		//messenger.printMessage(item.first, " DATA ");
+//		//for (auto&& thing : outputNode[item.first])
+//		//{
+//		//	messenger.printMessage(thing.first, " = ", thing.second);
+//		//}
+//	}
+//	messenger.printMessage("Writign File");
+//	SnapshotFileManager::writeSnapshotToYAML(location, filename, outputNode, mode);
+//	return r_state;
+//}
+//
+//
+//
+//
+//std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
+//{
+//	// This function returns a map of <OBJECT NAME: snap parameters> 
+//	// We fill it from the yaml node data 
+//	// map of < hardwarename, HardwareSnapshot > 
+//	// each HardwareSnapshot will be passed to its correpsonding hardware object in another function  
+//	//
+//	// Without reading more of the manual, it seem that you can access "nodes within the main node" 
+//	//  so auto& lower_level_node = snapshot_data[ENUM_TO_STRING(TYPE::MAGNET)] APPEARS NOT TO WORK!!! 
+//	// (BUT IT MIGHT IF YOU DO IT CORRECTLY) 
+//	//
+//	//std::cout << "snapshot_data from yamlNodeToHardwareSnapshotMap " << std::endl;
+//	//std::cout << input_node << std::endl;
+//	//std::cout << std::endl;
+//	std::map<std::string, HardwareSnapshot> return_map;
+//	messenger.printMessage("loop over input_node ");
+//	for (auto& it : input_node["MAGNET"])
+//	{
+//		std::string object_name = getFullName(it.first.as<std::string>());
+//		std::cout << "(objectname) key = " << object_name << std::endl;
+//		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
+//		//return_map[object_name] = HardwareSnapshot();
+//		for (auto&& map_it : value)
+//		{
+//			std::string record = map_it.first;
+//			//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
+//			//std::cout  << "record = " << record  << std::endl;
+//			if (record == MagnetRecords::K_VAL) {}
+//			else if (record == MagnetRecords::SPOWER) {}
+//			else if (record == MagnetRecords::RILK) {}
+//			else if (record == MagnetRecords::K_MRAD) {}
+//			else if (record == MagnetRecords::K_ANG) {}
+//			else if (record == MagnetRecords::K_SET_P) {}
+//			else if (record == MagnetRecords::K_DIP_P) {}
+//			else if (record == MagnetRecords::INT_STR) {}
+//			else if (record == MagnetRecords::INT_STR_MM) {}
+//			else if (record == MagnetRecords::READI) {}
+//			else if (record == MagnetRecords::RPOWER)
+//			{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
+//				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+//				//std::cout << "new_val is " << new_val << ", " <<  ENUM_TO_STRING(new_val) << std::endl;
+//				if (new_val == STATE::ON)
+//				{
+//					return_map[object_name].update(record, new_val);
+//					messenger.printMessage("loop over Magnet snapshot data");
+//					switchOn(object_name);
+//				}
+//				else
+//				{
+//					return_map[object_name].update(record, STATE::OFF);
+//					switchOff(object_name);
+//				}
+//			}
+//			if (record == MagnetRecords::SETI)
+//			{
+//				std::cout << "record is MagnetRecords::SETI" << std::endl;
+//				double new_val = std::stod(map_it.second);
+//				return_map[object_name].update(record, new_val);
+//				//std::cout << "ADDED " << record << " = " << return_map[object_name].get<double>(record) << std::endl;
+//				SETI(object_name, new_val);
+//			}
+//			//			return_map[map_it.first].add(MagnetRecords::RPOWER, new_val);
+//		}
+//	}
+//	// loop over each node (map) in the YAML.NODE
+//	messenger.printMessage("loop over Magnet snapshot data");
+//	std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
+//	return return_map;
+//}
 
 
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------
