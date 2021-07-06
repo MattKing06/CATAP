@@ -91,6 +91,20 @@ namespace SnapshotFileManager
 
 
 
+	YAML::Node readSnapshotFile(const std::string& location, const std::string& filename)
+	{
+		const boost::filesystem::path directory(location);
+		const boost::filesystem::path file(filename);
+		const boost::filesystem::path full_path = directory / file;
+		if (isFormatValid(full_path.string()) )
+		{
+			return YAML::LoadFile(full_path.string());
+		}
+		YAML::Node empty_node;
+		return empty_node;
+	}
+
+
 //		 __   __        __  ___     __  ___       ___  ___ 
 //		|  \ |__) |  | |__)  |     /__`  |  |  | |__  |__  
 //		|__/ |__) \__/ |  \  |     .__/  |  \__/ |    |    

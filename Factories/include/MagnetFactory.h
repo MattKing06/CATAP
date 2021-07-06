@@ -1012,6 +1012,19 @@ private:
 		/*! Snaphsot data is placed here  */
 		std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
 
+		/*! Each factory must know how to convert a YAML NODE read from snaphsot YAML file into a map of hardwareSnapshots. 
+		It must be done in the factory so we know how to convert the type for each record 
+		This function should also check the YAML::NODE is compliant with our definitions. 
+		@param[in] YAML::Node, input_node to convert
+		@param[out] map<string, HardwareSnapshot>, return map */
+		std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node & input_node); 
+		/*! Each factory must know how to convert a ython Dictionary into a map of hardwareSnapshots.
+		It must be done in the factory so we know how to convert the type for each record
+		@param[in] dict, input_dict to convert
+		@param[out] map<string, HardwareSnapshot>, return map */
+		std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
+
+		YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
 
 		/*! setup the EPCIS channels */
 		void setupChannels();

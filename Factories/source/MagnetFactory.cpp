@@ -1717,6 +1717,7 @@ STATE MagnetFactory::resetAllILK() const
 
 STATE MagnetFactory::saveSnapshot()
 {
+
 	return STATE::UNKNOWN;
 }
 STATE MagnetFactory::saveSnapshot(const std::string& filepath, const std::string& filename)
@@ -1733,6 +1734,8 @@ STATE MagnetFactory::saveSnapshot_Pyfile(const std::string& filepath, const std:
 }
 STATE MagnetFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
 {
+	YAML::Node file_node = SnapshotFileManager::readSnapshotFile(filepath, filename);
+	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
 	return STATE::UNKNOWN;
 }
 STATE MagnetFactory::loadSnapshot_Py(const boost::python::dict& d) // put d into hardwareSnapshotMap
@@ -1780,10 +1783,198 @@ STATE MagnetFactory::applySnaphot(const std::string& filepath, const std::string
 	return STATE::UNKNOWN;
 }
 
+std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
+{
+	// This function returns a map of <OBJECT NAME: snap parameters> 
+	// We fill it from the yaml node data 
+	// map of < hardwarename, HardwareSnapshot > 
+	// each HardwareSnapshot will be passed to its correpsonding hardware object in another function  
+	//
+	// Without reading more of the manual, it seem that you can access "nodes within the main node" 
+	//  so auto& lower_level_node = snapshot_data[ENUM_TO_STRING(TYPE::MAGNET)] APPEARS NOT TO WORK!!! 
+	// (BUT IT MIGHT IF YOU DO IT CORRECTLY) 
+	//
+	std::map<std::string, HardwareSnapshot> return_map;
+	messenger.printMessage("yamlNodeToHardwareSnapshotMap");
+	messenger.printMessage("loop over input_node ");
+	for (auto& it : input_node["MAGNET"])
+	{
+		std::string object_name = getFullName(it.first.as<std::string>());
+		std::cout << "(objectname) key = " << object_name << std::endl;
+		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
+		//return_map[object_name] = HardwareSnapshot();
+		for (auto&& map_it : value)
+		{
+			std::string record = map_it.first;
+			//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
+			//std::cout  << "record = " << record  << std::endl;
+			if (record == MagnetRecords::K_VAL) {}
+			else if (record == MagnetRecords::SPOWER)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == MagnetRecords::RILK)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == MagnetRecords::K_MRAD)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::K_ANG)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::K_SET_P)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::K_DIP_P)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::INT_STR)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::INT_STR_MM)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::READI)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == MagnetRecords::RPOWER)
+			{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			if (record == MagnetRecords::SETI)
+			{
+				std::cout << "record is MagnetRecords::SETI" << std::endl;
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			//			return_map[map_it.first].add(MagnetRecords::RPOWER, new_val);
+		}
+	}
+	// loop over each node (map) in the YAML.NODE
+	messenger.printMessage("loop over Magnet snapshot data");
+	std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
+	return return_map;
+}
+
+std::map<std::string, HardwareSnapshot> MagnetFactory::pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict)
+{
+	// This function returns a map of <OBJECT NAME: snap parameters> 
+	// We fill it from the yaml node data 
+	// map of < hardwarename, HardwareSnapshot > 
+	// each HardwareSnapshot will be passed to its correpsonding hardware object in another function  
+	//
+	// Without reading more of the manual, it seem that you can access "nodes within the main node" 
+	//  so auto& lower_level_node = snapshot_data[ENUM_TO_STRING(TYPE::MAGNET)] APPEARS NOT TO WORK!!! 
+	// (BUT IT MIGHT IF YOU DO IT CORRECTLY) 
+	//
+	std::map<std::string, HardwareSnapshot> return_map;
+	messenger.printMessage("pyDictToHardwareSnapshotMap");
+	messenger.printMessage("loop over input_node ");
+	//for (auto& it : input_dict["MAGNET"])
+	//{
+	//	std::string object_name = getFullName(it.first.as<std::string>());
+	//	std::cout << "(objectname) key = " << object_name << std::endl;
+	//	std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
+	//	//return_map[object_name] = HardwareSnapshot();
+	//	for (auto&& map_it : value)
+	//	{
+	//		std::string record = map_it.first;
+	//		//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
+	//		//std::cout  << "record = " << record  << std::endl;
+	//		if (record == MagnetRecords::K_VAL) {}
+	//		else if (record == MagnetRecords::SPOWER)
+	//		{
+	//			STATE new_val = GlobalFunctions::stringToState(map_it.second);
+	//			return_map[object_name].update<STATE>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::RILK)
+	//		{
+	//			STATE new_val = GlobalFunctions::stringToState(map_it.second);
+	//			return_map[object_name].update<STATE>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::K_MRAD)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::K_ANG)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::K_SET_P)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::K_DIP_P)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::INT_STR)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::INT_STR_MM)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::READI)
+	//		{
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		else if (record == MagnetRecords::RPOWER)
+	//		{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
+	//			STATE new_val = GlobalFunctions::stringToState(map_it.second);
+	//			return_map[object_name].update<STATE>(record, new_val);
+	//		}
+	//		if (record == MagnetRecords::SETI)
+	//		{
+	//			std::cout << "record is MagnetRecords::SETI" << std::endl;
+	//			double new_val = std::stod(map_it.second);
+	//			return_map[object_name].update<double>(record, new_val);
+	//		}
+	//		//			return_map[map_it.first].add(MagnetRecords::RPOWER, new_val);
+	//	}
+	//}
+	//// loop over each node (map) in the YAML.NODE
+	//messenger.printMessage("loop over Magnet snapshot data");
+	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
+	return return_map;
+}
 
 
-
-
+YAML::Node MagnetFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map)
+{
+	YAML::Node return_node;
+	for (auto& item : hardwaresnapshot_map)
+	{
+		return_node["MAGNET"][item.first] =  item.second.getYAMLNode();
+	}
+	return return_node;
+}
 
 
 
@@ -2177,75 +2368,7 @@ STATE MagnetFactory::applySnaphot(const std::string& filepath, const std::string
 //
 //
 //
-//std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
-//{
-//	// This function returns a map of <OBJECT NAME: snap parameters> 
-//	// We fill it from the yaml node data 
-//	// map of < hardwarename, HardwareSnapshot > 
-//	// each HardwareSnapshot will be passed to its correpsonding hardware object in another function  
-//	//
-//	// Without reading more of the manual, it seem that you can access "nodes within the main node" 
-//	//  so auto& lower_level_node = snapshot_data[ENUM_TO_STRING(TYPE::MAGNET)] APPEARS NOT TO WORK!!! 
-//	// (BUT IT MIGHT IF YOU DO IT CORRECTLY) 
-//	//
-//	//std::cout << "snapshot_data from yamlNodeToHardwareSnapshotMap " << std::endl;
-//	//std::cout << input_node << std::endl;
-//	//std::cout << std::endl;
-//	std::map<std::string, HardwareSnapshot> return_map;
-//	messenger.printMessage("loop over input_node ");
-//	for (auto& it : input_node["MAGNET"])
-//	{
-//		std::string object_name = getFullName(it.first.as<std::string>());
-//		std::cout << "(objectname) key = " << object_name << std::endl;
-//		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
-//		//return_map[object_name] = HardwareSnapshot();
-//		for (auto&& map_it : value)
-//		{
-//			std::string record = map_it.first;
-//			//std::cout << "(pv record, value) key / value = " << map_it.first << "/" << map_it.second << std::endl;
-//			//std::cout  << "record = " << record  << std::endl;
-//			if (record == MagnetRecords::K_VAL) {}
-//			else if (record == MagnetRecords::SPOWER) {}
-//			else if (record == MagnetRecords::RILK) {}
-//			else if (record == MagnetRecords::K_MRAD) {}
-//			else if (record == MagnetRecords::K_ANG) {}
-//			else if (record == MagnetRecords::K_SET_P) {}
-//			else if (record == MagnetRecords::K_DIP_P) {}
-//			else if (record == MagnetRecords::INT_STR) {}
-//			else if (record == MagnetRecords::INT_STR_MM) {}
-//			else if (record == MagnetRecords::READI) {}
-//			else if (record == MagnetRecords::RPOWER)
-//			{	//std::cout << "record is MagnetRecords::RPOWER" << std::endl;
-//				STATE new_val = GlobalFunctions::stringToState(map_it.second);
-//				//std::cout << "new_val is " << new_val << ", " <<  ENUM_TO_STRING(new_val) << std::endl;
-//				if (new_val == STATE::ON)
-//				{
-//					return_map[object_name].update(record, new_val);
-//					messenger.printMessage("loop over Magnet snapshot data");
-//					switchOn(object_name);
-//				}
-//				else
-//				{
-//					return_map[object_name].update(record, STATE::OFF);
-//					switchOff(object_name);
-//				}
-//			}
-//			if (record == MagnetRecords::SETI)
-//			{
-//				std::cout << "record is MagnetRecords::SETI" << std::endl;
-//				double new_val = std::stod(map_it.second);
-//				return_map[object_name].update(record, new_val);
-//				//std::cout << "ADDED " << record << " = " << return_map[object_name].get<double>(record) << std::endl;
-//				SETI(object_name, new_val);
-//			}
-//			//			return_map[map_it.first].add(MagnetRecords::RPOWER, new_val);
-//		}
-//	}
-//	// loop over each node (map) in the YAML.NODE
-//	messenger.printMessage("loop over Magnet snapshot data");
-//	std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
-//	return return_map;
-//}
+
 
 
 //--------------------------------------------------------------------------------------------------//--------------------------------------------------------------------------------------------------

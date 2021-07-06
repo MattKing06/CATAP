@@ -39,6 +39,41 @@ public:
 
 	}
 
+	// Convert a state into a YAML Node (std::map<std::string, boost::variant<STATE, TYPE, double, long, int, unsigned short, std::string>>)
+	YAML::Node getYAMLNode()const
+	{
+		YAML::Node return_node;
+		for (auto& item : state)
+		{
+			const std::string record_name = item.first;
+			if (item.second.type() == typeid(STATE))
+			{
+				return_node[record_name] = ENUM_TO_STRING(boost::get< STATE >(state.at(item.first)));
+			}
+			else if (item.second.type() == typeid(TYPE))
+			{
+				return_node[record_name] = ENUM_TO_STRING(boost::get< TYPE >(state.at(item.first)));
+			}
+			else if (item.second.type() == typeid(long))
+			{
+				return_node[record_name] = boost::get< long >(state.at(item.first));
+			}
+			else if (item.second.type() == typeid(int))
+			{
+				return_node[record_name] = boost::get< int >(state.at(item.first));
+			}
+			else if (item.second.type() == typeid(unsigned short))
+			{
+				return_node[record_name] = boost::get< unsigned short >(state.at(item.first));
+			}
+			else if (item.second.type() == typeid(std::string))
+			{
+				return_node[record_name] = boost::get< std::string>(state.at(item.first));
+			}
+		}
+		return return_node;
+	}
+
 
 	// TODO this could be renamed, maybe to convertHarwdraeSnapshotToPYDict or something more explanatory 
 	boost::python::dict getSnapshot_Py()const 
