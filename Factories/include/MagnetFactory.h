@@ -92,20 +92,52 @@ class MagnetFactory
 		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
 		
-
+		/*! Save the current magnetfactory settings to the default filepath and filename 
+		@param[out] STATE, success, failure, etc.	*/
 		STATE saveSnapshot();
+		/*! Save the current magnetfactory settings to filepath and filename
+		@param[in] string, filepath	
+		@param[in] string, filename	
+		@param[out] STATE, success, failure, etc.			*/
 		STATE saveSnapshot(const std::string& filepath, const std::string& filename);
+		/*! Save snap_dict to the default filepath and filename 
+		@param[in] dict, snap_dict
+		@param[out] STATE, success, failure, etc.			*/
 		STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict);
+		/*! Save snap_dict to filepath and filename
+		@param[in] string, filepath
+		@param[in] string, filename
+		@param[in] dict, snap_dict
+		@param[out] STATE, success, failure, etc.			*/
 		STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict);
-
+		/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings. 
+		@param[in] string, filepath
+		@param[in] string, filename
+		@param[out] STATE, success, failure, etc.			*/
 		STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
-		STATE loadSnapshot_Py(const boost::python::dict& snapshot_dictd); // put d into hardwareSnapshotMap
-
+		/*! Load snapshot_dict by copying the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+		@param[in] dict, snapshot_dict
+		@param[out] STATE, success, failure, etc.			*/
+		STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
+		/*! Get the latest snapshot data for this factory. 
+		@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
 		std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ veriosn 
+		/*! Get the latest snapshot data for this factory. Python Version 
+		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
 		boost::python::dict getSnapshot_Py(); // return current state as py dict 
+		/*! Get the snapshot data from filepath and filename. Python Version
+		@param[in] string, filepath 
+		@param[in] string, filename 
+		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
 		boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
-
+		/*! Apply a Python dict snapshot. 
+		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name 
+		@param[out] STATE, success, failure, etc.			*/
 		STATE applySnaphot(const boost::python::dict& snapshot_dict);
+		/*! Apply a snapshot data from filepath and filename.
+		@param[in] string, filepath
+		@param[in] string, filename
+		@param[out] STATE, success, failure, etc.			*/
 		STATE applySnaphot(const std::string& filepath, const std::string& filename);
 
 
