@@ -126,7 +126,7 @@ boost::python::list Magnet::getAliases_Py() const
 void Magnet::setPVStructs()
 {
 	//std::string PV = specificHardwareParameters.find(record)->second.data();
-	for(auto& record : MagnetRecords::magnetRecordList)
+	for (auto& record : MagnetRecords::magnetRecordList)
 	{
 		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
@@ -158,7 +158,6 @@ void Magnet::setPVStructs()
 			//pvStructs[pv.pvRecord] = pv;
 		}
 	}
-		
 }
 
 

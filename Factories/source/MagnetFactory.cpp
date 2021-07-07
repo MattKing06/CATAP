@@ -1782,8 +1782,6 @@ boost::python::dict MagnetFactory::getSnapshot_Py() // return current state as p
 	std::map<std::string, HardwareSnapshot> current_snapshot =  getSnapshot();
 	boost::python::dict r; // TODO MAGIC STRING
 	messenger.printDebugMessage("loop over current_snapshot (.size() =", current_snapshot.size());
-
-
 	for (auto&& item : current_snapshot)
 	{
 		// THIS IS NOT UPDATEING ANY DATA IN THE HARDWARE SNAPSHOT _ ITS CONVERTING WHAT ALREADY EXIST "
@@ -1810,15 +1808,54 @@ boost::python::dict MagnetFactory::getSnapshotFromFile_Py(const std::string& loc
 	r2[ENUM_TO_STRING(TYPE::MAGNET)] = r;
 	return r2;
 }
+
+
 STATE MagnetFactory::applySnaphot(const boost::python::dict& snapshot_dict)
 {
-	return STATE::UNKNOWN;
+	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
+	return applyhardwareSnapshotMap(hardwareSnapshotMap);
 }
 STATE MagnetFactory::applySnaphot(const std::string& filepath, const std::string& filename)
 {
-	return STATE::UNKNOWN;
+	loadSnapshot(filepath, filename); // this sets the hardwareSnapshotMap member variables 
+	return applyhardwareSnapshotMap(hardwareSnapshotMap);
+}
+STATE MagnetFactory::applyLoadedSnaphost()
+{
+	return applyhardwareSnapshotMap(hardwareSnapshotMap);
+}
+STATE MagnetFactory::applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map)
+{
+	for (auto&& item : hardwaresnapshot_map)
+	{
+		std::string fullName = getFullName(item.first);
+		if (GlobalFunctions::entryExists(magnetMap, fullName))
+		{
+			for (auto&& state_items : item.second.state)
+			{
+				if (state_items.first == "GETSETI")
+				{
+					magnetMap.at(fullName).SETI(item.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == "RPOWER")
+				{
+					STATE saved_psu_state = item.second.get<STATE>(state_items.first);
+					if (saved_psu_state == STATE::ON)
+					{
+						magnetMap.at(fullName).switchOn();
+					}
+					else if(saved_psu_state == STATE::OFF)
+					{
+						magnetMap.at(fullName).switchOff();
+					}
+				}
+			}
+		}
+	}
+	return STATE::SUCCESS;
 }
 
+// CONVERTERS between boost:python::dict yaml::node and hssm (other conversion happen else where, e.g. hssm to pydict / yaml::node HardwareSnapshot.h
 std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
 {
 	// This function returns a map of <OBJECT NAME: snap parameters> 
@@ -1914,7 +1951,6 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapsho
 	std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
 	return return_map;
 }
-
 std::map<std::string, HardwareSnapshot> MagnetFactory::pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict)
 {
 	// This function returns a map of <OBJECT NAME: HardwareSnapshot > 
@@ -2035,8 +2071,6 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::pyDictToHardwareSnapshotM
 	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
 	return return_map;
 }
-
-
 YAML::Node MagnetFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map)
 {
 	YAML::Node return_node;

@@ -17,30 +17,6 @@
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
-/// one-stop shop for magnet state
-//struct magnetStates
-//{   
-//	/*! Default constructor call for magnetStates */
-//	magnetStates():
-//		magnet_count(GlobalConstants::zero_sizet)
-//		{};
-//	size_t magnet_count;
-//	std::map<std::string, magnetState> magnet_states_map;
-//	boost::python::dict magnet_states_dict;
-//};
-///// DBURTs are magnet-states plus comment and timestamp 
-//struct MagnetFactorySnapshot
-//{   /*! Default constructor call for MagnetFactorySnapshot */
-//	MagnetFactorySnapshot() :
-//		comment("NO COMMENT"),
-//		timestamp("NO TIME")
-//	{};
-//	std::string comment;
-//	std::string timestamp;
-//	magnetStates magnetstates;
-//	//magnetStateStruct magnetstates_Py;
-//};
-
 class MagnetFactory
 {
 	public:
@@ -139,22 +115,11 @@ class MagnetFactory
 		@param[in] string, filename
 		@param[out] STATE, success, failure, etc.			*/
 		STATE applySnaphot(const std::string& filepath, const std::string& filename);
+		/*! Apply the member variable hardwareSnapshotMap (which could have already been loaded with loadSnapshot()). 
+		@param[out] STATE, success, failure, etc.			*/
+		STATE applyLoadedSnaphost();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		// HAPPENSN IN SNAPHOSTFILEMANGER
 		//void readVCCDBURTFile(const boost::filesystem::path& full_path) const;
 		//void readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const;
 		//boost::python::dict getSnapshot_Py();
@@ -1025,6 +990,10 @@ private:
 		std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
 
 		YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
+		/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed 
+		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply 
+		@param[out] STATE, success, failure, etc */
+		STATE MagnetFactory::applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
 
 		/*! setup the EPCIS channels */
 		void setupChannels();

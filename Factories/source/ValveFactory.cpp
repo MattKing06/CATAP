@@ -396,7 +396,7 @@ bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::
 	return SnapshotFileManager::writeSnapshotToYAML(location, filename, outputNode, mode);
 }
 
-bool ValveFactory::loadSnapshot(const std::string& location)
+bool ValveFactory::loadSnapshot(const std::string& location) // TODO this should be APPLY!!! 
 {
 	std::ifstream inFile(location);
 	if (!inFile) { return false; }

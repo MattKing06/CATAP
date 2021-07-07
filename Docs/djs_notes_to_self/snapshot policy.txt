@@ -17,7 +17,7 @@ For defining "standard setups" Eg., "GUN_CREST_BURT",  "BA1_STEERING"
 We will have REFERENCE files 
 SNAPSHOT_FILE_REFERENCE: "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Magnets\\x_y_z.yaml"
 
-
+EVERY applySNAPSHOT should save the HSSM to teh memer vairbel, for checking later if the apply actually was taken
 
 
 SnapshotFileManager
