@@ -103,7 +103,7 @@ namespace SnapshotFileManager
 		const boost::filesystem::path file(filename);
 		const boost::filesystem::path full_path = directory / file;
 
-		if (containsDBURTExtension)
+		if (containsDBURTExtension(full_path.extension().string()))
 		{
 			return DBURT2YAMLNode(full_path);
 		}

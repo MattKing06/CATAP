@@ -97,7 +97,7 @@ class MagnetFactory
 		STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
 		/*! Get the latest snapshot data for this factory. 
 		@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
-		std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ veriosn 
+		std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
 		/*! Get the latest snapshot data for this factory. Python Version 
 		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
 		boost::python::dict getSnapshot_Py(); // return current state as py dict 
@@ -127,6 +127,8 @@ class MagnetFactory
 		//bool applySnapshot_Py(boost::python::dict& snap);
 		//std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
 
+
+		STATE checkLastAppliedSnapshot();
 
 
 

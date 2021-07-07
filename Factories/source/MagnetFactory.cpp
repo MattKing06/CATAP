@@ -1760,9 +1760,10 @@ STATE MagnetFactory::loadSnapshot(const std::string filepath, const std::string&
 	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
 	return STATE::SUCCESS; // TODO do we need some error checking 
 }
-STATE MagnetFactory::loadSnapshot_Py(const boost::python::dict& d) // put d into hardwareSnapshotMap
+STATE MagnetFactory::loadSnapshot_Py(const boost::python::dict& snapshot_dict) // put d into hardwareSnapshotMap
 {
-	return STATE::UNKNOWN;
+	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
+	return STATE::SUCCESS;
 }
 std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot() // c++ version 
 {
@@ -1836,6 +1837,7 @@ STATE MagnetFactory::applyhardwareSnapshotMap(const std::map<std::string, Hardwa
 				if (state_items.first == "GETSETI")
 				{
 					magnetMap.at(fullName).SETI(item.second.get<double>(state_items.first));
+					messenger.printDebugMessage(fullName, " SETI ", item.second.get<double>(state_items.first));
 				}
 				else if (state_items.first == "RPOWER")
 				{
@@ -2079,6 +2081,63 @@ YAML::Node MagnetFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::stri
 		return_node["MAGNET"][item.first] =  item.second.getYAMLNode();
 	}
 	return return_node;
+}
+
+
+STATE MagnetFactory::checkLastAppliedSnapshot()
+{
+	std::map<std::string, HardwareSnapshot> current_snapshot = getSnapshot();
+
+	std::vector<std::string> wrong_seti;
+	std::vector<std::string> wrong_psu;
+	std::vector<std::string> wrong_name;
+
+	for (auto&& item : hardwareSnapshotMap)
+	{
+		std::string fullName = getFullName(item.first);
+		if (GlobalFunctions::entryExists(current_snapshot, fullName))
+		{
+			auto& hss_ref = current_snapshot.at(fullName);
+
+			for (auto&& state_items : item.second.state)
+			{
+				if (state_items.first == "GETSETI")
+				{
+					if (GlobalFunctions::entryExists(hss_ref.state, state_items.first))
+					{
+						double val_now = hss_ref.get<double>("GETSETI");
+						double val_ref = item.second.get<double>("GETSETI");
+						double tol = magnetMap.at(fullName).READI_tolerance;
+						bool compare = GlobalFunctions::areSame(val_now, val_ref, tol);
+						if (!compare)
+						{
+							wrong_seti.push_back(fullName);
+							messenger.printDebugMessage(fullName, " has wrong GETSETI, (now, ref) ", val_now, " !+ ", val_ref, "  tol ");
+						}
+					}
+				}
+				else if (state_items.first == "RPOWER")
+				{
+					if (GlobalFunctions::entryExists(hss_ref.state, state_items.first))
+					{
+						bool comp = hss_ref.get<STATE>("RPOWER") == item.second.get<STATE>("RPOWER");
+						if (!comp)
+						{
+							wrong_psu.push_back(fullName);
+							messenger.printDebugMessage(fullName, " has wrong RPOWER ");
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			wrong_name.push_back(item.first);
+			messenger.printDebugMessage(item.first, " has wrong NAME ");
+		}
+	}
+
+	return STATE::SUCCESS;
 }
 
 

@@ -319,6 +319,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("loadSnapshot", &MagnetFactory::loadSnapshot_Py, (boost::python::args("self", "snapshot_dict")))
 			.def("applySnaphot", applySnaphot_withDict, (boost::python::args("self", "snapshot_dict")))
 			.def("applySnaphot", applySnaphot_withfile, (boost::python::args("self", "filepath", "filename")))
+			.def("checkLastAppliedSnapshot", &MagnetFactory::checkLastAppliedSnapshot, (boost::python::args("self")))
 
 
 
