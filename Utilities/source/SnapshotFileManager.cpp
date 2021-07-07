@@ -5,8 +5,14 @@
 #include <iostream>
 namespace SnapshotFileManager
 {
+	// HERE THE EXPECTTATION IS IT WILL ALWAYS RETURN FILE DATA AS A YAML::NODE 
+	// AND DATA TO WRITE TO A FILE SHOUDL BE PASSED AS A YAML::NODE 
+	// AND THAT SHOULD BE THE END OF ANY DISCUSSION ;)
+	//
+	// EVERY CLASS TO DO WITH LOADING AND SAVING SNAPSHOT FILES SHOULD USE THIESE FUNCTIONS !! 
+	//
 	// TODO 
-	// have this address as the IP and domain name and test if they work  
+	// have this address as the IP and domain name and test if they work  ???
 	std::string const magnet_snapshot_default_path = "\\\\claraserv3\\claranet\\Snapshots";
 	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet\\Snapshots";
 	const std::string snapshot_file_reference = "SNAPSHOT_FILE_REFERENCE";
@@ -25,8 +31,6 @@ namespace SnapshotFileManager
 			return false;
 		}
 	}
-
-
 
 	bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode)
 	{
@@ -93,46 +97,50 @@ namespace SnapshotFileManager
 		return fileList;
 	}
 
-
-
 	YAML::Node readSnapshotFile(const std::string& location, const std::string& filename)
 	{
 		const boost::filesystem::path directory(location);
 		const boost::filesystem::path file(filename);
 		const boost::filesystem::path full_path = directory / file;
 
-		if ( isFormatValid(full_path.extension().string()) )
+		if (containsDBURTExtension)
 		{
-			std::cout << " readSnapshotFile  LoadFile " << full_path.string() << std::endl;
-			return YAML::LoadFile(full_path.string());
+			return DBURT2YAMLNode(full_path);
 		}
 		else
 		{
-			std::cout << " readSnapshotFile  isFormatValid returned false " << std::endl;
+			if ( isFormatValid(full_path.extension().string()) )
+			{
+				std::cout << " readSnapshotFile  LoadFile " << full_path.string() << std::endl;
+				return YAML::LoadFile(full_path.string());
+			}
+			else
+			{
+				std::cout << " readSnapshotFile  isFormatValid returned false " << std::endl;
+			}
 		}
 		YAML::Node empty_node;
 		return empty_node;
 	}
-
-
 //		 __   __        __  ___     __  ___       ___  ___ 
 //		|  \ |__) |  | |__)  |     /__`  |  |  | |__  |__  
 //		|__/ |__) \__/ |  \  |     .__/  |  \__/ |    |    
 //		
+//		DON'T USE THSI APART FROM WHEN WE HAVE TO 
+// 
 	const std::vector<std::string> dburt_extensions = { GlobalConstants::dotdburt, GlobalConstants::dotDBURT};
-	bool containsDBURTExtension(const std::string& str)
+	bool containsDBURTExtension(const std::string& fileExtension)
 	{
-		for (auto&& item : dburt_extensions)
+		if (std::find(SnapshotFileManager::dburt_extensions.begin(), SnapshotFileManager::dburt_extensions.end(),
+			fileExtension) != SnapshotFileManager::dburt_extensions.end())
 		{
-			if (GlobalFunctions::stringIsSubString(str, item))
-			{
-				return true;
-			}
-
+			return true;
 		}
-		return false;
+		else
+		{
+			return false;
+		}
 	}
-
 	std::vector<std::string> getDBURTKeyVal(const std::string& trimmedLine, const char delim)
 	{
 		std::stringstream ss(trimmedLine);
@@ -145,7 +153,6 @@ namespace SnapshotFileManager
 		}
 		return entry;
 	}
-
 	std::pair<bool, std::string> isDBURTFileAlias(const std::string& full_path)
 	{
 		std::pair<bool, std::string> r(false, "");
@@ -187,7 +194,6 @@ namespace SnapshotFileManager
 		}
 		return r;
 	}
-
 	YAML::Node DBURT2YAMLNode(const boost::filesystem::path& full_path)
 	{
 		std::cout << "DBURT2YAMLNode, is checking for an alias file " << std::endl;
@@ -367,7 +373,6 @@ namespace SnapshotFileManager
 
 		return node;
 	}
-
 	// for legacy DBURTS, don't use execpt for in the DBURT stuff 
 	std::string trimToDelimiter(std::string const& str, const std::string& STOPDELIMITER) 
 	{
