@@ -34,6 +34,8 @@ public:
 
 	void setHStep(const double& value);
 	void setVStep(const double& value);
+	double getHStep();
+	double getVStep();
 	bool moveHorizontally();
 	bool moveVertically();
 	bool moveLeft(const double& value);

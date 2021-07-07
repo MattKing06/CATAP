@@ -19,6 +19,29 @@ public:
 	void retrieveMonitorStatus(pvStruct& pvStruct);
 	void setupChannels();
 	LaserMirror& getLaserMirror(const std::string& name);
+
+
+	void setHStep(const std::string& mirrorName, const double& value);
+	void setVStep(const std::string& mirrorName, const double& value);
+	double getHStep(const std::string& mirrorName);
+	double getVStep(const std::string& mirrorName);
+	bool moveHorizontally(const std::string& mirrorName);
+	bool moveVertically(const std::string& mirrorName);
+	bool moveLeft(const std::string& mirrorName, const double& value);
+	bool moveRight(const std::string& mirrorName, const double& value);
+	bool moveUp(const std::string& mirrorName, const double& value);
+	bool moveDown(const std::string& mirrorName, const double& value);
+	double getCurrentHorizontalPosition(const std::string& mirrorName);
+	double getCurrentVerticalPosition(const std::string& mirrorName);
+	bool updatePositions(const std::string& mirrorName);
+	double getMaximumStepSize(const std::string& mirrorName);
+	double getLeftSense(const std::string& mirrorName);
+	double getRightSense(const std::string& mirrorName);
+	double getUpSense(const std::string& mirrorName);
+	double getDownSense(const std::string& mirrorName);
+
+
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

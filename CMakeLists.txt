@@ -8,7 +8,7 @@ set(PY_VERSION 3)
 
 if (WIN32)
   message(STATUS "WIN32 BUILD")
-  set(Boost_DIR "C:/boost/boost_1_63_0")
+  set(Boost_INCLUDE_DIR "C:/boost/boost_1_63_0")
   set(EPICS_DIR "C:/epics/base-3.14.12.5")
   set(YAML_PARSER_LIB_RELEASE_DIR "C:/yaml-cpp-build/Release")
   set(YAML_PARSER_LIB_DEBUG_DIR "C:/yaml-cpp-build/Debug")

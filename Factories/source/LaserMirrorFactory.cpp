@@ -135,6 +135,240 @@ bool LaserMirrorFactory::setup(const std::string& version)
 }
 
 
+void LaserMirrorFactory::setHStep(const std::string& mirrorName, const double& value)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		laserMirrorMap.at(mirrorName).setHStep(value);
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not setting H-Step.");
+	}
+}
+
+void LaserMirrorFactory::setVStep(const std::string& mirrorName, const double& value)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		laserMirrorMap.at(mirrorName).setVStep(value);
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not setting V-Step.");
+	}
+}
+
+double LaserMirrorFactory::getHStep(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getHStep();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting H-Step.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getVStep(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getVStep();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting V-Step.");
+		return GlobalConstants::double_min;
+	}
+}
+
+bool LaserMirrorFactory::moveHorizontally(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).moveHorizontally();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+		return false;
+	}
+}
+
+bool LaserMirrorFactory::moveVertically(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).moveVertically();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+		return false;
+	}
+}
+
+bool LaserMirrorFactory::moveLeft(const std::string& mirrorName, const double& value)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).moveLeft(value);
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+		return false;
+	}
+}
+
+bool LaserMirrorFactory::moveRight(const std::string& mirrorName, const double& value)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).moveRight(value);
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+		return false;
+	}
+}
+
+bool LaserMirrorFactory::moveUp(const std::string& mirrorName, const double& value)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).moveUp(value);
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+		return false;
+	}
+}
+
+bool LaserMirrorFactory::moveDown(const std::string& mirrorName, const double& value)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).moveDown(value);
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+		return false;
+	}
+}
+
+double LaserMirrorFactory::getCurrentHorizontalPosition(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getCurrentHorizontalPosition();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting horizontal position.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getCurrentVerticalPosition(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getCurrentVerticalPosition();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting vertical position.");
+		return GlobalConstants::double_min;
+	}
+}
+
+bool LaserMirrorFactory::updatePositions(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).updatePositions();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not updating position.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getMaximumStepSize(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getMaximumStepSize();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting max step size.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getLeftSense(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getLeftSense();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting left sense.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getRightSense(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getRightSense();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting right sense.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getUpSense(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getUpSense();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting up sense.");
+		return GlobalConstants::double_min;
+	}
+}
+
+double LaserMirrorFactory::getDownSense(const std::string& mirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+	{
+		return laserMirrorMap.at(mirrorName).getDownSense();
+	}
+	else
+	{
+		messenger.printMessage(mirrorName, " does not exist. Not getting down sense.");
+		return GlobalConstants::double_min;
+	}
+}
+
+
+
 void LaserMirrorFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

@@ -122,6 +122,16 @@ void LaserMirror::setVStep(const double& value)
 	}
 }
 
+double LaserMirror::getHStep()
+{
+	return hStep;
+}
+
+double LaserMirror::getVStep()
+{
+	return vStep;
+}
+
 bool LaserMirror::moveHorizontally()
 {
 	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::H_MREL));
