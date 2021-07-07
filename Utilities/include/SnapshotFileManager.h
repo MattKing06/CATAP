@@ -8,10 +8,13 @@
 
 namespace SnapshotFileManager
 {
+	extern const std::string magnet_snapshot_default_path;
 	extern const std::string defaultMachineSnapshotLocation;
 	extern const std::string snapshot_file_reference;// = "SNAPSHOT_FILE_REFERENCE";
 	extern const std::vector<std::string> dburt_extensions;
 	extern const std::vector<std::string> extensions;
+
+
 
 
 	extern std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {});

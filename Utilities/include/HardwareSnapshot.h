@@ -10,6 +10,7 @@
 #include <PythonTypeConversions.h>
 #include <map>
 #include <string>
+#include <iostream>
 #include <boost/variant.hpp>
 #include <boost/python/dict.hpp>
 
@@ -69,6 +70,11 @@ public:
 			else if (item.second.type() == typeid(std::string))
 			{
 				return_node[record_name] = boost::get< std::string>(state.at(item.first));
+			}
+			else if (item.second.type() == typeid(double))
+			{
+				std::cout << record_name << " is a double " << std::endl;
+				return_node[record_name] = boost::get< double>(state.at(item.first));
 			}
 		}
 		return return_node;

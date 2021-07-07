@@ -67,6 +67,8 @@ public:
 	std::map<std::string, pvStruct>& getPVStructs();
 	// TODO  for some reaons i think these should be keyed by an enum giving their type 
 	//std::map<int, pvStruct>& getPVStructs2();
+
+	// should be updated when you getSnapoht in the specific hardware class
 	HardwareSnapshot currentSnapshot;
 
 	HardwareSnapshot getHardwareSnapshot();

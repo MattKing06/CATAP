@@ -7,6 +7,7 @@ namespace SnapshotFileManager
 {
 	// TODO 
 	// have this address as the IP and domain name and test if they work  
+	std::string const magnet_snapshot_default_path = "\\\\claraserv3\\claranet\\Snapshots";
 	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet\\Snapshots";
 	const std::string snapshot_file_reference = "SNAPSHOT_FILE_REFERENCE";
 	const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
@@ -20,9 +21,12 @@ namespace SnapshotFileManager
 		}
 		else
 		{
+			std::cout << "!!WARNING!! isFormatValid invalid format, passed fileExtension =  " << fileExtension << std::endl;
 			return false;
 		}
 	}
+
+
 
 	bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode)
 	{
@@ -96,9 +100,15 @@ namespace SnapshotFileManager
 		const boost::filesystem::path directory(location);
 		const boost::filesystem::path file(filename);
 		const boost::filesystem::path full_path = directory / file;
-		if (isFormatValid(full_path.string()) )
+
+		if ( isFormatValid(full_path.extension().string()) )
 		{
+			std::cout << " readSnapshotFile  LoadFile " << full_path.string() << std::endl;
 			return YAML::LoadFile(full_path.string());
+		}
+		else
+		{
+			std::cout << " readSnapshotFile  isFormatValid returned false " << std::endl;
 		}
 		YAML::Node empty_node;
 		return empty_node;

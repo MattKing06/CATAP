@@ -312,7 +312,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("saveSnapshot", &MagnetFactory::saveSnapshot_Pydict, (boost::python::args("self", "snapshot_dict")))
 			.def("saveSnapshot", &MagnetFactory::saveSnapshot_Pyfile, (boost::python::args("self", "filepath", "filename", "snapshot_dict")))
 			.def("saveSnapshot", saveSnapshot_nofile,  (boost::python::args("self")))
-			.def("loadSnapshot", saveSnapshot_withfile,(boost::python::args("self", "filepath", "filename")))
+			.def("saveSnapshot", saveSnapshot_withfile,(boost::python::args("self", "filepath", "filename")))
 			.def("getSnapshot", &MagnetFactory::getSnapshot_Py, (boost::python::args("self")))
 			.def("getSnapshot", &MagnetFactory::getSnapshotFromFile_Py, (boost::python::args("self"), boost::python::args("filepath"), boost::python::args("filename")))
 			.def("loadSnapshot", &MagnetFactory::loadSnapshot, (boost::python::args("self", "filepath","filename")))

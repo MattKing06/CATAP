@@ -1072,6 +1072,8 @@ private:
 		after the snapshot has been applied to */
 		YAML::Node last_snapshot_yaml_node_read;
 
+		// NO - this data will be held in the SnapshotFileManager 
+		//const std::string magnet_snapshot_default_path;
 
 
 		// private
