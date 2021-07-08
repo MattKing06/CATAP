@@ -43,3 +43,38 @@ bool PILaserSystem::setup(const std::string& version)
 
 
 PILaserSystem::~PILaserSystem() {}
+
+Camera& PILaserSystem::getVirtualCathodeCamera()
+{
+	return virtualCathodeCamera;
+}
+
+Charge& PILaserSystem::getWCM()
+{
+	return wallCurrentMonitor;
+}
+
+LaserMirror& PILaserSystem::getLaserMirror()
+{
+	return mirror;
+}
+
+LaserEnergyMeter& PILaserSystem::getEnergyMeter()
+{
+	return energyMeter;
+}
+
+LaserHWP& PILaserSystem::getHWP()
+{
+	return halfwavePlate;
+}
+
+Shutter& PILaserSystem::getShutter01()
+{
+	return laserShutter01;
+}
+
+Shutter& PILaserSystem::getShutter02()
+{
+	return laserShutter02;
+}
