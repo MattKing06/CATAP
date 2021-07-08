@@ -69,23 +69,26 @@ class MagnetFactory
 
 		
 		/*! Save the current magnetfactory settings to the default filepath and filename 
+		@param[in] string, comments	(optional input, default as empty)
 		@param[out] STATE, success, failure, etc.	*/
-		STATE saveSnapshot();
+		STATE saveSnapshot(const std::string& comments = "");
 		/*! Save the current magnetfactory settings to filepath and filename
 		@param[in] string, filepath	
 		@param[in] string, filename	
+		@param[in] string, comments	(optional input, default as empty)
 		@param[out] STATE, success, failure, etc.			*/
-		STATE saveSnapshot(const std::string& filepath, const std::string& filename);
+		STATE saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments = "");
 		/*! Save snap_dict to the default filepath and filename 
 		@param[in] dict, snap_dict
+		@param[in] string, comments	(optional input, default as empty)
 		@param[out] STATE, success, failure, etc.			*/
-		STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict);
+		STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict, const std::string& comments = "");
 		/*! Save snap_dict to filepath and filename
 		@param[in] string, filepath
 		@param[in] string, filename
 		@param[in] dict, snap_dict
 		@param[out] STATE, success, failure, etc.			*/
-		STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict);
+		STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments = "");
 		/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings. 
 		@param[in] string, filepath
 		@param[in] string, filename
@@ -108,27 +111,52 @@ class MagnetFactory
 		boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
 		/*! Apply a Python dict snapshot. 
 		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name 
+		@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
 		@param[out] STATE, success, failure, etc.			*/
-		STATE applySnaphot(const boost::python::dict& snapshot_dict);
+		STATE applySnaphot(const boost::python::dict& snapshot_dict, TYPE magnets = TYPE::MAGNET);
 		/*! Apply a snapshot data from filepath and filename.
 		@param[in] string, filepath
 		@param[in] string, filename
+		@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
 		@param[out] STATE, success, failure, etc.			*/
-		STATE applySnaphot(const std::string& filepath, const std::string& filename);
+		STATE applySnaphot(const std::string& filepath, const std::string& filename, TYPE magnets = TYPE::MAGNET);
 		/*! Apply the member variable hardwareSnapshotMap (which could have already been loaded with loadSnapshot()). 
+		@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
 		@param[out] STATE, success, failure, etc.			*/
-		STATE applyLoadedSnaphost();
+		STATE applyLoadedSnaphost(TYPE magnets = TYPE::MAGNET);
 
-		// HAPPENSN IN SNAPHOSTFILEMANGER
-		//void readVCCDBURTFile(const boost::filesystem::path& full_path) const;
-		//void readCATAPSnapshotYAML(const boost::filesystem::path& full_path) const;
-		//boost::python::dict getSnapshot_Py();
-		////bool applySnapshot(std::map<std::string, HardwareSnapshot>& snap);
-		//bool applySnapshot_Py(boost::python::dict& snap);
-		//std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
+		 
 
-
+		/*! This function compares the current settings of PSU state and SETI with those contained in hardwareSnapShotMap. 
+		* Objects that fail the comparison due to, their name is not recognized, the PSU STATE match, or SETI is different 
+		@param[out] STATE, success, failure, etc.			*/
 		STATE checkLastAppliedSnapshot();
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot() 
+		@param[out] map<string, pair<double, double>, map of filaed object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		std::map<std::string, std::pair<double, double>> getSetWrongSETI()const;
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot(), Python version.
+		@param[out] dict, map of filled object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		boost::python::dict  getSetWrongSETI_Py()const;
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot()
+		@param[out] map<std::string, std::pair<double, double>, map of filaed object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		std::map<std::string, std::pair<STATE, STATE>> getSetWrongPSU();
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot(), Python version. 
+		@param[out] dict, map of filled object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		boost::python::dict  getSetWrongPSU_Py()const;
+		/*! checkLastAppliedSnapshot() fills this vector with names are not recognized 
+		@param[out] vector<string>, object names not recognized */
+		std::vector<std::string> getWrongName()const;
+		/*! checkLastAppliedSnapshot() fills this vector with names that were not recognized, Python version. 
+		@param[out] list, object names not recognized */
+		boost::python::list  getWrongName_Py()const;
+		/*! This function combines checkLastAppliedSnapshot() and getting results for any failed comparisons.
+		@param[out] dict, returned with top level keys "SETI_ERROR", "PSU_ERROR", "NAME_ERROR"  if there are failed comparisons, otherwise empty*/
+		boost::python::dict checkLastAppliedSnapshotReturnResults_Py();
+
+		/*! Return the Default Magnet Snapshot file path, hardcoded into CATAP */
+		std::string getDefaultMagnetSnapshotPath()const;
+		/*! Return the Default Machine snapshot file path, hardcoded into CATAP */
+		std::string getDefaultMachineSnapshotPath()const;
 
 
 
@@ -976,8 +1004,17 @@ private:
 
 		std::map<std::string, Magnet> magnetMap;
 
-		/*! Snaphsot data is placed here  */
+		/*! Snaphsot data is placed here, when loaded from file, or applied  */
 		std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
+		/*! checkLastAppliedSnapshot() fills this map with magnets that fail the SETI comparison, 
+		the map key is the mganet name, 1st item in the pair is the requested value, the 2nd is the actual value 		*/
+		std::map<std::string, std::pair<double,double>> set_wrong_seti;
+		/*! checkLastAppliedSnapshot() fills this map with magnets that fail the PSU comparison 
+		the map key is the mganet name, 1st item in the pair is the requested value, the 2nd is the actual value 		*/
+		std::map<std::string, std::pair<STATE,STATE>> set_wrong_psu;
+		/*! checkLastAppliedSnapshot() fills this vector with names are not recognized */
+		std::vector<std::string> set_wrong_name;
+
 
 		/*! Each factory must know how to convert a YAML NODE read from snaphsot YAML file into a map of hardwareSnapshots. 
 		It must be done in the factory so we know how to convert the type for each record 
@@ -995,7 +1032,7 @@ private:
 		/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed 
 		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply 
 		@param[out] STATE, success, failure, etc */
-		STATE MagnetFactory::applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
+		STATE MagnetFactory::applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE magnet_type = TYPE::MAGNET);
 
 		/*! setup the EPCIS channels */
 		void setupChannels();

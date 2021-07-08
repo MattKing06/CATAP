@@ -86,6 +86,7 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 		}
 		else
 		{
+			std::cout << "!!ERROR!! " << paramsMap.at("mag_type") << " is na unrecognized magnet type" << std::endl;
 			mag_type = TYPE::UNKNOWN_TYPE;
 		}
 

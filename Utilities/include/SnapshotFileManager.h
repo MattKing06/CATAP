@@ -21,7 +21,7 @@ namespace SnapshotFileManager
 	extern bool isLocationValid(const std::string& location);
 	extern bool isFormatValid(const std::string& location);
 	extern bool doesFileExist(const std::string& filePath);
-	extern bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& writeData, const STATE& mode);
+	extern bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& writeData, const STATE& mode, const std::string& comments = "");
 	extern boost::system::error_code createMachineSnapshotDirectory();
 
 

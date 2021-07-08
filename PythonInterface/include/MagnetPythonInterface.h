@@ -122,11 +122,11 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		//void(MagnetFactory::*SETIMultiple)(const std::string&, const double&) = &MagnetFactory::SETI;
 
 
-		STATE(MagnetFactory::*saveSnapshot_nofile)() = &MagnetFactory::saveSnapshot;
-		STATE(MagnetFactory::*saveSnapshot_withfile)(const std::string&, const std::string&) = &MagnetFactory::saveSnapshot;
+		STATE(MagnetFactory::*saveSnapshot_nofile)(const std::string&) = &MagnetFactory::saveSnapshot;
+		STATE(MagnetFactory::*saveSnapshot_withfile)(const std::string&, const std::string&, const std::string&) = &MagnetFactory::saveSnapshot;
 
-		STATE(MagnetFactory::*applySnaphot_withDict)(const boost::python::dict&) = &MagnetFactory::applySnaphot;
-		STATE(MagnetFactory::*applySnaphot_withfile)(const std::string&, const std::string&) = &MagnetFactory::applySnaphot;
+		STATE(MagnetFactory::*applySnaphot_withDict)(const boost::python::dict&, TYPE) = &MagnetFactory::applySnaphot;
+		STATE(MagnetFactory::*applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &MagnetFactory::applySnaphot;
 
 
 
@@ -309,17 +309,31 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("isACor", &MagnetFactory::isACor)
 			
 
-			.def("saveSnapshot", &MagnetFactory::saveSnapshot_Pydict, (boost::python::args("self", "snapshot_dict")))
-			.def("saveSnapshot", &MagnetFactory::saveSnapshot_Pyfile, (boost::python::args("self", "filepath", "filename", "snapshot_dict")))
-			.def("saveSnapshot", saveSnapshot_nofile,  (boost::python::args("self")))
-			.def("saveSnapshot", saveSnapshot_withfile,(boost::python::args("self", "filepath", "filename")))
+			.def("saveSnapshot", &MagnetFactory::saveSnapshot_Pydict, 
+				(boost::python::arg("self"), boost::python::arg("snapshot_dict"), boost::python::arg("comments") = ""))
+			.def("saveSnapshot", &MagnetFactory::saveSnapshot_Pyfile,
+				(boost::python::arg("self"), boost::python::arg("filepath"), boost::python::arg("filename"), boost::python::arg("snapshot_dict"), boost::python::arg("comments") = ""))
+			.def("saveSnapshot", saveSnapshot_nofile,  (boost::python::arg("self"), boost::python::arg("comments") = ""))
+			.def("saveSnapshot", saveSnapshot_withfile,  
+				(boost::python::arg("self"), boost::python::arg("filepath"), boost::python::arg("filename"), boost::python::arg("comments") = ""))
 			.def("getSnapshot", &MagnetFactory::getSnapshot_Py, (boost::python::args("self")))
 			.def("getSnapshot", &MagnetFactory::getSnapshotFromFile_Py, (boost::python::args("self"), boost::python::args("filepath"), boost::python::args("filename")))
 			.def("loadSnapshot", &MagnetFactory::loadSnapshot, (boost::python::args("self", "filepath","filename")))
 			.def("loadSnapshot", &MagnetFactory::loadSnapshot_Py, (boost::python::args("self", "snapshot_dict")))
-			.def("applySnaphot", applySnaphot_withDict, (boost::python::args("self", "snapshot_dict")))
-			.def("applySnaphot", applySnaphot_withfile, (boost::python::args("self", "filepath", "filename")))
+			.def("applySnaphot", applySnaphot_withDict, (boost::python::arg("self"), boost::python::arg("snapshot_dict"), boost::python::arg("magnet_type") = TYPE::MAGNET))
+			.def("applySnaphot", applySnaphot_withfile, 
+				(boost::python::arg("self"), boost::python::arg("filepath"), boost::python::arg("filename"), boost::python::arg("magnet_type") = TYPE::MAGNET))
 			.def("checkLastAppliedSnapshot", &MagnetFactory::checkLastAppliedSnapshot, (boost::python::args("self")))
+
+				
+			.def("getSetWrongSETI", &MagnetFactory::getSetWrongSETI_Py, (boost::python::args("self")))
+			.def("getSetWrongPSU", &MagnetFactory::getSetWrongPSU_Py, (boost::python::args("self")))
+			.def("getSetWrongPSU", &MagnetFactory::getSetWrongPSU_Py, (boost::python::args("self")))
+			.def("checkLastAppliedSnapshotReturnResults", &MagnetFactory::checkLastAppliedSnapshotReturnResults_Py, (boost::python::args("self")))
+
+			.def("getDefaultMagnetSnapshotPath", &MagnetFactory::getDefaultMagnetSnapshotPath, (boost::python::args("self")))
+			.def("getDefaultMachineSnapshotPath", &MagnetFactory::getDefaultMachineSnapshotPath, (boost::python::args("self")))
+
 
 
 

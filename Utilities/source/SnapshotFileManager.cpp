@@ -32,14 +32,19 @@ namespace SnapshotFileManager
 		}
 	}
 
-	bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode)
+	bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode, const std::string& comments)
 	{
-		const std::string fullpath = location + "/" + filename;
-		std::ofstream outFile(fullpath.c_str());
+		YAML::Node comment_node;
+		comment_node["COMMENT"] = comments;
+		const boost::filesystem::path directory(location);
+		const boost::filesystem::path file(filename);
+		const boost::filesystem::path full_path = directory / file;
+		std::ofstream outFile(full_path.c_str());
 		if (!outFile) { return false; }
 		// COULD GET THE HARDWARE TYPE FROM OutputNode, NEED TO ENFORCE HARDWARE TYPE AS FIRST ELEMENT.
 		outFile << "# YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
 		outFile << "# THIS SNAPSHOT WAS CREATED IN: " << ENUM_TO_STRING(mode) << " MODE." << std::endl;
+		outFile << comment_node << std::endl;
 		outFile << outputNode << std::endl;
 		return true;
 	}

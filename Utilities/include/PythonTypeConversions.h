@@ -87,7 +87,6 @@ boost::python::list to_py_list(const boost::circular_buffer<std::vector<typeOfVe
 	return newList;
 }
 
-
 template<class mapkey, class mapvalue>
 inline
 boost::python::dict to_py_dict(const std::map<mapkey, mapvalue>& map)
@@ -101,23 +100,36 @@ boost::python::dict to_py_dict(const std::map<mapkey, mapvalue>& map)
 	return newDictiOnary;
 }
 
-
-
-template<class mapkey, class mapvalue>
+template<class mapkey, class pairvalue>
 inline
-boost::python::dict to_py_dict_pair(const std::map<mapkey, std::pair<mapvalue, mapvalue>>& map)
+boost::python::dict to_py_dict_pair(const std::map<mapkey, std::pair<pairvalue, pairvalue>>& map)
 {
 	//typename std::map<key, value>::iterator iter;
 	boost::python::dict newDictiOnary;
-	for (auto&& iter : map)
+	for (auto&& iter = map.begin(); iter != map.end(); ++iter)
 	{
-		boost::python::list newList;
-		newList.append(iter.second.first);
-		newList.append(iter.second.second);
-		newDictiOnary[iter.first] = newList;
+		boost::python::tuple t = boost::python::make_tuple(iter->second.first, iter->second.second);
+		newDictiOnary[iter->first] = t;
 	}
 	return newDictiOnary;
 }
+
+
+//template<class mapkey, class mapvalue>
+//inline
+//boost::python::dict to_py_dict_pair(const std::map<mapkey, std::pair<mapvalue, mapvalue>>& map)
+//{
+//	//typename std::map<key, value>::iterator iter;
+//	boost::python::dict newDictiOnary;
+//	for (auto&& iter : map)
+//	{
+//		boost::python::list newList;
+//		newList.append(iter.second.first);
+//		newList.append(iter.second.second);
+//		newDictiOnary[iter.first] = newList;
+//	}
+//	return newDictiOnary;
+//}
 //template<class key, class value>
 //inline
 //boost::python::dict to_py_dict_pair(const std::map<key, std::pair<value, value>>& map)
