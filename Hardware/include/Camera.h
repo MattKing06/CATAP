@@ -336,6 +336,16 @@ public:
 	@param[in] double, value 
 	@param[out] bool, value */
 	bool setAvgIntensity(double value);
+	/*! Get the average pixel value that determines if beam is present in image
+	@param[out] double, average_pixel_value_for_beam*/
+	double getAveragePixelValueForBeam();
+	/*! Set the average pixel value that determines if beam is present in image
+	@param[in] double, averagePixelValueForBeam
+	@param[out] bool, isSetSucessfully*/
+	bool setAveragePixelValueForBeam(const double& value);
+	/*! Determines if beam is present in image data using AveragePixValue and AveragePixValueForBeam
+	@param[out]: */
+	bool hasBeam();
 	/*! Get the last directory / filename that HDF5 data was saved to.
 	@param[out] string, value */
 	std::string getLastDirectoryandFileName() const;

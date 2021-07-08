@@ -255,7 +255,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find AVG_PIXEL_VALUE_FOR_BEAM");
 	if (GlobalFunctions::entryExists(paramMap, "AVG_PIXEL_VALUE_FOR_BEAM"))
 	{
-		average_pixel_value_for_beam = std::stof(paramMap.find("AVG_PIXEL_VALUE_FOR_BEAM")->second);
+		average_pixel_value_for_beam = std::stod(paramMap.find("AVG_PIXEL_VALUE_FOR_BEAM")->second.data());
 	}
 	else
 	{
@@ -778,6 +778,19 @@ bool Camera::setAvgIntensity(double value)
 	}
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
+}
+double Camera::getAveragePixelValueForBeam()
+{
+	return average_pixel_value_for_beam;
+}
+bool Camera::setAveragePixelValueForBeam(const double& value)
+{
+	average_pixel_value_for_beam = value;
+	return true;
+}
+bool Camera::hasBeam()
+{
+	return getAvgIntensity() > getAveragePixelValueForBeam();
 }
 bool Camera::setMaskXCenter(long val)
 {
