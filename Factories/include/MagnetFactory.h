@@ -130,7 +130,7 @@ class MagnetFactory
 		/*! This function compares the current settings of PSU state and SETI with those contained in hardwareSnapShotMap. 
 		* Objects that fail the comparison due to, their name is not recognized, the PSU STATE match, or SETI is different 
 		@param[out] STATE, success, failure, etc.			*/
-		STATE checkLastAppliedSnapshot();
+		STATE checkLastAppliedSnapshot(TYPE mag_type_to_check = TYPE::MAGNET );
 		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot() 
 		@param[out] map<string, pair<double, double>, map of filaed object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
 		std::map<std::string, std::pair<double, double>> getSetWrongSETI()const;
@@ -151,7 +151,7 @@ class MagnetFactory
 		boost::python::list  getWrongName_Py()const;
 		/*! This function combines checkLastAppliedSnapshot() and getting results for any failed comparisons.
 		@param[out] dict, returned with top level keys "SETI_ERROR", "PSU_ERROR", "NAME_ERROR"  if there are failed comparisons, otherwise empty*/
-		boost::python::dict checkLastAppliedSnapshotReturnResults_Py();
+		boost::python::dict checkLastAppliedSnapshotReturnResults_Py(TYPE mag_type_to_check);
 
 		/*! Return the Default Magnet Snapshot file path, hardcoded into CATAP */
 		std::string getDefaultMagnetSnapshotPath()const;
@@ -418,8 +418,15 @@ class MagnetFactory
 		config files, (these can be dynamically changed, see setDegaussValues)
 		@param[in] name, full-name or name-alias of magnet object
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing 
-		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or anotehrerror occurred*/
+		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or another error occurred*/
 		bool degauss(const std::string& name, const bool reset_to_zero);
+
+		/*! degauss a magnet, following the degauss settings held by the magnet object, initially defined in the magnet object \
+		config files, (these can be dynamically changed, see setDegaussValues)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[in] set_value_after_degauss, SETI value to set after degaussing
+		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or another error occurred*/
+		bool degauss(const std::string& name, const double set_value_after_degauss);
 		/*! degauss multiple magnets  (c++ verion)
 		@param[in] names, std::vector full-name or name-alias of magnet objects to be degaussed 
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing
@@ -438,6 +445,8 @@ class MagnetFactory
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing
 		@param[out] python::dict of return bool for each magnet, keyed by the full-name */
 		boost::python::dict degaussAll_Py(const bool reset_to_zero);
+
+
 
 		//int setNumberOfDegaussSteps(const int value); 	//TODO: THINK ABOUT THIS ONE!!! 
 		
@@ -1006,6 +1015,7 @@ private:
 
 		/*! Snaphsot data is placed here, when loaded from file, or applied  */
 		std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
+
 		/*! checkLastAppliedSnapshot() fills this map with magnets that fail the SETI comparison, 
 		the map key is the mganet name, 1st item in the pair is the requested value, the 2nd is the actual value 		*/
 		std::map<std::string, std::pair<double,double>> set_wrong_seti;

@@ -13,8 +13,8 @@ namespace SnapshotFileManager
 	//
 	// TODO 
 	// have this address as the IP and domain name and test if they work  ???
-	std::string const magnet_snapshot_default_path = "\\\\claraserv3\\claranet\\Snapshots";
-	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3\\claranet\\Snapshots";
+	std::string const magnet_snapshot_default_path = "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Magnet";
+	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Machine";
 	const std::string snapshot_file_reference = "SNAPSHOT_FILE_REFERENCE";
 	const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
 

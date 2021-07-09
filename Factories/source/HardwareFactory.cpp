@@ -557,7 +557,7 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 }
 
 
-bool HardwareFactory::saveMachineSnapshot()
+bool HardwareFactory::saveMachineSnapshot()// TODO check names
 {
 	// TOD this couldn't this just call bool HardwareFactory::saveMachineSnapshot(const std::string& location) ???
 	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
@@ -597,7 +597,7 @@ bool HardwareFactory::saveMachineSnapshot()
 	return false;
 }
 
-bool HardwareFactory::saveMachineSnapshot(const std::string& location)
+bool HardwareFactory::saveMachineSnapshot(const std::string& location)// TODO check names
 {
 	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
 	boost::filesystem::path snapshotLocation;
@@ -629,7 +629,7 @@ bool HardwareFactory::saveMachineSnapshot(const std::string& location)
 	return false;
 }
 
-bool HardwareFactory::loadMachineSnapshot(const std::string& directory_location)
+bool HardwareFactory::loadMachineSnapshot(const std::string& directory_location)// TODO check names
 {
 	if (directory_location.empty())
 	{
@@ -650,7 +650,7 @@ bool HardwareFactory::loadMachineSnapshot(const std::string& directory_location)
 	return true;
 }
 
-bool HardwareFactory::applySnapshot(const std::string& filename)
+bool HardwareFactory::applySnapshot(const std::string& filename)// TODO check names
 {
 	std::ifstream inFile(filename);
 	if (!inFile) { return false; }
@@ -668,7 +668,7 @@ bool HardwareFactory::applySnapshot(const std::string& filename)
 	return false;
 }
 
-bool HardwareFactory::applySnapshot(const std::map<std::string, std::string> settings)
+bool HardwareFactory::applySnapshot(const std::map<std::string, std::string> settings)// TODO check names
 {
 	return false;
 }

@@ -16,6 +16,13 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		bool(Magnet::*isREADIequalValue_ml_tolerance)(const double)const = &Magnet::isREADIequalValue;
 		bool(Magnet::*isREADIequalValue_passed_tolerance)(const double, const double)const = &Magnet::isREADIequalValue;
 
+
+		bool(Magnet::*degauss_user_deg_values)(const boost::python::list&,  double) = &Magnet::degauss;
+		bool(Magnet::*degauss_user_end_values)( double) = &Magnet::degauss;
+		bool(Magnet::*degauss_to_zero)(const bool) = &Magnet::degauss;
+
+
+
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Magnet>())->to_python_target_type());
 		if (is_registered) return;
 		// magnet exposure
@@ -35,6 +42,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 			.add_property("psu_state", &Magnet::getPSUState, &Magnet::setPSUState)
 			.add_property("READI", &Magnet::getREADI)
+			.add_property("SETI", &Magnet::getSETI)
 			.add_property("name", &Magnet::getHardwareName)
 			.add_property("manufacturer", &Magnet::getManufacturer)
 			.add_property("serial_number", &Magnet::getSerialNumber)
@@ -61,7 +69,16 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("setREADITolerance", &Magnet::setREADITolerance)
 			.def("getMinI", &Magnet::getMinI)
 			.def("getMaxI", &Magnet::getMaxI)
-			.def("degauss", &Magnet::degauss)
+			
+			
+			.def("degauss", degauss_user_deg_values,
+				(boost::python::arg("self"), boost::python::arg("degauss_values"), boost::python::arg("reset_value")=0.0))
+			.def("degauss", degauss_user_end_values,
+				(boost::python::arg("self"), boost::python::arg("reset_value") = 0.0))
+			.def("degauss", degauss_to_zero, (boost::python::arg("self"), boost::python::arg("reset_to_zero")))
+
+
+
 			.def("isDegaussing", &Magnet::isDegaussing)
 			.def("getDegaussValues", &Magnet::getDegaussValues_Py)
 			.def("getDegaussTolerance", &Magnet::getDegaussTolerance)
@@ -145,7 +162,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 		//Magnet& getMagnet(const std::string & fullMagnetName);
 
-		bool(MagnetFactory::*degauss_single)(const std::string &, const bool)= &MagnetFactory::degauss;
+		bool(MagnetFactory::*degauss_single_bool)(const std::string &, const bool)= &MagnetFactory::degauss;
+		bool(MagnetFactory::*degauss_single_to_Value)(const std::string &, const double)= &MagnetFactory::degauss;
 
 		// OVERLOADED SETUP FUNCTIONS TO ALLOW USER FULL CONTROL AND "FUTURE PROOVED VERSION PARAMETER" 
 		bool (MagnetFactory::*setup_NoArg)() = &MagnetFactory::setup;
@@ -265,7 +283,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("swtichOff", &MagnetFactory::switchOff_Py)
 			.def("switchOffAll", &MagnetFactory::switchOffAll_Py)
 		
-			.def("degauss", degauss_single)
+			.def("degauss", degauss_single_bool)
+			.def("degauss", degauss_single_to_Value)
 			.def("degauss", &MagnetFactory::degauss_Py)
 
 
@@ -329,7 +348,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getSetWrongSETI", &MagnetFactory::getSetWrongSETI_Py, (boost::python::args("self")))
 			.def("getSetWrongPSU", &MagnetFactory::getSetWrongPSU_Py, (boost::python::args("self")))
 			.def("getSetWrongPSU", &MagnetFactory::getSetWrongPSU_Py, (boost::python::args("self")))
-			.def("checkLastAppliedSnapshotReturnResults", &MagnetFactory::checkLastAppliedSnapshotReturnResults_Py, (boost::python::args("self")))
+			.def("checkLastAppliedSnapshotReturnResults", &MagnetFactory::checkLastAppliedSnapshotReturnResults_Py, 
+				(boost::python::arg("self"), boost::python::arg("magnet_type") = TYPE::MAGNET))
 
 			.def("getDefaultMagnetSnapshotPath", &MagnetFactory::getDefaultMagnetSnapshotPath, (boost::python::args("self")))
 			.def("getDefaultMachineSnapshotPath", &MagnetFactory::getDefaultMachineSnapshotPath, (boost::python::args("self")))

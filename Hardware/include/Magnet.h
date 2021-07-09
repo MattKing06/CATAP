@@ -25,39 +25,6 @@ class Degauss;
 class Magnet;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
 
-//
-//struct MagnetSnapshot
-//{   // provide a default constructor
-//	MagnetSnapshot() :
-//		name(GlobalConstants::DUMMY_NAME),
-//		psu_state(STATE::ERR),
-//		ilk_state(STATE::ERR),
-//		seti(GlobalConstants::double_min),
-//		readi(GlobalConstants::double_min),
-//		k_dip_p(GlobalConstants::double_min),
-//		int_str_mm(GlobalConstants::double_min),
-//		k_set_p(GlobalConstants::double_min),
-//		int_str(GlobalConstants::double_min),
-//		k_ang(GlobalConstants::double_min),
-//		k_mrad(GlobalConstants::double_min),
-//		k_val(GlobalConstants::double_min)
-//	{};
-//	std::string name;
-//	TYPE type;
-//	STATE psu_state, ilk_state;
-//	double seti, readi;
-//	// physics units (not all types of magnets have all tehse values 
-//	double k_dip_p, int_str_mm, k_set_p, int_str, k_ang, k_val, k_mrad,
-//		magnetic_length;
-//
-//	std::vector<double> field_integral_coefficients;
-//
-//	// preprocessor ifdefine guards for non-python apps??? 
-//	boost::python::dict state_dict;
-//
-//};
-//
-
 
 class Degauss
 {   
@@ -67,7 +34,8 @@ class Degauss
 		Magnet* magnet;
 		std::vector<double>  degauss_values;
 		size_t				 current_step;
-		bool                resetToZero;
+		//bool                 resetToZero;
+		double               set_value_after_degauss;
 		double degaussTolerance;
 		std::thread* degauss_thread;
 		time_t wait_time;
@@ -116,6 +84,15 @@ class Magnet : public Hardware
 	//	@param[out] bool, for if in same state or not							*/
 		//bool isInSETIandPSUState(const magnetState& ms)const;
 
+	/*! degauss a magnet
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const std::vector<double>& custum_degauss_values, double set_value_after_degauss);
+	/*! degauss a magnet
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss);
+	/*! degauss a magnet
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(double set_value_after_degauss);
 	/*! degauss a magnet 
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const bool reset_to_zero);
