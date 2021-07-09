@@ -2123,6 +2123,7 @@ YAML::Node MagnetFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::stri
 
 STATE MagnetFactory::checkLastAppliedSnapshot( TYPE mag_type_to_check)
 {
+	STATE return_state = STATE::SUCCESS;
 	std::map<std::string, HardwareSnapshot> current_snapshot = getSnapshot();
 
 	std::vector<std::string> wrong_seti;
@@ -2179,11 +2180,12 @@ STATE MagnetFactory::checkLastAppliedSnapshot( TYPE mag_type_to_check)
 							bool compare = GlobalFunctions::areSame(val_now, val_ref, tol);
 							if (!compare)
 							{
+								return_state = STATE::FAIL;
 								std::pair<double, double> new_seti_pair;
 								new_seti_pair.first = val_ref;
 								new_seti_pair.second = val_now;
 								set_wrong_seti[std::string(fullName) ] = new_seti_pair;
-								messenger.printDebugMessage(fullName, " has wrong GETSETI, (now, ref) ", val_now, " !+ ", val_ref, "  tol ");
+								messenger.printDebugMessage(fullName, " has wrong GETSETI, (now, ref) ", val_now, " !+ ", val_ref, "  tol set_wrong_seti.size() = ", set_wrong_psu.size());
 							}
 						}
 					}
@@ -2194,11 +2196,12 @@ STATE MagnetFactory::checkLastAppliedSnapshot( TYPE mag_type_to_check)
 							bool comp = hss_ref.get<STATE>("RPOWER") == item.second.get<STATE>("RPOWER");
 							if (!comp)
 							{
+								return_state = STATE::FAIL;
 								std::pair<STATE, STATE> new_psu_pair;
 								new_psu_pair.first = hss_ref.get<STATE>("RPOWER");
 								new_psu_pair.second = item.second.get<STATE>("RPOWER");
 								set_wrong_psu[ std::string(fullName) ] = new_psu_pair;
-								messenger.printDebugMessage(fullName, " has wrong RPOWER ");
+								messenger.printDebugMessage(fullName, " has wrong RPOWER, set_wrong_psu.size() = ", set_wrong_psu.size());
 							}
 						}
 					}
@@ -2206,12 +2209,13 @@ STATE MagnetFactory::checkLastAppliedSnapshot( TYPE mag_type_to_check)
 			}
 			else
 			{
+				return_state = STATE::FAIL;
 				set_wrong_name.push_back(item.first);
 				messenger.printDebugMessage(item.first, " has wrong NAME ");
 			}
 		}
 	}
-	return STATE::SUCCESS;
+	return return_state;
 }
 
 std::map<std::string, std::pair<double, double>> MagnetFactory::getSetWrongSETI()const
@@ -2241,13 +2245,14 @@ boost::python::list  MagnetFactory::getWrongName_Py()const
 
 boost::python::dict MagnetFactory::checkLastAppliedSnapshotReturnResults_Py( TYPE mag_type_to_check )
 {			
+	messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ");
 	boost::python::dict r;
 	if (checkLastAppliedSnapshot(mag_type_to_check) != STATE::SUCCESS)
 	{
 		boost::python::dict seti_err = getSetWrongSETI_Py();
 		if (len(seti_err) > 0)
 		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(seti_err)," setio errors ");
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(seti_err)," seti errors ");
 			r[ std::string("SETI_ERROR") ] = seti_err;
 		}
 		else
@@ -2255,9 +2260,9 @@ boost::python::dict MagnetFactory::checkLastAppliedSnapshotReturnResults_Py( TYP
 			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no seti errors ");
 		}
 		boost::python::dict psu_err = getSetWrongPSU_Py();
-		if (len(seti_err) > 0)
+		if (len(psu_err) > 0)
 		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(seti_err), " psu errors ");
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(psu_err), " psu errors ");
 			r[std::string("PSU_ERROR") ] = psu_err;
 		}
 		else
@@ -2268,7 +2273,7 @@ boost::python::dict MagnetFactory::checkLastAppliedSnapshotReturnResults_Py( TYP
 		if (len(name_err) > 0)
 		{
 			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(name_err), " name errors ");
-			r[std::string("PSU_ERROR")  ] = psu_err;
+			r[std::string("NAME_ERROR")  ] = psu_err;
 		}
 		else
 		{

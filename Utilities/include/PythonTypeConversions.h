@@ -111,6 +111,7 @@ boost::python::dict to_py_dict_pair(const std::map<mapkey, std::pair<pairvalue, 
 		boost::python::tuple t = boost::python::make_tuple(iter->second.first, iter->second.second);
 		newDictiOnary[iter->first] = t;
 	}
+	std::cout << "to_py_dict_pair, return size = " << len(newDictiOnary) << std::endl;
 	return newDictiOnary;
 }
 
