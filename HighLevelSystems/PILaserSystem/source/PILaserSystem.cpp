@@ -46,35 +46,80 @@ PILaserSystem::~PILaserSystem() {}
 
 Camera& PILaserSystem::getVirtualCathodeCamera()
 {
-	return virtualCathodeCamera;
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return cameraFactory.getCamera(virtualCathodeCameraName);
 }
 
 Charge& PILaserSystem::getWCM()
 {
-	return wallCurrentMonitor;
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return chargeFactory.getChargeDiagnostic(wallCurrentMonitorName);
 }
 
 LaserMirror& PILaserSystem::getLaserMirror()
 {
-	return mirror;
+	return mirrorFactory.getLaserMirror(mirrorName);
 }
 
 LaserEnergyMeter& PILaserSystem::getEnergyMeter()
 {
-	return energyMeter;
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return laserEnergyMeterFactory.getLaserEnergyMeter(energyMeterName);
 }
 
 LaserHWP& PILaserSystem::getHWP()
 {
-	return halfwavePlate;
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return halfWavePlateFactory.getLaserHWP(halfWavePlateName);
 }
 
 Shutter& PILaserSystem::getShutter01()
 {
-	return laserShutter01;
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return shutterFactory.getShutter(shutterNames.at(0));
 }
 
 Shutter& PILaserSystem::getShutter02()
 {
-	return laserShutter02;
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return shutterFactory.getShutter(shutterNames.at(1));
+}
+
+bool PILaserSystem::canMove()
+{
+	if (laserShutter01.isOpen() && laserShutter02.isOpen())
+	{
+		if (virtualCathodeCamera.isAnalysisUpdating())
+		{
+			if (virtualCathodeCamera.hasBeam())
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }

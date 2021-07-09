@@ -21,6 +21,7 @@ namespace BOOST_PYTHON_LASER_FEEDBACK_INCLUDE
 			.def("getShutter02", &PILaserSystem::getShutter02, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getVirtualCathode", &PILaserSystem::getVirtualCathodeCamera, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getWCM", &PILaserSystem::getWCM, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("canMove", &PILaserSystem::canMove)
 			//.def("getCameraName", &PILaserSystem::getCameraName_Py)
 			//.def("getQ", &PILaserSystem::getQ)
 			//.def("getEnergy", &PILaserSystem::getEnergy)
