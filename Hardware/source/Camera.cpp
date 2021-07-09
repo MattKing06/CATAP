@@ -540,9 +540,17 @@ double Camera::getXPix()const
 {
 	return x_pix.second;
 }
+size_t Camera::getXPixScaleFactor() const
+{
+	return x_pix_scale_factor;
+}
 double Camera::getYPix()const
 {
 	return y_pix.second;
+}
+size_t Camera::getYPixScaleFactor() const
+{
+	return y_pix_scale_factor;
 }
 double Camera::getSigXPix()const
 {
@@ -555,6 +563,22 @@ double Camera::getSigYPix()const
 double Camera::getSigXYPix()const
 {
 	return sigma_xy_pix.second;
+}
+size_t Camera::getNumXPixFromArrayData() const
+{
+	return array_data_num_pix_x;
+}
+size_t Camera::getNumYPixFromArrayData() const
+{
+	return array_data_num_pix_y;
+}
+size_t Camera::getFullNumXPix() const
+{
+	return binary_num_pix_x;
+}
+size_t Camera::getFullNumYPix() const
+{
+	return binary_num_pix_y;
 }
 double Camera::getSumIntensity()const
 {

@@ -139,6 +139,12 @@ public:
 	/*! Get the x position in pixels from the online analysis.
 	@param[out] double, value */
 	double getXPix()const;
+	/*! Get the x pixel scale factor 
+	@param[out] size_t, value*/
+	size_t getXPixScaleFactor() const;
+	/*! Get the y pixel scale factor
+	@param[out] size_t, value*/
+	size_t getYPixScaleFactor() const;
 	/*! Get the y position in pixels from the online analysis.
 	@param[out] double, value */
 	double getYPix()const;
@@ -151,6 +157,14 @@ public:
 	/*! Get the x-y coviariance in pixels from the online analysis.
 	@param[out] double, value */
 	double getSigXYPix()const;
+	/*!*/
+	size_t getNumXPixFromArrayData() const;
+	/*!*/
+	size_t getNumYPixFromArrayData() const;
+	/*!*/
+	size_t getFullNumXPix() const;
+	/*!*/
+	size_t getFullNumYPix() const;
 	/*! Get the buffer trigger value.
 	@param[out] double, value */
 	char getBufferTrigger()const;
