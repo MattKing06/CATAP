@@ -17,7 +17,7 @@ void EPICSValveInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) co
 {
 	if (pvStruct.monitor)
 	{
-		if (pvStruct.pvRecord == ValveRecords::Sta)
+		if (pvStruct.pvRecord == ValveRecords::STA)
 		{
 			pvStruct.updateFunction = updateValveState;
 		}
@@ -35,10 +35,21 @@ void EPICSValveInterface::updateValveState(const struct event_handler_args args)
 	recastValve->valveState.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
-	case GlobalConstants::zero_int: recastValve->setValveState(STATE::CLOSED); break;
-	case GlobalConstants::one_int: recastValve->setValveState(STATE::OPEN); break;
+	case GlobalConstants::zero_int: 
+	{
+		recastValve->setValveState(STATE::CLOSED);
+		break;
+	}
+	case GlobalConstants::one_int:
+	{
+		recastValve->setValveState(STATE::OPEN);
+		break;
+	}
 	default:
+	{
 		recastValve->setValveState(STATE::ERR);
+		break;
+	}
 	}
 	static_messenger.printDebugMessage("VALVE STATE FOR: " + recastValve->getHardwareName() + ": "
 		+ ENUM_TO_STRING(recastValve->valveState.second));

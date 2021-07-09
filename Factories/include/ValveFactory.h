@@ -9,6 +9,7 @@
 #include <vector>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <SnapshotFileManager.h>
 
 /** @addtogroup factories 
  @{*/
@@ -143,8 +144,12 @@ public:
 	/*! returns true if messenger messages flag is true, false otherwise*/
 	bool isMessagingOn();
 
-
-
+	std::map<std::string, HardwareSnapshot> getSnapshot();
+	boost::python::dict getSnapshot_Py();
+	bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
+	bool loadSnapshot(const std::string& location);
+	bool loadSnapshot(const YAML::Node& settings);
+	bool loadSnapshot_Py(const boost::python::dict& settings);
 	/*! gets all valve names as python list*/
 	boost::python::list getAllValveNames_Py() const;
 	/*! gets valve states by name from the python list parameter, and returns a dict with key,value pairs of valve-name and state*/

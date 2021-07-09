@@ -129,6 +129,7 @@ namespace GlobalConstants
 		// magnet types
 		{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},
 		{ENUM_TO_STRING(TYPE::DIPOLE), TYPE::DIPOLE},
+		{ENUM_TO_STRING(TYPE::CORRECTOR), TYPE::CORRECTOR},
 		{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
 		{ENUM_TO_STRING(TYPE::HORIZONTAL_CORRECTOR), TYPE::HORIZONTAL_CORRECTOR},
 		{ENUM_TO_STRING(TYPE::SOLENOID), TYPE::SOLENOID},
@@ -174,9 +175,6 @@ namespace GlobalConstants
 		
 		{ "RFModulator", TYPE::RF_MODULATOR },
 		{ ENUM_TO_STRING(TYPE::RF_MODULATOR), TYPE::RF_MODULATOR },
-
-			
-
 				
 		//{ENUM_TO_STRING(TYPE::HVCOR), TYPE::HVCOR},
 		{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
@@ -199,12 +197,11 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::UNKNOWN_SCREEN_TYPE), TYPE::UNKNOWN_SCREEN_TYPE},
 		{ENUM_TO_STRING(TYPE::RFHEARTBEAT), TYPE::RFHEARTBEAT},
 		{"RFHeartbeat", TYPE::RFHEARTBEAT}
-
-
 	};
 
 	const std::map<std::string, STATE> stringToStateMap =
 	{
+			{ENUM_TO_STRING(STATE::ON), STATE::ON},
 			{ENUM_TO_STRING(STATE::OFF), STATE::OFF},
 			{ENUM_TO_STRING(STATE::UNKNOWN_NAME), STATE::UNKNOWN_NAME},
 			{ENUM_TO_STRING(STATE::SUCCESS), STATE::SUCCESS},
@@ -410,13 +407,6 @@ namespace GlobalConstants
 	/*! Arithmetic time-type capable of representing time 60 */
 	const time_t TIMET_60 = 60;
 
-	const std::string COMMENT = "COMMENT";
-	const std::string TIMESTAMP = "TIMESTAMP";
-	const std::string HEADER = "HEADER";
-	const std::string FILE_ALIAS = "FILE_ALIAS";
-
-	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
-	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
 	const std::string UNKNOWN = "UNKNOWN";
@@ -428,10 +418,37 @@ namespace GlobalConstants
 	
 
 
-
-
-
-
+	// legacy magnet dburt stuff 
+	const std::string VELA_CLARA_DBURT_ALIAS_V1 = "VELA-CLARA DBURT ALIAS FILE v1";
+	const std::string DBURT_HEADER_V2 = "VELA DBURT (MAGNET SAVE FILE) v2.0";
+	const std::string VELA_MAGNET_SAVE_FILE_v1 = "VELA MAGNET SAVE FILE v1.0"; 
+	const std::string DBURT_HEADER_V3 = "VELA-CLARA DBURT (MAGNET SAVE FILE) v3";
+	const std::string DBURT_HEADER_V4 = "VELA-CLARA DBURT (MAGNET SAVE FILE) v4";
+	const std::string dotdburt= ".dburt";
+	const std::string dotDBURT = ".DBURT";
+	const std::string DBURT_HEADER_DT = "DATE_TIME:";
+	const std::string DBURT_HEADER_COM = "COMMENTS:";
+	const std::string DBURT_HEADER_AREA = "BEAM_AREA:";
+	const std::string DBURT_HEADER_KEYW = "KEY_WORDS:";
+	const std::string COMMENT = "COMMENT";
+	const std::string TIMESTAMP = "TIMESTAMP";
+	const std::string HEADER = "HEADER";
+	const std::string FILE_ALIAS = "FILE_ALIAS";
+	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
+	const std::string DUMMY_NAME = "DUMMY_NAME";
+	const std::string DBURT_EOF_V1 = "END OF FILE";
+	const std::string DBURT_EOF_V3 = "END_OF_DATA"; 
+	const std::string DBURT_EOF_V4 = "END_OF_DATA";
+	const std::string END_OF_LINE = ";";
+	const char EQUALS_SIGN_C = '=';
+	const char COLON_C = ':';
+	const char DOUBLE_QUOTE_C = '"';
+	const char SPACE_C = ' ';
+	const char TAB_C = '\t';
+	const char COMMA_C = ',';
+	const char SLASH_SLASH_C = '\\';
+	const std::string SLASH_SLASH = "\\";
+	// end
 
 
 

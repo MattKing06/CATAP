@@ -158,8 +158,7 @@ namespace GlobalFunctions {
 		return s;
 	}
 
-	extern bool stringIsSubString(const std::string& stringToCheck, 
-		const std::string& stringToLookFor);
+	extern bool stringIsSubString(const std::string& stringToCheck,const std::string& stringToLookFor);
 
 	extern std::string getTimeAndDateString();
 
@@ -228,10 +227,15 @@ namespace GlobalFunctions {
 
 
 	extern TYPE stringToType(const std::string& string_to_compare);
+	extern STATE stringToState(const std::string& string_to_compare);
 
 	// isInMahineArea
 
 	extern bool isInMachineArea(TYPE testArea, TYPE area);
+	
+	extern std::string trimAllWhiteSpace(std::string strIN);
+	extern std::string trimAllWhiteSpaceExceptBetweenDoubleQuotes(std::string strIN);
+
 
 
 

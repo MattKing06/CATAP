@@ -4,6 +4,7 @@
 #include <vector>
 #include "GlobalFunctions.h"
 #include "GlobalTypeEnums.h"
+#include <PythonTypeConversions.h>
 
 
 // map to convert yaml file strings to magnet TYPE enums
@@ -13,7 +14,8 @@ Hardware::Hardware() :
 	machine_area(TYPE::UNKNOWN_TYPE),
 	hardware_type(TYPE::UNKNOWN_TYPE),
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
-	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
+	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	currentSnapshot(HardwareSnapshot())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
@@ -23,6 +25,7 @@ Hardware::Hardware(STATE mode) :
 	hardware_type(TYPE::UNKNOWN_TYPE),
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
 	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
+	currentSnapshot(HardwareSnapshot()),
 	mode(mode)
 {
 	//messenger.printDebugMessage("Constructing Hardware (with no config)");
@@ -41,7 +44,10 @@ machine_area_str(specificValueMap.find("machine_area")->second),
 machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
 hardware_type_str(specificValueMap.find("hardware_type")->second),
 hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
-hardwareName(specificValueMap.find("name")->second)
+hardwareName(specificValueMap.find("name")->second),
+onlineProperties(std::map<std::string, std::string>()),
+offlineProperties(std::map<std::string, std::string>()),
+currentSnapshot(HardwareSnapshot())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }
@@ -53,10 +59,20 @@ Hardware::Hardware(const Hardware& copyHardware) :
 	mode(copyHardware.mode), 
 	hardwareName(copyHardware.hardwareName),
 	hardware_type_str(copyHardware.hardware_type_str),
-	machine_area_str(copyHardware.machine_area_str)
+	machine_area_str(copyHardware.machine_area_str),
+	onlineProperties(copyHardware.onlineProperties),
+	offlineProperties(copyHardware.offlineProperties),
+	currentSnapshot(copyHardware.currentSnapshot)
 {
 	pvStructs.insert(copyHardware.pvStructs.begin(), copyHardware.pvStructs.end());
 	specificHardwareParameters.insert(copyHardware.specificHardwareParameters.begin(), copyHardware.specificHardwareParameters.end());
+
+	messenger.printDebugMessage(" specificHardwareParameters " );
+	for (auto&& it : specificHardwareParameters)
+	{
+		messenger.printDebugMessage(it.first, " = ", it.second );
+	}
+
 }
 
 std::string Hardware::getMachineAreaStr() const
@@ -92,10 +108,53 @@ std::map<std::string, std::string> Hardware::getSpecificHardwareParameters() con
 {
 	return specificHardwareParameters;
 }
+std::map<std::string, std::string> Hardware::getOnlineProperties() const
+{
+	return onlineProperties;
+}
+
+boost::python::dict Hardware::getOnlineProperties_Py()
+{
+	return to_py_dict(onlineProperties);
+}
+
+
+void Hardware::setOnlineProperties(const std::map<std::string, std::string>& properties)
+{
+	onlineProperties = properties;
+}
+
+HardwareSnapshot Hardware::getSnapshot()
+{
+	std::cout << "BASE CLASS CALLED" << std::endl;
+	return this->currentSnapshot;
+}
+boost::python::dict Hardware::getSnapshot_Py() 
+{
+	std::cout << "BASE CLASS CALLED" << std::endl;
+	return this->currentSnapshot.getSnapshot_Py();
+}
+std::map<std::string, std::string> Hardware::getOfflineProperties() const
+{
+	return offlineProperties;
+}
+
+boost::python::dict Hardware::getOfflineProperties_Py()
+{
+	return to_py_dict(offlineProperties);
+}
+
+void Hardware::setOfflineProperties(const std::map<std::string, std::string>& properties)
+{
+	offlineProperties = properties;
+}
+
 STATE Hardware::getMode() const
 {
 	return mode;
 }
+
+
 
 bool Hardware::isVirtual()const
 {
