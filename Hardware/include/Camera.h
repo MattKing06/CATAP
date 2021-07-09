@@ -196,6 +196,17 @@ public:
 	/*! Get the Number of pixels in the height of the (full) image.
 	@param[out] long, value */
 	long getPixelHeight()const;
+
+	/*! Get the PixelResults from analysis. The values expected back are in the following order:
+		[0] - X_POSITION
+		[1] - Y_POSITION
+		[2] - X_SIGMA_POSITION
+		[3] - Y_SIGMA_POSITION
+		[4] - COVARIANCE POSITION
+		@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
+	std::vector<double> getPixelResults() const;
+	boost::python::list getPixelResults_Py();
+	bool isAnalysisUpdating();
 	/*! Get the Acquire Time for the camera (shutter open time, units??).
 	@param[out] double, value */
 	double getAcquireTime()const;
@@ -676,6 +687,12 @@ protected:
 	std::pair<epicsTimeStamp, long> roi_size_x;
 	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> roi_size_y;
+	/*! Pixel Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
+	std::pair<epicsTimeStamp, std::vector<double> > pixelResults;
+	/*! Stores the last time the ANA Pixel Results were updated, will be used to set isResultUpdated*/
+	epicsTimeStamp lastResultsUpdateTime;
+	/*! Flag for showing that the ANA Pixel Results are updating */
+	bool isResultUpdated;
 	/*! ROI image data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
 	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/

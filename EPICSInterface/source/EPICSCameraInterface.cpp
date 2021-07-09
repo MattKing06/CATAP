@@ -1,6 +1,9 @@
 #include "EPICSCameraInterface.h"
 #include "CameraPVRecords.h"
 
+// REMOVE THIS LATER.
+#include <iostream>
+
 LoggingSystem EPICSCameraInterface::messenger;
 
 EPICSCameraInterface::EPICSCameraInterface() :
@@ -552,7 +555,17 @@ void EPICSCameraInterface::update_ANA_CovXYPix_RBV(const struct event_handler_ar
 	//	recastCamera->sigma_xy_pix.second);
 }
 void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handler_args args) {
-	//messenger.printDebugMessage("update_ANA_PixelResults_RBV ");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	recastCamera->lastResultsUpdateTime = recastCamera->pixelResults.first;
+	updateTimeStampDoubleVectorPair(args, recastCamera->pixelResults, recastCamera->pixelResults.second.size());
+	if (recastCamera->lastResultsUpdateTime.secPastEpoch != recastCamera->pixelResults.first.secPastEpoch)
+	{
+		recastCamera->isResultUpdated = true;
+	}
+	else
+	{
+		recastCamera->isResultUpdated = false;
+	}
 }
 void EPICSCameraInterface::update_ANA_MaskXCenter_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);

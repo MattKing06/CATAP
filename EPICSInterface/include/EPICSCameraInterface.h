@@ -2,6 +2,7 @@
 #define EPICS_CAMERA_INTERFACE_H_
 #ifndef EPICS_INTERFACE_H_
 #include "EPICSInterface.h"
+#include <iomanip>
 #endif 
 #include "Camera.h"
 #include <iostream>

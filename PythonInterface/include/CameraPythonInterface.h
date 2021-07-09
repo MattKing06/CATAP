@@ -72,6 +72,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isBusy", &Camera::isBusy)
 			.def("isNotBusy", &Camera::isNotBusy)
 			.def("didLastCaptureAndSaveSucceed", &Camera::didLastCaptureAndSaveSucceed)
+			.def("getANAPixelResults", &Camera::getPixelResults_Py)
 			.def("getMaskXCenter", &Camera::getMaskXCenter)
 			.def("getMaskYCenter", &Camera::getMaskYCenter)
 			.def("getMaskXRadius", &Camera::getMaskXRadius)

@@ -42,6 +42,14 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	pixelResults(std::make_pair(epicsTimeStamp(), std::vector<double>{GlobalConstants::double_min, //X_POS
+																	  GlobalConstants::double_min, //Y_POS
+																	  GlobalConstants::double_min, //X_SIGMA
+																	  GlobalConstants::double_min, //Y_SIGMA
+																	  GlobalConstants::double_min  //COV
+																	 })),
+	lastResultsUpdateTime(epicsTimeStamp()),
+	isResultUpdated(false),
 	x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -426,7 +434,8 @@ Camera::Camera(const Camera& copyCamera):
 Hardware(copyCamera),
 mask_and_roi_keywords(copyCamera.mask_and_roi_keywords),
 mask_keywords(copyCamera.mask_keywords),
-roi_keywords(copyCamera.roi_keywords)
+roi_keywords(copyCamera.roi_keywords),
+pixelResults(copyCamera.pixelResults)
 //mask_and_roi_keywords_Py(copyCamera.mask_and_roi_keywords_Py),
 //mask_keywords_Py(copyCamera.mask_keywords_Py),
 //roi_keywords_Py(copyCamera.roi_keywords_Py)
@@ -1683,6 +1692,21 @@ bool Camera::setFloorLevel(long v)
 		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
 	}
 	return false;
+}
+std::vector<double> Camera::getPixelResults() const
+{
+	std::cout << "X_POS: " << std::setprecision(15) << pixelResults.second.at(0)<< std::endl;
+	return pixelResults.second;
+}
+boost::python::list Camera::getPixelResults_Py()
+{
+	std::cout << "X_POS_PY: " << pixelResults.second.at(0) << std::endl;
+	std::vector<double> returnList = pixelResults.second;
+	return to_py_list(returnList);
+}
+bool Camera::isAnalysisUpdating()
+{
+	return isResultUpdated;
 }
 double Camera::getAcquireTime()const
 {
