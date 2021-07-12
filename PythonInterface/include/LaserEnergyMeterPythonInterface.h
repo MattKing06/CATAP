@@ -24,6 +24,9 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.add_property("energybuffer", &LaserEnergyMeter::getEnergyBuffer)
 			.add_property("energyvector", &LaserEnergyMeter::getEnergyVector)
 			.add_property("energy", &LaserEnergyMeter::getEnergy)
+			.add_property("status", &LaserEnergyMeter::getStatus)
+			.add_property("statusbuffer", &LaserEnergyMeter::getStatusBuffer)
+			.add_property("statusvector", &LaserEnergyMeter::getStatusVector)
 			.def("getOverRange", &LaserEnergyMeter::getOverRange)
 			.def("setStart", &LaserEnergyMeter::setStart)
 			.def("setStop", &LaserEnergyMeter::setStop)
@@ -38,7 +41,10 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("setBufferSize", &LaserEnergyMeter::setBufferSize)
 			.def("isEnergyVectorFull", &LaserEnergyMeter::isEnergyVectorFull)
 			.def("isEnergyBufferFull", &LaserEnergyMeter::isEnergyBufferFull)
-			.def("monitorForNShots", &LaserEnergyMeter::monitorForNShots);
+			.def("monitorForNShots", &LaserEnergyMeter::monitorForNShots)
+			.def("getStatus", &LaserEnergyMeter::getStatus)
+			.def("getStatusVector", &LaserEnergyMeter::getStatusVector)
+			.def("getStatusBuffer", &LaserEnergyMeter::getStatusBuffer);
 	}
 	
 	void expose_laser_energy_meter_factory_object() {

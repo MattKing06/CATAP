@@ -138,6 +138,21 @@ double LaserEnergyMeter::getEnergy() const
 	return energy.second;
 }
 
+STATE LaserEnergyMeter::getStatus() const
+{
+	return status;
+}
+
+std::vector< STATE > LaserEnergyMeter::getStatusVector() const
+{
+	return statusVector;
+}
+
+boost::circular_buffer< STATE > LaserEnergyMeter::getStatusBuffer() const
+{
+	return statusBuffer;
+}
+
 bool LaserEnergyMeter::setEnergy(const double& value)
 {
 	energy.second = value;
@@ -218,6 +233,54 @@ void LaserEnergyMeter::clearBuffers()
 {
 	shotsbuffer = 0;
 	energybuffer.clear();
+}
+
+bool LaserEnergyMeter::checkBuffer(boost::circular_buffer< double >& buf)
+{
+	if (buf[buf.size() - 1] == buf[buf.size()])
+	{
+		return true;
+	}
+	return false;
+}
+
+void LaserEnergyMeter::checkStatus()
+{
+	/*if (awak.first - rdy.first > 1.0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}*/
+	if (shotsbuffer == 0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (checkBuffer(energybuffer))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (shotsbuffer > 0)
+		if (isnan(energybuffer.back()))
+		{
+			status = STATE::BAD;
+			statusBuffer.push_back(status);
+		}
+		else if (energybuffer.back() != energybuffer[bufferSize - 2])
+		{
+			status = STATE::GOOD;
+			statusBuffer.push_back(status);
+		}
+		else
+		{
+			status = STATE::UNKNOWN;
+			statusBuffer.push_back(status);
+		}
+	if (monitoring)
+	{
+		statusVector.push_back(status);
+	}
 }
 
 void LaserEnergyMeter::debugMessagesOff()
