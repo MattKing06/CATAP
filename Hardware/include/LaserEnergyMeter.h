@@ -27,6 +27,8 @@ public:
 	EPICSLaserEnergyMeterInterface_sptr epicsInterface;
 	/*! Returns the EPICS name of this laser energy meter instance */
 	std::string getLaserEnergyMeterName() const;
+	/*! Returns the calibration factor (laser energy meter reading -> actual laser pulse energy) */
+	double getCalibrationFactor() const;
 	/*! Returns the alias name (not currently used) */
 	std::vector<std::string> getAliases() const;
 	/*! Returns the CATAP TYPE of the laser energy meter */
@@ -91,6 +93,27 @@ public:
 	void clearBuffers();
 	/*! remove all data from energy vector.*/
 	void clearVectors();
+	/*! checks if the two most recent values in the given buffer are the same. Used to set laser energy meter status.
+	@param[in] buf: buffer to check.
+	@param[out] bool: true if the values are the same.*/
+	bool checkBuffer(boost::circular_buffer< double >& buf);
+	/*! checks the laser energy meter status based on energy PV.*/
+	void checkStatus();
+	/*! the status of the laser energy meter based on energy values.*/
+	STATE status;
+	/*! a buffer of laser energy meter status values.*/
+	boost::circular_buffer< STATE > statusBuffer;
+	/*! a vector of laser energy meter status values (after using monitorForNShots).*/
+	std::vector< STATE > statusVector;
+	/*! returns the status of the laser energy meter based on energy values.
+	@param[out] state: the status.*/
+	STATE getStatus() const;
+	/*! returns the status buffer of the laser energy meter based on energy values.
+	@param[out] states: the status buffer.*/
+	boost::circular_buffer< STATE > getStatusBuffer() const;
+	/*! returns the status vector of the laser energy meter based on energy values (after using monitorForNShots).
+	@param[out] states: the status vector.*/
+	std::vector< STATE > getStatusVector() const;
 	/*! start button for acquiring laser energy.*/
 	std::pair<epicsTimeStamp, int> start;
 	/*! stop button for acquiring laser energy.*/
@@ -111,6 +134,8 @@ public:
 	bool monitoring;
 	/*! beamline position (useless).*/
 	double position;
+	/*! calibration factor (actual laser energy -> laser energy on energy meter).*/
+	double calibration_factor;
 	/*! laser energy meter name.*/
 	std::string name;
 	/*! number of shots monitored.*/

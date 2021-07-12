@@ -52,6 +52,8 @@ public:
 	Shutter& getShutter02();
 
 	bool canMove(); 
+	bool laserEnergyAutoRange();
+	bool openShutters();
 
 
 

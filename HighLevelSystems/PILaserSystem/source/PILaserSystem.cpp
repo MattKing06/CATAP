@@ -123,3 +123,55 @@ bool PILaserSystem::canMove()
 	}
 	return false;
 }
+
+bool PILaserSystem::openShutters()
+{
+	if (laserShutter01.isClosed())
+	{
+		laserShutter01.open();
+	}
+	if (laserShutter02.isClosed())
+	{
+		laserShutter02.open();
+	}
+	GlobalFunctions::pause_1000();
+	if (laserShutter01.isOpen() && laserShutter02.isOpen())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool PILaserSystem::laserEnergyAutoRange()
+{
+	openShutters();
+
+	if (energyMeter.getStatus() == STATE::GOOD)
+	{
+		return true;
+	}
+	else
+	{
+		energyMeter.setRange(LaserEnergyMeterRecords::laserEnergyMeterRangeSettings[0]);
+		bool shutterStatus = openShutters();
+		for (auto&& it1 : LaserEnergyMeterRecords::laserEnergyMeterRangeSettings)
+		{
+			if (energyMeter.getStatus() == STATE::GOOD)
+			{
+				return true;
+			}
+			else
+			{
+				if (energyMeter.getOverRange() == 1)
+				{
+					energyMeter.setRange(it1 - 1);
+					bool shutterStatus = openShutters();
+				}
+			}
+		}
+	}
+	return false;
+}
