@@ -359,14 +359,12 @@ void EPICSCameraInterface::update_HDF_WriteMessage(const struct event_handler_ar
 
 
 
-
 void EPICSCameraInterface::update_HDF_NumCaptured_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//messenger.printDebugMessage("update_HDF_NumCaptured_RBV ");
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_NumCaptured_RBV = ",
 		recastCamera->buffer_filename.second);
-
 }
 void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_args args)
 {
@@ -473,6 +471,7 @@ void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_mm);
 	recastCamera->x_mm_rs.Push(recastCamera->x_mm.second);
+	std::cout << "update_ANA_X_RBV  x_mm.second = " << recastCamera->x_mm.second << std::endl;
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_X_RBV = ", 
 	//	recastCamera->x_mm.second);
 }

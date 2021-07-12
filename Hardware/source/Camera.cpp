@@ -1070,10 +1070,10 @@ long Camera::getROISizeY()const
 std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX(); // MAGIC STRING
-	r["y_pos"] = getROIMinY(); // MAGIC STRING
-	r["x_size"] = getROISizeX();// MAGIC STRING
-	r["y_size"] = getROISizeY();// MAGIC STRING
+	r["roi_x_pos"] = getROIMinX(); // MAGIC STRING
+	r["roi_y_pos"] = getROIMinY(); // MAGIC STRING
+	r["roi_x_size"] = getROISizeX();// MAGIC STRING
+	r["roi_y_size"] = getROISizeY();// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getROI_Py()const
@@ -1083,10 +1083,14 @@ boost::python::dict Camera::getROI_Py()const
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX(); // MAGIC STRING
-	r["y_pos"] = getROIMinY(); // MAGIC STRING
-	r["x_size"] = getROISizeX();// MAGIC STRING
-	r["y_size"] = getROISizeY();// MAGIC STRING
+	r["roi_x_pos"] = getROIMinX(); // MAGIC STRING
+	r["roi_y_pos"] = getROIMinY(); // MAGIC STRING
+	r["roi_x_size"] = getROISizeX();// MAGIC STRING
+	r["roi_y_size"] = getROISizeY();// MAGIC STRING
+	r["mask_x_pos"] = getROIMinX(); // MAGIC STRING
+	r["mask_y_pos"] = getROIMinY(); // MAGIC STRING
+	r["mask_x_size"] = getROISizeX();// MAGIC STRING
+	r["mask_y_size"] = getROISizeY();// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getMaskandROI_Py()const
