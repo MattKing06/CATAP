@@ -16,6 +16,7 @@ LaserEnergyMeter::LaserEnergyMeter(const std::map<std::string, std::string> & pa
 Hardware(paramsMap, mode),
 //laserEnergyMeterType(LaserEnergyMeterRecords::laserEnergyMeterTypeToEnum.at(paramsMap.find("laser_pv_type")->second)),
 name(paramsMap.find("name")->second),
+calibration_factor(paramsMap.find("calibration_factor")->second),
 position(std::stod(paramsMap.find("position")->second))
 {
 messenger.printDebugMessage("constructor");
@@ -90,6 +91,11 @@ TYPE LaserEnergyMeter::getLaserEnergyMeterType() const
 std::string LaserEnergyMeter::getLaserEnergyMeterName() const
 {
 	return this->name;
+}
+
+double LaserEnergyMeter::getCalibrationFactor() const
+{
+	return this->calibration_factor;
 }
 
 bool LaserEnergyMeter::isMonitoring() const
