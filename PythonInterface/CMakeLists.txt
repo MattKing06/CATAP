@@ -23,6 +23,7 @@ set( SOURCE_FILES
     source/RFHeartbeatPythonInterface.cpp
     source/RFModulatorPythonInterface.cpp
     source/RFProtectionPythonInterface.cpp
+    source/RunningStatsPythonInterface.cpp
     source/StagePythonInterface.cpp
     source/ShutterPythonInterface.cpp
 )
@@ -56,6 +57,7 @@ set( INCLUDE_FILES
     include/RFHeartbeatPythonInterface.h
     include/RFModulatorPythonInterface.h
     include/RFProtectionPythonInterface.h
+    include/RunningStatsPythonInterface.h
     include/StagePythonInterface.h
     include/ShutterPythonInterface.h
 )

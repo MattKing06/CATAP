@@ -621,6 +621,9 @@ public:
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
 	boost::python::dict getRunningStats()const;
+	/*! Returns the running stats object, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getXPixRunningStats();
 	/*! Set the black level (for vela camera types only),
 	@param[in] long, values 
 	@param[out] bool, values */

@@ -1112,6 +1112,12 @@ boost::python::dict Camera::getRunningStats()const
 	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
 	return r;
 }
+
+RunningStats& Camera::getXPixRunningStats()
+{
+	return x_pix_rs;
+}
+
 size_t Camera::getBufferSize()const
 {
 	return running_stats_buffer_size;
