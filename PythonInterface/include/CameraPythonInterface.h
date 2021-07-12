@@ -23,9 +23,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 		
 		// function pointers for overloads we want to expose
-		bool(Camera:: * setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
-		bool(Camera:: * setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
-		bool(Camera:: * setMask_4PARAM)(long, long, long, long) = &Camera::setMask;
+		bool(Camera::*setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
+		bool(Camera::*setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
+		bool(Camera::*setMask_4PARAM)(long, long, long, long) = &Camera::setMask;
+
+		boost::python::dict(Camera::*getRunningStats_str)(const std::string&)const = &Camera::getRunningStats;
+		boost::python::dict(Camera::*getRunningStats_type)(TYPE)const = &Camera::getRunningStats;
+
+
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Camera>())->to_python_target_type());
 		if (is_registered) return;
@@ -208,9 +213,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 			.def("getBufferSize", &Camera::getBufferSize)
-			.def("setBufferSize", &Camera::setBufferSize)
-			.def("clearBuffers", &Camera::clearBuffers)
-			.def("getRunningStats", &Camera::getRunningStats)
+			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
+			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
+			.def("getAllRunningStats", &Camera::getAllRunningStats)
+			.def("getRunningStats", getRunningStats_str)
+			.def("getRunningStats", getRunningStats_type)
+			
 			.def("getScreen", &Camera::getScreen)
 			
 			.def("setGain", &Camera::setGain)
@@ -409,7 +417,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getBufferSize", &CameraFactory::getBufferSize)
 			.def("setBufferSize", &CameraFactory::setBufferSize)
 			.def("clearBuffers", &CameraFactory::clearBuffers)
-			.def("getRunningStats", &CameraFactory::getRunningStats)
+			.def("getAllRunningStats", &CameraFactory::getAllRunningStats)
 			.def("getScreen", &CameraFactory::getScreen)
 
 

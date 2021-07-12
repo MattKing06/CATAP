@@ -51,7 +51,14 @@ namespace GlobalFunctions {
 		return stringToCheck.find(stringToLookFor) != std::string::npos;
 	}
 
-
+	TYPE stringToTYPE(const std::string& type_str)
+	{
+		if (entryExists<TYPE>(GlobalConstants::stringToTypeMap, type_str))
+		{
+			return GlobalConstants::stringToTypeMap.at(type_str);
+		}
+		return TYPE::UNKNOWN_TYPE;
+	}
 
 
 	std::string getTimeAndDateString()
