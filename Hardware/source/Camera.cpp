@@ -1408,7 +1408,7 @@ bool Camera::write()
 {
 	bool ans = false;
 	int startNumber(1);// MAGIC_NUMBER should this be a one or a zero?
-	// WHAT IS THIS DOING????
+	// WHAT IS THIS DOING???? OLD stuff to converted to jpg automatically that has not been implmented 
 	//setStartFileNumberJPG(startNumber);
 	if (isNotCapturing())
 	{
@@ -1424,12 +1424,9 @@ bool Camera::write()
 //-------------------------------------------------------------------------------------------------------
 bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
 {
+	messenger.printDebugMessage("makeANewDirectoryAndName ");
 	bool ans = false;
-
 	messenger.printDebugMessage("char: ", sizeof(char));
-	messenger.printDebugMessage("char: ", sizeof(char));
-	messenger.printDebugMessage("char: ", sizeof(char));
-
 	//std::string time_now = globalfunctions::time_iso_8601();
 	
 	// this sets up the directory structure, based on year, month date
@@ -1441,8 +1438,8 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	tm local_tm = *localtime(&t);
 	////struct tm local_tm;
 	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
-	char newPath[256] = "/cameraimages/";
-	std::string strpath = "/cameraimages/" +
+	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
+	std::string strpath = "/CameraImages/" +
 		std::to_string(local_tm.tm_year + 1900) +
 		"/" + std::to_string(local_tm.tm_mon + 1) +
 		"/" + std::to_string(local_tm.tm_mday) + "/";
@@ -1624,6 +1621,11 @@ bool Camera::isCapturingOrSaving()const
 	}
 	return false;
 }
+bool Camera::isNotCapturingOrSaving()const
+{
+	return !isCapturingOrSaving();
+}
+
 std::string Camera::getLastDirectoryandFileName() const
 {
 	return getLastDirectory() + "/" + getLastFileName(); // WARNING!! TODO unix / windows conventions :(( 
@@ -1901,14 +1903,14 @@ bool Camera::updateImageData()
 	}
 	if (!image_data_has_not_vector_resized)
 	{
-		auto start = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
 		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 		//	, image_data.first);
 		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.second.size());
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		//auto stop = std::chrono::high_resolution_clock::now();
+		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -1930,14 +1932,14 @@ bool Camera::updateImageDataWithTimeStamp()
 	}
 	if (!image_data_has_not_vector_resized && !image_data_has_not_malloced)
 	{
-		auto start = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
 		bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.first);
 		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.second.size());
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageDataWithTimeStamp Time taken: ", duration.count(), " us");
+		//auto stop = std::chrono::high_resolution_clock::now();
+		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		//messenger.printDebugMessage("updateImageDataWithTimeStamp Time taken: ", duration.count(), " us");
 		return got_stamp && got_value;
 	}
 	else {
@@ -2015,8 +2017,8 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 		//std::cout << epicsInterface->getEPICSTime(ts_to_update) << std::endl;
 		auto stop  = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
-		std::cout << dbr_struct->value << std::endl;
+		//messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
+		//std::cout << dbr_struct->value << std::endl;
 		return true;
 	}
 	return false;
@@ -2031,7 +2033,7 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 		MY_SEVCHK(status);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
+		//messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
 		return true;
 	}
 	return false;

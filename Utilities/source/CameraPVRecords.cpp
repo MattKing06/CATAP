@@ -150,6 +150,7 @@ namespace CameraRecords
 	ANA_CPU_Dot_RBV,
 	ANA_PixW_RBV,
 	ANA_PixH_RBV,
+	HDF_WriteFile,
 	HDF_WriteFile_RBV,
 	HDF_WriteStatus,
 	HDF_WriteMessage,

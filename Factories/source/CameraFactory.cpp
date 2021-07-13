@@ -95,6 +95,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 
 		for (auto&& pv : pvstruct)
 		{
+			messenger.printDebugMessage("PVRecord = ", pv.second.pvRecord);
 			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{

@@ -621,8 +621,8 @@ void EPICSCameraInterface::update_CAM_ArrayRate_RBV(const struct event_handler_a
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->array_rate);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_ArrayRate_RBV = ",
-		recastCamera->array_rate.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_ArrayRate_RBV = ",
+	//	recastCamera->array_rate.second);
 }
 void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler_args args)
 {

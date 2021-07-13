@@ -539,6 +539,11 @@ public:
 	/*! Is camera capture_state == CAPTURING  OR is write_state == NOT_WRITING.
 	@param[out] bool*/
 	bool isCapturingOrSaving()const;
+	/*! Is camera capture_state != CAPTURING  OR is write_state != NOT_WRITING.
+	@param[out] bool*/
+	bool isNotCapturingOrSaving()const;
+	
+	// TODO	isBsuy has not been fully implmented yet  
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true 
 	* while busy attempts to write more data to disc will fail.
 	@param[out] bool	*/
