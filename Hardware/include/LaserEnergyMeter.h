@@ -1,6 +1,7 @@
 #ifndef LASER_ENERGY_METER_H_
 #define LASER_ENERGY_METER_H_
 #include "LoggingSystem.h"
+#include <RunningStats.h>
 #ifndef HARDWARE_H_
 #include "Hardware.h"
 #endif //HARDWARE_H_
@@ -142,6 +143,12 @@ public:
 	size_t bufferSize = 10;
 	/*! Vector size for energy monitoring.*/
 	size_t vectorSize = 10;
+	/*! Running stats object for LaserEnergy Meter, access to quick statistics*/
+	RunningStats energyStats;
+	/*! Get the running stats back as a dict*/
+	boost::python::dict getRunningStats_Py();
+	/*! Get the running stats object back directly*/
+	RunningStats& getEnergyRunningStats();
 	friend class EPICSLaserEnergyMeterInterface;
 protected:
 	//what else does a laser need?
