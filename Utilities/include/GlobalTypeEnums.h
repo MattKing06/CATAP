@@ -101,9 +101,13 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(VELA_LRRG)
 	(HRRG_GUN)
 	(LRRG_GUN)
+	// TODO 
+	// do we need this many >>> probably get rid of LAS and LASER,
 	(LAS) // TODO change to laser or laser transport ??? 
+	(LASER) // TODO change to laser or laser transport ??? 
 	(VELA_LASER)
 	(CLARA_LASER)
+
 	(L01)
 	(BA1)
 	(BA2)
@@ -163,6 +167,9 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(RFHEARTBEAT)
 
 
+	// TODO 
+	// THIS MAY NOT BE THE BEST PLACE FOR THESE, but i was trying to find a simple way to dfein them in a more global context 
+	// maybe cameraPVrecrods, should be renamed to "camerastuff"
 	(CAMERA_X_PIX_RS)
 	(CAMERA_Y_PIX_RS)
 	(CAMERA_SIGMA_X_PIX_RS)

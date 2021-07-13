@@ -1109,6 +1109,7 @@ boost::python::dict Camera::getRunningStats(const std::string& type_str)const
 }
 boost::python::dict Camera::getRunningStats(TYPE type)const
 {
+	
 	switch (type)
 	{
 	case TYPE::CAMERA_X_PIX_RS: return x_pix_rs.getRunningStats();

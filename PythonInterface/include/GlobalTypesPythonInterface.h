@@ -47,8 +47,13 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("POSITIVE_ONLY", TYPE::POSITIVE_ONLY)
 			.value("UNKNOWN_AREA", TYPE::UNKNOWN_AREA)
 			.value("ALL_VELA_CLARA", TYPE::ALL_VELA_CLARA)
+
+			// TODO 
+			.value("LASER", TYPE::LASER)
+			.value("LAS", TYPE::LAS)
 			.value("VELA_LASER", TYPE::VELA_LASER)
 			.value("CLARA_LASER", TYPE::CLARA_LASER)
+
 			.value("BA1", TYPE::BA1)
 			.value("BA2", TYPE::BA2)
 			.value("VELA", TYPE::VELA)
