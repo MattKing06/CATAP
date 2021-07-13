@@ -23,6 +23,7 @@ void EPICSChargeInterface::updateQ(const struct event_handler_args args)
 	Charge* recastCharge = getHardwareFromArgs<Charge>(args);
 	updateTimeStampDoublePair(args, recastCharge->q);
 	recastCharge->setQ(recastCharge->q.second);
+	recastCharge->qStats.Push(recastCharge->q.second);
 	messenger.printDebugMessage("Q VALUE FOR: " + recastCharge->getHardwareName() + ": "
 		+ std::to_string(recastCharge->q.second));
 }

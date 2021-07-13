@@ -26,7 +26,9 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getQVector", &Charge::getQVector_Py)
 			.def("monitorForNShots", &Charge::monitorForNShots)
 			.def("ismonitoring", &Charge::ismonitoring)
-			.def("setBufferSize", &Charge::setBufferSize);
+			.def("setBufferSize", &Charge::setBufferSize)
+			.def("getRunningStats", &Charge::getRunningStats_Py)
+			.def("getQRunningStats", &Charge::getQRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>());
 	}
 
 	//typedef std::pair<int, int> IntPair;
