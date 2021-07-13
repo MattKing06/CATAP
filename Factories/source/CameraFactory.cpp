@@ -1665,7 +1665,7 @@ void CameraFactory::setBufferSize(const std::string& name, size_t v)
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setBufferSize(v);
+		return camera_map.at(full_name).setAllRunningStatBufferSizes(v);
 	}
 }
 void CameraFactory::clearBuffers(const std::string& name)
@@ -1673,7 +1673,7 @@ void CameraFactory::clearBuffers(const std::string& name)
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).clearBuffers();
+		return camera_map.at(full_name).clearAllRunningStatBuffers();
 	}
 }
 double CameraFactory::getPix2mm(const std::string& name)const
@@ -1685,12 +1685,12 @@ double CameraFactory::getPix2mm(const std::string& name)const
 	}
 	return GlobalConstants::double_min;
 }
-boost::python::dict CameraFactory::getRunningStats(const std::string& name)const
+boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getRunningStats();
+		return camera_map.at(full_name).getAllRunningStats();
 	}
 	return boost::python::dict();
 }

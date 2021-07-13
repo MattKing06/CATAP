@@ -6,6 +6,9 @@
 //                                                                            \
     /// This macro creates an enum and also enables us to                     \
     /// get strings of the entries with ENUM_TO_STRING                        \
+	/// !!!BE CAREFUL EDITING ANY OF THE CHARACTERS!!!						  \	
+	/// !!!YOU HAVE BEEN WARNED !!!											  \
+//
 //
 //#include <boost/preprocessor.hpp>
 //#define X_DEFINE_ENUM_WITH_STRING_CONVERSIONS_TOSTRING_CASE(r, data, elem)    \
@@ -44,11 +47,28 @@
 	**************** README *********************
 	
 	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalConstants.h
-	IF YOU ADD TO THE LIST BE SURE TO UPDATE  stringToTypeMap in GlobalTypesPythonInterface.h
+	
+	IF YOU ADD TO THE LIST BE SURE TO UPDATE  GlobalTypesPythonInterface.h
 	 
-	IF ADDING A MACHINE_AREA THAT IS AN AGGREGATE OF MANY AREAS UPDATE  GlobalfUNCTIONS::isInMachineArea
+	IF ADDING A MACHINE_AREA THAT IS AN AGGREGATE OF MANY AREAS UPDATE  GlobalFuncitons::isInMachineArea
 
-	DON'T FORGET YOU PROBABLY ALSO NEED TO UPDATE the python exposure functions
+	DON'T FORGET YOU PROBABLY ALSO NEED TO UPDATE the python exposure functions (GlobalTypesPythonInterface.h)
+	
+	
+	
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
+	**************** README *********************
+
+  ___ ___   _   ___  __  __ ___
+ | _ \ __| /_\ |   \|  \/  | __|
+ |   / _| / _ \| |) | |\/| | _|
+ |_|_\___/_/ \_\___/|_|  |_|___|
+
+
+
+
 
 
 */
@@ -141,6 +161,18 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	(TEST)
 	// RF modulator heartbeats
 	(RFHEARTBEAT)
+
+
+	(CAMERA_X_PIX_RS)
+	(CAMERA_Y_PIX_RS)
+	(CAMERA_SIGMA_X_PIX_RS)
+	(CAMERA_SIGMA_Y_PIX_RS)
+	(CAMERA_SIGMA_XY_PIX_RS)
+	(CAMERA_X_MM_RS)
+	(CAMERA_Y_MM_RS)
+	(CAMERA_SIGMA_X_MM_RS)
+	(CAMERA_SIGMA_Y_MM_RS)
+	(CAMERA_SIGMA_XY_MM_RS)
 
 
 )

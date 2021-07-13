@@ -22,8 +22,6 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<STATE>())->to_python_target_type());
 		if (is_registered) return;
 
-
-
 		boost::python::enum_<STATE>("STATE", "Global Enums used for displaying States")
 			.value("On", STATE::ON) // Err ???  
 			.value("OFF", STATE::OFF)

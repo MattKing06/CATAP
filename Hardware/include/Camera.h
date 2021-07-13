@@ -612,15 +612,23 @@ public:
 	size_t getBufferSize()const;
 	/*! set the size of the running stats buffer, running_stats_buffer_size
 	@param[in] size_t, value */
-	void setBufferSize(size_t v);
+	void setAllRunningStatBufferSizes(size_t v);
 	/*! clear all runing stats buffers */
-	void clearBuffers();
+	void clearAllRunningStatBuffers();
 	/*! Get the pixel to mm conversion factor, 
 	@param[out] double, value */
 	double getPix2mm()const;
+	/*! Get the running stats for a particular analsys results (x position, or y position, etc.) 
+	@param[out] string, string of the TYPE of running stat to return  
+	@param[out] dict, value */
+	boost::python::dict getRunningStats(const std::string& type_str)const;
+	/*! Get the running stats for a particular analsys results (x position, or y position, etc.)
+	@param[out] TYPE, TYPE of running stat to return
+	@param[out] dict, value */
+	boost::python::dict getRunningStats(TYPE type)const;
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
-	boost::python::dict getRunningStats()const;
+	boost::python::dict getAllRunningStats()const;
 	/*! Set the black level (for vela camera types only),
 	@param[in] long, values 
 	@param[out] bool, values */

@@ -773,7 +773,7 @@ public:
 	/*! Get the running stats buffer,
 	@param[in] std::string, name
 	@param[out] dict, values */
-	boost::python::dict getRunningStats(const std::string& name)const;
+	boost::python::dict getAllRunningStats(const std::string& name)const;
 
 
 
