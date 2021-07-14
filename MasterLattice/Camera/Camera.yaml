@@ -15,7 +15,7 @@ controls_information:
         # # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-13:MAGICK:WriteMessage
         # # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:Capture_RBV
         # # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:NumCapture_RBV
-        # ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-13:ANA:StepSize_RBV
+        # ANA_NPointStepSize_RBV    : EBT-INJ-DIA-CAM-13:ANA:StepSize_RBV
         # ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-13:ANA:EnableCallbacks_RBV
         # ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:UseBkgrnd
         # ANA_UseNPoint    : EBT-INJ-DIA-CAM-13:ANA:UseNPoint

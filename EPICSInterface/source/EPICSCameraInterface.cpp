@@ -293,6 +293,12 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	{
 		pvStruct.updateFunction = this->update_ANA_UseNPoint;
 	}
+	else if (pvStruct.pvRecord == ANA_NewBkgrnd)
+	{
+	pvStruct.updateFunction = this->update_ANA_NewBkgrnd;
+	}
+
+	
 	else if (pvStruct.pvRecord == CAM_BlackLevel_RBV)
 	{
 		pvStruct.updateFunction = this->update_BlackLevel_RBV;
@@ -647,6 +653,24 @@ void EPICSCameraInterface::update_ANA_UseNPoint(const struct event_handler_args 
 		ENUM_TO_STRING(recastCamera->use_npoint.second));
 
 }
+
+void EPICSCameraInterface::update_ANA_NewBkgrnd(const struct event_handler_args args)
+{
+	//messenger.printDebugMessage("update_ANA_UseNPoint");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	recastCamera->set_new_background.first = tv->stamp;
+	switch (tv->value)
+	{
+	case 0: recastCamera->set_new_background.second = STATE::YES; break;
+	case 1: recastCamera->set_new_background.second = STATE::NO; break;
+	default:
+		recastCamera->set_new_background.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ",
+		ENUM_TO_STRING(recastCamera->use_background.second));
+}
+
 void EPICSCameraInterface::update_ANA_UseBkgrnd(const struct event_handler_args args)
 {
 	//messenger.printDebugMessage("update_ANA_UseNPoint");

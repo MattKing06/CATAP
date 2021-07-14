@@ -62,6 +62,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
@@ -1000,6 +1001,18 @@ bool Camera::isNotUsingNPoint()const
 {
 	return use_npoint.second == STATE::NOT_USING_NPOINT;
 }
+
+bool Camera::setNewBackground(bool v)
+{
+	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
+}
+STATE Camera::getSetNewBackgroundState()
+{
+	return set_new_background.second;
+}
+
+
 bool Camera::useBackground(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;

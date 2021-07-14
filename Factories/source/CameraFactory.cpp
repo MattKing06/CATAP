@@ -940,6 +940,24 @@ bool CameraFactory::isNotUsingNPoint(const std::string& name)const
 	}
 	return false;
 }
+STATE CameraFactory::getSetNewBackgroundState(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSetNewBackgroundState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+bool CameraFactory::setNewBackground(const std::string& name, bool v)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setNewBackground(v);
+	}
+	return false;
+}
 bool CameraFactory::useBackground(const std::string& name,bool v)
 {
 	std::string full_name = getFullName(name);

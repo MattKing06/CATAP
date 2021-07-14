@@ -411,6 +411,14 @@ public:
 	@param[in] std::string, name
 	@param[out] bool, true if using NPoint scaling*/
 	bool isNotUsingNPoint(const std::string& name)const;
+	/*! Get the state of the Flag to set the next image as background.
+	@param[in] std::string, name of camera
+	@param[out] STATE, value fo flag, YES or NO */
+	STATE getSetNewBackgroundState(const std::string& name);
+	/*! set the netx image to be the background image subtracted during the analysis procedure. 
+	@param[in] std::string, name of camera
+	@param[out] bool, true if value sent to EPICSt, not if it was succesfully applied */
+	bool setNewBackground(const std::string& name, bool v);
 	/*! set use the background image during the analysis  procedure
 	@param[in] std::string, name
 	@param[in] bool, true to use the background, False to not use the background

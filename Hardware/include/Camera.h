@@ -324,6 +324,15 @@ public:
 	/*! check if analysis is using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isUsingNPoint()const;
+	/*! Get the state of the Flag to set the next image as background
+	@param[out] STATE, the STATE of teh set new background flag, YES or NO  */
+	STATE getSetNewBackgroundState();
+	/*! Flag to set the next image as background 
+	@param[out] bool, true if using NPoint scaling*/
+	bool setNewBackground(bool v);
+	/*! Flag to set the next image as background
+	@param[out] bool, true if using NPoint scaling*/
+	bool getSetNewBackground(bool v);
 	/*! check if analysis is Not using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isNotUsingNPoint()const;
@@ -487,6 +496,8 @@ public:
 	/*! Get the mask and ROI settings (Python version).
 	@param[out] dict, values ) */
 	boost::python::dict getMaskandROI_Py()const;
+
+
 	/*! Start image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
@@ -667,6 +678,9 @@ protected:
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE > set_new_background;
+
 
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
