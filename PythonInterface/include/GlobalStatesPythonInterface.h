@@ -29,6 +29,11 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("ERR", STATE::ERR)
 			.value("ON", STATE::ON) // TODO should we just overload upper and lower case versions of these ?? 
 			.value("OFF", STATE::OFF)
+			
+			.value("YES", STATE::YES)
+			.value("NO", STATE::NO)
+
+
 			.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
 			.value("SUCCESS", STATE::SUCCESS)
 			.value("FAIL", STATE::FAIL)

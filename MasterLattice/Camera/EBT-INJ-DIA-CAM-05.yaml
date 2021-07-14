@@ -63,7 +63,7 @@ controls_information:
         ANA_PixMM    : EBT-INJ-DIA-CAM-05:ANA:PixMM
         ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-05:ANA:PixMM_RBV
         ANA_StepSize    : EBT-INJ-DIA-CAM-05:ANA:StepSize
-        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-05:ANA:StepSize_RBV
+        ANA_NPointStepSize_RBV    : EBT-INJ-DIA-CAM-05:ANA:StepSize_RBV
         ANA_X_RBV    : EBT-INJ-DIA-CAM-05:ANA:X_RBV
         ANA_Y_RBV    : EBT-INJ-DIA-CAM-05:ANA:Y_RBV
         ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-05:ANA:SigmaX_RBV

@@ -59,7 +59,7 @@ controls_information:
         ANA_PixMM    : CLA-C2V-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-C2V-DIA-CAM-01:ANA:PixMM_RBV
         ANA_StepSize    : CLA-C2V-DIA-CAM-01:ANA:StepSize
-        ANA_StepSize_RBV    : CLA-C2V-DIA-CAM-01:ANA:StepSize_RBV
+        ANA_NPointStepSize_RBV    : CLA-C2V-DIA-CAM-01:ANA:StepSize_RBV
         ANA_X_RBV    : CLA-C2V-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-C2V-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-C2V-DIA-CAM-01:ANA:SigmaX_RBV

@@ -166,6 +166,7 @@ namespace CameraRecords
 	ANA_StepSize_RBV,
 	ANA_EnableCallbacks_RBV,
 	ANA_UseBkgrnd,
+	ANA_UseBkgrnd_RBV,
 	ANA_UseNPoint,
 	ANA_X_RBV,
 	ANA_Y_RBV ,
@@ -211,7 +212,7 @@ namespace CameraRecords
 	MAGICK_NumCapture ,
 	ANA_StepSize ,
 	ANA_EnableCallbacks,
-	ANA_NewBkgrnd ,
+	ANA_NewBkgrnd,
 	ANA_UseNPoint ,
 	CAM2_ArrayData ,
 	ANA_MaskXCenter,
@@ -296,7 +297,8 @@ namespace CameraRecords
 		CAM_ArrayRate_RBV,
 		CAM_Temperature_RBV,
 		ANA_UseNPoint,
-		ANA_UseBkgrnd
+		ANA_UseBkgrnd_RBV,
+		ANA_NewBkgrnd
 
 
 	};

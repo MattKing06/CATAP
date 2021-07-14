@@ -163,6 +163,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isCollectingOrSaving", &Camera::isCapturingOrSaving) // VCC backwards compatability 
 			.def("isCollecting", &Camera::isCapturing)
 			.def("isNotCollecting", &Camera::isNotCapturing)
+			.def("setNewBackground", &Camera::setNewBackground)
 			.def("useBackground", &Camera::useBackground)
 			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
 			.def("isUsingBackground", &Camera::isUsingBackground)
@@ -370,6 +371,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isCollectingOrSaving", &CameraFactory::isCapturingOrSaving)
 			.def("isCollecting", &CameraFactory::isCapturing)
 			.def("isNotCollecting", &CameraFactory::isNotCapturing)
+			.def("setNewBackground", &CameraFactory::setNewBackground)
 			.def("useBackground", &CameraFactory::useBackground)
 			.def("getUsingBackgroundState", &CameraFactory::getUsingBackgroundState)
 			.def("isUsingBackground", &CameraFactory::isUsingBackground)
