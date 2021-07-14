@@ -1118,6 +1118,56 @@ RunningStats& Camera::getXPixRunningStats()
 	return x_pix_rs;
 }
 
+RunningStats& Camera::getYPixRunningStats()
+{
+	return y_pix_rs;
+}
+
+RunningStats& Camera::getSigmaXPixRunningStats()
+{
+	return sigma_x_pix_rs;
+}
+
+RunningStats& Camera::getSigmaYPixRunningStats()
+{
+	return sigma_y_pix_rs;
+}
+
+RunningStats& Camera::getXmmRunningStats()
+{
+	return x_mm_rs;
+}
+
+RunningStats& Camera::getYmmRunningStats()
+{
+	return y_mm_rs;
+}
+
+RunningStats& Camera::getSigmaXmmRunningStats()
+{
+	return sigma_x_mm_rs;
+}
+
+RunningStats& Camera::getSigmaYmmRunningStats()
+{
+	return sigma_y_mm_rs;
+}
+
+RunningStats& Camera::getSigmaXYmmRunningStats()
+{
+	return sigma_xy_mm_rs;
+}
+
+RunningStats& Camera::getAvgIntensityRunningStats()
+{
+	return avg_intensity_rs;
+}
+
+RunningStats& Camera::getSumIntensityRunningStats()
+{
+	return sum_intensity_rs;
+}
+
 size_t Camera::getBufferSize()const
 {
 	return running_stats_buffer_size;
