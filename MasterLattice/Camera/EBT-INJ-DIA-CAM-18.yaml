@@ -100,7 +100,8 @@ controls_information:
         HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-18:HDF:FilePath_RBV
         HDF_FileName_RBV    : EBT-INJ-DIA-CAM-18:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-18:HDF:WriteFile
-        # MAGICK_FileName    : EBT-INJ-DIA-CAM-18:MAGICK:FileName
+        HDF_WriteFile_RBV: EBT-INJ-DIA-CAM-18:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_WriteStatus: EBT-INJ-DIA-CAM-18:HDF:WriteStatus        # MAGICK_FileName    : EBT-INJ-DIA-CAM-18:MAGICK:FileName
         # MAGICK_FilePath    : EBT-INJ-DIA-CAM-18:MAGICK:FilePath
         # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-18:MAGICK:FileNumber
         # MAGICK_Capture    : EBT-INJ-DIA-CAM-18:MAGICK:Capture
