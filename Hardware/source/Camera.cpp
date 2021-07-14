@@ -1003,7 +1003,7 @@ bool Camera::isNotUsingNPoint()const
 bool Camera::useBackground(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
+	//messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
 }
 bool Camera::isUsingBackground()const
@@ -1758,14 +1758,14 @@ bool Camera::setFloorLevel(long v)
 }
 std::vector<double> Camera::getPixelResults() const
 {
-	std::cout << "X_POS: " << std::setprecision(15) << pixelResults.second.at(0)<< std::endl;
+	//std::cout << "X_POS: " << std::setprecision(15) << pixelResults.second.at(0)<< std::endl;
 	return pixelResults.second;
 }
 boost::python::list Camera::getPixelResults_Py()
 {
-	std::cout << "X_POS_PY: " << pixelResults.second.at(0) << std::endl;
-	std::vector<double> returnList = pixelResults.second;
-	return to_py_list(returnList);
+	//std::cout << "X_POS_PY: " << pixelResults.second.at(0) << std::endl;
+	//std::vector<double> returnList = pixelResults.second;
+	return to_py_list<double>(pixelResults.second);
 }
 bool Camera::isAnalysisUpdating()
 {

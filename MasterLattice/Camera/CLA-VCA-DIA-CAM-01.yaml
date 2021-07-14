@@ -37,7 +37,7 @@ controls_information:
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
-        # the analysis can use a back groun dsubtracted image 
+        # the analysis can use a back ground subtracted image 
         ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
         ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
         # the analysis can use "n-point scaling" 
