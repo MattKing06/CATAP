@@ -1,5 +1,6 @@
 stages:
 - cmake_linux
+- list_windows
 - make_linux
 - tests_linux
 - doxygen_linux
@@ -29,6 +30,12 @@ cmake_linux:
   - echo 'CMake Finished'
   - ls
   tags: ["linux"]
+  
+list_windows:
+  stage: list_windows
+  script:
+  - dir
+  tags: ["windows"]
 
 make_linux:
   stage: make_linux
