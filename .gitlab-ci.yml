@@ -1,19 +1,22 @@
-# before_script:
-  # - which gcc
-  # - which g++
-  # - which python3
-  # - echo $PATH
-# #  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
-# #  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
-# #  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
-  # - ls
-  
 stages:
-  - linux_build
-  - list_windows
+- cmake
+- make
+- tests
+- doxygen
+- sphinx
+- wheel
 
-linux_build:
-  stage: cmake_linux
+before_script:
+  - which gcc
+  - which g++
+  - which python3
+  - echo $PATH
+#  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
+#  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
+#  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
+  - ls
+cmake:
+  stage: cmake
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -24,7 +27,9 @@ linux_build:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
-  stage: make_linux
+
+make:
+  stage: make
   cache:
      key: ${CI_COMMIT_SHORT_SHA}
      paths:
@@ -34,7 +39,9 @@ linux_build:
   - make clean
   - make
   - echo 'Make Finished'
-  stage: tests_linux
+
+tests:
+  stage: tests
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths: 
@@ -51,7 +58,8 @@ linux_build:
   - ./FactoryTests
   - ./EPICSInterfaceTests
   - ./EPICSToolsTests
-  stage: doxygen_linux
+doxygen: 
+  stage: doxygen
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -62,7 +70,9 @@ linux_build:
   - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
-  stage: sphinx_linux
+
+sphinx:
+  stage: sphinx
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -72,7 +82,9 @@ linux_build:
   - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
   only:
     - master
-  stage: wheel_linux
+
+wheel:
+  stage: wheel
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -83,12 +95,3 @@ linux_build:
   - ./build_wheel.sh
   only:
     - master
-  tags: ["linux"]
-  
-list_windows:
-  stage: list_windows
-  script:
-  - dir
-  tags: ["windows"]
-
-
