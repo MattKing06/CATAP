@@ -59,7 +59,7 @@ controls_information:
         ANA_PixMM    : CLA-C2V-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-C2V-DIA-CAM-01:ANA:PixMM_RBV
         ANA_StepSize    : CLA-C2V-DIA-CAM-01:ANA:StepSize
-        ANA_StepSize_RBV    : CLA-C2V-DIA-CAM-01:ANA:StepSize_RBV
+        ANA_NPointStepSize_RBV    : CLA-C2V-DIA-CAM-01:ANA:StepSize_RBV
         ANA_X_RBV    : CLA-C2V-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-C2V-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-C2V-DIA-CAM-01:ANA:SigmaX_RBV
@@ -87,7 +87,10 @@ controls_information:
         CAM_AcquirePeriod_RBV    : CLA-C2V-DIA-CAM-01:CAM:AcquirePeriod_RBV
         CAM_ArrayRate_RBV    : CLA-C2V-DIA-CAM-01:CAM:ArrayRate_RBV
         CAM_Temperature_RBV    : CLA-C2V-DIA-CAM-01:CAM:Temperature_RBV
+
         HDF_Capture    : CLA-C2V-DIA-CAM-01:HDF:Capture
+        HDF_Capture_RBV    : CLA-C2V-DIA-CAM-01:HDF:Capture_RBV
+
         HDF_NumCapture    : CLA-C2V-DIA-CAM-01:HDF:NumCapture
         HDF_FilePath    : CLA-C2V-DIA-CAM-01:HDF:FilePath
         HDF_FileName    : CLA-C2V-DIA-CAM-01:HDF:FileName
@@ -96,6 +99,8 @@ controls_information:
         HDF_FilePath_RBV    : CLA-C2V-DIA-CAM-01:HDF:FilePath_RBV
         HDF_FileName_RBV    : CLA-C2V-DIA-CAM-01:HDF:FileName_RBV
         HDF_WriteFile    : CLA-C2V-DIA-CAM-01:HDF:WriteFile
+        HDF_WriteFile_RBV: CLA-C2V-DIA-CAM-01:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_WriteStatus: CLA-C2V-DIA-CAM-01:HDF:WriteStatus
         # MAGICK_FileName    : CLA-C2V-DIA-CAM-01:MAGICK:FileName
         # MAGICK_FilePath    : CLA-C2V-DIA-CAM-01:MAGICK:FilePath
         # MAGICK_FileNumber    : CLA-C2V-DIA-CAM-01:MAGICK:FileNumber

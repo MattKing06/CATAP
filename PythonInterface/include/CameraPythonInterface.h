@@ -24,9 +24,17 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 		
 		// function pointers for overloads we want to expose
-		bool(Camera:: * setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
-		bool(Camera:: * setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
-		bool(Camera:: * setMask_4PARAM)(long, long, long, long) = &Camera::setMask;
+		bool(Camera::*setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
+		bool(Camera::*setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
+		bool(Camera::*setMask_4PARAM)(long, long, long, long) = &Camera::setMask;
+
+		//boost::python::dict(Camera::*getRunningStats_str)(const std::string&)const = &Camera::getRunningStats;
+		//boost::python::dict(Camera::*getRunningStats_type)(TYPE)const = &Camera::getRunningStats;
+
+
+		bool(Camera::*captureAndSave_with_shotcount)(size_t) = &Camera::captureAndSave;
+		bool(Camera::*captureAndSave_without_shotcount)() = &Camera::captureAndSave;
+
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Camera>())->to_python_target_type());
 		if (is_registered) return;
@@ -144,19 +152,22 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getPixelWidth", &Camera::getPixelWidth)
 			.def("getPixelHeight", &Camera::getPixelHeight)
 			.def("setBufferTrigger", &Camera::setBufferTrigger)
-			.def("captureAndSave", &Camera::captureAndSave)
 			.def("getCaptureState", &Camera::getCaptureState)
 			.def("isCapturing", &Camera::isCapturing)
 			.def("isNotCapturing", &Camera::isNotCapturing)
 			.def("isWriting", &Camera::isWriting)
 			.def("isNotWriting", &Camera::isNotWriting)
 			.def("isCapturingOrSaving", &Camera::isCapturingOrSaving)
+			.def("isNotCapturingOrSaving", &Camera::isNotCapturingOrSaving)
 			.def("isSaving", &Camera::isWriting)
 			.def("isNotSaving", &Camera::isNotWriting)
-			.def("collectAndSave", &Camera::captureAndSave)
-			.def("isCollectingOrSaving", &Camera::isCapturingOrSaving)
+				// image captur e/ save 
+			.def("captureAndSave", captureAndSave_with_shotcount)
+			.def("collectAndSave", captureAndSave_without_shotcount)
+			.def("isCollectingOrSaving", &Camera::isCapturingOrSaving) // VCC backwards compatability 
 			.def("isCollecting", &Camera::isCapturing)
 			.def("isNotCollecting", &Camera::isNotCapturing)
+			.def("setNewBackground", &Camera::setNewBackground)
 			.def("useBackground", &Camera::useBackground)
 			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
 			.def("isUsingBackground", &Camera::isUsingBackground)
@@ -166,7 +177,11 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isUsingNPoint", &Camera::isUsingNPoint)
 			.def("isNotUsingNPoint", &Camera::isNotUsingNPoint)
 			.def("getStepSize", &Camera::getStepSize)
+			.def("getAnalysisStepSize", &Camera::getStepSize)
+			.def("getNpointStepSize", &Camera::getStepSize)
 			.def("setStepSize", &Camera::setStepSize)
+			.def("setAnalysisStepSize", &Camera::setStepSize)
+			.def("setNpointStepSize", &Camera::setStepSize)
 			.def("getSumIntensity", &Camera::getSumIntensity)
 			.def("getAvgIntensity", &Camera::getAvgIntensity)
 			.def("setSumIntensity", &Camera::setSumIntensity)
@@ -209,9 +224,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
 			.def("getBufferSize", &Camera::getBufferSize)
-			.def("setBufferSize", &Camera::setBufferSize)
-			.def("clearBuffers", &Camera::clearBuffers)
-			.def("getRunningStats", &Camera::getRunningStats)
+			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
+			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
+			.def("getRunningStats", &Camera::getAllRunningStats)
 			.def("getXPixRunningStats", &Camera::getXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getYPixRunningStats", &Camera::getYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getSigmaXPixRunningStats", &Camera::getSigmaXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
@@ -247,6 +262,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		bool(CameraFactory:: * setMaskandROI_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setMaskandROI;
 		bool(CameraFactory:: * setROI_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setROI;
 		bool(CameraFactory:: * setMask_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setMask;
+
+		bool(CameraFactory::*captureAndSave_with_shotcount)(const std::string&, size_t) = &CameraFactory::captureAndSave;
+		bool(CameraFactory::*captureAndSave_without_shotcount)(const std::string & ) = &CameraFactory::captureAndSave;
+
 		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
@@ -357,7 +376,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getPixelWidth", &CameraFactory::getPixelWidth)
 			.def("getPixelHeight", &CameraFactory::getPixelHeight)
 			.def("setBufferTrigger", &CameraFactory::setBufferTrigger)
-			.def("captureAndSave", &CameraFactory::captureAndSave)
+			.def("captureAndSave", captureAndSave_with_shotcount)
+			.def("collectAndSave", captureAndSave_with_shotcount)
+			.def("captureAndSave", captureAndSave_without_shotcount)
+			.def("collectAndSave", captureAndSave_without_shotcount)
 			.def("getCaptureState", &CameraFactory::getCaptureState)
 			.def("isCapturing", &CameraFactory::isCapturing)
 			.def("isNotCapturing", &CameraFactory::isNotCapturing)
@@ -366,10 +388,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isCapturingOrSaving", &CameraFactory::isCapturingOrSaving)
 			.def("isSaving", &CameraFactory::isWriting)
 			.def("isNotSaving", &CameraFactory::isNotWriting)
-			.def("collectAndSave", &CameraFactory::captureAndSave)
 			.def("isCollectingOrSaving", &CameraFactory::isCapturingOrSaving)
 			.def("isCollecting", &CameraFactory::isCapturing)
 			.def("isNotCollecting", &CameraFactory::isNotCapturing)
+			.def("setNewBackground", &CameraFactory::setNewBackground)
 			.def("useBackground", &CameraFactory::useBackground)
 			.def("getUsingBackgroundState", &CameraFactory::getUsingBackgroundState)
 			.def("isUsingBackground", &CameraFactory::isUsingBackground)
@@ -379,7 +401,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isUsingNPoint", &CameraFactory::isUsingNPoint)
 			.def("isNotUsingNPoint", &CameraFactory::isNotUsingNPoint)
 			.def("getStepSize", &CameraFactory::getStepSize)
+			.def("getNpointStepSize", &CameraFactory::getStepSize)
 			.def("setStepSize", &CameraFactory::setStepSize)
+			.def("setNpointStepSize", &CameraFactory::setStepSize)
 			.def("getSumIntensity", &CameraFactory::getSumIntensity)
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)
@@ -421,7 +445,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getBufferSize", &CameraFactory::getBufferSize)
 			.def("setBufferSize", &CameraFactory::setBufferSize)
 			.def("clearBuffers", &CameraFactory::clearBuffers)
-			.def("getRunningStats", &CameraFactory::getRunningStats)
+			.def("getAllRunningStats", &CameraFactory::getAllRunningStats)
 			.def("getScreen", &CameraFactory::getScreen)
 
 

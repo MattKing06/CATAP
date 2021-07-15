@@ -28,6 +28,8 @@ public:
 	EPICSLaserEnergyMeterInterface_sptr epicsInterface;
 	/*! Returns the EPICS name of this laser energy meter instance */
 	std::string getLaserEnergyMeterName() const;
+	/*! Returns the calibration factor (laser energy meter reading -> actual laser pulse energy) */
+	double getCalibrationFactor() const;
 	/*! Returns the alias name (not currently used) */
 	std::vector<std::string> getAliases() const;
 	/*! Returns the CATAP TYPE of the laser energy meter */
@@ -133,6 +135,8 @@ public:
 	bool monitoring;
 	/*! beamline position (useless).*/
 	double position;
+	/*! calibration factor (actual laser energy -> laser energy on energy meter).*/
+	double calibration_factor;
 	/*! laser energy meter name.*/
 	std::string name;
 	/*! number of shots monitored.*/

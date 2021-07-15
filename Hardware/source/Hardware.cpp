@@ -15,7 +15,7 @@ Hardware::Hardware() :
 	machine_area_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE)),
 	hardware_type_str(ENUM_TO_STRING(TYPE::UNKNOWN_TYPE))
 {
-	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
+	messenger.printDebugMessage("Constructing Hardware ", hardwareName, " complete" );
 }
 
 Hardware::Hardware(STATE mode) :

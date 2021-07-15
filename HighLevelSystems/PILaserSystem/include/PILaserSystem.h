@@ -48,6 +48,8 @@ public:
 	LaserMirror& getLaserMirror();
 	LaserEnergyMeter& getEnergyMeter();
 	LaserHWP& getHWP();
+
+	// TODO these could be bad names, there are many shutters from the PIL to BA1, etc. 
 	Shutter& getShutter01();
 	Shutter& getShutter02();
 

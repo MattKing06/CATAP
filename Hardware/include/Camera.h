@@ -324,6 +324,15 @@ public:
 	/*! check if analysis is using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isUsingNPoint()const;
+	/*! Get the state of the Flag to set the next image as background
+	@param[out] STATE, the STATE of teh set new background flag, YES or NO  */
+	STATE getSetNewBackgroundState();
+	/*! Flag to set the next image as background 
+	@param[out] bool, true if using NPoint scaling*/
+	bool setNewBackground(bool v);
+	/*! Flag to set the next image as background
+	@param[out] bool, true if using NPoint scaling*/
+	bool getSetNewBackground(bool v);
 	/*! check if analysis is Not using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isNotUsingNPoint()const;
@@ -487,6 +496,8 @@ public:
 	/*! Get the mask and ROI settings (Python version).
 	@param[out] dict, values ) */
 	boost::python::dict getMaskandROI_Py()const;
+
+
 	/*! Start image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
@@ -517,6 +528,17 @@ public:
 	/*! Get image analysis state .
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState()const;
+
+
+	/* Set the number of shots to capture when "collecting frames and writing to disc."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	bool setNumberOfShotsToCapture(size_t num);
+	/* Get the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	size_t getNumberOfShotsToCapture()const;
+	/*! Capture and save images to disc, using the currently set number of shots to capture.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave();
 	/*! Capture and save images to disc.
 	@param[in] size_t, num_images, number of images to capture and write to file
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -539,6 +561,11 @@ public:
 	/*! Is camera capture_state == CAPTURING  OR is write_state == NOT_WRITING.
 	@param[out] bool*/
 	bool isCapturingOrSaving()const;
+	/*! Is camera capture_state != CAPTURING  OR is write_state != NOT_WRITING.
+	@param[out] bool*/
+	bool isNotCapturingOrSaving()const;
+	
+	// TODO	isBsuy has not been fully implmented yet  
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true 
 	* while busy attempts to write more data to disc will fail.
 	@param[out] bool	*/
@@ -612,15 +639,23 @@ public:
 	size_t getBufferSize()const;
 	/*! set the size of the running stats buffer, running_stats_buffer_size
 	@param[in] size_t, value */
-	void setBufferSize(size_t v);
+	void setAllRunningStatBufferSizes(size_t v);
 	/*! clear all runing stats buffers */
-	void clearBuffers();
+	void clearAllRunningStatBuffers();
 	/*! Get the pixel to mm conversion factor, 
 	@param[out] double, value */
 	double getPix2mm()const;
+	///*! Get the running stats for a particular analsys results (x position, or y position, etc.) 
+	//@param[out] string, string of the TYPE of running stat to return  
+	//@param[out] dict, value */
+	//boost::python::dict getRunningStats(const std::string& type_str)const;
+	///*! Get the running stats for a particular analsys results (x position, or y position, etc.)
+	//@param[out] TYPE, TYPE of running stat to return
+	//@param[out] dict, value */
+	//boost::python::dict getRunningStats(TYPE type)const;
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
-	boost::python::dict getRunningStats()const;
+	boost::python::dict getAllRunningStats()const;
 	/*! Returns the running stats object for x_pix, not just the dict
 	@param[out] RunningStats, rs*/
 	RunningStats& getXPixRunningStats();
@@ -687,6 +722,11 @@ protected:
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE > set_new_background;
+
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > capture_count;
 
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
@@ -933,9 +973,6 @@ private:
 
 	/* ImageCapture class to hold data for image capturing and savign thread */
 	ImageCapture image_capture;
-	/* Set the numer bof shots to capture and save to disc 
-	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
-	bool setNumberOfShotsToCapture(size_t num);
 	/* Capture images 
 	@param[out] bool, if the value got sent to epics */
 	bool capture();

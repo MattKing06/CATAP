@@ -33,6 +33,8 @@ namespace MagnetPSUValueToState
 	extern std::map<int, STATE> magnetPSUIntToSTATE;// = { GETSETI, READI, RILK, RPOWER, SETI, SPOWER };
 }
 
+
+// TODO GET RID OF THIS 
 namespace MagnetState /* TODO THIS IS ALSO DEFINE IN TH EMAGNET CLASS :(  */ 
 //TODO: i don't think this is used anymore, DJS re-done in magnet and magnetFactory objects
 {

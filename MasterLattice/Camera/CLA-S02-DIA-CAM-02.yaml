@@ -59,7 +59,7 @@ controls_information:
         ANA_PixMM    : CLA-S02-DIA-CAM-02:ANA:PixMM
         ANA_PixMM_RBV    : CLA-S02-DIA-CAM-02:ANA:PixMM_RBV
         ANA_StepSize    : CLA-S02-DIA-CAM-02:ANA:StepSize
-        ANA_StepSize_RBV    : CLA-S02-DIA-CAM-02:ANA:StepSize_RBV
+        ANA_NPointStepSize_RBV    : CLA-S02-DIA-CAM-02:ANA:StepSize_RBV
         ANA_X_RBV    : CLA-S02-DIA-CAM-02:ANA:X_RBV
         ANA_Y_RBV    : CLA-S02-DIA-CAM-02:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-S02-DIA-CAM-02:ANA:SigmaX_RBV
@@ -96,6 +96,8 @@ controls_information:
         HDF_FilePath_RBV    : CLA-S02-DIA-CAM-02:HDF:FilePath_RBV
         HDF_FileName_RBV    : CLA-S02-DIA-CAM-02:HDF:FileName_RBV
         HDF_WriteFile    : CLA-S02-DIA-CAM-02:HDF:WriteFile
+        HDF_WriteFile_RBV: CLA-S02-DIA-CAM-021:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_WriteStatus: CLA-S02-DIA-CAM-02:HDF:WriteStatus
         # MAGICK_FileName    : CLA-S02-DIA-CAM-02:MAGICK:FileName
         # MAGICK_FilePath    : CLA-S02-DIA-CAM-02:MAGICK:FilePath
         # MAGICK_FileNumber    : CLA-S02-DIA-CAM-02:MAGICK:FileNumber

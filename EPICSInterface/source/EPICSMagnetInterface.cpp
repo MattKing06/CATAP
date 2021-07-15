@@ -124,7 +124,7 @@ void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 {
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
-	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
+	std::pair<epicsTimeStamp, unsigned short> pairToUpdate = getTimeStampUShortPair(args);
 	recastMagnet->ilk_state.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
