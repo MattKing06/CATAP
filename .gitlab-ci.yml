@@ -1,12 +1,3 @@
-stages:
-- cmake_linux
-- make_linux
-- tests_linux
-- doxygen_linux
-- sphinx_linux
-- wheel_linux
-- list_windows
-
 # before_script:
   # - which gcc
   # - which g++
