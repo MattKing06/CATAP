@@ -8,13 +8,21 @@ class RunningStats
 {
 	// thanks to https://www.johndcook.com/blog/standard_deviation/
 
+
+	// what shoudl this do?
+	// rolling mean / variance, of max_n number of shotsm, that are also added to a buffer  
+	// 
+	// another seperate biffer that just gets and stores some data  >>> ?
+	// 
+	// a seperate ciruclar buffer that providea sollign mean "windowed" over the last new_counter biuffersize  (NOT YET IMPLEMENTED) 
+
 public:
-	RunningStats() :
-		m_n(0),
-		max_n(0),
+	RunningStats(size_t start_buffer_size = 10) :
+		m_n(start_buffer_size),
+		max_n(start_buffer_size),
 		rs_complete(false)
 	{
-		setBufferSize(10); // MAGIC
+		setBufferSize(start_buffer_size); // MAGIC
 	}
 	/*! Clear the running stats values */
 	void Clear()
@@ -39,7 +47,7 @@ public:
 	template<typename T>
 	void Push(T x)
 	{
-		doPush((double)x);
+		doPush((double)x); // TODO this is probably to get rid of a divide by zero ... but might be worth checking
 	}
 
 	/*! Add a new value to the runing stats , templated version
@@ -198,8 +206,8 @@ private:
 				m_oldM = m_newM;
 				m_oldS = m_newS;
 			}
+			bufferPush(x);
 		}
-		bufferPush(x);
 	}
 
 };
