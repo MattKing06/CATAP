@@ -9,8 +9,8 @@
   # - ls
   
 stages:
-- linux_build
-- list_windows
+  - linux_build
+  - list_windows
 
 linux_build:
   stage: cmake_linux
