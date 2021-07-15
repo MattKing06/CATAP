@@ -649,6 +649,15 @@ public:
 	@param[in] std::string, name
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState(const std::string& name)const;
+	/* set the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	bool setNumberOfShotsToCapture(const std::string& name, size_t num);
+	/* set the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	size_t getNumberOfShotsToCapture(const std::string& name)const;
+	/*! Capture and save images to disc, using the currently set number of shots to capture.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave(const std::string& name);
 	/*! Capture and save images to disc.
 	@param[in] std::string, name
 	@param[in] size_t, num_images, number of images to capture and write to file

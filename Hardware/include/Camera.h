@@ -528,6 +528,17 @@ public:
 	/*! Get image analysis state .
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState()const;
+
+
+	/* Set the number of shots to capture when "collecting frames and writing to disc."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	bool setNumberOfShotsToCapture(size_t num);
+	/* Get the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	size_t getNumberOfShotsToCapture()const;
+	/*! Capture and save images to disc, using the currently set number of shots to capture.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave();
 	/*! Capture and save images to disc.
 	@param[in] size_t, num_images, number of images to capture and write to file
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -681,6 +692,8 @@ protected:
 	/*! Camera set new background STATE. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE > set_new_background;
 
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > capture_count;
 
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
@@ -927,9 +940,6 @@ private:
 
 	/* ImageCapture class to hold data for image capturing and savign thread */
 	ImageCapture image_capture;
-	/* Set the numer bof shots to capture and save to disc 
-	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
-	bool setNumberOfShotsToCapture(size_t num);
 	/* Capture images 
 	@param[out] bool, if the value got sent to epics */
 	bool capture();

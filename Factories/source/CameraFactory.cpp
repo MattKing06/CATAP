@@ -1436,6 +1436,28 @@ STATE CameraFactory::getAnalysisState(const std::string& name)const
 	}
 	return STATE::ERR;
 }
+bool CameraFactory::setNumberOfShotsToCapture(const std::string& name, size_t num)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setNumberOfShotsToCapture(num);
+	}
+	return false;
+}
+size_t CameraFactory::getNumberOfShotsToCapture(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getNumberOfShotsToCapture();
+	}
+	return GlobalConstants::zero_sizet;
+}
+bool CameraFactory::captureAndSave(const std::string& name)
+{
+	return captureAndSave(name, GlobalConstants::zero_sizet);
+}
 bool CameraFactory::captureAndSave(const std::string& name, size_t num_images)
 {
 	std::string full_name = getFullName(name);

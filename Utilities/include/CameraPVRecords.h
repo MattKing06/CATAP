@@ -10,7 +10,7 @@
 namespace CameraRecords
 {
 	// BUFFER DUMPING (7)
-	extern std::string const HDFB_Buffer_Trigger;
+	extern std::string const HDFB_Buffer_Trigger;                                 
 	extern std::string const HDFB_Buffer_FilePath;
 	extern std::string const HDFB_Buffer_FilePath_RBV;
 	extern std::string const HDFB_Buffer_FileName;
@@ -117,10 +117,11 @@ namespace CameraRecords
 	extern std::string const ANA_UseNPoint;
 	extern std::string const ANA_UseNPoint_RBV;
 	extern std::string const ANA_NPointStepSize_RBV;
+	extern std::string const ANA_NPointStepSize;
 	// LED STATUS (3)
 	extern std::string const LED_Sta;
 	extern std::string const LED_Off;
-	extern std::string const LED_On;
+	extern std::string const LED_On;                                    
 	// MAGIC IS NOT USED (yet!!!) 
 /*
 	extern std::string const MAGICK_FileName;

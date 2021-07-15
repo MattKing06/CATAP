@@ -595,7 +595,7 @@ long Camera::getStepSize()const
 }
 bool Camera::setStepSize(long val)
 {
-	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_StepSize), val);
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val);
 }
 bool Camera::setX(double value)
 {
@@ -1238,6 +1238,10 @@ STATE Camera::getAnalysisState( )const
 //-------------------------------------------------------------------------------------------------------
 //
 //
+bool Camera::captureAndSave()
+{
+	return captureAndSave(GlobalConstants::zero_sizet);
+}
 bool Camera::captureAndSave(size_t num_shots)
 {
 	if (isNotAcquiring())
@@ -1318,7 +1322,13 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 {
 	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
 	bool timed_out = false;
-	if (setNumberOfShotsToCapture(num_shots))
+
+	bool carry_on = true;
+	if (num_shots > GlobalConstants::zero_sizet)
+	{
+		bool carry_on = setNumberOfShotsToCapture(num_shots);
+	}
+	if (carry_on)
 	{
 		messenger.printDebugMessage(hardwareName, " Set number of shots success");
 		if (capture())
@@ -1395,6 +1405,10 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 	}
 }
 //-------------------------------------------------------------------------------------------------------
+size_t Camera::getNumberOfShotsToCapture()const
+{
+	return capture_count.second;
+}
 bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
