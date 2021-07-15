@@ -17,8 +17,7 @@ before_script:
   - ls
 cmake_linux:
   stage: cmake_linux
-  tags:
-    - linux
+  tags: linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -32,8 +31,7 @@ cmake_linux:
 
 make_linux:
   stage: make_linux
-  tags:
-    - linux
+  tags: linux
   cache:
      key: ${CI_COMMIT_SHORT_SHA}
      paths:
@@ -46,8 +44,7 @@ make_linux:
 
 tests_linux:
   stage: tests_linux
-  tags:
-    - linux
+  tags: linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths: 
@@ -66,8 +63,7 @@ tests_linux:
   - ./EPICSToolsTests
 doxygen_linux:
    stage: doxygen_linux
-   tags:
-     - linux
+   tags: linux
    cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -81,8 +77,7 @@ doxygen_linux:
 
 sphinx_linux:
   stage: sphinx_linux
-  tags:
-    - linux
+  tags: linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -95,8 +90,7 @@ sphinx_linux:
 
 wheel_linux:
   stage: wheel_linux
-  tags:
-    - linux
+  tags: linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
