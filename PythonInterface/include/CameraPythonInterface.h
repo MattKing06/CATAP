@@ -4,6 +4,7 @@
 #include <Camera.h>
 #include <CameraFactory.h>
 #include <PythonTypeConversions.h>
+#include <RunningStats.h>
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
@@ -226,11 +227,18 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
 			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
-
-			.def("getAllRunningStats", &Camera::getAllRunningStats)
-			//.def("getRunningStats", getRunningStats_str)
-			//.def("getRunningStats", getRunningStats_type)
-			
+			.def("getRunningStats", &Camera::getAllRunningStats)
+			.def("getXPixRunningStats", &Camera::getXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getYPixRunningStats", &Camera::getYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getSigmaXPixRunningStats", &Camera::getSigmaXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getSigmaYPixRunningStats", &Camera::getSigmaYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getXmmRunningStats", &Camera::getXmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getYmmRunningStats", &Camera::getYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getSigmaXmmRunningStats", &Camera::getSigmaXmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getSigmaYmmRunningStats", &Camera::getSigmaYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getSigmaXYmmRunningStats", &Camera::getSigmaXYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getAvgIntensityRunningStats", &Camera::getAvgIntensityRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getSumIntensityRunningStats", &Camera::getSumIntensityRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getScreen", &Camera::getScreen)
 			
 			.def("setGain", &Camera::setGain)

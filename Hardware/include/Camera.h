@@ -656,6 +656,39 @@ public:
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
 	boost::python::dict getAllRunningStats()const;
+	/*! Returns the running stats object for x_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getXPixRunningStats();
+	/*! Returns the running stats object for y_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getYPixRunningStats();
+	/*! Returns the running stats object for sigma_x_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXPixRunningStats();
+	/*! Returns the running stats object for sigma_y_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaYPixRunningStats();
+	/*! Returns the running stats object for x_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getXmmRunningStats();
+	/*! Returns the running stats object for y_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getYmmRunningStats();
+	/*! Returns the running stats object for sigma_x_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXmmRunningStats();
+	/*! Returns the running stats object for sigma_y_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaYmmRunningStats();
+	/*! Returns the running stats object for sigma_xy_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXYmmRunningStats();
+	/*! Returns the running stats object for avg_intensity, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getAvgIntensityRunningStats();
+	/*! Returns the running stats object for sum_intensity, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSumIntensityRunningStats();
 	/*! Set the black level (for vela camera types only),
 	@param[in] long, values 
 	@param[out] bool, values */

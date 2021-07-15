@@ -1,6 +1,7 @@
 #ifndef CHARGE_H_
 #define CHARGE_H_
 #include "LoggingSystem.h"
+#include <RunningStats.h>
 #ifndef HARDWARE_H_
 #include "Hardware.h"
 #endif //HARDWARE_H_
@@ -14,6 +15,7 @@
 #include <boost/circular_buffer.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+
 
 class EPICSChargeInterface;
 typedef boost::shared_ptr<EPICSChargeInterface> EPICSChargeInterface_sptr;
@@ -140,6 +142,12 @@ public:
 	STATE chargeState;
 	/*! name of charge diagnostic device.*/
 	std::string name;
+	/*! Running statistics for charge diagnostic, access to easy statistics*/
+	RunningStats qStats;
+	/*! Get the running stats back as a dict*/
+	boost::python::dict getRunningStats_Py();
+	/*! Get the running stats object` back directly*/
+	RunningStats& getQRunningStats();
 protected:
 	std::vector<std::string> aliases;
 	std::string chargeType;

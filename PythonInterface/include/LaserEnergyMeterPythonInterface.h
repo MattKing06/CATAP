@@ -46,7 +46,9 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("getStatus", &LaserEnergyMeter::getStatus)
 			.def("getCalibrationFactor", &LaserEnergyMeter::getCalibrationFactor)
 			.def("getStatusVector", &LaserEnergyMeter::getStatusVector)
-			.def("getStatusBuffer", &LaserEnergyMeter::getStatusBuffer);
+			.def("getStatusBuffer", &LaserEnergyMeter::getStatusBuffer)
+			.def("getRunningStats", &LaserEnergyMeter::getRunningStats_Py)
+			.def("getEnergyRunningStats", &LaserEnergyMeter::getEnergyRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>());
 	}
 	
 	void expose_laser_energy_meter_factory_object() {

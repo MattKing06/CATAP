@@ -16,6 +16,7 @@ LaserEnergyMeter::LaserEnergyMeter(const std::map<std::string, std::string> & pa
 Hardware(paramsMap, mode),
 //laserEnergyMeterType(LaserEnergyMeterRecords::laserEnergyMeterTypeToEnum.at(paramsMap.find("laser_pv_type")->second)),
 name(paramsMap.find("name")->second),
+energyStats(RunningStats()),
 calibration_factor(std::stod(paramsMap.find("calibration_factor")->second)),
 position(std::stod(paramsMap.find("position")->second))
 {
@@ -152,6 +153,18 @@ STATE LaserEnergyMeter::getStatus() const
 std::vector< STATE > LaserEnergyMeter::getStatusVector() const
 {
 	return statusVector;
+}
+
+boost::python::dict LaserEnergyMeter::getRunningStats_Py()
+{
+	boost::python::dict r;
+	r["energy_rs"] = energyStats.getRunningStats();
+	return r;
+}
+
+RunningStats& LaserEnergyMeter::getEnergyRunningStats()
+{
+	return energyStats;
 }
 
 boost::circular_buffer< STATE > LaserEnergyMeter::getStatusBuffer() const

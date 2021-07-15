@@ -1,6 +1,7 @@
 #include <PILaserSystemPythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
+#include <RunningStatsPythonInterface.h>
 #include <CameraPythonInterface.h>
 #include <ChargePythonInterface.h>
 #include <LaserEnergyMeterPythonInterface.h>
@@ -19,6 +20,7 @@ BOOST_PYTHON_MODULE(_PILaserSystem)
 	BOOST_PYTHON_LASER_FEEDBACK_INCLUDE::exposePILaserSystemObject();
 	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
 	// EXPOSE CAMERA/SHUTTER/MIRROR/HWP/ENERGY_METER/CHARGE
+	BOOST_PYTHON_RUNNING_STATS_INCLUDE::expose_running_stats_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
 	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_object();
