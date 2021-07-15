@@ -152,7 +152,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	}
 	else
 	{
-		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_Y_PIX_2_MM");
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_SHOTS_NUMBER");
 	}
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find name_alias");
@@ -165,6 +165,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			messenger.printDebugMessage(hardwareName, " added aliase " + name);
 		}
 	}
+	else{ messenger.printDebugMessage(hardwareName, " !!WARNING!!");}
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find SCREEN_NAME");
 	if (GlobalFunctions::entryExists(paramMap, "SCREEN_NAME"))
@@ -176,6 +177,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			messenger.printDebugMessage(hardwareName, " added screen_name " + name);
 		}
 	}
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find CAM_TYPE");
 	if (GlobalFunctions::entryExists(paramMap, "CAM_TYPE"))
@@ -185,6 +187,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
 		}
 	}
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find HAS_LED");
 	if (GlobalFunctions::entryExists(paramMap, "HAS_LED"))
@@ -198,6 +201,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			has_led = false;
 		}
 	}
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_X"))
@@ -208,7 +212,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_X");
 	}
-
 
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
@@ -1413,7 +1416,7 @@ bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
 	{
-		return epicsInterface->putValue2<int>(pvStructs.at(CameraRecords::HDF_Capture), (int)num);
+		return epicsInterface->putValue2<int>(pvStructs.at(CameraRecords::HDF_NumCapture), (int)num);
 	}
 	return false;
 }
