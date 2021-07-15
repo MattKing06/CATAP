@@ -222,9 +222,11 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getLEDState", &Camera::getLEDState)
 			.def("getAliases", &Camera::getAliases_Py)
 			.def("getScreenNames", &Camera::getScreenNames_Py)
+			
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
 			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
+
 			.def("getAllRunningStats", &Camera::getAllRunningStats)
 			//.def("getRunningStats", getRunningStats_str)
 			//.def("getRunningStats", getRunningStats_type)
