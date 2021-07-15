@@ -7,6 +7,10 @@
 # #  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
 # #  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   # - ls
+  
+stages:
+- linux_build
+- list_windows
 
 linux_build:
   stage: cmake_linux
