@@ -506,7 +506,6 @@ void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_ar
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ",
 		recastCamera->save_filename.second);
 }
-
 //void EPICSCameraInterface::update_HDFB_Buffer_Trigger(const struct event_handler_args args)
 //{
 //	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -514,7 +513,6 @@ void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_ar
 //	// TODO
 //
 //}
-
 void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -561,16 +559,13 @@ void EPICSCameraInterface::update_HDFB_Buffer_FileNumber_RBV(const struct event_
 	updateTimeStampLongPair(args, recastCamera->buffer_filenumber);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FileNumber_RBV = ",
 		recastCamera->buffer_filenumber.second);
-
 }
-
 void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_min_x);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinX_RBV = ",
 		recastCamera->roi_min_x.second);
-
 }
 void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args args)
 {
@@ -579,7 +574,6 @@ void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args 
 	updateTimeStampLongPair(args, recastCamera->roi_min_y);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinY_RBV = ",
 		recastCamera->roi_min_y.second);
-
 }
 void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args args)
 {

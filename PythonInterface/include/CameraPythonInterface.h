@@ -27,8 +27,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		bool(Camera::*setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
 		bool(Camera::*setMask_4PARAM)(long, long, long, long) = &Camera::setMask;
 
-		boost::python::dict(Camera::*getRunningStats_str)(const std::string&)const = &Camera::getRunningStats;
-		boost::python::dict(Camera::*getRunningStats_type)(TYPE)const = &Camera::getRunningStats;
+		//boost::python::dict(Camera::*getRunningStats_str)(const std::string&)const = &Camera::getRunningStats;
+		//boost::python::dict(Camera::*getRunningStats_type)(TYPE)const = &Camera::getRunningStats;
 
 
 		bool(Camera::*captureAndSave_with_shotcount)(size_t) = &Camera::captureAndSave;
@@ -226,8 +226,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
 			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
 			.def("getAllRunningStats", &Camera::getAllRunningStats)
-			.def("getRunningStats", getRunningStats_str)
-			.def("getRunningStats", getRunningStats_type)
+			//.def("getRunningStats", getRunningStats_str)
+			//.def("getRunningStats", getRunningStats_type)
 			
 			.def("getScreen", &Camera::getScreen)
 			

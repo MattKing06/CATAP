@@ -1119,29 +1119,29 @@ boost::python::dict Camera::getMaskandROI_Py()const
 
 
 
-boost::python::dict Camera::getRunningStats(const std::string& type_str)const
-{
-	return getRunningStats(GlobalFunctions::stringToTYPE(type_str));
-}
-boost::python::dict Camera::getRunningStats(TYPE type)const
-{
-	
-	switch (type)
-	{
-	case TYPE::CAMERA_X_PIX_RS: return x_pix_rs.getRunningStats();
-	case TYPE::CAMERA_Y_PIX_RS: return y_pix_rs.getRunningStats();
-	case TYPE::CAMERA_SIGMA_X_PIX_RS: return sigma_x_pix_rs.getRunningStats();
-	case TYPE::CAMERA_SIGMA_Y_PIX_RS: return sigma_y_pix_rs.getRunningStats();
-	case TYPE::CAMERA_SIGMA_XY_PIX_RS: return sigma_xy_pix_rs.getRunningStats();
-	case TYPE::CAMERA_X_MM_RS: return x_mm_rs.getRunningStats();
-	case TYPE::CAMERA_Y_MM_RS: return y_mm_rs.getRunningStats();
-	case TYPE::CAMERA_SIGMA_X_MM_RS: return sigma_x_mm_rs.getRunningStats();
-	case TYPE::CAMERA_SIGMA_Y_MM_RS: return sigma_y_mm_rs.getRunningStats();
-	case TYPE::CAMERA_SIGMA_XY_MM_RS: return sigma_xy_mm_rs.getRunningStats();
-	default: return boost::python::dict();
-	}
-
-}
+//boost::python::dict Camera::getRunningStats(const std::string& type_str)const
+//{
+//	return getRunningStats(GlobalFunctions::stringToTYPE(type_str));
+//}
+//boost::python::dict Camera::getRunningStats(TYPE type)const
+//{
+//	
+//	switch (type)
+//	{
+//	case TYPE::CAMERA_X_PIX_RS: return x_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_Y_PIX_RS: return y_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_X_PIX_RS: return sigma_x_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_Y_PIX_RS: return sigma_y_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_XY_PIX_RS: return sigma_xy_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_X_MM_RS: return x_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_Y_MM_RS: return y_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_X_MM_RS: return sigma_x_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_Y_MM_RS: return sigma_y_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_XY_MM_RS: return sigma_xy_mm_rs.getRunningStats();
+//	default: return boost::python::dict();
+//	}
+//
+//}
 
 boost::python::dict Camera::getAllRunningStats()const
 {

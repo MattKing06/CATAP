@@ -645,14 +645,14 @@ public:
 	/*! Get the pixel to mm conversion factor, 
 	@param[out] double, value */
 	double getPix2mm()const;
-	/*! Get the running stats for a particular analsys results (x position, or y position, etc.) 
-	@param[out] string, string of the TYPE of running stat to return  
-	@param[out] dict, value */
-	boost::python::dict getRunningStats(const std::string& type_str)const;
-	/*! Get the running stats for a particular analsys results (x position, or y position, etc.)
-	@param[out] TYPE, TYPE of running stat to return
-	@param[out] dict, value */
-	boost::python::dict getRunningStats(TYPE type)const;
+	///*! Get the running stats for a particular analsys results (x position, or y position, etc.) 
+	//@param[out] string, string of the TYPE of running stat to return  
+	//@param[out] dict, value */
+	//boost::python::dict getRunningStats(const std::string& type_str)const;
+	///*! Get the running stats for a particular analsys results (x position, or y position, etc.)
+	//@param[out] TYPE, TYPE of running stat to return
+	//@param[out] dict, value */
+	//boost::python::dict getRunningStats(TYPE type)const;
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
 	boost::python::dict getAllRunningStats()const;
