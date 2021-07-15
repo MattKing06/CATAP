@@ -1,11 +1,11 @@
 stages:
 - cmake_linux
-- list_windows
 - make_linux
 - tests_linux
 - doxygen_linux
 - sphinx_linux
 - wheel_linux
+- list_windows
 
 # before_script:
   # - which gcc
@@ -17,7 +17,7 @@ stages:
 # #  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   # - ls
 
-cmake_linux:
+linux_build:
   stage: cmake_linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -29,15 +29,6 @@ cmake_linux:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
-  tags: ["linux"]
-  
-list_windows:
-  stage: list_windows
-  script:
-  - dir
-  tags: ["windows"]
-
-make_linux:
   stage: make_linux
   cache:
      key: ${CI_COMMIT_SHORT_SHA}
@@ -48,9 +39,6 @@ make_linux:
   - make clean
   - make
   - echo 'Make Finished'
-  tags: ["linux"]
-
-tests_linux:
   stage: tests_linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -68,10 +56,6 @@ tests_linux:
   - ./FactoryTests
   - ./EPICSInterfaceTests
   - ./EPICSToolsTests
-  tags: ["linux"]
-  
-
-doxygen_linux:
   stage: doxygen_linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -83,9 +67,6 @@ doxygen_linux:
   - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
-  tags: ["linux"]
-   
-sphinx_linux:
   stage: sphinx_linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -96,9 +77,6 @@ sphinx_linux:
   - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
   only:
     - master
-  tags: ["linux"]
-
-wheel_linux:
   stage: wheel_linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -111,3 +89,11 @@ wheel_linux:
   only:
     - master
   tags: ["linux"]
+  
+list_windows:
+  stage: list_windows
+  script:
+  - dir
+  tags: ["windows"]
+
+
