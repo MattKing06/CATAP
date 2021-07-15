@@ -1,10 +1,10 @@
 stages:
-- cmake
-- make
-- tests
-- doxygen
-- sphinx
-- wheel
+- cmake_linux
+- make_linux
+- tests_linux
+- doxygen_linux
+- sphinx_linux
+- wheel_linux
 
 before_script:
   - which gcc
@@ -15,8 +15,10 @@ before_script:
 #  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
 #  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   - ls
-cmake:
-  stage: cmake
+cmake_linux:
+  stage: cmake_linux
+  tags:
+    - linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -28,8 +30,10 @@ cmake:
   - echo 'CMake Finished'
   - ls
 
-make:
-  stage: make
+make_linux:
+  stage: make_linux
+  tags:
+    - linux
   cache:
      key: ${CI_COMMIT_SHORT_SHA}
      paths:
@@ -40,8 +44,10 @@ make:
   - make
   - echo 'Make Finished'
 
-tests:
-  stage: tests
+tests_linux:
+  stage: tests_linux
+  tags:
+    - linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths: 
@@ -58,9 +64,11 @@ tests:
   - ./FactoryTests
   - ./EPICSInterfaceTests
   - ./EPICSToolsTests
-doxygen: 
-  stage: doxygen
-  cache:
+doxygen_linux:
+   stage: doxygen_linux
+   tags:
+     - linux
+   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - build/*
@@ -71,8 +79,10 @@ doxygen:
   only:
     - master
 
-sphinx:
-  stage: sphinx
+sphinx_linux:
+  stage: sphinx_linux
+  tags:
+    - linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -83,8 +93,10 @@ sphinx:
   only:
     - master
 
-wheel:
-  stage: wheel
+wheel_linux:
+  stage: wheel_linux
+  tags:
+    - linux
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
