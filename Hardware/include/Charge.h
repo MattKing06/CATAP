@@ -82,7 +82,7 @@ public:
 	@param[out] value: bunch charge.*/
 	double getQ() const;
 	/*! get the beamline position of the charge diagnostic
-	@param[out] value: position.*/
+	@param[out] value: position.*/ 
 	double getPosition() const;
 	/*! get the size of the buffer of charge values for the charge diagnostic
 	@param[out] value: buffer size.*/

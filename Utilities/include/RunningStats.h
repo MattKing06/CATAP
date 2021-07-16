@@ -192,7 +192,7 @@ private:
 	{
 		if (can_add())
 		{
-			std::cout << "RS CAN ADD" << std::endl;
+			//std::cout << "RS CAN ADD" << std::endl;
 			m_n++;
 			// See Knuth TAOCP vol 2, 3rd edition, page 232
 			if (m_n == 1)
@@ -212,7 +212,7 @@ private:
 		}
 		else
 		{
-			std::cout << "RS CANT ADD" << std::endl;
+			//std::cout << "RS CANT ADD" << std::endl;
 		}
 		
 	}
