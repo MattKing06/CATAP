@@ -27,6 +27,7 @@ cmake_linux:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
+  tags: ["linux"]
 
 cmake_windows:
   stage: cmake
@@ -34,11 +35,12 @@ cmake_windows:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - build/*
-    script:
-    - mkdir build
-    - cd build
-    - cmake ../. .
-    - dir
+  script:
+  - mkdir build
+  - cd build
+  - cmake ../. .
+  - dir
+  tags: ["windows"]
 
 make:
   stage: make
