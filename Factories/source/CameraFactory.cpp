@@ -232,11 +232,16 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 
 void CameraFactory::caputMasterLatticeParametersAfterSetup()
 {
+	messenger.printMessage("caputMasterLatticeParametersAfterSetup");
 	for (auto& cam: camera_map)
 	{
-		cam.second.setCentreXPixel(cam.second.getCentreXPixel());
-		cam.second.setCentreYPixel(cam.second.getCentreYPixel());
-		cam.second.setPixelToMM(cam.second.getPixelToMM());
+		messenger.printMessage(cam.first, " setCentreXPixel to ", cam.second.master_lattice_centre_x);
+		cam.second.setCentreXPixel(cam.second.master_lattice_centre_x);
+		messenger.printMessage(cam.first, " getCentreYPixel to ", cam.second.master_lattice_centre_y);
+		cam.second.setCentreYPixel(cam.second.master_lattice_centre_y);
+		messenger.printMessage(cam.first, " setPixelToMM to ", cam.second.master_lattice_pixel_to_mm);
+		cam.second.setPixelToMM(cam.second.master_lattice_pixel_to_mm);
+
 	}
 }
 

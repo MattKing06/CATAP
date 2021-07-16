@@ -58,5 +58,14 @@ public:
 	bool openShutters();
 
 
+	size_t PILaserSystem_RS_size;
+	/*! Clear all the values assoociated with the Running mean and variance stats.*/
+	void clearAllRunningStat();
+	void setAllRunningStatSize(size_t new_val);
+	size_t getRunningStatSize();
+	size_t getRunningStatCount();
+	bool isRunningStatFull();
+
+
 
 };

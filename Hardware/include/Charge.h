@@ -122,6 +122,8 @@ public:
 	void setVectorSize(const size_t& value);
 	/*! empty all buffers.*/
 	void clearBuffers();
+
+
 	/*! charge value w/ associated epicsTimeStamp.*/
 	std::pair< epicsTimeStamp, double > q;
 	/*! beamline position of charge diagnostic.*/
@@ -148,6 +150,13 @@ public:
 	boost::python::dict getRunningStats_Py();
 	/*! Get the running stats object` back directly*/
 	RunningStats& getQRunningStats();
+	/*! Set running stats max count .*/
+	void setRunningStatSize(size_t new_size);
+	/*! lear running stats data.*/
+	void clearRunningStats();
+	size_t getRunningStatCount();
+	size_t getRunningStatSize()const;
+	bool isRunningStatFull();
 protected:
 	std::vector<std::string> aliases;
 	std::string chargeType;

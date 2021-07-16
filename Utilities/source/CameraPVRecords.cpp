@@ -78,6 +78,7 @@ namespace CameraRecords
 	std::string const ANA_SigmaYPix_RBV			    = "ANA_SigmaYPix_RBV"			;
 	std::string const ANA_CovXYPix_RBV				= "ANA_CovXYPix_RBV"		;
 	std::string const ANA_PixelResults_RBV			= "ANA_PixelResults_RBV"	;
+	std::string const ANA_MMResults_RBV				= "ANA_MMResults_RBV"	;
 	std::string const ANA_MaskXCenter_RBV			= "ANA_MaskXCenter_RBV"		;
 	std::string const ANA_MaskXCenter				= "ANA_MaskXCenter"			;
 	std::string const ANA_MaskYCenter_RBV			= "ANA_MaskYCenter_RBV"		;
@@ -129,6 +130,7 @@ namespace CameraRecords
 	ANA_CovXY_RBV					  ,ANA_AvgIntensity_RBV			      ,ANA_Intensity_RBV				  ,
 	ANA_XPix_RBV					  ,ANA_YPix_RBV					      ,ANA_SigmaXPix_RBV				  ,
 	ANA_SigmaYPix_RBV				  ,ANA_CovXYPix_RBV				      ,ANA_PixelResults_RBV			  ,
+	ANA_MMResults_RBV,
 	ANA_MaskXCenter_RBV				  ,ANA_MaskXCenter					  ,ANA_MaskYCenter_RBV				  ,
 	ANA_MaskYCenter					  ,ANA_MaskXRad_RBV				      ,ANA_MaskXRad					  ,
 	ANA_MaskYRad_RBV				  ,ANA_MaskYRad					      ,ANA_CenterX_RBV					  ,
@@ -157,7 +159,8 @@ namespace CameraRecords
 		ANA_SigmaX_RBV						,		ANA_SigmaY_RBV						,		ANA_CovXY_RBV						,  //13
 		ANA_AvgIntensity_RBV				,		ANA_Intensity_RBV					,		ANA_XPix_RBV						,  //14
 		ANA_YPix_RBV						,		ANA_SigmaXPix_RBV					,		ANA_SigmaYPix_RBV					,  //15
-		ANA_CovXYPix_RBV					,		ANA_PixelResults_RBV				,		ANA_MaskXCenter_RBV					,  //16
+		ANA_CovXYPix_RBV					,		ANA_PixelResults_RBV				,		ANA_MMResults_RBV					,  //16
+		ANA_MaskXCenter_RBV					,  
 		ANA_MaskYCenter_RBV					,		ANA_MaskXRad_RBV					,		ANA_MaskYRad_RBV					,  //17
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
 		ANA_UseBkgrnd_RBV					,		ANA_UseNPoint_RBV					,		ANA_NPointStepSize_RBV				,  //19

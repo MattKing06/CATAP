@@ -7,6 +7,7 @@ PILaserSystem::PILaserSystem(STATE mode) :
 	halfWavePlateFactory(LaserHWPFactory(mode)),
 	chargeFactory(ChargeFactory(mode)),
 	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
+	PILaserSystem_RS_size(0),
 	messenger(LoggingSystem(true, true))
 {
 
@@ -15,11 +16,17 @@ PILaserSystem::PILaserSystem(STATE mode) :
 
 bool PILaserSystem::setup(const std::string& version)
 {
+	messenger.printMessage("PILaserSystem calling cameraFactory.setup.");
 	cameraFactory.setup(version, TYPE::CLARA_LASER);
+	messenger.printMessage("PILaserSystem calling mirrorFactory.setup.");
 	mirrorFactory.setup(version);
+	messenger.printMessage("PILaserSystem calling shutterFactory.setup.");
 	shutterFactory.setup(version);
+	messenger.printMessage("PILaserSystem calling halfWavePlateFactory.setup.");
 	halfWavePlateFactory.setup(version);
+	messenger.printMessage("PILaserSystem calling chargeFactory.setup.");
 	chargeFactory.setup(version);
+	messenger.printMessage("PILaserSystem calling laserEnergyMeterFactory.setup.");
 	laserEnergyMeterFactory.setup(version);
 	if (cameraFactory.hasBeenSetup && mirrorFactory.hasBeenSetup
 		&& shutterFactory.hasBeenSetup && halfWavePlateFactory.hasBeenSetup
@@ -32,6 +39,7 @@ bool PILaserSystem::setup(const std::string& version)
 		laserShutter02 = shutterFactory.getShutter(shutterNames.at(1));
 		virtualCathodeCamera = cameraFactory.getCamera(virtualCathodeCameraName);
 		wallCurrentMonitor = chargeFactory.getChargeDiagnostic(wallCurrentMonitorName);
+		setAllRunningStatSize(0);
 		return true;
 	}
 	else
@@ -108,6 +116,36 @@ Shutter& PILaserSystem::getShutter02()
 	// ASK MATT OR DUNCAN WHY THIS WORKS. //
 	return shutterFactory.getShutter(shutterNames.at(1));
 }
+
+size_t PILaserSystem_RS_size;
+/*! Clear all the values assoociated with the Running mean and variance stats.*/
+void PILaserSystem::clearAllRunningStat()
+{
+	wallCurrentMonitor.clearRunningStats();
+	energyMeter.clearRunningStats();
+	virtualCathodeCamera.clearAllRunningStats();
+}
+void PILaserSystem::setAllRunningStatSize(size_t new_val)
+{
+	PILaserSystem_RS_size = new_val;
+	virtualCathodeCamera.setAllRunningStatSizes(PILaserSystem_RS_size);
+	wallCurrentMonitor.setRunningStatSize(PILaserSystem_RS_size);
+	energyMeter.setRunningStatsSize(PILaserSystem_RS_size);
+	clearAllRunningStat();
+}
+size_t PILaserSystem::getRunningStatSize()
+{
+	return PILaserSystem_RS_size;
+}
+size_t PILaserSystem::getRunningStatCount()
+{
+	return wallCurrentMonitor.getRunningStatCount();
+}
+bool PILaserSystem::isRunningStatFull()
+{
+	return wallCurrentMonitor.isRunningStatFull();
+}
+
 
 bool PILaserSystem::canMove()
 {

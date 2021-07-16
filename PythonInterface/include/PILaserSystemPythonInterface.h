@@ -23,6 +23,16 @@ namespace BOOST_PYTHON_LASER_FEEDBACK_INCLUDE
 			.def("getWCM", &PILaserSystem::getWCM, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("canMove", &PILaserSystem::canMove)
 			.def("laserEnergyAutoRange", &PILaserSystem::laserEnergyAutoRange)
+
+
+			.def("setAllRunningStatSize", &PILaserSystem::setAllRunningStatSize)
+			.def("clearAllRunningStat", &PILaserSystem::clearAllRunningStat)
+			.def("getRunningStatSize", &PILaserSystem::getRunningStatSize)
+			.def("getRunningStatCount", &PILaserSystem::getRunningStatCount)
+			.def("isRunningStatFull", &PILaserSystem::isRunningStatFull)
+
+			
+
 			//.def("getCameraName", &PILaserSystem::getCameraName_Py)
 			//.def("getQ", &PILaserSystem::getQ)
 			//.def("getEnergy", &PILaserSystem::getEnergy)

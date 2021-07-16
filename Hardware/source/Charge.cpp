@@ -236,6 +236,29 @@ RunningStats& Charge::getQRunningStats()
 	return qStats;
 }
 
+void Charge::clearRunningStats()
+{
+	return qStats.Clear();
+}
+void Charge::setRunningStatSize(size_t new_size)
+{
+	return qStats.setMaxCount(new_size);
+}
+size_t Charge::getRunningStatSize()const 
+{
+	return qStats.getMaxCount();
+}
+
+size_t Charge::getRunningStatCount()
+{
+	return qStats.NumDataValues();
+}
+bool Charge::isRunningStatFull()
+{
+	return qStats.Full();
+}
+
+
 void Charge::debugMessagesOff()
 {
 	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");
