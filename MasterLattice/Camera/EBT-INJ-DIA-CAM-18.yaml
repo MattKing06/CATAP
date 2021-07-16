@@ -113,7 +113,6 @@ controls_information:
         # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-18:MAGICK:WriteMessage
         # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-18:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-18:MAGICK:NumCapture_RBV
-        ANA_PixMM    : EBT-INJ-DIA-CAM-18:ANA:PixMM
         LED_Sta    : EBT-INJ-DIA-LED-01:Sta
         LED_Off    : EBT-INJ-DIA-LED-01:Off
         LED_On    : EBT-INJ-DIA-LED-01:Sta
