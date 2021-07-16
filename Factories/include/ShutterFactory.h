@@ -12,7 +12,7 @@ public:
 	ShutterFactory(STATE mode);
 	ShutterFactory(const ShutterFactory& copyFactory);
 	~ShutterFactory();
-
+	bool hasBeenSetup;
 
 	/*! Try to open a shutter.
 	@param[in] string, name of shutter 
@@ -166,8 +166,6 @@ private:
 	void updateAliasNameMap(const Shutter& shutter);
 	std::map<std::string, std::string> alias_name_map;
 
-
-	bool hasBeenSetup;
 	STATE mode;
 
 	// dummy_magnet is used to return values when users ask for a nOn-existing magnet's properties 

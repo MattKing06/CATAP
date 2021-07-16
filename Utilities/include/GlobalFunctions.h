@@ -125,6 +125,8 @@ namespace GlobalFunctions {
     }
 
 
+	extern TYPE stringToTYPE(const std::string& type_str);
+
 
 	//template<typename T = double>
 	//double roundToN(const T a, const size_t n)

@@ -22,8 +22,6 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<STATE>())->to_python_target_type());
 		if (is_registered) return;
 
-
-
 		boost::python::enum_<STATE>("STATE", "Global Enums used for displaying States")
 			.value("On", STATE::ON) // Err ???  
 			.value("OFF", STATE::OFF)
@@ -31,6 +29,11 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("ERR", STATE::ERR)
 			.value("ON", STATE::ON) // TODO should we just overload upper and lower case versions of these ?? 
 			.value("OFF", STATE::OFF)
+			
+			.value("YES", STATE::YES)
+			.value("NO", STATE::NO)
+
+
 			.value("UNKNOWN_NAME", STATE::UNKNOWN_NAME)
 			.value("SUCCESS", STATE::SUCCESS)
 			.value("FAIL", STATE::FAIL)

@@ -20,6 +20,8 @@ controls_information:
         ANA_MaskXRad    : CLA-C2V-DIA-CAM-01:ANA:MaskXRad
         ANA_MaskYRad_RBV    : CLA-C2V-DIA-CAM-01:ANA:MaskYRad_RBV
         ANA_MaskYRad    : CLA-C2V-DIA-CAM-01:ANA:MaskYRad
+        ANA_MaskWidth_RBV    : CLA-C2V-DIA-CAM-01:ANA:MaskWidth_RBV
+        ANA_MaskHeight_RBV    : CLA-C2V-DIA-CAM-01:ANA:MaskHeight_RBV
         # ROI SK implementation  
         ROI1_MinX_RBV : CLA-C2V-DIA-CAM-01:ROI1:MinX_RBV
         ROI1_MinX : CLA-C2V-DIA-CAM-01:ROI1:MinX
@@ -39,9 +41,12 @@ controls_information:
         ANA_EnableCallbacks    : CLA-C2V-DIA-CAM-01:ANA:EnableCallbacks
         # the analysis can use a back groun dsubtracted image 
         ANA_NewBkgrnd    : CLA-C2V-DIA-CAM-01:ANA:NewBkgrnd
+        ANA_NewBkgrnd_RBV: CLA-C2V-DIA-CAM-01:ANA:NewBkgrnd_RBV
         ANA_UseBkgrnd    : CLA-C2V-DIA-CAM-01:ANA:UseBkgrnd
+        ANA_UseBkgrnd_RBV    : CLA-C2V-DIA-CAM-01:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
-        ANA_UseNPoint    : CLA-C2V-DIA-CAM-01:ANA:UseNPoint       
+        ANA_UseNPoint    : CLA-C2V-DIA-CAM-01:ANA:UseNPoint     
+        ANA_NPointStepSize    : CLA-C2V-DIA-CAM-01:ANA:UseNPoint_RBV           
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : CLA-C2V-DIA-CAM-01:ANA:UseFloor
         ANA_UseFloor_RBV : CLA-C2V-DIA-CAM-01:ANA:UseFloor_RBV
@@ -59,7 +64,7 @@ controls_information:
         ANA_PixMM    : CLA-C2V-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-C2V-DIA-CAM-01:ANA:PixMM_RBV
         ANA_StepSize    : CLA-C2V-DIA-CAM-01:ANA:StepSize
-        ANA_StepSize_RBV    : CLA-C2V-DIA-CAM-01:ANA:StepSize_RBV
+        ANA_NPointStepSize_RBV    : CLA-C2V-DIA-CAM-01:ANA:StepSize_RBV
         ANA_X_RBV    : CLA-C2V-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-C2V-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-C2V-DIA-CAM-01:ANA:SigmaX_RBV
@@ -72,7 +77,8 @@ controls_information:
         ANA_SigmaXPix_RBV    : CLA-C2V-DIA-CAM-01:ANA:SigmaXPix_RBV
         ANA_SigmaYPix_RBV    : CLA-C2V-DIA-CAM-01:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : CLA-C2V-DIA-CAM-01:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : CLA-C2V-DIA-CAM-01:ANA:PixelResults_RBV 
+        ANA_PixelResults_RBV    : CLA-C2V-DIA-CAM-01:ANA:PixelResults_RBV
+        ANA_MMResults_RBV    : CLA-C2V-DIA-CAM-01:ANA:MMResults_RBV
         # # actuall array data
         CAM2_ArrayData    : CLA-C2V-DIA-CAM-01:CAM2:ArrayData
         HDFB_Buffer_Trigger : CLA-C2V-DIA-CAM-01:CAM:Trigger.PROC
@@ -87,7 +93,10 @@ controls_information:
         CAM_AcquirePeriod_RBV    : CLA-C2V-DIA-CAM-01:CAM:AcquirePeriod_RBV
         CAM_ArrayRate_RBV    : CLA-C2V-DIA-CAM-01:CAM:ArrayRate_RBV
         CAM_Temperature_RBV    : CLA-C2V-DIA-CAM-01:CAM:Temperature_RBV
+
         HDF_Capture    : CLA-C2V-DIA-CAM-01:HDF:Capture
+        HDF_Capture_RBV    : CLA-C2V-DIA-CAM-01:HDF:Capture_RBV
+
         HDF_NumCapture    : CLA-C2V-DIA-CAM-01:HDF:NumCapture
         HDF_FilePath    : CLA-C2V-DIA-CAM-01:HDF:FilePath
         HDF_FileName    : CLA-C2V-DIA-CAM-01:HDF:FileName
@@ -96,6 +105,9 @@ controls_information:
         HDF_FilePath_RBV    : CLA-C2V-DIA-CAM-01:HDF:FilePath_RBV
         HDF_FileName_RBV    : CLA-C2V-DIA-CAM-01:HDF:FileName_RBV
         HDF_WriteFile    : CLA-C2V-DIA-CAM-01:HDF:WriteFile
+        HDF_WriteFile_RBV: CLA-C2V-DIA-CAM-01:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_WriteStatus: CLA-C2V-DIA-CAM-01:HDF:WriteStatus
+        HDF_WriteMessage: CLA-C2V-DIA-CAM-01:HDF:WriteMessage
         # MAGICK_FileName    : CLA-C2V-DIA-CAM-01:MAGICK:FileName
         # MAGICK_FilePath    : CLA-C2V-DIA-CAM-01:MAGICK:FilePath
         # MAGICK_FileNumber    : CLA-C2V-DIA-CAM-01:MAGICK:FileNumber
@@ -119,6 +131,7 @@ properties:
     name_alias: C2V-CAM-01, C2V-CAM1  # include screen names here as well 
     CAM_TYPE : CLARA_CAM 
     SCREEN_NAME : C2V-SCR-01, C2V-YAG-01 # which screen is the camera looking at 
+    IP_ADDRESS_STREAM: ""
     #IP_ADDRESS_STREAM : "" 
     MAX_SHOTS_NUMBER  :	600 # max number of shots that can be taken in a single burst 
     ## these are the indices of each value in the array PixelResults_RBV
@@ -159,7 +172,7 @@ properties:
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
-
+    #HAS_LED: TRUE
 
 
 # PV_IA_SUFFIX_X_RBV		= ANA:X_RBV;

@@ -18,6 +18,8 @@ std::string const ENERGYREADBACK = "ENERGYREADBACK";
 	std::map<std::string, TYPE> laserEnergyMeterTypeToEnum{
 		std::pair<std::string, TYPE>("ENERGYMETER",TYPE::ENERGYMETER) };
 
+	std::vector< int > laserEnergyMeterRangeSettings = { 3, 2, 1, 0 };
+
 
 }
 
