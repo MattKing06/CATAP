@@ -15,7 +15,7 @@ before_script:
 #  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
 #  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
   - ls
-cmake:
+cmake_linux:
   stage: cmake
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -27,6 +27,18 @@ cmake:
   - cmake ../.
   - echo 'CMake Finished'
   - ls
+
+cmake_windows:
+  stage: cmake
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - build/*
+    script:
+    - mkdir build
+    - cd build
+    - cmake ../. .
+    - dir
 
 make:
   stage: make
