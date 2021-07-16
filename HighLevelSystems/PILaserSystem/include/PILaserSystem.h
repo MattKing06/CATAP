@@ -60,8 +60,12 @@ public:
 
 	size_t PILaserSystem_RS_size;
 	/*! Clear all the values assoociated with the Running mean and variance stats.*/
-	void clearAllRunningStats();
-	void setAllRunningStatSizes(size_t new_val);
+	void clearAllRunningStat();
+	void setAllRunningStatSize(size_t new_val);
+	size_t getRunningStatSize();
+	size_t getRunningStatCount();
+	bool isRunningStatFull();
+
 
 
 };

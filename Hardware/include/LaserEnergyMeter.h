@@ -147,12 +147,20 @@ public:
 	size_t bufferSize = 10;
 	/*! Vector size for energy monitoring.*/
 	size_t vectorSize = 10;
+
+
 	/*! Running stats object for LaserEnergy Meter, access to quick statistics*/
 	RunningStats energyStats;
 	/*! Get the running stats back as a dict*/
 	boost::python::dict getRunningStats_Py();
 	/*! Get the running stats object back directly*/
 	RunningStats& getEnergyRunningStats();
+
+	/*! Set running stats max count .*/
+	void setRunningStatsSize(size_t new_size);
+	/*! lear running stats data.*/
+	void clearRunningStats();
+
 	friend class EPICSLaserEnergyMeterInterface;
 protected:
 	//what else does a laser need?

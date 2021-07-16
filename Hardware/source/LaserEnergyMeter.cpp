@@ -263,6 +263,14 @@ bool LaserEnergyMeter::checkBuffer(boost::circular_buffer< double >& buf)
 	return false;
 }
 
+void LaserEnergyMeter::setRunningStatsSize(size_t new_size)
+{
+	energyStats.setMaxCount(new_size);
+}
+void LaserEnergyMeter::clearRunningStats()
+{
+	energyStats.Clear();
+}
 void LaserEnergyMeter::checkStatus()
 {
 	/*if (awak.first - rdy.first > 1.0)
