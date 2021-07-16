@@ -236,8 +236,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
+			.def("setAllRunningStatBufferSizes", &Camera::setAllRunningStatBufferSizes)
 			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
+			.def("clearAllRunningStatBuffers", &Camera::clearAllRunningStatBuffers)
 			.def("getRunningStats", &Camera::getAllRunningStats)
+
+			.def("clearAllRunningStats", &Camera::clearAllRunningStats)
+			.def("setAllRunningStatSizes", &Camera::setAllRunningStatSizes)
+
 			.def("getXPixRunningStats", &Camera::getXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getYPixRunningStats", &Camera::getYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getSigmaXPixRunningStats", &Camera::getSigmaXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())

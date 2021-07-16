@@ -18,7 +18,7 @@ class RunningStats
 
 public:
 	RunningStats(size_t start_buffer_size = 10) :
-		m_n(start_buffer_size),
+		m_n(0),
 		max_n(start_buffer_size),
 		rs_complete(false)
 	{
@@ -27,14 +27,15 @@ public:
 	/*! Clear the running stats values */
 	void Clear()
 	{
+		std::cout << "RS CLEAR" << std::endl;
 		m_n = 0;
 		rs_complete = false;
 	}
 	/*! Set maximum number of entires to be added to running stats
 		@param[in] number of entries         */
-	void setMaxCount(const size_t value)
+	void setMaxCount(const size_t value) // todo, this needs a "keepin grollign forever setting" probably by way of a maxCount of minus 1?? 
 	{
-		max_n = value;
+		max_n = value; 
 	}
 	/*! Get the maximum number of entires
 		@param[out] max number of entries         */
@@ -47,7 +48,7 @@ public:
 	template<typename T>
 	void Push(T x)
 	{
-		doPush((double)x); // TODO this is probably to get rid of a divide by zero ... but might be worth checking
+		doPush((double)x); 
 	}
 
 	/*! Add a new value to the runing stats , templated version
@@ -191,6 +192,7 @@ private:
 	{
 		if (can_add())
 		{
+			std::cout << "RS CAN ADD" << std::endl;
 			m_n++;
 			// See Knuth TAOCP vol 2, 3rd edition, page 232
 			if (m_n == 1)
@@ -206,8 +208,13 @@ private:
 				m_oldM = m_newM;
 				m_oldS = m_newS;
 			}
-			bufferPush(x);
+			//	bufferPush(x);
 		}
+		else
+		{
+			std::cout << "RS CANT ADD" << std::endl;
+		}
+		
 	}
 
 };

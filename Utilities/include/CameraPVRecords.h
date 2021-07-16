@@ -94,6 +94,7 @@ namespace CameraRecords
 	extern std::string const ANA_SigmaYPix_RBV;
 	extern std::string const ANA_CovXYPix_RBV;
 	extern std::string const ANA_PixelResults_RBV;
+	extern std::string const ANA_MMResults_RBV;
 	// MASK DEFINITIONS (8)
 	extern std::string const ANA_MaskXCenter_RBV;
 	extern std::string const ANA_MaskXCenter;

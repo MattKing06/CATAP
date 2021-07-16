@@ -53,6 +53,7 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	else if (pvStruct.pvRecord == ANA_SigmaYPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaYPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_CovXYPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_PixelResults_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixelResults_RBV;	}
+	else if (pvStruct.pvRecord == ANA_MMResults_RBV)	{		pvStruct.updateFunction = this->update_ANA_MMResults_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskXCenter_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskXCenter_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskYCenter_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskYCenter_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskXRad_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;	}
@@ -152,8 +153,6 @@ void EPICSCameraInterface::update_HDF_NumCapture_RBV(const struct event_handler_
 		recastCamera->capture_count.second);
 }
 
-
-
 void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -248,21 +247,21 @@ void EPICSCameraInterface::update_ANA_X_RBV(const struct event_handler_args args
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_mm);
-	recastCamera->x_mm_rs.Push(recastCamera->x_mm.second);
+	//recastCamera->x_mm_rs.Push(recastCamera->x_mm.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_X_RBV = ", 
 	//	recastCamera->x_mm.second);
 }
 void EPICSCameraInterface::update_ANA_Y_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->y_mm);
-	recastCamera->y_mm_rs.Push(recastCamera->y_mm.second);
+	//recastCamera->y_mm_rs.Push(recastCamera->y_mm.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_Y_RBV = ",
 	//	recastCamera->y_mm.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaX_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_x_mm);
-	recastCamera->sigma_x_mm_rs.Push(recastCamera->sigma_x_mm.second);
+	//recastCamera->sigma_x_mm_rs.Push(recastCamera->sigma_x_mm.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaX_RBV = ", 
 	//	recastCamera->sigma_x_mm.second);
 }
@@ -270,7 +269,7 @@ void EPICSCameraInterface::update_ANA_SigmaY_RBV(const struct event_handler_args
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_y_mm);
-	recastCamera->sigma_y_mm_rs.Push(recastCamera->sigma_y_mm.second);
+	//recastCamera->sigma_y_mm_rs.Push(recastCamera->sigma_y_mm.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaY_RBV = ", 
 	//	recastCamera->sigma_y_mm.second);
 }
@@ -278,49 +277,49 @@ void EPICSCameraInterface::update_ANA_CovXY_RBV(const struct event_handler_args 
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_xy_mm);
-	recastCamera->sigma_xy_mm_rs.Push(recastCamera->sigma_xy_mm.second);
+	//recastCamera->sigma_xy_mm_rs.Push(recastCamera->sigma_xy_mm.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CovXY_RBV = ", 
 	//	recastCamera->sigma_xy_mm.second);
 }
 void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->avg_intensity);
-	recastCamera->avg_intensity_rs.Push(recastCamera->avg_intensity.second);
+	//recastCamera->avg_intensity_rs.Push(recastCamera->avg_intensity.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_AvgIntensity_RBV = ", 
 	//	recastCamera->avg_intensity.second);
 }
 void EPICSCameraInterface::update_ANA_Intensity_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sum_intensity);
-	recastCamera->sum_intensity_rs.Push(recastCamera->sum_intensity.second);
+	//recastCamera->sum_intensity_rs.Push(recastCamera->sum_intensity.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_Intensity_RBV = ", 
 	//	recastCamera->sum_intensity.second);
 }
 void EPICSCameraInterface::update_ANA_XPix_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->x_pix);
-	recastCamera->x_pix_rs.Push(recastCamera->x_pix.second);
+	//recastCamera->x_pix_rs.Push(recastCamera->x_pix.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_XPix_RBV = ", 
 	//	recastCamera->x_pix.second);
 }
 void EPICSCameraInterface::update_ANA_YPix_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->y_pix);
-	recastCamera->y_pix_rs.Push(recastCamera->y_pix.second);
+	//recastCamera->y_pix_rs.Push(recastCamera->y_pix.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_YPix_RBV = ",
 	//	recastCamera->y_pix.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaXPix_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_x_pix);
-	recastCamera->sigma_x_pix_rs.Push(recastCamera->sigma_x_pix.second);
+	//recastCamera->sigma_x_pix_rs.Push(recastCamera->sigma_x_pix.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaXPix_RBV = ", 
 	//	recastCamera->sigma_x_pix.second);
 }
 void EPICSCameraInterface::update_ANA_SigmaYPix_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sigma_y_pix);
-	recastCamera->sigma_y_pix_rs.Push(recastCamera->sigma_y_pix.second);
+	//recastCamera->sigma_y_pix_rs.Push(recastCamera->sigma_y_pix.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_SigmaYPix_RBV = ",
 	//	recastCamera->sigma_y_pix.second);
 }
@@ -338,11 +337,22 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 	{
 		recastCamera->isResultUpdated = true;
 
-		recastCamera->x_pix_rs.Push(recastCamera->pixelResults.second[0]);
-		recastCamera->y_pix_rs.Push(recastCamera->pixelResults.second[1]);
-		recastCamera->sigma_x_pix_rs.Push(recastCamera->pixelResults.second[2]);
-		recastCamera->sigma_y_pix_rs.Push(recastCamera->pixelResults.second[3]);
-		recastCamera->sigma_xy_pix_rs.Push(recastCamera->pixelResults.second[4]);
+		recastCamera->x_pix_rs.Push<double>(recastCamera->pixelResults.second[0]);
+		recastCamera->y_pix_rs.Push<double>(recastCamera->pixelResults.second[1]);
+		recastCamera->sigma_x_pix_rs.Push<double>(recastCamera->pixelResults.second[2]);
+		recastCamera->sigma_y_pix_rs.Push<double>(recastCamera->pixelResults.second[3]);
+		recastCamera->sigma_xy_pix_rs.Push<double>(recastCamera->pixelResults.second[4]);
+
+		messenger.printDebugMessage("update_ANA_PixelResults_RBV = ", recastCamera->pixelResults.second[0], " ",
+			recastCamera->pixelResults.second[1], " ",
+			recastCamera->pixelResults.second[2], " ",
+			recastCamera->pixelResults.second[3], " ",
+			recastCamera->pixelResults.second[4]);
+		messenger.printDebugMessage("RS = ", recastCamera->x_pix_rs.Mean(), " ",
+			recastCamera->y_pix_rs.Mean(), " ",
+			recastCamera->sigma_x_pix_rs.Mean(), " ",
+			recastCamera->sigma_y_pix_rs.Mean(), " ",
+			recastCamera->sigma_xy_pix_rs.Mean());
 	}
 	else
 	{
@@ -356,11 +366,23 @@ void EPICSCameraInterface::update_ANA_MMResults_RBV(const struct event_handler_a
 	updateTimeStampDoubleVectorPair(args, recastCamera->mmResults, recastCamera->mmResults.second.size());
 	if (recastCamera->lastResultsUpdateTime_mm_ana_results.secPastEpoch != recastCamera->pixelResults.first.secPastEpoch)
 	{
-		recastCamera->x_mm_rs.Push(recastCamera->mmResults.second[0]);
-		recastCamera->y_mm_rs.Push(recastCamera->mmResults.second[1]);
-		recastCamera->sigma_x_mm_rs.Push(recastCamera->mmResults.second[2]);
-		recastCamera->sigma_y_mm_rs.Push(recastCamera->mmResults.second[3]);
-		recastCamera->sigma_xy_mm_rs.Push(recastCamera->mmResults.second[4]);
+		recastCamera->x_mm_rs.Push<double>(recastCamera->mmResults.second[0]);
+		recastCamera->y_mm_rs.Push<double>(recastCamera->mmResults.second[1]);
+		recastCamera->sigma_x_mm_rs.Push<double>(recastCamera->mmResults.second[2]);
+		recastCamera->sigma_y_mm_rs.Push<double>(recastCamera->mmResults.second[3]);
+		recastCamera->sigma_xy_mm_rs.Push<double>(recastCamera->mmResults.second[4]);
+
+		messenger.printDebugMessage("update_ANA_MMResults_RBV = ", recastCamera->mmResults.second[0], " ",
+			recastCamera->mmResults.second[1], " ",
+			recastCamera->mmResults.second[2], " ",
+			recastCamera->mmResults.second[3], " ",
+			recastCamera->mmResults.second[4]);
+		messenger.printDebugMessage("RS = ", recastCamera->x_mm_rs.Mean(), " ",
+			recastCamera->y_mm_rs.Mean(), " ",
+			recastCamera->sigma_x_mm_rs.Mean(), " ",
+			recastCamera->sigma_y_mm_rs.Mean(), " ",
+			recastCamera->sigma_xy_mm_rs.Mean());
+
 	}
 }
 

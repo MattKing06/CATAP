@@ -236,6 +236,12 @@ RunningStats& Charge::getQRunningStats()
 	return qStats;
 }
 
+//void & Charge::getQRunningStats()
+//{
+//	return qStats;
+//}
+
+
 void Charge::debugMessagesOff()
 {
 	messenger.printDebugMessage(hardwareName, " - DEBUG OFF");

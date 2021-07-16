@@ -177,6 +177,13 @@ public:
 	/*!*/
 	size_t getFullNumYPix() const;
 
+	/*! Clear all the values assoociated with the Running mean and variance stats.*/
+	void clearAllRunningStats();
+	/*! Set the size of all Running mean and variance stats.*/
+	void setAllRunningStatSizes(size_t new_val);
+
+
+	// TODO this is the IMAGE buffer, we (will) also have data buffers conatined in runningstats 
 	/*! Get the buffer trigger value.
 	@param[out] double, value */
 	char getBufferTrigger()const;
@@ -943,6 +950,12 @@ protected:
 	RunningStats avg_intensity_rs;
 	/* sum pixel running stats buffer*/
 	RunningStats sum_intensity_rs;
+
+	// protected so cam-factory can get these eaisly 
+	double master_lattice_pixel_to_mm;
+	long  master_lattice_centre_x;
+	long  master_lattice_centre_y;
+
 private:
 	/*! Type of camera, different camera types have different funcionality, defined in Master Lattice  */
 	TYPE cam_type;
@@ -1073,6 +1086,9 @@ private:
 	/*! Flag set if the roi_data vector has had memory allocated for it.
 	To save application memory this ony happens when requesting image data accross the network */
 	bool roi_data_has_not_vector_resized;
+
+
+
 };
 
 

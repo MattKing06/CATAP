@@ -55,6 +55,11 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 																	  GlobalConstants::double_min, //Y_SIGMA
 																	  GlobalConstants::double_min  //COV
 																	 })),
+
+	master_lattice_pixel_to_mm(GlobalConstants::double_min),
+	master_lattice_centre_x(GlobalConstants::long_min),
+	master_lattice_centre_y(GlobalConstants::long_min),
+
 	lastResultsUpdateTime(epicsTimeStamp()),
 	lastResultsUpdateTime_mm_ana_results(epicsTimeStamp()),
 	isResultUpdated(false),
@@ -405,7 +410,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find X_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "X_CENTER_DEF"))
 	{
-		x_center_pixel.second = (long)std::stoi(paramMap.find("X_CENTER_DEF")->second);
+		master_lattice_centre_x = (long)std::stoi(paramMap.find("X_CENTER_DEF")->second);
 	}
 	else
 	{
@@ -415,7 +420,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "Y_CENTER_DEF"))
 	{
-		y_center_pixel.second = (long)std::stoi(paramMap.find("Y_CENTER_DEF")->second);
+		master_lattice_centre_y = (long)std::stoi(paramMap.find("Y_CENTER_DEF")->second);
 	}
 	else
 	{
@@ -425,11 +430,13 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find PIX_2_MM_RATIO_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "PIX_2_MM_RATIO_DEF"))
 	{
-		pixel_to_mm.second = (double)std::stod(paramMap.find("PIX_2_MM_RATIO_DEF")->second);
+		master_lattice_pixel_to_mm  = std::stod(paramMap.find("PIX_2_MM_RATIO_DEF")->second);
+		messenger.printDebugMessage(hardwareName, " Found PIX_2_MM_RATIO_DEF, value = ", master_lattice_pixel_to_mm);
+
 	}
 	else
 	{
-		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find PIX_2_MM_RATIO_DEF");
 	}
 	// 
 	// 
@@ -1301,8 +1308,32 @@ void Camera::clearAllRunningStatBuffers()
 	sigma_y_mm_rs.clearBuffer();
 	sigma_xy_mm_rs.clearBuffer();
 }
-
-
+void Camera::clearAllRunningStats()
+{
+	x_pix_rs.Clear();
+	y_pix_rs.Clear();
+	sigma_x_pix_rs.Clear();
+	sigma_y_pix_rs.Clear();
+	sigma_xy_pix_rs.Clear();
+	x_mm_rs.Clear();
+	y_mm_rs.Clear();
+	sigma_x_mm_rs.Clear();
+	sigma_y_mm_rs.Clear();
+	sigma_xy_mm_rs.Clear();
+}
+void Camera::setAllRunningStatSizes(size_t new_val)
+{
+	x_pix_rs.setMaxCount(new_val);
+	y_pix_rs.setMaxCount(new_val);
+	sigma_x_pix_rs.setMaxCount(new_val);
+	sigma_y_pix_rs.setMaxCount(new_val);
+	sigma_xy_pix_rs.setMaxCount(new_val);
+	x_mm_rs.setMaxCount(new_val);
+	y_mm_rs.setMaxCount(new_val);
+	sigma_x_mm_rs.setMaxCount(new_val);
+	sigma_y_mm_rs.setMaxCount(new_val);
+	sigma_xy_mm_rs.setMaxCount(new_val);
+}
 
 bool Camera::startAcquiring()
 {

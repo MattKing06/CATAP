@@ -109,6 +109,25 @@ Shutter& PILaserSystem::getShutter02()
 	return shutterFactory.getShutter(shutterNames.at(1));
 }
 
+size_t PILaserSystem_RS_size;
+/*! Clear all the values assoociated with the Running mean and variance stats.*/
+void PILaserSystem::clearAllRunningStats()
+{
+	wallCurrentMonitor.Clear();
+	energyMeter.Clear();
+	virtualCathodeCamera.clearAllRunningStats();
+}
+void PILaserSystem::setAllRunningStatSizes(size_t new_val)
+{
+	PILaserSystem_RS_size = new_val;
+	virtualCathodeCamera.setAllRunningStatSizes(PILaserSystem_RS_size);
+	energyMeter.Clear();
+	virtualCathodeCamera.Clear();
+}
+
+
+
+
 bool PILaserSystem::canMove()
 {
 	if (laserShutter01.isOpen() && laserShutter02.isOpen())
