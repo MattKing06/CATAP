@@ -668,6 +668,9 @@ public:
 	/*! Returns the running stats object for sigma_y_pix, not just the dict
 	@param[out] RunningStats, rs*/
 	RunningStats& getSigmaYPixRunningStats();
+	/*! Returns the running stats object for sigma_xy_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXYPixRunningStats();
 	/*! Returns the running stats object for x_mm, not just the dict
 	@param[out] RunningStats, rs*/
 	RunningStats& getXmmRunningStats();

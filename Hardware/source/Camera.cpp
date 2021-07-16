@@ -1179,6 +1179,11 @@ RunningStats& Camera::getSigmaYPixRunningStats()
 	return sigma_y_pix_rs;
 }
 
+RunningStats& Camera::getSigmaXYPixRunningStats()
+{
+	return sigma_xy_pix_rs;
+}
+
 RunningStats& Camera::getXmmRunningStats()
 {
 	return x_mm_rs;
