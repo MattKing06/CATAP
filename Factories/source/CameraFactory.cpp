@@ -5,6 +5,7 @@
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
 #include <algorithm>
+#include <exception>
 
 CameraFactory::CameraFactory()
 {
@@ -127,7 +128,15 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		EPICSInterface::sendToEPICS();
 	}
 	messenger.printDebugMessage("Finished Setting up EPICS channels, caput default values ");
-	caputMasterLatticeParametersAfterSetup();
+	try
+	{
+		caputMasterLatticeParametersAfterSetup();
+	}
+	catch(const std::out_of_range& error)
+	{
+		std::cout << "ERROR" << std::endl;
+	}
+		
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }

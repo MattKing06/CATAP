@@ -20,6 +20,8 @@ controls_information:
         ANA_MaskXRad    : CLA-S02-DIA-CAM-03:ANA:MaskXRad
         ANA_MaskYRad_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskYRad_RBV
         ANA_MaskYRad    : CLA-S02-DIA-CAM-03:ANA:MaskYRad
+        ANA_MaskWidth_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskWidth_RBV
+        ANA_MaskHeight_RBV    : CLA-S02-DIA-CAM-03:ANA:MaskHeight_RBV
         # ROI SK implementation  
         ROI1_MinX_RBV : CLA-S02-DIA-CAM-03:ROI1:MinX_RBV
         ROI1_MinX : CLA-S02-DIA-CAM-03:ROI1:MinX
@@ -31,17 +33,20 @@ controls_information:
         ROI1_SizeY : CLA-S02-DIA-CAM-03:ROI1:SizeY
         ROI1_ImageData_RBV  : CLA-S02-DIA-CAM-03:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Start_Acquire     : CLA-S02-DIA-CAM-03:CAM:Acquire
-        CAM_Stop_Acquire      : CLA-S02-DIA-CAM-03:CAM:Acquire
+        CAM_Start_Acquire    : CLA-S02-DIA-CAM-03:CAM:Acquire
+        CAM_Stop_Acquire     : CLA-S02-DIA-CAM-03:CAM:Acquire
         CAM_Acquire_RBV    : CLA-S02-DIA-CAM-03:CAM:Acquire_RBV
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-S02-DIA-CAM-03:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : CLA-S02-DIA-CAM-03:ANA:EnableCallbacks
         # the analysis can use a back groun dsubtracted image 
         ANA_NewBkgrnd    : CLA-S02-DIA-CAM-03:ANA:NewBkgrnd
+        ANA_NewBkgrnd_RBV: CLA-S02-DIA-CAM-03:ANA:NewBkgrnd_RBV
         ANA_UseBkgrnd    : CLA-S02-DIA-CAM-03:ANA:UseBkgrnd
+        ANA_UseBkgrnd_RBV    : CLA-S02-DIA-CAM-03:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
-        ANA_UseNPoint    : CLA-S02-DIA-CAM-03:ANA:UseNPoint       
+        ANA_UseNPoint    : CLA-S02-DIA-CAM-03:ANA:UseNPoint     
+        ANA_NPointStepSize    : CLA-S02-DIA-CAM-03:ANA:UseNPoint_RBV           
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : CLA-S02-DIA-CAM-03:ANA:UseFloor
         ANA_UseFloor_RBV : CLA-S02-DIA-CAM-03:ANA:UseFloor_RBV
@@ -72,7 +77,8 @@ controls_information:
         ANA_SigmaXPix_RBV    : CLA-S02-DIA-CAM-03:ANA:SigmaXPix_RBV
         ANA_SigmaYPix_RBV    : CLA-S02-DIA-CAM-03:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : CLA-S02-DIA-CAM-03:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : CLA-S02-DIA-CAM-03:ANA:PixelResults_RBV 
+        ANA_PixelResults_RBV    : CLA-S02-DIA-CAM-03:ANA:PixelResults_RBV
+        ANA_MMResults_RBV    : CLA-S02-DIA-CAM-03:ANA:MMResults_RBV
         # # actuall array data
         CAM2_ArrayData    : CLA-S02-DIA-CAM-03:CAM2:ArrayData
         HDFB_Buffer_Trigger : CLA-S02-DIA-CAM-03:CAM:Trigger.PROC
@@ -87,7 +93,10 @@ controls_information:
         CAM_AcquirePeriod_RBV    : CLA-S02-DIA-CAM-03:CAM:AcquirePeriod_RBV
         CAM_ArrayRate_RBV    : CLA-S02-DIA-CAM-03:CAM:ArrayRate_RBV
         CAM_Temperature_RBV    : CLA-S02-DIA-CAM-03:CAM:Temperature_RBV
+
         HDF_Capture    : CLA-S02-DIA-CAM-03:HDF:Capture
+        HDF_Capture_RBV    : CLA-S02-DIA-CAM-03:HDF:Capture_RBV
+
         HDF_NumCapture    : CLA-S02-DIA-CAM-03:HDF:NumCapture
         HDF_FilePath    : CLA-S02-DIA-CAM-03:HDF:FilePath
         HDF_FileName    : CLA-S02-DIA-CAM-03:HDF:FileName
@@ -98,6 +107,7 @@ controls_information:
         HDF_WriteFile    : CLA-S02-DIA-CAM-03:HDF:WriteFile
         HDF_WriteFile_RBV: CLA-S02-DIA-CAM-03:HDF:WriteFile_RBV # TODO add to all cams
         HDF_WriteStatus: CLA-S02-DIA-CAM-03:HDF:WriteStatus
+        HDF_WriteMessage: CLA-S02-DIA-CAM-03:HDF:WriteMessage
         # MAGICK_FileName    : CLA-S02-DIA-CAM-03:MAGICK:FileName
         # MAGICK_FilePath    : CLA-S02-DIA-CAM-03:MAGICK:FilePath
         # MAGICK_FileNumber    : CLA-S02-DIA-CAM-03:MAGICK:FileNumber
@@ -110,10 +120,9 @@ controls_information:
         # MAGICK_WriteMessage    : CLA-S02-DIA-CAM-03:MAGICK:WriteMessage
         # MAGICK_Capture_RBV    : CLA-S02-DIA-CAM-03:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : CLA-S02-DIA-CAM-03:MAGICK:NumCapture_RBV
-        # ANA_PixMM    : CLA-S02-DIA-CAM-03:ANA:PixMM
-        # LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        # LED_Off    : CLA-LAS-DIA-LED-01:Off
-        # LED_On    : CLA-LAS-DIA-LED-01:On
+        LED_Sta    : CLA-LAS-DIA-LED-01:Sta
+        LED_On : CLA-LAS-DIA-LED-01:On
+        LED_Off : CLA-LAS-DIA-LED-01:Off
 
 properties:
     hardware_type: Camera
