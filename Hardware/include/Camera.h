@@ -71,6 +71,8 @@ public:
 	/*! get the type of the camera (e.g. vela_camera, clara_camera 
 	@param[out] type */
 	TYPE getCamType()const;
+
+	// TODO these all need tidying up / renaming or deleting 
 	/*! convert a horizontal length in pixels to mm for this camera 
 	@param[in] length in pixels 
 	@param[out] length in mm*/
@@ -99,6 +101,15 @@ public:
 	/*! Set the pixels to mm in y(horizontal) direction.
 	@param[in] double, new value */
 	double setpix2mmY(double value);
+
+
+	/*! Get the pixels to mm value (the one that is actaully used in EPICS).
+	@param[out] double, value */
+	double getPixelToMM()const;
+	/*! Set the pixels to mm value (the one that is actaully used in EPICS).
+	@param[in] double, value 
+	@param[out] bool, if command got sent to EPICS (not if it was received). */
+	bool setPixelToMM(double val)const;
 
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
@@ -165,6 +176,7 @@ public:
 	size_t getFullNumXPix() const;
 	/*!*/
 	size_t getFullNumYPix() const;
+
 	/*! Get the buffer trigger value.
 	@param[out] double, value */
 	char getBufferTrigger()const;
@@ -214,12 +226,38 @@ public:
 	/*! Get the PixelResults from analysis. The values expected back are in the following order:
 		[0] - X_POSITION
 		[1] - Y_POSITION
-		[2] - X_SIGMA_POSITION
-		[3] - Y_SIGMA_POSITION
+		[2] - X_SIGMA
+		[3] - Y_SIGMA
 		[4] - COVARIANCE POSITION
 		@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
 	std::vector<double> getPixelResults() const;
 	boost::python::list getPixelResults_Py();
+	/*! Get the mm Results from analysis. The values expected back are in the following order:
+	[0] - X_POSITION
+	[1] - Y_POSITION
+	[2] - X_SIGMA
+	[3] - Y_SIGMA
+	[4] - COVARIANCE 
+	@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
+	std::vector<double> getMMResults() const;
+	boost::python::list getMMResults_Py() ;
+
+	/*! Get the X Pixel defined as the "horizontal" centre of the image-array, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getCentreXPixel()const;
+	/*! Get the Y Pixel defined as the "vertical" centre of the image-array, probably set from the Master Lattice.
+	@param[out] long, value */
+	bool getCentreYPixel()const;
+	/*! Set the X Pixel to be defined as the "horizontal" centre of the image-array.
+	@param[in] long, value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreXPixel(long value);
+	/*! Set the Y Pixel to be defined as the "vertical" centre of the image-array.
+	@param[in] long, value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreYPixel(long value);
+	/*! Check if the image analysis results are updating.
+	@param[out] bool, ture if updating */
 	bool isAnalysisUpdating();
 	/*! Get the Acquire Time for the camera (shutter open time, units??).
 	@param[out] double, value */
@@ -496,8 +534,6 @@ public:
 	/*! Get the mask and ROI settings (Python version).
 	@param[out] dict, values ) */
 	boost::python::dict getMaskandROI_Py()const;
-
-
 	/*! Start image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
@@ -528,8 +564,6 @@ public:
 	/*! Get image analysis state .
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState()const;
-
-
 	/* Set the number of shots to capture when "collecting frames and writing to disc."
 	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
 	bool setNumberOfShotsToCapture(size_t num);
@@ -564,7 +598,6 @@ public:
 	/*! Is camera capture_state != CAPTURING  OR is write_state != NOT_WRITING.
 	@param[out] bool*/
 	bool isNotCapturingOrSaving()const;
-	
 	// TODO	isBsuy has not been fully implmented yet  
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true 
 	* while busy attempts to write more data to disc will fail.
@@ -626,7 +659,6 @@ public:
 	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
-
 	boost::python::list getROIData_Py()const;
 	/*! Get a reference to the current image data. Gives access to image data without copying 
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
@@ -779,25 +811,32 @@ protected:
 	std::pair<epicsTimeStamp, long> roi_size_y;
 	/*! Pixel Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
 	std::pair<epicsTimeStamp, std::vector<double> > pixelResults;
+	/*! mm Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
+	std::pair<epicsTimeStamp, std::vector<double> > mmResults;
 	/*! Stores the last time the ANA Pixel Results were updated, will be used to set isResultUpdated*/
 	epicsTimeStamp lastResultsUpdateTime;
+	/*! Stores the last time the ANA MM Results were updated, purely used fro pushign to the running stats */
+	epicsTimeStamp lastResultsUpdateTime_mm_ana_results;
 	/*! Flag for showing that the ANA Pixel Results are updating */
 	bool isResultUpdated;
 	/*! ROI image data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
-	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > x_center;
-	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > y_center;
+	/*! An x pixel number to be the horizontal centre (probably set from the Master Lattice).	*/
+	std::pair<epicsTimeStamp, double > x_center_pixel;
+	/*! A y pixel number to be the vertical centre (probably set from the Master Lattice).	*/
+	std::pair<epicsTimeStamp, double > y_center_pixel;
 	/*! conversion factor for pixels to mm. Value and epicstimestamp. From Epics. */
 	std::pair<epicsTimeStamp, double > pix_to_mm;
-	/*! conversion factor for pixels to mm in the x direction. From Master Lattice. */
 
+
+	// TODO get rid of these, or make better! 
 	/*! conversion of pixels to mm */
 	std::pair<epicsTimeStamp, double > pix2mm;
 	double pix2mmX_ratio;
 	/*! conversion factor for pixels to mm in the y direction. From Master Lattice. */
 	double pix2mmY_ratio;
+
+
 	/*! Camera acquire time. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > acquire_time;
 	/*! Camera acquire period. Value and epicstimestamp.	*/

@@ -62,6 +62,7 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
+	// TODO thsi fucntion needs to be combined with the other setups, all setup versions should end up in the same setup function!!! 
 	machineAreas = machineAreas_IN;
 
 	if (hasBeenSetup)
@@ -125,9 +126,12 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		}
 		EPICSInterface::sendToEPICS();
 	}
+	messenger.printDebugMessage("Finished Setting up EPICS channels, caput default values ");
+	caputMasterLatticeParametersAfterSetup();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
 	//machineAreas = machineAreas_IN;
@@ -210,10 +214,23 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 		messenger.printDebugMessage("Finished Setting up EPICS channels ");
 		EPICSInterface::sendToEPICS();
 	}
-	messenger.printDebugMessage("Finished Setting up EPICS channels ");
+	messenger.printDebugMessage("Finished Setting up EPICS channels, caput default values ");
+	caputMasterLatticeParametersAfterSetup();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
+
+void CameraFactory::caputMasterLatticeParametersAfterSetup()
+{
+	for (auto& cam: camera_map)
+	{
+		cam.second.setCentreXPixel(cam.second.getCentreXPixel());
+		cam.second.setCentreYPixel(cam.second.getCentreYPixel());
+		cam.second.setPixelToMM(cam.second.getPixelToMM());
+	}
+}
+
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);

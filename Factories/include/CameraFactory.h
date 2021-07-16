@@ -947,10 +947,12 @@ private:
 	/*! sets the pvStruct monitor flag to true if the record is hardcoded as a record to monitor 
 	@param[in] pvStruct, pvStruct to set monitor status for */
 	void setMonitorStatus(pvStruct& pvStruct);
-		
+	
+	/*! All camera objects are held in here */
 	std::map<std::string, Camera> camera_map;
 	
-
+	/*! After setup has finished connecting channels, some values are set to their Master Lattice values, pixel to mm, centre_x and y row/column (maybe some othhers). */
+	void caputMasterLatticeParametersAfterSetup();
 
 	std::vector<TYPE> machineAreas;
 

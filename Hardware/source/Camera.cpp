@@ -25,6 +25,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	pix2mmX_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	pix2mmY_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	max_shots_number(GlobalConstants::size_zero),  // MAGIC STRING
+	pix2mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -48,10 +49,17 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 																	  GlobalConstants::double_min, //Y_SIGMA
 																	  GlobalConstants::double_min  //COV
 																	 })),
+	mmResults(std::make_pair(epicsTimeStamp(), std::vector<double>{GlobalConstants::double_min, //X_POS
+																	  GlobalConstants::double_min, //Y_POS
+																	  GlobalConstants::double_min, //X_SIGMA
+																	  GlobalConstants::double_min, //Y_SIGMA
+																	  GlobalConstants::double_min  //COV
+																	 })),
 	lastResultsUpdateTime(epicsTimeStamp()),
+	lastResultsUpdateTime_mm_ana_results(epicsTimeStamp()),
 	isResultUpdated(false),
-	x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-	y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	x_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	y_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -397,7 +405,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find X_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "X_CENTER_DEF"))
 	{
-		x_center_def = (size_t)std::stof(paramMap.find("X_CENTER_DEF")->second);
+		x_center_pixel.second = (long)std::stoi(paramMap.find("X_CENTER_DEF")->second);
 	}
 	else
 	{
@@ -407,12 +415,25 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "Y_CENTER_DEF"))
 	{
-		y_center_def = (size_t)std::stof(paramMap.find("Y_CENTER_DEF")->second);
+		y_center_pixel.second = (long)std::stoi(paramMap.find("Y_CENTER_DEF")->second);
 	}
 	else
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
 	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find PIX_2_MM_RATIO_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "PIX_2_MM_RATIO_DEF"))
+	{
+		pixel_to_mm.second = (double)std::stod(paramMap.find("PIX_2_MM_RATIO_DEF")->second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
+	}
+	// 
+	// 
+	// 
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find USE_MASK_RAD_LIMITS");
 	if (GlobalFunctions::entryExists(paramMap, "USE_MASK_RAD_LIMITS"))
@@ -488,6 +509,33 @@ TYPE Camera::getCamType()const
 {
 	return cam_type;
 }
+
+double Camera::getPixelToMM()const
+{
+	return pix_to_mm.second;
+}
+bool Camera::setPixelToMM(double value )const
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_PixMM), value);
+}
+
+long Camera::getCentreXPixel()const
+{
+	return x_center_pixel.second;
+}
+bool Camera::getCentreYPixel()const
+{
+	return y_center_pixel.second;
+}
+bool Camera::setCentreXPixel(long value)
+{
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterX), value);
+}
+bool Camera::setCentreYPixel(long value)
+{
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterY), value);
+}
+
 double Camera::pix2mmX(double value)const
 {
 	return value / pix2mmX_ratio;
@@ -568,6 +616,8 @@ double Camera::getSigXYPix()const
 {
 	return sigma_xy_pix.second;
 }
+
+
 size_t Camera::getNumXPixFromArrayData() const
 {
 	return array_data_num_pix_x;
@@ -584,6 +634,7 @@ size_t Camera::getFullNumYPix() const
 {
 	return binary_num_pix_y;
 }
+
 double Camera::getSumIntensity()const
 {
 	return sum_intensity.second;
@@ -1858,6 +1909,15 @@ boost::python::list Camera::getPixelResults_Py()
 	//std::vector<double> returnList = pixelResults.second;
 	return to_py_list<double>(pixelResults.second);
 }
+std::vector<double> Camera::getMMResults() const
+{
+	return mmResults.second;
+}
+boost::python::list Camera::getMMResults_Py()
+{
+	return to_py_list<double>(pixelResults.second);
+}
+
 bool Camera::isAnalysisUpdating()
 {
 	return isResultUpdated;

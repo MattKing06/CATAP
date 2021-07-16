@@ -76,6 +76,7 @@ static void update_ANA_SigmaXPix_RBV(const struct event_handler_args args);
 static void update_ANA_SigmaYPix_RBV(const struct event_handler_args args);
 static void update_ANA_CovXYPix_RBV(const struct event_handler_args args);
 static void update_ANA_PixelResults_RBV(const struct event_handler_args args);
+static void update_ANA_MMResults_RBV(const struct event_handler_args args);
 static void update_ANA_MaskXCenter_RBV(const struct event_handler_args args);
 static void update_ANA_MaskYCenter_RBV(const struct event_handler_args args);
 static void update_ANA_MaskXRad_RBV(const struct event_handler_args args);

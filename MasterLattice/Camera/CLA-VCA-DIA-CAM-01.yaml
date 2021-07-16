@@ -83,6 +83,7 @@ controls_information:
         ANA_SigmaYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXYPix_RBV
         ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV 
+        ANA_MMResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:MMResults_RBV 
         # # actuall array data
         CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
         # # meh LEDs, should probably go in their own factory?? 

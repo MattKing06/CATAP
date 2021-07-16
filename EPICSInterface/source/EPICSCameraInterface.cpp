@@ -337,12 +337,34 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 	if (recastCamera->lastResultsUpdateTime.secPastEpoch != recastCamera->pixelResults.first.secPastEpoch)
 	{
 		recastCamera->isResultUpdated = true;
+
+		recastCamera->x_pix_rs.Push(recastCamera->pixelResults.second[0]);
+		recastCamera->y_pix_rs.Push(recastCamera->pixelResults.second[1]);
+		recastCamera->sigma_x_pix_rs.Push(recastCamera->pixelResults.second[2]);
+		recastCamera->sigma_y_pix_rs.Push(recastCamera->pixelResults.second[3]);
+		recastCamera->sigma_xy_pix_rs.Push(recastCamera->pixelResults.second[4]);
 	}
 	else
 	{
 		recastCamera->isResultUpdated = false;
 	}
 }
+void EPICSCameraInterface::update_ANA_MMResults_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	recastCamera->lastResultsUpdateTime_mm_ana_results = recastCamera->mmResults.first;
+	updateTimeStampDoubleVectorPair(args, recastCamera->mmResults, recastCamera->mmResults.second.size());
+	if (recastCamera->lastResultsUpdateTime_mm_ana_results.secPastEpoch != recastCamera->pixelResults.first.secPastEpoch)
+	{
+		recastCamera->x_mm_rs.Push(recastCamera->mmResults.second[0]);
+		recastCamera->y_mm_rs.Push(recastCamera->mmResults.second[1]);
+		recastCamera->sigma_x_mm_rs.Push(recastCamera->mmResults.second[2]);
+		recastCamera->sigma_y_mm_rs.Push(recastCamera->mmResults.second[3]);
+		recastCamera->sigma_xy_mm_rs.Push(recastCamera->mmResults.second[4]);
+	}
+}
+
+
 void EPICSCameraInterface::update_ANA_MaskXCenter_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->mask_x_center);
@@ -370,16 +392,16 @@ void EPICSCameraInterface::update_ANA_MaskYRad_RBV(const struct event_handler_ar
 }
 void EPICSCameraInterface::update_ANA_CenterX_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->x_center);
+	updateTimeStampDoublePair(args, recastCamera->x_center_pixel);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CenterX_RBV = ",
-		recastCamera->x_center.second);
+		recastCamera->x_center_pixel.second);
 }
 void EPICSCameraInterface::update_ANA_CenterY_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->y_center);
+	updateTimeStampDoublePair(args, recastCamera->y_center_pixel);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CenterY_RBV = ",
-		recastCamera->y_center.second);
+		recastCamera->y_center_pixel.second);
 }
 void EPICSCameraInterface::update_CAM_AcquireTime_RBV(const struct event_handler_args args)
 {
