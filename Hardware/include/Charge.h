@@ -157,6 +157,11 @@ public:
 	size_t getRunningStatCount();
 	size_t getRunningStatSize()const;
 	bool isRunningStatFull();
+
+	friend class ChargeFactory;
+	friend class EPICSCameraInterface;
+	friend class PILaserSystem;
+
 protected:
 	std::vector<std::string> aliases;
 	std::string chargeType;

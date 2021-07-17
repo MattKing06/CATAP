@@ -238,10 +238,12 @@ RunningStats& Charge::getQRunningStats()
 
 void Charge::clearRunningStats()
 {
+	std::cout << "Charge qStats.Clear " << std::endl;
 	return qStats.Clear();
 }
 void Charge::setRunningStatSize(size_t new_size)
 {
+	std::cout << "Charge qStats.setMaxCount " << new_size << std::endl;
 	return qStats.setMaxCount(new_size);
 }
 size_t Charge::getRunningStatSize()const 

@@ -9,7 +9,6 @@ namespace BOOST_PYTHON_RUNNING_STATS_INCLUDE
 		if (is_registered) return;
 
 		boost::python::class_<RunningStats, boost::noncopyable>("RunningStats", boost::python::no_init)
-			.def("buffer", &RunningStats::Buffer_Py)
 			.def("clear", &RunningStats::Clear)
 			.def("setMaxCount", &RunningStats::setMaxCount)
 			.def("getMaxCount", &RunningStats::getMaxCount)
@@ -19,6 +18,9 @@ namespace BOOST_PYTHON_RUNNING_STATS_INCLUDE
 			.def("standardDeviation", &RunningStats::StandardDeviation)
 			.def("isFull", &RunningStats::Full)
 			.def("isNotFull", &RunningStats::NotFull)
+			
+			/// TODO not properly implmented yet 
+			.def("buffer", &RunningStats::Buffer_Py)
 			.def("getRunningStats", &RunningStats::getRunningStats)
 			.def("setBufferSize", &RunningStats::setBufferSize)
 			.def("getBufferSize", &RunningStats::getBuferSize)

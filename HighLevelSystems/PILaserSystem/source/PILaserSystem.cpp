@@ -1,4 +1,5 @@
 #include <PILaserSystem.h>
+#include <iostream>
 
 PILaserSystem::PILaserSystem(STATE mode) :
 	cameraFactory(CameraFactory(mode)),
@@ -39,6 +40,8 @@ bool PILaserSystem::setup(const std::string& version)
 		laserShutter02 = shutterFactory.getShutter(shutterNames.at(1));
 		virtualCathodeCamera = cameraFactory.getCamera(virtualCathodeCameraName);
 		wallCurrentMonitor = chargeFactory.getChargeDiagnostic(wallCurrentMonitorName);
+
+		// initilalzie these, but myabe we shouldn't idk   
 		setAllRunningStatSize(0);
 		return true;
 	}
@@ -121,15 +124,23 @@ size_t PILaserSystem_RS_size;
 /*! Clear all the values assoociated with the Running mean and variance stats.*/
 void PILaserSystem::clearAllRunningStat()
 {
+	std::cout << "PILaserSystem wallCurrentMonitor.clearRunningStats " << std::endl;
 	wallCurrentMonitor.clearRunningStats();
+	std::cout << "PILaserSystem energyMeter.clearRunningStats " << std::endl;
 	energyMeter.clearRunningStats();
+	std::cout << "PILaserSystem virtualCathodeCamera.clearRunningStats " << std::endl;
 	virtualCathodeCamera.clearAllRunningStats();
 }
 void PILaserSystem::setAllRunningStatSize(size_t new_val)
 {
+	std::cout << "PILaserSystem setAllRunningStatSize passed " << new_val << std::endl;
 	PILaserSystem_RS_size = new_val;
+	std::cout << "PILaserSystem PILaserSystem_RS_size = " << PILaserSystem_RS_size << std::endl;
+	std::cout << "PILaserSystem virtualCathodeCamera.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
 	virtualCathodeCamera.setAllRunningStatSizes(PILaserSystem_RS_size);
+	std::cout << "PILaserSystem wallCurrentMonitor.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
 	wallCurrentMonitor.setRunningStatSize(PILaserSystem_RS_size);
+	std::cout << "PILaserSystem energyMeter.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
 	energyMeter.setRunningStatsSize(PILaserSystem_RS_size);
 	clearAllRunningStat();
 }

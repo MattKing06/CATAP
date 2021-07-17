@@ -1310,28 +1310,48 @@ void Camera::clearAllRunningStatBuffers()
 }
 void Camera::clearAllRunningStats()
 {
+	std::cout << "Camera x_pix_rs.Clear " << std::endl;
 	x_pix_rs.Clear();
+	std::cout << "Camera y_pix_rs.Clear " << std::endl;
 	y_pix_rs.Clear();
+	std::cout << "Camera sigma_x_pix_rs.Clear " << std::endl;
 	sigma_x_pix_rs.Clear();
+	std::cout << "Camera sigma_y_pix_rs.Clear " << std::endl;
 	sigma_y_pix_rs.Clear();
+	std::cout << "Camera sigma_xy_pix_rs.Clear " << std::endl;
 	sigma_xy_pix_rs.Clear();
+	std::cout << "Camera x_mm_rs.Clear " << std::endl;
 	x_mm_rs.Clear();
+	std::cout << "Camera y_mm_rs.Clear " << std::endl;
 	y_mm_rs.Clear();
+	std::cout << "Camera sigma_x_mm_rs.Clear " << std::endl;
 	sigma_x_mm_rs.Clear();
+	std::cout << "Camera sigma_y_mm_rs.Clear " << std::endl;
 	sigma_y_mm_rs.Clear();
+	std::cout << "Camera sigma_xy_mm_rs.Clear " << std::endl;
 	sigma_xy_mm_rs.Clear();
 }
 void Camera::setAllRunningStatSizes(size_t new_val)
 {
+	std::cout << "Camera x_pix_rs.setMaxCount " << new_val << std::endl;
 	x_pix_rs.setMaxCount(new_val);
+	std::cout << "Camera y_pix_rs.setMaxCount " << new_val << std::endl;
 	y_pix_rs.setMaxCount(new_val);
+	std::cout << "Camera sigma_x_pix_rs.setMaxCount " << new_val << std::endl;
 	sigma_x_pix_rs.setMaxCount(new_val);
+	std::cout << "Camera sigma_y_pix_rs.setMaxCount " << new_val << std::endl;
 	sigma_y_pix_rs.setMaxCount(new_val);
+	std::cout << "Camera sigma_xy_pix_rs.setMaxCount " << new_val << std::endl;
 	sigma_xy_pix_rs.setMaxCount(new_val);
+	std::cout << "Camera x_mm_rs.setMaxCount " << new_val << std::endl;
 	x_mm_rs.setMaxCount(new_val);
+	std::cout << "Camera y_mm_rs.setMaxCount " << new_val << std::endl;
 	y_mm_rs.setMaxCount(new_val);
+	std::cout << "Camera sigma_x_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_x_mm_rs.setMaxCount(new_val);
+	std::cout << "Camera sigma_y_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_y_mm_rs.setMaxCount(new_val);
+	std::cout << "Camera sigma_xy_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_xy_mm_rs.setMaxCount(new_val);
 }
 

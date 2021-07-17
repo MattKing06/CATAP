@@ -4,12 +4,15 @@
 #include <iostream>
 #include "PythonTypeConversions.h"
 
+
+
+
 class RunningStats
 {
 	// thanks to https://www.johndcook.com/blog/standard_deviation/
 
 
-	// what shoudl this do?
+	// what should this do?
 	// rolling mean / variance, of max_n number of shotsm, that are also added to a buffer  
 	// 
 	// another seperate biffer that just gets and stores some data  >>> ?
@@ -17,13 +20,31 @@ class RunningStats
 	// a seperate ciruclar buffer that providea sollign mean "windowed" over the last new_counter biuffersize  (NOT YET IMPLEMENTED) 
 
 public:
-	RunningStats(size_t start_buffer_size = 10) :
+
+	// let's keep a count of RS objects,
+	static size_t total_rs_object_count;
+	static size_t current_rs_object_count;
+
+
+	RunningStats() :
 		m_n(0),
-		max_n(start_buffer_size),
+		max_n(0),
 		rs_complete(false)
 	{
+		total_rs_object_count += 1;
+		current_rs_object_count += 1;
+		std::cout << "RS Construct: total_rs_object_count  = " << total_rs_object_count << std::endl;
+		std::cout << "RS Construct: current_rs_object_count  = " << current_rs_object_count << std::endl;
+		size_t start_buffer_size = 10;
 		setBufferSize(start_buffer_size); // MAGIC
 	}
+	~RunningStats() {
+		current_rs_object_count -= 1;
+		std::cout << "RS Destry: total_rs_object_count  = " << total_rs_object_count << std::endl;
+		std::cout << "RS Destry: current_rs_object_count  = " << current_rs_object_count << std::endl;
+	}
+
+
 	/*! Clear the running stats values */
 	void Clear()
 	{
@@ -36,11 +57,13 @@ public:
 	void setMaxCount(const size_t value) // todo, this needs a "keepin grollign forever setting" probably by way of a maxCount of minus 1?? 
 	{
 		max_n = value; 
+		std::cout << "setMaxCount " << value << ", max_n " << max_n << std::endl;
 	}
 	/*! Get the maximum number of entires
 		@param[out] max number of entries         */
 	size_t getMaxCount() const
 	{
+		std::cout << "getMaxCount " << max_n << std::endl;
 		return max_n;
 	}
 	/*! Add a new value to the runing stats , templated version
@@ -218,6 +241,7 @@ private:
 	}
 
 };
+
 #endif // _RUNNING_STATS_H_
 
 
