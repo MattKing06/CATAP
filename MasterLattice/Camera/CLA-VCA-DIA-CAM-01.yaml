@@ -3,6 +3,7 @@ controls_information:
     PV: true
     pv_record_map:
         # NO _RBV versions of these PVs 
+        # THESE SET TH EMAS AND ROI TOGTHER AND SHOULD BE USED 
         ROIandMask_SetX : CLA-VCA-DIA-CAM-01:ANA:SetX
         ROIandMask_SetY : CLA-VCA-DIA-CAM-01:ANA:SetY
         ROIandMask_SetXrad : CLA-VCA-DIA-CAM-01:ANA:SetXRad
@@ -20,7 +21,7 @@ controls_information:
         ANA_MaskXRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad_RBV
         ANA_MaskYRad    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad
         ANA_MaskYRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad_RBV
-        
+       
         ANA_MaskWidth_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskWidth_RBV
         ANA_MaskHeight_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskHeight_RBV
         
@@ -41,6 +42,10 @@ controls_information:
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
+        # analysis overlays  (TO BE BENCHMARKED AND CROSS CHECKED SUSPECT INVGERTED Y AXIS) 
+        ANA_OVERLAY_1_CROSS : CLA-VCA-DIA-CAM-01:OVER:1:Use
+        ANA_OVERLAY_2_RESULT : CLA-VCA-DIA-CAM-01:OVER:2:Use
+        ANA_OVERLAY_3_MASK : CLA-VCA-DIA-CAM-01:OVER:3:Use
         # the analysis can use a back ground subtracted image 
         ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
         ANA_NewBkgrnd_RBV: CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd_RBV
@@ -52,6 +57,7 @@ controls_information:
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : CLA-VCA-DIA-CAM-01:ANA:UseFloor
         ANA_UseFloor_RBV : CLA-VCA-DIA-CAM-01:ANA:UseFloor_RBV
+
         ANA_FloorLevel    : CLA-VCA-DIA-CAM-01:ANA:Floor
         ANA_FloorLevel_RBV    : CLA-VCA-DIA-CAM-01:ANA:Floor_RBV
         ANA_FlooredPoints_RBV    : CLA-VCA-DIA-CAM-01:ANA:FLOORED_PTS

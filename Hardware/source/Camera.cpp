@@ -76,6 +76,9 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	cross_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	results_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 

@@ -249,6 +249,58 @@ public:
 	std::vector<double> getMMResults() const;
 	boost::python::list getMMResults_Py() ;
 
+	/*! Enable the Cross-Overlay on the decimated camera image array sent over the network. 
+	* Will be visiable to many camera image viewing apps, 
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayCross();
+	/*! Disable the Cross-Overlay on the decimated camera image array sent over the network. 	
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disbaleOverlayCross();
+	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayCrossState()const;
+	/*! Compare the current state of the cross overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayCrossStateEnabled()const;
+	/*! Compare the current state of the cross overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayCrossStateDisabled()const;
+	/*! Enable the Mask-Overlay on the decimated camera image array sent over the network.
+	* Will be visiable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayMask();
+	/*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disbaleOverlayMask();
+	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayMaskState()const;
+	/*! Compre the current state of the Mask-Overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayMaskStateEnabled()const;
+	/*! Compare the current state of the Mask-Overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayMaskStateDisabled()const;
+	/*! Enable the Results-Overlay on the decimated camera image array sent over the network.
+	* Will be visiable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayResults();
+	/*! Disable the Results-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disbaleOverlayResults();
+	/*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayResultsState()const;
+	/*! Comapre the current state of the Results-Overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayMaskResultsEnabled()const;
+	/*! Compare the current state of the Results-Overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayMaskResultsDisabled()const;
+
 	/*! Get the X Pixel defined as the "horizontal" centre of the image-array, probably set from the Master Lattice.
 	@param[out] long, value */
 	long getCentreXPixel()const;
@@ -757,19 +809,23 @@ public:
 	friend class CameraFactory;
 protected:
 	/* 
-		In general we put data that comes back from EPCIS into a timestamp, data pair. 
+		In general we put data that comes back from EPICS into a timestamp, data pair. 
 		This is because we expect to be able to use the time stamps to synchonize different data streams 
 	*/
+	/*! Cross-overlay status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> cross_overlay;
+	/*! Mask-overlay status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> mask_overlay;
+	/*! Results-overlay status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> results_overlay;
 	/*! Camera gain, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
 	/*! Camera set new background STATE. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE > set_new_background;
-
 	/*! Camera set new background STATE. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > capture_count;
-
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
 	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/

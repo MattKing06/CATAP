@@ -723,7 +723,19 @@ void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args a
 	//messenger.printDebugMessage(recastCamera->hardwareName, " R = ",recastCamera->pixel_height.second);
 }
 
+void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	updateTimeStampLongPair(args, recastCamera->pixel_height);
+}
+void EPICSCameraInterface::update_ANA_OVERLAY_2_RESULT(const struct event_handler_args args)
+{
 
+}
+void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK(const struct event_handler_args args)
+{
+
+}
 
 
 
