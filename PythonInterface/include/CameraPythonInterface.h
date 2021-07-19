@@ -230,9 +230,30 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setCentreXPixel", &Camera::setCentreXPixel)
 			.def("setCentreYPixel", &Camera::setCentreYPixel)
 
+
 				
 			.def("getPixelToMM", &Camera::getPixelToMM)
 			.def("setPixelToMM", &Camera::setPixelToMM)
+			
+				
+				
+			.def("enableOverlayCross", &Camera::enableOverlayCross)
+			.def("disbaleOverlayCross", &Camera::disbaleOverlayCross)
+			.def("getOverlayCrossState", &Camera::getOverlayCrossState)
+			.def("isOverlayCrossEnabled", &Camera::isOverlayCrossEnabled)
+			.def("isOverlayCrossDisabled", &Camera::isOverlayCrossDisabled)
+			.def("enableOverlayMask", &Camera::enableOverlayMask)
+			.def("disbaleOverlayMask", &Camera::disbaleOverlayMask)
+			.def("getOverlayMaskState", &Camera::getOverlayMaskState)
+			.def("isOverlayMaskEnabled", &Camera::isOverlayMaskEnabled)
+			.def("isOverlayMaskDisabled", &Camera::isOverlayMaskDisabled)
+			.def("enableOverlayResult", &Camera::enableOverlayResult)
+			.def("disbaleOverlayResult", &Camera::disbaleOverlayResult)
+			.def("getOverlayResultState", &Camera::getOverlayResultState)
+			.def("isOverlayResultEnabled", &Camera::isOverlayResultEnabled)
+			.def("isOverlayResultDisabled", &Camera::isOverlayResultDisabled)
+			
+			// TODO the runnings atsts and buffersd a re being updated 
 
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)

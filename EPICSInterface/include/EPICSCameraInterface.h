@@ -91,9 +91,9 @@ static void update_LED_Sta(const struct event_handler_args args);
 
 
 
-static void update_ANA_OVERLAY_1_CROSS(const struct event_handler_args args);
-static void update_ANA_OVERLAY_2_RESULT(const struct event_handler_args args);
-static void update_ANA_OVERLAY_3_MASK(const struct event_handler_args args);
+static void update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args);
+static void update_ANA_OVERLAY_2_RESULT_RBV(const struct event_handler_args args);
+static void update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args);
 
 
 

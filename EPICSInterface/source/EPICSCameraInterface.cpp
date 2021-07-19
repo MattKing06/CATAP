@@ -25,74 +25,122 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 {
 	using namespace CameraRecords;
 	// TODOD could be a const map and then a lookup ... might be neater?? 
-	
-	
-	
 	if (pvStruct.pvRecord == HDF_WriteFile_RBV)	{		pvStruct.updateFunction = this->update_HDF_WriteFile_RBV;	}
-	else if (pvStruct.pvRecord == HDF_WriteStatus)	{		pvStruct.updateFunction = this->update_HDF_WriteStatus;	}
-	else if (pvStruct.pvRecord == HDF_WriteMessage)	{		pvStruct.updateFunction = this->update_HDF_WriteMessage_RBV;	}
-	else if (pvStruct.pvRecord == HDF_FileName_RBV)	{		pvStruct.updateFunction = this->update_HDF_FileName_RBV;	}
-	else if (pvStruct.pvRecord == HDF_FilePath_RBV)	{		pvStruct.updateFunction = this->update_HDF_FilePath_RBV;	}
+	else if (pvStruct.pvRecord == HDF_WriteStatus)		{		pvStruct.updateFunction = this->update_HDF_WriteStatus;	}
+	else if (pvStruct.pvRecord == HDF_WriteMessage)		{		pvStruct.updateFunction = this->update_HDF_WriteMessage_RBV;	}
+	else if (pvStruct.pvRecord == HDF_FileName_RBV)		{		pvStruct.updateFunction = this->update_HDF_FileName_RBV;	}
+	else if (pvStruct.pvRecord == HDF_FilePath_RBV)		{		pvStruct.updateFunction = this->update_HDF_FilePath_RBV;	}
 	else if (pvStruct.pvRecord == HDF_FileNumber_RBV)	{		pvStruct.updateFunction = this->update_HDF_FileNumber_RBV;	}
 	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
-	else if (pvStruct.pvRecord == HDF_Capture_RBV)	{		pvStruct.updateFunction = this->update_HDF_Capture_RBV;	}
-	else if (pvStruct.pvRecord == CAM_Acquire_RBV)	{		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;	}
+	else if (pvStruct.pvRecord == HDF_Capture_RBV)		{		pvStruct.updateFunction = this->update_HDF_Capture_RBV;	}
+	else if (pvStruct.pvRecord == CAM_Acquire_RBV)		{		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;	}
 	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
 	else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
 	else if (pvStruct.pvRecord == ANA_EnableCallbacks_RBV)	{		pvStruct.updateFunction = this->update_ANA_EnableCallbacks_RBV;	}
-	else if (pvStruct.pvRecord == ANA_X_RBV)	{		pvStruct.updateFunction = this->update_ANA_X_RBV;	}
-	else if (pvStruct.pvRecord == ANA_Y_RBV)	{		pvStruct.updateFunction = this->update_ANA_Y_RBV;	}
-	else if (pvStruct.pvRecord == ANA_SigmaX_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaX_RBV;	}
-	else if (pvStruct.pvRecord == ANA_SigmaY_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaY_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CovXY_RBV)	{		pvStruct.updateFunction = this->update_ANA_CovXY_RBV;	}
+	else if (pvStruct.pvRecord == ANA_X_RBV)			{		pvStruct.updateFunction = this->update_ANA_X_RBV;	}
+	else if (pvStruct.pvRecord == ANA_Y_RBV)			{		pvStruct.updateFunction = this->update_ANA_Y_RBV;	}
+	else if (pvStruct.pvRecord == ANA_SigmaX_RBV)		{		pvStruct.updateFunction = this->update_ANA_SigmaX_RBV;	}
+	else if (pvStruct.pvRecord == ANA_SigmaY_RBV)		{		pvStruct.updateFunction = this->update_ANA_SigmaY_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CovXY_RBV)		{		pvStruct.updateFunction = this->update_ANA_CovXY_RBV;	}
 	else if (pvStruct.pvRecord == ANA_AvgIntensity_RBV)	{		pvStruct.updateFunction = this->update_ANA_AvgIntensity_RBV;	}
 	else if (pvStruct.pvRecord == ANA_Intensity_RBV)	{		pvStruct.updateFunction = this->update_ANA_Intensity_RBV;	}
-	else if (pvStruct.pvRecord == ANA_XPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_XPix_RBV;	}
-	else if (pvStruct.pvRecord == ANA_YPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_YPix_RBV;	}
+	else if (pvStruct.pvRecord == ANA_XPix_RBV)			{		pvStruct.updateFunction = this->update_ANA_XPix_RBV;	}
+	else if (pvStruct.pvRecord == ANA_YPix_RBV)			{		pvStruct.updateFunction = this->update_ANA_YPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_SigmaXPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaXPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_SigmaYPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaYPix_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CovXYPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CovXYPix_RBV)		{		pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_PixelResults_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixelResults_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MMResults_RBV)	{		pvStruct.updateFunction = this->update_ANA_MMResults_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskXCenter_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskXCenter_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskYCenter_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskYCenter_RBV;	}
-	else if (pvStruct.pvRecord == ANA_MaskXRad_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;	}
-	else if (pvStruct.pvRecord == ANA_MaskYRad_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskYRad_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CenterX_RBV)	{		pvStruct.updateFunction = this->update_ANA_CenterX_RBV;	}	
-	else if (pvStruct.pvRecord == ANA_CenterY_RBV)	{		pvStruct.updateFunction = this->update_ANA_CenterY_RBV;	}
-	else if (pvStruct.pvRecord == ANA_PixMM_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixMM_RBV;	}
+	else if (pvStruct.pvRecord == ANA_MaskXRad_RBV)		{		pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;	}
+	else if (pvStruct.pvRecord == ANA_MaskYRad_RBV)		{		pvStruct.updateFunction = this->update_ANA_MaskYRad_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CenterX_RBV)		{		pvStruct.updateFunction = this->update_ANA_CenterX_RBV;	}	
+	else if (pvStruct.pvRecord == ANA_CenterY_RBV)		{		pvStruct.updateFunction = this->update_ANA_CenterY_RBV;	}
+	else if (pvStruct.pvRecord == ANA_PixMM_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixMM_RBV;	}
 	else if (pvStruct.pvRecord == CAM_AcquireTime_RBV)	{		pvStruct.updateFunction = this->update_CAM_AcquireTime_RBV;	}
-	else if (pvStruct.pvRecord == CAM_AcquirePeriod_RBV)	{		pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;	}
+	else if (pvStruct.pvRecord == CAM_AcquirePeriod_RBV){		pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;	}
 	else if (pvStruct.pvRecord == CAM_ArrayRate_RBV)	{		pvStruct.updateFunction = this->update_CAM_ArrayRate_RBV;	}
 	else if (pvStruct.pvRecord == CAM_Temperature_RBV)	{		pvStruct.updateFunction = this->update_CAM_Temperature_RBV;	}	
 	else if (pvStruct.pvRecord == HDFB_Buffer_FilePath_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FilePath_RBV;	}
 	else if (pvStruct.pvRecord == HDFB_Buffer_FileName_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FileName_RBV;	}
 	else if (pvStruct.pvRecord == HDFB_Buffer_FileNumber_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FileNumber_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_MinX_RBV)	{		pvStruct.updateFunction = this->update_ROI1_MinX_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_MinY_RBV)	{		pvStruct.updateFunction = this->update_ROI1_MinY_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_SizeX_RBV)	{		pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_SizeY_RBV)	{		pvStruct.updateFunction = this->update_ROI1_SizeY_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_MinX_RBV)		{		pvStruct.updateFunction = this->update_ROI1_MinX_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_MinY_RBV)		{		pvStruct.updateFunction = this->update_ROI1_MinY_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_SizeX_RBV)		{		pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_SizeY_RBV)		{		pvStruct.updateFunction = this->update_ROI1_SizeY_RBV;	}
 	else if (pvStruct.pvRecord == ROI1_ImageData_RBV)	{		pvStruct.updateFunction = this->update_ROI1_ImageData_RBV;	}
-	else if (pvStruct.pvRecord == ANA_UseFloor_RBV) {		pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;	}
+	else if (pvStruct.pvRecord == ANA_UseFloor_RBV)		{		pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;	}
 	else if (pvStruct.pvRecord == ANA_FloorLevel_RBV)	{		pvStruct.updateFunction = this->update_ANA_FloorLevel_RBV;	}
-	else if (pvStruct.pvRecord == ANA_FlooredPoints_RBV)	{		pvStruct.updateFunction = this->update_ANA_FlooredPoints_RBV;	}
+	else if (pvStruct.pvRecord == ANA_FlooredPoints_RBV){		pvStruct.updateFunction = this->update_ANA_FlooredPoints_RBV;	}
 	else if (pvStruct.pvRecord == ANA_FlooredPercent_RBV)	{		pvStruct.updateFunction = this->update_ANA_FlooredPercent_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CPU_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CPU_RBV)			{		pvStruct.updateFunction = this->update_ANA_CPU_RBV;	}
 	else if (pvStruct.pvRecord == ANA_CPU_CropSubMask_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_CropSubMask_RBV;	}
 	else if (pvStruct.pvRecord == ANA_CPU_Npoint_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_Npoint_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CPU_Dot_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_Dot_RBV;	}
-	else if (pvStruct.pvRecord == ANA_PixW_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixW_RBV;}
-	else if (pvStruct.pvRecord == ANA_PixH_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixH_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CPU_Dot_RBV)		{		pvStruct.updateFunction = this->update_ANA_CPU_Dot_RBV;	}
+	else if (pvStruct.pvRecord == ANA_PixW_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixW_RBV;}
+	else if (pvStruct.pvRecord == ANA_PixH_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixH_RBV;	}
 	else if (pvStruct.pvRecord == ANA_UseBkgrnd)	{	pvStruct.updateFunction = this->update_ANA_UseBkgrnd_RBV;	}
 	else if (pvStruct.pvRecord == ANA_UseNPoint)	{		pvStruct.updateFunction = this->update_ANA_UseNPoint_RBV;	}
 	else if (pvStruct.pvRecord == ANA_NewBkgrnd)	{	pvStruct.updateFunction = this->update_ANA_NewBkgrnd_RBV;	}
 	else if (pvStruct.pvRecord == CAM_BlackLevel_RBV)	{		pvStruct.updateFunction = this->update_CAM_BlackLevel_RBV;	}
-	else if (pvStruct.pvRecord == CAM_Gain_RBV)	{		pvStruct.updateFunction = this->update_CAM_Gain_RBV;	}
+	else if (pvStruct.pvRecord == CAM_Gain_RBV)		{		pvStruct.updateFunction = this->update_CAM_Gain_RBV;	}
+	else if (pvStruct.pvRecord == ANA_OVERLAY_1_CROSS_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_1_CROSS_RBV;	}
+	else if (pvStruct.pvRecord == ANA_OVERLAY_2_RESULT_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_2_RESULT_RBV;	}
+	else if (pvStruct.pvRecord == ANA_OVERLAY_3_MASK_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_3_MASK_RBV;	}
 	else	
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 	}
 }
+
+void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->capture_state.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->cross_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->cross_overlay.second = STATE::ENABLED; break;
+	default:
+		recastCamera->cross_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
+		ENUM_TO_STRING(recastCamera->cross_overlay.second));
+}
+void EPICSCameraInterface::update_ANA_OVERLAY_2_RESULT_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->result_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->result_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->result_overlay.second = STATE::ENABLED; break;
+	default:
+		recastCamera->result_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
+		ENUM_TO_STRING(recastCamera->result_overlay.second));
+}
+void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->mask_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->mask_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->mask_overlay.second = STATE::ENABLED; break;
+	default:
+		recastCamera->mask_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
+		ENUM_TO_STRING(recastCamera->mask_overlay.second));
+}
+
+
 void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -123,8 +171,6 @@ void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_arg
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteStatus = ",
 		ENUM_TO_STRING(recastCamera->write_state.second));
 }
-
-
 void EPICSCameraInterface::update_HDF_WriteMessage_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -722,21 +768,6 @@ void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args a
 	updateTimeStampLongPair(args, recastCamera->pixel_height);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " R = ",recastCamera->pixel_height.second);
 }
-
-void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampLongPair(args, recastCamera->pixel_height);
-}
-void EPICSCameraInterface::update_ANA_OVERLAY_2_RESULT(const struct event_handler_args args)
-{
-
-}
-void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK(const struct event_handler_args args)
-{
-
-}
-
 
 
 

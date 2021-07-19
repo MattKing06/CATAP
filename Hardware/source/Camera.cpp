@@ -78,7 +78,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cross_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-	results_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	result_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
@@ -813,6 +813,69 @@ STATE Camera::getLEDState()const
 {
 	return led_state.second;
 }
+//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------
+bool Camera::enableOverlayCross()
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_sizet);
+}
+bool Camera::disbaleOverlayCross()
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_sizet);
+}
+STATE Camera::getOverlayCrossState()const
+{
+	return cross_overlay.second;
+}
+bool Camera::isOverlayCrossEnabled()const
+{
+	return cross_overlay.second == STATE::ENABLED;
+}
+bool Camera::isOverlayCrossDisabled()const
+{
+	return cross_overlay.second == STATE::ENABLED;
+}
+bool Camera::enableOverlayMask()
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_sizet);
+}
+bool Camera::disbaleOverlayMask()
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_sizet);
+}
+STATE Camera::getOverlayMaskState()const
+{
+	return mask_overlay.second;
+}
+bool Camera::isOverlayMaskEnabled()const
+{
+	return mask_overlay.second == STATE::ENABLED;
+}
+bool Camera::isOverlayMaskDisabled()const
+{
+	return mask_overlay.second == STATE::ENABLED;
+}
+bool Camera::enableOverlayResult()
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_sizet);
+}
+bool Camera::disbaleOverlayResult()
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_sizet);
+}
+STATE Camera::getOverlayResultState()const
+{
+	return result_overlay.second;
+}
+bool Camera::isOverlayResultEnabled()const
+{
+	return mask_overlay.second == STATE::ENABLED;
+}
+bool Camera::isOverlayResultDisabled()const
+{
+	return mask_overlay.second == STATE::DISABLED;
+}
+//--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 //bool Camera::setXPix(double value)
 //{

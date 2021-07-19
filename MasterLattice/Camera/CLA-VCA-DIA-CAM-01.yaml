@@ -46,6 +46,9 @@ controls_information:
         ANA_OVERLAY_1_CROSS : CLA-VCA-DIA-CAM-01:OVER:1:Use
         ANA_OVERLAY_2_RESULT : CLA-VCA-DIA-CAM-01:OVER:2:Use
         ANA_OVERLAY_3_MASK : CLA-VCA-DIA-CAM-01:OVER:3:Use
+        ANA_OVERLAY_1_CROSS_RBV : CLA-VCA-DIA-CAM-01:OVER:1:Use_RBV
+        ANA_OVERLAY_2_RESULT_RBV : CLA-VCA-DIA-CAM-01:OVER:2:Use_RBV
+        ANA_OVERLAY_3_MASK_RBV : CLA-VCA-DIA-CAM-01:OVER:3:Use_RBV
         # the analysis can use a back ground subtracted image 
         ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
         ANA_NewBkgrnd_RBV: CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd_RBV

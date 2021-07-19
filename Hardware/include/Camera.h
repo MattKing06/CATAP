@@ -262,10 +262,10 @@ public:
 	STATE getOverlayCrossState()const;
 	/*! Compare the current state of the cross overlay to ENABLED.
 	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
-	bool isOverlayCrossStateEnabled()const;
+	bool isOverlayCrossEnabled()const;
 	/*! Compare the current state of the cross overlay to DISABLED.
 	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
-	bool isOverlayCrossStateDisabled()const;
+	bool isOverlayCrossDisabled()const;
 	/*! Enable the Mask-Overlay on the decimated camera image array sent over the network.
 	* Will be visiable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
@@ -279,27 +279,27 @@ public:
 	STATE getOverlayMaskState()const;
 	/*! Compre the current state of the Mask-Overlay to ENABLED.
 	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
-	bool isOverlayMaskStateEnabled()const;
+	bool isOverlayMaskEnabled()const;
 	/*! Compare the current state of the Mask-Overlay to DISABLED.
 	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
-	bool isOverlayMaskStateDisabled()const;
+	bool isOverlayMaskDisabled()const;
 	/*! Enable the Results-Overlay on the decimated camera image array sent over the network.
 	* Will be visiable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool enableOverlayResults();
+	bool enableOverlayResult();
 	/*! Disable the Results-Overlay on the decimated camera image array sent over the network.
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayResults();
+	bool disbaleOverlayResult();
 	/*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
-	STATE getOverlayResultsState()const;
+	STATE getOverlayResultState()const;
 	/*! Comapre the current state of the Results-Overlay to ENABLED.
 	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
-	bool isOverlayMaskResultsEnabled()const;
+	bool isOverlayResultEnabled()const;
 	/*! Compare the current state of the Results-Overlay to DISABLED.
 	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
-	bool isOverlayMaskResultsDisabled()const;
+	bool isOverlayResultDisabled()const;
 
 	/*! Get the X Pixel defined as the "horizontal" centre of the image-array, probably set from the Master Lattice.
 	@param[out] long, value */
@@ -817,7 +817,7 @@ protected:
 	/*! Mask-overlay status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> mask_overlay;
 	/*! Results-overlay status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> results_overlay;
+	std::pair<epicsTimeStamp, STATE> result_overlay;
 	/*! Camera gain, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
