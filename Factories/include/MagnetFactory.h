@@ -1042,7 +1042,7 @@ private:
 		/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed 
 		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply 
 		@param[out] STATE, success, failure, etc */
-		STATE MagnetFactory::applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE magnet_type = TYPE::MAGNET);
+		STATE applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE magnet_type = TYPE::MAGNET);
 
 		/*! setup the EPCIS channels */
 		void setupChannels();
