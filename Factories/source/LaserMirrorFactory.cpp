@@ -125,8 +125,8 @@ bool LaserMirrorFactory::setup(const std::string& version)
 			else
 			{
 				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS.");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
 	}

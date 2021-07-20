@@ -783,6 +783,10 @@ public:
 	void setBufferSize(const std::string& name, size_t v);
 	/*! Clear all runing stats buffers */
 	void clearBuffers(const std::string& name);
+	/*! sets all RS size (m_max) for a given camera*/
+	void setRunningStatSize(const std::string& name, size_t size);
+	/*! clears the RS object for a given camera */
+	void clearRunningStats(const std::string& name);
 	/*! Get the pixel to mm conversion factor,
 	@param[in] std::string, name
 	@param[out] double, value */

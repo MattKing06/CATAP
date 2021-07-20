@@ -31,6 +31,27 @@ CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
 }
 CameraFactory::~CameraFactory()
 {
+	messenger.printDebugMessage("CameraFactory Destructor Called");
+	if (hasBeenSetup)
+	{
+		for (auto& camera : camera_map)
+		{
+			auto pvStructsList = camera.second.getPVStructs();
+			for (auto& pvStruct : pvStructsList)
+			{
+				if (pvStruct.second.monitor)
+				{
+					if (pvStruct.second.EVID)
+					{
+						camera.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
+				}
+				camera.second.epicsInterface->removeChannel(pvStruct.second);
+				ca_pend_io(CA_PEND_IO_TIMEOUT);
+			}
+		}
+	}
 }
 
 bool CameraFactory::setup()
@@ -1746,6 +1767,22 @@ void CameraFactory::clearBuffers(const std::string& name)
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
 		return camera_map.at(full_name).clearAllRunningStatBuffers();
+	}
+}
+void CameraFactory::setRunningStatSize(const std::string& name, size_t size)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		camera_map.at(full_name).setAllRunningStatSizes(size);
+	}
+}
+void CameraFactory::clearRunningStats(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		camera_map.at(full_name).clearAllRunningStats();
 	}
 }
 double CameraFactory::getPix2mm(const std::string& name)const

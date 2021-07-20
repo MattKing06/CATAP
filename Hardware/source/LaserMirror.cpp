@@ -28,7 +28,9 @@ LaserMirror::LaserMirror(const LaserMirror& copyLaserMirror) :
 	leftSense(copyLaserMirror.leftSense),
 	rightSense(copyLaserMirror.rightSense),
 	upSense(copyLaserMirror.upSense),
-	downSense(copyLaserMirror.downSense)
+	downSense(copyLaserMirror.downSense),
+	hStep(copyLaserMirror.hStep),
+	vStep(copyLaserMirror.vStep)
 {
 }
 

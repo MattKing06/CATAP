@@ -45,8 +45,11 @@ ChargeFactory::~ChargeFactory()
 		{
 			if (pvStruct.second.monitor)
 			{
-				charge.second.epicsInterface->removeSubscription(pvStruct.second);
-				ca_flush_io();
+				if (pvStruct.second.EVID)
+				{
+					charge.second.epicsInterface->removeSubscription(pvStruct.second);
+					ca_flush_io();
+				}
 			}
 			charge.second.epicsInterface->removeChannel(pvStruct.second);
 			ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -537,6 +540,22 @@ boost::python::dict ChargeFactory::getAllPosition_Py()
 	std::map<std::string, double> positiOnvals = getAllPosition();
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
+}
+
+void ChargeFactory::setRunningStatSize(const std::string& name, const size_t& size)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		chargeMap.at(name).setRunningStatSize(size);
+	}
+}
+
+void ChargeFactory::clearRunningStats(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		chargeMap.at(name).clearRunningStats();
+	}
 }
 
 void ChargeFactory::debugMessagesOn()

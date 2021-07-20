@@ -47,8 +47,11 @@ LaserEnergyMeterFactory::~LaserEnergyMeterFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					laser.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID) 
+					{
+						laser.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
 				laser.second.epicsInterface->removeChannel(pvStruct.second);
 				ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -143,8 +146,8 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 			else
 			{
 				messenger.printMessage(laser.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
 	}
@@ -291,6 +294,22 @@ boost::python::list LaserEnergyMeterFactory::getEnergyBuffer_Py(const std::strin
 void LaserEnergyMeterFactory::monitorForNShots(const std::string& name, const size_t& value)
 {
 	laserEnergyMeterMap.find(name)->second.monitorForNShots(value);
+}
+
+void LaserEnergyMeterFactory::setRunningStatSize(const std::string& name, const size_t& size)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		laserEnergyMeterMap.at(name).setRunningStatsSize(size);
+	}
+}
+
+void LaserEnergyMeterFactory::clearRunningStats(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		laserEnergyMeterMap.at(name).clearRunningStats();
+	}
 }
 
 void LaserEnergyMeterFactory::setVectorSize(const std::string& name, const size_t& value)

@@ -38,7 +38,8 @@ Hardware(copyLaser),
 laserEnergyMeterType(copyLaser.laserEnergyMeterType),
 name(copyLaser.name),
 position(copyLaser.position),
-epicsInterface(copyLaser.epicsInterface)
+epicsInterface(copyLaser.epicsInterface),
+energyStats(copyLaser.energyStats)
 {
 }
 

@@ -34,7 +34,8 @@ Hardware(copyCharge),
 chargeType(copyCharge.chargeType),
 name(copyCharge.name),
 position(copyCharge.position),
-epicsInterface(copyCharge.epicsInterface)
+epicsInterface(copyCharge.epicsInterface),
+qStats(copyCharge.qStats)
 {
 }
 
