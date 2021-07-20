@@ -256,7 +256,7 @@ public:
 	/*! Disable the Cross-Overlay on the decimated camera image array sent over the network. 	
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayCross();
+	bool disableOverlayCross();
 	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
 	STATE getOverlayCrossState()const;
@@ -273,7 +273,7 @@ public:
 	/*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayMask();
+	bool disableOverlayMask();
 	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
 	STATE getOverlayMaskState()const;
@@ -290,7 +290,7 @@ public:
 	/*! Disable the Results-Overlay on the decimated camera image array sent over the network.
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayResult();
+	bool disableOverlayResult();
 	/*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
 	STATE getOverlayResultState()const;

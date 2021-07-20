@@ -817,11 +817,11 @@ STATE Camera::getLEDState()const
 //--------------------------------------------------------------------------------------------------
 bool Camera::enableOverlayCross()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_ushort);
 }
-bool Camera::disbaleOverlayCross()
+bool Camera::disableOverlayCross()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayCrossState()const
 {
@@ -833,15 +833,15 @@ bool Camera::isOverlayCrossEnabled()const
 }
 bool Camera::isOverlayCrossDisabled()const
 {
-	return cross_overlay.second == STATE::ENABLED;
+	return cross_overlay.second == STATE::DISABLED;
 }
 bool Camera::enableOverlayMask()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_ushort);
 }
-bool Camera::disbaleOverlayMask()
+bool Camera::disableOverlayMask()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayMaskState()const
 {
@@ -853,15 +853,15 @@ bool Camera::isOverlayMaskEnabled()const
 }
 bool Camera::isOverlayMaskDisabled()const
 {
-	return mask_overlay.second == STATE::ENABLED;
+	return mask_overlay.second == STATE::DISABLED;
 }
 bool Camera::enableOverlayResult()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_ushort);
 }
-bool Camera::disbaleOverlayResult()
+bool Camera::disableOverlayResult()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayResultState()const
 {

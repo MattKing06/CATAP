@@ -26,8 +26,6 @@ public:
 
 
    
-
-
 static void update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args);
 static void update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args);
 static void update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args);

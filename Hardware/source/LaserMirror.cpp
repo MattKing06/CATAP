@@ -30,7 +30,9 @@ LaserMirror::LaserMirror(const LaserMirror& copyLaserMirror) :
 	leftSense(copyLaserMirror.leftSense),
 	rightSense(copyLaserMirror.rightSense),
 	upSense(copyLaserMirror.upSense),
-	downSense(copyLaserMirror.downSense)
+	downSense(copyLaserMirror.downSense),
+	hStep(copyLaserMirror.hStep),
+	vStep(copyLaserMirror.vStep)
 {
 }
 
@@ -136,36 +138,48 @@ double LaserMirror::getVStep()const
 
 bool LaserMirror::moveHorizontally()
 {
+	messenger.printMessage(hardwareName, " moveHorizontally ", hStep);
 	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::H_MREL));
+	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::H_MREL), hStep);
 }
 
 bool LaserMirror::moveVertically()
 {
-	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::V_MREL));
+	// 
+	messenger.printMessage(hardwareName, " moveVertically ", vStep);
+	return epicsInterface->setNewVerticalPosition(vStep, pvStructs.at(LaserMirrorRecords::V_MREL));
+	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::V_MREL), hStep);
 }
+
+
+
 
 bool LaserMirror::moveLeft(const double& value)
 {
 	setHStep(value * leftSense);
+	messenger.printMessage(hardwareName, " moveLeft, ", hStep);
 	return moveHorizontally();
 }
 
 bool LaserMirror::moveRight(const double& value)
 {
 	setHStep(value * rightSense);
-	return moveVertically();
+	messenger.printMessage(hardwareName, " moveRight, ", hStep);
+	return moveHorizontally();
 }
 
 bool LaserMirror::moveUp(const double& value)
 {
-	setHStep(value * upSense);
-	return false;
+	setVStep(value * upSense);
+	messenger.printMessage(hardwareName, " moveUp, ", vStep);
+	return moveVertically();
 }
 
 bool LaserMirror::moveDown(const double& value)
 {
-	setHStep(value * downSense);
-	return false;
+	setVStep(value * downSense);
+	messenger.printMessage(hardwareName, " moveDown, ", vStep);
+	return moveVertically();
 }
 
 double LaserMirror::getCurrentHorizontalPosition()
