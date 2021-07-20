@@ -189,6 +189,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setAvgPixValueForBeam", &Camera::setAveragePixelValueForBeam)
 			.def("getAvgPixValueForBeam", &Camera::getAveragePixelValueForBeam)
 			.def("hasBeam", &Camera::hasBeam)
+			.def("hasNoBeam", &Camera::hasNoBeam)
 			.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastDirectory", &Camera::getLastDirectory)

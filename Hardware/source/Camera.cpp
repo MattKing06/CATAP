@@ -940,7 +940,7 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
-double Camera::getAveragePixelValueForBeam()
+double Camera::getAveragePixelValueForBeam()const
 {
 	return average_pixel_value_for_beam;
 }
@@ -949,9 +949,13 @@ bool Camera::setAveragePixelValueForBeam(const double& value)
 	average_pixel_value_for_beam = value;
 	return true;
 }
-bool Camera::hasBeam()
+bool Camera::hasBeam()const
 {
 	return getAvgIntensity() > getAveragePixelValueForBeam();
+}
+bool Camera::hasNoBeam()const
+{
+	return !hasBeam();
 }
 bool Camera::setMaskXCenter(long val)
 {
