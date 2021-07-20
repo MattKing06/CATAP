@@ -20,22 +20,12 @@ public:
 	LaserMirror(const LaserMirror& copyLaserMirror);
 	~LaserMirror();
 	void setPVStructs();
-	EPICSLaserMirrorInterface_sptr epicsInterface;
-	std::map<std::string, std::string> LaserMirrorParamMap;
-	std::pair<epicsTimeStamp, double> currentHorizontalPosition;
-	std::pair<epicsTimeStamp, double> currentVerticalPosition;
-	double hStep;
-	double vStep;
-	double maximumStepSize;
-	double leftSense;
-	double rightSense;
-	double upSense;
-	double downSense;
+
 
 	void setHStep(const double& value);
 	void setVStep(const double& value);
-	double getHStep();
-	double getVStep();
+	double getHStep()const;
+	double getVStep()const;
 	bool moveHorizontally();
 	bool moveVertically();
 	bool moveLeft(const double& value);
@@ -55,6 +45,20 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+
+// private: !!! 
+	double hStep;
+	double vStep;
+	double maximumStepSize;
+	double leftSense;
+	double rightSense;
+	double upSense;
+	double downSense;
+	EPICSLaserMirrorInterface_sptr epicsInterface;
+	std::map<std::string, std::string> LaserMirrorParamMap;
+	std::pair<epicsTimeStamp, double> currentHorizontalPosition;
+	std::pair<epicsTimeStamp, double> currentVerticalPosition;
+
 };
 
 

@@ -17,6 +17,11 @@ public:
 	bool setNewVerticalPosition(const double& value, const pvStruct& pv);
 	void moveHorizontal(const pvStruct& pv);
 	void moveVertical(const pvStruct& pv);
+
+private:
+
+
+
 };
 
 #endif //EPICS_LASER_MIRROR_INTERFACE_H_

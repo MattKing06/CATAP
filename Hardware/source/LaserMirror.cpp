@@ -12,7 +12,9 @@ LaserMirror::LaserMirror(const std::map<std::string, std::string>& paramMap, STA
 	leftSense(std::stod(paramMap.find("left_sense")->second)),
 	rightSense(std::stod(paramMap.find("right_sense")->second)),
 	upSense(std::stod(paramMap.find("up_sense")->second)),
-	downSense(std::stod(paramMap.find("down_sense")->second))
+	downSense(std::stod(paramMap.find("down_sense")->second)),
+	hStep(GlobalConstants::ten_double),
+	vStep(GlobalConstants::ten_double)
 {
 	setPVStructs();
 	epicsInterface = boost::make_shared<EPICSLaserMirrorInterface>(EPICSLaserMirrorInterface());
@@ -122,12 +124,12 @@ void LaserMirror::setVStep(const double& value)
 	}
 }
 
-double LaserMirror::getHStep()
+double LaserMirror::getHStep()const
 {
 	return hStep;
 }
 
-double LaserMirror::getVStep()
+double LaserMirror::getVStep()const
 {
 	return vStep;
 }
