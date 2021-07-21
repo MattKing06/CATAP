@@ -12,7 +12,9 @@ LaserMirror::LaserMirror(const std::map<std::string, std::string>& paramMap, STA
 	leftSense(std::stod(paramMap.find("left_sense")->second)),
 	rightSense(std::stod(paramMap.find("right_sense")->second)),
 	upSense(std::stod(paramMap.find("up_sense")->second)),
-	downSense(std::stod(paramMap.find("down_sense")->second))
+	downSense(std::stod(paramMap.find("down_sense")->second)),
+	hStep(0.0),
+	vStep(0.0)
 {
 	setPVStructs();
 	epicsInterface = boost::make_shared<EPICSLaserMirrorInterface>(EPICSLaserMirrorInterface());
@@ -96,7 +98,7 @@ void LaserMirror::setHStep(const double& value)
 	{
 		if (value < GlobalConstants::zero_double)
 		{
-			hStep = -maximumStepSize;
+			hStep = -1.0*maximumStepSize;
 		}
 		else
 		{
@@ -115,7 +117,7 @@ void LaserMirror::setVStep(const double& value)
 	{
 		if (value < GlobalConstants::zero_double)
 		{
-			vStep = -maximumStepSize;
+			vStep = -1.0*maximumStepSize;
 		}
 		else
 		{
@@ -136,12 +138,14 @@ double LaserMirror::getVStep()
 
 bool LaserMirror::moveHorizontally()
 {
+	std::cout << "HSTEP: " << hStep << std::endl;
 	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::H_MREL));
 }
 
 bool LaserMirror::moveVertically()
 {
-	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::V_MREL));
+	std::cout << "VSTEP: " << vStep << std::endl;
+	return epicsInterface->setNewHorizontalPosition(vStep, pvStructs.at(LaserMirrorRecords::V_MREL));
 }
 
 bool LaserMirror::moveLeft(const double& value)
@@ -153,19 +157,19 @@ bool LaserMirror::moveLeft(const double& value)
 bool LaserMirror::moveRight(const double& value)
 {
 	setHStep(value * rightSense);
-	return moveVertically();
+	return moveHorizontally();
 }
 
 bool LaserMirror::moveUp(const double& value)
 {
-	setHStep(value * upSense);
-	return false;
+	setVStep(value * upSense);
+	return moveVertically();
 }
 
 bool LaserMirror::moveDown(const double& value)
 {
-	setHStep(value * downSense);
-	return false;
+	setVStep(value * downSense);
+	return moveVertically();
 }
 
 double LaserMirror::getCurrentHorizontalPosition()

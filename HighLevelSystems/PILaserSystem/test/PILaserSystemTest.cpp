@@ -20,5 +20,12 @@ BOOST_AUTO_TEST_CASE(set_all_running_stats_size_test)
 	BOOST_CHECK_EQUAL(PIL.PILaserSystem_RS_size, lem.getEnergyRunningStats().getMaxCount());
 }
 
+BOOST_AUTO_TEST_CASE(move_laser_mirror_test)
+{
+	PILaserSystem PIL(STATE::PHYSICAL);
+	bool status = PIL.setup("");
+	LaserMirror mirror = PIL.getLaserMirror();
+	mirror.moveLeft(1.0);
+}
 
 BOOST_AUTO_TEST_SUITE_END();

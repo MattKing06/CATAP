@@ -100,12 +100,17 @@ bool LaserMirrorFactory::setup(const std::string& version)
 		return true;
 	}
 	populateLaserMirrorMap();
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 	setupChannels();
 	EPICSInterface::sendToEPICS();
-	for (auto& mirror : laserMirrorMap)
+	for (auto&& mirror : laserMirrorMap)
 	{
-		auto mirrorPVStructs = mirror.second.getPVStructs();
-		for (auto& pv : mirrorPVStructs)
+		std::map<std::string, pvStruct>& mirrorPVStructs = mirror.second.getPVStructs();
+		for (auto&& pv : mirrorPVStructs)
 		{
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
@@ -114,13 +119,13 @@ bool LaserMirrorFactory::setup(const std::string& version)
 				mirror.second.epicsInterface->retrieveCHTYPE(pv.second);
 				mirror.second.epicsInterface->retrieveCOUNT(pv.second);
 				mirror.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				std::cout << "RECORD: " << pv.second.fullPVName << "/// TYPE: " << pv.second.CHTYPE << std::endl;
 				pv.second.MASK = DBE_VALUE;
 				if (pv.second.monitor)
 				{
 					std::cout << " MONITORING: " << pv.first << std::endl;
 					mirror.second.epicsInterface->createSubscription(mirror.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
 			}
 			else
 			{
@@ -129,6 +134,7 @@ bool LaserMirrorFactory::setup(const std::string& version)
 				//return hasBeenSetup;
 			}
 		}
+		EPICSInterface::sendToEPICS();
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
