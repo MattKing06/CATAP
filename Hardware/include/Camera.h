@@ -71,7 +71,6 @@ public:
 	/*! get the type of the camera (e.g. vela_camera, clara_camera 
 	@param[out] type */
 	TYPE getCamType()const;
-
 	// TODO these all need tidying up / renaming or deleting 
 	/*! convert a horizontal length in pixels to mm for this camera 
 	@param[in] length in pixels 
@@ -101,8 +100,6 @@ public:
 	/*! Set the pixels to mm in y(horizontal) direction.
 	@param[in] double, new value */
 	double setpix2mmY(double value);
-
-
 	/*! Get the pixels to mm value (the one that is actaully used in EPICS).
 	@param[out] double, value */
 	double getPixelToMM()const;
@@ -110,7 +107,6 @@ public:
 	@param[in] double, value 
 	@param[out] bool, if command got sent to EPICS (not if it was received). */
 	bool setPixelToMM(double val)const;
-
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
 	@param[in] double, value 

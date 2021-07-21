@@ -1486,6 +1486,7 @@ bool Camera::captureAndSave(size_t num_shots)
 	}
 	else
 	{
+		busy = true;
 		messenger.printDebugMessage(hardwareName, " collectAndSave passed num_shots = ", num_shots);
 		/*
 			kill any finished threads
@@ -1506,7 +1507,7 @@ bool Camera::captureAndSave(size_t num_shots)
 				image_capture.cam = this;
 				image_capture.thread
 					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
-				GlobalFunctions::pause_500();
+				//GlobalFunctions::pause_500();
 				messenger.printDebugMessage("new imageCollectStruct created and running");
 				return true;
 			}
@@ -2334,7 +2335,6 @@ std::vector<long>& Camera::getROIDataConstRef()
 {
 	return roi_data.second;
 }
-
 bool Camera::setBlackLevel(long value)
 {
 	if (getCamType() == TYPE::VELA_CAMERA)
