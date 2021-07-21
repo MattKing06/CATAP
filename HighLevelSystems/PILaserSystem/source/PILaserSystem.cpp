@@ -40,7 +40,9 @@ bool PILaserSystem::setup(const std::string& version)
 		laserShutter02 = shutterFactory.getShutter(shutterNames.at(1));
 		virtualCathodeCamera = cameraFactory.getCamera(virtualCathodeCameraName);
 		wallCurrentMonitor = chargeFactory.getChargeDiagnostic(wallCurrentMonitorName);
-
+		std::cout << "LOCAL ADDR: " << std::addressof(mirror) << std::endl;
+		std::cout << "FUNC ADDR: " << std::addressof(mirrorFactory.laserMirrorMap.at(mirrorName)) << std::endl;
+		std::cout << "FUNC_SECOND_CALL ADDR: " << std::addressof(mirrorFactory.laserMirrorMap.at(mirrorName)) << std::endl;
 		// initilalzie these, but myabe we shouldn't idk   
 		setAllRunningStatSize(0);
 		return true;
@@ -125,11 +127,12 @@ size_t PILaserSystem_RS_size;
 void PILaserSystem::clearAllRunningStat()
 {
 	std::cout << "PILaserSystem wallCurrentMonitor.clearRunningStats " << std::endl;
-	chargeFactory.clearRunningStats(wallCurrentMonitorName);
+	//chargeFactory.clearRunningStats(wallCurrentMonitorName);
+	wallCurrentMonitor.clearRunningStats();
 	std::cout << "PILaserSystem energyMeter.clearRunningStats " << std::endl;
-	laserEnergyMeterFactory.clearRunningStats(energyMeterName);
+	energyMeter.clearRunningStats();
 	std::cout << "PILaserSystem virtualCathodeCamera.clearRunningStats " << std::endl;
-	cameraFactory.clearRunningStats(virtualCathodeCameraName);
+	virtualCathodeCamera.clearAllRunningStats();
 }
 void PILaserSystem::setAllRunningStatSize(size_t new_val)
 {
@@ -137,11 +140,14 @@ void PILaserSystem::setAllRunningStatSize(size_t new_val)
 	PILaserSystem_RS_size = new_val;
 	std::cout << "PILaserSystem PILaserSystem_RS_size = " << PILaserSystem_RS_size << std::endl;
 	std::cout << "PILaserSystem virtualCathodeCamera.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
-	cameraFactory.setRunningStatSize(virtualCathodeCameraName, PILaserSystem_RS_size);
+	//cameraFactory.setRunningStatSize(virtualCathodeCameraName, PILaserSystem_RS_size);
+	virtualCathodeCamera.setAllRunningStatSizes(PILaserSystem_RS_size);
 	std::cout << "PILaserSystem wallCurrentMonitor.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
-	chargeFactory.setRunningStatSize(wallCurrentMonitorName, PILaserSystem_RS_size);
+	//chargeFactory.setRunningStatSize(wallCurrentMonitorName, PILaserSystem_RS_size);
+	wallCurrentMonitor.setRunningStatSize(PILaserSystem_RS_size);
 	std::cout << "PILaserSystem energyMeter.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
-	laserEnergyMeterFactory.setRunningStatSize(energyMeterName, PILaserSystem_RS_size);
+	//laserEnergyMeterFactory.setRunningStatSize(energyMeterName, PILaserSystem_RS_size);
+	energyMeter.setRunningStatsSize(PILaserSystem_RS_size);
 	clearAllRunningStat();
 }
 size_t PILaserSystem::getRunningStatSize()

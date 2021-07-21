@@ -168,7 +168,7 @@ std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getLaserEnergyM
 
 LaserEnergyMeter& LaserEnergyMeterFactory::getLaserEnergyMeter(const std::string& fullLaserName)
 {
-	return laserEnergyMeterMap.find(fullLaserName)->second;
+	return laserEnergyMeterMap.at(fullLaserName);
 }
 
 std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getAllLaserEnergyMeters()

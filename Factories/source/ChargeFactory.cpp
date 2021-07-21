@@ -182,7 +182,7 @@ boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
 
 Charge& ChargeFactory::getChargeDiagnostic(const std::string& fullChargeName)
 {
-	return chargeMap.find(fullChargeName)->second;
+	return chargeMap.at(fullChargeName);
 }
 
 std::map<std::string, Charge> ChargeFactory::getAllChargeDiagnostics()
