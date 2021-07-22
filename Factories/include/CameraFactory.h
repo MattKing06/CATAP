@@ -70,6 +70,15 @@ public:
 	
 
 
+	/*! get Anlaysis results in pixels
+	@param[in] std::string, name
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	std::map<std::string, double> getAnalysisResultsPixels(const std::string& name)const;
+	/*! get Anlaysis results in pixels, Python version
+	@param[in] std::string, name
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	boost::python::dict getAnalysisResultsPixels_Py(const std::string& name)const;
+
 	/*! Set the black level (for vela camera types only),
 	@param[in] std::string, name
 	@param[in] long, values
@@ -87,7 +96,22 @@ public:
 	@param[in] std::string, name
 	@param[out] long, latest value */
 	long getGain(const std::string& name )const;
-
+	/*! Get the total number of pixels in X for the standard image sent over the network 
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getArrayDataPixelCountX(const std::string& name)const;
+	/*! Get the total number of pixels in Y for the standard image sent over the network 
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getArrayDataPixelCountY(const std::string& name)const;
+	/*! Get the total number of pixels in X for the full binary image saved to disc
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getBinaryDataPixelCountX(const std::string& name)const;
+	/*! Get the total number of pixels in Y for the full binary image saved to disc
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getBinaryDataPixelCountY(const std::string& name)const;
 	/*! get the name alises for this Camera
 	@param[in] std::string, name
 	@param[out] names, vector containing  all the alias names */
@@ -552,12 +576,12 @@ public:
 	@param[in] std::string, name
 	@param[in] long, value (lower left hand pixel of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIxPos(const std::string& name, long val);
+	bool setMaskAndROIxMax(const std::string& name, long val);
 	/*! Set the mask and ROI y position,
 	@param[in] std::string, name
 	@param[in] long, value (left-most pixel of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIyPos(const std::string& name, long val);
+	bool setMaskAndROIyMax(const std::string& name, long val);
 	/*! Set the mask and ROI x size,
 	@param[in] std::string, name
 	@param[in] long, value (width of ROI)
@@ -571,11 +595,11 @@ public:
 	/*! Set the mask and ROI x position,
 	@param[in] std::string, name
 	@param[out] long, value	*/
-	long getMaskAndROIxPos(const std::string& name)const;
+	long getMaskAndROIxMax(const std::string& name)const;
 	/*! Set the mask and ROI y position,
 	@param[in] std::string, name
 	@param[out] long, value	*/
-	long getMaskAndROIyPos(const std::string& name)const;
+	long getMaskAndROIyMax(const std::string& name)const;
 	/*! Set the mask and ROI x size,
 	@param[in] std::string, name
 	@param[out] long, value	*/
@@ -791,6 +815,60 @@ public:
 	@param[in] std::string, name
 	@param[out] double, value */
 	double getPix2mm(const std::string& name)const;
+
+	/*! Enable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool enableAnalysisMaskOverlay(const std::string& name);
+	/*! Enable the Cross Hair Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool enableCrossHairOverlay(const std::string& name);
+	/*! Enable the Center Of Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool enableCentreOfMassOverlay(const std::string& name);
+	/*! Disable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
+	* 	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableAnalysisMaskOverlay(const std::string& name);
+	/*! Disable the Cross Hair Overlay in the Camera Image data,
+	* 	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableCrossHairOverlay(const std::string& name);
+	/*! Disable the Centre of Mass Overlay in the Camera Image data,
+	* 	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableCentreOfMassOverlay(const std::string& name);
+	/*! Disable all overlays in the Camera Image data,
+	* 	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableAllOverlay(const std::string& name);
+	/*! Disable all overlays, for all cameras in this factory, 
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	bool disableAllOverlay();
+	/*! Get the state of the Analysis Mask Overlay 
+	* 	@param[in] std::string, name
+	@param[out] STATE, one of ON, OFF, UNKNONWN */
+	STATE getAnalysisMaskOverlayState(const std::string& name)const;
+	/*! Get the state of the Cross Hair Overlay 
+	* 	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	STATE getCrossHairOverlayState(const std::string& name)const;
+	/*! Get the state of the Centre of Mass Overlay 
+	* 	@param[in] std::string, name
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	STATE getCentreOfMassOverlayState(const std::string& name)const;
+	/*! get the Overlay state for each camera object and overlay
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	std::map<std::string, STATE> getAllOverlayStates()const;
+	/*! get the Overlay state for each camera object and overlay, Python version 
+	@param[out] bool, was command sent to EPICS, (not if it worked) */
+	boost::python::dict getAllOverlayStates_Py()const;
+
+
+
+
 	/*! Get the running stats buffer,
 	@param[in] std::string, name
 	@param[out] dict, values */

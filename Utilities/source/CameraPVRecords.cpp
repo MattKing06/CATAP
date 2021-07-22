@@ -110,7 +110,6 @@ namespace CameraRecords
 	std::string const ANA_OVERLAY_2_RESULT_RBV = "ANA_OVERLAY_2_RESULT_RBV";
 	std::string const ANA_OVERLAY_3_MASK_RBV = "ANA_OVERLAY_3_MASK_RBV";
 
-
 	std::vector<std::string> cameraRecordList = {
 	HDFB_Buffer_Trigger               ,HDFB_Buffer_FilePath 			  ,HDFB_Buffer_FilePath_RBV 		  ,
 	HDFB_Buffer_FileName 			  ,HDFB_Buffer_FileName_RBV 		  ,HDFB_Buffer_FileNumber 			  ,
@@ -149,8 +148,7 @@ namespace CameraRecords
 	ANA_OVERLAY_1_CROSS_RBV, ANA_OVERLAY_2_RESULT_RBV, ANA_OVERLAY_3_MASK_RBV,
 	ANA_OVERLAY_1_CROSS, ANA_OVERLAY_2_RESULT, ANA_OVERLAY_3_MASK
 	};
-
-
+         
 	std::vector<std::string> cameraMonitorRecordsList
 	{
 		HDFB_Buffer_FilePath_RBV            ,		HDFB_Buffer_FileName_RBV			,		HDFB_Buffer_FileNumber_RBV			,  //1
@@ -173,11 +171,11 @@ namespace CameraRecords
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
 		ANA_UseBkgrnd_RBV					,		ANA_UseNPoint_RBV					,		ANA_NPointStepSize_RBV				,  //19
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
-
 		ANA_MaskXCenter_RBV,
 		// ATM these ones don't come with an _RBV siffix fro a read only PV 
 		HDF_WriteMessage, // 58
 		LED_Sta		      // 59
+
 	};
 
 }

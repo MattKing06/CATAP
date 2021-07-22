@@ -10,6 +10,7 @@
 std::mutex mtx;           // mutex for critical section
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
+#include <boost/range/combine.hpp>
 #include "GlobalConstants.h"
 
 
@@ -72,6 +73,9 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	array_rate(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	cross_hair_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	center_of_mass_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	analysis_mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -80,7 +84,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	result_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
-	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
+	mask_and_roi_keywords({ "roi_x", "roi_y", "x_rad", "y_rad" }),  //MAGIC STRING TOD better place for these ??? 
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
 	//roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
 	image_data_has_not_malloced(true),
@@ -90,6 +94,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	array_data_num_pix_x(GlobalConstants::size_zero),
 	array_data_num_pix_y(GlobalConstants::size_zero),
 	array_data_pixel_count(GlobalConstants::size_zero),
+	roi_total_pixel_count(GlobalConstants::size_zero),
 	binary_num_pix_x(GlobalConstants::size_zero),
 	binary_num_pix_y(GlobalConstants::size_zero),
 	binary_data_pixel_count(GlobalConstants::size_zero),
@@ -141,6 +146,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 
 void Camera::getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode)
 {
+	messenger.printDebugMessage("getMasterLatticeData");
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_X_PIX_2_MM");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_X_PIX_2_MM"))
 	{
@@ -461,6 +467,61 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find USE_MASK_RAD_LIMITS");
 	}
+	//-------------------------------------------------------------------------------------------------
+	// This is really overworked, but does mean you can change names form the config file , if you want to, 
+	// TODO in the future I would like more of the analysis results to go into this analysis_data array, also the analyis settings, etc  
+	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "RESULTS_COUNT"))
+	{
+		analysis_data.second.resize( (size_t)std::stof(paramMap.find("RESULTS_COUNT")->second));
+		analysis_data_names.resize( (size_t)std::stof(paramMap.find("RESULTS_COUNT")->second));
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
+	}
+
+	if (GlobalFunctions::entryExists(paramMap, "X_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("X_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "X_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("X_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "Y_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("Y_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "Y_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("Y_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("X_SIGMA_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("X_SIGMA_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("Y_SIGMA_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("Y_SIGMA_NAME")->second);
+		}
+	}
+	if (GlobalFunctions::entryExists(paramMap, "COV_POS"))
+	{
+		size_t pos = (size_t)std::stoi(paramMap.find("COV_POS")->second);
+		if (GlobalFunctions::entryExists(paramMap, "COV_NAME"))
+		{
+			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
+		}
+	}
+
 }
 
 
@@ -534,28 +595,61 @@ TYPE Camera::getCamType()const
 
 double Camera::getPixelToMM()const
 {
-	return pix_to_mm.second;
+ return pix_to_mm.second;
 }
 bool Camera::setPixelToMM(double value )const
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_PixMM), value);
+ return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_PixMM), value);
 }
 
 long Camera::getCentreXPixel()const
 {
-	return x_center_pixel.second;
+ return x_center_pixel.second;
 }
 bool Camera::getCentreYPixel()const
 {
-	return y_center_pixel.second;
+ return y_center_pixel.second;
 }
 bool Camera::setCentreXPixel(long value)
 {
-	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterX), value);
+ return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterX), value);
 }
 bool Camera::setCentreYPixel(long value)
 {
-	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterY), value);
+	 return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterY), value);
+}
+std::map<std::string, double> Camera::getAnalysisResultsPixels()const
+{
+	std::map<std::string, double> r;
+	std::string n;
+	double v;
+	for (auto it : boost::combine(analysis_data_names, analysis_data.second)) {
+		;
+		boost::tie(n, v) = it;
+		r[n] = v;
+	}
+	return r;
+}
+boost::python::dict Camera::getAnalysisResultsPixels_Py()const
+{
+	return  to_py_dict<std::string, double>(getAnalysisResultsPixels());
+}
+
+size_t Camera::getArrayDataPixelCountX()const
+{
+	return array_data_num_pix_x;
+}
+size_t Camera::getArrayDataPixelCountY()const
+{
+	return array_data_num_pix_y;
+}
+size_t Camera::getBinaryDataPixelCountX()const
+{
+	return binary_num_pix_x;
+}
+size_t Camera::getBinaryDataPixelCountY()const
+{
+	return binary_num_pix_y;
 }
 
 double Camera::pix2mmX(double value)const
@@ -1009,10 +1103,18 @@ bool Camera::setMask(std::map<std::string, long> settings)
 	{
 		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
 	}
-	else
+	std::cout << "!!ERROR!! wrong setMask keywords: ";
+	for (auto&& item : settings)
 	{
-		messenger.printMessage("setMask passed map with incorrect keywords");
+		std::cout << item.first << ", ";
 	}
+	std::cout << std::endl;
+	std::cout << "Expecting: ";
+	for (auto&& item : mask_keywords)
+	{
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
 	return false;
 }
 bool Camera::setMask_Py(boost::python::dict settings)
@@ -1036,15 +1138,15 @@ bool Camera::setROISizeY(long val)
 {
 	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_SizeY), (dbr_long_t)val);
 }
-bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
+bool Camera::setROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
-	if (setMaskXCenter(roi_x))
+	if (setMaskAndROIxMax(x_max))
 	{
-		if (setMaskYCenter(roi_y))
+		if (setMaskAndROIyMax(y_max))
 		{
-			if (setMaskXRadius(roi_rad_x))
+			if (setMaskAndROIxSize(x_rad))
 			{
-				if (setMaskYRadius(roi_rad_y))
+				if (setMaskAndROIySize(y_rad))
 				{
 					return true;
 				}
@@ -1055,10 +1157,11 @@ bool Camera::setROI(long roi_x, long  roi_y, long roi_rad_x, long roi_rad_y)
 }
 bool Camera::setROI(std::map<std::string, long> settings)
 {
-	if (GlobalFunctions::entriesExist(settings, mask_keywords))
+	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("roi_rad_x"), settings.at("roi_rad_y"));
+		return setROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
 	}
+	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_max, y_max, x_rad, y_rad");
 	return false;
 }
 bool Camera::setROI_Py(boost::python::dict settings)
@@ -1066,11 +1169,11 @@ bool Camera::setROI_Py(boost::python::dict settings)
 	return setROI(to_std_map<std::string, long>(settings));
 
 }
-long Camera::getMaskAndROIxPos()const
+long Camera::getMaskAndROIxMax()const
 {
 	return roi_and_mask_centre_x.second; // NEEDS CHECKING
 }
-long Camera::getMaskAndROIyPos()const
+long Camera::getMaskAndROIyMax()const
 {
 	return roi_and_mask_centre_y.second; // NEEDS CHECKING
 }
@@ -1082,11 +1185,11 @@ long Camera::getMaskAndROIySize()const
 {
 	return roi_and_mask_radius_y.second; // NEEDS CHECKING
 }
-bool Camera::setMaskAndROIxPos(long val)
+bool Camera::setMaskAndROIxMax(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetX), (double)val);
 }
-bool Camera::setMaskAndROIyPos(long val)
+bool Camera::setMaskAndROIyMax(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetY), (double)val);
 }
@@ -1098,15 +1201,15 @@ bool Camera::setMaskAndROIySize(long val)
 {
 	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (double)val);
 }
-bool Camera::setMaskandROI(long x_pos, long  y_pos, long x_size, long y_size)
+bool Camera::setMaskandROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
-	if(setMaskAndROIxPos(x_pos))
+	if(setMaskAndROIxMax(x_max))
 	{
-		if (setMaskAndROIyPos(y_pos))
+		if (setMaskAndROIyMax(y_max))
 		{
-			if (setMaskAndROIxSize(x_size))
+			if (setMaskAndROIxSize(x_rad))
 			{
-				if (setMaskAndROIySize(y_size))
+				if (setMaskAndROIySize(y_rad))
 				{
 					return true;
 				}
@@ -1119,8 +1222,20 @@ bool Camera::setMaskandROI(std::map<std::string, long> settings)
 {
 	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setMaskandROI(settings.at("x_pos"), settings.at("y_pos"), settings.at("x_size"), settings.at("y_size"));
+		return setMaskandROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("x_rad"), settings.at("y_rad"));
 	}
+	std::cout << "!!ERROR!! wrong setMaskandROI keywords: ";  
+	for (auto&& item : settings)
+	{
+		std::cout << item.first << ", ";
+	}
+	std::cout << std::endl;
+	std::cout << "Expecting: ";
+	for (auto&& item : mask_and_roi_keywords)
+	{
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
 	return false;
 }
 bool Camera::setMaskandROI_Py(boost::python::dict settings)
@@ -1200,7 +1315,7 @@ std::map<std::string, long> Camera::getMask()const
 	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
 	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
 	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
-	r["mask_rad_x"] = getMaskYRadius();// MAGIC STRING
+	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getMask_Py()const
@@ -1230,11 +1345,19 @@ std::map<std::string, long> Camera::getROI()const
 	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
 	r["roi_x_size"] = getROISizeX();// MAGIC STRING
 	r["roi_y_size"] = getROISizeY();// MAGIC STRING
+
+	// r["x_max"] = roi_max_x;   // MAGIC STRING
+	// r["y_max"] = roi_max_y; // MAGIC STRING
+	// r["x_size"] = getROISizeX();// MAGIC STRING
+	// r["y_size"] = getROISizeY();// MAGIC STRING
+	// r["x_min"] = getROIMinX();// MAGIC STRING
+	// r["y_min"] = getROIMinY();// MAGIC STRING
+
 	return r;
 }
 boost::python::dict Camera::getROI_Py()const
 {
-	return  to_py_dict<std::string, long>(getMaskandROI());
+	return  to_py_dict<std::string, long>(getROI());
 }
 std::map<std::string, long> Camera::getMaskandROI()const
 {
@@ -1247,17 +1370,24 @@ std::map<std::string, long> Camera::getMaskandROI()const
 	r["mask_center_y"] = getMaskYCenter(); // MAGIC STRING
 	r["mask_x_size"] = getMaskXRadius();// MAGIC STRING
 	r["mask_y_size"] = getMaskYRadius();// MAGIC STRING
+// =======
+	// r["mask_x"] = getMaskXCenter(); // MAGIC STRING
+	// r["mask_y"] = getMaskYCenter(); // MAGIC STRING
+	// r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
+	// r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
+	// r["x_max"] = getROIMinX() + getROISizeX();   // MAGIC STRING
+	// r["y_max"] = getROIMinY() + getROISizeY(); // MAGIC STRING
+	// r["x_size"] = getROISizeX();// MAGIC STRING
+	// r["y_size"] = getROISizeY();// MAGIC STRING
+	// r["x_min"] = getROIMinX();// MAGIC STRING
+	// r["y_min"] = getROIMinY();// MAGIC STRING
+
 	return r;
 }
 boost::python::dict Camera::getMaskandROI_Py()const
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
-
-
-
-
-
 
 //boost::python::dict Camera::getRunningStats(const std::string& type_str)const
 //{
@@ -1283,7 +1413,72 @@ boost::python::dict Camera::getMaskandROI_Py()const
 //
 //}
 
-boost::python::dict Camera::getAllRunningStats()const
+
+
+bool Camera::enableAnalysisMaskOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::one_ushort);
+}
+bool Camera::enableCrossHairOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CROSS_HAIR), GlobalConstants::one_ushort);
+}
+bool Camera::enableCentreOfMassOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CENTRE_OF_MASS), GlobalConstants::one_ushort);
+}
+bool Camera::disableAnalysisMaskOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+}
+bool Camera::disableCrossHairOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+}
+bool Camera::disableCentreOfMassOverlay()
+{
+	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+}
+bool Camera::disableAllOverlay()
+{
+	bool r = true;
+	if(disableAnalysisMaskOverlay())	{
+	}
+	else{
+		r = false;
+	}
+	if (disableCrossHairOverlay()) {
+	}
+	else {
+		r = false;
+	}
+	if (disableCentreOfMassOverlay()) {
+	}
+	else {
+		r = false;
+	}
+	return r;
+}
+STATE Camera::getAnalysisMaskOverlayState()const
+{
+	return cross_hair_overlay.second;
+}
+STATE Camera::getCrossHairOverlayState()const
+{
+	return cross_hair_overlay.second;
+}
+STATE Camera::getCentreOfMassOverlayState()const
+{
+	return cross_hair_overlay.second;
+}
+
+// std::pair<epicsTimeStamp, STATE> ;
+// std::pair<epicsTimeStamp, STATE> center_of_mass_overlay;
+// std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
+
+
+//boost::python::dict Camera::getAllRunningStats()const
+boost::python::dict Camera::getRunningStats()const
 {
 	boost::python::dict r;
 	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
@@ -2252,8 +2447,16 @@ bool Camera::updateROIData()
 	if (!roi_data_has_not_vector_resized)
 	{
 		auto start = std::chrono::high_resolution_clock::now();
+		//bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
+		//	, roi_data.second.size());
+
+		roi_total_pixel_count = roi_size_x.second * roi_size_y.second;
+
+		messenger.printDebugMessage("roi_total_pixel_count = ", roi_total_pixel_count);
+
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
-			, roi_data.second.size());
+			, roi_total_pixel_count);
+
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
@@ -2337,7 +2540,7 @@ std::vector<long> Camera::getROIData()const
 }
 boost::python::list Camera::getROIData_Py()const
 {
-	return to_py_list<long>(getROIData());
+	return to_py_list<long>(GlobalFunctions::slice(getROIData(),GlobalConstants::zero_int, roi_total_pixel_count-1));
 }
 std::vector<long>& Camera::getImageDataConstRef()
 {
@@ -2373,4 +2576,58 @@ long Camera::getGain()const
 }
 
 
+std::map<std::string, double> Camera::getAnalayisData() const
+{
+	std::map < std::string, double> r;
+	r["x_pix"] = getXPix();
+	r["y_pix"] = getYPix();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["x_mm"] = getX();
+	r["y_mm"] = getY();
+	r["sigma_x_mm"] = getSigX();
+	r["sigma_y_mm"] = getSigY();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["pix2mmX"] = getpix2mmX();
+	r["pix2mmY"] = getpix2mmY();
+	r["floor_state"] = getUseFloorState();
+	r["floor_level"] = getFloorLevel();
+	r["npoint_state"] = getNPointState();
+	r["step_size"] = getStepSize();
+	r["using_background_state"] = getUsingBackgroundState();
+	r["avg_intensity"] = getAvgIntensity();
+	r["avg_intensity"] = getAvgIntensity();
 
+	return r;
+}
+boost::python::dict Camera::getAnalayisData_Py() const
+{
+	boost::python::dict r;
+	r["x_pix"] = getXPix();
+	r["y_pix"] = getYPix();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["x_mm"] = getX();
+	r["y_mm"] = getY();
+	r["sigma_x_mm"] = getSigX();
+	r["sigma_y_mm"] = getSigY();
+	r["sigma_x_pix"] = getSigXPix();
+	r["sigma_y_pix"] = getSigYPix();
+	r["sigma_xy_pix"] = getSigXYPix();
+	r["pix2mmX"] = getpix2mmX();
+	r["pix2mmY"] = getpix2mmY();
+	r["floor_state"] = getUseFloorState();
+	r["floor_level"] = getFloorLevel();
+	r["npoint_state"] = getNPointState();
+	r["npoint_state"] = getNPointState();
+	r["npoint_step_size"] = getStepSize();
+	r["using_background_state"] = getUsingBackgroundState();
+	r["sum_intensity"] = getSumIntensity();
+	r["avg_intensity"] = getAvgIntensity();
+
+	return r;
+}
