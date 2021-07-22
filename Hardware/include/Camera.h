@@ -610,6 +610,9 @@ public:
 	/*! Get the mask and ROI settings (Python version).
 	@param[out] dict, values ) */
 	boost::python::dict getMaskandROI_Py()const;
+	/*! Save the Camera IMage buffer to disk (typically the last 600 shots).
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool saveImageBuffer();
 	/*! Start image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
@@ -1191,6 +1194,9 @@ private:
 	/* Set the directory and file name for the next capture and save 
 	@param[out] bool, if the value got sent to epics */
 	bool makeANewDirectoryAndName(size_t numbOfShots);
+	/* Set the directory and file name for the Camera Image Buffer dump.
+	@param[out] bool, if the value got sent to epics */
+	bool makeANewDirectoryAndNameBuffer();
 	/* Flag set if the camera is "busy" busy means performing any part of the capture and save routine,  */
 	bool busy;
 	/* Flag set if the last capture and save routine manged to complete  */

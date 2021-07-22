@@ -1912,6 +1912,99 @@ bool Camera::write()
 	return ans;
 }
 //-------------------------------------------------------------------------------------------------------
+bool Camera::saveImageBuffer()
+{
+	if (busy)
+	{
+		return false;
+	}
+	if (makeANewDirectoryAndNameBuffer())
+	{
+		char proc = 1;
+		return epicsInterface->putValue2<char>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), proc);
+	}
+	return false;
+}
+//-------------------------------------------------------------------------------------------------------
+bool Camera::makeANewDirectoryAndNameBuffer()///YUCK (make it look nice)
+{
+	messenger.printDebugMessage("makeANewDirectoryAndNameBuffer ");
+	bool ans = false;
+	messenger.printDebugMessage("char: ", sizeof(char));
+	//std::string time_now = globalfunctions::time_iso_8601();
+	// this sets up the directory structure, based on year, month date
+	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+	std::time_t t = std::chrono::system_clock::to_time_t(p);
+	// now we jump into some c because, meh 
+	// use local timezone 
+	tm local_tm = *localtime(&t);
+	////struct tm local_tm;
+	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
+	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
+	std::string strpath = "/CameraImages/" +
+		std::to_string(local_tm.tm_year + 1900) +
+		"/" + std::to_string(local_tm.tm_mon + 1) +
+		"/" + std::to_string(local_tm.tm_mday) + "/";
+	strcpy(newPath, strpath.c_str());
+	char newName[256] = "defaultname";
+	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_ImageBuffer";
+	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
+	strcpy(newName, strName.c_str());
+	messenger.printDebugMessage("File Directory would be: ", newPath);
+	messenger.printDebugMessage("File name is: ", newName);
+	std::stringstream s;
+	for (auto&& t : newPath)
+	{
+		s << static_cast<unsigned>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	s.clear();
+	for (auto&& t : newPath)
+	{
+		s << static_cast<signed>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
+	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
+	if (ca_state(pvStructs.at(CameraRecords::HDFB_Buffer_FileName).CHID) == cs_conn)
+	{
+		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDFB_Buffer_FileName).CHID, newName);
+		MY_SEVCHK(status);
+		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK(status);
+		if (status == ECA_NORMAL)
+		{
+			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
+			{
+				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDFB_Buffer_FilePath).CHID, newPath);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+				if (status == ECA_NORMAL)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				messenger.printDebugMessage(hardwareName, " HDFB_Buffer_FilePath is not connected");
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " HDFB_Buffer_FileName is not connected");
+	}
+	return ans;
+}
+
+
 bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
 {
 	messenger.printDebugMessage("makeANewDirectoryAndName ");
@@ -1942,8 +2035,6 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	strcpy(newName, strName.c_str());
 	messenger.printDebugMessage("File Directory would be: ", newPath);
 	messenger.printDebugMessage("File name is: ", newName);
-
-
 	std::stringstream s;
 	for (auto&& t : newPath)
 	{
@@ -1958,7 +2049,6 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 		s << " ";
 	}
 	messenger.printDebugMessage("t = ", s.str());
-
 	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
 	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
 
@@ -2000,58 +2090,6 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 		messenger.printDebugMessage(hardwareName, " HDF_FileName is not connected");
 	}
 
-
-
-	//ans = epicsinterface->putarrayvalue<char*>(pvstructs.at(camerarecords::hdf_filename), newname);
-	//if (ans)
-	//{
-	//	ans = epicsinterface->putarrayvalue<char*>(pvstructs.at(camerarecords::hdf_filepath), newpath);
-	//	if (ans)
-	//	{
-	//		requested_directory = newpath;
-	//		requested_filename = newname;
-	//	}
-	//	else
-	//	{
-	//		messenger.printdebugmessage(hardwarename, " failed to send new filepath");
-	//	}
-	//}
-	//else
-	//{
-	//	messenger.printdebugmessage(hardwarename, " failed to send new filename");
-	//}
-
-
-	//}
-	//else
-	//{
-	//	messenger.printdebugmessage(hardwarename," failed to send new filename");
-	//}
-
-	//putarrayvalue(camera.pvcomstructs.at(cam_pv_type::cam_file_name).chtype,
-	//	camera.pvcomstructs.at(cam_pv_type::cam_file_name).count,
-	//	camera.pvcomstructs.at(cam_pv_type::cam_file_name).chid,
-	//	&newname);
-	//ca_array_put(camera.pvcomstructs.at(cam_pv_type::cam_file_path).chtype,
-	//	camera.pvcomstructs.at(cam_pv_type::cam_file_path).count,
-	//	camera.pvcomstructs.at(cam_pv_type::cam_file_path).chid,
-	//	&newpath);
-
-	//int status = sendtoepics("ca_put", "", "timeout trying to send new file path state.");
-	//if (status == eca_normal)
-	//{
-	//	ans = true;
-	//	camera.daq.latestdirectory = newpath;
-	//	camera.daq.latestfilename = newname;
-
-	//	allcamdata.at(camera.name).daq.latestdirectory = newpath;
-	//	allcamdata.at(camera.name).daq.latestfilename = newname;
-
-	//message("new latestdirectory set to ", latest_directory, " on ", camera.name, " camera.");
-	//message("new latestfilename set to  ", latest_filename, " on ", camera.name, " camera.");
-	//}
-
-//	//return true;
 	return ans;
 }
 bool Camera::isWriting()const
