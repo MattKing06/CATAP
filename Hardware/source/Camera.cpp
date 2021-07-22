@@ -1796,7 +1796,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 		if (capture())
 		{
 			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
-			GlobalFunctions::pause_500();
+			//GlobalFunctions::pause_500();
 			// add a time out here
 			time_t wait_time = num_shots * 10 + 5; // MAGIC numbers 
 			time_t time_start = GlobalFunctions::timeNow();
@@ -1820,8 +1820,8 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 			{
 				if (makeANewDirectoryAndName(num_shots))
 				{
-					GlobalFunctions::pause_500();
-					GlobalFunctions::pause_500();
+					//GlobalFunctions::pause_500();
+					//GlobalFunctions::pause_500();
 					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
 					if (write())
 					{
@@ -1832,8 +1832,8 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 						}
 						messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
 						// pause and wait for EPICS to UPDATE
-						GlobalFunctions::pause_500();
-						GlobalFunctions::pause_500();
+						//GlobalFunctions::pause_500();
+						//GlobalFunctions::pause_500();
 						///check status of save/write
 						if (write_state_check.second == STATE::WRITE_CHECK_OK)
 						{
@@ -1846,7 +1846,6 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 							last_capture_and_save_success = false;
 							image_capture.status = STATE::WRITE_CHECK_ERROR;
 						}
-						busy = false;
 						image_capture.is_busy = false;
 					}
 					else
@@ -1865,6 +1864,8 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 	{
 		messenger.printDebugMessage(hardwareName, " setNumberOfShotsToCapture returned false."); 
 	}
+	image_capture.is_busy = false;
+	busy = false;
 }
 //-------------------------------------------------------------------------------------------------------
 size_t Camera::getNumberOfShotsToCapture()const
