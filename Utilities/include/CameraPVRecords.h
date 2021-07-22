@@ -122,7 +122,7 @@ namespace CameraRecords
 	// LED STATUS (3)
 	extern std::string const LED_Sta;
 	extern std::string const LED_Off;
-	extern std::string const LED_On;                                    
+                                 
 	// anlaysis overlay (6)
 	extern std::string const ANA_OVERLAY_1_CROSS;
 	extern std::string const ANA_OVERLAY_2_RESULT;
@@ -130,6 +130,13 @@ namespace CameraRecords
 	extern std::string const ANA_OVERLAY_1_CROSS_RBV;
 	extern std::string const ANA_OVERLAY_2_RESULT_RBV;
 	extern std::string const ANA_OVERLAY_3_MASK_RBV;
+
+	extern std::string const LED_On;
+	extern std::string const CAM_BlackLevel;
+	extern std::string const CAM_BlackLevel_RBV;
+	extern std::string const CAM_Gain;
+	extern std::string const CAM_Gain_RBV;
+
 
 
 	// MAGIC IS NOT USED (yet!!!) 

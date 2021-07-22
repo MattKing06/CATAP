@@ -98,7 +98,7 @@ void LaserMirror::setHStep(const double& value)
 	{
 		if (value < GlobalConstants::zero_double)
 		{
-			hStep = -maximumStepSize;
+			hStep = -1.0*maximumStepSize;
 		}
 		else
 		{
@@ -117,7 +117,7 @@ void LaserMirror::setVStep(const double& value)
 	{
 		if (value < GlobalConstants::zero_double)
 		{
-			vStep = -maximumStepSize;
+			vStep = -1.0*maximumStepSize;
 		}
 		else
 		{
@@ -145,10 +145,11 @@ bool LaserMirror::moveHorizontally()
 
 bool LaserMirror::moveVertically()
 {
-	// 
+
 	messenger.printMessage(hardwareName, " moveVertically ", vStep);
 	return epicsInterface->setNewVerticalPosition(vStep, pvStructs.at(LaserMirrorRecords::V_MREL));
 	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::V_MREL), hStep);
+
 }
 
 

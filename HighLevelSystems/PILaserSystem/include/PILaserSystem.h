@@ -28,7 +28,7 @@ public:
 	LoggingSystem messenger;
 	Camera virtualCathodeCamera;
 	Charge wallCurrentMonitor;
-	LaserMirror mirror;
+    LaserMirror mirror;
 	LaserEnergyMeter energyMeter;
 	LaserHWP halfwavePlate;
 	Shutter laserShutter01;

@@ -41,7 +41,8 @@ machine_area_str(specificValueMap.find("machine_area")->second),
 machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_area")->second)),
 hardware_type_str(specificValueMap.find("hardware_type")->second),
 hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
-hardwareName(specificValueMap.find("name")->second)
+hardwareName(specificValueMap.find("name")->second),
+pvStructs(std::map<std::string, pvStruct>())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);
 }

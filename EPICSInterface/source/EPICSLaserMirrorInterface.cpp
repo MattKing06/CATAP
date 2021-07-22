@@ -40,20 +40,13 @@ void EPICSLaserMirrorInterface::updateVerticalPosition(const struct event_handle
 
 bool EPICSLaserMirrorInterface::setNewHorizontalPosition(const double value, const pvStruct& pv)
 {
-	std::cout << "setNewHorizontalPosition " << value << std::endl;
-
-	int status = ca_put(pv.CHTYPE, pv.CHID, &value);
-	MY_SEVCHK(status);
-	status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+	putValue(pv, value);
 	return true;
 }
 
 bool EPICSLaserMirrorInterface::setNewVerticalPosition(const double value, const pvStruct& pv)
 {
-	std::cout << "setNewVerticalPosition " << value << std::endl;
-	int status = ca_put(pv.CHTYPE, pv.CHID, &value);
-	MY_SEVCHK(status);
-	status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+	putValue(pv, value);
 	return true;
 }
 

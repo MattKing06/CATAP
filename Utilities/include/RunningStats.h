@@ -38,6 +38,20 @@ public:
 		size_t start_buffer_size = 10;
 		setBufferSize(start_buffer_size); // MAGIC
 	}
+
+	RunningStats(const RunningStats& copyRS) :
+		m_n(copyRS.m_n),
+		max_n(copyRS.max_n),
+		rs_complete(copyRS.rs_complete),
+		buffer_n(copyRS.buffer_n),
+		m_oldM(copyRS.m_oldM),
+		m_newM(copyRS.m_newM),
+		m_oldS(copyRS.m_oldS),
+		m_newS(copyRS.m_newS)
+	{
+
+	}
+
 	~RunningStats() {
 		current_rs_object_count -= 1;
 		std::cout << "RS Destry: total_rs_object_count  = " << total_rs_object_count << std::endl;

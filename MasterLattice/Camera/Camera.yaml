@@ -116,6 +116,76 @@ controls_information:
         HDF_WriteFile_RBV: CLA-VCA-DIA-CAM-01:HDF:WriteFile_RBV # TODO add to all cams
         HDF_WriteStatus: CLA-VCA-DIA-CAM-01:HDF:WriteStatus
         HDF_WriteMessage: CLA-VCA-DIA-CAM-01:HDF:WriteMessage
+        # HDF_WriteFile_RBV    : EBT-INJ-DIA-CAM-13:HDF:WriteFile_RBV
+        # HDF_WriteStatus    : EBT-INJ-DIA-CAM-13:HDF:WriteStatus
+        # HDF_WriteMessage    : EBT-INJ-DIA-CAM-13:HDF:WriteMessage
+        # HDF_NumCaptured_RBV    : EBT-INJ-DIA-CAM-13:HDF:NumCaptured_RBV
+        # HDF_Capture_RBV    : EBT-INJ-DIA-CAM-13:HDF:Capture_RBV
+        # CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-13:CAM:Acquire_RBV
+        # HDF_NumCapture_RBV    : EBT-INJ-DIA-CAM-13:HDF:NumCapture_RBV
+        # # MAGICK_NumCaptured_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:NumCaptured_RBV
+        # # MAGICK_WriteFile_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:WriteFile_RBV
+        # # MAGICK_WriteStatus    : EBT-INJ-DIA-CAM-13:MAGICK:WriteStatus
+        # # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-13:MAGICK:WriteMessage
+        # # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:Capture_RBV
+        # # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-13:MAGICK:NumCapture_RBV
+        # ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-13:ANA:StepSize_RBV
+        # ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-13:ANA:EnableCallbacks_RBV
+        # ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:UseBkgrnd
+        # ANA_UseNPoint    : EBT-INJ-DIA-CAM-13:ANA:UseNPoint
+        # ANA_X_RBV    : EBT-INJ-DIA-CAM-13:ANA:X_RBV
+        # ANA_Y_RBV    : EBT-INJ-DIA-CAM-13:ANA:Y_RBV
+        # ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaX_RBV
+        # ANA_SigmaY_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaY_RBV
+        # ANA_CovXY_RBV    : EBT-INJ-DIA-CAM-13:ANA:CovXY_RBV
+        # ANA_AvgIntensity_RBV    : EBT-INJ-DIA-CAM-13:ANA:AvgIntensity_RBV
+        # ANA_Intensity_RBV    : EBT-INJ-DIA-CAM-13:ANA:Intensity_RBV
+        # ANA_XPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:XPix_RBV
+        # ANA_YPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:YPix_RBV
+        # ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaXPix_RBV
+        # ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:SigmaYPix_RBV
+        # ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-13:ANA:CovXYPix_RBV
+        # ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-13:ANA:PixelResults_RBV
+        # ANA_MaskXCenter_RBV    : value
+        # ANA_MaskYCenter_RBV    : value
+        # ANA_MaskXRad_RBV    : value
+        # ANA_MaskYRad_RBV    : value
+        # ANA_MaskXCenter    : value
+        # ANA_MaskYCenter    : value
+        # ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-13:ANA:CenterX_RBV
+        # ANA_CenterY_RBV    : EBT-INJ-DIA-CAM-13:ANA:CenterY_RBV
+        # ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-13:ANA:PixMM_RBV
+        # CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-13:CAM:AcquireTime_RBV
+        # CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-13:CAM:AcquirePeriod_RBV
+        # CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-13:CAM:ArrayRate_RBV
+        # CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-13:CAM:Temperature_RBV
+        # HDF_FilePath    : EBT-INJ-DIA-CAM-13:HDF:FilePath
+        # HDF_FileName    : EBT-INJ-DIA-CAM-13:HDF:FileName
+        # HDF_FileNumber    : EBT-INJ-DIA-CAM-13:HDF:FileNumber
+        # HDF_WriteFile    : EBT-INJ-DIA-CAM-13:HDF:WriteFile
+        # CAM_Acquire    : EBT-INJ-DIA-CAM-13:CAM:Acquire
+        # CAM_Acquire    : EBT-INJ-DIA-CAM-13:CAM:Acquire
+        # HDF_Capture    : EBT-INJ-DIA-CAM-13:HDF:Capture
+        # HDF_NumCapture    : EBT-INJ-DIA-CAM-13:HDF:NumCapture
+        # ANA_StepSize    : EBT-INJ-DIA-CAM-13:ANA:StepSize
+        # ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-13:ANA:EnableCallbacks
+        # ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:NewBkgrnd
+        # ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-13:ANA:UseBkgrnd
+        # ANA_UseNPoint    : EBT-INJ-DIA-CAM-13:ANA:UseNPoint
+        # CAM2_ArrayData    : EBT-INJ-DIA-CAM-13:CAM2:ArrayData
+        # ANA_MaskXCenter    : EBT-INJ-DIA-CAM-13:ANA:MaskXCenter
+        # ANA_MaskYCenter    : EBT-INJ-DIA-CAM-13:ANA:MaskYCenter
+        # ANA_MaskXRad    : EBT-INJ-DIA-CAM-13:ANA:MaskXRad
+        # ANA_MaskYRad    : EBT-INJ-DIA-CAM-13:ANA:MaskYRad
+        # ANA_CenterX    : EBT-INJ-DIA-CAM-13:ANA:CenterX
+        # ANA_CenterY    : EBT-INJ-DIA-CAM-13:ANA:CenterY
+        # ANA_PixMM    : EBT-INJ-DIA-CAM-13:ANA:PixMM
+        # LED_Sta    : CLA-LAS-DIA-LED-01:Sta
+        # LED_Off    :    CLA-LAS-DIA-LED-01:Off
+        # LED_On    : CLA-LAS-DIA-LED-01:On
+        # OVERLAY_CROSS_HAIR : EBT-INJ-DIA-CAM-20:OVER:1:Use 
+        # OVERLAY_CENTRE_OF_MASS : EBT-INJ-DIA-CAM-20:OVER:2:Use 
+        # OVERLAY_MASK : EBT-INJ-DIA-CAM-20:OVER:3:Use 
 properties:
     hardware_type : Camera
     machine_area : value
