@@ -1862,57 +1862,60 @@ boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)co
 	return boost::python::dict();
 }
 
-bool CameraFactory::enableAnalysisMaskOverlay(const std::string& name)
+
+
+
+bool CameraFactory::enableOverlayMask(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).enableAnalysisMaskOverlay();
+		return camera_map.at(full_name).enableOverlayMask();
 	}
 	return false;
 }
-bool CameraFactory::enableCrossHairOverlay(const std::string& name)
+bool CameraFactory::enableOverlayCross(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).enableCrossHairOverlay();
+		return camera_map.at(full_name).enableOverlayCross();
 	}
 	return false;
 }
-bool CameraFactory::enableCentreOfMassOverlay(const std::string& name)
+bool CameraFactory::enableOverlayResult(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).enableCentreOfMassOverlay();
+		return camera_map.at(full_name).enableOverlayResult();
 	}
 	return false;
 }
-bool CameraFactory::disableAnalysisMaskOverlay(const std::string& name)
+bool CameraFactory::disableOverlayCross(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).disableAnalysisMaskOverlay();
+		return camera_map.at(full_name).disableOverlayCross();
 	}
 	return false;
 }
-bool CameraFactory::disableCrossHairOverlay(const std::string& name)
+bool CameraFactory::disableOverlayMask(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).disableCrossHairOverlay();
+		return camera_map.at(full_name).disableOverlayMask();
 	}
 	return false;
 }
-bool CameraFactory::disableCentreOfMassOverlay(const std::string& name)
+bool CameraFactory::disableOverlayResult(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).disableCentreOfMassOverlay();
+		return camera_map.at(full_name).disableOverlayResult();
 	}
 	return false;
 }
@@ -1925,43 +1928,43 @@ bool CameraFactory::disableAllOverlay(const std::string& name)
 	}
 	return false;
 }
-bool CameraFactory::disableAllOverlay()
+bool CameraFactory::disableAllOverlayForAllCameras()
 {
-	bool r = true;
-	for (auto&& it : camera_map)
+	for (auto& cam : camera_map)
 	{
-		bool s = disableAllOverlay();
-		if (s == false)
-		{
-			r = false;
-		}
+		cam.second.disableAllOverlay();
 	}
-	return r;
+	return false;
 }
-STATE CameraFactory::getAnalysisMaskOverlayState(const std::string& name)const
+
+
+
+
+
+STATE CameraFactory::getOverlayMaskState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getAnalysisMaskOverlayState();
-	}
-	return STATE::UNKNOWN_STATE;
-}
-STATE CameraFactory::getCrossHairOverlayState(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).getCrossHairOverlayState();
+		return camera_map.at(full_name).getOverlayMaskState();
 	}
 	return STATE::UNKNOWN_STATE;
 }
-STATE CameraFactory::getCentreOfMassOverlayState(const std::string& name)const
+STATE CameraFactory::getOverlayCrossState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getCentreOfMassOverlayState();
+		return camera_map.at(full_name).getOverlayCrossState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+STATE CameraFactory::getOverlayResultState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getOverlayResultState();
 	}
 	return STATE::UNKNOWN_STATE;
 }

@@ -981,6 +981,24 @@ bool Camera::isOverlayResultDisabled()const
 {
 	return mask_overlay.second == STATE::DISABLED;
 }
+bool Camera::disableAllOverlay()
+{
+	bool m_dis = disableOverlayMask();
+	bool c_dis = disableOverlayCross();
+	bool r_dis = disableOverlayResult();
+	if (m_dis)
+	{
+		if (c_dis)
+		{
+			if (r_dis)
+			{
+				return true;
+			}
+		}
+	}
+	return true;
+}
+
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 //bool Camera::setXPix(double value)
@@ -1412,65 +1430,65 @@ boost::python::dict Camera::getMaskandROI_Py()const
 //	}
 //
 //}
-
-
-
-bool Camera::enableAnalysisMaskOverlay()
-{
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::one_ushort);
-}
-bool Camera::enableCrossHairOverlay()
-{
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CROSS_HAIR), GlobalConstants::one_ushort);
-}
-bool Camera::enableCentreOfMassOverlay()
-{
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CENTRE_OF_MASS), GlobalConstants::one_ushort);
-}
-bool Camera::disableAnalysisMaskOverlay()
-{
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
-}
-bool Camera::disableCrossHairOverlay()
-{
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
-}
-bool Camera::disableCentreOfMassOverlay()
-{
-	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
-}
-bool Camera::disableAllOverlay()
-{
-	bool r = true;
-	if(disableAnalysisMaskOverlay())	{
-	}
-	else{
-		r = false;
-	}
-	if (disableCrossHairOverlay()) {
-	}
-	else {
-		r = false;
-	}
-	if (disableCentreOfMassOverlay()) {
-	}
-	else {
-		r = false;
-	}
-	return r;
-}
-STATE Camera::getAnalysisMaskOverlayState()const
-{
-	return cross_hair_overlay.second;
-}
-STATE Camera::getCrossHairOverlayState()const
-{
-	return cross_hair_overlay.second;
-}
-STATE Camera::getCentreOfMassOverlayState()const
-{
-	return cross_hair_overlay.second;
-}
+//
+//
+//
+//bool Camera::enableAnalysisMaskOverlay()
+//{
+//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::one_ushort);
+//}
+//bool Camera::enableCrossHairOverlay()
+//{
+//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CROSS_HAIR), GlobalConstants::one_ushort);
+//}
+//bool Camera::enableCentreOfMassOverlay()
+//{
+//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CENTRE_OF_MASS), GlobalConstants::one_ushort);
+//}
+//bool Camera::disableAnalysisMaskOverlay()
+//{
+//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+//}
+//bool Camera::disableCrossHairOverlay()
+//{
+//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+//}
+//bool Camera::disableCentreOfMassOverlay()
+//{
+//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
+//}
+//bool Camera::disableAllOverlay()
+//{
+//	bool r = true;
+//	if(disableAnalysisMaskOverlay())	{
+//	}
+//	else{
+//		r = false;
+//	}
+//	if (disableCrossHairOverlay()) {
+//	}
+//	else {
+//		r = false;
+//	}
+//	if (disableCentreOfMassOverlay()) {
+//	}
+//	else {
+//		r = false;
+//	}
+//	return r;
+//}
+//STATE Camera::getAnalysisMaskOverlayState()const
+//{
+//	return cross_hair_overlay.second;
+//}
+//STATE Camera::getCrossHairOverlayState()const
+//{
+//	return cross_hair_overlay.second;
+//}
+//STATE Camera::getCentreOfMassOverlayState()const
+//{
+//	return cross_hair_overlay.second;
+//}
 
 // std::pair<epicsTimeStamp, STATE> ;
 // std::pair<epicsTimeStamp, STATE> center_of_mass_overlay;

@@ -259,6 +259,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getOverlayResultState", &Camera::getOverlayResultState)
 			.def("isOverlayResultEnabled", &Camera::isOverlayResultEnabled)
 			.def("isOverlayResultDisabled", &Camera::isOverlayResultDisabled)
+			.def("disableAllOverlay", &Camera::disableAllOverlay)
 			
 			// TODO the runnings atsts and buffersd a re being updated 
 
@@ -509,6 +510,25 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getGain", &CameraFactory::getGain)
 			.def("setBlackLevel", &CameraFactory::setBlackLevel)
 			.def("getBlackLevel", &CameraFactory::getBlackLevel)
+
+
+			.def("enableOverlayCross", &CameraFactory::enableOverlayCross)
+			.def("disableOverlayCross", &CameraFactory::disableOverlayCross)
+			//.def("getOverlayCrossState", &CameraFactory::getOverlayCrossState)
+			//.def("isOverlayCrossEnabled", &CameraFactory::isOverlayCrossEnabled)
+			//.def("isOverlayCrossDisabled", &CameraFactory::isOverlayCrossDisabled)
+			.def("enableOverlayMask", &CameraFactory::enableOverlayMask)
+			.def("disableOverlayMask", &CameraFactory::disableOverlayMask)
+			//.def("getOverlayMaskState", &CameraFactory::getOverlayMaskState)
+			//.def("isOverlayMaskEnabled", &CameraFactory::isOverlayMaskEnabled)
+			//.def("isOverlayMaskDisabled", &CameraFactory::isOverlayMaskDisabled)
+			.def("enableOverlayResult", &CameraFactory::enableOverlayResult)
+			.def("disableOverlayResult", &CameraFactory::disableOverlayResult)
+			//.def("getOverlayResultState", &CameraFactory::getOverlayResultState)
+			//.def("isOverlayResultEnabled", &CameraFactory::isOverlayResultEnabled)
+			//.def("isOverlayResultDisabled", &CameraFactory::isOverlayResultDisabled)
+			.def("disableAllOverlay", &CameraFactory::disableAllOverlay)
+			.def("disableAllOverlayForAllCameras", &CameraFactory::disableAllOverlayForAllCameras)
 
 			//.def("pix2mmX", &CameraFactory::pix2mmX)
 			//.def("pix2mmY", &CameraFactory::pix2mmY)

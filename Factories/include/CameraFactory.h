@@ -819,46 +819,46 @@ public:
 	/*! Enable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool enableAnalysisMaskOverlay(const std::string& name);
+	bool enableOverlayMask(const std::string& name);
 	/*! Enable the Cross Hair Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool enableCrossHairOverlay(const std::string& name);
+	bool enableOverlayCross(const std::string& name);
 	/*! Enable the Center Of Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool enableCentreOfMassOverlay(const std::string& name);
+	bool enableOverlayResult(const std::string& name);
 	/*! Disable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
 	* 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableAnalysisMaskOverlay(const std::string& name);
+	bool disableOverlayMask(const std::string& name);
 	/*! Disable the Cross Hair Overlay in the Camera Image data,
 	* 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableCrossHairOverlay(const std::string& name);
+	bool disableOverlayCross(const std::string& name);
 	/*! Disable the Centre of Mass Overlay in the Camera Image data,
 	* 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableCentreOfMassOverlay(const std::string& name);
-	/*! Disable all overlays in the Camera Image data,
+	bool disableOverlayResult(const std::string& name);
+	/*! Disable all overlays for the named camera,
 	* 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
 	bool disableAllOverlay(const std::string& name);
 	/*! Disable all overlays, for all cameras in this factory, 
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableAllOverlay();
+	bool disableAllOverlayForAllCameras();
 	/*! Get the state of the Analysis Mask Overlay 
 	* 	@param[in] std::string, name
 	@param[out] STATE, one of ON, OFF, UNKNONWN */
-	STATE getAnalysisMaskOverlayState(const std::string& name)const;
+	STATE getOverlayMaskState(const std::string& name)const;
 	/*! Get the state of the Cross Hair Overlay 
 	* 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	STATE getCrossHairOverlayState(const std::string& name)const;
+	STATE getOverlayCrossState(const std::string& name)const;
 	/*! Get the state of the Centre of Mass Overlay 
 	* 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	STATE getCentreOfMassOverlayState(const std::string& name)const;
+	STATE getOverlayResultState(const std::string& name)const;
 	/*! get the Overlay state for each camera object and overlay
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
 	std::map<std::string, STATE> getAllOverlayStates()const;
