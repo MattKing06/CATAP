@@ -813,36 +813,61 @@ public:
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
-	/*! Enable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?) 
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool enableAnalysisMaskOverlay();
-	/*! Enable the Cross Hair Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool enableCrossHairOverlay();
-	/*! Enable the Center Of Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool enableCentreOfMassOverlay();
-	/*! Disable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableAnalysisMaskOverlay();
-	/*! Disable the Cross Hair Overlay in the Camera Image data,
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableCrossHairOverlay();
-	/*! Disable the Centre of Mass Overlay in the Camera Image data,
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableCentreOfMassOverlay();
-	/*! Disable all overlays in the Camera Image data,
-	@param[out] bool, was command sent to EPICS, (not if it worked) */
-	bool disableAllOverlay();
-	/*! Get the state of the Analysis Mask Overlay 
-	@param[out] STATE, one of ON, OFF, ERR, or UNKNONWN */
-	STATE getAnalysisMaskOverlayState()const;
-	/*! Get the state of the Cross Hair Overlay 
-	@param[out] STATE, one of ON, OFF, ERR, or UNKNONWN */
-	STATE getCrossHairOverlayState()const;
-	/*! Get the state of the Center of Mass Overlay
-	@param[out] STATE, one of ON, OFF, ERR, or UNKNONWN */
-	STATE getCentreOfMassOverlayState()const;
+
+
+
+	/*! Enable the Cross-Overlay on the decimated camera image array sent over the network.
+		* Will be visiable to many camera image viewing apps,
+		@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayCross();
+	/*! Disable the Cross-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disableOverlayCross();
+	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayCrossState()const;
+	/*! Compare the current state of the cross overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayCrossEnabled()const;
+	/*! Compare the current state of the cross overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayCrossDisabled()const;
+	/*! Enable the Mask-Overlay on the decimated camera image array sent over the network.
+	* Will be visiable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayMask();
+	/*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disableOverlayMask();
+	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayMaskState()const;
+	/*! Compre the current state of the Mask-Overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayMaskEnabled()const;
+	/*! Compare the current state of the Mask-Overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayMaskDisabled()const;
+	/*! Enable the Results-Overlay on the decimated camera image array sent over the network.
+	* Will be visiable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayResult();
+	/*! Disable the Results-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disableOverlayResult();
+	/*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayResultState()const;
+	/*! Comapre the current state of the Results-Overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayResultEnabled()const;
+	/*! Compare the current state of the Results-Overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayResultDisabled()const;
+
 
 
 	/* Enable debug messages*/

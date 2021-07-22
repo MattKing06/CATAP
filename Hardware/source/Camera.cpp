@@ -1477,8 +1477,8 @@ STATE Camera::getCentreOfMassOverlayState()const
 // std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
 
 
-//boost::python::dict Camera::getAllRunningStats()const
-boost::python::dict Camera::getRunningStats()const
+//boost::python::dict Camera::getRunningStats()const
+boost::python::dict Camera::getAllRunningStats()const
 {
 	boost::python::dict r;
 	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING

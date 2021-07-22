@@ -130,19 +130,6 @@ void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK_RBV(const struct event_hand
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
 	recastCamera->mask_overlay.first = new_value.first;
 	switch (new_value.second)
-	else if (pvStruct.pvRecord == OVERLAY_CROSS_HAIR)
-	{
-		pvStruct.updateFunction = this->update_OVERLAY_CROSS_HAIR;
-	}
-	else if (pvStruct.pvRecord == OVERLAY_CENTRE_OF_MASS)
-	{
-		pvStruct.updateFunction = this->update_OVERLAY_CENTRE_OF_MASS;
-	}
-	else if (pvStruct.pvRecord == OVERLAY_MASK)
-	{
-		pvStruct.updateFunction = this->update_OVERLAY_MASK;
-	}
-	else
 	{
 	case GlobalConstants::zero_ushort: recastCamera->mask_overlay.second = STATE::DISABLED; break;
 	case GlobalConstants::one_ushort:  recastCamera->mask_overlay.second = STATE::ENABLED; break;
@@ -906,33 +893,34 @@ void EPICSCameraInterface::update_OVERLAY_MASK(const struct event_handler_args a
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_MASK = ",
 		ENUM_TO_STRING(recastCamera->analysis_mask_overlay.second));
 }
-void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
-}
-void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args)
-{
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_MAGICK_WriteFile_RBV ");
-}
 
-void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_MAGICK_WriteStatus ");
-}
-
-void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_MAGICK_WriteMessage ");
-}
-
-void EPICSCameraInterface::update_MAGICK_Capture_RBV(const struct event_handler_args args) {
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
-}
-
-void EPICSCameraInterface::update_MAGICK_NumCapture_RBV(const struct event_handler_args args) {
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
-}
+//void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
+//}
+//void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_WriteFile_RBV ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_WriteStatus ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_WriteMessage ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_Capture_RBV(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_NumCapture_RBV(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
+//}
