@@ -5,6 +5,7 @@
 #include "ConfigReader.h"
 #pragma once
 #include "Charge.h"
+#include <GlobalFunctions.h>
 #include <vector>
 #include <map>
 #include <utility>
@@ -198,7 +199,10 @@ public:
 	/*returns a Python dict of beamline positions of charge diagnostic devices
 	@param[out] dict: positions, keyed by name.*/
 	boost::python::dict getAllPosition_Py();
-
+	/*! sets the RS size (m_max) for a given charge diagnostic*/
+	void setRunningStatSize(const std::string& name, const size_t& size);
+	/*! clears the RS object for a given charge diagnostic */
+	void clearRunningStats(const std::string& name);
 	/*! turns debug messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for ChargeFactory and calls same function in all charge diagnostics and configReader*/

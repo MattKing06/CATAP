@@ -1,6 +1,7 @@
 #ifndef CHARGE_H_
 #define CHARGE_H_
 #include "LoggingSystem.h"
+#include <RunningStats.h>
 #ifndef HARDWARE_H_
 #include "Hardware.h"
 #endif //HARDWARE_H_
@@ -14,6 +15,7 @@
 #include <boost/circular_buffer.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+
 
 class EPICSChargeInterface;
 typedef boost::shared_ptr<EPICSChargeInterface> EPICSChargeInterface_sptr;
@@ -80,7 +82,7 @@ public:
 	@param[out] value: bunch charge.*/
 	double getQ() const;
 	/*! get the beamline position of the charge diagnostic
-	@param[out] value: position.*/
+	@param[out] value: position.*/ 
 	double getPosition() const;
 	/*! get the size of the buffer of charge values for the charge diagnostic
 	@param[out] value: buffer size.*/
@@ -120,6 +122,8 @@ public:
 	void setVectorSize(const size_t& value);
 	/*! empty all buffers.*/
 	void clearBuffers();
+
+
 	/*! charge value w/ associated epicsTimeStamp.*/
 	std::pair< epicsTimeStamp, double > q;
 	/*! beamline position of charge diagnostic.*/
@@ -140,6 +144,24 @@ public:
 	STATE chargeState;
 	/*! name of charge diagnostic device.*/
 	std::string name;
+	/*! Running statistics for charge diagnostic, access to easy statistics*/
+	RunningStats qStats;
+	/*! Get the running stats back as a dict*/
+	boost::python::dict getRunningStats_Py();
+	/*! Get the running stats object` back directly*/
+	RunningStats& getQRunningStats();
+	/*! Set running stats max count .*/
+	void setRunningStatSize(size_t new_size);
+	/*! lear running stats data.*/
+	void clearRunningStats();
+	size_t getRunningStatCount();
+	size_t getRunningStatSize()const;
+	bool isRunningStatFull();
+
+	friend class ChargeFactory;
+	friend class EPICSCameraInterface;
+	friend class PILaserSystem;
+
 protected:
 	std::vector<std::string> aliases;
 	std::string chargeType;

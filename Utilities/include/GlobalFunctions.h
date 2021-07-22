@@ -43,17 +43,27 @@ namespace GlobalFunctions {
 	template<class T>
 	bool entriesExist(const std::map<std::string, T>& m, const std::vector<std::string>& names)
 	{
+		//std::cout << "entriesExist, looking for ";
+		//for (auto&& item : m)
+		//{
+		//	std::cout << item.first << ",";
+		//}
+		//std::cout << std::endl;
+
 		for (auto&& item : names)
 		{
+			//std::cout << "Checking " << item;
 			if (entryExists(m, item))
 			{
-
+				//std::cout << " Exists! " << std::endl;
 			}
 			else
 			{
+				//std::cout << " Does not Exist returning false! " << std::endl;
 				return false;
 			}
 		}
+		//std::cout << "All entries exist, returning true " << std::endl;
 		return true;
 	}
 
@@ -69,6 +79,16 @@ namespace GlobalFunctions {
 			/* v does not contain x */
 			return false;
 		}
+	}
+
+
+	template<typename T>
+	std::vector<T> slice(std::vector<T> const& v, int m, int n)
+	{
+		auto first = v.cbegin() + m;
+		auto last = v.cbegin() + n + 1;
+		std::vector<T> vec(first, last);
+		return vec;
 	}
 
 	template<typename T = int>
@@ -124,6 +144,8 @@ namespace GlobalFunctions {
         return ret;
     }
 
+
+	extern TYPE stringToTYPE(const std::string& type_str);
 
 
 	//template<typename T = double>

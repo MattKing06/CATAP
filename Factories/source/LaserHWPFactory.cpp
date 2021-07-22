@@ -47,8 +47,11 @@ LaserHWPFactory::~LaserHWPFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					laser.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID)
+					{
+						laser.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
 				laser.second.epicsInterface->removeChannel(pvStruct.second);
 				ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -76,7 +79,8 @@ void LaserHWPFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
 	if (
 		pvStruct.pvRecord == LaserHWPRecords::MABS ||
-		pvStruct.pvRecord == LaserHWPRecords::RPOS
+		pvStruct.pvRecord == LaserHWPRecords::RPOS ||
+		pvStruct.pvRecord == LaserHWPRecords::ENABLE
 		)
 	{
 		pvStruct.monitor = true;
@@ -112,16 +116,20 @@ bool LaserHWPFactory::setup(const std::string& VERSION)
 	//// epics magnet interface has been initialized in laser constructor
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
+	messenger.printMessage(" populateLaserHWPMap");
 	populateLaserHWPMap();
-
+	messenger.printMessage(" setupChannels");
 	setupChannels();
 	EPICSInterface::sendToEPICS();
 	for (auto& laser : laserHWPMap)
 	{
+		messenger.printMessage(" getPVStructs");
 		std::map<std::string, pvStruct>& laserPVStructs = laser.second.getPVStructs();
 		for (auto& pv : laserPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
+			messenger.printMessage(" lookup ", pvAndRecordName);
+
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				retrievemonitorStatus(pv.second);
@@ -142,8 +150,8 @@ bool LaserHWPFactory::setup(const std::string& VERSION)
 			else
 			{
 				messenger.printMessage(laser.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
 	}

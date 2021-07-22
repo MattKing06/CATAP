@@ -243,7 +243,6 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 			}
 			hardwarePropertyAndValueVector.insert(std::make_pair(key, value));
 		}
-
 	}
 	// for debugging print data in file 
 	//for (auto&& it : hardwarePropertyAndValueVector)

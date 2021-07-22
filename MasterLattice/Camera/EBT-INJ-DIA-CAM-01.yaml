@@ -2,10 +2,6 @@
 controls_information:
     PV: true
     pv_record_map:
-        CAM_BlackLevel_RBV : EBT-INJ-DIA-CAM-01:CAM:BlackLevelRaw_RBV
-        CAM_BlackLevel :  EBT-INJ-DIA-CAM-01:CAM:BlackLevelRaw
-        CAM_Gain_RBV : EBT-INJ-DIA-CAM-01:CAM:GainRaw_RBV
-        CAM_Gain : EBT-INJ-DIA-CAM-01:CAM:GainRaw
         # NO _RBV versions of these PVs 
         ROIandMask_SetX : EBT-INJ-DIA-CAM-01:ANA:SetX
         ROIandMask_SetY : EBT-INJ-DIA-CAM-01:ANA:SetY
@@ -24,6 +20,8 @@ controls_information:
         ANA_MaskXRad    : EBT-INJ-DIA-CAM-01:ANA:MaskXRad
         ANA_MaskYRad_RBV    : EBT-INJ-DIA-CAM-01:ANA:MaskYRad_RBV
         ANA_MaskYRad    : EBT-INJ-DIA-CAM-01:ANA:MaskYRad
+        ANA_MaskWidth_RBV    : EBT-INJ-DIA-CAM-01:ANA:MaskWidth_RBV
+        ANA_MaskHeight_RBV    : EBT-INJ-DIA-CAM-01:ANA:MaskHeight_RBV
         # ROI SK implementation  
         ROI1_MinX_RBV : EBT-INJ-DIA-CAM-01:ROI1:MinX_RBV
         ROI1_MinX : EBT-INJ-DIA-CAM-01:ROI1:MinX
@@ -35,17 +33,20 @@ controls_information:
         ROI1_SizeY : EBT-INJ-DIA-CAM-01:ROI1:SizeY
         ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-01:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Start   # VELA CAM is different to CLARA cam!!! 
-        CAM_Stop_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Stop     # VELA CAM is different to CLARA cam!!! 
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-01:CAM:CameraState # VELA CAM is different to CLARA cam!!! 
+        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-01:CAM:Acquire
+        CAM_Stop_Acquire     : EBT-INJ-DIA-CAM-01:CAM:Acquire
+        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-01:CAM:Acquire_RBV
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-01:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-01:ANA:EnableCallbacks
         # the analysis can use a back groun dsubtracted image 
         ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-01:ANA:NewBkgrnd
+        ANA_NewBkgrnd_RBV: EBT-INJ-DIA-CAM-01:ANA:NewBkgrnd_RBV
         ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-01:ANA:UseBkgrnd
+        ANA_UseBkgrnd_RBV    : EBT-INJ-DIA-CAM-01:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-01:ANA:UseNPoint       
+        ANA_UseNPoint    : EBT-INJ-DIA-CAM-01:ANA:UseNPoint     
+        ANA_NPointStepSize    : EBT-INJ-DIA-CAM-01:ANA:UseNPoint_RBV           
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : EBT-INJ-DIA-CAM-01:ANA:UseFloor
         ANA_UseFloor_RBV : EBT-INJ-DIA-CAM-01:ANA:UseFloor_RBV
@@ -63,7 +64,7 @@ controls_information:
         ANA_PixMM    : EBT-INJ-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-01:ANA:PixMM_RBV
         ANA_StepSize    : EBT-INJ-DIA-CAM-01:ANA:StepSize
-        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-01:ANA:StepSize_RBV
+        ANA_NPointStepSize_RBV    : EBT-INJ-DIA-CAM-01:ANA:StepSize_RBV
         ANA_X_RBV    : EBT-INJ-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : EBT-INJ-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-01:ANA:SigmaX_RBV
@@ -76,7 +77,8 @@ controls_information:
         ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-01:ANA:SigmaXPix_RBV
         ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-01:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-01:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-01:ANA:PixelResults_RBV 
+        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-01:ANA:PixelResults_RBV
+        ANA_MMResults_RBV    : EBT-INJ-DIA-CAM-01:ANA:MMResults_RBV
         # # actuall array data
         CAM2_ArrayData    : EBT-INJ-DIA-CAM-01:CAM2:ArrayData
         HDFB_Buffer_Trigger : EBT-INJ-DIA-CAM-01:CAM:Trigger.PROC
@@ -91,7 +93,10 @@ controls_information:
         CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-01:CAM:AcquirePeriod_RBV
         CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-01:CAM:ArrayRate_RBV
         CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-01:CAM:Temperature_RBV
+
         HDF_Capture    : EBT-INJ-DIA-CAM-01:HDF:Capture
+        HDF_Capture_RBV    : EBT-INJ-DIA-CAM-01:HDF:Capture_RBV
+
         HDF_NumCapture    : EBT-INJ-DIA-CAM-01:HDF:NumCapture
         HDF_FilePath    : EBT-INJ-DIA-CAM-01:HDF:FilePath
         HDF_FileName    : EBT-INJ-DIA-CAM-01:HDF:FileName
@@ -100,6 +105,9 @@ controls_information:
         HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-01:HDF:FilePath_RBV
         HDF_FileName_RBV    : EBT-INJ-DIA-CAM-01:HDF:FileName_RBV
         HDF_WriteFile    : EBT-INJ-DIA-CAM-01:HDF:WriteFile
+        HDF_WriteFile_RBV: EBT-INJ-DIA-CAM-01:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_WriteStatus: EBT-INJ-DIA-CAM-01:HDF:WriteStatus
+        HDF_WriteMessage: EBT-INJ-DIA-CAM-01:HDF:WriteMessage
         # MAGICK_FileName    : EBT-INJ-DIA-CAM-01:MAGICK:FileName
         # MAGICK_FilePath    : EBT-INJ-DIA-CAM-01:MAGICK:FilePath
         # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-01:MAGICK:FileNumber
@@ -113,8 +121,8 @@ controls_information:
         # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-01:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-01:MAGICK:NumCapture_RBV
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
-        LED_Off    : CLA-LAS-DIA-LED-01:Off
-        LED_On    : CLA-LAS-DIA-LED-01:On
+        LED_On : CLA-LAS-DIA-LED-01:On
+        LED_Off : CLA-LAS-DIA-LED-01:Off
 
 properties:
     hardware_type: Camera
@@ -145,12 +153,12 @@ properties:
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
-    ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
-    BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
-    BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
-    X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
-    Y_PIX_SCALE_FACTOR : 2 #; 
+    ARRAY_DATA_NUM_PIX_X : 1392 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_Y : 1040 #; array data passed through EPICS
+    BINARY_NUM_PIX_X : 1392 #; the binary image is bigger than the array data passed through EPICS
+    BINARY_NUM_PIX_Y : 1040 #; the binary image is bigger than the array data passed through EPICS
+    X_PIX_SCALE_FACTOR : 1 #; scaling from array_data num pixels to binary image data num pixels
+    Y_PIX_SCALE_FACTOR : 1 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.2 #;  emprically determined value for when laser is present
     X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
     Y_CENTER_DEF      : 0 #;

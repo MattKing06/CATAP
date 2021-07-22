@@ -71,6 +71,7 @@ public:
 	/*! get the type of the camera (e.g. vela_camera, clara_camera 
 	@param[out] type */
 	TYPE getCamType()const;
+	// TODO these all need tidying up / renaming or deleting 
 	/*! convert a horizontal length in pixels to mm for this camera 
 	@param[in] length in pixels 
 	@param[out] length in mm*/
@@ -90,15 +91,39 @@ public:
 	/*! Get the pixels to mm in x(horizontal) direction. (First set from the yaml config file) 
 	@param[out] double, value */
 	double getpix2mmX()const;
-	/*! Get the pixels to mm in y (horizontal) direction. (First set from the yaml config file)
+	/*! Get the pixels to mm in y (vertical) direction. (First set from the yaml config file)
 	@param[out] double, value */
 	double getpix2mmY()const;
 	/*! Set the pixels to mm in x(horizontal) direction. 
 	@param[in] double, new value */
 	double setpix2mmX(double value);
-	/*! Set the pixels to mm in y(horizontal) direction.
+	/*! Set the pixels to mm in y(vertical) direction.
 	@param[in] double, new value */
 	double setpix2mmY(double value);
+
+	/*! Get the pixels to mm value (the one that is actaully used in EPICS).
+	@param[out] double, value */
+	double getPixelToMM()const;
+	/*! Set the pixels to mm value (the one that is actaully used in EPICS).
+	@param[in] double, value 
+	@param[out] bool, if command got sent to EPICS (not if it was received). */
+	bool setPixelToMM(double val)const;
+
+
+	/*! Get the number of pixels in the x direction for the "standard" image array sent over the network
+	@param[out] size_t, value*/
+	size_t getArrayDataPixelCountX()const;
+	/*! Get the number of pixels in the y direction for the "standard" image array sent over the network.
+	@param[out] size_t, value*/
+	size_t getArrayDataPixelCountY()const;
+
+	/*! Get the number of pixels in the x direction for the full image array saved to disk.
+	@param[out] size_t, value*/
+	size_t getBinaryDataPixelCountX()const;
+	/*!  Get the number of pixels in the x direction for the full image array saved to disk.
+	@param[out] size_t, value*/
+	size_t getBinaryDataPixelCountY()const;
+
 
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
@@ -139,6 +164,12 @@ public:
 	/*! Get the x position in pixels from the online analysis.
 	@param[out] double, value */
 	double getXPix()const;
+	/*! Get the x pixel scale factor 
+	@param[out] size_t, value*/
+	size_t getXPixScaleFactor() const;
+	/*! Get the y pixel scale factor
+	@param[out] size_t, value*/
+	size_t getYPixScaleFactor() const;
 	/*! Get the y position in pixels from the online analysis.
 	@param[out] double, value */
 	double getYPix()const;
@@ -151,6 +182,22 @@ public:
 	/*! Get the x-y coviariance in pixels from the online analysis.
 	@param[out] double, value */
 	double getSigXYPix()const;
+	/*!*/
+	size_t getNumXPixFromArrayData() const;
+	/*!*/
+	size_t getNumYPixFromArrayData() const;
+	/*!*/
+	size_t getFullNumXPix() const;
+	/*!*/
+	size_t getFullNumYPix() const;
+
+	/*! Clear all the values assoociated with the Running mean and variance stats.*/
+	void clearAllRunningStats();
+	/*! Set the size of all Running mean and variance stats.*/
+	void setAllRunningStatSizes(size_t new_val);
+
+
+	// TODO this is the IMAGE buffer, we (will) also have data buffers conatined in runningstats 
 	/*! Get the buffer trigger value.
 	@param[out] double, value */
 	char getBufferTrigger()const;
@@ -164,19 +211,19 @@ public:
 	@param[out] double, value */
 	long getBufferFileNumber()const;
 
-	// TODO sort this out and neaten it
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIminX()const;
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIminY()const;
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIsizeX()const;
-	///*! Get the buffer dump file-path.
-	//@param[out] long, value */
-	//long getBufferROIsizeY()const;
+	/*! Get relevant analysis data in a map 
+	@param[out] std::map<std::string, double> */
+	std::map<std::string, double> getAnalayisData() const;
+	boost::python::dict getAnalayisData_Py() const;
+
+
+	/*! get Anlaysis results in pixels 
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	std::map<std::string, double> getAnalysisResultsPixels()const;
+	/*! get Anlaysis results in pixels, Python version
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	boost::python::dict getAnalysisResultsPixels_Py()const;
+
 
 	/*! Get the total CPU usage of the camera.
 	@param[out] long, value */
@@ -196,6 +243,95 @@ public:
 	/*! Get the Number of pixels in the height of the (full) image.
 	@param[out] long, value */
 	long getPixelHeight()const;
+
+	/*! Get the PixelResults from analysis. The values expected back are in the following order:
+		[0] - X_POSITION
+		[1] - Y_POSITION
+		[2] - X_SIGMA
+		[3] - Y_SIGMA
+		[4] - COVARIANCE POSITION
+		@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
+	std::vector<double> getPixelResults() const;
+	boost::python::list getPixelResults_Py();
+	/*! Get the mm Results from analysis. The values expected back are in the following order:
+	[0] - X_POSITION
+	[1] - Y_POSITION
+	[2] - X_SIGMA
+	[3] - Y_SIGMA
+	[4] - COVARIANCE 
+	@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
+	std::vector<double> getMMResults() const;
+	boost::python::list getMMResults_Py() ;
+
+	///*! Enable the Cross-Overlay on the decimated camera image array sent over the network. 
+	//* Will be visiable to many camera image viewing apps, 
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool enableOverlayCross();
+	///*! Disable the Cross-Overlay on the decimated camera image array sent over the network. 	
+	//* The overlay will be visable to many camera image viewing apps,
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool disableOverlayCross();
+	///*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	//@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	//STATE getOverlayCrossState()const;
+	///*! Compare the current state of the cross overlay to ENABLED.
+	//@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	//bool isOverlayCrossEnabled()const;
+	///*! Compare the current state of the cross overlay to DISABLED.
+	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	//bool isOverlayCrossDisabled()const;
+	///*! Enable the Mask-Overlay on the decimated camera image array sent over the network.
+	//* Will be visiable to many camera image viewing apps,
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool enableOverlayMask();
+	///*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
+	//* The overlay will be visable to many camera image viewing apps,
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool disableOverlayMask();
+	///*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	//@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	//STATE getOverlayMaskState()const;
+	///*! Compre the current state of the Mask-Overlay to ENABLED.
+	//@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	//bool isOverlayMaskEnabled()const;
+	///*! Compare the current state of the Mask-Overlay to DISABLED.
+	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	//bool isOverlayMaskDisabled()const;
+	///*! Enable the Results-Overlay on the decimated camera image array sent over the network.
+	//* Will be visiable to many camera image viewing apps,
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool enableOverlayResult();
+	///*! Disable the Results-Overlay on the decimated camera image array sent over the network.
+	//* The overlay will be visable to many camera image viewing apps,
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool disableOverlayResult();
+	///*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
+	//@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	//STATE getOverlayResultState()const;
+	///*! Comapre the current state of the Results-Overlay to ENABLED.
+	//@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	//bool isOverlayResultEnabled()const;
+	///*! Compare the current state of the Results-Overlay to DISABLED.
+	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	//bool isOverlayResultDisabled()const;
+
+	/*! Get the X Pixel defined as the "horizontal" centre of the image-array, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getCentreXPixel()const;
+	/*! Get the Y Pixel defined as the "vertical" centre of the image-array, probably set from the Master Lattice.
+	@param[out] long, value */
+	bool getCentreYPixel()const;
+	/*! Set the X Pixel to be defined as the "horizontal" centre of the image-array.
+	@param[in] long, value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreXPixel(long value);
+	/*! Set the Y Pixel to be defined as the "vertical" centre of the image-array.
+	@param[in] long, value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreYPixel(long value);
+	/*! Check if the image analysis results are updating.
+	@param[out] bool, ture if updating */
+	bool isAnalysisUpdating();
 	/*! Get the Acquire Time for the camera (shutter open time, units??).
 	@param[out] double, value */
 	double getAcquireTime()const;
@@ -215,30 +351,30 @@ public:
 	@param[in] long, new val
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROIMinX(long val);
-	/*! Set the Region Of Interest minimum y pixel.
+	/*! Set the Region Of Interest minimum y pixel, !!WARNING!! This function does not move the analysis MASK and should only be used by experts. 
 	@param[in] long, new val
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROIMinY(long val);
-	/*! Set the Region Of Interest size in x pixels.
+	/*! Set the Region Of Interest size in x pixels, !!WARNING!! This function does not move the analysis MASK and should only be used by experts 
 	@param[in] long, new val
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROISizeX(long val);
-	/*! Set the Region Of Interest size in y pixels.
+	/*! Set the Region Of Interest size in y pixels, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] long, new val 
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROISizeY(long val);
-	/*! Set the 4 Region Of Interest size in y pixels.
+	/*! Set the 4 Region Of Interest size in y pixels, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] long, new x_pos value
 	@param[in] long, new y_pos value 
 	@param[in] long, new x_size value
 	@param[in] long, new y_size value
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI(long x, long  y, long x_size, long y_size);
-	/*! Set the Region Of Interest parameters.
+	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] map<std::string, long>, with new values (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI(std::map<std::string, long> settings);
-	/*! Set the Region Of Interest parameters. 
+	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] long, dict with new values, (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI_Py(boost::python::dict settings);
@@ -248,10 +384,10 @@ public:
 	/*! Get the Region Of Interest minimum y (pixels).
 	@param[out] long, value*/
 	long getROIMinY()const;
-	/*! Get the Region Of Interest minimum x (pixels).
+	/*! Get the Region Of Interest x size (pixels).
 	@param[out] long, value*/
 	long getROISizeX()const;
-	/*! Get the Region Of Interest minimum y (pixels).
+	/*! Get the Region Of Interest y size (pixels).
 	@param[out] long, value*/
 	long getROISizeY()const;
 	/*! Get the Region Of Interest values.
@@ -299,6 +435,15 @@ public:
 	/*! check if analysis is using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isUsingNPoint()const;
+	/*! Get the state of the Flag to set the next image as background
+	@param[out] STATE, the STATE of teh set new background flag, YES or NO  */
+	STATE getSetNewBackgroundState();
+	/*! Flag to set the next image as background 
+	@param[out] bool, true if using NPoint scaling*/
+	bool setNewBackground(bool v);
+	/*! Flag to set the next image as background
+	@param[out] bool, true if using NPoint scaling*/
+	bool getSetNewBackground(bool v);
 	/*! check if analysis is Not using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
 	bool isNotUsingNPoint()const;
@@ -315,7 +460,7 @@ public:
 	/*! check if analysis is Not using a background data
 	@param[out] bool, true if NOT  using background image during analysis*/
 	bool isNotUsingBackground()const;
-	/*! get the latest pixel sum for the image
+	/*! get the Npoint scaling stepsize 
 	@param[out] long, value */
 	long getStepSize()const;
 	/*! set the Npoint scaling stepsize 
@@ -336,6 +481,19 @@ public:
 	@param[in] double, value 
 	@param[out] bool, value */
 	bool setAvgIntensity(double value);
+	/*! Get the average pixel value that determines if beam is present in image
+	@param[out] double, average_pixel_value_for_beam*/
+	double getAveragePixelValueForBeam()const;
+	/*! Set the average pixel value that determines if beam is present in image
+	@param[in] double, averagePixelValueForBeam
+	@param[out] bool, isSetSucessfully*/
+	bool setAveragePixelValueForBeam(const double& value);
+	/*! Determines if beam is present in image data using AveragePixValue and AveragePixValueForBeam
+	@param[out]: bool, true if AveragePixValue > AveragePixValueForBeam*/
+	bool hasBeam()const;
+	/*! Determines if beam is present in image data using AveragePixValue (from online analysis) and AveragePixValueForBeam (defined in Prime Lattice)
+	@param[out]: bool, true if AveragePixValue < AveragePixValueForBeam*/
+	bool hasNoBeam()const;
 	/*! Get the last directory / filename that HDF5 data was saved to.
 	@param[out] string, value */
 	std::string getLastDirectoryandFileName() const;
@@ -406,11 +564,11 @@ public:
 	/*! Set the mask and ROI x position,  
 	@param[in] long, value (lower left hand pixel of ROI) 
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIxPos(long val);
+	bool setMaskAndROIxMax(long val);
 	/*! Set the mask and ROI y position,
 	@param[in] long, value (left-most pixel of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool setMaskAndROIyPos(long val);
+	bool setMaskAndROIyMax(long val);
 	/*! Set the mask and ROI x size,
 	@param[in] long, value (width of ROI)
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -421,10 +579,10 @@ public:
 	bool setMaskAndROIySize(long val);
 	/*! Set the mask and ROI x position,
 	@param[out] long, value	*/
-	long getMaskAndROIxPos()const;
+	long getMaskAndROIxMax()const;
 	/*! Set the mask and ROI y position,
 	@param[out] long, value	*/
-	long getMaskAndROIyPos()const;
+	long getMaskAndROIyMax()const;
 	/*! Set the mask and ROI x size,
 	@param[out] long, value	*/
 	long getMaskAndROIxSize()const;
@@ -482,6 +640,15 @@ public:
 	/*! Get image analysis state .
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState()const;
+	/* Set the number of shots to capture when "collecting frames and writing to disc."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	bool setNumberOfShotsToCapture(size_t num);
+	/* Get the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	size_t getNumberOfShotsToCapture()const;
+	/*! Capture and save images to disc, using the currently set number of shots to capture.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave();
 	/*! Capture and save images to disc.
 	@param[in] size_t, num_images, number of images to capture and write to file
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -504,6 +671,10 @@ public:
 	/*! Is camera capture_state == CAPTURING  OR is write_state == NOT_WRITING.
 	@param[out] bool*/
 	bool isCapturingOrSaving()const;
+	/*! Is camera capture_state != CAPTURING  OR is write_state != NOT_WRITING.
+	@param[out] bool*/
+	bool isNotCapturingOrSaving()const;
+	// TODO	isBsuy has not been fully implmented yet  
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true 
 	* while busy attempts to write more data to disc will fail.
 	@param[out] bool	*/
@@ -564,7 +735,6 @@ public:
 	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
-
 	boost::python::list getROIData_Py()const;
 	/*! Get a reference to the current image data. Gives access to image data without copying 
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
@@ -577,15 +747,59 @@ public:
 	size_t getBufferSize()const;
 	/*! set the size of the running stats buffer, running_stats_buffer_size
 	@param[in] size_t, value */
-	void setBufferSize(size_t v);
+	void setAllRunningStatBufferSizes(size_t v);
 	/*! clear all runing stats buffers */
-	void clearBuffers();
+	void clearAllRunningStatBuffers();
 	/*! Get the pixel to mm conversion factor, 
 	@param[out] double, value */
 	double getPix2mm()const;
+	///*! Get the running stats for a particular analsys results (x position, or y position, etc.) 
+	//@param[out] string, string of the TYPE of running stat to return  
+	//@param[out] dict, value */
+	//boost::python::dict getRunningStats(const std::string& type_str)const;
+	///*! Get the running stats for a particular analsys results (x position, or y position, etc.)
+	//@param[out] TYPE, TYPE of running stat to return
+	//@param[out] dict, value */
+	//boost::python::dict getRunningStats(TYPE type)const;
 	/*! Get the running stats buffer,
 	@param[out] dict, values */
-	boost::python::dict getRunningStats()const;
+	boost::python::dict getAllRunningStats()const;
+	/*! Returns the running stats object for x_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getXPixRunningStats();
+	/*! Returns the running stats object for y_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getYPixRunningStats();
+	/*! Returns the running stats object for sigma_x_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXPixRunningStats();
+	/*! Returns the running stats object for sigma_y_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaYPixRunningStats();
+	/*! Returns the running stats object for sigma_xy_pix, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXYPixRunningStats();
+	/*! Returns the running stats object for x_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getXmmRunningStats();
+	/*! Returns the running stats object for y_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getYmmRunningStats();
+	/*! Returns the running stats object for sigma_x_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXmmRunningStats();
+	/*! Returns the running stats object for sigma_y_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaYmmRunningStats();
+	/*! Returns the running stats object for sigma_xy_mm, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSigmaXYmmRunningStats();
+	/*! Returns the running stats object for avg_intensity, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getAvgIntensityRunningStats();
+	/*! Returns the running stats object for sum_intensity, not just the dict
+	@param[out] RunningStats, rs*/
+	RunningStats& getSumIntensityRunningStats();
 	/*! Set the black level (for vela camera types only),
 	@param[in] long, values 
 	@param[out] bool, values */
@@ -599,6 +813,64 @@ public:
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
+
+
+
+	/*! Enable the Cross-Overlay on the decimated camera image array sent over the network.
+		* Will be visiable to many camera image viewing apps,
+		@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayCross();
+	/*! Disable the Cross-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disableOverlayCross();
+	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayCrossState()const;
+	/*! Compare the current state of the cross overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayCrossEnabled()const;
+	/*! Compare the current state of the cross overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayCrossDisabled()const;
+	/*! Enable the Mask-Overlay on the decimated camera image array sent over the network.
+	* Will be visiable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayMask();
+	/*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disableOverlayMask();
+	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayMaskState()const;
+	/*! Compare the current state of the Mask-Overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayMaskEnabled()const;
+	/*! Compare the current state of the Mask-Overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayMaskDisabled()const;
+	/*! Enable the Results-Overlay on the decimated camera image array sent over the network.
+	* Will be visiable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool enableOverlayResult();
+	/*! Disable the Results-Overlay on the decimated camera image array sent over the network.
+	* The overlay will be visable to many camera image viewing apps,
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool disableOverlayResult();
+	/*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
+	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
+	STATE getOverlayResultState()const;
+	/*! Comapre the current state of the Results-Overlay to ENABLED.
+	@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
+	bool isOverlayResultEnabled()const;
+	/*! Compare the current state of the Results-Overlay to DISABLED.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool isOverlayResultDisabled()const;
+	/*! Disbale all the image overlays.
+	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
+	bool disableAllOverlay();
+
 	/* Enable debug messages*/
 	void debugMessagesOn();
 	/* Disbale debug messages*/
@@ -612,14 +884,23 @@ public:
 	friend class CameraFactory;
 protected:
 	/* 
-		In general we put data that comes back from EPCIS into a timestamp, data pair. 
+		In general we put data that comes back from EPICS into a timestamp, data pair. 
 		This is because we expect to be able to use the time stamps to synchonize different data streams 
 	*/
+	/*! Cross-overlay status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> cross_overlay;
+	/*! Mask-overlay status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> mask_overlay;
+	/*! Results-overlay status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> result_overlay;
 	/*! Camera gain, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
-
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE > set_new_background;
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > capture_count;
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
 	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
@@ -666,21 +947,34 @@ protected:
 	std::pair<epicsTimeStamp, long> roi_size_x;
 	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> roi_size_y;
+	/*! Pixel Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
+	std::pair<epicsTimeStamp, std::vector<double> > pixelResults;
+	/*! mm Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
+	std::pair<epicsTimeStamp, std::vector<double> > mmResults;
+	/*! Stores the last time the ANA Pixel Results were updated, will be used to set isResultUpdated*/
+	epicsTimeStamp lastResultsUpdateTime;
+	/*! Stores the last time the ANA MM Results were updated, purely used fro pushign to the running stats */
+	epicsTimeStamp lastResultsUpdateTime_mm_ana_results;
+	/*! Flag for showing that the ANA Pixel Results are updating */
+	bool isResultUpdated;
 	/*! ROI image data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
-	/*! analaysis center x NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > x_center;
-	/*! analaysis center y NOT SURE WHAT THIS IS YET. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > y_center;
+	/*! An x pixel number to be the horizontal centre (probably set from the Master Lattice).	*/
+	std::pair<epicsTimeStamp, double > x_center_pixel;
+	/*! A y pixel number to be the vertical centre (probably set from the Master Lattice).	*/
+	std::pair<epicsTimeStamp, double > y_center_pixel;
 	/*! conversion factor for pixels to mm. Value and epicstimestamp. From Epics. */
 	std::pair<epicsTimeStamp, double > pix_to_mm;
-	/*! conversion factor for pixels to mm in the x direction. From Master Lattice. */
 
+
+	// TODO get rid of these, or make better! 
 	/*! conversion of pixels to mm */
 	std::pair<epicsTimeStamp, double > pix2mm;
 	double pix2mmX_ratio;
 	/*! conversion factor for pixels to mm in the y direction. From Master Lattice. */
 	double pix2mmY_ratio;
+
+
 	/*! Camera acquire time. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > acquire_time;
 	/*! Camera acquire period. Value and epicstimestamp.	*/
@@ -749,14 +1043,26 @@ protected:
 	std::pair<epicsTimeStamp, double> pixel_to_mm;
 	/*! Number of images to capture. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> num_capture;
-	/* pointer to dbr_time_stuct, used to get timestmp for images*/
+	/*! pointer to dbr_time_stuct, used to get timestmp for images*/
 	struct dbr_time_long* dbr_image_data;
-	/* image_data vector to hold image data */
+	/*! image_data vector to hold image data */
 	std::pair<epicsTimeStamp, std::vector<long>> image_data;
-	/* pointer to dbr_time_stuct, used to get timestmp for roi*/
+	/*! pointer to dbr_time_stuct, used to get timestmp for roi*/
 	struct dbr_time_long* dbr_roi_data;
-	/* roi_data vector to hold image data */
+	/*! roi_data vector to hold image data */
 	std::pair<epicsTimeStamp, std::vector<long>> roi_data;
+
+
+	/*! analysis data results, x, y , sigma_x, sigma_y, sigma_xy (can be re-defined in config file ) */
+	std::pair<epicsTimeStamp, std::vector<double>> analysis_data;
+	/*! names for each element in the pixel results array, defined in the master lattice config file  */
+	std::vector<std::string> analysis_data_names;
+
+
+	std::pair<epicsTimeStamp, STATE> cross_hair_overlay;
+	std::pair<epicsTimeStamp, STATE> center_of_mass_overlay;
+	std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
+
 	/*! Keywords used for setting ROI and mask together, python version (OUR PREFFERRED INTERFACE!) */
 	//boost::python::list mask_and_roi_keywords_Py;
 	/*! Keywords used for setting mask, python version  (Not prefferred, use mask and ROI together) */
@@ -787,6 +1093,12 @@ protected:
 	RunningStats avg_intensity_rs;
 	/* sum pixel running stats buffer*/
 	RunningStats sum_intensity_rs;
+
+	// protected so cam-factory can get these eaisly 
+	double master_lattice_pixel_to_mm;
+	long  master_lattice_centre_x;
+	long  master_lattice_centre_y;
+
 private:
 	/*! Type of camera, different camera types have different funcionality, defined in Master Lattice  */
 	TYPE cam_type;
@@ -804,6 +1116,17 @@ private:
 	size_t binary_num_pix_y;
 	/* total number of pixels in the full binary image data*/
 	size_t binary_data_pixel_count;
+	
+	/*! Number of pixels in the Region Of Interest data, (from ROI1:SizeX * ROI1:SizeY) */
+	size_t roi_total_pixel_count;
+
+
+	size_t roi_max_x;
+	size_t roi_max_y;
+
+
+	/* total number of pixels in the image array data*/
+
 	/*! scaling from array_data num pixels to binary image data num pixels for 'horizontal' axis. */
 	size_t x_pix_scale_factor;
 	/*! scaling from array_data num pixels to binary image data num pixels for 'vertical' axis. */
@@ -859,9 +1182,6 @@ private:
 
 	/* ImageCapture class to hold data for image capturing and savign thread */
 	ImageCapture image_capture;
-	/* Set the numer bof shots to capture and save to disc 
-	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
-	bool setNumberOfShotsToCapture(size_t num);
 	/* Capture images 
 	@param[out] bool, if the value got sent to epics */
 	bool capture();
@@ -900,7 +1220,7 @@ private:
 	@param[in] size_t, count of array elemnts to get (for ROI this changes depend on the size of the ROI  
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool getArrayValue(std::vector<long>& data_vec, const pvStruct& pvs, size_t count);
-	/*! Resize vetcor to array_data_pixel_count size, (to save memory only done on request) 
+	/*! Resize vector to array_data_pixel_count size, (to save memory only done on request) 
 	@param[in] std::vector<long>&, vector to resize
 	@param[out] bool, if resize succeeded */
 	bool vector_resize(std::vector<long>& vec);
@@ -920,6 +1240,9 @@ private:
 	/*! Flag set if the roi_data vector has had memory allocated for it.
 	To save application memory this ony happens when requesting image data accross the network */
 	bool roi_data_has_not_vector_resized;
+
+
+
 };
 
 

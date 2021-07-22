@@ -57,9 +57,14 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::CLARA_PH1), TYPE::CLARA_PH1},
 		{ENUM_TO_STRING(TYPE::CLARA_2_BA1), TYPE::CLARA_2_BA1},
 		{ENUM_TO_STRING(TYPE::CLARA_2_BA1_BA2), TYPE::CLARA_2_BA1_BA2},
+
+		// TODO 
+		// do we need this many >>> probably get rid of LAS and LASER,
 		{ENUM_TO_STRING(TYPE::LAS), TYPE::LAS},
+		{ENUM_TO_STRING(TYPE::LASER), TYPE::LASER},
 		{ENUM_TO_STRING(TYPE::CLARA_LASER), TYPE::CLARA_LASER},
 		{ENUM_TO_STRING(TYPE::VELA_LASER), TYPE::VELA_LASER},
+
 		{ENUM_TO_STRING(TYPE::VELA_INJ), TYPE::VELA_INJ},
 		{ENUM_TO_STRING(TYPE::VELA_2_BA1), TYPE::VELA_2_BA1},
 		{ENUM_TO_STRING(TYPE::VELA_2_BA1_BA2), TYPE::VELA_2_BA1_BA2},
@@ -103,6 +108,9 @@ namespace GlobalConstants
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},
 
+		{ENUM_TO_STRING(TYPE::LASER_MIRROR), TYPE::LASER_MIRROR},
+		{"LaserMirror", TYPE::LASER_MIRROR},
+		{"laser_mirror", TYPE::LASER_MIRROR},
 				
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
@@ -201,6 +209,19 @@ namespace GlobalConstants
 		{"RFHeartbeat", TYPE::RFHEARTBEAT}
 
 
+
+		//{ ENUM_TO_STRING(TYPE::CAMERA_X_PIX_RS), TYPE::CAMERA_X_PIX_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_Y_PIX_RS), TYPE::CAMERA_Y_PIX_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_SIGMA_X_PIX_RS), TYPE::CAMERA_SIGMA_X_PIX_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_SIGMA_Y_PIX_RS), TYPE::CAMERA_SIGMA_Y_PIX_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_SIGMA_XY_PIX_RS), TYPE::CAMERA_SIGMA_XY_PIX_RS },
+
+		//{ ENUM_TO_STRING(TYPE::CAMERA_X_MM_RS), TYPE::CAMERA_X_MM_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_Y_MM_RS), TYPE::CAMERA_Y_MM_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_SIGMA_X_MM_RS), TYPE::CAMERA_SIGMA_X_MM_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_SIGMA_Y_MM_RS), TYPE::CAMERA_SIGMA_Y_MM_RS },
+		//{ ENUM_TO_STRING(TYPE::CAMERA_SIGMA_XY_MM_RS), TYPE::CAMERA_SIGMA_XY_MM_RS },
+
 	};
 
 	const std::map<std::string, STATE> stringToStateMap =
@@ -284,6 +305,9 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::ACQM_NOW), STATE::ACQM_NOW},
 			{ENUM_TO_STRING(STATE::ACQM_EVENT), STATE::ACQM_EVENT},
 
+			{ENUM_TO_STRING(STATE::YES), STATE::YES},
+			{ENUM_TO_STRING(STATE::NO), STATE::NO},
+
 
 			// gun mod
 			{ENUM_TO_STRING(STATE::OFF_REQUEST), STATE::OFF_REQUEST},
@@ -320,6 +344,7 @@ namespace GlobalConstants
 	const double zero_double = 0.0;
 	/*! Double-type variable for 1.0 */
 	const double one_double = 1.0;
+	const double ten_double = 10.0;
 	/*! Double-type variable for 0.1 */
 	const double zero_point_one_double = 0.1;
 	
