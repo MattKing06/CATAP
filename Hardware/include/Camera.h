@@ -71,7 +71,6 @@ public:
 	/*! get the type of the camera (e.g. vela_camera, clara_camera 
 	@param[out] type */
 	TYPE getCamType()const;
-
 	// TODO these all need tidying up / renaming or deleting 
 	/*! convert a horizontal length in pixels to mm for this camera 
 	@param[in] length in pixels 
@@ -101,8 +100,6 @@ public:
 	/*! Set the pixels to mm in y(horizontal) direction.
 	@param[in] double, new value */
 	double setpix2mmY(double value);
-
-
 	/*! Get the pixels to mm value (the one that is actaully used in EPICS).
 	@param[out] double, value */
 	double getPixelToMM()const;
@@ -110,7 +107,6 @@ public:
 	@param[in] double, value 
 	@param[out] bool, if command got sent to EPICS (not if it was received). */
 	bool setPixelToMM(double val)const;
-
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
 	@param[in] double, value 
@@ -256,7 +252,7 @@ public:
 	/*! Disable the Cross-Overlay on the decimated camera image array sent over the network. 	
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayCross();
+	bool disableOverlayCross();
 	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
 	STATE getOverlayCrossState()const;
@@ -273,7 +269,7 @@ public:
 	/*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayMask();
+	bool disableOverlayMask();
 	/*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
 	STATE getOverlayMaskState()const;
@@ -290,7 +286,7 @@ public:
 	/*! Disable the Results-Overlay on the decimated camera image array sent over the network.
 	* The overlay will be visable to many camera image viewing apps,
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool disbaleOverlayResult();
+	bool disableOverlayResult();
 	/*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
 	@param[out] STATE, current state of overla, ENABLED, DISBALED, */
 	STATE getOverlayResultState()const;
@@ -469,14 +465,17 @@ public:
 	bool setAvgIntensity(double value);
 	/*! Get the average pixel value that determines if beam is present in image
 	@param[out] double, average_pixel_value_for_beam*/
-	double getAveragePixelValueForBeam();
+	double getAveragePixelValueForBeam()const;
 	/*! Set the average pixel value that determines if beam is present in image
 	@param[in] double, averagePixelValueForBeam
 	@param[out] bool, isSetSucessfully*/
 	bool setAveragePixelValueForBeam(const double& value);
 	/*! Determines if beam is present in image data using AveragePixValue and AveragePixValueForBeam
-	@param[out]: */
-	bool hasBeam();
+	@param[out]: bool, true if AveragePixValue > AveragePixValueForBeam*/
+	bool hasBeam()const;
+	/*! Determines if beam is present in image data using AveragePixValue (from online analysis) and AveragePixValueForBeam (defined in Prime Lattice)
+	@param[out]: bool, true if AveragePixValue < AveragePixValueForBeam*/
+	bool hasNoBeam()const;
 	/*! Get the last directory / filename that HDF5 data was saved to.
 	@param[out] string, value */
 	std::string getLastDirectoryandFileName() const;

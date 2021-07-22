@@ -98,7 +98,7 @@ void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS_RBV(const struct event_han
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->capture_state.first = new_value.first;
+	recastCamera->cross_overlay.first = new_value.first;
 	switch (new_value.second)
 	{
 	case GlobalConstants::zero_ushort: recastCamera->cross_overlay.second = STATE::DISABLED; break;
@@ -121,7 +121,7 @@ void EPICSCameraInterface::update_ANA_OVERLAY_2_RESULT_RBV(const struct event_ha
 	default:
 		recastCamera->result_overlay.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_2_CROSS_RBV = ",
 		ENUM_TO_STRING(recastCamera->result_overlay.second));
 }
 void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args)
@@ -136,7 +136,7 @@ void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK_RBV(const struct event_hand
 	default:
 		recastCamera->mask_overlay.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_3_CROSS_RBV = ",
 		ENUM_TO_STRING(recastCamera->mask_overlay.second));
 }
 

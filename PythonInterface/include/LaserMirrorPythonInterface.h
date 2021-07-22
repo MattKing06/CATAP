@@ -21,6 +21,12 @@ namespace BOOST_PYTHON_LASER_MIRROR_INCLUDE
 			.def("moveRight", &LaserMirror::moveRight)
 			.def("moveUp", &LaserMirror::moveUp)
 			.def("moveDown", &LaserMirror::moveDown)
+
+			.def("setHStep", &LaserMirror::setHStep)
+			.def("setVStep", &LaserMirror::setVStep)
+			.def("getHStep", &LaserMirror::getHStep)
+			.def("getVStep", &LaserMirror::getVStep)
+
 			.def("debugMessagesOn", &LaserMirror::debugMessagesOn)
 			.def("debugMessagesOff", &LaserMirror::debugMessagesOff)
 			.def("messagesOn", &LaserMirror::messagesOn)

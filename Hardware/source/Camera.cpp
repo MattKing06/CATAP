@@ -829,11 +829,11 @@ STATE Camera::getLEDState()const
 //--------------------------------------------------------------------------------------------------
 bool Camera::enableOverlayCross()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_ushort);
 }
-bool Camera::disbaleOverlayCross()
+bool Camera::disableOverlayCross()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayCrossState()const
 {
@@ -845,15 +845,15 @@ bool Camera::isOverlayCrossEnabled()const
 }
 bool Camera::isOverlayCrossDisabled()const
 {
-	return cross_overlay.second == STATE::ENABLED;
+	return cross_overlay.second == STATE::DISABLED;
 }
 bool Camera::enableOverlayMask()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_ushort);
 }
-bool Camera::disbaleOverlayMask()
+bool Camera::disableOverlayMask()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayMaskState()const
 {
@@ -865,15 +865,15 @@ bool Camera::isOverlayMaskEnabled()const
 }
 bool Camera::isOverlayMaskDisabled()const
 {
-	return mask_overlay.second == STATE::ENABLED;
+	return mask_overlay.second == STATE::DISABLED;
 }
 bool Camera::enableOverlayResult()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_ushort);
 }
-bool Camera::disbaleOverlayResult()
+bool Camera::disableOverlayResult()
 {
-	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_sizet);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayResultState()const
 {
@@ -952,7 +952,7 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
-double Camera::getAveragePixelValueForBeam()
+double Camera::getAveragePixelValueForBeam()const
 {
 	return average_pixel_value_for_beam;
 }
@@ -961,9 +961,13 @@ bool Camera::setAveragePixelValueForBeam(const double& value)
 	average_pixel_value_for_beam = value;
 	return true;
 }
-bool Camera::hasBeam()
+bool Camera::hasBeam()const
 {
 	return getAvgIntensity() > getAveragePixelValueForBeam();
+}
+bool Camera::hasNoBeam()const
+{
+	return !hasBeam();
 }
 bool Camera::setMaskXCenter(long val)
 {
@@ -1494,6 +1498,7 @@ bool Camera::captureAndSave(size_t num_shots)
 	}
 	else
 	{
+		busy = true;
 		messenger.printDebugMessage(hardwareName, " collectAndSave passed num_shots = ", num_shots);
 		/*
 			kill any finished threads
@@ -1514,7 +1519,7 @@ bool Camera::captureAndSave(size_t num_shots)
 				image_capture.cam = this;
 				image_capture.thread
 					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
-				GlobalFunctions::pause_500();
+				//GlobalFunctions::pause_500();
 				messenger.printDebugMessage("new imageCollectStruct created and running");
 				return true;
 			}
@@ -2342,7 +2347,6 @@ std::vector<long>& Camera::getROIDataConstRef()
 {
 	return roi_data.second;
 }
-
 bool Camera::setBlackLevel(long value)
 {
 	if (getCamType() == TYPE::VELA_CAMERA)
