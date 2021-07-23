@@ -677,6 +677,13 @@ public:
 	/*! Is camera capture_state != CAPTURING  OR is write_state != NOT_WRITING.
 	@param[out] bool*/
 	bool isNotCapturingOrSaving()const;
+
+	/*! Sometimes capturign and saving can fail and certian flags do nto get reset. 
+	This function attempts to reset paramters to their nominal values.
+	Use it if you feel to you have to try something, but really there should be no need to if the camera system is not mistreated 
+	@param[out] bool, TRUE if commands got sent to EPICS */
+	bool resetCaptureAndSaveError();
+
 	// TODO	isBsuy has not been fully implmented yet  
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true 
 	* while busy attempts to write more data to disc will fail.
@@ -1119,10 +1126,22 @@ private:
 	size_t binary_num_pix_y;
 	/* total number of pixels in the full binary image data*/
 	size_t binary_data_pixel_count;
-	
 	/*! Number of pixels in the Region Of Interest data, (from ROI1:SizeX * ROI1:SizeY) */
 	size_t roi_total_pixel_count;
 
+	
+	/*! Number of pixels in 'horizontal' axis for the CAM1 array data. */
+	size_t cam1_num_pix_x;
+	/*! Number of pixels in 'vertical' axis for the CAM1 array data. */
+	size_t cam1_num_pix_y;
+	/*! Number of pixels in 'horizontal' axis for the CAM2 array data. */
+	size_t cam2_num_pix_x;
+	/*! Number of pixels in 'vertical' axis for the CAM2 array data. */
+	size_t cam2_num_pix_y;
+	/*! Number of pixels in 'horizontal' axis for the CAM3 array data. */
+	size_t cam3_num_pix_x;
+	/*! Number of pixels in 'vertical' axis for the CAM3 array data. */
+	size_t cam3_num_pix_y;
 
 	size_t roi_max_x;
 	size_t roi_max_y;

@@ -243,6 +243,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setPixelToMM", &Camera::setPixelToMM)
 
 			.def("saveImageBuffer", &Camera::saveImageBuffer)
+
+				
+			.def("resetCaptureAndSaveError", &Camera::resetCaptureAndSaveError)
 			
 				
 				

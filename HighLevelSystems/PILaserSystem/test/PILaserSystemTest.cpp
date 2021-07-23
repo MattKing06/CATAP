@@ -13,6 +13,7 @@ BOOST_AUTO_TEST_CASE(setup_test)
 BOOST_AUTO_TEST_CASE(set_all_running_stats_size_test)
 {
 	PILaserSystem PIL(STATE::PHYSICAL);
+
 	bool status = PIL.setup("");
 	PIL.setAllRunningStatSize(20);
 	LaserEnergyMeter lem = PIL.getEnergyMeter();

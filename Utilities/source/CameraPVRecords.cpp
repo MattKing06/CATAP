@@ -95,8 +95,8 @@ namespace CameraRecords
 	std::string const ANA_NewBkgrnd_RBV			    = "ANA_NewBkgrnd_RBV"			;
 	std::string const ANA_UseBkgrnd				    = "ANA_UseBkgrnd"				;
 	std::string const ANA_UseBkgrnd_RBV			    = "ANA_UseBkgrnd_RBV"			;
-	std::string const ANA_UseNPoint				    = "ANA_UseNPoint"				;
-	std::string const ANA_UseNPoint_RBV			    = "ANA_UseNPoint_RBV"			;
+//	std::string const ANA_UseNPoint				    = "ANA_UseNPoint"				;
+//	std::string const ANA_UseNPoint_RBV			    = "ANA_UseNPoint_RBV"			;
 	std::string const ANA_NPointStepSize_RBV		= "ANA_NPointStepSize_RBV"	;
 	std::string const ANA_NPointStepSize			= "ANA_NPointStepSize"	;
 	std::string const LED_Sta						= "LED_Sta"					;
@@ -109,7 +109,7 @@ namespace CameraRecords
 	std::string const ANA_OVERLAY_1_CROSS_RBV = "ANA_OVERLAY_1_CROSS_RBV";
 	std::string const ANA_OVERLAY_2_RESULT_RBV = "ANA_OVERLAY_2_RESULT_RBV";
 	std::string const ANA_OVERLAY_3_MASK_RBV = "ANA_OVERLAY_3_MASK_RBV";
-
+	 
 	std::vector<std::string> cameraRecordList = {
 	HDFB_Buffer_Trigger               ,HDFB_Buffer_FilePath 			  ,HDFB_Buffer_FilePath_RBV 		  ,
 	HDFB_Buffer_FileName 			  ,HDFB_Buffer_FileName_RBV 		  ,HDFB_Buffer_FileNumber 			  ,
@@ -142,7 +142,8 @@ namespace CameraRecords
 	ANA_MaskYRad_RBV				  ,ANA_MaskYRad					      ,ANA_CenterX_RBV					  ,
 	ANA_CenterX						  ,ANA_CenterY_RBV					  ,ANA_CenterY						  ,
 	ANA_NewBkgrnd					  ,ANA_NewBkgrnd_RBV				  ,ANA_UseBkgrnd					  ,
-	ANA_UseBkgrnd_RBV				  ,ANA_UseNPoint					  ,ANA_UseNPoint_RBV				  ,
+	ANA_UseBkgrnd_RBV,				  
+	//,ANA_UseNPoint					  ,ANA_UseNPoint_RBV				  ,
 	ANA_NPointStepSize_RBV			  ,ANA_NPointStepSize				  ,LED_Sta							  ,
 	LED_Off							  ,LED_On,
 	ANA_OVERLAY_1_CROSS_RBV, ANA_OVERLAY_2_RESULT_RBV, ANA_OVERLAY_3_MASK_RBV,
@@ -169,14 +170,14 @@ namespace CameraRecords
 		ANA_CovXYPix_RBV					,		ANA_PixelResults_RBV				,		ANA_MMResults_RBV					,  //16
 		ANA_MaskYCenter_RBV					,		ANA_MaskXRad_RBV					,		ANA_MaskYRad_RBV					,  //17
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
-		ANA_UseBkgrnd_RBV					,		ANA_UseNPoint_RBV					,		ANA_NPointStepSize_RBV				,  //19
+		ANA_UseBkgrnd_RBV					,		
+		//ANA_UseNPoint_RBV					,		
+		ANA_NPointStepSize_RBV				,  //19
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
 		ANA_MaskXCenter_RBV,
-		// ATM these ones don't come with an _RBV siffix fro a read only PV 
+		// ATM these ones don't come with an _RBV suffix for a read only PV 
 		HDF_WriteMessage, // 58
 		LED_Sta		      // 59
-
 	};
 
 }
-

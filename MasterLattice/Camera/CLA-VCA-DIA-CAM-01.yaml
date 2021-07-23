@@ -55,8 +55,8 @@ controls_information:
         ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
         ANA_UseBkgrnd_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
-        ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint       
-        ANA_UseNPoint_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint_RBV   
+#        ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint       
+#        ANA_UseNPoint_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint_RBV   
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : CLA-VCA-DIA-CAM-01:ANA:UseFloor
         ANA_UseFloor_RBV : CLA-VCA-DIA-CAM-01:ANA:UseFloor_RBV
@@ -94,7 +94,9 @@ controls_information:
         ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV 
         ANA_MMResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:MMResults_RBV 
         # # actuall array data
+        CAM1_ArrayData    : CLA-VCA-DIA-CAM-01:CAM1:ArrayData
         CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
+        # CAM3_ArrayData    : CLA-VCA-DIA-CAM-01:CAM3:ArrayData
         # # meh LEDs, should probably go in their own factory?? 
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
         LED_Off    : CLA-LAS-DIA-LED-01:Off
@@ -104,7 +106,7 @@ controls_information:
         HDFB_Buffer_FilePath_RBV : CLA-VCA-DIA-CAM-01:HDFB:FilePath_RBV
         HDFB_Buffer_FileName : CLA-VCA-DIA-CAM-01:HDFB:FileName
         HDFB_Buffer_FileName_RBV : CLA-VCA-DIA-CAM-01:HDFB:FileName_RBV
-        HDFB_Buffer_FileNumber : CLA-VCA-DIA-CAM-01:HDFB:FileNumber
+        # HDFB_Buffer_FileNumber : CLA-VCA-DIA-CAM-01:HDFB:FileNumber
         HDFB_Buffer_FileNumber_RBV : CLA-VCA-DIA-CAM-01:HDFB:FileNumber_RBV
         # HDF_NumCapture_RBV    : CLA-VCAWws-DIA-CAM-01:HDF:NumCapture_RBV
         CAM_AcquireTime_RBV    : CLA-VCA-DIA-CAM-01:CAM:AcquireTime_RBV
@@ -138,10 +140,6 @@ controls_information:
         # MAGICK_Capture_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : CLA-VCA-DIA-CAM-01:MAGICK:NumCapture_RBV
         
-        OVERLAY_CROSS_HAIR : CLA-VCA-DIA-CAM-01:OVER:1:Use 
-        OVERLAY_CENTRE_OF_MASS : CLA-VCA-DIA-CAM-01:OVER:2:Use 
-        OVERLAY_MASK : CLA-VCA-DIA-CAM-01:OVER:3:Use 
-        
 properties:
     hardware_type: Camera
     machine_area : CLARA_LASER # Set by where the camera physically *IS* 
@@ -171,10 +169,22 @@ properties:
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
+    
+    # TODO this could be better named!  
     ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
     ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
     BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
+       
+    # COULD  USE THESE! 
+    # CAM1_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
+    # CAM1_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
+    # CAM2_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
+    # CAM2_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
+    # CAM3_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
+    # CAM3_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
+
+   
     X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
     Y_PIX_SCALE_FACTOR : 2 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.0 #;  emprically determined value for when laser is present

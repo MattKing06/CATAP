@@ -67,5 +67,4 @@ public:
 	bool isRunningStatFull();
 
 
-
 };

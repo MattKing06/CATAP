@@ -138,7 +138,10 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 		messenger.printDebugMessage(item.first, " = ", item.second);
 	}
 	getMasterLatticeData(paramMap, mode);
+
 	setPVStructs();
+
+
 	//mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
 	//mask_keywords_Py = to_py_list(mask_keywords);
 	//roi_keywords_Py = to_py_list(roi_keywords);
@@ -521,6 +524,16 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
 		}
 	}
+
+	//if (GlobalFunctions::entryExists(paramMap, "CAM1_ARRAY_DATA_NUM_PIX_X"))
+	//{
+	//	size_t pos = (size_t)std::stoi(paramMap.find("CAM1_ARRAY_DATA_NUM_PIX_X")->second);
+	//}
+	//else
+	//{
+	//	messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find CAM1_ARRAY_DATA_NUM_PIX_X");
+	//}
+
 
 }
 
@@ -1263,7 +1276,7 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 bool Camera::useNPoint(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NPointStepSize_RBV), comm);
 }
 STATE Camera::getNPointState()const
 {
@@ -2117,14 +2130,33 @@ bool Camera::didLastCaptureAndSaveSucceed()
 	return last_capture_and_save_success == true;
 }
 //---------------------------------------------------------------------------------
+bool Camera::resetCaptureAndSaveError()
+{
+	bool set_capture = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::zero_ushort);
+	bool set_write_file = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::zero_ushort);
+	bool set_write_stat = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_WriteStatus), GlobalConstants::zero_ushort);
+	if (set_capture)
+	{
+		if (set_write_file)
+		{
+			if (set_write_stat)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+ 
+//---------------------------------------------------------------------------------
 bool Camera::isCapturing()const
 {
 	if (getCaptureState() == STATE::CAPTURING)
 	{
-		messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
+		//messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
 		return true;
 	}
-	messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
+	//messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
 	return false;
 }
 bool Camera::isNotCapturing()const
