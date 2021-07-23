@@ -332,6 +332,7 @@ void EPICSCameraInterface::update_ANA_CovXY_RBV(const struct event_handler_args 
 void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->avg_intensity);
+	recastCamera->avg_intensity_rs.Push<double>(recastCamera->avg_intensity.second);
 	//recastCamera->avg_intensity_rs.Push(recastCamera->avg_intensity.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_AvgIntensity_RBV = ", 
 	//	recastCamera->avg_intensity.second);
@@ -339,6 +340,7 @@ void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handle
 void EPICSCameraInterface::update_ANA_Intensity_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sum_intensity);
+	recastCamera->sum_intensity_rs.Push<double>(recastCamera->sum_intensity.second);
 	//recastCamera->sum_intensity_rs.Push(recastCamera->sum_intensity.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_Intensity_RBV = ", 
 	//	recastCamera->sum_intensity.second);

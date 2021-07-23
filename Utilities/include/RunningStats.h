@@ -57,8 +57,6 @@ public:
 		std::cout << "RS Destry: total_rs_object_count  = " << total_rs_object_count << std::endl;
 		std::cout << "RS Destry: current_rs_object_count  = " << current_rs_object_count << std::endl;
 	}
-
-
 	/*! Clear the running stats values */
 	void Clear()
 	{
@@ -87,7 +85,6 @@ public:
 	{
 		doPush((double)x); 
 	}
-
 	/*! Add a new value to the runing stats , templated version
 		@param[in] value to add, !!must be a umerica simple type!! */
 	size_t NumDataValues() const
@@ -140,8 +137,6 @@ public:
 		m_oldM = m_oldM_init;
 		m_oldS = m_oldS_init;
 	}
-
-
 	std::vector<double> Buffer()const
 	{
 		return buffer;
@@ -150,7 +145,6 @@ public:
 	{
 		return to_py_list<double>(buffer);
 	}
-
 	/*
 	  get/set the current settings, so that you can prime the running-stat with
 		some known values
@@ -221,8 +215,6 @@ private:
 		}
 
 	}
-
-
 	/*! Add a new value to the runing stats, assuming passed value is double
 	@param[in] value to add */
 	void doPush(double x)
@@ -251,9 +243,7 @@ private:
 		{
 			//std::cout << "RS CANT ADD" << std::endl;
 		}
-		
 	}
-
 };
 
 #endif // _RUNNING_STATS_H_
