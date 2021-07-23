@@ -75,7 +75,7 @@ public:
 		@param[out] max number of entries         */
 	size_t getMaxCount() const
 	{
-		std::cout << "getMaxCount " << max_n << std::endl;
+		//std::cout << "getMaxCount " << max_n << std::endl;
 		return max_n;
 	}
 	/*! Add a new value to the runing stats , templated version

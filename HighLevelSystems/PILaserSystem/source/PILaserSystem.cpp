@@ -131,14 +131,28 @@ size_t PILaserSystem::getRunningStatSize()
 {
 	return PILaserSystem_RS_size;
 }
+
+
+
 //size_t PILaserSystem::getRunningStatCount()
 //{
 //	return wallCurrentMonitor.getRunningStatCount();
 //}
-//bool PILaserSystem::isRunningStatFull()
-//{
-//	return wallCurrentMonitor.isRunningStatFull();
-//}
+
+bool PILaserSystem::areAllRunningStatsFull()
+{
+	if (cameraFactory.areAllRunningStatsFull(virtualCathodeCameraName))
+	{
+		if (chargeFactory.areAllRunningStatsFull(wallCurrentMonitorName))
+		{
+			if (laserEnergyMeterFactory.areRunningStatsFull(energyMeterName))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
 //
 //
 //bool PILaserSystem::canMove()

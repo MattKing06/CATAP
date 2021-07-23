@@ -558,6 +558,17 @@ void ChargeFactory::clearRunningStats(const std::string& name)
 	}
 }
 
+bool ChargeFactory::areAllRunningStatsFull(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		// TODO this is onky for the Qstat atm, and will need updating at a later date 
+		return chargeMap.at(name).isRunningStatFull();
+	}
+	return false;
+}
+
+
 void ChargeFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

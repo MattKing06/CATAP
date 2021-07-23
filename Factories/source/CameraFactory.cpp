@@ -612,7 +612,6 @@ long CameraFactory::getBufferFileNumber(const std::string& name)const
 	}
 	return GlobalConstants::long_min;
 }
-
 bool CameraFactory::setBlackLevel(const std::string& name, long value)
 {
 	std::string full_name = getFullName(name);
@@ -621,6 +620,16 @@ bool CameraFactory::setBlackLevel(const std::string& name, long value)
 		return camera_map.at(full_name).setBlackLevel(value);
 	}
 	return GlobalConstants::long_min;
+}
+
+bool CameraFactory::areAllRunningStatsFull(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).areAllRunningStatsFull();
+	}
+	return false;
 }
 
 long CameraFactory::getBlackLevel(const std::string& name)const

@@ -684,6 +684,8 @@ public:
 	@param[out] bool, TRUE if commands got sent to EPICS */
 	bool resetCaptureAndSaveError();
 
+	bool areAllRunningStatsFull()const;
+
 	// TODO	isBsuy has not been fully implmented yet  
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true 
 	* while busy attempts to write more data to disc will fail.

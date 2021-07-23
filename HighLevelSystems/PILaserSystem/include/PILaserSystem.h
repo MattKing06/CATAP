@@ -63,8 +63,8 @@ public:
 	void clearAllRunningStat();
 	void setAllRunningStatSize(size_t new_val);
 	size_t getRunningStatSize();
-	size_t getRunningStatCount();
-	bool isRunningStatFull();
+	//size_t getRunningStatCount();
+	bool areAllRunningStatsFull();
 
 
 };

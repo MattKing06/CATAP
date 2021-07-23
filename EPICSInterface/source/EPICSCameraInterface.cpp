@@ -82,7 +82,8 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	else if (pvStruct.pvRecord == ANA_PixH_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixH_RBV;	}
 	else if (pvStruct.pvRecord == ANA_UseBkgrnd)	{	pvStruct.updateFunction = this->update_ANA_UseBkgrnd_RBV;	}
 
-	//else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
+	else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
+	else if (pvStruct.pvRecord == ANA_UseNPoint_RBV)	{		pvStruct.updateFunction = this->update_ANA_UseNPoint_RBV;	}
 
 	else if (pvStruct.pvRecord == ANA_NewBkgrnd)	{	pvStruct.updateFunction = this->update_ANA_NewBkgrnd_RBV;	}
 	else if (pvStruct.pvRecord == CAM_BlackLevel_RBV)	{		pvStruct.updateFunction = this->update_CAM_BlackLevel_RBV;	}
@@ -532,22 +533,21 @@ void EPICSCameraInterface::update_CAM_Temperature_RBV(const struct event_handler
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Temperature_RBV = ",
 		recastCamera->temperature.second);
 }
-//void EPICSCameraInterface::update_ANA_UseNPoint_RBV(const struct event_handler_args args)
-//{
-//	Camera* recastCamera = static_cast<Camera*>(args.usr);
-//	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-//	recastCamera->use_npoint.first = tv->stamp;
-//	switch (tv->value)
-//	{
-//	case 0: recastCamera->use_npoint.second = STATE::NOT_USING_NPOINT; break;
-//	case 1:  recastCamera->use_npoint.second = STATE::USING_NPOINT; break;
-//	default:
-//		recastCamera->use_npoint.second = STATE::ERR;
-//	}
-//	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseNPoint = ",
-//		ENUM_TO_STRING(recastCamera->use_npoint.second));
-//
-//}
+void EPICSCameraInterface::update_ANA_UseNPoint_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	recastCamera->use_npoint.first = tv->stamp;
+	switch (tv->value)
+	{
+	case 0: recastCamera->use_npoint.second = STATE::NOT_USING_NPOINT; break;
+	case 1:  recastCamera->use_npoint.second = STATE::USING_NPOINT; break;
+	default:
+		recastCamera->use_npoint.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseNPoint_RBV = ",
+		ENUM_TO_STRING(recastCamera->use_npoint.second));
+}
 
 void EPICSCameraInterface::update_ANA_NewBkgrnd_RBV(const struct event_handler_args args)
 {

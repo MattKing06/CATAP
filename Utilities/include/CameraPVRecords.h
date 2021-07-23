@@ -115,8 +115,8 @@ namespace CameraRecords
 	extern std::string const ANA_UseBkgrnd;
 	extern std::string const ANA_UseBkgrnd_RBV;
 	// ANALYSIS NPOINT SCALING (2)
-	//extern std::string const ANA_UseNPoint;
-	//extern std::string const ANA_UseNPoint_RBV;
+	extern std::string const ANA_UseNPoint;
+	extern std::string const ANA_UseNPoint_RBV;
 	extern std::string const ANA_NPointStepSize_RBV;
 	extern std::string const ANA_NPointStepSize;
 	// LED STATUS (3)

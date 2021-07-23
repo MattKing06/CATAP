@@ -239,6 +239,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 
 				
+			.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)
+
 			.def("getPixelToMM", &Camera::getPixelToMM)
 			.def("setPixelToMM", &Camera::setPixelToMM)
 
@@ -515,6 +517,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getGain", &CameraFactory::getGain)
 			.def("setBlackLevel", &CameraFactory::setBlackLevel)
 			.def("getBlackLevel", &CameraFactory::getBlackLevel)
+
+			.def("areAllRunningStatsFull", &CameraFactory::areAllRunningStatsFull)
 
 
 			.def("enableOverlayCross", &CameraFactory::enableOverlayCross)

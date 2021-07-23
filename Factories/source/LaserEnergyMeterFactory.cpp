@@ -312,6 +312,16 @@ void LaserEnergyMeterFactory::clearRunningStats(const std::string& name)
 	}
 }
 
+bool LaserEnergyMeterFactory::areRunningStatsFull(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		return laserEnergyMeterMap.at(name).areRunningStatsFull();
+	}
+	return false;
+}
+
+
 void LaserEnergyMeterFactory::setVectorSize(const std::string& name, const size_t& value)
 {
 	laserEnergyMeterMap.find(name)->second.setVectorSize(value);

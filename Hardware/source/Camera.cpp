@@ -1276,7 +1276,7 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 bool Camera::useNPoint(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NPointStepSize_RBV), comm);
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NPointStepSize), comm);
 }
 STATE Camera::getNPointState()const
 {
@@ -1290,6 +1290,48 @@ bool Camera::isNotUsingNPoint()const
 {
 	return use_npoint.second == STATE::NOT_USING_NPOINT;
 }
+bool Camera::areAllRunningStatsFull()const
+{
+	if (x_pix_rs.Full())
+	{
+		if (y_pix_rs.Full())
+		{
+			if (sigma_x_pix_rs.Full())
+			{
+				if (sigma_y_pix_rs.Full())
+				{
+					if (sigma_xy_pix_rs.Full())
+					{
+						if (x_mm_rs.Full())
+						{
+							if (y_mm_rs.Full())
+							{
+								if (sigma_x_mm_rs.Full())
+								{
+									if (sigma_y_mm_rs.Full())
+									{
+										if (sigma_xy_mm_rs.Full())
+										{
+											if (avg_intensity_rs.Full())
+											{
+												if (sum_intensity_rs.Full())
+												{
+													return true;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 
 bool Camera::setNewBackground(bool v)
 {
@@ -1638,6 +1680,10 @@ void Camera::clearAllRunningStats()
 	sigma_y_mm_rs.Clear();
 	std::cout << "Camera sigma_xy_mm_rs.Clear " << std::endl;
 	sigma_xy_mm_rs.Clear();
+	std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
+	avg_intensity_rs.Clear();
+	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
+	sum_intensity_rs.Clear();
 }
 void Camera::setAllRunningStatSizes(size_t new_val)
 {
@@ -1661,6 +1707,10 @@ void Camera::setAllRunningStatSizes(size_t new_val)
 	sigma_y_mm_rs.setMaxCount(new_val);
 	std::cout << "Camera sigma_xy_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_xy_mm_rs.setMaxCount(new_val);
+	std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
+	avg_intensity_rs.setMaxCount(new_val);
+	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
+	sum_intensity_rs.setMaxCount(new_val);
 }
 
 bool Camera::startAcquiring()

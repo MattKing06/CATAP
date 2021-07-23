@@ -124,6 +124,9 @@ public:
 	void setRunningStatSize(const std::string& name, const size_t& size);
 	/*! clears the RS object for a given laser energy meter */
 	void clearRunningStats(const std::string& name);
+	/*! clears the RS object for a given laser energy meter */
+	bool areRunningStatsFull(const std::string& name);
+
 	/*! set the size of the laser energy vector.
 	@param[in] name: the laser energy meter name.
 	@param[in] value: vector size.*/

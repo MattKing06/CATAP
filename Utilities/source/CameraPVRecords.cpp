@@ -95,8 +95,8 @@ namespace CameraRecords
 	std::string const ANA_NewBkgrnd_RBV			    = "ANA_NewBkgrnd_RBV"			;
 	std::string const ANA_UseBkgrnd				    = "ANA_UseBkgrnd"				;
 	std::string const ANA_UseBkgrnd_RBV			    = "ANA_UseBkgrnd_RBV"			;
-//	std::string const ANA_UseNPoint				    = "ANA_UseNPoint"				;
-//	std::string const ANA_UseNPoint_RBV			    = "ANA_UseNPoint_RBV"			;
+	std::string const ANA_UseNPoint				    = "ANA_UseNPoint"				;
+	std::string const ANA_UseNPoint_RBV			    = "ANA_UseNPoint_RBV"			;
 	std::string const ANA_NPointStepSize_RBV		= "ANA_NPointStepSize_RBV"	;
 	std::string const ANA_NPointStepSize			= "ANA_NPointStepSize"	;
 	std::string const LED_Sta						= "LED_Sta"					;
@@ -143,7 +143,7 @@ namespace CameraRecords
 	ANA_CenterX						  ,ANA_CenterY_RBV					  ,ANA_CenterY						  ,
 	ANA_NewBkgrnd					  ,ANA_NewBkgrnd_RBV				  ,ANA_UseBkgrnd					  ,
 	ANA_UseBkgrnd_RBV,				  
-	//,ANA_UseNPoint					  ,ANA_UseNPoint_RBV				  ,
+	ANA_UseNPoint					  ,ANA_UseNPoint_RBV				  ,
 	ANA_NPointStepSize_RBV			  ,ANA_NPointStepSize				  ,LED_Sta							  ,
 	LED_Off							  ,LED_On,
 	ANA_OVERLAY_1_CROSS_RBV, ANA_OVERLAY_2_RESULT_RBV, ANA_OVERLAY_3_MASK_RBV,
@@ -171,7 +171,7 @@ namespace CameraRecords
 		ANA_MaskYCenter_RBV					,		ANA_MaskXRad_RBV					,		ANA_MaskYRad_RBV					,  //17
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
 		ANA_UseBkgrnd_RBV					,		
-		//ANA_UseNPoint_RBV					,		
+		ANA_UseNPoint_RBV					,		
 		ANA_NPointStepSize_RBV				,  //19
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
 		ANA_MaskXCenter_RBV,

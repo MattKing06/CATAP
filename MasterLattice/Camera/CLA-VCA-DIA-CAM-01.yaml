@@ -76,9 +76,12 @@ controls_information:
         ANA_PixMM    : CLA-VCA-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixMM_RBV
 
-        ANA_NPointStepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
-        ANA_NPointStepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
-
+        ANA_NPointStepSize     : CLA-VCA-DIA-CAM-01:ANA:StepSize
+        ANA_NPointStepSize_RBV : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
+        ANA_UseNPoint     : CLA-VCA-DIA-CAM-01:ANA:UseNPoint   
+        ANA_UseNPoint_RBV : CLA-VCA-DIA-CAM-01:ANA:UseNPoint_RBV   
+        
+        
         ANA_X_RBV    : CLA-VCA-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-VCA-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaX_RBV

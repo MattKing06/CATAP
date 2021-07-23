@@ -26,6 +26,11 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getQVector", &Charge::getQVector_Py)
 			.def("setRunningStatsSize", &Charge::setRunningStatSize)
 			.def("clearRunningStats", &Charge::clearRunningStats)
+			.def("getRunningStatCount", &Charge::getRunningStatCount)
+			.def("getRunningStatSize", &Charge::getRunningStatSize)
+			.def("isRunningStatFull", &Charge::isRunningStatFull)
+
+
 			.def("monitorForNShots", &Charge::monitorForNShots)
 			.def("ismonitoring", &Charge::ismonitoring)
 			.def("setBufferSize", &Charge::setBufferSize)
@@ -59,6 +64,14 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
 			.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
 			.def("getAllChargeDiagnosticNames", &ChargeFactory::getAllChargeDiagnosticNames_Py)
+			
+			
+			
+			.def("setRunningStatSize", &ChargeFactory::setRunningStatSize)
+			.def("clearRunningStats", &ChargeFactory::clearRunningStats)
+			.def("areAllRunningStatsFull", &ChargeFactory::areAllRunningStatsFull)
+
+
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots)
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
 			.def("ismonitoring", &ChargeFactory::ismonitoring)

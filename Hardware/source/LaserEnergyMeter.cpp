@@ -274,6 +274,12 @@ void LaserEnergyMeter::clearRunningStats()
 	std::cout << "LaserEnergyMeter energyStats.Clear " << std::endl;
 	energyStats.Clear();
 }
+bool LaserEnergyMeter::areRunningStatsFull()
+{
+	return energyStats.Full();
+}
+
+
 void LaserEnergyMeter::checkStatus()
 {
 	/*if (awak.first - rdy.first > 1.0)

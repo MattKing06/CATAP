@@ -203,6 +203,10 @@ public:
 	void setRunningStatSize(const std::string& name, const size_t& size);
 	/*! clears the RS object for a given charge diagnostic */
 	void clearRunningStats(const std::string& name);
+	
+	bool areAllRunningStatsFull(const std::string& name);
+
+
 	/*! turns debug messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for ChargeFactory and calls same function in all charge diagnostics and configReader*/

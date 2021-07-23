@@ -118,6 +118,8 @@ public:
 	void setRunningStatsSize(size_t new_size);
 	/*! lear running stats data.*/
 	void clearRunningStats();
+	/*! lear running stats data.*/
+	bool areRunningStatsFull();
 
 	friend class EPICSLaserEnergyMeterInterface;
 	friend class LaserEnergyFactory;
