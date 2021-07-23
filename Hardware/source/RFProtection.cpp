@@ -12,7 +12,6 @@ RFProtection::RFProtection()
 
 RFProtection::RFProtection(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
-	RFProtectionParamMap(paramMap),
 	epicsInterface(boost::make_shared<EPICSRFProtectionInterface>(EPICSRFProtectionInterface()))
 {
 	messenger.printMessage("setMasterLatticeData data for: ", hardwareName);
@@ -34,40 +33,40 @@ void RFProtection::setMasterLatticeData()
 	messenger.printMessage("setMasterLatticeData ", hardwareName);
 	//protectionType(string_to_hardware_type_map.at(RFProtectionParamMap.at("prot_type")))
 
-	boost::split(aliases, RFProtectionParamMap.find("name_alias")->second, [](char c) {return c == ','; });
+	boost::split(aliases, specificHardwareParameters.find("name_alias")->second, [](char c) {return c == ','; });
 
 
-	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, RFProtectionParamMap.at("prot_type")))
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, specificHardwareParameters.at("prot_type")))
 	{
-		protectionType = GlobalConstants::stringToTypeMap.at(RFProtectionParamMap.at("prot_type"));
+		protectionType = GlobalConstants::stringToTypeMap.at(specificHardwareParameters.at("prot_type"));
 		messenger.printMessage("protectionType = ", ENUM_TO_STRING(protectionType));
 
 	}
 	else
 	{
-		messenger.printMessage("!!ERROR!! Can't find protectionType = ", RFProtectionParamMap.at("prot_type"));
+		messenger.printMessage("!!ERROR!! Can't find protectionType = ", specificHardwareParameters.at("prot_type"));
 	}
 
-	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, RFProtectionParamMap.at("machine_area")))
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, specificHardwareParameters.at("machine_area")))
 	{
-		machine_area = GlobalConstants::stringToTypeMap.at(RFProtectionParamMap.at("machine_area"));
+		machine_area = GlobalConstants::stringToTypeMap.at(specificHardwareParameters.at("machine_area"));
 		messenger.printMessage("machine_area = ", ENUM_TO_STRING(machine_area));
 
 	}
 	else
 	{
-		messenger.printMessage("!!ERROR!! Can't find machine_area = ", RFProtectionParamMap.at("machine_area"));
+		messenger.printMessage("!!ERROR!! Can't find machine_area = ", specificHardwareParameters.at("machine_area"));
 	}
 
-	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, RFProtectionParamMap.at("hardware_type")))
+	if (GlobalFunctions::entryExists(GlobalConstants::stringToTypeMap, specificHardwareParameters.at("hardware_type")))
 	{
-		machine_area = GlobalConstants::stringToTypeMap.at(RFProtectionParamMap.at("hardware_type"));
+		machine_area = GlobalConstants::stringToTypeMap.at(specificHardwareParameters.at("hardware_type"));
 		messenger.printMessage("machine_area = ", ENUM_TO_STRING(machine_area));
 
 	}
 	else
 	{
-		messenger.printMessage("!!ERROR!! Can't find hardware_type = ", RFProtectionParamMap.at("hardware_type"));
+		messenger.printMessage("!!ERROR!! Can't find hardware_type = ", specificHardwareParameters.at("hardware_type"));
 	}
 
 

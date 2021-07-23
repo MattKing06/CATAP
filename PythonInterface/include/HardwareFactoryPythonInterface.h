@@ -29,12 +29,17 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 		RFModulatorFactory&(HardwareFactory::*getRFModulatorFactory_noarg)()= &HardwareFactory::getRFModulatorFactory;
 		RFModulatorFactory&(HardwareFactory::*getRFModulatorFactory_listOfAreas)(const std::vector<TYPE>&)= &HardwareFactory::getRFModulatorFactory;
 
+		bool(HardwareFactory:: * setup_all)(const std::string&)= &HardwareFactory::setup;
+		bool(HardwareFactory:: * setup_single)(const std::string&, const std::string&) = &HardwareFactory::setup;
+		bool(HardwareFactory:: * setup_multiple)(const boost::python::list&, const std::string&) = &HardwareFactory::setup;
 
-
-
+		bool(HardwareFactory:: * saveSnapshotDefaultLocation)() = &HardwareFactory::saveMachineSnapshot;
+		bool(HardwareFactory:: * saveSnapshotToLocation)(const std::string&) = &HardwareFactory::saveMachineSnapshot;
 		// Hardware Factory Exposure
 		boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"), boost::python::args("mode"))))
-			.def("setup", &HardwareFactory::setup, (boost::python::args("self"), boost::python::arg("hardwareType"), boost::python::args("version")))
+			.def("setup", setup_single, (boost::python::arg("self"), boost::python::arg("hardwareType"), boost::python::arg("version")))
+			.def("setup", setup_all, (boost::python::arg("self"), boost::python::arg("version")))
+			.def("setup", setup_multiple, (boost::python::arg("self"), boost::python::arg("hardwareTypes"), boost::python::arg("version")))
 			.add_property("llrfFactory", &HardwareFactory::llrffactory)
 			.def("getLLRFFactory", &HardwareFactory::getLLRFFactory_Single, boost::python::arg("self"), boost::python::arg("machine_area"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getLLRFFactory", &HardwareFactory::getLLRFFactory_Py, boost::python::arg("self"), boost::python::arg("machine_areas"), boost::python::return_value_policy<boost::python::reference_existing_object>())
@@ -92,8 +97,10 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 
 			.def("getRFProtectionFactory", &HardwareFactory::getRFProtectionFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("shutterFactory", &HardwareFactory::rfProtectionFactory)
-
-
+			.def("saveMachineSnapshot", saveSnapshotToLocation, boost::python::args("self"), boost::python::args("location"))
+			.def("saveMachineSnapshot", saveSnapshotDefaultLocation, boost::python::args("self"), "Saves a machine snapshot to a timestamped folder in the default location: \\\\claraserv3.dl.ac.uk\\claranet\\MachineSnapshots")
+			.def("loadMachineSnapshot", &HardwareFactory::loadMachineSnapshot)
+			.def("getDefaultSnapshotLocation", &HardwareFactory::getDefaultSnapshotLocation, boost::python::args("self"), "Returns the default location of the Machine Snapshot files on server.")
 			.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &HardwareFactory::messagesOn, boost::python::arg("self"))

@@ -1,8 +1,8 @@
 controls_information:
     PV: true
     pv_record_map:
-        On: CLA-LAS-VAC-VALV-01:On
-        Off: CLA-LAS-VAC-VALV-01:Off
+        Open: CLA-LAS-VAC-VALV-01:Open
+        Close: CLA-LAS-VAC-VALV-01:Close
         Sta: CLA-LAS-VAC-VALV-01:Sta
 properties:
     machine_area: LAS

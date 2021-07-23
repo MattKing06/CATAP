@@ -51,7 +51,14 @@ namespace GlobalFunctions {
 		return stringToCheck.find(stringToLookFor) != std::string::npos;
 	}
 
-
+	TYPE stringToTYPE(const std::string& type_str)
+	{
+		if (entryExists<TYPE>(GlobalConstants::stringToTypeMap, type_str))
+		{
+			return GlobalConstants::stringToTypeMap.at(type_str);
+		}
+		return TYPE::UNKNOWN_TYPE;
+	}
 
 
 	std::string getTimeAndDateString()
@@ -60,7 +67,8 @@ namespace GlobalFunctions {
 		auto tm = *std::localtime(&t);
 
 		std::ostringstream oss;
-		oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+		// THIE ORDER OF YEAR-MONTH-DAY is important!! 
+		oss << std::put_time(&tm, "%Y-%m-%d %H-%M-%S");
 		auto str = oss.str();
 		return str;
 		//  std::cout << "baseObject::currentDateTime() " << std::endl;
@@ -123,12 +131,24 @@ namespace GlobalFunctions {
 
 	TYPE stringToType(const std::string& string_to_check)
 	{
+		// TODO convert to upper case string_to_check
 		auto it = GlobalConstants::stringToTypeMap.find(string_to_check);
 		if (it != GlobalConstants::stringToTypeMap.end())
 		{
 			return GlobalConstants::stringToTypeMap.at(string_to_check);
 		}
 		return TYPE::UNKNOWN_TYPE;
+	}
+
+	STATE stringToState(const std::string& string_to_check)
+	{
+		// TODO convert to upper case string_to_check
+		auto it = GlobalConstants::stringToStateMap.find(string_to_check);
+		if (it != GlobalConstants::stringToStateMap.end())
+		{
+			return GlobalConstants::stringToStateMap.at(string_to_check);
+		}
+		return STATE::UNKNOWN;
 	}
 
 	bool isInMachineArea(TYPE testArea, TYPE area)
@@ -202,5 +222,77 @@ namespace GlobalFunctions {
 		return str; // return our new string.
 	}
 
+
+	std::string trimAllWhiteSpace(std::string strIN)
+	{
+		std::string str = strIN;
+		str.erase(std::remove_if(str.begin(), str.end(), isspace), str.end());
+		return str;
+	}
+
+	std::string trimAllWhiteSpaceExceptBetweenDoubleQuotes(std::string strIN)
+	{   /*
+			Does exactly what the function name says.
+			Used so that user strings with spaces in can be passed
+			from the config files,
+			This will have to change if we want to inlcude special characters
+			in the config file strings
+		*/
+		// whether to ignore the current character or not
+		std::string str = strIN;
+		bool ignore = false;
+
+		// a kind of NULL pointer
+		std::string::iterator endVal = str.end();
+		// a  "
+		std::string::iterator type = endVal;
+
+		for (std::string::iterator it = str.begin(); it != str.end();)
+		{
+			if ((*it) == GlobalConstants::DOUBLE_QUOTE_C) // we're in a string!
+			{
+				if (ignore)
+				{
+					if (type != endVal && (*it) == (*type))
+					{   // end of the string
+						ignore = false;
+						type = endVal;
+					}
+				}
+				else /// this must be the start of a quoted string
+				{
+					ignore = true;
+					type = it;
+				}
+				if ((*it) == GlobalConstants::DOUBLE_QUOTE_C)
+				{
+					it = str.erase(it);
+				}
+				else
+				{
+					it++;
+				}
+			}
+			else
+			{
+				if (!ignore)
+				{
+					if ((*it) == GlobalConstants::SPACE_C || (*it) == GlobalConstants::TAB_C)
+					{
+						it = str.erase(it);
+					}
+					else
+					{
+						it++;
+					}
+				}
+				else
+				{
+					it++;
+				}
+			}
+		}
+		return str;
+	}
 
 }

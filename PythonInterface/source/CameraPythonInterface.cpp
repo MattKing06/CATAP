@@ -1,4 +1,5 @@
 #include <CameraPythonInterface.h>
+#include <RunningStatsPythonInterface.h>
 #include <HardwarePythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
@@ -14,4 +15,5 @@ BOOST_PYTHON_MODULE(_Camera)
 	//BOOST_PYTHON_CAMERA_INCLUDE::expose_std_vector_long_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_object();
 	BOOST_PYTHON_CAMERA_INCLUDE::expose_camera_factory_object();
+	BOOST_PYTHON_RUNNING_STATS_INCLUDE::expose_running_stats_object();
 }

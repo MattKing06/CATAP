@@ -6,6 +6,7 @@
 #include <vector>
 #include <numeric>
 #include <math.h>
+#include <GlobalFunctions.h>
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
@@ -13,15 +14,27 @@
 LaserHWP::LaserHWP()
 {}
 LaserHWP::LaserHWP(const std::map<std::string, std::string> & paramsMap, STATE mode) :
-Hardware(paramsMap, mode),
-laserType(LaserHWPRecords::laserHWPTypeToEnum.at(paramsMap.find("laser_pv_type")->second)),
-name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second))
+Hardware(paramsMap, mode)
 {
-messenger.printDebugMessage("constructor");
+	messenger.printDebugMessage("LaserHWP constructor");
+
+	if (GlobalFunctions::entryExists<std::string>(paramsMap, "laser_pv_type"))
+	{
+		laserType = LaserHWPRecords::laserHWPTypeToEnum.at(paramsMap.find("laser_pv_type")->second);
+	}
+	if (GlobalFunctions::entryExists<std::string>(paramsMap, "position"))
+	{
+		position = std::stod(paramsMap.find("position")->second);
+	}
+	if (GlobalFunctions::entryExists<std::string>(paramsMap, "name"))
+	{
+		name = paramsMap.find("name")->second;
+	}
+
 setPVStructs();
 epicsInterface = boost::make_shared<EPICSLaserHWPInterface>(EPICSLaserHWPInterface());
 epicsInterface->ownerName = hardwareName;
+messenger.printDebugMessage("LaserHWP constructor complete");
 }
 LaserHWP::LaserHWP(const LaserHWP & copyLaser) :
 Hardware(copyLaser),
@@ -99,6 +112,45 @@ double LaserHWP::getHWPSet() const
 double LaserHWP::getHWPRead() const
 {
 	return hwpread.second;
+}
+
+
+//____________________________________________________________________________________________
+bool LaserHWP::isHWPEnabled() const
+{
+	return hwp_enable.second == STATE::ON;
+}
+//____________________________________________________________________________________________
+bool LaserHWP::isHWPDisabled()const
+{
+	return hwp_enable.second == STATE::OFF;
+}
+//____________________________________________________________________________________________
+STATE LaserHWP::getHWPEnableState()const
+{
+	return hwp_enable.second;
+}
+
+//____________________________________________________________________________________________
+bool LaserHWP::enableHWP()
+{
+	//messenger.printDebugMessage("pilaserInterface::enableHWP ");
+	//messenger.printDebugMessage("CHTYPE =  ", pilaser.pvComStructs.at(pilaserStructs::PILASER_PV_TYPE::HALF_WAVE_PLATE_ENABLE).CHTYPE);
+	//messenger.printDebugMessage("CHID =  ", pilaser.pvComStructs.at(pilaserStructs::PILASER_PV_TYPE::HALF_WAVE_PLATE_ENABLE).CHID);
+	//    pilaserStructs::pvStruct& pvs = pilaser.pvComStructs.at(pilaserStructs::PILASER_PV_TYPE::HALF_WAVE_PLATE_ENABLE);
+	//    dbr_enum_t c = (dbr_enum_t)UTL::ONE_US;
+	//need to figure out how to move th elaser from command line...
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(LaserHWPRecords::ENABLE), GlobalConstants::one_ushort);
+}
+//____________________________________________________________________________________________
+bool LaserHWP::disableHWP()
+{
+	//message("pilaserInterface::disableHWP ");
+	//message("CHTYPE =  ", pilaser.pvComStructs.at(pilaserStructs::PILASER_PV_TYPE::HALF_WAVE_PLATE_ENABLE).CHTYPE);
+	//message("CHID =  ", pilaser.pvComStructs.at(pilaserStructs::PILASER_PV_TYPE::HALF_WAVE_PLATE_ENABLE).CHID);
+	//need to figure out how to move the laser from command line...
+	//pilaserStructs::pvStruct& pvs = pilaser.pvComStructs.at(pilaserStructs::PILASER_PV_TYPE::HALF_WAVE_PLATE_ENABLE);
+	return epicsInterface->putValue2<unsigned short>(pvStructs.at(LaserHWPRecords::ENABLE), GlobalConstants::zero_ushort);
 }
 
 void LaserHWP::debugMessagesOff()

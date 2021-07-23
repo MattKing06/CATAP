@@ -13,3 +13,4 @@ properties:
     name: CLA-LAS-DIA-EM-06
     virtual_name: VM-CLA-LAS-DIA-EM-06
     position: 0.0
+    calibration_factor: 15.4

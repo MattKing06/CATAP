@@ -17,30 +17,6 @@
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
 class Magnet;
-/// one-stop shop for magnet state
-struct magnetStates
-{   
-	/*! Default constructor call for magnetStates */
-	magnetStates():
-		magnet_count(GlobalConstants::zero_sizet)
-		{};
-	size_t magnet_count;
-	std::map<std::string, magnetState> magnet_states_map;
-	boost::python::dict magnet_states_dict;
-};
-/// DBURTs are magnet-states plus comment and timestamp 
-struct dburt
-{   /*! Default constructor call for dburt */
-	dburt() :
-		comment("NO COMMENT"),
-		timestamp("NO TIME")
-	{};
-	std::string comment;
-	std::string timestamp;
-	magnetStates magnetstates;
-	//magnetStateStruct magnetstates_Py;
-};
-
 class MagnetFactory
 {
 	public:
@@ -90,6 +66,98 @@ class MagnetFactory
 		@param[in] machineAreas, only setup magnets that match an area in machineAreas  
 		@param[out] bool, for success or failure	*/
 		bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
+
+		
+		/*! Save the current magnetfactory settings to the default filepath and filename 
+		@param[in] string, comments	(optional input, default as empty)
+		@param[out] STATE, success, failure, etc.	*/
+		STATE saveSnapshot(const std::string& comments = "");
+		/*! Save the current magnetfactory settings to filepath and filename
+		@param[in] string, filepath	
+		@param[in] string, filename	
+		@param[in] string, comments	(optional input, default as empty)
+		@param[out] STATE, success, failure, etc.			*/
+		STATE saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments = "");
+		/*! Save snap_dict to the default filepath and filename 
+		@param[in] dict, snap_dict
+		@param[in] string, comments	(optional input, default as empty)
+		@param[out] STATE, success, failure, etc.			*/
+		STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict, const std::string& comments = "");
+		/*! Save snap_dict to filepath and filename
+		@param[in] string, filepath
+		@param[in] string, filename
+		@param[in] dict, snap_dict
+		@param[out] STATE, success, failure, etc.			*/
+		STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments = "");
+		/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings. 
+		@param[in] string, filepath
+		@param[in] string, filename
+		@param[out] STATE, success, failure, etc.			*/
+		STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
+		/*! Load snapshot_dict by copying the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+		@param[in] dict, snapshot_dict
+		@param[out] STATE, success, failure, etc.			*/
+		STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
+		/*! Get the latest snapshot data for this factory. 
+		@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
+		std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
+		/*! Get the latest snapshot data for this factory. Python Version 
+		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
+		boost::python::dict getSnapshot_Py(); // return current state as py dict 
+		/*! Get the snapshot data from filepath and filename. Python Version
+		@param[in] string, filepath 
+		@param[in] string, filename 
+		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
+		boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
+		/*! Apply a Python dict snapshot. 
+		@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name 
+		@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+		@param[out] STATE, success, failure, etc.			*/
+		STATE applySnaphot(const boost::python::dict& snapshot_dict, TYPE magnets = TYPE::MAGNET);
+		/*! Apply a snapshot data from filepath and filename.
+		@param[in] string, filepath
+		@param[in] string, filename
+		@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+		@param[out] STATE, success, failure, etc.			*/
+		STATE applySnaphot(const std::string& filepath, const std::string& filename, TYPE magnets = TYPE::MAGNET);
+		/*! Apply the member variable hardwareSnapshotMap (which could have already been loaded with loadSnapshot()). 
+		@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+		@param[out] STATE, success, failure, etc.			*/
+		STATE applyLoadedSnaphost(TYPE magnets = TYPE::MAGNET);
+
+		 
+
+		/*! This function compares the current settings of PSU state and SETI with those contained in hardwareSnapShotMap. 
+		* Objects that fail the comparison due to, their name is not recognized, the PSU STATE match, or SETI is different 
+		@param[out] STATE, success, failure, etc.			*/
+		STATE checkLastAppliedSnapshot(TYPE mag_type_to_check = TYPE::MAGNET );
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot() 
+		@param[out] map<string, pair<double, double>, map of filaed object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		std::map<std::string, std::pair<double, double>> getSetWrongSETI()const;
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot(), Python version.
+		@param[out] dict, map of filled object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		boost::python::dict  getSetWrongSETI_Py()const;
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot()
+		@param[out] map<std::string, std::pair<double, double>, map of filaed object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		std::map<std::string, std::pair<STATE, STATE>> getSetWrongPSU();
+		/*! Get object names and SETI that faile dthe last call to checkLastAppliedSnapshot(), Python version. 
+		@param[out] dict, map of filled object, keyed by name, 1st item in the pair is the requested value, the 2nd is the actual value			*/
+		boost::python::dict  getSetWrongPSU_Py()const;
+		/*! checkLastAppliedSnapshot() fills this vector with names are not recognized 
+		@param[out] vector<string>, object names not recognized */
+		std::vector<std::string> getWrongName()const;
+		/*! checkLastAppliedSnapshot() fills this vector with names that were not recognized, Python version. 
+		@param[out] list, object names not recognized */
+		boost::python::list  getWrongName_Py()const;
+		/*! This function combines checkLastAppliedSnapshot() and getting results for any failed comparisons.
+		@param[out] dict, returned with top level keys "SETI_ERROR", "PSU_ERROR", "NAME_ERROR"  if there are failed comparisons, otherwise empty*/
+		boost::python::dict checkLastAppliedSnapshotReturnResults_Py(TYPE mag_type_to_check);
+
+		/*! Return the Default Magnet Snapshot file path, hardcoded into CATAP */
+		std::string getDefaultMagnetSnapshotPath()const;
+		/*! Return the Default Machine snapshot file path, hardcoded into CATAP */
+		std::string getDefaultMachineSnapshotPath()const;
+
 
 
 		/*! Get a reference to magnet object, will return a dummy_magnet if magnetName is not found  
@@ -145,8 +213,6 @@ class MagnetFactory
 		/*! Get the full name of every vertical corrector magnet in the factory (python version)
 		@param[out] python::list of magnet names*/
 		boost::python::list getAllVCorrectorNames_Py()const;
-
-
 
 		/*! Returns the GETSETI value for a magnet. GETSETI is the requested set current.  
 		@param[in] name, full-name or name-alias of magnet object 
@@ -231,6 +297,14 @@ class MagnetFactory
 		@param[in] value, new STATE to set 
 		@param[out] std::map of <name, value>, if name can't be found std::min is returned */
 		//bool offlineSetILKState(const std::string& name, const STATE value);
+
+		/*! Reset the magnet PSU external interlocks
+		* 	@param[in] names, full-names or name-aliases of magnets
+		*	@param[out] bool, true if commands got sent to EPICS */
+		STATE resetILK(const std::string& name) const;
+		/*! Reset all magnet PSU external interlocks
+		@param[out] bool, true if commands got sent to EPICS */
+		STATE resetAllILK() const;
 
 
 
@@ -344,8 +418,15 @@ class MagnetFactory
 		config files, (these can be dynamically changed, see setDegaussValues)
 		@param[in] name, full-name or name-alias of magnet object
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing 
-		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or anotehrerror occurred*/
+		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or another error occurred*/
 		bool degauss(const std::string& name, const bool reset_to_zero);
+
+		/*! degauss a magnet, following the degauss settings held by the magnet object, initially defined in the magnet object \
+		config files, (these can be dynamically changed, see setDegaussValues)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[in] set_value_after_degauss, SETI value to set after degaussing
+		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or another error occurred*/
+		bool degauss(const std::string& name, const double set_value_after_degauss);
 		/*! degauss multiple magnets  (c++ verion)
 		@param[in] names, std::vector full-name or name-alias of magnet objects to be degaussed 
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing
@@ -364,6 +445,8 @@ class MagnetFactory
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing
 		@param[out] python::dict of return bool for each magnet, keyed by the full-name */
 		boost::python::dict degaussAll_Py(const bool reset_to_zero);
+
+
 
 		//int setNumberOfDegaussSteps(const int value); 	//TODO: THINK ABOUT THIS ONE!!! 
 		
@@ -586,6 +669,17 @@ class MagnetFactory
 		@param[in] names, python::list of full-names or name-aliases of magnet objects
 		@param[out] python::dict of magnet READI tolerances  keyed by the passed names */
 		boost::python::dict setREADITolerance_Py(const boost::python::list& names, const double value);
+
+
+		/*! check if the current READI is equal to a value, to within the Master Lattice  defeind tolerance
+		@param[in]  value to compare with READI
+		@param[out] bool, true if value is equal READI, otherwise false 		*/
+		bool isREADIequalValue(const std::string& name, const double value) const;
+		/*! check if the current READI is equal to a value, to within a tolerance
+			@param[in]  value to compare with READI
+			@param[in]  tolerance for comparisaon
+			@param[out] bool, true if value is equal READI, otherwise false 		*/
+		bool isREADIequalValue(const std::string& name, const double value, const double tolerance) const;
 
 		/*! Get the minimum SETI value that can be applied, as defined in the config file.
 		@param[in] name, full-name or name-alias of magnet object
@@ -866,35 +960,6 @@ class MagnetFactory
 		@param[out] bool, result of comparison */
 		bool isACor(const std::string& name)const;
 
-		/*! Return a magnetstate object for a magnet, a magnetsatte object defines the main settings accessed through EPICS,
-		(SETI, READ, psue_state, see magnetstate for more info)
-		@param[in] name, full-name or name-aliase of magnet
-		@param[out] magnetstate*/
-		magnetState getMagnetState(const std::string& name)const;
-		/*! Return a magnetStates object for all magnets in the factory, a magnetStates has the magnetState for multiple magnets 
-		@param[out] magnetsates */
-		magnetStates getMagnetStates() const;
-
-		/*! Return a magnetState as a python dictrionary  
-		@param[in] name of magnet to get state for  
-		@param[out] magnetState as pythjon dict  */
-		boost::python::dict getMagnetState_Py(const std::string& name)const;
-		/*! Return magnetState for all magnets in the factory, 
-		@param[out] python dictionary version of a magnetStates */
-		boost::python::dict getAllMagnetState_Py() const;
-
-
-		/*! Set the magnet states for a magnet 
-		@param[in] magnetsate to be applied  
-		@param[out] bool, TRUE if magnet could be found in Factory and magnet.setMagnetState returns TRUE, otherwise FALSE */
-		bool setMagnetState(const magnetState& ms) ;
-
-		/*! Set the magnet states for all magnets defined in the magnetstate object, that are of a TYPE passed 
-		@param[in] magnet states to be applied
-		@param[in] types, std::vector of magnet TYPE that a magnetstate will be applied to 
-		@param[out] magnetsate */
-		std::map<std::string, bool> applyMagnetStates(const magnetStates& ms, const std::vector<TYPE>& types);
-							   
 
 		/*! Get the names of the magnets that are in an area 
 		@param[in] TYPE, area 
@@ -914,75 +979,11 @@ class MagnetFactory
 		boost::python::list getNamesInAreas_Py(const boost::python::list& areas) const;
 
 
-		/*! Write a DBURT file to the default location 
-		@param[in] DBURT filename to write
-		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeDBURT(const std::string& fileName)const;
-		/*! Write a DBURT file to the default location with passed comments 
-		@param[in] DBURT filename to write
-		@param[in] DBURT comments to write to file 
-		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeDBURT(const std::string& fileName, const std::string& commment)const;
-		/*! Write a DBURT file to the passed location with passed comments
-		@param[in] DBURT filepath, location wher efile will be written 
-		@param[in] DBURT filename to write
-		@param[in] DBURT comments to write to file
-		@param[out] bool, if file was succesfully wwritten or not */
-		bool writeDBURT(const std::string& filePath, const std::string& fileName, const std::string& commment)const;
-
-		/*! Read a DBURT file from the default location
-		@param[in] DBURT filename to read 
-		@param[out] dburt, dburt object generated after file has been parsed */
-		dburt readDBURT(const std::string& fileName)const;
-		/*! Read a DBURT file from a passed location 
-		@param[in] DBURT filepath to look for file 
-		@param[in] DBURT filename to read
-		@param[out] dburt, dburt object generated after file has been parsed */
-		dburt readDBURT(const std::string& filePath, const std::string& fileName)const;
-
-		/*! Apply a DBURT file from passed location
-		@param[in] DBURT filepath to file 
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURT(const std::string& filePath, const std::string& fileName);
-		/*! Apply a DBURT file to quadrupole magnets only  from passed location
-		@param[in] DBURT filepath to file
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTQuadOnly(const std::string& filePath,  const std::string& fileName);
-		/*! Apply a DBURT file to corrector magnets only from passed location
-		@param[in] DBURT filepath to file
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTCorOnly(const std::string& filePath, const std::string& fileName);
-
-		/*! Apply a DBURT file from the default location 
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURT(const std::string& fileName);
-		/*! Apply a DBURT file to quadrupole magnets only  from passed location
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTQuadOnly(const std::string& fileName);
-		/*! Apply a DBURT file to corrector magnets only from passed location
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt was applied */
-		bool applyDBURTCorOnly(const std::string& fileName);
-
-		/*! Compare a DBURT file in teh default lcoation to the curent maget settings 
-		@param[in] DBURT filename to read
-		@param[out] bool, if dburt file matches current settings */
-		bool isMagnetStateEqualDBURT(const std::string& fileName);
-
 
 		/*! Get the full name of a magnet 
 		@param[in] name to lookup 
 		@param[out] fullname of magnet, or dummy magnet name if passed name does not exist*/
 		std::string getFullName(const std::string& name_to_check) const;
-
-
-
-
 
 
 		// private
@@ -1012,20 +1013,50 @@ private:
 
 		std::map<std::string, Magnet> magnetMap;
 
+		/*! Snaphsot data is placed here, when loaded from file, or applied  */
+		std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
+
+		/*! checkLastAppliedSnapshot() fills this map with magnets that fail the SETI comparison, 
+		the map key is the mganet name, 1st item in the pair is the requested value, the 2nd is the actual value 		*/
+		std::map<std::string, std::pair<double,double>> set_wrong_seti;
+		/*! checkLastAppliedSnapshot() fills this map with magnets that fail the PSU comparison 
+		the map key is the mganet name, 1st item in the pair is the requested value, the 2nd is the actual value 		*/
+		std::map<std::string, std::pair<STATE,STATE>> set_wrong_psu;
+		/*! checkLastAppliedSnapshot() fills this vector with names are not recognized */
+		std::vector<std::string> set_wrong_name;
+
+
+		/*! Each factory must know how to convert a YAML NODE read from snaphsot YAML file into a map of hardwareSnapshots. 
+		It must be done in the factory so we know how to convert the type for each record 
+		This function should also check the YAML::NODE is compliant with our definitions. 
+		@param[in] YAML::Node, input_node to convert
+		@param[out] map<string, HardwareSnapshot>, return map */
+		std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node & input_node); 
+		/*! Each factory must know how to convert a ython Dictionary into a map of hardwareSnapshots.
+		It must be done in the factory so we know how to convert the type for each record
+		@param[in] dict, input_dict to convert
+		@param[out] map<string, HardwareSnapshot>, return map */
+		std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
+
+		YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
+		/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed 
+		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply 
+		@param[out] STATE, success, failure, etc */
+		STATE applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE magnet_type = TYPE::MAGNET);
 
 		/*! setup the EPCIS channels */
 		void setupChannels();
 
-		/*! Write a dburt file to disk, private function that does the actual writing
-		@param[in] path object 
-		@param[in] dburt data 
-		@param[out] successfully written */
-		bool writeDBURTToFile(const boost::filesystem::path& full_path, const dburt& dburt_to_write) const;
-		/*! Read a dburt file from disk, private function that does the actual reading
-		@param[in] path object
-		@param[out] dburt data*/
-		dburt readDBURTFile(const boost::filesystem::path& full_path) const;
-		std::pair<bool, std::string> isDBURTFileAlias(const std::string& full_path)const;
+		///*! Write a MagnetFactorySnapshot file to disk, private function that does the actual writing
+		//@param[in] path object 
+		//@param[in] MagnetFactorySnapshot data 
+		//@param[out] successfully written */
+		//bool writeMagnetFactorySnapshotToFile(const boost::filesystem::path& full_path, const MagnetFactorySnapshot& MagnetFactorySnapshot_to_write) const;
+		///*! Read a MagnetFactorySnapshot file from disk, private function that does the actual reading
+		//@param[in] path object
+		//@param[out] MagnetFactorySnapshot data*/
+		//MagnetFactorySnapshot readMagnetFactorySnapshotFile(const boost::filesystem::path& full_path) const;
+		//std::pair<bool, std::string> isMagnetFactorySnapshotFileAlias(const std::string& full_path)const;
 
 		/*! Update the alias-name-map, 
 		@param[in] magnet object top updat emap with */
@@ -1039,6 +1070,29 @@ private:
 		std::vector<TYPE> machineAreas;
 		/*! Delete magnet objects that are not of the machineArea TYPE for this factory, called during setup*/
 		void cutMagnetMapByMachineAreas();
+
+
+		std::string LEGACY_DBURT_IDENT;
+
+		/*! apply a snapshot contained in YAML node
+		@param[out] YAML::Node, pase the hardware snapshot data into a YAML node. */
+		YAML::Node getSnapshotAsYAMLNode();
+
+
+		/*! apply a snapshot contained in YAML node 
+		@param[in] YAML::Node, The node must be formatted correctly for a magnet snapshot. 
+		@param[out] STATE, descirbing the relative successive of the operation. */
+		STATE applyYAMLNode(const YAML::Node& input_node);
+
+
+		// TODO base class member ??? 
+		/*! Snapshot files are processed into thsi YAML::NOde and then applied. Keeping a copy allows for comparison 
+		after the snapshot has been applied to */
+		YAML::Node last_snapshot_yaml_node_read;
+
+		// NO - this data will be held in the SnapshotFileManager 
+		//const std::string magnet_snapshot_default_path;
+
 
 		// private
 		ConfigReader reader;

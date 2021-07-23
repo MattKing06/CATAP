@@ -11,7 +11,7 @@ set( SOURCE_FILES
     source/CameraPVRecords.cpp
     source/ChargePVRecords.cpp
     source/ScreenPVRecords.cpp
-    source/HardwareState.cpp
+    source/HardwareSnapshot.cpp
     source/IMGPVRecords.cpp
     source/LaserEnergyMeterPVRecords.cpp
     source/LaserHWPPVRecords.cpp
@@ -22,6 +22,7 @@ set( SOURCE_FILES
     source/RFHeartbeatPVRecords.cpp
     source/RFModulatorPVRecords.cpp
     source/RFProtectionPVRecords.cpp
+    source/SnapshotFileManager.cpp
     source/StagePVRecords.cpp
     source/ShutterPVRecords.cpp
     source/RunningStats.cpp
@@ -32,7 +33,7 @@ set( INCLUDE_FILES
      include/GlobalTypeEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
-     include/HardwareState.h
+     include/HardwareSnapshot.h
      include/MagnetPVRecords.h
      include/ValvePVRecords.h
      include/BPMPVRecords.h
@@ -49,6 +50,7 @@ set( INCLUDE_FILES
      include/RFHeartbeatPVRecords.h
      include/RFModulatorPVRecords.h
      include/RFProtectionPVRecords.h
+     include/SnapshotFileManager.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
      include/RunningStats.h

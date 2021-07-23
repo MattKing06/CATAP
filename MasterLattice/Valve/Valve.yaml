@@ -1,8 +1,8 @@
 controls_information:
     PV: true, false
     pv_record_map:
-        On: UNDEFINED
-        Off: UNDEFINED
+        Open: UNDEFINED
+        Close: UNDEFINED
         Sta: UNDEFINED
 properties:
     machine_area: UNDEFINED

@@ -7,6 +7,7 @@ controls_information:
     RPOWER: CLA-GUN-MAG-SOL-02:RPOWER
     SETI: CLA-GUN-MAG-SOL-02:SETI
     SPOWER: CLA-GUN-MAG-SOL-02:SPOWER
+    ILK_RESET: CLA-GUN-MAG-SOL-02:Rst
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
 properties:
   degauss_tolerance: 2.0
