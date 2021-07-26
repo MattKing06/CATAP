@@ -58,7 +58,7 @@ ms_build:
       - build/*
   script: 
     - "cd build"
-    - &"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe" ALL_BUILD.vcxproj /Configuration=Release
+    - "MSBuild.exe ALL_BUILD.vcxproj /Configuration=Release"
   stage: make
   tags: 
     - windows
