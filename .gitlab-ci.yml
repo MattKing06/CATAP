@@ -86,7 +86,9 @@ windows_tests:
       - build/*
   script: 
     - cd build
-    - cd testBin\Release
+    - cd testBin
+    - cd Release
+    - dir
     - .\ConfigReaderTest.exe
     - .\LoggingSystemTest.exe
     - .\HardwareTests.exe
