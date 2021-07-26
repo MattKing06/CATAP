@@ -34,16 +34,16 @@ cmake_windows:
   tags: 
     - windows
 
-linx_make: 
+linux_make: 
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
       - build/*
   script: 
-    - "cd build/"
-    - "make clean"
+    - cd build/
+    - make clean
     - make
-    - "echo 'Make Finished'"
+    - echo 'Make Finished'
   stage: make
   tags: 
     - linux
@@ -53,8 +53,8 @@ ms_build:
     paths: 
       - build/*
   script: 
-    - "cd build"
-    - "MSBuild.exe ALL_BUILD.vcxproj /Configuration=Release"
+    - cd build
+    - "MSBuild.exe ALL_BUILD.vcxproj /property:Configuration=Release"
   stage: make
   tags: 
     - windows
@@ -65,10 +65,10 @@ linux_tests:
     paths: 
       - build/*
   script: 
-    - "cd build"
-    - "cd testBin"
-    - "echo 'Running Tests..'"
-    - "ls ~/MasterLattice"
+    - cd build
+    - cd testBin
+    - echo 'Running Tests..'
+    - ls ~/MasterLattice
     - ./ConfigReaderTest
     - ./LoggingSystemTest
     - ./HardwareTests
@@ -85,9 +85,8 @@ windows_tests:
     paths: 
       - build/*
   script: 
-    - "cd build"
-    - "cd testBin"
-    - "echo 'Running Tests..'"
+    - cd build
+    - cd testBin
     - ConfigReaderTest.exe
     - LoggingSystemTest.exe
     - HardwareTests.exe
