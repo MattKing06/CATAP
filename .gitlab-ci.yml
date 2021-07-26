@@ -1,4 +1,11 @@
---- 
+stages: 
+  - cmake
+  - make
+  - tests
+  - doxygen
+  - sphinx
+  - wheel
+
 cmake_linux: 
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
@@ -26,18 +33,7 @@ cmake_windows:
   stage: cmake
   tags: 
     - windows
-doxygen: 
-  cache: 
-    key: "${CI_COMMIT_SHORT_SHA}"
-    paths: 
-      - build/*
-  only: 
-    - master
-  script: 
-    - "cd build"
-    - "doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs"
-    - "scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp"
-  stage: doxygen
+
 linx_make: 
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
@@ -58,29 +54,12 @@ ms_build:
       - build/*
   script: 
     - "cd build"
-    - "MSBuild.exe ALL_BUILD.vcxproj /property:Configuration=Release"
+    - "MSBuild.exe ALL_BUILD.vcxproj /Configuration=Release"
   stage: make
   tags: 
     - windows
-sphinx: 
-  cache: 
-    key: "${CI_COMMIT_SHORT_SHA}"
-    paths: 
-      - build/*
-  only: 
-    - master
-  script: 
-    - "cd build"
-    - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy"
-  stage: sphinx
-stages: 
-  - cmake
-  - make
-  - tests
-  - doxygen
-  - sphinx
-  - wheel
-tests: 
+
+linux_tests: 
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
@@ -97,6 +76,57 @@ tests:
     - ./EPICSInterfaceTests
     - ./EPICSToolsTests
   stage: tests
+  tags:
+    - linux
+
+windows_tests: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script: 
+    - "cd build"
+    - "cd testBin"
+    - "echo 'Running Tests..'"
+    - ConfigReaderTest.exe
+    - LoggingSystemTest.exe
+    - HardwareTests.exe
+    - FactoryTests.exe
+    - EPICSInterfaceTests.exe
+    - EPICSToolsTests.exe
+  stage: tests
+  tags:
+    - windows
+
+doxygen: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
+    - master
+  script: 
+    - "cd build"
+    - "doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs"
+    - "scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp"
+  stage: doxygen
+  tags:
+    - linux
+
+sphinx: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
+    - master
+  script: 
+    - "cd build"
+    - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy"
+  stage: sphinx
+  tags:
+    - linux
+
 wheel: 
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
@@ -109,4 +139,5 @@ wheel:
     - "cd ./PythonInterface/CATAP/"
     - ./build_wheel.sh
   stage: wheel
-
+  tags:
+    - linux
