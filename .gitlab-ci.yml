@@ -1,124 +1,111 @@
-stages:
-- cmake
-- make
-- tests
-- doxygen
-- sphinx
-- wheel
-
-# before_script:
-  # - which gcc
-  # - which g++
-  # - which python3
-  # - echo $PATH
-# #  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
-# #  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
-# #  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
-  # - ls
-cmake_linux:
-  stage: cmake
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - build/*
-  script:
-  - mkdir build
-  - cd build
-  - cmake ../.
-  - echo 'CMake Finished'
-  - ls
-  tags: ["linux"]
-
-cmake_windows:
-  stage: cmake
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - build/*
-  script:
-  - mkdir build
-  - cd build
-  - cmake ../. .
-  - dir
-  tags: ["windows"]
-
-linx_make:
-  stage: make
-  cache:
-     key: ${CI_COMMIT_SHORT_SHA}
-     paths:
-       - build/*  
-  script:
-  - cd build/
-  - make clean
-  - make
-  - echo 'Make Finished'
-  tags: ["linux"]
-
-ms_build:
-  stage: make
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - build/*
-  script:
-  - cd build
-  - "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe ALL_BUILD.vcxproj /property:Configuration=Release"
-  tags: ["windows"]
-  
-
-tests:
-  stage: tests
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+--- 
+cmake_linux: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
       - build/*
-  script:
-#  - /bin/bash ~/start_vm.script
-  - cd build  
-  - cd testBin
-  - echo 'Running Tests..'
-  - ls ~/MasterLattice
-  - ./ConfigReaderTest
-  - ./LoggingSystemTest
-  - ./HardwareTests
-  - ./FactoryTests
-  - ./EPICSInterfaceTests
-  - ./EPICSToolsTests
+  script: 
+    - "mkdir build"
+    - "cd build"
+    - "cmake ../."
+    - "echo 'CMake Finished'"
+    - ls
+  stage: cmake
+  tags: 
+    - linux
+cmake_windows: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script: 
+    - "mkdir build"
+    - "cd build"
+    - "cmake ../. ."
+    - dir
+  stage: cmake
+  tags: 
+    - windows
 doxygen: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
+    - master
+  script: 
+    - "cd build"
+    - "doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs"
+    - "scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp"
   stage: doxygen
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
+linx_make: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
       - build/*
-  script:
-  - cd build
-  - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
-  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
-  only:
+  script: 
+    - "cd build/"
+    - "make clean"
+    - make
+    - "echo 'Make Finished'"
+  stage: make
+  tags: 
+    - linux
+ms_build: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script: 
+    - "cd build"
+    - "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe ALL_BUILD.vcxproj /Configuration=Release"
+  stage: make
+  tags: 
+    - windows
+sphinx: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
     - master
-
-sphinx:
+  script: 
+    - "cd build"
+    - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy"
   stage: sphinx
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
+stages: 
+  - cmake
+  - make
+  - tests
+  - doxygen
+  - sphinx
+  - wheel
+tests: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
       - build/*
-  script:
-  - cd build
-  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
-  only:
+  script: 
+    - "cd build"
+    - "cd testBin"
+    - "echo 'Running Tests..'"
+    - "ls ~/MasterLattice"
+    - ./ConfigReaderTest
+    - ./LoggingSystemTest
+    - ./HardwareTests
+    - ./FactoryTests
+    - ./EPICSInterfaceTests
+    - ./EPICSToolsTests
+  stage: tests
+wheel: 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
     - master
-
-wheel:
+  script: 
+    - "cd build"
+    - "cd ./PythonInterface/CATAP/"
+    - ./build_wheel.sh
   stage: wheel
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - build/*
-  script:
-  - cd build
-  - cd ./PythonInterface/CATAP/
-  - ./build_wheel.sh
-  only:
-    - master
