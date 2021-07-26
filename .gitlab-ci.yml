@@ -87,12 +87,12 @@ windows_tests:
   script: 
     - cd build
     - cd testBin
-    - ConfigReaderTest.exe
-    - LoggingSystemTest.exe
-    - HardwareTests.exe
-    - FactoryTests.exe
-    - EPICSInterfaceTests.exe
-    - EPICSToolsTests.exe
+    - .\ConfigReaderTest.exe
+    - .\LoggingSystemTest.exe
+    - .\HardwareTests.exe
+    - .\FactoryTests.exe
+    - .\EPICSInterfaceTests.exe
+    - .\EPICSToolsTests.exe
   stage: tests
   tags:
     - windows
