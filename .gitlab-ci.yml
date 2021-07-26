@@ -58,7 +58,7 @@ ms_build:
       - build/*
   script: 
     - "cd build"
-    - "MSBuild.exe ALL_BUILD.vcxproj /Configuration=Release"
+    - "MSBuild.exe ALL_BUILD.vcxproj /property:Configuration=Release"
   stage: make
   tags: 
     - windows
