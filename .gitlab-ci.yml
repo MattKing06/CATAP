@@ -109,3 +109,4 @@ wheel:
     - "cd ./PythonInterface/CATAP/"
     - ./build_wheel.sh
   stage: wheel
+
