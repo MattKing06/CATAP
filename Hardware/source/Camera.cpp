@@ -2665,6 +2665,16 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	}
 	return false;
 }
+//std::vector<double>* Camera::getImagedataByPointer()
+//{
+//	//mValues.clear();
+//	//for (double d_ = 0.0; d_ < 4; d_ += 0.3)
+//	//{
+//	//	mValues.push_back(d_);
+//	//}
+//	return &image_data.second;
+//}
+
 std::vector<long> Camera::getImageData()const
 {
 	return image_data.second;

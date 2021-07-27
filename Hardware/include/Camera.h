@@ -883,6 +883,10 @@ public:
 	@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
 	bool disableAllOverlay();
 
+	/*! testing returning pointer to image array instead of copying 	*/
+	std::vector<double>* Camera::getImagedataPointer()
+
+
 	/* Enable debug messages*/
 	void debugMessagesOn();
 	/* Disbale debug messages*/
