@@ -39,7 +39,7 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_factory_object();
 	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
-	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_listener_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_factory_object();
 	BOOST_PYTHON_LASER_MIRROR_INCLUDE::expose_laser_mirror_object();
