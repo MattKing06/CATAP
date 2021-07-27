@@ -24,8 +24,9 @@ namespace SnapshotFileManager
 	extern bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& writeData, const STATE& mode, const std::string& comments = "");
 	extern boost::system::error_code createMachineSnapshotDirectory();
 
+	extern bool isSnapshotFileReference(std::string& path_to_fill, std::string& filanme_to_fill);
 
-	// WE ARE DEFINING THAT TEH SNAPSHOTFILEMANAGER ONLY DEALS WITH YAML::NODES
+	// WE ARE DEFINING THAT THE SNAPSHOTFILEMANAGER ONLY DEALS WITH YAML::NODES
 	// SO PASS IN A YAML NODE TO WRIT ETO FILE, OR GET A YAML NODE FROM A FILE 
 	extern YAML::Node readSnapshotFile(const std::string& location, const std::string& filename);
 

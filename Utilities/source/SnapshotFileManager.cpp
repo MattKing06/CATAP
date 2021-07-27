@@ -7,100 +7,116 @@ namespace SnapshotFileManager
 {
 	// HERE THE EXPECTTATION IS IT WILL ALWAYS RETURN FILE DATA AS A YAML::NODE 
 	// AND DATA TO WRITE TO A FILE SHOUDL BE PASSED AS A YAML::NODE 
-	// AND THAT SHOULD BE THE END OF ANY DISCUSSION ;)
-	//
-	// EVERY CLASS TO DO WITH LOADING AND SAVING SNAPSHOT FILES SHOULD USE THIESE FUNCTIONS !! 
-	//
-	// TODO 
-	// have this address as the IP and domain name and test if they work  ???
-	std::string const magnet_snapshot_default_path = "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Magnet";
-	std::string const defaultMachineSnapshotLocation = "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Machine";
-	const std::string snapshot_file_reference = "SNAPSHOT_FILE_REFERENCE";
-	const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
+// AND THAT SHOULD BE THE END OF ANY DISCUSSION ;)
+//
+// EVERY CLASS TO DO WITH LOADING AND SAVING SNAPSHOT FILES SHOULD USE THIESE FUNCTIONS !! 
+//
+// TODO 
+// have this address as the IP and domain name and test if they work  ???
+std::string const magnet_snapshot_default_path = "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Magnet";
+std::string const defaultMachineSnapshotLocation = "\\\\claraserv3.dl.ac.uk\\claranet\\Snapshots\\Machine";
+const std::string snapshot_file_reference = "SNAPSHOT_FILE_REFERENCE";
+const std::vector<std::string> extensions = { ".yml", ".yaml", ".YML", ".YAML" };
 
-	bool isFormatValid(const std::string& fileExtension)
+bool isFormatValid(const std::string& fileExtension)
+{
+	if (std::find(SnapshotFileManager::extensions.begin(), SnapshotFileManager::extensions.end(),
+		fileExtension) != SnapshotFileManager::extensions.end())
 	{
-		if (std::find(SnapshotFileManager::extensions.begin(), SnapshotFileManager::extensions.end(),
-			fileExtension) != SnapshotFileManager::extensions.end())
-		{
-			return true;
-		}
-		else
-		{
-			std::cout << "!!WARNING!! isFormatValid invalid format, passed fileExtension =  " << fileExtension << std::endl;
-			return false;
-		}
-	}
-
-	bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode, const std::string& comments)
-	{
-		YAML::Node comment_node;
-		comment_node["COMMENT"] = comments;
-		const boost::filesystem::path directory(location);
-		const boost::filesystem::path file(filename);
-		const boost::filesystem::path full_path = directory / file;
-		std::ofstream outFile(full_path.c_str());
-		if (!outFile) { return false; }
-		// COULD GET THE HARDWARE TYPE FROM OutputNode, NEED TO ENFORCE HARDWARE TYPE AS FIRST ELEMENT.
-		outFile << "# YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
-		outFile << "# THIS SNAPSHOT WAS CREATED IN: " << ENUM_TO_STRING(mode) << " MODE." << std::endl;
-		outFile << comment_node << std::endl;
-		outFile << outputNode << std::endl;
 		return true;
 	}
-
-	boost::system::error_code createMachineSnapshotDirectory()
+	else
 	{
-		return boost::system::error_code();
+		std::cout << "!!WARNING!! isFormatValid invalid format, passed fileExtension =  " << fileExtension << std::endl;
+		return false;
 	}
+}
 
-	std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList)
+bool writeSnapshotToYAML(const std::string& location, const std::string& filename, const YAML::Node& outputNode, const STATE& mode, const std::string& comments)
+{
+	YAML::Node comment_node;
+	comment_node["COMMENT"] = comments;
+	const boost::filesystem::path directory(location);
+	const boost::filesystem::path file(filename);
+	const boost::filesystem::path full_path = directory / file;
+	std::ofstream outFile(full_path.c_str());
+	if (!outFile) { return false; }
+	// COULD GET THE HARDWARE TYPE FROM OutputNode, NEED TO ENFORCE HARDWARE TYPE AS FIRST ELEMENT.
+	outFile << "# YAML VELA/CLARA VALVE SETTINGS SAVE FILE: VERSION 1" << std::endl;
+	outFile << "# THIS SNAPSHOT WAS CREATED IN: " << ENUM_TO_STRING(mode) << " MODE." << std::endl;
+	outFile << comment_node << std::endl;
+	outFile << outputNode << std::endl;
+	return true;
+}
+
+boost::system::error_code createMachineSnapshotDirectory()
+{
+	return boost::system::error_code();
+}
+
+std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList)
+{
+	std::vector<std::string> fileList;
+	boost::filesystem::path path(dirPath);
+	try
 	{
-		std::vector<std::string> fileList;
-		boost::filesystem::path path(dirPath);
-		try
+		if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
 		{
-			if (boost::filesystem::exists(path) && boost::filesystem::is_directory(path))
+			boost::filesystem::directory_iterator iter(path);
+			boost::filesystem::directory_iterator end;
+			while (iter != end)
 			{
-				boost::filesystem::directory_iterator iter(path);
-				boost::filesystem::directory_iterator end;
-				while (iter != end)
+				if (boost::filesystem::is_directory(iter->path()) &&
+					(std::find(skipList.begin(), skipList.end(), iter->path().filename()) != skipList.end()))
 				{
-					if (boost::filesystem::is_directory(iter->path()) &&
-						(std::find(skipList.begin(), skipList.end(), iter->path().filename()) != skipList.end()))
+					boost::system::error_code ec;
+					iter.increment(ec);
+					if (ec)
 					{
-						boost::system::error_code ec;
-						iter.increment(ec);
-						if (ec)
-						{
-							std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
-						}
+						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
 					}
-					else if (isFormatValid(iter->path().extension().string()))
+				}
+				else if (isFormatValid(iter->path().extension().string()))
+				{
+					fileList.push_back(iter->path().string());
+					boost::system::error_code ec;
+					iter.increment(ec);
+					if (ec)
 					{
-						fileList.push_back(iter->path().string());
-						boost::system::error_code ec;
-						iter.increment(ec);
-						if (ec)
-						{
-							std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
-						}
+						std::cout << " COULD NOT ACCESS : " << iter->path().string() << std::endl;
 					}
-					else
-					{
-						boost::system::error_code ec;
-						iter.increment(ec);
-						std::cout << iter->path().string() << " is in the wrong format (no yaml files found...)" << std::endl;
-					}
+				}
+				else
+				{
+					boost::system::error_code ec;
+					iter.increment(ec);
+					std::cout << iter->path().string() << " is in the wrong format (no yaml files found...)" << std::endl;
 				}
 			}
 		}
-		catch (std::system_error& e)
-		{
-			std::cout << e.what() << std::endl;
-		}
-		return fileList;
 	}
+	catch (std::system_error& e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+	return fileList;
+}
+
+bool isSnapshotFileReference(const YAML::Node& input_node, std::string& path_to_fill, std::string& filanme_to_fill)
+{
+	for (auto& it : input_node["MAGNET"])
+	{
+		if (it.first.as<std::string>() == snapshot_file_reference)
+		{
+			const boost::filesystem::path file_path(it.second.as<std::string>());
+			path_to_fill = file_path.parent_path().string();
+			filanme_to_fill = file_path.filename().string();
+			return true;
+		}
+	}
+	return false;
+}
+
 
 	YAML::Node readSnapshotFile(const std::string& location, const std::string& filename)
 	{
@@ -117,7 +133,18 @@ namespace SnapshotFileManager
 			if ( isFormatValid(full_path.extension().string()) )
 			{
 				std::cout << " readSnapshotFile  LoadFile " << full_path.string() << std::endl;
-				return YAML::LoadFile(full_path.string());
+				YAML::Node file_data = YAML::LoadFile(full_path.string());
+		
+				std::string reference_path;
+				std::string reference_filename;
+
+				if (isSnapshotFileReference(file_data, reference_path, reference_filename))
+				{
+					std::cout << "Alias file points to: " << reference_path << ", " << reference_filename << std::endl;
+					return readSnapshotFile(reference_path, reference_filename);
+				}
+
+				return file_data;
 			}
 			else
 			{
