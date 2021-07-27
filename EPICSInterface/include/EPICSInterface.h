@@ -355,8 +355,6 @@ public:
 		return false;
 	}
 
-
-
 	template<typename T>
 	static bool putArrayValue(const pvStruct& pvStruct, const T& value)
 	{

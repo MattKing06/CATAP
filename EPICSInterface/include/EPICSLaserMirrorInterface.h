@@ -13,10 +13,15 @@ public:
 	void retrieveUpdateFunctionForRecord(pvStruct& pvStruct);
 	static void updateHorizontalPosition(const struct event_handler_args args);
 	static void updateVerticalPosition(const struct event_handler_args args);
-	bool setNewHorizontalPosition(const double& value, const pvStruct& pv);
-	bool setNewVerticalPosition(const double& value, const pvStruct& pv);
+	bool setNewHorizontalPosition(const double value, const pvStruct& pv);
+	bool setNewVerticalPosition(const double value, const pvStruct& pv);
 	void moveHorizontal(const pvStruct& pv);
 	void moveVertical(const pvStruct& pv);
+
+private:
+
+
+
 };
 
 #endif //EPICS_LASER_MIRROR_INTERFACE_H_

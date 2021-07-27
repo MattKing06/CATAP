@@ -100,12 +100,6 @@ public:
 	bool checkBuffer(boost::circular_buffer< double >& buf);
 	/*! checks the laser energy meter status based on energy PV.*/
 	void checkStatus();
-	/*! the status of the laser energy meter based on energy values.*/
-	STATE status;
-	/*! a buffer of laser energy meter status values.*/
-	boost::circular_buffer< STATE > statusBuffer;
-	/*! a vector of laser energy meter status values (after using monitorForNShots).*/
-	std::vector< STATE > statusVector;
 	/*! returns the status of the laser energy meter based on energy values.
 	@param[out] state: the status.*/
 	STATE getStatus() const;
@@ -115,6 +109,22 @@ public:
 	/*! returns the status vector of the laser energy meter based on energy values (after using monitorForNShots).
 	@param[out] states: the status vector.*/
 	std::vector< STATE > getStatusVector() const;
+	/*! Get the running stats back as a dict*/
+	boost::python::dict getRunningStats_Py();
+	/*! Get the running stats object back directly*/
+	RunningStats& getEnergyRunningStats();
+
+	/*! Set running stats max count .*/
+	void setRunningStatsSize(size_t new_size);
+	/*! lear running stats data.*/
+	void clearRunningStats();
+	/*! lear running stats data.*/
+	bool areRunningStatsFull();
+
+	friend class EPICSLaserEnergyMeterInterface;
+	friend class LaserEnergyFactory;
+	friend class PILaserSystem;
+protected:
 	/*! start button for acquiring laser energy.*/
 	std::pair<epicsTimeStamp, int> start;
 	/*! stop button for acquiring laser energy.*/
@@ -147,22 +157,17 @@ public:
 	size_t bufferSize = 10;
 	/*! Vector size for energy monitoring.*/
 	size_t vectorSize = 10;
+	/*! the status of the laser energy meter based on energy values.*/
+	STATE status;
+	/*! a buffer of laser energy meter status values.*/
+	boost::circular_buffer< STATE > statusBuffer;
+	/*! a vector of laser energy meter status values (after using monitorForNShots).*/
+	std::vector< STATE > statusVector;
+
 
 
 	/*! Running stats object for LaserEnergy Meter, access to quick statistics*/
 	RunningStats energyStats;
-	/*! Get the running stats back as a dict*/
-	boost::python::dict getRunningStats_Py();
-	/*! Get the running stats object back directly*/
-	RunningStats& getEnergyRunningStats();
-
-	/*! Set running stats max count .*/
-	void setRunningStatsSize(size_t new_size);
-	/*! lear running stats data.*/
-	void clearRunningStats();
-
-	friend class EPICSLaserEnergyMeterInterface;
-protected:
 	//what else does a laser need?
 	std::vector<std::string> aliases;
 	TYPE laserEnergyMeterType;

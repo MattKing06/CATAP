@@ -44,6 +44,11 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
 			.def("getCamType", &Camera::getCamType)
+			.def("getArrayDataPixelCountX", &Camera::getArrayDataPixelCountX)
+			.def("getArrayDataPixelCountY", &Camera::getArrayDataPixelCountY)
+
+			.def("getBinaryDataPixelCountX", &Camera::getBinaryDataPixelCountX)
+			.def("getBinaryDataPixelCountY", &Camera::getBinaryDataPixelCountY)
 			.def("getPix2mm", &Camera::getPix2mm        )
 			.def("pix2mmX", &Camera::pix2mmX        )
 			.def("pix2mmY", &Camera::pix2mmY		)
@@ -98,8 +103,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROISizeX", &Camera::getROISizeX)
 			.def("getROISizeY", &Camera::getROISizeY)
 			.def("getROI", &Camera::getROI_Py)
-			.def("getMaskAndROIxPos", &Camera::getMaskAndROIxPos)
-			.def("getMaskAndROIyPos", &Camera::getMaskAndROIyPos)
+			.def("getMaskAndROIxMax", &Camera::getMaskAndROIxMax)
+			.def("getMaskAndROIyMax", &Camera::getMaskAndROIyMax)
 			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
 			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
 			.def("getMaskandROI", &Camera::getMaskandROI_Py)
@@ -111,8 +116,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getImageData", &Camera::getImageData_Py)
 			.def("getROIData", &Camera::getROIData_Py)
-			.def("setMaskAndROIxPos", &Camera::setMaskAndROIxPos) 			// use these for setting mask AND ROI 
-			.def("setMaskAndROIyPos", &Camera::setMaskAndROIyPos)
+			.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
+			.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
 			.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
 			.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
 			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
@@ -189,6 +194,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setAvgPixValueForBeam", &Camera::setAveragePixelValueForBeam)
 			.def("getAvgPixValueForBeam", &Camera::getAveragePixelValueForBeam)
 			.def("hasBeam", &Camera::hasBeam)
+			.def("hasNoBeam", &Camera::hasNoBeam)
+			.def("getAnalysisData", &Camera::getAnalayisData_Py)
 			.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
 			.def("getLastDirectory", &Camera::getLastDirectory)
@@ -230,9 +237,38 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setCentreXPixel", &Camera::setCentreXPixel)
 			.def("setCentreYPixel", &Camera::setCentreYPixel)
 
+
 				
+			.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)
+
 			.def("getPixelToMM", &Camera::getPixelToMM)
 			.def("setPixelToMM", &Camera::setPixelToMM)
+
+			.def("saveImageBuffer", &Camera::saveImageBuffer)
+
+				
+			.def("resetCaptureAndSaveError", &Camera::resetCaptureAndSaveError)
+			
+				
+				
+			.def("enableOverlayCross", &Camera::enableOverlayCross)
+			.def("disableOverlayCross", &Camera::disableOverlayCross)
+			.def("getOverlayCrossState", &Camera::getOverlayCrossState)
+			.def("isOverlayCrossEnabled", &Camera::isOverlayCrossEnabled)
+			.def("isOverlayCrossDisabled", &Camera::isOverlayCrossDisabled)
+			.def("enableOverlayMask", &Camera::enableOverlayMask)
+			.def("disableOverlayMask", &Camera::disableOverlayMask)
+			.def("getOverlayMaskState", &Camera::getOverlayMaskState)
+			.def("isOverlayMaskEnabled", &Camera::isOverlayMaskEnabled)
+			.def("isOverlayMaskDisabled", &Camera::isOverlayMaskDisabled)
+			.def("enableOverlayResult", &Camera::enableOverlayResult)
+			.def("disableOverlayResult", &Camera::disableOverlayResult)
+			.def("getOverlayResultState", &Camera::getOverlayResultState)
+			.def("isOverlayResultEnabled", &Camera::isOverlayResultEnabled)
+			.def("isOverlayResultDisabled", &Camera::isOverlayResultDisabled)
+			.def("disableAllOverlay", &Camera::disableAllOverlay)
+			
+			// TODO the runnings atsts and buffersd a re being updated 
 
 			.def("getBufferSize", &Camera::getBufferSize)
 			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
@@ -262,6 +298,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getGain", &Camera::getGain)
 			.def("setBlackLevel", &Camera::setBlackLevel)
 			.def("getBlackLevel", &Camera::getBlackLevel)
+			
+				
+			.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)
 
 
 
@@ -293,6 +332,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>() )
 
 			.def("getCamType", &CameraFactory::getCamType)
+			.def("getArrayDataPixelCountX", &CameraFactory::getArrayDataPixelCountX)
+			.def("getArrayDataPixelCountY", &CameraFactory::getArrayDataPixelCountY)
+			.def("getBinaryDataPixelCountX", &CameraFactory::getBinaryDataPixelCountX)
+			.def("getBinaryDataPixelCountY", &CameraFactory::getBinaryDataPixelCountY)
 			.def("getPix2mm", &CameraFactory::getPix2mm)
 			.def("pix2mmX", &CameraFactory::pix2mmX)
 			.def("pix2mmY", &CameraFactory::pix2mmY)
@@ -340,8 +383,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROISizeX", &CameraFactory::getROISizeX)
 			.def("getROISizeY", &CameraFactory::getROISizeY)
 			.def("getROI", &CameraFactory::getROI_Py)
-			.def("getMaskAndROIxPos", &CameraFactory::getMaskAndROIxPos)
-			.def("getMaskAndROIyPos", &CameraFactory::getMaskAndROIyPos)
+			.def("getMaskAndROIxMax", &CameraFactory::getMaskAndROIxMax)
+			.def("getMaskAndROIyMax", &CameraFactory::getMaskAndROIyMax)
 			.def("getMaskAndROIxSize", &CameraFactory::getMaskAndROIxSize)
 			.def("getMaskAndROIySize", &CameraFactory::getMaskAndROIySize)
 			.def("getMaskandROI", &CameraFactory::getMaskandROI_Py)
@@ -353,8 +396,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getROIDataConstRef", &CameraFactory::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getImageData", &CameraFactory::getImageData_Py)
 			.def("getROIData", &CameraFactory::getROIData_Py)
-			.def("setMaskAndROIxPos", &CameraFactory::setMaskAndROIxPos) 			// use these for setting mask AND ROI 
-			.def("setMaskAndROIyPos", &CameraFactory::setMaskAndROIyPos)
+			.def("setMaskAndROIxMax", &CameraFactory::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
+			.def("setMaskAndROIyMax", &CameraFactory::setMaskAndROIyMax)
 			.def("setMaskAndROIxSize", &CameraFactory::setMaskAndROIxSize)
 			.def("setMaskAndROIySize", &CameraFactory::setMaskAndROIySize)
 			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
@@ -467,10 +510,34 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getScreen", &CameraFactory::getScreen)
 
 
+			.def("getAnalysisResultsPixels", &CameraFactory::getAnalysisResultsPixels_Py)
+
+
 			.def("setGain", &CameraFactory::setGain)
 			.def("getGain", &CameraFactory::getGain)
 			.def("setBlackLevel", &CameraFactory::setBlackLevel)
 			.def("getBlackLevel", &CameraFactory::getBlackLevel)
+
+			.def("areAllRunningStatsFull", &CameraFactory::areAllRunningStatsFull)
+
+
+			.def("enableOverlayCross", &CameraFactory::enableOverlayCross)
+			.def("disableOverlayCross", &CameraFactory::disableOverlayCross)
+			//.def("getOverlayCrossState", &CameraFactory::getOverlayCrossState)
+			//.def("isOverlayCrossEnabled", &CameraFactory::isOverlayCrossEnabled)
+			//.def("isOverlayCrossDisabled", &CameraFactory::isOverlayCrossDisabled)
+			.def("enableOverlayMask", &CameraFactory::enableOverlayMask)
+			.def("disableOverlayMask", &CameraFactory::disableOverlayMask)
+			//.def("getOverlayMaskState", &CameraFactory::getOverlayMaskState)
+			//.def("isOverlayMaskEnabled", &CameraFactory::isOverlayMaskEnabled)
+			//.def("isOverlayMaskDisabled", &CameraFactory::isOverlayMaskDisabled)
+			.def("enableOverlayResult", &CameraFactory::enableOverlayResult)
+			.def("disableOverlayResult", &CameraFactory::disableOverlayResult)
+			//.def("getOverlayResultState", &CameraFactory::getOverlayResultState)
+			//.def("isOverlayResultEnabled", &CameraFactory::isOverlayResultEnabled)
+			//.def("isOverlayResultDisabled", &CameraFactory::isOverlayResultDisabled)
+			.def("disableAllOverlay", &CameraFactory::disableAllOverlay)
+			.def("disableAllOverlayForAllCameras", &CameraFactory::disableAllOverlayForAllCameras)
 
 			//.def("pix2mmX", &CameraFactory::pix2mmX)
 			//.def("pix2mmY", &CameraFactory::pix2mmY)

@@ -28,7 +28,7 @@ public:
 	LoggingSystem messenger;
 	Camera virtualCathodeCamera;
 	Charge wallCurrentMonitor;
-	LaserMirror mirror;
+    LaserMirror mirror;
 	LaserEnergyMeter energyMeter;
 	LaserHWP halfwavePlate;
 	Shutter laserShutter01;
@@ -63,9 +63,8 @@ public:
 	void clearAllRunningStat();
 	void setAllRunningStatSize(size_t new_val);
 	size_t getRunningStatSize();
-	size_t getRunningStatCount();
-	bool isRunningStatFull();
-
+	//size_t getRunningStatCount();
+	bool areAllRunningStatsFull();
 
 
 };

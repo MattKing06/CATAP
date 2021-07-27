@@ -47,8 +47,11 @@ LaserHWPFactory::~LaserHWPFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					laser.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID)
+					{
+						laser.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
 				laser.second.epicsInterface->removeChannel(pvStruct.second);
 				ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -147,8 +150,8 @@ bool LaserHWPFactory::setup(const std::string& VERSION)
 			else
 			{
 				messenger.printMessage(laser.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
+				//hasBeenSetup = false;
+				//return hasBeenSetup;
 			}
 		}
 	}

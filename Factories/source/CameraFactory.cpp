@@ -31,6 +31,27 @@ CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
 }
 CameraFactory::~CameraFactory()
 {
+	messenger.printDebugMessage("CameraFactory Destructor Called");
+	if (hasBeenSetup)
+	{
+		for (auto& camera : camera_map)
+		{
+			auto pvStructsList = camera.second.getPVStructs();
+			for (auto& pvStruct : pvStructsList)
+			{
+				if (pvStruct.second.monitor)
+				{
+					if (pvStruct.second.EVID)
+					{
+						camera.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
+				}
+				camera.second.epicsInterface->removeChannel(pvStruct.second);
+				ca_pend_io(CA_PEND_IO_TIMEOUT);
+			}
+		}
+	}
 }
 
 bool CameraFactory::setup()
@@ -63,9 +84,8 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
-	// TODO thsi fucntion needs to be combined with the other setups, all setup versions should end up in the same setup function!!! 
+	messenger.printDebugMessage("setup Camera Factory with vector of machine areas");
 	machineAreas = machineAreas_IN;
-
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
@@ -81,8 +101,19 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	for (auto& item : camera_map)
+	{
+		std::string name(item.second.getHardwareName());
+		messenger.printDebugMessage("calling updateAliasNameMap for , ", item.first, ", ", name);
+		// update aliases for camera item in map
+		updateAliasNameMap(item.second);
+	}
+	messenger.printDebugMessage("setup by areas calling cutLHarwdareMapByMachineAreas");
 	cutLHarwdareMapByMachineAreas();
+	// TODOD the below needs to be a seperate fun ction as i have copied and pasted this into the otehr setup by names function !
+	messenger.printDebugMessage("setup by areas calling setupChannels");
 	setupChannels();
+	messenger.printDebugMessage("setup by areas calling sendToEPICS");
 	EPICSInterface::sendToEPICS();
 
 	for (auto& item : camera_map)
@@ -90,7 +121,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		std::string name(item.second.getHardwareName());
 		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
-		updateAliasNameMap(item.second);
+		//updateAliasNameMap(item.second);
 
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
@@ -143,18 +174,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
-	//machineAreas = machineAreas_IN;
-	//messenger.printDebugMessage("called Camera Factory setup  ");
-	//std::stringstream ss;
-	//ss << "machineAreas = ";
-	//for (auto&& area : machineAreas)
-	//{
-	//	ss << ENUM_TO_STRING(area);
-	//	ss << ", ";
-	//}
-	//messenger.printDebugMessage(ss.str());
-	//GlobalFunctions::pause_2000();
-
+	messenger.printDebugMessage("setup Camera Factory with vector of camera names");
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup Camera Factory: it has been setup");
@@ -164,25 +184,34 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	messenger.printDebugMessage("Calling  populateCameraMap");
+	messenger.printDebugMessage("setup_names calling populateCameraMap");	
 	populateCameraMap();
-	messenger.printDebugMessage("populateCameraMap finished");
+	messenger.printDebugMessage("setup_names calling populateCameraMap finished");
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
-	messenger.printDebugMessage("Calling cutLHarwdareMapByNames");
-	cutLHarwdareMapByNames(names);
-	messenger.printDebugMessage("cutLHarwdareMapByNames Finished");
-	setupChannels();
-	EPICSInterface::sendToEPICS();
 	for (auto& item : camera_map)
 	{
 		std::string name(item.second.getHardwareName());
 		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
 		updateAliasNameMap(item.second);
+	}
+	messenger.printDebugMessage("setup by names calling cutLHarwdareMapByNames");
+	cutLHarwdareMapByNames(names);
+	messenger.printDebugMessage("setup by names calling setupChannels");
+	setupChannels();
+	messenger.printDebugMessage("setup by names calling sendToEPICS");
+	EPICSInterface::sendToEPICS();
+	messenger.printDebugMessage("setup by names doign detailed setup and connections");
+	for (auto& item : camera_map)
+	{
+		std::string name(item.second.getHardwareName());
+		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
+		// update aliases for camera item in map
+		// updateAliasNameMap(item.second);
 
 		//follow this through it seems to be empty! 
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
@@ -228,8 +257,6 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
-
-
 void CameraFactory::caputMasterLatticeParametersAfterSetup()
 {
 	messenger.printMessage("caputMasterLatticeParametersAfterSetup");
@@ -244,7 +271,6 @@ void CameraFactory::caputMasterLatticeParametersAfterSetup()
 
 	}
 }
-
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
@@ -586,7 +612,6 @@ long CameraFactory::getBufferFileNumber(const std::string& name)const
 	}
 	return GlobalConstants::long_min;
 }
-
 bool CameraFactory::setBlackLevel(const std::string& name, long value)
 {
 	std::string full_name = getFullName(name);
@@ -595,6 +620,16 @@ bool CameraFactory::setBlackLevel(const std::string& name, long value)
 		return camera_map.at(full_name).setBlackLevel(value);
 	}
 	return GlobalConstants::long_min;
+}
+
+bool CameraFactory::areAllRunningStatsFull(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).areAllRunningStatsFull();
+	}
+	return false;
 }
 
 long CameraFactory::getBlackLevel(const std::string& name)const
@@ -627,6 +662,43 @@ long CameraFactory::getGain(const std::string& name)const
 	return GlobalConstants::long_min;
 }
 
+
+size_t CameraFactory::getArrayDataPixelCountX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getArrayDataPixelCountX();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getArrayDataPixelCountY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getArrayDataPixelCountY();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getBinaryDataPixelCountX(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBinaryDataPixelCountX();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getBinaryDataPixelCountY(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBinaryDataPixelCountY();
+	}
+	return GlobalConstants::size_zero;
+}
 
 long CameraFactory::getCPUTotal(const std::string& name)const
 {
@@ -826,6 +898,22 @@ long CameraFactory::getROISizeY(const std::string& name )const
 	}
 	return GlobalConstants::long_min;
 }
+std::map<std::string, double> CameraFactory::getAnalysisResultsPixels(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAnalysisResultsPixels();
+	}
+	std::map<std::string, double> r;
+	r["ERROR"] = GlobalConstants::double_min; // MAGIC STRING
+	return r;
+}
+boost::python::dict CameraFactory::getAnalysisResultsPixels_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, double>(getAnalysisResultsPixels(name));
+}
+
 std::map<std::string, long> CameraFactory::getROI(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1255,21 +1343,21 @@ boost::python::dict CameraFactory::getMask_Py(const std::string& name)const
 	}
 	return to_py_dict<std::string, long>(CameraFactory::getMask(name));
 }
-bool CameraFactory::setMaskAndROIxPos(const std::string& name, long val)
+bool CameraFactory::setMaskAndROIxMax(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setMaskAndROIxPos(val);
+		return camera_map.at(full_name).setMaskAndROIxMax(val);
 	}
 	return GlobalConstants::double_min;
 }
-bool CameraFactory::setMaskAndROIyPos(const std::string& name, long val)
+bool CameraFactory::setMaskAndROIyMax(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setMaskAndROIyPos(val);
+		return camera_map.at(full_name).setMaskAndROIyMax(val);
 	}
 	return GlobalConstants::double_min;
 }
@@ -1291,21 +1379,21 @@ bool CameraFactory::setMaskAndROIySize(const std::string& name, long val)
 	}
 	return GlobalConstants::double_min;
 }
-long CameraFactory::getMaskAndROIxPos(const std::string& name )const
+long CameraFactory::getMaskAndROIxMax(const std::string& name )const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getMaskAndROIxPos();
+		return camera_map.at(full_name).getMaskAndROIxMax();
 	}
 	return GlobalConstants::long_min;
 }
-long CameraFactory::getMaskAndROIyPos(const std::string& name )const
+long CameraFactory::getMaskAndROIyMax(const std::string& name )const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getMaskAndROIyPos();
+		return camera_map.at(full_name).getMaskAndROIyMax();
 	}
 	return GlobalConstants::long_min;
 }
@@ -1748,6 +1836,22 @@ void CameraFactory::clearBuffers(const std::string& name)
 		return camera_map.at(full_name).clearAllRunningStatBuffers();
 	}
 }
+void CameraFactory::setRunningStatSize(const std::string& name, size_t size)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		camera_map.at(full_name).setAllRunningStatSizes(size);
+	}
+}
+void CameraFactory::clearRunningStats(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		camera_map.at(full_name).clearAllRunningStats();
+	}
+}
 double CameraFactory::getPix2mm(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1768,6 +1872,121 @@ boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)co
 }
 
 
+
+
+bool CameraFactory::enableOverlayMask(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).enableOverlayMask();
+	}
+	return false;
+}
+bool CameraFactory::enableOverlayCross(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).enableOverlayCross();
+	}
+	return false;
+}
+bool CameraFactory::enableOverlayResult(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).enableOverlayResult();
+	}
+	return false;
+}
+bool CameraFactory::disableOverlayCross(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableOverlayCross();
+	}
+	return false;
+}
+bool CameraFactory::disableOverlayMask(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableOverlayMask();
+	}
+	return false;
+}
+bool CameraFactory::disableOverlayResult(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableOverlayResult();
+	}
+	return false;
+}
+bool CameraFactory::disableAllOverlay(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).disableAllOverlay();
+	}
+	return false;
+}
+bool CameraFactory::disableAllOverlayForAllCameras()
+{
+	for (auto& cam : camera_map)
+	{
+		cam.second.disableAllOverlay();
+	}
+	return false;
+}
+
+
+
+
+
+STATE CameraFactory::getOverlayMaskState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getOverlayMaskState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+STATE CameraFactory::getOverlayCrossState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getOverlayCrossState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+STATE CameraFactory::getOverlayResultState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getOverlayResultState();
+	}
+	return STATE::UNKNOWN_STATE;
+}
+std::map<std::string, STATE> CameraFactory::getAllOverlayStates()const
+{
+	std::map<std::string, STATE> r;
+	return r;
+}
+boost::python::dict CameraFactory::getAllOverlayStates_Py()const
+{
+	boost::python::dict r;
+	return r;
+}
 
 
 
@@ -2484,7 +2703,7 @@ void CameraFactory::updateAliasNameMap(const Camera& camera)
 {
 	// first add in the magnet full name
 	std::string full_name = camera.getHardwareName();
-	//messenger.printMessage("updateAliasNameMap ", full_name);
+	messenger.printMessage("updateAliasNameMap ", full_name);
 	if (GlobalFunctions::entryExists(alias_name_map, full_name))
 	{
 		// Not necessarily an error, screen_name goes in the alias map too 
@@ -2629,7 +2848,11 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 		//messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
 		for (auto&& name : names)
 		{
-			if (it->first == name )
+			std::string full_name = getFullName(name);
+
+
+
+			if (it->first == full_name)
 			{
 				should_erase = false;
 				break;
@@ -2676,6 +2899,15 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 	messenger.printDebugMessage("cutLHarwdareMapByNames camera_map.size() went from ", start_size, " to ", end_size);
 	GlobalFunctions::pause_2000();
 }
+
+
+
+
+
+
+
+
+
 
 void CameraFactory::debugMessagesOn()
 {

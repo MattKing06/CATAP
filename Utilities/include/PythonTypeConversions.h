@@ -36,6 +36,7 @@ boost::python::list to_py_list(const std::vector<typeOfVectorToCOnvert>& vector)
 	}
 	return newList;
 }
+
 template<class typeOfVectorToCOnvert>
 inline
 boost::python::list to_py_list(const boost::circular_buffer<typeOfVectorToCOnvert>& buffer)

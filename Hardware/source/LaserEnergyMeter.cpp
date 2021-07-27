@@ -38,7 +38,8 @@ Hardware(copyLaser),
 laserEnergyMeterType(copyLaser.laserEnergyMeterType),
 name(copyLaser.name),
 position(copyLaser.position),
-epicsInterface(copyLaser.epicsInterface)
+epicsInterface(copyLaser.epicsInterface),
+energyStats(copyLaser.energyStats)
 {
 }
 
@@ -265,12 +266,20 @@ bool LaserEnergyMeter::checkBuffer(boost::circular_buffer< double >& buf)
 
 void LaserEnergyMeter::setRunningStatsSize(size_t new_size)
 {
+	std::cout << "LaserEnergyMeter energyStats.setMaxCount " << new_size << std::endl;
 	energyStats.setMaxCount(new_size);
 }
 void LaserEnergyMeter::clearRunningStats()
 {
+	std::cout << "LaserEnergyMeter energyStats.Clear " << std::endl;
 	energyStats.Clear();
 }
+bool LaserEnergyMeter::areRunningStatsFull()
+{
+	return energyStats.Full();
+}
+
+
 void LaserEnergyMeter::checkStatus()
 {
 	/*if (awak.first - rdy.first > 1.0)

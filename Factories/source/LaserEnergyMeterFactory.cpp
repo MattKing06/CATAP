@@ -47,8 +47,11 @@ LaserEnergyMeterFactory::~LaserEnergyMeterFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					laser.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID) 
+					{
+						laser.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
 				laser.second.epicsInterface->removeChannel(pvStruct.second);
 				ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -143,6 +146,8 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 			else
 			{
 				messenger.printMessage(laser.first, " CANNOT CONNECT TO EPICS");
+				hasBeenSetup = false;
+				return hasBeenSetup;
 			}
 		}
 	}
@@ -163,7 +168,7 @@ std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getLaserEnergyM
 
 LaserEnergyMeter& LaserEnergyMeterFactory::getLaserEnergyMeter(const std::string& fullLaserName)
 {
-	return laserEnergyMeterMap.find(fullLaserName)->second;
+	return laserEnergyMeterMap.at(fullLaserName);
 }
 
 std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getAllLaserEnergyMeters()
@@ -290,6 +295,32 @@ void LaserEnergyMeterFactory::monitorForNShots(const std::string& name, const si
 {
 	laserEnergyMeterMap.find(name)->second.monitorForNShots(value);
 }
+
+void LaserEnergyMeterFactory::setRunningStatSize(const std::string& name, const size_t& size)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		laserEnergyMeterMap.at(name).setRunningStatsSize(size);
+	}
+}
+
+void LaserEnergyMeterFactory::clearRunningStats(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		laserEnergyMeterMap.at(name).clearRunningStats();
+	}
+}
+
+bool LaserEnergyMeterFactory::areRunningStatsFull(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		return laserEnergyMeterMap.at(name).areRunningStatsFull();
+	}
+	return false;
+}
+
 
 void LaserEnergyMeterFactory::setVectorSize(const std::string& name, const size_t& value)
 {

@@ -25,74 +25,125 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 {
 	using namespace CameraRecords;
 	// TODOD could be a const map and then a lookup ... might be neater?? 
-	
-	
-	
 	if (pvStruct.pvRecord == HDF_WriteFile_RBV)	{		pvStruct.updateFunction = this->update_HDF_WriteFile_RBV;	}
-	else if (pvStruct.pvRecord == HDF_WriteStatus)	{		pvStruct.updateFunction = this->update_HDF_WriteStatus;	}
-	else if (pvStruct.pvRecord == HDF_WriteMessage)	{		pvStruct.updateFunction = this->update_HDF_WriteMessage_RBV;	}
-	else if (pvStruct.pvRecord == HDF_FileName_RBV)	{		pvStruct.updateFunction = this->update_HDF_FileName_RBV;	}
-	else if (pvStruct.pvRecord == HDF_FilePath_RBV)	{		pvStruct.updateFunction = this->update_HDF_FilePath_RBV;	}
+	else if (pvStruct.pvRecord == HDF_WriteStatus)		{		pvStruct.updateFunction = this->update_HDF_WriteStatus;	}
+	else if (pvStruct.pvRecord == HDF_WriteMessage)		{		pvStruct.updateFunction = this->update_HDF_WriteMessage_RBV;	}
+	else if (pvStruct.pvRecord == HDF_FileName_RBV)		{		pvStruct.updateFunction = this->update_HDF_FileName_RBV;	}
+	else if (pvStruct.pvRecord == HDF_FilePath_RBV)		{		pvStruct.updateFunction = this->update_HDF_FilePath_RBV;	}
 	else if (pvStruct.pvRecord == HDF_FileNumber_RBV)	{		pvStruct.updateFunction = this->update_HDF_FileNumber_RBV;	}
-	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
-	else if (pvStruct.pvRecord == HDF_Capture_RBV)	{		pvStruct.updateFunction = this->update_HDF_Capture_RBV;	}
-	else if (pvStruct.pvRecord == CAM_Acquire_RBV)	{		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;	}
+//	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
+	else if (pvStruct.pvRecord == HDF_Capture_RBV)		{		pvStruct.updateFunction = this->update_HDF_Capture_RBV;	}
+	else if (pvStruct.pvRecord == CAM_Acquire_RBV)		{		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;	}
 	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
 	else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
 	else if (pvStruct.pvRecord == ANA_EnableCallbacks_RBV)	{		pvStruct.updateFunction = this->update_ANA_EnableCallbacks_RBV;	}
-	else if (pvStruct.pvRecord == ANA_X_RBV)	{		pvStruct.updateFunction = this->update_ANA_X_RBV;	}
-	else if (pvStruct.pvRecord == ANA_Y_RBV)	{		pvStruct.updateFunction = this->update_ANA_Y_RBV;	}
-	else if (pvStruct.pvRecord == ANA_SigmaX_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaX_RBV;	}
-	else if (pvStruct.pvRecord == ANA_SigmaY_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaY_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CovXY_RBV)	{		pvStruct.updateFunction = this->update_ANA_CovXY_RBV;	}
+	else if (pvStruct.pvRecord == ANA_X_RBV)			{		pvStruct.updateFunction = this->update_ANA_X_RBV;	}
+	else if (pvStruct.pvRecord == ANA_Y_RBV)			{		pvStruct.updateFunction = this->update_ANA_Y_RBV;	}
+	else if (pvStruct.pvRecord == ANA_SigmaX_RBV)		{		pvStruct.updateFunction = this->update_ANA_SigmaX_RBV;	}
+	else if (pvStruct.pvRecord == ANA_SigmaY_RBV)		{		pvStruct.updateFunction = this->update_ANA_SigmaY_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CovXY_RBV)		{		pvStruct.updateFunction = this->update_ANA_CovXY_RBV;	}
 	else if (pvStruct.pvRecord == ANA_AvgIntensity_RBV)	{		pvStruct.updateFunction = this->update_ANA_AvgIntensity_RBV;	}
 	else if (pvStruct.pvRecord == ANA_Intensity_RBV)	{		pvStruct.updateFunction = this->update_ANA_Intensity_RBV;	}
-	else if (pvStruct.pvRecord == ANA_XPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_XPix_RBV;	}
-	else if (pvStruct.pvRecord == ANA_YPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_YPix_RBV;	}
+	else if (pvStruct.pvRecord == ANA_XPix_RBV)			{		pvStruct.updateFunction = this->update_ANA_XPix_RBV;	}
+	else if (pvStruct.pvRecord == ANA_YPix_RBV)			{		pvStruct.updateFunction = this->update_ANA_YPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_SigmaXPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaXPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_SigmaYPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_SigmaYPix_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CovXYPix_RBV)	{		pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CovXYPix_RBV)		{		pvStruct.updateFunction = this->update_ANA_CovXYPix_RBV;	}
 	else if (pvStruct.pvRecord == ANA_PixelResults_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixelResults_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MMResults_RBV)	{		pvStruct.updateFunction = this->update_ANA_MMResults_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskXCenter_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskXCenter_RBV;	}
 	else if (pvStruct.pvRecord == ANA_MaskYCenter_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskYCenter_RBV;	}
-	else if (pvStruct.pvRecord == ANA_MaskXRad_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;	}
-	else if (pvStruct.pvRecord == ANA_MaskYRad_RBV)	{		pvStruct.updateFunction = this->update_ANA_MaskYRad_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CenterX_RBV)	{		pvStruct.updateFunction = this->update_ANA_CenterX_RBV;	}	
-	else if (pvStruct.pvRecord == ANA_CenterY_RBV)	{		pvStruct.updateFunction = this->update_ANA_CenterY_RBV;	}
-	else if (pvStruct.pvRecord == ANA_PixMM_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixMM_RBV;	}
+	else if (pvStruct.pvRecord == ANA_MaskXRad_RBV)		{		pvStruct.updateFunction = this->update_ANA_MaskXRad_RBV;	}
+	else if (pvStruct.pvRecord == ANA_MaskYRad_RBV)		{		pvStruct.updateFunction = this->update_ANA_MaskYRad_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CenterX_RBV)		{		pvStruct.updateFunction = this->update_ANA_CenterX_RBV;	}	
+	else if (pvStruct.pvRecord == ANA_CenterY_RBV)		{		pvStruct.updateFunction = this->update_ANA_CenterY_RBV;	}
+	else if (pvStruct.pvRecord == ANA_PixMM_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixMM_RBV;	}
 	else if (pvStruct.pvRecord == CAM_AcquireTime_RBV)	{		pvStruct.updateFunction = this->update_CAM_AcquireTime_RBV;	}
-	else if (pvStruct.pvRecord == CAM_AcquirePeriod_RBV)	{		pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;	}
+	else if (pvStruct.pvRecord == CAM_AcquirePeriod_RBV){		pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;	}
 	else if (pvStruct.pvRecord == CAM_ArrayRate_RBV)	{		pvStruct.updateFunction = this->update_CAM_ArrayRate_RBV;	}
 	else if (pvStruct.pvRecord == CAM_Temperature_RBV)	{		pvStruct.updateFunction = this->update_CAM_Temperature_RBV;	}	
 	else if (pvStruct.pvRecord == HDFB_Buffer_FilePath_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FilePath_RBV;	}
 	else if (pvStruct.pvRecord == HDFB_Buffer_FileName_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FileName_RBV;	}
 	else if (pvStruct.pvRecord == HDFB_Buffer_FileNumber_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FileNumber_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_MinX_RBV)	{		pvStruct.updateFunction = this->update_ROI1_MinX_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_MinY_RBV)	{		pvStruct.updateFunction = this->update_ROI1_MinY_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_SizeX_RBV)	{		pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;	}
-	else if (pvStruct.pvRecord == ROI1_SizeY_RBV)	{		pvStruct.updateFunction = this->update_ROI1_SizeY_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_MinX_RBV)		{		pvStruct.updateFunction = this->update_ROI1_MinX_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_MinY_RBV)		{		pvStruct.updateFunction = this->update_ROI1_MinY_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_SizeX_RBV)		{		pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;	}
+	else if (pvStruct.pvRecord == ROI1_SizeY_RBV)		{		pvStruct.updateFunction = this->update_ROI1_SizeY_RBV;	}
 	else if (pvStruct.pvRecord == ROI1_ImageData_RBV)	{		pvStruct.updateFunction = this->update_ROI1_ImageData_RBV;	}
-	else if (pvStruct.pvRecord == ANA_UseFloor_RBV) {		pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;	}
+	else if (pvStruct.pvRecord == ANA_UseFloor_RBV)		{		pvStruct.updateFunction = this->update_ANA_UseFloor_RBV;	}
 	else if (pvStruct.pvRecord == ANA_FloorLevel_RBV)	{		pvStruct.updateFunction = this->update_ANA_FloorLevel_RBV;	}
-	else if (pvStruct.pvRecord == ANA_FlooredPoints_RBV)	{		pvStruct.updateFunction = this->update_ANA_FlooredPoints_RBV;	}
+	else if (pvStruct.pvRecord == ANA_FlooredPoints_RBV){		pvStruct.updateFunction = this->update_ANA_FlooredPoints_RBV;	}
 	else if (pvStruct.pvRecord == ANA_FlooredPercent_RBV)	{		pvStruct.updateFunction = this->update_ANA_FlooredPercent_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CPU_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CPU_RBV)			{		pvStruct.updateFunction = this->update_ANA_CPU_RBV;	}
 	else if (pvStruct.pvRecord == ANA_CPU_CropSubMask_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_CropSubMask_RBV;	}
 	else if (pvStruct.pvRecord == ANA_CPU_Npoint_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_Npoint_RBV;	}
-	else if (pvStruct.pvRecord == ANA_CPU_Dot_RBV)	{		pvStruct.updateFunction = this->update_ANA_CPU_Dot_RBV;	}
-	else if (pvStruct.pvRecord == ANA_PixW_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixW_RBV;}
-	else if (pvStruct.pvRecord == ANA_PixH_RBV)	{		pvStruct.updateFunction = this->update_ANA_PixH_RBV;	}
+	else if (pvStruct.pvRecord == ANA_CPU_Dot_RBV)		{		pvStruct.updateFunction = this->update_ANA_CPU_Dot_RBV;	}
+	else if (pvStruct.pvRecord == ANA_PixW_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixW_RBV;}
+	else if (pvStruct.pvRecord == ANA_PixH_RBV)		{		pvStruct.updateFunction = this->update_ANA_PixH_RBV;	}
 	else if (pvStruct.pvRecord == ANA_UseBkgrnd)	{	pvStruct.updateFunction = this->update_ANA_UseBkgrnd_RBV;	}
-	else if (pvStruct.pvRecord == ANA_UseNPoint)	{		pvStruct.updateFunction = this->update_ANA_UseNPoint_RBV;	}
+
+	else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
+	else if (pvStruct.pvRecord == ANA_UseNPoint_RBV)	{		pvStruct.updateFunction = this->update_ANA_UseNPoint_RBV;	}
+
 	else if (pvStruct.pvRecord == ANA_NewBkgrnd)	{	pvStruct.updateFunction = this->update_ANA_NewBkgrnd_RBV;	}
 	else if (pvStruct.pvRecord == CAM_BlackLevel_RBV)	{		pvStruct.updateFunction = this->update_CAM_BlackLevel_RBV;	}
-	else if (pvStruct.pvRecord == CAM_Gain_RBV)	{		pvStruct.updateFunction = this->update_CAM_Gain_RBV;	}
+	else if (pvStruct.pvRecord == CAM_Gain_RBV)		{		pvStruct.updateFunction = this->update_CAM_Gain_RBV;	}
+	else if (pvStruct.pvRecord == ANA_OVERLAY_1_CROSS_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_1_CROSS_RBV;	}
+	else if (pvStruct.pvRecord == ANA_OVERLAY_2_RESULT_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_2_RESULT_RBV;	}
+	else if (pvStruct.pvRecord == ANA_OVERLAY_3_MASK_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_3_MASK_RBV;	}
 	else	
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 	}
 }
+
+void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->cross_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->cross_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->cross_overlay.second = STATE::ENABLED; break;
+	default:
+		recastCamera->cross_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
+		ENUM_TO_STRING(recastCamera->cross_overlay.second));
+}
+void EPICSCameraInterface::update_ANA_OVERLAY_2_RESULT_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->result_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->result_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->result_overlay.second = STATE::ENABLED; break;
+	default:
+		recastCamera->result_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_2_CROSS_RBV = ",
+		ENUM_TO_STRING(recastCamera->result_overlay.second));
+}
+void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->mask_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->mask_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->mask_overlay.second = STATE::ENABLED; break;
+	default:
+		recastCamera->mask_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_3_CROSS_RBV = ",
+		ENUM_TO_STRING(recastCamera->mask_overlay.second));
+}
+
+
 void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -123,8 +174,6 @@ void EPICSCameraInterface::update_HDF_WriteStatus(const struct event_handler_arg
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_WriteStatus = ",
 		ENUM_TO_STRING(recastCamera->write_state.second));
 }
-
-
 void EPICSCameraInterface::update_HDF_WriteMessage_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -284,6 +333,7 @@ void EPICSCameraInterface::update_ANA_CovXY_RBV(const struct event_handler_args 
 void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->avg_intensity);
+	recastCamera->avg_intensity_rs.Push<double>(recastCamera->avg_intensity.second);
 	//recastCamera->avg_intensity_rs.Push(recastCamera->avg_intensity.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_AvgIntensity_RBV = ", 
 	//	recastCamera->avg_intensity.second);
@@ -291,6 +341,7 @@ void EPICSCameraInterface::update_ANA_AvgIntensity_RBV(const struct event_handle
 void EPICSCameraInterface::update_ANA_Intensity_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->sum_intensity);
+	recastCamera->sum_intensity_rs.Push<double>(recastCamera->sum_intensity.second);
 	//recastCamera->sum_intensity_rs.Push(recastCamera->sum_intensity.second);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_Intensity_RBV = ", 
 	//	recastCamera->sum_intensity.second);
@@ -358,6 +409,36 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 	{
 		recastCamera->isResultUpdated = false;
 	}
+
+// void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handler_args args) 
+// {
+	// //messenger.printDebugMessage("update_ANA_PixelResults_RBV ");
+	// Camera* recastCamera = static_cast<Camera*>(args.usr);
+
+	// /*	
+		// Pointer to the data + timestamp 
+	// */
+	// const dbr_time_double* p_data = (const struct dbr_time_double*)args.dbr;
+	// /*
+		// Get timestamp and add to data_buffer
+	// */
+	// recastCamera -> analysis_data.first = p_data->stamp;
+	// /*
+		// Get the data and add to data_buffer, this assumes the data is 'new'
+		// there is a way to set up the LLRF such that it sends the same data multiple times
+	// */
+	// const dbr_double_t* pValue;
+	// pValue = &p_data->value;
+
+	// std::copy(pValue, pValue + recastCamera->analysis_data.second.size(), 
+		// recastCamera->analysis_data.second.begin());
+
+
+
+	// //messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixelResults_RBV [0] = ",
+	// //	recastCamera->analysis_data.second[0]);
+
+// >>>>>>> origin/camera_bug_fixing_during_operations
 }
 void EPICSCameraInterface::update_ANA_MMResults_RBV(const struct event_handler_args args)
 {
@@ -398,7 +479,6 @@ void EPICSCameraInterface::update_ANA_MaskYCenter_RBV(const struct event_handler
 	updateTimeStampLongPair(args, recastCamera->mask_y_center);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_MaskYCenter_RBV = ",
 		recastCamera->mask_y_center.second);
-
 }
 void EPICSCameraInterface::update_ANA_MaskXRad_RBV(const struct event_handler_args args) {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
@@ -465,9 +545,8 @@ void EPICSCameraInterface::update_ANA_UseNPoint_RBV(const struct event_handler_a
 	default:
 		recastCamera->use_npoint.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseNPoint = ",
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseNPoint_RBV = ",
 		ENUM_TO_STRING(recastCamera->use_npoint.second));
-
 }
 
 void EPICSCameraInterface::update_ANA_NewBkgrnd_RBV(const struct event_handler_args args)
@@ -575,8 +654,8 @@ void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_ha
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->buffer_filepath.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV = ",
-		recastCamera->buffer_filepath.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV = ",
+	//	recastCamera->buffer_filepath.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args)
 {
@@ -594,15 +673,15 @@ void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_ha
 	}
 	std::string dummy_string(dummy_char);
 	recastCamera->buffer_filename.second = dummy_string;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ",
-		recastCamera->buffer_filename.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ",
+	//	recastCamera->buffer_filename.second);
 }
 void EPICSCameraInterface::update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->buffer_filenumber);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FileNumber_RBV = ",
-		recastCamera->buffer_filenumber.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FileNumber_RBV = ",
+	//	recastCamera->buffer_filenumber.second);
 }
 void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args args)
 {
@@ -610,43 +689,64 @@ void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args 
 	updateTimeStampLongPair(args, recastCamera->roi_min_x);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinX_RBV = ",
 		recastCamera->roi_min_x.second);
+
+	recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
+		recastCamera->roi_max_x);
 }
 void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, long> roi_min_y;
 	updateTimeStampLongPair(args, recastCamera->roi_min_y);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinY_RBV = ",
-		recastCamera->roi_min_y.second);
+	recastCamera->roi_max_y = recastCamera->roi_min_y.second + recastCamera->roi_size_y.second;
+	// messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max Y = ",
+		// recastCamera->roi_max_y);
+	// messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinY_RBV = ",
+		// recastCamera->roi_min_y.second);
+
 }
 void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_size_x);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ",
+	//	recastCamera->roi_size_x.second);
 	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ",
 		recastCamera->roi_size_x.second);
+	recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
+		recastCamera->roi_max_x);
 }
 void EPICSCameraInterface::update_ROI1_SizeY_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->roi_size_y);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_SizeY_RBV = ",
-		recastCamera->roi_size_y.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_SizeY_RBV = ",
+	//	recastCamera->roi_size_y.second);
+	recastCamera->roi_max_y = recastCamera->roi_min_y.second + recastCamera->roi_size_y.second;
+	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max Y = ",
+		recastCamera->roi_max_y);
 }
 
 void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	// TODO actually not doing it this way for now, only caget 
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_ImageData_RBV");
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_ImageData_RBV");
 }
+
+
+
+
+
 
 void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
 {
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	recastCamera->use_floor.first = tv->stamp;
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV value = ", tv->value);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV value = ", tv->value);
 	switch (tv->value)
 	{
 	case 0: recastCamera->use_floor.second = STATE::NOT_USING_FLOOR; break;
@@ -654,7 +754,7 @@ void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_ar
 	default:
 		recastCamera->use_floor.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV = ", ENUM_TO_STRING(recastCamera->use_floor.second));
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV = ", ENUM_TO_STRING(recastCamera->use_floor.second));
 }
 void EPICSCameraInterface::update_ANA_FloorLevel_RBV(const struct event_handler_args args)
 {
@@ -699,7 +799,6 @@ void EPICSCameraInterface::update_ANA_CPU_Npoint_RBV(const struct event_handler_
 	updateTimeStampLongPair(args, recastCamera->cpu_npoint);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CPU_Npoint_RBV = ",
 	//	recastCamera->cpu_npoint.second);
-
 }
 void EPICSCameraInterface::update_ANA_CPU_Dot_RBV(const struct event_handler_args args)
 {
@@ -722,22 +821,83 @@ void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args a
 	updateTimeStampLongPair(args, recastCamera->pixel_height);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " R = ",recastCamera->pixel_height.second);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //
+//void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_NumCaptured_RBV ");
+//}
+//void EPICSCameraInterface::update_MAGICK_WriteFile_RBV(const struct event_handler_args args)
+//{
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_WriteFile_RBV ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_WriteStatus(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_WriteStatus ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_WriteMessage(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_WriteMessage ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_Capture_RBV(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_Capture_RBV ");
+//}
+//
+//void EPICSCameraInterface::update_MAGICK_NumCapture_RBV(const struct event_handler_args args) {
+//	Camera* recastCamera = static_cast<Camera*>(args.usr);
+//	messenger.printDebugMessage("update_MAGICK_NumCapture_RBV ");
+//}
+void EPICSCameraInterface::update_OVERLAY_CROSS_HAIR(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->cross_hair_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->cross_hair_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->cross_hair_overlay.second = STATE::ON; break;
+	default:
+		recastCamera->cross_hair_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_CROSS_HAIR = ",
+		ENUM_TO_STRING(recastCamera->cross_hair_overlay.second));
+}
+void EPICSCameraInterface::update_OVERLAY_CENTRE_OF_MASS(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->center_of_mass_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->center_of_mass_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->center_of_mass_overlay.second = STATE::ON; break;
+	default:
+		recastCamera->center_of_mass_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_CENTRE_OF_MASS = ",
+		ENUM_TO_STRING(recastCamera->center_of_mass_overlay.second));
+}
+void EPICSCameraInterface::update_OVERLAY_MASK(const struct event_handler_args args)
+{
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
+	recastCamera->analysis_mask_overlay.first = new_value.first;
+	switch (new_value.second)
+	{
+	case GlobalConstants::zero_ushort: recastCamera->analysis_mask_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->analysis_mask_overlay.second = STATE::ON; break;
+	default:
+		recastCamera->analysis_mask_overlay.second = STATE::ERR;
+	}
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_MASK = ",
+		ENUM_TO_STRING(recastCamera->analysis_mask_overlay.second));
+}
+
 //void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
 //{
 //	Camera* recastCamera = static_cast<Camera*>(args.usr);

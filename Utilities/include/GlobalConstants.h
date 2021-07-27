@@ -329,6 +329,7 @@ namespace GlobalConstants
 	const double zero_double = 0.0;
 	/*! Double-type variable for 1.0 */
 	const double one_double = 1.0;
+	const double ten_double = 10.0;
 	/*! Double-type variable for 0.1 */
 	const double zero_point_one_double = 0.1;
 	

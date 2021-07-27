@@ -26,8 +26,6 @@ public:
 
 
    
-
-
 static void update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args);
 static void update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args);
 static void update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args);
@@ -91,11 +89,9 @@ static void update_LED_Sta(const struct event_handler_args args);
 
 
 
-
-
-
-
-
+static void update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args);
+static void update_ANA_OVERLAY_2_RESULT_RBV(const struct event_handler_args args);
+static void update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args);
 
 
 
@@ -177,6 +173,10 @@ static void update_LED_Sta(const struct event_handler_args args);
 
     //static void update_BlackLevel_RBV(const struct event_handler_args args);
     //static void update_Gain_RBV(const struct event_handler_args args);
+
+    static void update_OVERLAY_CROSS_HAIR(const struct event_handler_args args);
+    static void update_OVERLAY_CENTRE_OF_MASS(const struct event_handler_args args);
+    static void update_OVERLAY_MASK(const struct event_handler_args args);
 
 
 };

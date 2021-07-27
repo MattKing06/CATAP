@@ -1,4 +1,5 @@
 #include <PILaserSystem.h>
+#include <iostream>
 
 PILaserSystem::PILaserSystem(STATE mode) :
 	cameraFactory(CameraFactory(mode)),
@@ -28,25 +29,8 @@ bool PILaserSystem::setup(const std::string& version)
 	chargeFactory.setup(version);
 	messenger.printMessage("PILaserSystem calling laserEnergyMeterFactory.setup.");
 	laserEnergyMeterFactory.setup(version);
-	if (cameraFactory.hasBeenSetup && mirrorFactory.hasBeenSetup
-		&& shutterFactory.hasBeenSetup && halfWavePlateFactory.hasBeenSetup
-		&& chargeFactory.hasBeenSetup && laserEnergyMeterFactory.hasBeenSetup)
-	{
-		mirror = mirrorFactory.getLaserMirror(mirrorName);
-		energyMeter = laserEnergyMeterFactory.getLaserEnergyMeter(energyMeterName);
-		halfwavePlate = halfWavePlateFactory.getLaserHWP(halfWavePlateName);
-		laserShutter01 = shutterFactory.getShutter(shutterNames.at(0));
-		laserShutter02 = shutterFactory.getShutter(shutterNames.at(1));
-		virtualCathodeCamera = cameraFactory.getCamera(virtualCathodeCameraName);
-		wallCurrentMonitor = chargeFactory.getChargeDiagnostic(wallCurrentMonitorName);
-		setAllRunningStatSize(0);
-		return true;
-	}
-	else
-	{
-		messenger.printMessage("COULD NOT SETUP PILaserSystem.");
-		return false;
-	}
+	setAllRunningStatSize(0);
+	return true;
 }
 
 
@@ -121,39 +105,47 @@ size_t PILaserSystem_RS_size;
 /*! Clear all the values assoociated with the Running mean and variance stats.*/
 void PILaserSystem::clearAllRunningStat()
 {
-	wallCurrentMonitor.clearRunningStats();
-	energyMeter.clearRunningStats();
-	virtualCathodeCamera.clearAllRunningStats();
+	std::cout << "PILaserSystem wallCurrentMonitor.clearRunningStats " << std::endl;
+	chargeFactory.clearRunningStats(wallCurrentMonitorName);
+	//wallCurrentMonitor.clearRunningStats();
+	std::cout << "PILaserSystem energyMeter.clearRunningStats " << std::endl;
+	laserEnergyMeterFactory.clearRunningStats(energyMeterName);
+	//energyMeter.clearRunningStats();
+	std::cout << "PILaserSystem virtualCathodeCamera.clearRunningStats " << std::endl;
+	cameraFactory.clearRunningStats(virtualCathodeCameraName);
 }
 void PILaserSystem::setAllRunningStatSize(size_t new_val)
 {
+	std::cout << "PILaserSystem setAllRunningStatSize passed " << new_val << std::endl;
 	PILaserSystem_RS_size = new_val;
-	virtualCathodeCamera.setAllRunningStatSizes(PILaserSystem_RS_size);
-	wallCurrentMonitor.setRunningStatSize(PILaserSystem_RS_size);
-	energyMeter.setRunningStatsSize(PILaserSystem_RS_size);
+	std::cout << "PILaserSystem PILaserSystem_RS_size = " << PILaserSystem_RS_size << std::endl;
+	std::cout << "PILaserSystem virtualCathodeCamera.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
+	cameraFactory.setRunningStatSize(virtualCathodeCameraName, PILaserSystem_RS_size);
+	std::cout << "PILaserSystem wallCurrentMonitor.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
+	chargeFactory.setRunningStatSize(wallCurrentMonitorName, PILaserSystem_RS_size);
+	std::cout << "PILaserSystem energyMeter.setAllRunningStatSizes " << PILaserSystem_RS_size << std::endl;
+	laserEnergyMeterFactory.setRunningStatSize(energyMeterName, PILaserSystem_RS_size);
 	clearAllRunningStat();
 }
 size_t PILaserSystem::getRunningStatSize()
 {
 	return PILaserSystem_RS_size;
 }
-size_t PILaserSystem::getRunningStatCount()
-{
-	return wallCurrentMonitor.getRunningStatCount();
-}
-bool PILaserSystem::isRunningStatFull()
-{
-	return wallCurrentMonitor.isRunningStatFull();
-}
 
 
-bool PILaserSystem::canMove()
+
+//size_t PILaserSystem::getRunningStatCount()
+//{
+//	return wallCurrentMonitor.getRunningStatCount();
+//}
+
+bool PILaserSystem::areAllRunningStatsFull()
 {
-	if (laserShutter01.isOpen() && laserShutter02.isOpen())
+	if (cameraFactory.areAllRunningStatsFull(virtualCathodeCameraName))
 	{
-		if (virtualCathodeCamera.isAnalysisUpdating())
+		if (chargeFactory.areAllRunningStatsFull(wallCurrentMonitorName))
 		{
-			if (virtualCathodeCamera.hasBeam())
+			if (laserEnergyMeterFactory.areRunningStatsFull(energyMeterName))
 			{
 				return true;
 			}
@@ -161,19 +153,35 @@ bool PILaserSystem::canMove()
 	}
 	return false;
 }
+//
+//
+//bool PILaserSystem::canMove()
+//{
+//	if (shutterFactory.isOpen(shutterNames.at(0)) && shutterFactory.isOpen(shutterNames.at(1)))
+//	{
+//		if (cameraFactory.isAnalysisUpdating(virtualCathodeCameraName))
+//		{
+//			if (cameraFactory.hasBeam(virtualCathodeCameraName))
+//			{
+//				return true;
+//			}
+//		}
+//	}
+//	return false;
+//}
 
 bool PILaserSystem::openShutters()
 {
-	if (laserShutter01.isClosed())
+	if (shutterFactory.isClosed(shutterNames.at(0)))
 	{
-		laserShutter01.open();
+		shutterFactory.open(shutterNames.at(0));
 	}
-	if (laserShutter02.isClosed())
+	if (shutterFactory.isClosed(shutterNames.at(1)))
 	{
-		laserShutter02.open();
+		shutterFactory.open(shutterNames.at(1));
 	}
 	GlobalFunctions::pause_1000();
-	if (laserShutter01.isOpen() && laserShutter02.isOpen())
+	if (shutterFactory.isOpen(shutterNames.at(0)) && shutterFactory.isOpen(shutterNames.at(1)))
 	{
 		return true;
 	}
@@ -183,33 +191,33 @@ bool PILaserSystem::openShutters()
 	}
 }
 
-bool PILaserSystem::laserEnergyAutoRange()
-{
-	openShutters();
-
-	if (energyMeter.getStatus() == STATE::GOOD)
-	{
-		return true;
-	}
-	else
-	{
-		energyMeter.setRange(LaserEnergyMeterRecords::laserEnergyMeterRangeSettings[0]);
-		bool shutterStatus = openShutters();
-		for (auto&& it1 : LaserEnergyMeterRecords::laserEnergyMeterRangeSettings)
-		{
-			if (energyMeter.getStatus() == STATE::GOOD)
-			{
-				return true;
-			}
-			else
-			{
-				if (energyMeter.getOverRange() == 1)
-				{
-					energyMeter.setRange(it1 - 1);
-					bool shutterStatus = openShutters();
-				}
-			}
-		}
-	}
-	return false;
-}
+//bool PILaserSystem::laserEnergyAutoRange()
+//{
+//	openShutters();
+//
+//	if (energyMeter.getStatus() == STATE::GOOD)
+//	{
+//		return true;
+//	}
+//	else
+//	{
+//		energyMeter.setRange(LaserEnergyMeterRecords::laserEnergyMeterRangeSettings[0]);
+//		bool shutterStatus = openShutters();
+//		for (auto&& it1 : LaserEnergyMeterRecords::laserEnergyMeterRangeSettings)
+//		{
+//			if (energyMeter.getStatus() == STATE::GOOD)
+//			{
+//				return true;
+//			}
+//			else
+//			{
+//				if (energyMeter.getOverRange() == 1)
+//				{
+//					energyMeter.setRange(it1 - 1);
+//					bool shutterStatus = openShutters();
+//				}
+//			}
+//		}
+//	}
+//	return false;
+//}

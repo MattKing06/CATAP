@@ -114,7 +114,7 @@ namespace CameraRecords
 	extern std::string const ANA_NewBkgrnd_RBV;
 	extern std::string const ANA_UseBkgrnd;
 	extern std::string const ANA_UseBkgrnd_RBV;
-	// ANALYSIS NPOINT SCALING (3)
+	// ANALYSIS NPOINT SCALING (2)
 	extern std::string const ANA_UseNPoint;
 	extern std::string const ANA_UseNPoint_RBV;
 	extern std::string const ANA_NPointStepSize_RBV;
@@ -122,7 +122,23 @@ namespace CameraRecords
 	// LED STATUS (3)
 	extern std::string const LED_Sta;
 	extern std::string const LED_Off;
-	extern std::string const LED_On;                                    
+                                 
+	// anlaysis overlay (6)
+	extern std::string const ANA_OVERLAY_1_CROSS;
+	extern std::string const ANA_OVERLAY_2_RESULT;
+	extern std::string const ANA_OVERLAY_3_MASK;
+	extern std::string const ANA_OVERLAY_1_CROSS_RBV;
+	extern std::string const ANA_OVERLAY_2_RESULT_RBV;
+	extern std::string const ANA_OVERLAY_3_MASK_RBV;
+
+	extern std::string const LED_On;
+	extern std::string const CAM_BlackLevel;
+	extern std::string const CAM_BlackLevel_RBV;
+	extern std::string const CAM_Gain;
+	extern std::string const CAM_Gain_RBV;
+
+
+
 	// MAGIC IS NOT USED (yet!!!) 
 /*
 	extern std::string const MAGICK_FileName;
