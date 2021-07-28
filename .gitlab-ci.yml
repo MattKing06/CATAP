@@ -82,10 +82,6 @@ linux_tests:
     - linux
 
 windows_tests: 
-  cache: 
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths: 
-      - build/*
   script: 
     - cd build
     - cd testBin
