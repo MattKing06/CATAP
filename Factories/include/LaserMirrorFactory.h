@@ -25,12 +25,12 @@ public:
 	void setVStep(const std::string& mirrorName, const double& value);
 	double getHStep(const std::string& mirrorName);
 	double getVStep(const std::string& mirrorName);
-	bool moveHorizontally(const std::string& mirrorName);
-	bool moveVertically(const std::string& mirrorName);
-	bool moveLeft(const std::string& mirrorName, const double& value);
-	bool moveRight(const std::string& mirrorName, const double& value);
-	bool moveUp(const std::string& mirrorName, const double& value);
-	bool moveDown(const std::string& mirrorName, const double& value);
+	//bool moveHorizontally(const std::string& mirrorName);
+///	bool moveVertically(const std::string& mirrorName);
+	bool moveLeft(const std::string& mirrorName);
+	bool moveRight(const std::string& mirrorName);
+	bool moveUp(const std::string& mirrorName);
+	bool moveDown(const std::string& mirrorName);
 	double getCurrentHorizontalPosition(const std::string& mirrorName);
 	double getCurrentVerticalPosition(const std::string& mirrorName);
 	bool updatePositions(const std::string& mirrorName);

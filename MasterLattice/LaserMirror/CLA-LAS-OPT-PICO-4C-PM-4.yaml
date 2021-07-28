@@ -15,6 +15,6 @@ properties:
     step_max : 100.1
     left_sense : 1.0
     right_sense : -1.0
-    up_sense : 1.0
-    down_sense : -1.0
+    up_sense : -1.0
+    down_sense : 1.0
         

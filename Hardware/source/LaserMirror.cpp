@@ -136,52 +136,97 @@ double LaserMirror::getVStep()const
 	return vStep;
 }
 
-bool LaserMirror::moveHorizontally()
+//bool LaserMirror::moveHorizontally()
+//{
+//	messenger.printMessage(hardwareName, " moveHorizontally ", hStep);
+//	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::H_MREL));
+//	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::H_MREL), hStep);
+//}
+//
+//bool LaserMirror::moveVertically()
+//{
+//	messenger.printMessage(hardwareName, " moveVertically ", vStep);
+//	return epicsInterface->setNewVerticalPosition(vStep, pvStructs.at(LaserMirrorRecords::V_MREL));
+//	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::V_MREL), hStep);
+//}
+
+
+bool LaserMirror::moveHorizontally(const double&step)
 {
-	messenger.printMessage(hardwareName, " moveHorizontally ", hStep);
-	return epicsInterface->setNewHorizontalPosition(hStep, pvStructs.at(LaserMirrorRecords::H_MREL));
+	messenger.printMessage(hardwareName, " moveHorizontally ", step);
+	return epicsInterface->setNewHorizontalPosition(step, pvStructs.at(LaserMirrorRecords::H_MREL));
 	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::H_MREL), hStep);
 }
 
-bool LaserMirror::moveVertically()
+bool LaserMirror::moveVertically(const double&step)
 {
-
-	messenger.printMessage(hardwareName, " moveVertically ", vStep);
-	return epicsInterface->setNewVerticalPosition(vStep, pvStructs.at(LaserMirrorRecords::V_MREL));
+	messenger.printMessage(hardwareName, " moveVertically ", step);
+	return epicsInterface->setNewVerticalPosition(step, pvStructs.at(LaserMirrorRecords::V_MREL));
 	//return epicsInterface->putValue2<double>(pvStructs.at(LaserMirrorRecords::V_MREL), hStep);
-
 }
 
 
+bool LaserMirror::moveLeft() {	return moveHorizontally(hStep * leftSense);	}
+bool LaserMirror::moveRight(){	return moveHorizontally(hStep * rightSense);	}
+bool LaserMirror::moveUp()	 {	return moveVertically(vStep * upSense);	}
+bool LaserMirror::moveDown() {	return moveVertically(vStep * downSense);	}
 
 
-bool LaserMirror::moveLeft(const double& value)
-{
-	setHStep(value * leftSense);
-	messenger.printMessage(hardwareName, " moveLeft, ", hStep);
-	return moveHorizontally();
-}
 
-bool LaserMirror::moveRight(const double& value)
-{
-	setHStep(value * rightSense);
-	messenger.printMessage(hardwareName, " moveRight, ", hStep);
-	return moveHorizontally();
-}
 
-bool LaserMirror::moveUp(const double& value)
-{
-	setVStep(value * upSense);
-	messenger.printMessage(hardwareName, " moveUp, ", vStep);
-	return moveVertically();
-}
 
-bool LaserMirror::moveDown(const double& value)
-{
-	setVStep(value * downSense);
-	messenger.printMessage(hardwareName, " moveDown, ", vStep);
-	return moveVertically();
-}
+
+//
+//
+//
+//
+//bool LaserMirror::moveRight(const double& value)
+//{
+//	setHStep(value * rightSense);
+//	messenger.printMessage(hardwareName, " moveRight, ", hStep);
+//	return moveHorizontally();
+//}
+//bool LaserMirror::moveLeft(const double& value)
+//{
+//	setHStep(value * leftSense);
+//	messenger.printMessage(hardwareName, " moveLeft, ", hStep);
+//	return moveHorizontally();
+//}
+//bool LaserMirror::moveUp(const double& value)
+//{
+//	setVStep(value * upSense);
+//	messenger.printMessage(hardwareName, " moveUp, ", vStep);
+//	return moveVertically();
+//}
+//bool LaserMirror::moveDown(const double& value)
+//{
+//	setVStep(value * downSense);
+//	messenger.printMessage(hardwareName, " moveDown, ", vStep);
+//	return moveVertically();
+//}
+//
+
+//
+//bool LaserMirror::moveRight(const double& value)
+//{
+//	setHStep(value * rightSense);
+//	messenger.printMessage(hardwareName, " moveRight, ", hStep);
+//	return moveHorizontally();
+//}
+//
+//bool LaserMirror::moveUp(const double& value)
+//{
+//	setVStep(value * upSense);
+//	messenger.printMessage(hardwareName, " moveUp, ", vStep);
+//	return moveVertically();
+//}
+//
+//bool LaserMirror::moveDown(const double& value)
+//{
+//	setVStep(value * downSense);
+//	messenger.printMessage(hardwareName, " moveDown, ", vStep);
+//	return moveVertically();
+//}
 
 double LaserMirror::getCurrentHorizontalPosition()
 {

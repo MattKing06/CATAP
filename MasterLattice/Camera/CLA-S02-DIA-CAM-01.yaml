@@ -46,7 +46,8 @@ controls_information:
         ANA_UseBkgrnd_RBV    : CLA-S02-DIA-CAM-01:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
         ANA_UseNPoint    : CLA-S02-DIA-CAM-01:ANA:UseNPoint     
-        ANA_NPointStepSize    : CLA-S02-DIA-CAM-01:ANA:UseNPoint_RBV           
+        ANA_NPointStepSize    : CLA-S02-DIA-CAM-01:ANA:UseNPoint_RBV   
+        ANA_NPointStepSize_RBV    : CLA-S02-DIA-CAM-01:ANA:StepSize_RBV        
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : CLA-S02-DIA-CAM-01:ANA:UseFloor
         ANA_UseFloor_RBV : CLA-S02-DIA-CAM-01:ANA:UseFloor_RBV
@@ -64,7 +65,7 @@ controls_information:
         ANA_PixMM    : CLA-S02-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-S02-DIA-CAM-01:ANA:PixMM_RBV
         ANA_StepSize    : CLA-S02-DIA-CAM-01:ANA:StepSize
-        ANA_NPointStepSize_RBV    : CLA-S02-DIA-CAM-01:ANA:StepSize_RBV
+
         ANA_X_RBV    : CLA-S02-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-S02-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-S02-DIA-CAM-01:ANA:SigmaX_RBV

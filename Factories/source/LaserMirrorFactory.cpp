@@ -191,11 +191,37 @@ double LaserMirrorFactory::getVStep(const std::string& mirrorName)
 	}
 }
 
-bool LaserMirrorFactory::moveHorizontally(const std::string& mirrorName)
+//bool LaserMirrorFactory::moveHorizontally(const std::string& mirrorName)
+//{
+//	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+//	{
+//		return laserMirrorMap.at(mirrorName).moveHorizontally();
+//	}
+//	else
+//	{
+//		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+//		return false;
+//	}
+//}
+//
+//bool LaserMirrorFactory::moveVertically(const std::string& mirrorName)
+//{
+//	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
+//	{
+//		return laserMirrorMap.at(mirrorName).moveVertically();
+//	}
+//	else
+//	{
+//		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
+//		return false;
+//	}
+//}
+
+bool LaserMirrorFactory::moveLeft(const std::string& mirrorName)
 {
 	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
 	{
-		return laserMirrorMap.at(mirrorName).moveHorizontally();
+		return laserMirrorMap.at(mirrorName).moveLeft();
 	}
 	else
 	{
@@ -204,11 +230,11 @@ bool LaserMirrorFactory::moveHorizontally(const std::string& mirrorName)
 	}
 }
 
-bool LaserMirrorFactory::moveVertically(const std::string& mirrorName)
+bool LaserMirrorFactory::moveRight(const std::string& mirrorName)
 {
 	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
 	{
-		return laserMirrorMap.at(mirrorName).moveVertically();
+		return laserMirrorMap.at(mirrorName).moveRight();
 	}
 	else
 	{
@@ -217,11 +243,11 @@ bool LaserMirrorFactory::moveVertically(const std::string& mirrorName)
 	}
 }
 
-bool LaserMirrorFactory::moveLeft(const std::string& mirrorName, const double& value)
+bool LaserMirrorFactory::moveUp(const std::string& mirrorName)
 {
 	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
 	{
-		return laserMirrorMap.at(mirrorName).moveLeft(value);
+		return laserMirrorMap.at(mirrorName).moveUp();
 	}
 	else
 	{
@@ -230,37 +256,11 @@ bool LaserMirrorFactory::moveLeft(const std::string& mirrorName, const double& v
 	}
 }
 
-bool LaserMirrorFactory::moveRight(const std::string& mirrorName, const double& value)
+bool LaserMirrorFactory::moveDown(const std::string& mirrorName)
 {
 	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
 	{
-		return laserMirrorMap.at(mirrorName).moveRight(value);
-	}
-	else
-	{
-		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
-		return false;
-	}
-}
-
-bool LaserMirrorFactory::moveUp(const std::string& mirrorName, const double& value)
-{
-	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
-	{
-		return laserMirrorMap.at(mirrorName).moveUp(value);
-	}
-	else
-	{
-		messenger.printMessage(mirrorName, " does not exist. Not Moving.");
-		return false;
-	}
-}
-
-bool LaserMirrorFactory::moveDown(const std::string& mirrorName, const double& value)
-{
-	if (GlobalFunctions::entryExists(laserMirrorMap, mirrorName))
-	{
-		return laserMirrorMap.at(mirrorName).moveDown(value);
+		return laserMirrorMap.at(mirrorName).moveDown();
 	}
 	else
 	{

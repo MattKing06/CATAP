@@ -1476,96 +1476,36 @@ boost::python::dict Camera::getAllRunningStats()const
 	return r;
 }
 
-RunningStats& Camera::getXPixRunningStats()
-{
-	return x_pix_rs;
-}
+RunningStats& Camera::getXPixRunningStats(){	return x_pix_rs;}
+RunningStats& Camera::getYPixRunningStats(){	return y_pix_rs;}
+RunningStats& Camera::getSigmaXPixRunningStats(){	return sigma_x_pix_rs;}
+RunningStats& Camera::getSigmaYPixRunningStats(){	return sigma_y_pix_rs;}
+RunningStats& Camera::getSigmaXYPixRunningStats(){	return sigma_xy_pix_rs;}
+RunningStats& Camera::getXmmRunningStats(){	return x_mm_rs;}
+RunningStats& Camera::getYmmRunningStats(){	return y_mm_rs;}
+RunningStats& Camera::getSigmaXmmRunningStats(){	return sigma_x_mm_rs;}
 
-RunningStats& Camera::getYPixRunningStats()
-{
-	return y_pix_rs;
-}
-
-RunningStats& Camera::getSigmaXPixRunningStats()
-{
-	return sigma_x_pix_rs;
-}
-
-RunningStats& Camera::getSigmaYPixRunningStats()
-{
-	return sigma_y_pix_rs;
-}
-
-RunningStats& Camera::getSigmaXYPixRunningStats()
-{
-	return sigma_xy_pix_rs;
-}
-
-RunningStats& Camera::getXmmRunningStats()
-{
-	return x_mm_rs;
-}
-
-RunningStats& Camera::getYmmRunningStats()
-{
-	return y_mm_rs;
-}
-
-RunningStats& Camera::getSigmaXmmRunningStats()
-{
-	return sigma_x_mm_rs;
-}
-
-RunningStats& Camera::getSigmaYmmRunningStats()
-{
-	return sigma_y_mm_rs;
-}
-
-RunningStats& Camera::getSigmaXYmmRunningStats()
-{
-	return sigma_xy_mm_rs;
-}
-
-RunningStats& Camera::getAvgIntensityRunningStats()
-{
-	return avg_intensity_rs;
-}
-
-RunningStats& Camera::getSumIntensityRunningStats()
-{
-	return sum_intensity_rs;
-}
-
-size_t Camera::getBufferSize()const
-{
-	return running_stats_buffer_size;
-}
+RunningStats& Camera::getSigmaYmmRunningStats(){	return sigma_y_mm_rs;	}
+RunningStats& Camera::getSigmaXYmmRunningStats(){	return sigma_xy_mm_rs;	}
+RunningStats& Camera::getAvgIntensityRunningStats(){	return avg_intensity_rs;}
+RunningStats& Camera::getSumIntensityRunningStats(){	return sum_intensity_rs;}
+size_t Camera::getBufferSize()const{return running_stats_buffer_size;}
 void Camera::setAllRunningStatBufferSizes(size_t v)
 {
-	x_pix_rs.setBufferSize(v);
-	y_pix_rs.setBufferSize(v);
-	sigma_x_pix_rs.setBufferSize(v);
-	sigma_y_pix_rs.setBufferSize(v);
-	sigma_xy_pix_rs.setBufferSize(v);
-	x_mm_rs.setBufferSize(v);
-	y_mm_rs.setBufferSize(v);
-	sigma_x_mm_rs.setBufferSize(v);
-	sigma_y_mm_rs.setBufferSize(v);
-	sigma_xy_mm_rs.setBufferSize(v);
+	x_pix_rs.setBufferSize(v);			y_pix_rs.setBufferSize(v);
+	sigma_x_pix_rs.setBufferSize(v);	sigma_y_pix_rs.setBufferSize(v);
+	sigma_xy_pix_rs.setBufferSize(v);	x_mm_rs.setBufferSize(v);
+	y_mm_rs.setBufferSize(v);			sigma_x_mm_rs.setBufferSize(v);
+	sigma_y_mm_rs.setBufferSize(v);		sigma_xy_mm_rs.setBufferSize(v);
 	running_stats_buffer_size = v;
 }
 void Camera::clearAllRunningStatBuffers()
 {
-	x_pix_rs.clearBuffer();
-	y_pix_rs.clearBuffer();
-	sigma_x_pix_rs.clearBuffer();
-	sigma_y_pix_rs.clearBuffer();
-	sigma_xy_pix_rs.clearBuffer();
-	x_mm_rs.clearBuffer();
-	y_mm_rs.clearBuffer();
-	sigma_x_mm_rs.clearBuffer();
-	sigma_y_mm_rs.clearBuffer();
-	sigma_xy_mm_rs.clearBuffer();
+	x_pix_rs.clearBuffer();			y_pix_rs.clearBuffer();
+	sigma_x_pix_rs.clearBuffer();	sigma_y_pix_rs.clearBuffer();
+	sigma_xy_pix_rs.clearBuffer();	x_mm_rs.clearBuffer();
+	y_mm_rs.clearBuffer();			sigma_x_mm_rs.clearBuffer();
+	sigma_y_mm_rs.clearBuffer();	sigma_xy_mm_rs.clearBuffer();
 }
 void Camera::clearAllRunningStats()
 {
@@ -1624,32 +1564,20 @@ void Camera::setAllRunningStatSizes(size_t new_val)
 size_t Camera::getRunningStatNumDataValues()const
 {
 	std::vector<size_t> NumDataValuesVector(GlobalConstants::twelve_sizet, GlobalConstants::sizet_max);
-	NumDataValuesVector[0] = x_pix_rs.NumDataValues();
-	NumDataValuesVector[1] = y_pix_rs.NumDataValues();
-	NumDataValuesVector[2] = sigma_x_pix_rs.NumDataValues();
-	NumDataValuesVector[3] = sigma_y_pix_rs.NumDataValues();
-	NumDataValuesVector[4] = sigma_xy_pix_rs.NumDataValues();
-	NumDataValuesVector[5] = x_mm_rs.NumDataValues();
-	NumDataValuesVector[6] = y_mm_rs.NumDataValues();
-	NumDataValuesVector[7] = sigma_x_mm_rs.NumDataValues();
-	NumDataValuesVector[8] = sigma_y_mm_rs.NumDataValues();
-	NumDataValuesVector[9] = sigma_xy_mm_rs.NumDataValues();
-	NumDataValuesVector[10] = avg_intensity_rs.NumDataValues();
-	NumDataValuesVector[11] = sum_intensity_rs.NumDataValues();
+	NumDataValuesVector[0] = x_pix_rs.NumDataValues(); 			NumDataValuesVector[1] = y_pix_rs.NumDataValues();
+	NumDataValuesVector[2] = sigma_x_pix_rs.NumDataValues();	NumDataValuesVector[3] = sigma_y_pix_rs.NumDataValues();
+	NumDataValuesVector[4] = sigma_xy_pix_rs.NumDataValues();	NumDataValuesVector[5] = x_mm_rs.NumDataValues();
+	NumDataValuesVector[6] = y_mm_rs.NumDataValues();			NumDataValuesVector[7] = sigma_x_mm_rs.NumDataValues();
+	NumDataValuesVector[8] = sigma_y_mm_rs.NumDataValues();		NumDataValuesVector[9] = sigma_xy_mm_rs.NumDataValues();
+	NumDataValuesVector[10] = avg_intensity_rs.NumDataValues();	NumDataValuesVector[11] = sum_intensity_rs.NumDataValues();
 	//size_t min_item = *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());
 	//std::cout << "Camera::getRunningStatNumDataValues min_item =  " << min_item << std::endl;
-	//std::cout << "NumDataValuesVector[0] " << NumDataValuesVector[0] << std::endl;
-	//std::cout << "NumDataValuesVector[1] " << NumDataValuesVector[1] << std::endl;
-	//std::cout << "NumDataValuesVector[2] " << NumDataValuesVector[2] << std::endl;
-	//std::cout << "NumDataValuesVector[3] " << NumDataValuesVector[3] << std::endl;
-	//std::cout << "NumDataValuesVector[4] " << NumDataValuesVector[4] << std::endl;
-	//std::cout << "NumDataValuesVector[5] " << NumDataValuesVector[5] << std::endl;
-	//std::cout << "NumDataValuesVector[6] " << NumDataValuesVector[6] << std::endl;
-	//std::cout << "NumDataValuesVector[7] " << NumDataValuesVector[7] << std::endl;
-	//std::cout << "NumDataValuesVector[8] " << NumDataValuesVector[8] << std::endl;
-	//std::cout << "NumDataValuesVector[9] " << NumDataValuesVector[9] << std::endl;
-	//std::cout << "NumDataValuesVector[10] " << NumDataValuesVector[10] << std::endl;
-	//std::cout << "NumDataValuesVector[11] " << NumDataValuesVector[11] << std::endl;
+	//std::cout << "NumDataValuesVector[0] " << NumDataValuesVector[0] << std::endl;	//std::cout << "NumDataValuesVector[1] " << NumDataValuesVector[1] << std::endl;
+	//std::cout << "NumDataValuesVector[2] " << NumDataValuesVector[2] << std::endl;	//std::cout << "NumDataValuesVector[3] " << NumDataValuesVector[3] << std::endl;
+	//std::cout << "NumDataValuesVector[4] " << NumDataValuesVector[4] << std::endl;	//std::cout << "NumDataValuesVector[5] " << NumDataValuesVector[5] << std::endl;
+	//std::cout << "NumDataValuesVector[6] " << NumDataValuesVector[6] << std::endl;	//std::cout << "NumDataValuesVector[7] " << NumDataValuesVector[7] << std::endl;
+	//std::cout << "NumDataValuesVector[8] " << NumDataValuesVector[8] << std::endl;	//std::cout << "NumDataValuesVector[9] " << NumDataValuesVector[9] << std::endl;
+	//std::cout << "NumDataValuesVector[10] " << NumDataValuesVector[10] << std::endl;	//std::cout << "NumDataValuesVector[11] " << NumDataValuesVector[11] << std::endl;
 	return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());;
 }
 

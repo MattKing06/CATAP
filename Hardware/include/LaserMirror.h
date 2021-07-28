@@ -26,12 +26,26 @@ public:
 	void setVStep(const double& value);
 	double getHStep()const;
 	double getVStep()const;
-	bool moveHorizontally();
-	bool moveVertically();
-	bool moveLeft(const double& value);
-	bool moveRight(const double& value);
-	bool moveUp(const double& value);
-	bool moveDown(const double& value);
+
+
+
+
+	bool moveHorizontally(const double& step);
+	bool moveVertically(const double& step);
+
+
+
+	bool moveLeft();
+	bool moveRight();
+	bool moveUp();
+	bool moveDown();
+
+	//bool moveLeft(const double& value);
+	//bool moveRight(const double& value);
+	//bool moveUp(const double& value);
+	//bool moveDown(const double& value);
+
+
 	double getCurrentHorizontalPosition();
 	double getCurrentVerticalPosition();
 	bool updatePositions();
