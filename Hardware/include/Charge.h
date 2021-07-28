@@ -157,6 +157,9 @@ public:
 	size_t getRunningStatCount();
 	size_t getRunningStatSize()const;
 	bool isRunningStatFull();
+	/*! Get the current number of data values being used by the Running Stats.
+* 	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues()const;
 
 	friend class ChargeFactory;
 	friend class EPICSCameraInterface;

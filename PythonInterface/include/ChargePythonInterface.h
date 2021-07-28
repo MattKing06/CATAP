@@ -29,6 +29,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getRunningStatCount", &Charge::getRunningStatCount)
 			.def("getRunningStatSize", &Charge::getRunningStatSize)
 			.def("isRunningStatFull", &Charge::isRunningStatFull)
+			.def("getRunningStatNumDataValues", &Charge::getRunningStatNumDataValues)
 
 
 			.def("monitorForNShots", &Charge::monitorForNShots)
@@ -70,6 +71,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("setRunningStatSize", &ChargeFactory::setRunningStatSize)
 			.def("clearRunningStats", &ChargeFactory::clearRunningStats)
 			.def("areAllRunningStatsFull", &ChargeFactory::areAllRunningStatsFull)
+			.def("getRunningStatNumDataValues", &ChargeFactory::getRunningStatNumDataValues)
 
 
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots)

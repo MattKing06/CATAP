@@ -819,6 +819,9 @@ public:
 
 	bool areAllRunningStatsFull(const std::string& name)const;
 
+
+	size_t getRunningStatNumDataValues(const std::string& name)const;
+
 	/*! Enable the Analysis Mask Overlay in the Camera Image data, (NB I think this is enabled JUST for camera data sent over the network!?)
 	@param[in] std::string, name
 	@param[out] bool, was command sent to EPICS, (not if it worked) */

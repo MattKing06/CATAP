@@ -368,21 +368,25 @@ namespace GlobalConstants
 	//const epicsUInt16 one_epicsUInt16 = 1;
 
 
-
 	/*! Unsigned size_t-type for 0 */
 	const size_t zero_sizet = 0;
 	/*! Unsigned size_t-type for 1 */
 	const size_t one_sizet = 1;
 	/*! Unsigned size_t-type for 2 */
 	const size_t two_sizet = 2;
+	/*! Unsigned size_t-type for 3 */
+	const size_t three_sizet = 3;
 	/*! Unsigned size_t-type for 5 */
 	const size_t five_sizet = 5;
+	/*! Unsigned size_t-type for 12 */
+	const size_t twelve_sizet = 12;
 	/*! Unsigned size_t-type for 80 */
 	const size_t eighty_sizet = 80;
 	/*! Unsigned size_t-type for 100 */
 	const size_t one_hundred_sizet = 100;
 	/*! Unsigned Integer-type for 999999 */
 	const size_t nine99999 = 999999;
+	const size_t sizet_max = std::numeric_limits<size_t>::max();
 
 	const long zero_long = 0;
 	const long one_long = 1;

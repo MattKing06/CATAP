@@ -33,8 +33,8 @@ public:
 	{
 		total_rs_object_count += 1;
 		current_rs_object_count += 1;
-		std::cout << "RS Construct: total_rs_object_count  = " << total_rs_object_count << std::endl;
-		std::cout << "RS Construct: current_rs_object_count  = " << current_rs_object_count << std::endl;
+		//std::cout << "RS Construct: total_rs_object_count  = " << total_rs_object_count << std::endl;
+		//std::cout << "RS Construct: current_rs_object_count  = " << current_rs_object_count << std::endl;
 		size_t start_buffer_size = 10;
 		setBufferSize(start_buffer_size); // MAGIC
 	}
@@ -54,13 +54,13 @@ public:
 
 	~RunningStats() {
 		current_rs_object_count -= 1;
-		std::cout << "RS Destry: total_rs_object_count  = " << total_rs_object_count << std::endl;
-		std::cout << "RS Destry: current_rs_object_count  = " << current_rs_object_count << std::endl;
+		//std::cout << "RS Destry: total_rs_object_count  = " << total_rs_object_count << std::endl;
+		//std::cout << "RS Destry: current_rs_object_count  = " << current_rs_object_count << std::endl;
 	}
 	/*! Clear the running stats values */
 	void Clear()
 	{
-		std::cout << "RS CLEAR" << std::endl;
+		//std::cout << "RS CLEAR" << std::endl;
 		m_n = 0;
 		rs_complete = false;
 	}
@@ -69,7 +69,7 @@ public:
 	void setMaxCount(const size_t value) // todo, this needs a "keepin grollign forever setting" probably by way of a maxCount of minus 1?? 
 	{
 		max_n = value; 
-		std::cout << "setMaxCount " << value << ", max_n " << max_n << std::endl;
+		//std::cout << "setMaxCount " << value << ", max_n " << max_n << std::endl;
 	}
 	/*! Get the maximum number of entires
 		@param[out] max number of entries         */

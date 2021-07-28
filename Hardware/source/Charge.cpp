@@ -260,7 +260,10 @@ bool Charge::isRunningStatFull()
 {
 	return qStats.Full();
 }
-
+size_t Charge::getRunningStatNumDataValues()const
+{
+	return qStats.NumDataValues();
+}
 
 void Charge::debugMessagesOff()
 {

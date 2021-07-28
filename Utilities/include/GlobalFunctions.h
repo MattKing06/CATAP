@@ -1,6 +1,7 @@
 #ifndef GLOBAL_FUNCTIOnS_H_
 #define GLOBAL_FUNCTIOnS_H_
 
+//#include "epicsTime.h"
 #include <map>
 #include <string>
 #include <cmath>
@@ -25,6 +26,10 @@
 */
 
 namespace GlobalFunctions {
+
+
+	// 	extern bool areEqualEpicsTimeStamps(const epicsTimeStamp& t1, const epicsTimeStamp& t2); TODO add when we can include epicstime.h
+ 
 
     /*
             We often check if entries exist in maps,

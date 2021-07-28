@@ -762,6 +762,9 @@ public:
 	void setAllRunningStatBufferSizes(size_t v);
 	/*! clear all runing stats buffers */
 	void clearAllRunningStatBuffers();
+	/*! Get the current number of data values being used by the Running Stats.
+* 	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues()const;
 	/*! Get the pixel to mm conversion factor, 
 	@param[out] double, value */
 	double getPix2mm()const;
@@ -884,7 +887,7 @@ public:
 	bool disableAllOverlay();
 
 	/*! testing returning pointer to image array instead of copying 	*/
-	std::vector<double>* Camera::getImagedataPointer()
+	//std::vector<double>* Camera::getImagedataPointer();
 
 
 	/* Enable debug messages*/
@@ -1273,6 +1276,22 @@ private:
 	bool roi_data_has_not_vector_resized;
 
 
+	// TODO issue 101, move to globalfunctions 
+	bool areEqualEpicsTimeStamps(const epicsTimeStamp& t1, const epicsTimeStamp& t2)const 
+	{
+		if (t1.secPastEpoch == t2.secPastEpoch)
+		{
+			if (t1.nsec == t2.nsec)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	bool areNotEqualEpicsTimeStamps(const epicsTimeStamp& t1, const epicsTimeStamp& t2)const
+	{
+		return !areEqualEpicsTimeStamps(t1,t2);
+	}
 
 };
 

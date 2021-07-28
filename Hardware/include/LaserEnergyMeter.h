@@ -113,13 +113,16 @@ public:
 	boost::python::dict getRunningStats_Py();
 	/*! Get the running stats object back directly*/
 	RunningStats& getEnergyRunningStats();
-
 	/*! Set running stats max count .*/
 	void setRunningStatsSize(size_t new_size);
 	/*! lear running stats data.*/
 	void clearRunningStats();
-	/*! lear running stats data.*/
-	bool areRunningStatsFull();
+	/*! are running stats data.
+	* 	@param[out] bool: true if the number of counts equals the max count.*/
+	bool areRunningStatsFull(); // TODO const 
+	/*! Get the current number of data values being used by the Running Stats.
+	* 	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues()const;
 
 	friend class EPICSLaserEnergyMeterInterface;
 	friend class LaserEnergyFactory;

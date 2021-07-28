@@ -138,10 +138,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 		messenger.printDebugMessage(item.first, " = ", item.second);
 	}
 	getMasterLatticeData(paramMap, mode);
-
 	setPVStructs();
-
-
 	//mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
 	//mask_keywords_Py = to_py_list(mask_keywords);
 	//roi_keywords_Py = to_py_list(roi_keywords);
@@ -248,6 +245,8 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_Y");
 	}
 	array_data_pixel_count = array_data_num_pix_y * array_data_num_pix_x;
+
+	messenger.printDebugMessage(hardwareName, " array_data_pixel_count = ", array_data_pixel_count);
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "BINARY_NUM_PIX_X"))
@@ -524,7 +523,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
 		}
 	}
-
 	//if (GlobalFunctions::entryExists(paramMap, "CAM1_ARRAY_DATA_NUM_PIX_X"))
 	//{
 	//	size_t pos = (size_t)std::stoi(paramMap.find("CAM1_ARRAY_DATA_NUM_PIX_X")->second);
@@ -533,11 +531,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	//{
 	//	messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find CAM1_ARRAY_DATA_NUM_PIX_X");
 	//}
-
-
 }
-
-
 
 Camera::Camera(const Camera& copyCamera):
 Hardware(copyCamera),
@@ -556,7 +550,11 @@ sigma_x_mm_rs(copyCamera.sigma_x_mm_rs),
 sigma_y_mm_rs(copyCamera.sigma_y_mm_rs),
 sigma_xy_mm_rs(copyCamera.sigma_xy_mm_rs),
 avg_intensity_rs(copyCamera.avg_intensity_rs),
-sum_intensity_rs(copyCamera.sum_intensity_rs)
+sum_intensity_rs(copyCamera.sum_intensity_rs),
+image_data_has_not_malloced(copyCamera.image_data_has_not_malloced),
+image_data_has_not_vector_resized(copyCamera.image_data_has_not_vector_resized),
+roi_data_has_not_malloced(copyCamera.roi_data_has_not_malloced),
+roi_data_has_not_vector_resized(copyCamera.roi_data_has_not_vector_resized)
 //mask_and_roi_keywords_Py(copyCamera.mask_and_roi_keywords_Py),
 //mask_keywords_Py(copyCamera.mask_keywords_Py),
 //roi_keywords_Py(copyCamera.roi_keywords_Py)
@@ -1462,95 +1460,6 @@ boost::python::dict Camera::getMaskandROI_Py()const
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
 
-//boost::python::dict Camera::getRunningStats(const std::string& type_str)const
-//{
-//	return getRunningStats(GlobalFunctions::stringToTYPE(type_str));
-//}
-//boost::python::dict Camera::getRunningStats(TYPE type)const
-//{
-//	
-//	switch (type)
-//	{
-//	case TYPE::CAMERA_X_PIX_RS: return x_pix_rs.getRunningStats();
-//	case TYPE::CAMERA_Y_PIX_RS: return y_pix_rs.getRunningStats();
-//	case TYPE::CAMERA_SIGMA_X_PIX_RS: return sigma_x_pix_rs.getRunningStats();
-//	case TYPE::CAMERA_SIGMA_Y_PIX_RS: return sigma_y_pix_rs.getRunningStats();
-//	case TYPE::CAMERA_SIGMA_XY_PIX_RS: return sigma_xy_pix_rs.getRunningStats();
-//	case TYPE::CAMERA_X_MM_RS: return x_mm_rs.getRunningStats();
-//	case TYPE::CAMERA_Y_MM_RS: return y_mm_rs.getRunningStats();
-//	case TYPE::CAMERA_SIGMA_X_MM_RS: return sigma_x_mm_rs.getRunningStats();
-//	case TYPE::CAMERA_SIGMA_Y_MM_RS: return sigma_y_mm_rs.getRunningStats();
-//	case TYPE::CAMERA_SIGMA_XY_MM_RS: return sigma_xy_mm_rs.getRunningStats();
-//	default: return boost::python::dict();
-//	}
-//
-//}
-//
-//
-//
-//bool Camera::enableAnalysisMaskOverlay()
-//{
-//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::one_ushort);
-//}
-//bool Camera::enableCrossHairOverlay()
-//{
-//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CROSS_HAIR), GlobalConstants::one_ushort);
-//}
-//bool Camera::enableCentreOfMassOverlay()
-//{
-//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_CENTRE_OF_MASS), GlobalConstants::one_ushort);
-//}
-//bool Camera::disableAnalysisMaskOverlay()
-//{
-//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
-//}
-//bool Camera::disableCrossHairOverlay()
-//{
-//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
-//}
-//bool Camera::disableCentreOfMassOverlay()
-//{
-//	return  epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::OVERLAY_MASK), GlobalConstants::zero_ushort);
-//}
-//bool Camera::disableAllOverlay()
-//{
-//	bool r = true;
-//	if(disableAnalysisMaskOverlay())	{
-//	}
-//	else{
-//		r = false;
-//	}
-//	if (disableCrossHairOverlay()) {
-//	}
-//	else {
-//		r = false;
-//	}
-//	if (disableCentreOfMassOverlay()) {
-//	}
-//	else {
-//		r = false;
-//	}
-//	return r;
-//}
-//STATE Camera::getAnalysisMaskOverlayState()const
-//{
-//	return cross_hair_overlay.second;
-//}
-//STATE Camera::getCrossHairOverlayState()const
-//{
-//	return cross_hair_overlay.second;
-//}
-//STATE Camera::getCentreOfMassOverlayState()const
-//{
-//	return cross_hair_overlay.second;
-//}
-
-// std::pair<epicsTimeStamp, STATE> ;
-// std::pair<epicsTimeStamp, STATE> center_of_mass_overlay;
-// std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
-
-
-//boost::python::dict Camera::getRunningStats()const
 boost::python::dict Camera::getAllRunningStats()const
 {
 	boost::python::dict r;
@@ -1660,57 +1569,88 @@ void Camera::clearAllRunningStatBuffers()
 }
 void Camera::clearAllRunningStats()
 {
-	std::cout << "Camera x_pix_rs.Clear " << std::endl;
+	//std::cout << "Camera x_pix_rs.Clear " << std::endl;
 	x_pix_rs.Clear();
-	std::cout << "Camera y_pix_rs.Clear " << std::endl;
+	//std::cout << "Camera y_pix_rs.Clear " << std::endl;
 	y_pix_rs.Clear();
-	std::cout << "Camera sigma_x_pix_rs.Clear " << std::endl;
+	//std::cout << "Camera sigma_x_pix_rs.Clear " << std::endl;
 	sigma_x_pix_rs.Clear();
-	std::cout << "Camera sigma_y_pix_rs.Clear " << std::endl;
+	//std::cout << "Camera sigma_y_pix_rs.Clear " << std::endl;
 	sigma_y_pix_rs.Clear();
-	std::cout << "Camera sigma_xy_pix_rs.Clear " << std::endl;
+	//std::cout << "Camera sigma_xy_pix_rs.Clear " << std::endl;
 	sigma_xy_pix_rs.Clear();
-	std::cout << "Camera x_mm_rs.Clear " << std::endl;
+	//std::cout << "Camera x_mm_rs.Clear " << std::endl;
 	x_mm_rs.Clear();
-	std::cout << "Camera y_mm_rs.Clear " << std::endl;
+	//std::cout << "Camera y_mm_rs.Clear " << std::endl;
 	y_mm_rs.Clear();
-	std::cout << "Camera sigma_x_mm_rs.Clear " << std::endl;
+	//std::cout << "Camera sigma_x_mm_rs.Clear " << std::endl;
 	sigma_x_mm_rs.Clear();
-	std::cout << "Camera sigma_y_mm_rs.Clear " << std::endl;
+	//std::cout << "Camera sigma_y_mm_rs.Clear " << std::endl;
 	sigma_y_mm_rs.Clear();
-	std::cout << "Camera sigma_xy_mm_rs.Clear " << std::endl;
+	//std::cout << "Camera sigma_xy_mm_rs.Clear " << std::endl;
 	sigma_xy_mm_rs.Clear();
-	std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
+	//std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
 	avg_intensity_rs.Clear();
-	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
+//	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
 	sum_intensity_rs.Clear();
 }
 void Camera::setAllRunningStatSizes(size_t new_val)
 {
-	std::cout << "Camera x_pix_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera x_pix_rs.setMaxCount " << new_val << std::endl;
 	x_pix_rs.setMaxCount(new_val);
-	std::cout << "Camera y_pix_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera y_pix_rs.setMaxCount " << new_val << std::endl;
 	y_pix_rs.setMaxCount(new_val);
-	std::cout << "Camera sigma_x_pix_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera sigma_x_pix_rs.setMaxCount " << new_val << std::endl;
 	sigma_x_pix_rs.setMaxCount(new_val);
-	std::cout << "Camera sigma_y_pix_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera sigma_y_pix_rs.setMaxCount " << new_val << std::endl;
 	sigma_y_pix_rs.setMaxCount(new_val);
-	std::cout << "Camera sigma_xy_pix_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera sigma_xy_pix_rs.setMaxCount " << new_val << std::endl;
 	sigma_xy_pix_rs.setMaxCount(new_val);
-	std::cout << "Camera x_mm_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera x_mm_rs.setMaxCount " << new_val << std::endl;
 	x_mm_rs.setMaxCount(new_val);
-	std::cout << "Camera y_mm_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera y_mm_rs.setMaxCount " << new_val << std::endl;
 	y_mm_rs.setMaxCount(new_val);
-	std::cout << "Camera sigma_x_mm_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera sigma_x_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_x_mm_rs.setMaxCount(new_val);
-	std::cout << "Camera sigma_y_mm_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera sigma_y_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_y_mm_rs.setMaxCount(new_val);
-	std::cout << "Camera sigma_xy_mm_rs.setMaxCount " << new_val << std::endl;
+//	std::cout << "Camera sigma_xy_mm_rs.setMaxCount " << new_val << std::endl;
 	sigma_xy_mm_rs.setMaxCount(new_val);
-	std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
+//	std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
 	avg_intensity_rs.setMaxCount(new_val);
-	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
+//	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
 	sum_intensity_rs.setMaxCount(new_val);
+}
+size_t Camera::getRunningStatNumDataValues()const
+{
+	std::vector<size_t> NumDataValuesVector(GlobalConstants::twelve_sizet, GlobalConstants::sizet_max);
+	NumDataValuesVector[0] = x_pix_rs.NumDataValues();
+	NumDataValuesVector[1] = y_pix_rs.NumDataValues();
+	NumDataValuesVector[2] = sigma_x_pix_rs.NumDataValues();
+	NumDataValuesVector[3] = sigma_y_pix_rs.NumDataValues();
+	NumDataValuesVector[4] = sigma_xy_pix_rs.NumDataValues();
+	NumDataValuesVector[5] = x_mm_rs.NumDataValues();
+	NumDataValuesVector[6] = y_mm_rs.NumDataValues();
+	NumDataValuesVector[7] = sigma_x_mm_rs.NumDataValues();
+	NumDataValuesVector[8] = sigma_y_mm_rs.NumDataValues();
+	NumDataValuesVector[9] = sigma_xy_mm_rs.NumDataValues();
+	NumDataValuesVector[10] = avg_intensity_rs.NumDataValues();
+	NumDataValuesVector[11] = sum_intensity_rs.NumDataValues();
+	//size_t min_item = *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());
+	//std::cout << "Camera::getRunningStatNumDataValues min_item =  " << min_item << std::endl;
+	//std::cout << "NumDataValuesVector[0] " << NumDataValuesVector[0] << std::endl;
+	//std::cout << "NumDataValuesVector[1] " << NumDataValuesVector[1] << std::endl;
+	//std::cout << "NumDataValuesVector[2] " << NumDataValuesVector[2] << std::endl;
+	//std::cout << "NumDataValuesVector[3] " << NumDataValuesVector[3] << std::endl;
+	//std::cout << "NumDataValuesVector[4] " << NumDataValuesVector[4] << std::endl;
+	//std::cout << "NumDataValuesVector[5] " << NumDataValuesVector[5] << std::endl;
+	//std::cout << "NumDataValuesVector[6] " << NumDataValuesVector[6] << std::endl;
+	//std::cout << "NumDataValuesVector[7] " << NumDataValuesVector[7] << std::endl;
+	//std::cout << "NumDataValuesVector[8] " << NumDataValuesVector[8] << std::endl;
+	//std::cout << "NumDataValuesVector[9] " << NumDataValuesVector[9] << std::endl;
+	//std::cout << "NumDataValuesVector[10] " << NumDataValuesVector[10] << std::endl;
+	//std::cout << "NumDataValuesVector[11] " << NumDataValuesVector[11] << std::endl;
+	return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());;
 }
 
 bool Camera::startAcquiring()
@@ -2486,6 +2426,7 @@ void Camera::messagesOff()
 /* memory shenanigans so its only used for large image arrays when requested */ 
 bool Camera::vector_resize(std::vector<long>& vec)
 {
+	messenger.printDebugMessage(hardwareName, " vector_resize to ", array_data_pixel_count, " Items");
 	vec.resize(array_data_pixel_count);
 	return vec.size() == array_data_pixel_count;
 }
@@ -2507,10 +2448,14 @@ void Camera::malloc_roidata()
 }
 bool Camera::updateImageData()
 {
+	std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
+	messenger.printDebugMessage("updateImageData");
 	if (image_data_has_not_vector_resized)
 	{
+		messenger.printDebugMessage("image_data_has_not_vector_resized = True");
 		messenger.printDebugMessage("vector_resize for image_data ");
 		vector_resize(image_data.second);
+		messenger.printDebugMessage("vector_resize for image_data 2");
 		if (image_data.second.size() == array_data_pixel_count)
 		{
 			image_data_has_not_vector_resized = false;
@@ -2522,6 +2467,7 @@ bool Camera::updateImageData()
 	}
 	if (!image_data_has_not_vector_resized)
 	{
+		messenger.printDebugMessage("image_data_has_not_vector_resized = False");
 		//auto start = std::chrono::high_resolution_clock::now();
 		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 		//	, image_data.first);
@@ -2677,6 +2623,7 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 
 std::vector<long> Camera::getImageData()const
 {
+	std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
 	return image_data.second;
 }
 boost::python::list Camera::getImageData_Py()const

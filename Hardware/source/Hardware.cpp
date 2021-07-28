@@ -47,7 +47,7 @@ machine_area(GlobalConstants::stringToTypeMap.at(specificValueMap.find("machine_
 hardware_type(GlobalConstants::stringToTypeMap.at(specificValueMap.find("hardware_type")->second)),
 onlineProperties(std::map<std::string, std::string>()),
 offlineProperties(std::map<std::string, std::string>()),
-currentSnapshot(HardwareSnapshot())
+currentSnapshot(HardwareSnapshot()),
 pvStructs(std::map<std::string, pvStruct>())
 {
 	messenger.printDebugMessage("Constructing Hardware ", hardwareName);

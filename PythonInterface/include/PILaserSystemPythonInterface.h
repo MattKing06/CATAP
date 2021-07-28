@@ -28,8 +28,9 @@ namespace BOOST_PYTHON_LASER_FEEDBACK_INCLUDE
 			.def("setAllRunningStatSize", &PILaserSystem::setAllRunningStatSize)
 			.def("clearAllRunningStat", &PILaserSystem::clearAllRunningStat)
 			.def("getRunningStatSize", &PILaserSystem::getRunningStatSize)
+			.def("getRunningStatNumDataValues", &PILaserSystem::getRunningStatNumDataValues)
 			//.def("getRunningStatCount", &PILaserSystem::getRunningStatCount)
-			//.def("isRunningStatFull", &PILaserSystem::isRunningStatFull)
+			.def("areAllRunningStatsFull", &PILaserSystem::areAllRunningStatsFull)
 
 			
 

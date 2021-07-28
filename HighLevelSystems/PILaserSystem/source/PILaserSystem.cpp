@@ -139,6 +139,22 @@ size_t PILaserSystem::getRunningStatSize()
 //	return wallCurrentMonitor.getRunningStatCount();
 //}
 
+
+size_t PILaserSystem::getRunningStatNumDataValues()const
+{
+	std::vector<size_t> NumDataValuesVector(GlobalConstants::three_sizet, GlobalConstants::sizet_max);
+	NumDataValuesVector[0] = cameraFactory.getRunningStatNumDataValues(virtualCathodeCameraName);
+	NumDataValuesVector[1] = chargeFactory.getRunningStatNumDataValues(wallCurrentMonitorName);
+	NumDataValuesVector[2] = laserEnergyMeterFactory.getRunningStatNumDataValues(energyMeterName);
+	//return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());
+	//size_t min_item = *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());
+	//std::cout << "PILaserSystem::getRunningStatNumDataValues min_item = " << min_item << std::endl;
+	//std::cout << "NumDataValuesVector[0] " << NumDataValuesVector[0] << std::endl;
+	//std::cout << "NumDataValuesVector[1] " << NumDataValuesVector[1] << std::endl;
+	//std::cout << "NumDataValuesVector[2] " << NumDataValuesVector[2] << std::endl;
+	return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());;
+}
+
 bool PILaserSystem::areAllRunningStatsFull()
 {
 	if (cameraFactory.areAllRunningStatsFull(virtualCathodeCameraName))

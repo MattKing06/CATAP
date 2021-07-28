@@ -19,7 +19,11 @@
 #include <iostream>
 #include <map>
 
-const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\test\\CATAP\\MasterLattice";//MASTER_LATTICE_LOCATION;
+
+// TODO this is hardcoded in, which is fine, but we do need a way of passing a different location 
+//const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\test\\CATAP\\MasterLattice";//MASTER_LATTICE_LOCATION;
+//const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\development\\CATAP\\djs56\\new_pc\\src\\MasterLattice";//MASTER_LATTICE_LOCATION;
+const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\development\\CATAP\\djs56\\new_pc\\src\\MasterLattice";//MASTER_LATTICE_LOCATION;
 #if defined(__unix__) ||  defined(_unix)
 const std::string SEPARATOR = "/";
 #endif

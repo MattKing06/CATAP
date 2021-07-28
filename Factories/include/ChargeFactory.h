@@ -205,7 +205,10 @@ public:
 	void clearRunningStats(const std::string& name);
 	
 	bool areAllRunningStatsFull(const std::string& name);
-
+	/*! Get the current number of data values being used by the Running Stats.
+	@param[in] name: the charge factory name.
+	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues(const std::string& name)const;
 
 	/*! turns debug messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
 	void debugMessagesOn();

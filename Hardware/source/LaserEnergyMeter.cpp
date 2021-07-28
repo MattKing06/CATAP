@@ -266,19 +266,22 @@ bool LaserEnergyMeter::checkBuffer(boost::circular_buffer< double >& buf)
 
 void LaserEnergyMeter::setRunningStatsSize(size_t new_size)
 {
-	std::cout << "LaserEnergyMeter energyStats.setMaxCount " << new_size << std::endl;
+	//std::cout << "LaserEnergyMeter energyStats.setMaxCount " << new_size << std::endl;
 	energyStats.setMaxCount(new_size);
 }
 void LaserEnergyMeter::clearRunningStats()
 {
-	std::cout << "LaserEnergyMeter energyStats.Clear " << std::endl;
+	//std::cout << "LaserEnergyMeter energyStats.Clear " << std::endl;
 	energyStats.Clear();
 }
 bool LaserEnergyMeter::areRunningStatsFull()
 {
 	return energyStats.Full();
 }
-
+size_t LaserEnergyMeter::getRunningStatNumDataValues()const
+{
+	return energyStats.NumDataValues();
+}
 
 void LaserEnergyMeter::checkStatus()
 {

@@ -1,4 +1,5 @@
 #include "GlobalFunctions.h"
+
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -33,6 +34,8 @@ namespace GlobalFunctions {
 	//}
 
 	time_t timeNow(){ return time(nullptr); }
+
+
 
 	std::string toString(const std::vector<TYPE>& vec)
 	{

@@ -62,9 +62,9 @@ public:
 	/*! Clear all the values assoociated with the Running mean and variance stats.*/
 	void clearAllRunningStat();
 	void setAllRunningStatSize(size_t new_val);
-	size_t getRunningStatSize();
-	//size_t getRunningStatCount();
-	bool areAllRunningStatsFull();
+	size_t getRunningStatSize();// const
+	size_t getRunningStatNumDataValues()const;
+	bool areAllRunningStatsFull();// const
 
 
 };

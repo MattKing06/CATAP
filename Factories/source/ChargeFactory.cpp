@@ -567,7 +567,14 @@ bool ChargeFactory::areAllRunningStatsFull(const std::string& name)
 	}
 	return false;
 }
-
+size_t ChargeFactory::getRunningStatNumDataValues(const std::string& name)const
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		return chargeMap.at(name).getRunningStatNumDataValues();
+	}
+	return GlobalConstants::size_zero;
+}
 
 void ChargeFactory::debugMessagesOn()
 {

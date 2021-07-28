@@ -1870,7 +1870,15 @@ boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)co
 	}
 	return boost::python::dict();
 }
-
+size_t CameraFactory::getRunningStatNumDataValues(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getRunningStatNumDataValues();
+	}
+	return GlobalConstants::zero_sizet;
+}
 
 
 
