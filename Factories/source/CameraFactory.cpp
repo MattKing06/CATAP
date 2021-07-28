@@ -1113,21 +1113,21 @@ bool CameraFactory::isNotUsingBackground(const std::string& name)const
 	}
 	return false;
 }
-long CameraFactory::getStepSize(const std::string& name)const
+long CameraFactory::getNpointStepSize(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getStepSize();
+		return camera_map.at(full_name).getNpointStepSize();
 	}
 	return GlobalConstants::long_min;
 }
-bool CameraFactory::setStepSize(const std::string& name, long val)
+bool CameraFactory::setNpointStepSize(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setStepSize(val);
+		return camera_map.at(full_name).setNpointStepSize(val);
 	}
 	return false;
 }

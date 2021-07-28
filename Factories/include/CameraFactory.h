@@ -463,12 +463,12 @@ public:
 	/*! get the latest pixel sum for the image
 	@param[in] std::string, name
 	@param[out] long, value */
-	long getStepSize(const std::string& name)const;
+	long getNpointStepSize(const std::string& name)const;
 	/*! set the Npoint scaling stepsize
 	@param[in] std::string, name
 	@param[in] long, new stepsize
 	@param[out] bool, value */
-	bool setStepSize(const std::string& name,long val);
+	bool setNpointStepSize(const std::string& name,long val);
 	/*! get the latest pixel sum for the image
 	@param[in] std::string, name	
 	@param[out] double, value */

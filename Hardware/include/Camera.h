@@ -462,11 +462,11 @@ public:
 	bool isNotUsingBackground()const;
 	/*! get the Npoint scaling stepsize 
 	@param[out] long, value */
-	long getStepSize()const;
+	long getNpointStepSize()const;
 	/*! set the Npoint scaling stepsize 
 	@param[in] long, new stepsize
 	@param[out] bool, value */
-	bool setStepSize(long val);
+	bool setNpointStepSize(long val);
 	/*! get the latest pixel sum for the image 
 	@param[out] double, value */
 	double getSumIntensity()const;

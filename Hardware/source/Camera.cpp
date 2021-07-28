@@ -770,11 +770,11 @@ double Camera::getAvgIntensity()const
 {
 	return avg_intensity.second;
 }
-long Camera::getStepSize()const
+long Camera::getNpointStepSize()const
 {
 	return step_size.second;
 }
-bool Camera::setStepSize(long val)
+bool Camera::setNpointStepSize(long val)
 {
 	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val);
 }
@@ -2620,7 +2620,7 @@ std::map<std::string, double> Camera::getAnalayisData() const
 	r["floor_state"] = getUseFloorState();
 	r["floor_level"] = getFloorLevel();
 	r["npoint_state"] = getNPointState();
-	r["step_size"] = getStepSize();
+	r["step_size"] = getNpointStepSize();
 	r["using_background_state"] = getUsingBackgroundState();
 	r["avg_intensity"] = getAvgIntensity();
 	r["avg_intensity"] = getAvgIntensity();
@@ -2648,7 +2648,7 @@ boost::python::dict Camera::getAnalayisData_Py() const
 	r["floor_level"] = getFloorLevel();
 	r["npoint_state"] = getNPointState();
 	r["npoint_state"] = getNPointState();
-	r["npoint_step_size"] = getStepSize();
+	r["npoint_step_size"] = getNpointStepSize();
 	r["using_background_state"] = getUsingBackgroundState();
 	r["sum_intensity"] = getSumIntensity();
 	r["avg_intensity"] = getAvgIntensity();
