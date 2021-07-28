@@ -22,7 +22,7 @@ cmake_linux:
     - linux
 cmake_windows: 
   cache: 
-    key: "${CI_COMMIT_SHORT_SHA}"
+    key: %CI_COMMIT_SHORT_SHA%
     paths: 
       - build/*
   script: 
@@ -50,7 +50,7 @@ linux_make:
     - linux
 ms_build: 
   cache: 
-    key: "${CI_COMMIT_SHORT_SHA}"
+    key: %CI_COMMIT_SHORT_SHA%
     paths: 
       - build/*
   script: 
@@ -82,7 +82,7 @@ linux_tests:
 
 windows_tests: 
   cache: 
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: %CI_COMMIT_SHORT_SHA%
     paths: 
       - build/*
   script: 
