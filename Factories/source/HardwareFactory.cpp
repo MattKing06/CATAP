@@ -683,49 +683,83 @@ void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
-	magnetFactory.debugMessagesOn();
 	bpmFactory.debugMessagesOn();
-	chargeFactory.debugMessagesOn();
 	cameraFactory.debugMessagesOn();
+	chargeFactory.debugMessagesOn();
+	imgFactory.debugMessagesOn();
 	laserEnergyMeterFactory.debugMessagesOn();
 	laserHWPFactory.debugMessagesOn();
+	llrffactory.debugMessagesOn();
+	magnetFactory.debugMessagesOn();
+	rfHeartbeatFactory.debugMessagesOn();
+	rfmodulatorFactory.debugMessagesOn();
+	rfProtectionFactory.debugMessagesOn();
+	screenFactory.debugMessagesOn();
+	shutterFactory.debugMessagesOn();
+	valveFactory.debugMessagesOn();
 }
 
 void HardwareFactory::debugMessagesOff()
 {
 	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG OFF");
 	messenger.debugMessagesOff();
-	magnetFactory.debugMessagesOff();
 	bpmFactory.debugMessagesOff();
+	cameraFactory.debugMessagesOff();
 	chargeFactory.debugMessagesOff();
-	valveFactory.debugMessagesOff();
+	imgFactory.debugMessagesOff();
 	laserEnergyMeterFactory.debugMessagesOff();
 	laserHWPFactory.debugMessagesOff();
+	llrffactory.debugMessagesOff();
+	magnetFactory.debugMessagesOff();
+	rfHeartbeatFactory.debugMessagesOff();
+	rfmodulatorFactory.debugMessagesOff();
+	rfProtectionFactory.debugMessagesOff();
+	screenFactory.debugMessagesOff();
+	shutterFactory.debugMessagesOff();
+	valveFactory.debugMessagesOff();
 }
 
 void HardwareFactory::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
-	magnetFactory.messagesOn();
 	bpmFactory.messagesOn();
+	cameraFactory.messagesOn();
 	chargeFactory.messagesOn();
-	valveFactory.messagesOn();
+	imgFactory.messagesOn();
 	laserEnergyMeterFactory.messagesOn();
 	laserHWPFactory.messagesOn();
+	llrffactory.messagesOn();
+	magnetFactory.messagesOn();
+	rfHeartbeatFactory.messagesOn();
+	rfmodulatorFactory.messagesOn();
+	rfProtectionFactory.messagesOn();
+	screenFactory.messagesOn();
+	shutterFactory.messagesOn();
+	valveFactory.messagesOn();
 }
 
 void HardwareFactory::messagesOff()
 {
 	messenger.printMessage("HARDWARE-FAC - MESSAGES OFF");
 	messenger.messagesOff();
-	magnetFactory.messagesOff();
+
 	bpmFactory.messagesOff();
+	cameraFactory.messagesOff();
 	chargeFactory.messagesOff();
-	valveFactory.messagesOff();
+	imgFactory.messagesOff();
 	laserEnergyMeterFactory.messagesOff();
 	laserHWPFactory.messagesOff();
+	llrffactory.messagesOff();
+	magnetFactory.messagesOff();
+	rfHeartbeatFactory.messagesOff();
+	rfmodulatorFactory.messagesOff();
+	rfProtectionFactory.messagesOff();
+	screenFactory.messagesOff();
+	shutterFactory.messagesOff();
+	valveFactory.messagesOff();
 }
+
 
 bool HardwareFactory::isMessagingOn()
 {
