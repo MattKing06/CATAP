@@ -610,7 +610,7 @@ double Camera::getPixelToMM()const
 }
 bool Camera::setPixelToMM(double value )const
 {
- return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_PixMM), value);
+ return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ANA_PixMM), (epicsFloat64)value);
 }
 
 long Camera::getCentreXPixel()const
@@ -623,11 +623,11 @@ bool Camera::getCentreYPixel()const
 }
 bool Camera::setCentreXPixel(long value)
 {
- return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterX), value);
+ return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterX), (epicsInt32)value);
 }
 bool Camera::setCentreYPixel(long value)
 {
-	 return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterY), value);
+	 return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterY), (epicsInt32)value);
 }
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
@@ -776,7 +776,9 @@ long Camera::getNpointStepSize()const
 }
 bool Camera::setNpointStepSize(long val)
 {
-	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val);
+	std::cout << "setNpointStepSize, val = " << (epicsInt32)val << std::endl;
+	//return false;
+	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);
 }
 bool Camera::setX(double value)
 {
@@ -847,44 +849,11 @@ bool Camera::setBufferTrigger()
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		char v = 1;
-		return epicsInterface->putValue2<char>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), v);
+		epicsUInt8 v = 1;
+		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), v);
 	}
 	return false;
 }
-//
-//bool Camera::setROIminX(long v)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinX), v);
-//	}
-//	return false;
-//}
-//bool Camera::setROIminY(long v)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_MinY), v);
-//	}
-//	return false;
-//}
-//bool Camera::setROIsizeX(long v)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeX), v);
-//	}
-//	return false;
-//}
-//bool Camera::setROIsizeY(long v)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ROI1_SizeY), v);
-//	}
-//	return false;
-//}
 bool Camera::hasLED()const
 {
 	return has_led;
@@ -894,10 +863,10 @@ bool Camera::setLEDOn()
 	// ALSO HAVE IN SCREENS 
 	if (has_led)
 	{
-		if (epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_ACTIVATE))
+		if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
-			return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_On), GlobalConstants::EPICS_SEND);
+			return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_SEND);
 		}
 		messenger.printDebugMessage(hardwareName," Send setLEDOn EPICS_ACTIVATE failed ");
 	}
@@ -910,10 +879,10 @@ bool Camera::setLEDOn()
 bool Camera::setLEDOff()
 {
 	// ALSO HAVE IN SCREENS
-	if(epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_ACTIVATE))
+	if(epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
-		return epicsInterface->putValue2(pvStructs.at(CameraRecords::LED_Off), GlobalConstants::EPICS_SEND);
+		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_SEND);
 	}
 	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
 	return false;
@@ -934,11 +903,11 @@ STATE Camera::getLEDState()const
 //--------------------------------------------------------------------------------------------------
 bool Camera::enableOverlayCross()
 {
-	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_ushort);
+	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_ushort);
 }
 bool Camera::disableOverlayCross()
 {
-	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_ushort);
+	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_ushort);
 }
 STATE Camera::getOverlayCrossState()const
 {
@@ -954,11 +923,11 @@ bool Camera::isOverlayCrossDisabled()const
 }
 bool Camera::enableOverlayMask()
 {
-	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_ushort);
+	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_ushort);
 }
 bool Camera::disableOverlayMask()
 {
-	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_ushort);
+	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayMaskState()const
 {
@@ -974,11 +943,11 @@ bool Camera::isOverlayMaskDisabled()const
 }
 bool Camera::enableOverlayResult()
 {
-	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_ushort);
+	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_ushort);
 }
 bool Camera::disableOverlayResult()
 {
-	return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_ushort);
+	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_ushort);
 }
 STATE Camera::getOverlayResultState()const
 {
@@ -1095,19 +1064,19 @@ bool Camera::hasNoBeam()const
 bool Camera::setMaskXCenter(long val)
 {
 	messenger.printMessage("setMaskXCenter ", val);
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskXCenter), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskXCenter), (epicsInt32)val);
 }
 bool Camera::setMaskYCenter(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskYCenter), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYCenter), (epicsInt32)val);
 }
 bool Camera::setMaskXRadius(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskXRad), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskXRad), (epicsInt32)val);
 }
 bool Camera::setMaskYRadius(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ANA_MaskYRad), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYRad), (epicsInt32)val);
 }
 bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
 {
@@ -1153,19 +1122,19 @@ bool Camera::setMask_Py(boost::python::dict settings)
 }
 bool Camera::setROIMinX(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_MinX), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinX), (epicsInt32)val);
 }
 bool Camera::setROIMinY(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_MinY), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinY), (epicsInt32)val);
 }
 bool Camera::setROISizeX(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_SizeX), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeX), (epicsInt32)val);
 }
 bool Camera::setROISizeY(long val)
 {
-	return  epicsInterface->putValue2<dbr_long_t>(pvStructs.at(CameraRecords::ROI1_SizeY), (dbr_long_t)val);
+	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeY), (epicsInt32)val);
 }
 bool Camera::setROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
@@ -1216,19 +1185,19 @@ long Camera::getMaskAndROIySize()const
 }
 bool Camera::setMaskAndROIxMax(long val)
 {
-	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetX), (double)val);
+	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)val);
 }
 bool Camera::setMaskAndROIyMax(long val)
 {
-	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetY), (double)val);
+	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)val);
 }
 bool Camera::setMaskAndROIxSize(long val)
 {
-	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (double)val);
+	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (epicsFloat64)val);
 }
 bool Camera::setMaskAndROIySize(long val)
 {
-	return  epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (double)val);
+	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (epicsFloat64)val);
 }
 bool Camera::setMaskandROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
@@ -1273,8 +1242,8 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 }
 bool Camera::useNPoint(bool v)
 {
-	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
+	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
 }
 STATE Camera::getNPointState()const
 {
@@ -1333,20 +1302,18 @@ bool Camera::areAllRunningStatsFull()const
 
 bool Camera::setNewBackground(bool v)
 {
-	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
+	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
 }
 STATE Camera::getSetNewBackgroundState()
 {
 	return set_new_background.second;
 }
-
-
 bool Camera::useBackground(bool v)
 {
-	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
 	//messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
 }
 bool Camera::isUsingBackground()const
 {
@@ -1583,11 +1550,11 @@ size_t Camera::getRunningStatNumDataValues()const
 
 bool Camera::startAcquiring()
 {
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
+	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
 }
 bool Camera::stopAcquiring()
 {
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
 }
 bool Camera::isAcquiring()const
 {
@@ -1603,11 +1570,11 @@ STATE Camera::getAcquireState()const
 }
 bool Camera::startAnalysing()
 {
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
 }
 bool Camera::stopAnalysing()
 {
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::zero_ushort);
+	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::zero_ushort);
 }
 bool Camera::isAnalysing()const
 {
@@ -1807,7 +1774,7 @@ bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
 	{
-		return epicsInterface->putValue2<int>(pvStructs.at(CameraRecords::HDF_NumCapture), (int)num);
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
 	}
 	return false;
 }
@@ -1816,7 +1783,7 @@ bool Camera::capture()
 	bool ans = false;
 	if (isAcquiring())
 	{
-		ans = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::one_ushort);
+		ans = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::one_ushort);
 		messenger.printDebugMessage("Capture set to 1 on camera ", hardwareName);
 	}
 	else
@@ -1833,7 +1800,7 @@ bool Camera::write()
 	//setStartFileNumberJPG(startNumber);
 	if (isNotCapturing())
 	{
-		ans = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::one_ushort);
+		ans = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::one_ushort);
 		messenger.printDebugMessage("WriteFile set to 1 on camera = ", hardwareName);
 	}
 	else
@@ -1851,8 +1818,8 @@ bool Camera::saveImageBuffer()
 	}
 	if (makeANewDirectoryAndNameBuffer())
 	{
-		char proc = 1;
-		return epicsInterface->putValue2<char>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), proc);
+		epicsUInt8 proc = 1;
+		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), proc);
 	}
 	return false;
 }
@@ -2050,9 +2017,9 @@ bool Camera::didLastCaptureAndSaveSucceed()
 //---------------------------------------------------------------------------------
 bool Camera::resetCaptureAndSaveError()
 {
-	bool set_capture = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::zero_ushort);
-	bool set_write_file = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::zero_ushort);
-	bool set_write_stat = epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::HDF_WriteStatus), GlobalConstants::zero_ushort);
+	bool set_capture = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::zero_ushort);
+	bool set_write_file = epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::zero_ushort);
+	bool set_write_stat = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_WriteStatus), GlobalConstants::zero_ushort);
 	if (set_capture)
 	{
 		if (set_write_file)
@@ -2204,7 +2171,7 @@ bool Camera::setUseFloor()
 		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
 		{
 			//messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
 		}
 		//messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
 		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
@@ -2219,7 +2186,7 @@ bool Camera::setDoNotUseFloor()
 		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
 		{
 			messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
 		}
 		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
 
@@ -2230,7 +2197,7 @@ bool Camera::setFloorLevel(long v)
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), (epicsInt32)v);
 	}
 	return false;
 }
@@ -2377,7 +2344,7 @@ void Camera::malloc_roidata()
 bool Camera::updateImageData()
 {
 	std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
-	messenger.printDebugMessage("updateImageData");
+	//messenger.printDebugMessage("updateImageData");
 	if (image_data_has_not_vector_resized)
 	{
 		messenger.printDebugMessage("image_data_has_not_vector_resized = True");
@@ -2395,7 +2362,7 @@ bool Camera::updateImageData()
 	}
 	if (!image_data_has_not_vector_resized)
 	{
-		messenger.printDebugMessage("image_data_has_not_vector_resized = False");
+		//messenger.printDebugMessage("image_data_has_not_vector_resized = False");
 		//auto start = std::chrono::high_resolution_clock::now();
 		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 		//	, image_data.first);
@@ -2578,7 +2545,7 @@ bool Camera::setBlackLevel(long value)
 {
 	if (getCamType() == TYPE::VELA_CAMERA)
 	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::CAM_BlackLevel), value);
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::CAM_BlackLevel), (epicsInt32)value);
 	}
 	return false;
 }
@@ -2590,7 +2557,7 @@ bool Camera::setGain(long value)
 {
 	if (getCamType() == TYPE::VELA_CAMERA)
 	{
-		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::CAM_Gain), value);
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::CAM_Gain), (epicsInt32)value);
 	}
 	return false;
 }

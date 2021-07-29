@@ -341,6 +341,13 @@ namespace GlobalConstants
 	/*! Unsigned short-type variable for 1 */
 	const unsigned short one_ushort = 1;
 
+	//// epics versions 
+	///*! epicsUInt16 variable for 0 */
+	//const epicsUInt16 zero_epicsUInt16 = 0;
+	///*! epicsUInt16 variable for 1 */
+	//const epicsUInt16 one_epicsUInt16 = 1;
+
+
 	/*! Minimum possible value of a unsigned short */
 	const unsigned short ushort_min = std::numeric_limits<unsigned short>::min();
 	/*! Maximum possible value of a unsigned short */
@@ -363,9 +370,6 @@ namespace GlobalConstants
 
 	/*! Minimum possible value of a double */
 	const char char_min = std::numeric_limits<char>::min();
-
-	//const epicsUInt16 zero_epicsUInt16= 0;
-	//const epicsUInt16 one_epicsUInt16 = 1;
 
 
 	/*! Unsigned size_t-type for 0 */

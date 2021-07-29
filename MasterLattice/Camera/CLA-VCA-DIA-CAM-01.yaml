@@ -73,7 +73,7 @@ controls_information:
         ANA_PixH_RBV : CLA-VCA-DIA-CAM-01:ANA:PixH_RBV
         ANA_PixMM    : CLA-VCA-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixMM_RBV
-
+        # the analysis can use "n-point scaling" see image analysis notes written by DJS / Tim Price / Matt Toplis 
         ANA_NPointStepSize     : CLA-VCA-DIA-CAM-01:ANA:StepSize
         ANA_NPointStepSize_RBV : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
         ANA_UseNPoint     : CLA-VCA-DIA-CAM-01:ANA:UseNPoint   
@@ -176,7 +176,10 @@ properties:
     ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
     BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
-       
+      
+      
+    MAX_NPOINT_STEPSIZE : 10
+    MIN_NPOINT_STEPSIZE : 1
     # COULD  USE THESE! 
     # CAM1_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
     # CAM1_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
