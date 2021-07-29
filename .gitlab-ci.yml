@@ -94,6 +94,8 @@ windows_tests:
     - .\ConfigReaderTest.exe
     - .\LoggingSystemTest.exe
     - .\HardwareTests.exe
+    - .\EPICSInterfaceTests.exe
+    - .\EPICSToolsTests.exe
   stage: tests
   tags:
     - windows
