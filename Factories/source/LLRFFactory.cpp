@@ -719,7 +719,7 @@ void LLRFFactory::debugMessagesOff()
 	// reader.debugMessagesOff();
 	for (auto& llrf : LLRFMap)
 	{
-		llrf.second.messagesOn();
+		llrf.second.messagesOff();
 	}
 }
 void LLRFFactory::messagesOn()
