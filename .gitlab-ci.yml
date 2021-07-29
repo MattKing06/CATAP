@@ -75,7 +75,7 @@ linux_tests:
     - ./ConfigReaderTest
     - ./LoggingSystemTest
     - ./HardwareTests
-    - ./FactoryTests
+   # - ./FactoryTests
     - ./EPICSInterfaceTests
     - ./EPICSToolsTests
   stage: tests
