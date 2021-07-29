@@ -2,6 +2,7 @@ stages:
   - cmake
   - make
   - tests
+  - clean
   - doxygen
   - sphinx
   - wheel
@@ -96,6 +97,19 @@ windows_tests:
     - .\HardwareTests.exe
     - .\FactoryTests.exe
   stage: tests
+  tags:
+    - windows
+
+clean:
+  stage: cleanup
+  script:
+  - echo "Time to clean up"
+  after_script:
+  - set "BUILD_DIR=%CI_PROJECT_DIR%\\build"
+  - set "BUILD_DIR=%BUILD_DIR:/=\%"
+  - echo "Cleaning %BUILD_DIR%"
+  - rmdir /S /Q %BUILD_DIR%
+  - exit /b 0
   tags:
     - windows
 
