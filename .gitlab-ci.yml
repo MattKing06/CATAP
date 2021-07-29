@@ -81,7 +81,11 @@ linux_tests:
   tags:
     - linux
 
-windows_tests: 
+windows_tests:
+  cache: 
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths: 
+      - build/*
   script: 
     - cd build
     - cd testBin
@@ -91,8 +95,6 @@ windows_tests:
     - .\LoggingSystemTest.exe
     - .\HardwareTests.exe
     - .\FactoryTests.exe
-    - .\EPICSInterfaceTests.exe
-    - .\EPICSToolsTests.exe
   stage: tests
   tags:
     - windows
