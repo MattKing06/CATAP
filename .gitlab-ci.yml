@@ -75,6 +75,7 @@ linux_tests:
     - ./ConfigReaderTest
     - ./LoggingSystemTest
     - ./HardwareTests
+    - ./FactoryTests
     - ./EPICSInterfaceTests
     - ./EPICSToolsTests
   stage: tests
@@ -91,7 +92,6 @@ windows_tests:
     - cd testBin
     - cd Release
     - .\ConfigReaderTest.exe
-    - .\FactoryTests.exe
     - .\LoggingSystemTest.exe
     - .\HardwareTests.exe
     - .\EPICSInterfaceTests.exe
