@@ -92,6 +92,7 @@ windows_tests:
     - cd testBin
     - cd Release
     - .\ConfigReaderTest.exe
+    - .\FactoryTests.exe
     - .\LoggingSystemTest.exe
     - .\HardwareTests.exe
     - .\EPICSInterfaceTests.exe
