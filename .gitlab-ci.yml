@@ -91,29 +91,10 @@ windows_tests:
     - cd build
     - cd testBin
     - cd Release
-    - dir
     - .\ConfigReaderTest.exe
     - .\LoggingSystemTest.exe
     - .\HardwareTests.exe
-    - .\FactoryTests.exe
   stage: tests
-  tags:
-    - windows
-
-clean:
-  cache: 
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths: 
-      - build/*
-  stage: cleanup
-  script:
-  - echo "Time to clean up"
-  after_script:
-  - set "BUILD_DIR=%CI_PROJECT_DIR%\\build"
-  - set "BUILD_DIR=%BUILD_DIR:/=\%"
-  - echo "Cleaning %BUILD_DIR%"
-  - rmdir /S /Q %BUILD_DIR%
-  - exit /b 0
   tags:
     - windows
 
