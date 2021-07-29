@@ -37,8 +37,8 @@ controls_information:
         ROI1_SizeY : EBT-INJ-DIA-CAM-07:ROI1:SizeY
         ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-07:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-07:CAM:Acquire
-        CAM_Stop_Acquire     : EBT-INJ-DIA-CAM-07:CAM:Acquire
+        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-07:CAM:Start
+        CAM_Stop_Acquire     : EBT-INJ-DIA-CAM-07:CAM:Stop
         CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-07:CAM:Acquire_RBV
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-07:ANA:EnableCallbacks_RBV

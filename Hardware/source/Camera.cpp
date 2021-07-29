@@ -1274,7 +1274,7 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 bool Camera::useNPoint(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NPointStepSize), comm);
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
 }
 STATE Camera::getNPointState()const
 {

@@ -21,10 +21,8 @@ controls_information:
         ANA_MaskXRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad_RBV
         ANA_MaskYRad    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad
         ANA_MaskYRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad_RBV
-       
         ANA_MaskWidth_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskWidth_RBV
         ANA_MaskHeight_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskHeight_RBV
-        
         # ROI SK implementation  
         ROI1_MinX_RBV : CLA-VCA-DIA-CAM-01:ROI1:MinX_RBV
         ROI1_MinX : CLA-VCA-DIA-CAM-01:ROI1:MinX
@@ -36,8 +34,8 @@ controls_information:
         ROI1_SizeY : CLA-VCA-DIA-CAM-01:ROI1:SizeY
         ROI1_ImageData_RBV  : CLA-VCA-DIA-CAM-01:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Start_Acquire   : CLA-VCA-DIA-CAM-01:CAM:Acquire
-        CAM_Stop_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Acquire
+        CAM_Start_Acquire   : CLA-VCA-DIA-CAM-01:CAM:Start
+        CAM_Stop_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Stop
         CAM_Acquire_RBV    : CLA-VCA-DIA-CAM-01:CAM:Acquire_RBV
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
@@ -50,10 +48,10 @@ controls_information:
         ANA_OVERLAY_2_RESULT_RBV : CLA-VCA-DIA-CAM-01:OVER:2:Use_RBV
         ANA_OVERLAY_3_MASK_RBV : CLA-VCA-DIA-CAM-01:OVER:3:Use_RBV
         # the analysis can use a back ground subtracted image 
-        ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
-        ANA_NewBkgrnd_RBV: CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd_RBV
-        ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
-        ANA_UseBkgrnd_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd_RBV
+        ANA_NewBkgrnd     : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
+        ANA_NewBkgrnd_RBV : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd_RBV
+        ANA_UseBkgrnd     : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
+        ANA_UseBkgrnd_RBV : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
 #        ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint       
 #        ANA_UseNPoint_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint_RBV   
@@ -203,4 +201,3 @@ properties:
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
     HAS_LED : FALSE # so far only the virtual cathode needs this flag 
-

@@ -33,8 +33,8 @@ controls_information:
         ROI1_SizeY : CLA-C2V-DIA-CAM-01:ROI1:SizeY
         ROI1_ImageData_RBV  : CLA-C2V-DIA-CAM-01:CAM3:ArrayData
         # start stop acquiring images 
-        CAM_Start_Acquire    : CLA-C2V-DIA-CAM-01:CAM:Acquire
-        CAM_Stop_Acquire     : CLA-C2V-DIA-CAM-01:CAM:Acquire
+        CAM_Start_Acquire    : CLA-C2V-DIA-CAM-01:CAM:Start
+        CAM_Stop_Acquire     : CLA-C2V-DIA-CAM-01:CAM:Stop
         CAM_Acquire_RBV    : CLA-C2V-DIA-CAM-01:CAM:Acquire_RBV
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-C2V-DIA-CAM-01:ANA:EnableCallbacks_RBV
