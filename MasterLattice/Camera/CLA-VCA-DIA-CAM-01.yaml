@@ -11,10 +11,6 @@ controls_information:
         # the "mask" from JW/TP implementation 
         ANA_MaskXCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter
         ANA_MaskXCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter_RBV
-        ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
-        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
-        ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
-        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
         ANA_MaskYCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter
         ANA_MaskYCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter_RBV
         ANA_MaskXRad    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad
@@ -33,6 +29,11 @@ controls_information:
         ROI1_SizeY_RBV : CLA-VCA-DIA-CAM-01:ROI1:SizeY_RBV
         ROI1_SizeY : CLA-VCA-DIA-CAM-01:ROI1:SizeY
         ROI1_ImageData_RBV  : CLA-VCA-DIA-CAM-01:CAM3:ArrayData
+        # central axis definition 
+        ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
+        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
+        ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
+        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
         # start stop acquiring images 
         CAM_Start_Acquire   : CLA-VCA-DIA-CAM-01:CAM:Start
         CAM_Stop_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Stop
@@ -94,7 +95,7 @@ controls_information:
         ANA_CovXYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXYPix_RBV
         ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV 
         ANA_MMResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:MMResults_RBV 
-        # # actuall array data
+        # # actual array data
         CAM1_ArrayData    : CLA-VCA-DIA-CAM-01:CAM1:ArrayData
         CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
         # CAM3_ArrayData    : CLA-VCA-DIA-CAM-01:CAM3:ArrayData
@@ -102,6 +103,7 @@ controls_information:
         LED_Sta    : CLA-LAS-DIA-LED-01:Sta
         LED_Off    : CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
+        # image buffer dumping
         HDFB_Buffer_Trigger : CLA-VCA-DIA-CAM-01:CAM:Trigger.PROC
         HDFB_Buffer_FilePath : CLA-VCA-DIA-CAM-01:HDFB:FilePath
         HDFB_Buffer_FilePath_RBV : CLA-VCA-DIA-CAM-01:HDFB:FilePath_RBV
@@ -204,3 +206,10 @@ properties:
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
     HAS_LED : FALSE # so far only the virtual cathode needs this flag 
+    # empircally determined, adn used to set the center 
+    RF_CENTER_X : 1080
+    RF_CENTER_Y : 1000
+    MECHANICAL_CENTER_X : 1000
+    MECHANICAL_CENTER_Y : 1000
+    
+    

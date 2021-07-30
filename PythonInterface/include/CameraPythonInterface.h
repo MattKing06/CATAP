@@ -237,6 +237,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setCentreXPixel", &Camera::setCentreXPixel)
 			.def("setCentreYPixel", &Camera::setCentreYPixel)
 
+			//.def("setCentrePixels", &Camera::setCentrePixels)
+			//.def("setMechanicalCentre", &Camera::setMechanicalCentre)
+			//.def("getRFCentreXPixel", &Camera::getRFCentreXPixel)
+			//.def("getRFCentreYPixel", &Camera::getRFCentreYPixel)
+			//.def("getMechCentreXPixel", &Camera::getMechCentreXPixel)
+			//.def("getMechCentreYPixel", &Camera::getMechCentreYPixel)
+
+
 
 				
 			.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)

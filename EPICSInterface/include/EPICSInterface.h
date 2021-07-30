@@ -29,6 +29,16 @@
 }								\
 
 
+#define MY_SEVCHK_Mess(status, m)		\
+{								\
+	if (status != ECA_NORMAL)	\
+	{							\
+		printf("CATAP: The requested ca operation didn't complete successfully because \"%s\"\n",ca_message(status)); \
+		SEVCHK(status, m);   \
+	}							\
+}
+
+
 /** @defgroup epicsInterface EPICS Interfaces
 	@brief A collection of classes responsible for EPICS Channel Access calls.
 
@@ -38,7 +48,7 @@
 	*up connections and subscriptions for PVs as well as general functions that are needed by all child EPICS Interfaces, i.e. putValve.
 @{*/
 class PV;
-#define CA_PEND_IO_TIMEOUT 10.0
+#define CA_PEND_IO_TIMEOUT 5.0
 class EPICSInterface
 {
 
@@ -104,6 +114,7 @@ public:
 	void detachFromContext();
 	/*! Used to send the buffered requests to EPICS using ca_pend_io function*/
 	static void sendToEPICS();
+	static void sendToEPICSm(const char* m ="");
 	/*! Used to send ca_flush_io after creating a channel */
 	static int caFlushIO(const std::string& ca)
 	{

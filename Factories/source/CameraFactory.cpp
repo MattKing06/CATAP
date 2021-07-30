@@ -114,8 +114,8 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	messenger.printDebugMessage("setup by areas calling setupChannels");
 	setupChannels();
 	messenger.printDebugMessage("setup by areas calling sendToEPICS");
-	EPICSInterface::sendToEPICS();
-
+	//EPICSInterface::sendToEPICS();
+	EPICSInterface::sendToEPICSm("CameraFactory");
 	for (auto& item : camera_map)
 	{
 		std::string name(item.second.getHardwareName());
@@ -156,7 +156,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 				messenger.printMessage(item.first, ", ", pv.second.pvRecord, " CANNOT CONNECT TO EPICS");
 			}
 		}
-		EPICSInterface::sendToEPICS();
+		EPICSInterface::sendToEPICSm("CameraFactory connect PVs");
 	}
 	messenger.printDebugMessage("Finished Setting up EPICS channels, caput default values ");
 	try

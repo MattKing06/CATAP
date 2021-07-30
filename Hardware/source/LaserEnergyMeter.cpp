@@ -15,10 +15,10 @@ LaserEnergyMeter::LaserEnergyMeter()
 LaserEnergyMeter::LaserEnergyMeter(const std::map<std::string, std::string> & paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
 //laserEnergyMeterType(LaserEnergyMeterRecords::laserEnergyMeterTypeToEnum.at(paramsMap.find("laser_pv_type")->second)),
-name(paramsMap.find("name")->second),
+name(paramsMap.at("name")),
 energyStats(RunningStats()),
-calibration_factor(std::stod(paramsMap.find("calibration_factor")->second)),
-position(std::stod(paramsMap.find("position")->second))
+calibration_factor(std::stod(paramsMap.at("calibration_factor"))),
+position(std::stod(paramsMap.at("position")))
 {
 messenger.printDebugMessage("constructor");
 setPVStructs();

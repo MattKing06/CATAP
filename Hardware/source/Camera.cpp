@@ -66,6 +66,16 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	isResultUpdated(false),
 	x_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	y_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	
+	
+	rf_centre_x(GlobalConstants::long_min),
+	rf_centre_y(GlobalConstants::long_min),
+	mechanical_centre_x(GlobalConstants::long_min),
+	mechanical_centre_y(GlobalConstants::long_min),
+	x_center_def(GlobalConstants::size_zero),
+	y_center_def(GlobalConstants::size_zero),
+
+
 	step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -107,8 +117,6 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	x_mask_rad_max(GlobalConstants::size_zero),
 	y_mask_rad_max(GlobalConstants::size_zero),
 	use_mask_rad_limits(false),
-	x_center_def(GlobalConstants::size_zero),
-	y_center_def(GlobalConstants::size_zero),
 	sensor_max_temperature(GlobalConstants::double_min),
 	sensor_min_temperature(GlobalConstants::double_min),
 	average_pixel_value_for_beam(GlobalConstants::double_min),
@@ -523,6 +531,55 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
 		}
 	}
+
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find RF_CENTER_X");
+	if (GlobalFunctions::entryExists(paramMap, "RF_CENTER_X"))
+	{
+		rf_centre_x = std::stod(paramMap.find("RF_CENTER_X")->second);
+		messenger.printDebugMessage(hardwareName, " Found RF_CENTER_X, value = ", rf_centre_x);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_X");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find RF_CENTER_Y");
+	if (GlobalFunctions::entryExists(paramMap, "RF_CENTER_Y"))
+	{
+		rf_centre_y = std::stod(paramMap.find("RF_CENTER_Y")->second);
+		messenger.printDebugMessage(hardwareName, " Found RF_CENTER_Y, value = ", rf_centre_y);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_Y");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find MECHANICAL_CENTER_X");
+	if (GlobalFunctions::entryExists(paramMap, "MECHANICAL_CENTER_X"))
+	{
+		mechanical_centre_x = std::stod(paramMap.find("MECHANICAL_CENTER_X")->second);
+		messenger.printDebugMessage(hardwareName, " Found MECHANICAL_CENTER_X, value = ", mechanical_centre_x);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_X");
+	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find MECHANICAL_CENTER_Y");
+	if (GlobalFunctions::entryExists(paramMap, "MECHANICAL_CENTER_Y"))
+	{
+		mechanical_centre_y = std::stod(paramMap.find("MECHANICAL_CENTER_Y")->second);
+		messenger.printDebugMessage(hardwareName, " Found MECHANICAL_CENTER_Y, value = ", mechanical_centre_y);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_Y");
+	}
 	//if (GlobalFunctions::entryExists(paramMap, "CAM1_ARRAY_DATA_NUM_PIX_X"))
 	//{
 	//	size_t pos = (size_t)std::stoi(paramMap.find("CAM1_ARRAY_DATA_NUM_PIX_X")->second);
@@ -599,6 +656,10 @@ void Camera::setPVStructs()
 		}
 	}
 }
+
+
+
+
 TYPE Camera::getCamType()const
 {
 	return cam_type;
@@ -629,6 +690,43 @@ bool Camera::setCentreYPixel(long value)
 {
 	 return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterY), (epicsInt32)value);
 }
+
+
+//bool Camera::setCentrePixels(long x, long y)
+//{
+//	if (setCentreXPixel(x))
+//	{
+//		return setCentreYPixel(y);
+//	}
+//	return false;
+//}
+//bool Camera::setMechanicalCentre()
+//{
+//	return setCentrePixels(mechanical_centre_x, mechanical_centre_y);
+//}
+//bool Camera::setRFCenter()
+//{
+//	return setCentrePixels(rf_centre_x, rf_centre_y);
+//}
+//long Camera::getRFCentreXPixel()const
+//{
+//	return rf_centre_x;
+//}
+//long Camera::getRFCentreYPixel()const
+//{
+//	return rf_centre_y;
+//}
+//long Camera::getMechCentreXPixel()const
+//{
+//	return mechanical_centre_x;
+//}
+//long Camera::getMechCentreYPixel()const
+//{
+//	return mechanical_centre_y;
+//}
+
+
+
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
 	std::map<std::string, double> r;
@@ -2343,8 +2441,13 @@ void Camera::malloc_roidata()
 }
 bool Camera::updateImageData()
 {
-	std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
+	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
 	//messenger.printDebugMessage("updateImageData");
+	if (image_data_has_not_malloced)
+	{
+		messenger.printDebugMessage("calling malloc_imagedata");
+		malloc_imagedata();
+	}
 	if (image_data_has_not_vector_resized)
 	{
 		messenger.printDebugMessage("image_data_has_not_vector_resized = True");
@@ -2479,7 +2582,7 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 	if (ca_state(pvs.CHID) == cs_conn)
 	{
 		int status = ca_array_get(DBR_TIME_LONG,1,pvs.CHID,dbr_struct);
-		EPICSInterface::sendToEPICS();
+		EPICSInterface::sendToEPICSm("this is from getArrayTimeStamp");
 		MY_SEVCHK(status);
 		ts_to_update = dbr_struct->stamp;
 		//std::cout << epicsInterface->getEPICSTime(ts_to_update) << std::endl;
@@ -2497,8 +2600,8 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	if (ca_state(pvs.CHID) == cs_conn)
 	{
 		int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
-		EPICSInterface::sendToEPICS();
-		MY_SEVCHK(status);
+		EPICSInterface::sendToEPICSm("this is from getArrayValue");
+		//MY_SEVCHK(status);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		//messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");

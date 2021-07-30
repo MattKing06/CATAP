@@ -85,6 +85,18 @@ void EPICSInterface::sendToEPICS()
 	}
 }
 
+void EPICSInterface::sendToEPICSm(const char* m )
+{
+	try
+	{
+		int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK_Mess(status,m);
+	}
+	catch (const std::runtime_error& runtimeError)
+	{
+		std::cout << runtimeError.what() << std::endl;
+	}
+}
 
 int EPICSInterface::sendToEPICSReturnStatus()
 {

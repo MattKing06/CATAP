@@ -120,7 +120,7 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 	populateLaserEnergyMeterMap();
 
 	setupChannels();
-	EPICSInterface::sendToEPICS();
+	EPICSInterface::sendToEPICSm("LaserEnergyMeterFactory");
 	for (auto& laser : laserEnergyMeterMap)
 	{
 		std::map<std::string, pvStruct>& laserPVStructs = laser.second.getPVStructs();
@@ -141,7 +141,8 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 				{
 					laser.second.epicsInterface->createSubscription(laser.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
+
+				EPICSInterface::sendToEPICSm("LaserEnergyMeterFactory connect PVs");
 			}
 			else
 			{

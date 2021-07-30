@@ -116,7 +116,7 @@ bool ChargeFactory::setup(const std::string& VERSION)
 	populateChargeMap();
 
 	setupChannels();
-	EPICSInterface::sendToEPICS();
+	EPICSInterface::sendToEPICSm("ChargeFactory connect PVs");
 	for (auto& charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
@@ -138,7 +138,7 @@ bool ChargeFactory::setup(const std::string& VERSION)
 				{
 					charge.second.epicsInterface->createSubscription(charge.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
+				EPICSInterface::sendToEPICSm("ChargeFactory connect PVs");
 			}
 			else
 			{

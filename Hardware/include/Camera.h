@@ -315,20 +315,11 @@ public:
 	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
 	//bool isOverlayResultDisabled()const;
 
-	/*! Get the X Pixel defined as the "horizontal" centre of the image-array, probably set from the Master Lattice.
-	@param[out] long, value */
-	long getCentreXPixel()const;
-	/*! Get the Y Pixel defined as the "vertical" centre of the image-array, probably set from the Master Lattice.
-	@param[out] long, value */
-	bool getCentreYPixel()const;
-	/*! Set the X Pixel to be defined as the "horizontal" centre of the image-array.
-	@param[in] long, value to set
-	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool setCentreXPixel(long value);
-	/*! Set the Y Pixel to be defined as the "vertical" centre of the image-array.
-	@param[in] long, value to set
-	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool setCentreYPixel(long value);
+
+	
+	
+	
+	
 	/*! Check if the image analysis results are updating.
 	@param[out] bool, ture if updating */
 	bool isAnalysisUpdating();
@@ -888,6 +879,48 @@ public:
 
 	/*! testing returning pointer to image array instead of copying 	*/
 	//std::vector<double>* Camera::getImagedataPointer();
+	
+
+
+	/*! Get the X Pixel defined as the "horizontal" centre of the image-array, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getCentreXPixel()const;
+	/*! Get the Y Pixel defined as the "vertical" centre of the image-array, probably set from the Master Lattice.
+	@param[out] long, value */
+	bool getCentreYPixel()const;
+	/*! Set the X Pixel to be defined as the "horizontal" centre of the image-array.
+	@param[in] long, value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreXPixel(long value);
+	/*! Set the Y Pixel to be defined as the "vertical" centre of the image-array.
+	@param[in] long, value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreYPixel(long value);
+	///*! Set the X and Y Pixels to be defined as the centre of the image-array.
+	//@param[in] long, x value to set
+	//@param[in] long, y value to set
+	//@param[out] bool, true if value got sent to epics (not if it was received)*/
+	//bool setCentrePixels(long x, long y);
+	///*! Sets the analysis centre to be the main lattice values for the mechanical center (in pixels).
+	//* Sets the analysis centre to be the main lattice values.
+	//@param[out] bool, if the value got sent to epics.*/
+	//bool setMechanicalCentre();
+	///*! For the virtual Cathode the centre of the screen can be defined using the RF centre of the injector.
+	//* Sets the analysis centre to be the main lattice values (in pixels).
+	//@param[out] bool, if the value got sent to epics.*/
+	//bool setRFCenter();
+	///*! Get the RF center X Pixel, probably set from the Master Lattice.
+	//@param[out] long, value */
+	//long getRFCentreXPixel()const;
+	///*! Get the RF center Y Pixel, probably set from the Master Lattice.
+	//@param[out] long, value */
+	//long getRFCentreYPixel()const;
+	///*! Get the mechanical center X Pixel, probably set from the Master Lattice.
+	//@param[out] long, value */
+	//long getMechCentreXPixel()const;
+	///*! Get the mechanical center Y Pixel, probably set from the Master Lattice.
+	//@param[out] long, value */
+	//long getMechCentreYPixel()const;
 
 
 	/* Enable debug messages*/
@@ -1154,6 +1187,16 @@ private:
 
 	size_t roi_max_x;
 	size_t roi_max_y;
+
+
+	/*! For the virtual Cathode we can have an RF centre (x pxiel) defined in main lattice */
+	long rf_centre_x;
+	/*! For the virtual Cathode we can have an RF centre (x pxiel) defined in main lattice */
+	long rf_centre_y;
+	/*! The horizontal mechanical centre of the image in pixels defined in main lattice */
+	long mechanical_centre_x;
+	/*! The vertical mechanical centre of the image in pixels defined in main lattice */
+	long mechanical_centre_y;
 
 
 	/* total number of pixels in the image array data*/
