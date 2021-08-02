@@ -36,6 +36,7 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 //	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
 	else if (pvStruct.pvRecord == HDF_Capture_RBV)		{		pvStruct.updateFunction = this->update_HDF_Capture_RBV;	}
 	else if (pvStruct.pvRecord == CAM_Acquire_RBV)		{		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;	}
+	else if (pvStruct.pvRecord == CAM2_ArrayData)		{		pvStruct.updateFunction = this->update_CAM2_ArrayData;}
 	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
 	else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
 	else if (pvStruct.pvRecord == ANA_EnableCallbacks_RBV)	{		pvStruct.updateFunction = this->update_ANA_EnableCallbacks_RBV;	}
@@ -270,6 +271,10 @@ void EPICSCameraInterface::update_CAM_BlackLevel_RBV(const struct event_handler_
 	updateTimeStampLongPair(args, recastCamera->black_level);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_BlackLevel_RBV = ",
 		recastCamera->black_level.second);
+}
+void EPICSCameraInterface::update_CAM2_ArrayData(const struct event_handler_args args)
+{
+	messenger.printMessage("UPDATE ARRAY DATA");
 }
 void EPICSCameraInterface::update_CAM_Gain_RBV(const struct event_handler_args args)
 {
