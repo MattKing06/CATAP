@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(get_10_image_test)
 	{
 		cam.updateImageData();
 		std::vector<long> imagedata = cam.getImageData();
-		boost::python::list imagedata_Py = cam.getImageData_Py();
+		//cam.getImageData_Py();
 	}
 }
 

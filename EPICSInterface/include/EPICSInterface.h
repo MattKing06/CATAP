@@ -115,6 +115,7 @@ public:
 	/*! Used to send the buffered requests to EPICS using ca_pend_io function*/
 	static void sendToEPICS();
 	static void sendToEPICSm(const char* m ="");
+	static bool sendToEPICSm2(const char* m ="");
 	/*! Used to send ca_flush_io after creating a channel */
 	static int caFlushIO(const std::string& ca)
 	{
@@ -387,7 +388,9 @@ public:
 	* @param[in] pointer_to_dbr_type : pointer_to_dbr_type pointer to where got array will be.
 	* @param[out] bool: if command got sent to epics correctls (not if it worked!).*/
 	bool getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const;
+		
 
+	static void coutECASTATUS(const int status);
 
 
 #endif

@@ -2495,19 +2495,21 @@ void Camera::malloc_roidata()
 }
 bool Camera::updateImageData()
 {
-	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
+	std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
 	//messenger.printDebugMessage("updateImageData");
 	if (image_data_has_not_malloced)
 	{
-		messenger.printDebugMessage("calling malloc_imagedata, array_data_pixel_count = ", array_data_pixel_count);
+		messenger.printDebugMessage("image_data_has_not_malloced, calling malloc_imagedata, array_data_pixel_count = ", array_data_pixel_count);
 		malloc_imagedata();
+	}
+	else
+	{
+		messenger.printDebugMessage("image_data_has_malloce");
 	}
 	if (image_data_has_not_vector_resized)
 	{
 		messenger.printDebugMessage("image_data_has_not_vector_resized = True");
-		messenger.printDebugMessage("vector_resize for image_data ");
 		vector_resize(image_data.second);
-		messenger.printDebugMessage("vector_resize for image_data 2");
 		if (image_data.second.size() == array_data_pixel_count)
 		{
 			image_data_has_not_vector_resized = false;
@@ -2517,17 +2519,20 @@ bool Camera::updateImageData()
 			image_data_has_not_vector_resized = true;
 		}
 	}
+	{
+		messenger.printDebugMessage("image_data_has_vector_resized"); 
+	}
 	if (!image_data_has_not_vector_resized)
 	{
-		//messenger.printDebugMessage("image_data_has_not_vector_resized = False");
-		//auto start = std::chrono::high_resolution_clock::now();
+		messenger.printDebugMessage("Getting new array data ");
+		auto start = std::chrono::high_resolution_clock::now();
 		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 		//	, image_data.first);
 		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.second.size());
-		//auto stop = std::chrono::high_resolution_clock::now();
-		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -2654,12 +2659,14 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	if (ca_state(pvs.CHID) == cs_conn)
 	{
 		int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
-		EPICSInterface::sendToEPICSm("this is from getArrayValue");
-		//MY_SEVCHK(status);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		//messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
-		return true;
+		if (EPICSInterface::sendToEPICSm2("this is from getArrayValue"));
+		{
+			messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
+			return true;
+		}
+		messenger.printDebugMessage("!!ERROR!!  ca_array_get, took  ", duration.count(), " us");	
 	}
 	return false;
 }
