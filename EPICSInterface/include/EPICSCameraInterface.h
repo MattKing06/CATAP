@@ -5,6 +5,7 @@
 #include <iomanip>
 #endif 
 #include "Camera.h"
+#include <chrono> 
 #include <iostream>
 #include <GlobalStateEnums.h>
 
@@ -178,6 +179,18 @@ static void update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args);
     static void update_OVERLAY_CENTRE_OF_MASS(const struct event_handler_args args);
     static void update_OVERLAY_MASK(const struct event_handler_args args);
 
+
+    static bool get_camera_array(std::vector<long>& data_vec, const pvStruct& pvs, size_t count)
+    {
+        messenger.printDebugMessage("getArrayValue Function");
+        if (ca_state(pvs.CHID) == cs_conn)
+        {
+            messenger.printDebugMessage("ca_array_get ... ");
+            int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
+            return sendToEPICSm2("this is from getArrayValue");
+        }
+        return false;
+    }
 
 };
 #endif //EPICS_CAMERA_INTERFACE_H_

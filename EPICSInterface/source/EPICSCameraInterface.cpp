@@ -427,9 +427,9 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 		recastCamera->sigma_x_pix_rs.Push<double>(recastCamera->pixelResults.second[2]);
 		recastCamera->sigma_y_pix_rs.Push<double>(recastCamera->pixelResults.second[3]);
 		recastCamera->sigma_xy_pix_rs.Push<double>(recastCamera->pixelResults.second[4]);
-		//messenger.printDebugMessage("update_ANA_PixelResults_RBV = ", recastCamera->pixelResults.second[0], " ",
-		//	recastCamera->pixelResults.second[1], " ",		//	recastCamera->pixelResults.second[2], " ",
-		//	recastCamera->pixelResults.second[3], " ",		//	recastCamera->pixelResults.second[4]);
+		messenger.printDebugMessage("update_ANA_PixelResults_RBV = ", recastCamera->pixelResults.second[0], " ",
+			recastCamera->pixelResults.second[1], " ",	recastCamera->pixelResults.second[2], " ",
+			recastCamera->pixelResults.second[3], " ",	recastCamera->pixelResults.second[4]);
 		//messenger.printDebugMessage("RS = ", recastCamera->x_pix_rs.Mean(), " ",
 		//	recastCamera->y_pix_rs.Mean(), " ",		//	recastCamera->sigma_x_pix_rs.Mean(), " ",
 		//	recastCamera->sigma_y_pix_rs.Mean(), " ",		//	recastCamera->sigma_xy_pix_rs.Mean());
@@ -927,6 +927,10 @@ void EPICSCameraInterface::update_OVERLAY_MASK(const struct event_handler_args a
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_MASK = ",
 		ENUM_TO_STRING(recastCamera->analysis_mask_overlay.second));
 }
+
+
+
+
 
 //void EPICSCameraInterface::update_MAGICK_NumCaptured_RBV(const struct event_handler_args args)
 //{
