@@ -17,6 +17,9 @@ PILaserSystem::PILaserSystem(STATE mode) :
 
 bool PILaserSystem::setup(const std::string& version)
 {
+	messenger.printMessage("PILaserSystem calling laserEnergyMeterFactory.setup.");
+	laserEnergyMeterFactory.setup(version);
+
 	messenger.printMessage("PILaserSystem calling cameraFactory.setup.");
 	cameraFactory.setup(version, TYPE::CLARA_LASER);
 	messenger.printMessage("PILaserSystem calling mirrorFactory.setup.");
@@ -27,8 +30,7 @@ bool PILaserSystem::setup(const std::string& version)
 	halfWavePlateFactory.setup(version);
 	messenger.printMessage("PILaserSystem calling chargeFactory.setup.");
 	chargeFactory.setup(version);
-	messenger.printMessage("PILaserSystem calling laserEnergyMeterFactory.setup.");
-	laserEnergyMeterFactory.setup(version);
+
 	setAllRunningStatSize(0);
 	return true;
 }

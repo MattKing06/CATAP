@@ -76,6 +76,12 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	y_center_def(GlobalConstants::size_zero),
 
 
+	dbr_image_data(nullptr),
+	dbr_roi_data(nullptr),
+
+	image_data(std::make_pair(epicsTimeStamp(), std::vector<long>())),
+	roi_data(std::make_pair(epicsTimeStamp(), std::vector<long>())),
+	analysis_data(std::make_pair(epicsTimeStamp(), std::vector<double>())),
 	step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -611,7 +617,53 @@ sum_intensity_rs(copyCamera.sum_intensity_rs),
 image_data_has_not_malloced(copyCamera.image_data_has_not_malloced),
 image_data_has_not_vector_resized(copyCamera.image_data_has_not_vector_resized),
 roi_data_has_not_malloced(copyCamera.roi_data_has_not_malloced),
-roi_data_has_not_vector_resized(copyCamera.roi_data_has_not_vector_resized)
+roi_data_has_not_vector_resized(copyCamera.roi_data_has_not_vector_resized),
+image_data(copyCamera.image_data),
+roi_data(copyCamera.roi_data),
+analysis_data(copyCamera.analysis_data),
+step_size(copyCamera.step_size),
+acquire_time(copyCamera.acquire_time),
+acquire_period(copyCamera.acquire_period),
+temperature(copyCamera.temperature),
+array_rate(copyCamera.array_rate),
+use_npoint(copyCamera.use_npoint),
+use_background(copyCamera.use_background),
+cross_hair_overlay(copyCamera.cross_hair_overlay),
+center_of_mass_overlay(copyCamera.center_of_mass_overlay),
+analysis_mask_overlay(copyCamera.analysis_mask_overlay),
+pixel_to_mm(copyCamera.pixel_to_mm),
+black_level(copyCamera.black_level),
+gain(copyCamera.gain),
+set_new_background(copyCamera.set_new_background),
+cross_overlay(copyCamera.cross_overlay),
+mask_overlay(copyCamera.mask_overlay),
+result_overlay(copyCamera.result_overlay),
+array_data_num_pix_x(copyCamera.array_data_num_pix_x),
+array_data_num_pix_y(copyCamera.array_data_num_pix_y),
+array_data_pixel_count(copyCamera.array_data_pixel_count),
+roi_total_pixel_count(copyCamera.roi_total_pixel_count),
+binary_num_pix_x(copyCamera.binary_num_pix_x),
+binary_num_pix_y(copyCamera.binary_num_pix_y),
+binary_data_pixel_count(copyCamera.binary_data_pixel_count),
+x_pix_scale_factor(copyCamera.x_pix_scale_factor),
+y_pix_scale_factor(copyCamera.y_pix_scale_factor),
+x_mask_def(copyCamera.x_mask_def),
+y_mask_def(copyCamera.y_mask_def),
+x_mask_rad_def(copyCamera.x_mask_rad_def),
+y_mask_rad_def(copyCamera.y_mask_rad_def),
+x_mask_rad_max(copyCamera.x_mask_rad_max),
+y_mask_rad_max(copyCamera.y_mask_rad_max),
+use_mask_rad_limits(copyCamera.use_mask_rad_limits),
+sensor_max_temperature(copyCamera.sensor_max_temperature),
+sensor_min_temperature(copyCamera.sensor_min_temperature),
+average_pixel_value_for_beam(copyCamera.average_pixel_value_for_beam),
+min_x_pixel_pos(copyCamera.min_x_pixel_pos),
+max_x_pixel_pos(copyCamera.max_x_pixel_pos),
+min_y_pixel_pos(copyCamera.min_y_pixel_pos),
+max_y_pixel_pos(copyCamera.max_y_pixel_pos),
+busy(copyCamera.busy),
+has_led(copyCamera.has_led),
+last_capture_and_save_success(copyCamera.last_capture_and_save_success)
 //mask_and_roi_keywords_Py(copyCamera.mask_and_roi_keywords_Py),
 //mask_keywords_Py(copyCamera.mask_keywords_Py),
 //roi_keywords_Py(copyCamera.roi_keywords_Py)
@@ -2426,6 +2478,7 @@ bool Camera::vector_resize(std::vector<long>& vec)
 void Camera::malloc_imagedata()
 {
 	/*	allocate memory for dbr_image_data, array pointer 	*/
+	messenger.printDebugMessage(hardwareName, " malloc_imagedata ", array_data_pixel_count, " DBR_TIME_LONG");
 	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, array_data_pixel_count);
 	dbr_image_data = (struct dbr_time_long*)malloc(nBytes);
 	messenger.printDebugMessage(hardwareName, " dbr_image_data pointer allocated ", nBytes, " BYTES ");
@@ -2434,6 +2487,7 @@ void Camera::malloc_imagedata()
 void Camera::malloc_roidata()
 {
 	/*		allocate memory for dbr_roi_data, array pointer  	*/
+	messenger.printDebugMessage(hardwareName, " malloc_roidata ", array_data_pixel_count, " DBR_TIME_LONG");
 	unsigned nBytes = dbr_size_n(DBR_TIME_LONG, array_data_pixel_count);
 	dbr_roi_data = (struct dbr_time_long*)malloc(nBytes);
 	messenger.printDebugMessage(hardwareName, " dbr_roi_data pointer allocated ", nBytes, " BYTES ");
@@ -2445,7 +2499,7 @@ bool Camera::updateImageData()
 	//messenger.printDebugMessage("updateImageData");
 	if (image_data_has_not_malloced)
 	{
-		messenger.printDebugMessage("calling malloc_imagedata");
+		messenger.printDebugMessage("calling malloc_imagedata, array_data_pixel_count = ", array_data_pixel_count);
 		malloc_imagedata();
 	}
 	if (image_data_has_not_vector_resized)
@@ -2626,7 +2680,7 @@ std::vector<long> Camera::getImageData()const
 }
 boost::python::list Camera::getImageData_Py()const
 {
-	return to_py_list<long>(getImageData());
+	return to_py_list<long>(image_data.second);
 }
 std::vector<long> Camera::getROIData()const
 {

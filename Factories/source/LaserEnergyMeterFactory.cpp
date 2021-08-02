@@ -11,7 +11,8 @@
 #endif
 #include "yaml-cpp/emitter.h"
 
-LaserEnergyMeterFactory::LaserEnergyMeterFactory() : LaserEnergyMeterFactory(STATE::OFFLINE)
+LaserEnergyMeterFactory::LaserEnergyMeterFactory():
+	LaserEnergyMeterFactory(STATE::OFFLINE)
 {
 	std::cout << "LaserFactory DEFAULT constRUCTOR called " << std::endl;
 }

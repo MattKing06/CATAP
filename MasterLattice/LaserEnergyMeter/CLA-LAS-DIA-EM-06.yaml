@@ -7,7 +7,7 @@ controls_information:
         RANGESP : CLA-LAS-DIA-EM-06:Range_SP
         ENERGYREADBACK : CLA-LAS-DIA-EM-06:E_RB
 properties: 
-    machine_area : S01
+    machine_area : LASER
     hardware_type : LaserEnergyMeter
     laser_pv_type : ENERGYMETER
     name : CLA-LAS-DIA-EM-06

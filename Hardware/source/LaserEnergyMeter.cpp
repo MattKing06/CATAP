@@ -18,20 +18,28 @@ Hardware(paramsMap, mode),
 name(paramsMap.at("name")),
 energyStats(RunningStats()),
 calibration_factor(std::stod(paramsMap.at("calibration_factor"))),
-position(std::stod(paramsMap.at("position")))
+position(std::stod(paramsMap.at("position"))),
+start(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+stop(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+overrange(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+range(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+energy(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+bufferSize(10),
+vectorSize(10),
+shotsvector(0),
+shotsbuffer(0),
+acquiring(false),
+monitoring(false),
+epicsInterface(boost::make_shared<EPICSLaserEnergyMeterInterface>(EPICSLaserEnergyMeterInterface())),
+laserEnergyMeterType(TYPE::UNKNOWN_TYPE),
+status(STATE::UNKNOWN_STATE),
+statusBuffer(boost::circular_buffer< STATE >()),
+statusVector(std::vector<STATE >()),
+aliases(std::vector<std::string >())
 {
-messenger.printDebugMessage("constructor");
-setPVStructs();
-bufferSize = 10;
-vectorSize = 10;
-shotsvector = 0;
-shotsbuffer = 0;
-energybuffer.resize(bufferSize);
-energyvector.resize(vectorSize);
-acquiring = false;
-monitoring = false;
-epicsInterface = boost::make_shared<EPICSLaserEnergyMeterInterface>(EPICSLaserEnergyMeterInterface());
-epicsInterface->ownerName = hardwareName;
+	messenger.printDebugMessage("constructor");
+	epicsInterface->ownerName = hardwareName;
+	setPVStructs();
 }
 LaserEnergyMeter::LaserEnergyMeter(const LaserEnergyMeter& copyLaser) :
 Hardware(copyLaser),
@@ -39,7 +47,23 @@ laserEnergyMeterType(copyLaser.laserEnergyMeterType),
 name(copyLaser.name),
 position(copyLaser.position),
 epicsInterface(copyLaser.epicsInterface),
-energyStats(copyLaser.energyStats)
+energybuffer(copyLaser.energybuffer),
+energyvector(copyLaser.energyvector),
+energyStats(copyLaser.energyStats),
+bufferSize(copyLaser.bufferSize),
+vectorSize(copyLaser.vectorSize),
+shotsvector(copyLaser.shotsvector),
+shotsbuffer(copyLaser.shotsbuffer),
+acquiring(copyLaser.acquiring),
+monitoring(copyLaser.monitoring),
+start(copyLaser.start),
+stop(copyLaser.stop),
+overrange(copyLaser.overrange),
+range(copyLaser.range),
+energy(copyLaser.energy),
+statusBuffer(copyLaser.statusBuffer),
+statusVector(copyLaser.statusVector),
+aliases(copyLaser.aliases)
 {
 }
 

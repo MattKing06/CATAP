@@ -30,9 +30,9 @@ boost::python::list to_py_list(const std::vector<typeOfVectorToCOnvert>& vector)
 	typename std::vector<typeOfVectorToCOnvert>::iterator iter;
 	boost::python::list newList;
 	//for (iter = vector.begin(); iter != vector.end(); ++iter)
-	for(auto&& iter = vector.begin(); iter != vector.end(); ++iter)
+	for (const auto& item : vector)
 	{
-		newList.append(*iter);
+		newList.append(item); 
 	}
 	return newList;
 }

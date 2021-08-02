@@ -33,6 +33,7 @@ BOOST_AUTO_TEST_CASE(move_laser_mirror_test)
 BOOST_AUTO_TEST_CASE(get_10_image_test)
 {
 	PILaserSystem PIL(STATE::PHYSICAL);
+
 	bool status = PIL.setup("");
 	Camera cam = PIL.getVirtualCathodeCamera();
 	//get 10 images 
@@ -40,6 +41,7 @@ BOOST_AUTO_TEST_CASE(get_10_image_test)
 	{
 		cam.updateImageData();
 		std::vector<long> imagedata = cam.getImageData();
+		boost::python::list imagedata_Py = cam.getImageData_Py();
 	}
 }
 

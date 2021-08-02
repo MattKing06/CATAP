@@ -24,9 +24,13 @@ const std::map<std::string, std::string> ConfigReader::allowedHardwareTypes = {
 //LoggingSystem ConfigReader::messenger = LoggingSystem(false, false);
 ConfigReader::ConfigReader():
 yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), 
-yamlFilename(""),
 mode(STATE::OFFLINE), 
-hardwareFolder("")
+numberOfParsesExpected(0),
+yamlFilename(std::string()),
+hardwareFolder(std::string()),
+yamlFilenamesAndParsedStatusMap(std::map<std::string, bool>()),
+offlineProperties(std::map<std::string, std::string>()),
+onlineProperties(std::map<std::string, std::string>())
 {
 	messenger.printDebugMessage("ConfigReader() Constructor called");
 	// since we have not specified a hardware component
@@ -39,7 +43,14 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 	messenger(LoggingSystem(true, true)),
 	mode(mode),
 	// TODO hardwareType should be TYPE ENUM not a string 
-	hardwareFolder(hardwareType)
+	hardwareFolder(hardwareType),
+	numberOfParsesExpected(0),
+	yamlFilename(std::string()),
+	yamlFileDestination(std::string()),
+	yamlFilenamesAndParsedStatusMap(std::map<std::string, bool>()),
+	offlineProperties(std::map<std::string, std::string>()),
+	onlineProperties(std::map<std::string, std::string>())
+
 {
 	messenger.printDebugMessage("ConfigReader( " + hardwareType + ", " + ENUM_TO_STRING(mode) + ") Constructor called");
 	yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
