@@ -4,7 +4,7 @@ enable_testing()
 add_executable(EPICSToolsTests ${TEST_FILES})
 cmake_policy(SET CMP0023 NEW)
 #link to Boost libs AND whatever else
-target_include_directories(EPICSToolsTests PRIVATE ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR}
+target_include_directories(EPICSToolsTests PRIVATE ${Boost_INCLUDE_DIR} ${Python3_INCLUDE_DIRS}
 												${PROJECT_SOURCE_DIR}/EPICSTools/include 
 												${PROJECT_SOURCE_DIR}/EPICSInterface/include
 												${PROJECT_SOURCE_DIR}/LoggingSystem/include

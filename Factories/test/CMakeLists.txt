@@ -4,7 +4,7 @@ enable_testing()
 add_executable(FactoryTests ${TEST_FILES})
 cmake_policy(SET CMP0023 NEW)
 #link to Boost libs AND whatever else
-target_include_directories(FactoryTests PRIVATE ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR}
+target_include_directories(FactoryTests PRIVATE ${Boost_INCLUDE_DIR} ${Python3_INCLUDE_DIRS}
 												${PROJECT_SOURCE_DIR}/Factories/include ${PROJECT_SOURCE_DIR}/EPICSInterface/include
 												${PROJECT_SOURCE_DIR}/PV/include ${PROJECT_SOURCE_DIR}/Hardware/include 
 												${PROJECT_SOURCE_DIR}/Utilities/include ${PROJECT_SOURCE_DIR}/ConfigReader/include)
