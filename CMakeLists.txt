@@ -27,7 +27,7 @@ if (WIN32)
   #########################################
   if (${CATAP_BOOST_VERSION} MATCHES 1.76)
 	  set(Boost_INCLUDE_DIR "C:/boost/boost_1_76_0")
-	  set(CATAP_PY_VERSION 3.8)
+	  #set(CATAP_PY_VERSION 3.8)
 	  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python38 system filesystem thread chrono atomic date_time unit_test_framework)
   endif(${CATAP_BOOST_VERSION} MATCHES 1.76)
   if (${CATAP_PY_VERSION} MATCHES 3.6)
