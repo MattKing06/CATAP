@@ -49,6 +49,7 @@ static void update_CAM_AcquirePeriod_RBV(const struct event_handler_args args);
 static void update_CAM_ArrayRate_RBV(const struct event_handler_args args);
 static void update_CAM_Gain_RBV(const struct event_handler_args args);
 static void update_CAM_BlackLevel_RBV(const struct event_handler_args args);
+static void update_CAM2_ArrayData(const struct event_handler_args args);
 static void update_ANA_EnableCallbacks_RBV(const struct event_handler_args args);
 static void update_ANA_UseFloor_RBV(const struct event_handler_args args);
 static void update_ANA_FloorLevel_RBV(const struct event_handler_args args);
