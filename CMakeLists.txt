@@ -3,12 +3,47 @@ project(CATAP)
 cmake_policy(SET CMP0074 NEW)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CXX_STANDARD 17)
-set(PY_VERSION 3)
-
+# These are default versions for CATAP build
+# They can be set here or via cmake-gui
+# Setting here will persist between caches, 
+# setting via gui will change if cache is deleted.
+set(CATAP_PY_VERSION 3.6 CACHE PATH "Python Version Number")
+set(CATAP_BOOST_VERSION 1.76 CACHE PATH "Boost Version Number")
 
 if (WIN32)
   message(STATUS "WIN32 BUILD")
-  set(Boost_DIR "C:/boost/boost_1_63_0")
+  #########################################
+  # Boost 1.63 ONLY BUILT WITH PYTHON 3.6 #
+  # So we are settings PY VERSION EXPLICIT#
+  #########################################
+  if (${CATAP_BOOST_VERSION} MATCHES 1.63)
+	  set(Boost_INCLUDE_DIR "C:/boost/boost_1_63_0")
+	  set(CATAP_PY_VERSION 3.6)
+	  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
+  endif(${CATAP_BOOST_VERSION} MATCHES 1.63)
+  #########################################
+  # Boost 1.76 ONLY BUILT WITH PYTHON 3.8 #
+  # So we are settings PY VERSION EXPLICIT#
+  #########################################
+  if (${CATAP_BOOST_VERSION} MATCHES 1.76)
+	  set(Boost_INCLUDE_DIR "C:/boost/boost_1_76_0")
+	  set(CATAP_PY_VERSION 3.8)
+	  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python38 system filesystem thread chrono atomic date_time unit_test_framework)
+  endif(${CATAP_BOOST_VERSION} MATCHES 1.76)
+  if (${CATAP_PY_VERSION} MATCHES 3.6)
+	  message("PYTHON 3.6 BUILD: ")
+	  find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
+	  message("include: ${Python3_INCLUDE_DIRS}")
+	  message("libs: ${Python3_LIBRARIES}")
+  endif(${CATAP_PY_VERSION} MATCHES 3.6)
+
+  if (${CATAP_PY_VERSION} MATCHES 3.8)
+	  message("PYTHON 3.8 BUILD: ")
+	  find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
+	  message("include: ${Python3_INCLUDE_DIRS}")
+	  message("libs: ${Python3_LIBRARIES}")
+  endif(${CATAP_PY_VERSION} MATCHES 3.8)
+
   set(EPICS_DIR "C:/epics/base-3.14.12.5")
   set(YAML_PARSER_LIB_RELEASE_DIR "C:/yaml-cpp-build/Release")
   set(YAML_PARSER_LIB_DEBUG_DIR "C:/yaml-cpp-build/Debug")
@@ -20,6 +55,7 @@ if (WIN32)
   set(EPICS_CA_LIB ${EPICS_LIBRARYDIR}ca.lib)
   set(EPICS_COM_DLL ${EPICS_DLLDIR}Com.dll)
   set(EPICS_CA_DLL ${EPICS_DLLDIR}ca.dll)
+  set(THIRD_PARTY_LIBS ${CMAKE_SOURCE_DIR}/thirdparty)
 endif(WIN32)
 if(UNIX)
   message(STATUS "UNIX BUILD")
@@ -35,8 +71,9 @@ endif(UNIX)
 
 set_property(GLOBAL PROPERTY DEBUG_COnFIGURATIOnS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_COnFIGURATIOnS "Release;MinSizeRel")
-find_package(PythonLibs ${PY_VERSION} REQUIRED)
-find_package(Boost 1.63 REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
+
+
+
 message("Finding Boost...")
 
 if(Boost_FOUND)
@@ -61,6 +98,9 @@ endif(Boost_FOUND)
 
 set(MASTER_LATTICE_LOCATION ${CMAKE_SOURCE_DIR}/MasterLattice)
 add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+add_definitions(-DHAVE_SNPRINTF)
+
+
 
 add_subdirectory(Factories)
 add_subdirectory(LoggingSystem)
