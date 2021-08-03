@@ -37,12 +37,20 @@ BOOST_AUTO_TEST_CASE(get_10_image_test)
 	bool status = PIL.setup("");
 	Camera cam = PIL.getVirtualCathodeCamera();
 	//get 10 images 
+	auto start = std::chrono::high_resolution_clock::now(); 
 	for (int i = 0; i < 10; i++)
 	{
 		cam.updateImageData();
 		std::vector<long> imagedata = cam.getImageData();
 		//cam.getImageData_Py();
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		std::cout << "took " << duration.count() / (i+1) << " ms" << std::endl;
 	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	std::cout << "total took " << duration.count() << " ms" << std::endl;
+
 }
 
 BOOST_AUTO_TEST_SUITE_END();
