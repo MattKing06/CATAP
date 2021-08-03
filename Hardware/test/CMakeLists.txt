@@ -1,6 +1,6 @@
 message( "Processing Hardware Unit Tests")
 enable_testing()
-find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
+#find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 #Add a compile target
 add_executable(HardwareTests ${TEST_FILES})
 cmake_policy(SET CMP0023 NEW)

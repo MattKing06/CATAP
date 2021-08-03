@@ -1,7 +1,7 @@
 message( "Processing LoggingSystem Unit Tests")
 enable_testing()
 add_definitiOns(-DBOOST_ALL_DYN_LINK)
-find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
+#find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 if ( Boost_FOUND )
 		#Extract filename without extension
 	        get_filename_compOnent(testName LoggingSystemTest.cpp NAME_WE)

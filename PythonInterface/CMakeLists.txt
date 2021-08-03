@@ -93,7 +93,7 @@ if(UNIX)
 endif(UNIX)
 cmake_policy(SET CMP0022 NEW)
 find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS python3)
+#find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 if(MSVC)
 	# This definition is added because _HardwareFactory exposes a lot objects
 	# so MSVC compiler requires that we define the bigobj flag in the compiler definitions.

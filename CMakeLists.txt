@@ -36,7 +36,7 @@ endif(UNIX)
 set_property(GLOBAL PROPERTY DEBUG_COnFIGURATIOnS "Debug;RelWithDebInfo")
 set_property(GLOBAL PROPERTY RELEASE_COnFIGURATIOnS "Release;MinSizeRel")
 find_package(PythonLibs ${PY_VERSION} REQUIRED)
-find_package(Boost 1.63.0)
+find_package(Boost 1.63 REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
 message("Finding Boost...")
 
 if(Boost_FOUND)
