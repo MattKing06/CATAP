@@ -15,7 +15,7 @@ if (WIN32)
 
   IF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.63)
     IF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.76)
-      message(FATAL_ERROR "Please set the boost version you require for CATAP (CATAP > CATAP_BOOST_VERSION).
+      message(FATAL_ERROR "Please set the boost version you require for CATAP (Ungrouped Entries > CATAP_BOOST_VERSION).
       Currently boost 1.63 uses python3.6 and boost 1.76 uses python3.8. ")
     ENDIF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.76) 
   ENDIF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.63)
