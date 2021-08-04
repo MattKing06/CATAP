@@ -70,6 +70,8 @@ if(UNIX)
   set(EPICS_OS_INCLUDES ${EPICS_DIR}/include/os/Linux)
   set(EPICS_COM_LIB ${EPICS_LIBRARYDIR}libCom.so)
   set(EPICS_CA_LIB ${EPICS_LIBRARYDIR}libca.so)
+  find_package(Boost 1.63 EXACT REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
+  find_package(Python3 3.6 EXACT COMPONENTS Development)
 endif(UNIX)
 
 set_property(GLOBAL PROPERTY DEBUG_COnFIGURATIOnS "Debug;RelWithDebInfo")
