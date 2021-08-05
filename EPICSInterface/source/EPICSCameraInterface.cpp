@@ -11,7 +11,7 @@ LoggingSystem EPICSCameraInterface::messenger;
 EPICSCameraInterface::EPICSCameraInterface() :
 	EPICSInterface()
 {
-	messenger = LoggingSystem(true, true);
+	messenger = LoggingSystem(true, false);
 	messenger.printDebugMessage("EPICSCameraInterface Constructor Called");
 }
 
@@ -427,9 +427,9 @@ void EPICSCameraInterface::update_ANA_PixelResults_RBV(const struct event_handle
 		recastCamera->sigma_x_pix_rs.Push<double>(recastCamera->pixelResults.second[2]);
 		recastCamera->sigma_y_pix_rs.Push<double>(recastCamera->pixelResults.second[3]);
 		recastCamera->sigma_xy_pix_rs.Push<double>(recastCamera->pixelResults.second[4]);
-		messenger.printDebugMessage("update_ANA_PixelResults_RBV = ", recastCamera->pixelResults.second[0], " ",
-			recastCamera->pixelResults.second[1], " ",	recastCamera->pixelResults.second[2], " ",
-			recastCamera->pixelResults.second[3], " ",	recastCamera->pixelResults.second[4]);
+		//messenger.printDebugMessage("update_ANA_PixelResults_RBV = ", recastCamera->pixelResults.second[0], " ",
+		//	recastCamera->pixelResults.second[1], " ",	recastCamera->pixelResults.second[2], " ",
+		//	recastCamera->pixelResults.second[3], " ",	recastCamera->pixelResults.second[4]);
 		//messenger.printDebugMessage("RS = ", recastCamera->x_pix_rs.Mean(), " ",
 		//	recastCamera->y_pix_rs.Mean(), " ",		//	recastCamera->sigma_x_pix_rs.Mean(), " ",
 		//	recastCamera->sigma_y_pix_rs.Mean(), " ",		//	recastCamera->sigma_xy_pix_rs.Mean());
@@ -501,7 +501,7 @@ void EPICSCameraInterface::update_ANA_CenterX_RBV(const struct event_handler_arg
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->x_center_pixel);
+	updateTimeStampLongPair(args, recastCamera->x_center_pixel);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CenterX_RBV = ",
 		recastCamera->x_center_pixel.second);
 }
@@ -509,7 +509,7 @@ void EPICSCameraInterface::update_ANA_CenterY_RBV(const struct event_handler_arg
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->y_center_pixel);
+	updateTimeStampLongPair(args, recastCamera->y_center_pixel);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_CenterY_RBV = ",
 		recastCamera->y_center_pixel.second);
 }

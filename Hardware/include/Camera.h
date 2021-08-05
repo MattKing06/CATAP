@@ -887,7 +887,7 @@ public:
 	long getCentreXPixel()const;
 	/*! Get the Y Pixel defined as the "vertical" centre of the image-array, probably set from the Master Lattice.
 	@param[out] long, value */
-	bool getCentreYPixel()const;
+	long getCentreYPixel()const;
 	/*! Set the X Pixel to be defined as the "horizontal" centre of the image-array.
 	@param[in] long, value to set
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
@@ -896,31 +896,31 @@ public:
 	@param[in] long, value to set
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setCentreYPixel(long value);
-	///*! Set the X and Y Pixels to be defined as the centre of the image-array.
-	//@param[in] long, x value to set
-	//@param[in] long, y value to set
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool setCentrePixels(long x, long y);
-	///*! Sets the analysis centre to be the main lattice values for the mechanical center (in pixels).
-	//* Sets the analysis centre to be the main lattice values.
-	//@param[out] bool, if the value got sent to epics.*/
-	//bool setMechanicalCentre();
-	///*! For the virtual Cathode the centre of the screen can be defined using the RF centre of the injector.
-	//* Sets the analysis centre to be the main lattice values (in pixels).
-	//@param[out] bool, if the value got sent to epics.*/
-	//bool setRFCenter();
-	///*! Get the RF center X Pixel, probably set from the Master Lattice.
-	//@param[out] long, value */
-	//long getRFCentreXPixel()const;
-	///*! Get the RF center Y Pixel, probably set from the Master Lattice.
-	//@param[out] long, value */
-	//long getRFCentreYPixel()const;
-	///*! Get the mechanical center X Pixel, probably set from the Master Lattice.
-	//@param[out] long, value */
-	//long getMechCentreXPixel()const;
-	///*! Get the mechanical center Y Pixel, probably set from the Master Lattice.
-	//@param[out] long, value */
-	//long getMechCentreYPixel()const;
+	/*! Set the X and Y Pixels to be defined as the centre of the image-array.
+	@param[in] long, x value to set
+	@param[in] long, y value to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentrePixels(long x, long y);
+	/*! Sets the analysis centre to be the main lattice values for the mechanical center (in pixels).
+	* Sets the analysis centre to be the main lattice values.
+	@param[out] bool, if the value got sent to epics.*/
+	bool setMechanicalCentre();
+	/*! For the virtual Cathode the centre of the screen can be defined using the RF centre of the injector.
+	* Sets the analysis centre to be the main lattice values (in pixels).
+	@param[out] bool, if the value got sent to epics.*/
+	bool setRFCenter();
+	/*! Get the RF center X Pixel, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getRFCentreXPixel()const;
+	/*! Get the RF center Y Pixel, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getRFCentreYPixel()const;
+	/*! Get the mechanical center X Pixel, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getMechCentreXPixel()const;
+	/*! Get the mechanical center Y Pixel, probably set from the Master Lattice.
+	@param[out] long, value */
+	long getMechCentreYPixel()const;
 
 
 	/* Enable debug messages*/
@@ -1012,9 +1012,9 @@ protected:
 	/*! ROI image data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
 	/*! An x pixel number to be the horizontal centre (probably set from the Master Lattice).	*/
-	std::pair<epicsTimeStamp, double > x_center_pixel;
+	std::pair<epicsTimeStamp, long > x_center_pixel;
 	/*! A y pixel number to be the vertical centre (probably set from the Master Lattice).	*/
-	std::pair<epicsTimeStamp, double > y_center_pixel;
+	std::pair<epicsTimeStamp, long > y_center_pixel;
 	/*! conversion factor for pixels to mm. Value and epicstimestamp. From Epics. */
 	std::pair<epicsTimeStamp, double > pix_to_mm;
 

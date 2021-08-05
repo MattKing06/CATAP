@@ -730,7 +730,7 @@ long Camera::getCentreXPixel()const
 {
  return x_center_pixel.second;
 }
-bool Camera::getCentreYPixel()const
+long Camera::getCentreYPixel()const
 {
  return y_center_pixel.second;
 }
@@ -744,38 +744,38 @@ bool Camera::setCentreYPixel(long value)
 }
 
 
-//bool Camera::setCentrePixels(long x, long y)
-//{
-//	if (setCentreXPixel(x))
-//	{
-//		return setCentreYPixel(y);
-//	}
-//	return false;
-//}
-//bool Camera::setMechanicalCentre()
-//{
-//	return setCentrePixels(mechanical_centre_x, mechanical_centre_y);
-//}
-//bool Camera::setRFCenter()
-//{
-//	return setCentrePixels(rf_centre_x, rf_centre_y);
-//}
-//long Camera::getRFCentreXPixel()const
-//{
-//	return rf_centre_x;
-//}
-//long Camera::getRFCentreYPixel()const
-//{
-//	return rf_centre_y;
-//}
-//long Camera::getMechCentreXPixel()const
-//{
-//	return mechanical_centre_x;
-//}
-//long Camera::getMechCentreYPixel()const
-//{
-//	return mechanical_centre_y;
-//}
+bool Camera::setCentrePixels(long x, long y)
+{
+	if (setCentreXPixel(x))
+	{
+		return setCentreYPixel(y);
+	}
+	return false;
+}
+bool Camera::setMechanicalCentre()
+{
+	return setCentrePixels(mechanical_centre_x, mechanical_centre_y);
+}
+bool Camera::setRFCenter()
+{
+	return setCentrePixels(rf_centre_x, rf_centre_y);
+}
+long Camera::getRFCentreXPixel()const
+{
+	return rf_centre_x;
+}
+long Camera::getRFCentreYPixel()const
+{
+	return rf_centre_y;
+}
+long Camera::getMechCentreXPixel()const
+{
+	return mechanical_centre_x;
+}
+long Camera::getMechCentreYPixel()const
+{
+	return mechanical_centre_y;
+}
 
 
 
@@ -2591,14 +2591,14 @@ bool Camera::updateROIData()
 
 		roi_total_pixel_count = roi_size_x.second * roi_size_y.second;
 
-		messenger.printDebugMessage("roi_total_pixel_count = ", roi_total_pixel_count);
+		//messenger.printDebugMessage("roi_total_pixel_count = ", roi_total_pixel_count);
 
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_total_pixel_count);
 
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
+		//messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	return false;
@@ -2625,7 +2625,7 @@ bool Camera::updateROIDataWithTimeStamp()
 			, roi_num_pixels);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateROIDataWithTimeStamp Time taken: ", duration.count(), " us");
+		//messenger.printDebugMessage("updateROIDataWithTimeStamp Time taken: ", duration.count(), " us");
 		return got_stamp && got_value;
 	}
 	return false;
@@ -2662,7 +2662,7 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 		{
 			auto stop = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-			messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
+			//messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
 			return true;
 		}
 		//messenger.printDebugMessage("!!ERROR!!  ca_array_get, took  ", duration.count(), " us");	

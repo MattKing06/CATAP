@@ -153,10 +153,10 @@ namespace CameraRecords
 	std::vector<std::string> cameraMonitorRecordsList
 	{
 		HDFB_Buffer_FilePath_RBV            ,		HDFB_Buffer_FileName_RBV			,		HDFB_Buffer_FileNumber_RBV			,  //1
-		ROI1_MinX_RBV						,		ROI1_MinY_RBV						,		ROI1_SizeX_RBV						,  //2
-		ROI1_SizeY_RBV						,		ROI1_ImageData_RBV					,		HDF_WriteStatus						,  //3
 		HDF_Capture_RBV						,		HDF_NumCapture_RBV					,		HDF_FilePath_RBV					,  //4
 		HDF_FileName_RBV					,		HDF_FileNumber_RBV					,		HDF_WriteFile_RBV					,  //5
+		ROI1_MinX_RBV						,		ROI1_MinY_RBV						,		ROI1_SizeX_RBV						,  //2
+		ROI1_SizeY_RBV						,		HDF_WriteStatus						,  //3
 		CAM_Acquire_RBV						,		CAM_AcquireTime_RBV					,		CAM_AcquirePeriod_RBV				,  //6
 		CAM_ArrayRate_RBV					,		CAM_Gain_RBV						,		CAM_BlackLevel_RBV					,  //7
 		ANA_EnableCallbacks_RBV				,		ANA_UseFloor_RBV					,		ANA_FloorLevel_RBV					,  //8
@@ -175,7 +175,7 @@ namespace CameraRecords
 		ANA_NPointStepSize_RBV				,  //19
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
 		ANA_MaskXCenter_RBV,
-		// ATM these ones don't come with an _RBV suffix for a read only PV 
+		//// ATM these ones don't come with an _RBV suffix for a read only PV 
 		HDF_WriteMessage, // 58
 		LED_Sta		      // 59
 	};

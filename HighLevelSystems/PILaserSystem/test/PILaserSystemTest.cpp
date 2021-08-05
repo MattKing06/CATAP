@@ -32,6 +32,7 @@ BOOST_AUTO_TEST_CASE(move_laser_mirror_test)
 
 BOOST_AUTO_TEST_CASE(get_10_image_test)
 {
+
 	PILaserSystem PIL(STATE::PHYSICAL);
 
 	bool status = PIL.setup("");

@@ -207,9 +207,9 @@ properties:
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
     HAS_LED : FALSE # so far only the virtual cathode needs this flag 
     # empircally determined, adn used to set the center 
-    RF_CENTER_X : 1080
+    RF_CENTER_X : 1000
     RF_CENTER_Y : 1000
-    MECHANICAL_CENTER_X : 1000
+    MECHANICAL_CENTER_X : 1080
     MECHANICAL_CENTER_Y : 1000
     
     
