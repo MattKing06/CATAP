@@ -163,93 +163,10 @@ void Magnet::setPVStructs()
 
 
 
-HardwareSnapshot Magnet::getSnapshot()
-{
-	currentSnapshot.update(MagnetRecords::GETSETI , GETSETI.second);
-	currentSnapshot.update(MagnetRecords::READI, READI.second);
-	currentSnapshot.update(MagnetRecords::RILK, ilk_state.second);
-	currentSnapshot.update(MagnetRecords::RPOWER, psu_state.second);
-	currentSnapshot.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
-	currentSnapshot.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
-	currentSnapshot.update(MagnetRecords::INT_STR, INT_STR.second);
-	currentSnapshot.update(MagnetRecords::K_SET_P, K_SET_P.second);
-	currentSnapshot.update(MagnetRecords::K_ANG, K_ANG.second);
-	currentSnapshot.update(MagnetRecords::K_MRAD, K_MRAD.second);
-	currentSnapshot.update(MagnetRecords::K_VAL, K_VAL.second);
-	return currentSnapshot;
-}
-boost::python::dict Magnet::getSnapshot_Py()
-{
-	getSnapshot();
-	return currentSnapshot.getSnapshot_Py();
-}
-
-
-bool Magnet::matchesSnapshot()const
-{
-//	if (isREADIequalValue(ms.readi, READI_tolerance))
-//	{
-//		if (ms.seti == getSETI())
-//		{
-//			if (ms.psu_state == getPSUState())
-//			{
-//				if (ms.psu_state == getIlkState())
-//				{
-//					return true;
-//				}
-//			}
-//		}
-//	}
-	return false;
-}
-
-double Magnet::getMinI()const
-{
-	return min_i;
-}
-double Magnet::getMaxI()const
-{
-	return max_i;
-}
-
-std::string Magnet::getManufacturer() const
-{
-	return manufacturer;
-}
-std::string Magnet::getSerialNumber() const
-{
-	return serial_number;
-}
-TYPE Magnet::getMagType() const
-{
-	return mag_type;
-}
-double Magnet::getPosition() const
-{
-	return position;
-}
-TYPE Magnet::getMagnetType() const
-{
-	return mag_type;
-}
-std::string Magnet::getMagnetRevType() const
-{
-	return magRevType;
-}
-double Magnet::getREADITolerance() const
-{
-	return READI_tolerance;
-}
-double Magnet::setREADITolerance(const double value)
-{
-	READI_tolerance = value;
-	return READI_tolerance;
-}
 size_t Magnet::getNumberOfDegaussSteps() const
 {
 	return numberOfDegaussSteps;
 }
-
 std::vector<double> Magnet::getDegaussValues() const
 {
 	return degaussValues;
@@ -268,8 +185,6 @@ boost::python::list Magnet::setDegaussValues_Py(const boost::python::list& value
 {
 	return to_py_list(setDegaussValues(to_std_vector<double>(values)));
 }
-
-
 double Magnet::getDegaussTolerance() const
 {
 	return degaussTolerance;
@@ -279,31 +194,6 @@ double Magnet::setDegaussTolerance(const double value)
 	degaussTolerance = value;
 	return degaussTolerance;
 }
-
-std::vector<double> Magnet::getFieldIntegralCoefficients() const
-{
-	return field_integral_coefficients;
-}
-
-boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
-{
-	return to_py_list(getFieldIntegralCoefficients());
-}
-
-
-double Magnet::getMagneticLength() const
-{
-	return magnetic_length;
-}
-std::string Magnet::getFullPSUName() const
-{
-	return fullPSUName;
-}
-std::string Magnet::getMeasurementDataLocation() const
-{
-	return measurementDataLocation;
-}
-
 bool Magnet::isDegaussing()const
 {
 	return is_degaussing;
@@ -459,7 +349,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 			{
 				/*
 					READI is not changing and it's at zero, but zero isn't the final READI value we expect.
-					so don't breka out of this loop
+					so don't break out of this loop
 				*/
 			}
 			else if (has_READI_settled && !is_READI_zero)
@@ -494,9 +384,118 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		*/
 		GlobalFunctions::pause_2000();
 	} /// while
-
 	return !timed_out;
+}
 
+
+
+
+HardwareSnapshot Magnet::getSnapshot()
+{
+	currentSnapshot.update(MagnetRecords::GETSETI , GETSETI.second);
+	currentSnapshot.update(MagnetRecords::READI, READI.second);
+	currentSnapshot.update(MagnetRecords::RILK, ilk_state.second);
+	currentSnapshot.update(MagnetRecords::RPOWER, psu_state.second);
+	currentSnapshot.update(MagnetRecords::K_DIP_P, K_DIP_P.second);
+	currentSnapshot.update(MagnetRecords::INT_STR_MM, INT_STR_MM.second);
+	currentSnapshot.update(MagnetRecords::INT_STR, INT_STR.second);
+	currentSnapshot.update(MagnetRecords::K_SET_P, K_SET_P.second);
+	currentSnapshot.update(MagnetRecords::K_ANG, K_ANG.second);
+	currentSnapshot.update(MagnetRecords::K_MRAD, K_MRAD.second);
+	currentSnapshot.update(MagnetRecords::K_VAL, K_VAL.second);
+	return currentSnapshot;
+}
+boost::python::dict Magnet::getSnapshot_Py()
+{
+	getSnapshot();
+	return currentSnapshot.getSnapshot_Py();
+}
+
+
+bool Magnet::matchesSnapshot()const
+{
+//	if (isREADIequalValue(ms.readi, READI_tolerance))
+//	{
+//		if (ms.seti == getSETI())
+//		{
+//			if (ms.psu_state == getPSUState())
+//			{
+//				if (ms.psu_state == getIlkState())
+//				{
+//					return true;
+//				}
+//			}
+//		}
+//	}
+	return false;
+}
+
+double Magnet::getMinI()const
+{
+	return min_i;
+}
+double Magnet::getMaxI()const
+{
+	return max_i;
+}
+
+std::string Magnet::getManufacturer() const
+{
+	return manufacturer;
+}
+std::string Magnet::getSerialNumber() const
+{
+	return serial_number;
+}
+TYPE Magnet::getMagType() const
+{
+	return mag_type;
+}
+double Magnet::getPosition() const
+{
+	return position;
+}
+TYPE Magnet::getMagnetType() const
+{
+	return mag_type;
+}
+std::string Magnet::getMagnetRevType() const
+{
+	return magRevType;
+}
+double Magnet::getREADITolerance() const
+{
+	return READI_tolerance;
+}
+double Magnet::setREADITolerance(const double value)
+{
+	READI_tolerance = value;
+	return READI_tolerance;
+}
+
+
+std::vector<double> Magnet::getFieldIntegralCoefficients() const
+{
+	return field_integral_coefficients;
+}
+
+boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
+{
+	return to_py_list(getFieldIntegralCoefficients());
+}
+
+
+double Magnet::getMagneticLength() const
+{
+	return magnetic_length;
+}
+std::string Magnet::getFullPSUName() const
+{
+	return fullPSUName;
+}
+std::string Magnet::getMeasurementDataLocation() const
+{
+	return measurementDataLocation;
 }
 
 // THIS IS "SETTING" A SETI, WE NEVER READ SET WE USE GETSETI
@@ -702,6 +701,7 @@ void Magnet::messagesOn()
 	messenger.printMessage(hardwareName, " - MESSAGES ON");
 	epicsInterface->messagesOn();
 }
+
 
 
 

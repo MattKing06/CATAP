@@ -920,16 +920,8 @@ double Camera::getAvgIntensity()const
 {
 	return avg_intensity.second;
 }
-long Camera::getNpointStepSize()const
-{
-	return step_size.second;
-}
-bool Camera::setNpointStepSize(long val)
-{
-	std::cout << "setNpointStepSize, val = " << (epicsInt32)val << std::endl;
-	//return false;
-	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);
-}
+
+
 bool Camera::setX(double value)
 {
 	if(mode == STATE::PHYSICAL)
@@ -1390,6 +1382,10 @@ bool Camera::setMaskandROI_Py(boost::python::dict settings)
 {
 	return setMaskandROI(to_std_map<std::string, long>(settings));
 }
+/* 			 __   __         ___     __   __                    __
+	|\ | __ |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _`
+	| \|    |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__>
+*/
 bool Camera::useNPoint(bool v)
 {
 	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
@@ -1407,6 +1403,19 @@ bool Camera::isNotUsingNPoint()const
 {
 	return use_npoint.second == STATE::NOT_USING_NPOINT;
 }
+long Camera::getNpointStepSize()const
+{
+	return step_size.second;
+}
+bool Camera::setNpointStepSize(long val)
+{
+	std::cout << "setNpointStepSize, val = " << (epicsInt32)val << std::endl;
+	//return false;
+	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);
+}
+
+
+
 bool Camera::areAllRunningStatsFull()const
 {
 	if (x_pix_rs.Full())
@@ -1481,6 +1490,9 @@ double Camera::getPix2mm()const
 {
 	return pixel_to_mm.second;
 }
+
+
+
 long Camera::getMaskXCenter()const
 {
 	return mask_x_center.second;
@@ -1533,14 +1545,6 @@ std::map<std::string, long> Camera::getROI()const
 	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
 	r["roi_x_size"] = getROISizeX();// MAGIC STRING
 	r["roi_y_size"] = getROISizeY();// MAGIC STRING
-
-	// r["x_max"] = roi_max_x;   // MAGIC STRING
-	// r["y_max"] = roi_max_y; // MAGIC STRING
-	// r["x_size"] = getROISizeX();// MAGIC STRING
-	// r["y_size"] = getROISizeY();// MAGIC STRING
-	// r["x_min"] = getROIMinX();// MAGIC STRING
-	// r["y_min"] = getROIMinY();// MAGIC STRING
-
 	return r;
 }
 boost::python::dict Camera::getROI_Py()const
@@ -1558,18 +1562,6 @@ std::map<std::string, long> Camera::getMaskandROI()const
 	r["mask_center_y"] = getMaskYCenter(); // MAGIC STRING
 	r["mask_x_size"] = getMaskXRadius();// MAGIC STRING
 	r["mask_y_size"] = getMaskYRadius();// MAGIC STRING
-// =======
-	// r["mask_x"] = getMaskXCenter(); // MAGIC STRING
-	// r["mask_y"] = getMaskYCenter(); // MAGIC STRING
-	// r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
-	// r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
-	// r["x_max"] = getROIMinX() + getROISizeX();   // MAGIC STRING
-	// r["y_max"] = getROIMinY() + getROISizeY(); // MAGIC STRING
-	// r["x_size"] = getROISizeX();// MAGIC STRING
-	// r["y_size"] = getROISizeY();// MAGIC STRING
-	// r["x_min"] = getROIMinX();// MAGIC STRING
-	// r["y_min"] = getROIMinY();// MAGIC STRING
-
 	return r;
 }
 boost::python::dict Camera::getMaskandROI_Py()const
@@ -1609,74 +1601,24 @@ RunningStats& Camera::getSumIntensityRunningStats(){	return sum_intensity_rs;}
 size_t Camera::getBufferSize()const{return running_stats_buffer_size;}
 void Camera::setAllRunningStatBufferSizes(size_t v)
 {
-	x_pix_rs.setBufferSize(v);			y_pix_rs.setBufferSize(v);
-	sigma_x_pix_rs.setBufferSize(v);	sigma_y_pix_rs.setBufferSize(v);
-	sigma_xy_pix_rs.setBufferSize(v);	x_mm_rs.setBufferSize(v);
-	y_mm_rs.setBufferSize(v);			sigma_x_mm_rs.setBufferSize(v);
-	sigma_y_mm_rs.setBufferSize(v);		sigma_xy_mm_rs.setBufferSize(v);
-	running_stats_buffer_size = v;
+	x_pix_rs.setBufferSize(v);			y_pix_rs.setBufferSize(v);	sigma_x_pix_rs.setBufferSize(v);	sigma_y_pix_rs.setBufferSize(v);
+	sigma_xy_pix_rs.setBufferSize(v);	x_mm_rs.setBufferSize(v);	y_mm_rs.setBufferSize(v);			sigma_x_mm_rs.setBufferSize(v);
+	sigma_y_mm_rs.setBufferSize(v);		sigma_xy_mm_rs.setBufferSize(v);	running_stats_buffer_size = v;
 }
 void Camera::clearAllRunningStatBuffers()
 {
-	x_pix_rs.clearBuffer();			y_pix_rs.clearBuffer();
-	sigma_x_pix_rs.clearBuffer();	sigma_y_pix_rs.clearBuffer();
-	sigma_xy_pix_rs.clearBuffer();	x_mm_rs.clearBuffer();
-	y_mm_rs.clearBuffer();			sigma_x_mm_rs.clearBuffer();
-	sigma_y_mm_rs.clearBuffer();	sigma_xy_mm_rs.clearBuffer();
+	x_pix_rs.clearBuffer();	y_pix_rs.clearBuffer();	sigma_x_pix_rs.clearBuffer(); sigma_y_pix_rs.clearBuffer();	sigma_xy_pix_rs.clearBuffer();	
+	x_mm_rs.clearBuffer();	y_mm_rs.clearBuffer();	sigma_x_mm_rs.clearBuffer();  sigma_y_mm_rs.clearBuffer();  sigma_xy_mm_rs.clearBuffer();
 }
 void Camera::clearAllRunningStats()
 {
-	//std::cout << "Camera x_pix_rs.Clear " << std::endl;
-	x_pix_rs.Clear();
-	//std::cout << "Camera y_pix_rs.Clear " << std::endl;
-	y_pix_rs.Clear();
-	//std::cout << "Camera sigma_x_pix_rs.Clear " << std::endl;
-	sigma_x_pix_rs.Clear();
-	//std::cout << "Camera sigma_y_pix_rs.Clear " << std::endl;
-	sigma_y_pix_rs.Clear();
-	//std::cout << "Camera sigma_xy_pix_rs.Clear " << std::endl;
-	sigma_xy_pix_rs.Clear();
-	//std::cout << "Camera x_mm_rs.Clear " << std::endl;
-	x_mm_rs.Clear();
-	//std::cout << "Camera y_mm_rs.Clear " << std::endl;
-	y_mm_rs.Clear();
-	//std::cout << "Camera sigma_x_mm_rs.Clear " << std::endl;
-	sigma_x_mm_rs.Clear();
-	//std::cout << "Camera sigma_y_mm_rs.Clear " << std::endl;
-	sigma_y_mm_rs.Clear();
-	//std::cout << "Camera sigma_xy_mm_rs.Clear " << std::endl;
-	sigma_xy_mm_rs.Clear();
-	//std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
-	avg_intensity_rs.Clear();
-//	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
-	sum_intensity_rs.Clear();
+	x_pix_rs.Clear();	y_pix_rs.Clear();	sigma_x_pix_rs.Clear();	sigma_y_pix_rs.Clear();	sigma_xy_pix_rs.Clear();	x_mm_rs.Clear();
+	y_mm_rs.Clear();	sigma_x_mm_rs.Clear();	sigma_y_mm_rs.Clear();	sigma_xy_mm_rs.Clear();	avg_intensity_rs.Clear();	sum_intensity_rs.Clear();
 }
 void Camera::setAllRunningStatSizes(size_t new_val)
 {
-//	std::cout << "Camera x_pix_rs.setMaxCount " << new_val << std::endl;
-	x_pix_rs.setMaxCount(new_val);
-//	std::cout << "Camera y_pix_rs.setMaxCount " << new_val << std::endl;
-	y_pix_rs.setMaxCount(new_val);
-//	std::cout << "Camera sigma_x_pix_rs.setMaxCount " << new_val << std::endl;
-	sigma_x_pix_rs.setMaxCount(new_val);
-//	std::cout << "Camera sigma_y_pix_rs.setMaxCount " << new_val << std::endl;
-	sigma_y_pix_rs.setMaxCount(new_val);
-//	std::cout << "Camera sigma_xy_pix_rs.setMaxCount " << new_val << std::endl;
-	sigma_xy_pix_rs.setMaxCount(new_val);
-//	std::cout << "Camera x_mm_rs.setMaxCount " << new_val << std::endl;
-	x_mm_rs.setMaxCount(new_val);
-//	std::cout << "Camera y_mm_rs.setMaxCount " << new_val << std::endl;
-	y_mm_rs.setMaxCount(new_val);
-//	std::cout << "Camera sigma_x_mm_rs.setMaxCount " << new_val << std::endl;
-	sigma_x_mm_rs.setMaxCount(new_val);
-//	std::cout << "Camera sigma_y_mm_rs.setMaxCount " << new_val << std::endl;
-	sigma_y_mm_rs.setMaxCount(new_val);
-//	std::cout << "Camera sigma_xy_mm_rs.setMaxCount " << new_val << std::endl;
-	sigma_xy_mm_rs.setMaxCount(new_val);
-//	std::cout << "Camera avg_intensity_rs.Clear " << std::endl;
-	avg_intensity_rs.setMaxCount(new_val);
-//	std::cout << "Camera sum_intensity_rs.Clear " << std::endl;
-	sum_intensity_rs.setMaxCount(new_val);
+	x_pix_rs.setMaxCount(new_val);	y_pix_rs.setMaxCount(new_val);	sigma_x_pix_rs.setMaxCount(new_val);	sigma_y_pix_rs.setMaxCount(new_val);	sigma_xy_pix_rs.setMaxCount(new_val);	x_mm_rs.setMaxCount(new_val);
+	y_mm_rs.setMaxCount(new_val);	sigma_x_mm_rs.setMaxCount(new_val);	sigma_y_mm_rs.setMaxCount(new_val);	sigma_xy_mm_rs.setMaxCount(new_val);	avg_intensity_rs.setMaxCount(new_val);	sum_intensity_rs.setMaxCount(new_val);
 }
 size_t Camera::getRunningStatNumDataValues()const
 {
@@ -1687,16 +1629,10 @@ size_t Camera::getRunningStatNumDataValues()const
 	NumDataValuesVector[6] = y_mm_rs.NumDataValues();			NumDataValuesVector[7] = sigma_x_mm_rs.NumDataValues();
 	NumDataValuesVector[8] = sigma_y_mm_rs.NumDataValues();		NumDataValuesVector[9] = sigma_xy_mm_rs.NumDataValues();
 	NumDataValuesVector[10] = avg_intensity_rs.NumDataValues();	NumDataValuesVector[11] = sum_intensity_rs.NumDataValues();
-	//size_t min_item = *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());
-	//std::cout << "Camera::getRunningStatNumDataValues min_item =  " << min_item << std::endl;
-	//std::cout << "NumDataValuesVector[0] " << NumDataValuesVector[0] << std::endl;	//std::cout << "NumDataValuesVector[1] " << NumDataValuesVector[1] << std::endl;
-	//std::cout << "NumDataValuesVector[2] " << NumDataValuesVector[2] << std::endl;	//std::cout << "NumDataValuesVector[3] " << NumDataValuesVector[3] << std::endl;
-	//std::cout << "NumDataValuesVector[4] " << NumDataValuesVector[4] << std::endl;	//std::cout << "NumDataValuesVector[5] " << NumDataValuesVector[5] << std::endl;
-	//std::cout << "NumDataValuesVector[6] " << NumDataValuesVector[6] << std::endl;	//std::cout << "NumDataValuesVector[7] " << NumDataValuesVector[7] << std::endl;
-	//std::cout << "NumDataValuesVector[8] " << NumDataValuesVector[8] << std::endl;	//std::cout << "NumDataValuesVector[9] " << NumDataValuesVector[9] << std::endl;
-	//std::cout << "NumDataValuesVector[10] " << NumDataValuesVector[10] << std::endl;	//std::cout << "NumDataValuesVector[11] " << NumDataValuesVector[11] << std::endl;
 	return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());;
 }
+
+
 
 bool Camera::startAcquiring()
 {
