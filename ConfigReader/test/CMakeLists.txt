@@ -1,6 +1,6 @@
 message( "Processing ConfigReader Unit Tests")
 enable_testing()
-find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework filesystem system)
+#find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework filesystem system)
 if ( Boost_FOUND )
 		#Extract filename without extension
 		get_filename_compOnent(testName ConfigReaderTest.cpp NAME_WE)

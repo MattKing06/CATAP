@@ -55,15 +55,15 @@ set( INCLUDE_FILES
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
-find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS python3)
+#find_package(PythonLibs ${PY_VERSION})
+#find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 add_library(Utilities ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   message("COMPILING PYTHON INTERFACE WITH -fPIC")
   SET_TARGET_PROPERTIES(Utilities PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIR})
-target_include_directories(Utilities PRIVATE ${PYTHON_INCLUDE_DIR})
+target_include_directories(Utilities PRIVATE ${Python3_INCLUDE_DIRS})
 target_include_directories(Utilities PUBLIC ${YAML_PARSER_DIR}/include)
 target_include_directories(Utilities PUBLIC include)
 if(WIN32)
@@ -76,6 +76,6 @@ endif(UNIX)
 TARGET_LINK_LIBRARIES(Utilities
 					 PRIVATE
 					 ${Boost_LIBRARIES}
-					 ${PYTHON_LIBRARY}
+					 ${Python3_LIBRARIES}
 					 )
 set_property(TARGET Utilities PROPERTY FOLDER "Utilities")
