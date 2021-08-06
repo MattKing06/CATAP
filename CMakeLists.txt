@@ -12,8 +12,6 @@ set(CATAP_BOOST_VERSION "NOT-SET" CACHE STRING "Boost Version")
 
 if (WIN32)
   message(STATUS "WIN32 BUILD")
-<
-
   IF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.63)
     IF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.76)
       message(FATAL_ERROR "Please set the boost version you require for CATAP (Ungrouped Entries > CATAP_BOOST_VERSION).
