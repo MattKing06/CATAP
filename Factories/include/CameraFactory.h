@@ -634,6 +634,20 @@ public:
 	@param[in] std::string, name
 	@param[out] dict, values ) */
 	boost::python::dict getMaskandROI_Py(const std::string& name)const;
+
+	/*! Get IOC active camera limit. The maximum number of cameras that can be active for this IOC. Running at this limit does not imply that everything will run smoothly!)
+	@param[in] std::string, name
+	@param[out] double, values ) */
+	double getActiveCameraLimit(const std::string& name) const;
+	/*! Get IOC active camera count. The number of cameras that are currently acquiring in this IOC.
+	@param[in] std::string, name
+	@param[out] double, values ) */
+	double getActiveCameraCount(const std::string& name) const;
+	/*! Test if the active camera limit is greater than than the active camera count
+	@param[in] std::string, name
+	@param[out] bool, values ) */
+	bool canStartCamera(const std::string& name)const;
+
 	/*! Start image acquiring.
 	@param[in] std::string, name
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/

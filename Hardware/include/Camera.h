@@ -604,6 +604,23 @@ public:
 	/*! Save the Camera IMage buffer to disk (typically the last 600 shots).
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool saveImageBuffer();
+	
+protected:
+	/*! Active camera limit for this IOC.	*/
+	std::pair<epicsTimeStamp, double > active_camera_limit;
+	/*! Active camera count for this IOC.	*/
+	std::pair<epicsTimeStamp, double > active_camera_count;
+public:
+	/*! Get IOC active camera limit. The maximum number of cameras that can be active for this IOC. Running at this limit does not imply that everything will run smoothly!)
+	@param[out] double */
+	double getActiveCameraLimit() const;
+	/*! Get IOC active camera count. The number of cameras that are currently acquiring in this IOC.
+	@param[out] double */
+	double getActiveCameraCount() const;
+	/*! Test if the active camera limit is greater than than the active camera count  
+	@param[out] bool */
+	bool canStartCamera()const;
+	
 	/*! Start image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
@@ -1025,6 +1042,8 @@ protected:
 	double pix2mmX_ratio;
 	/*! conversion factor for pixels to mm in the y direction. From Master Lattice. */
 	double pix2mmY_ratio;
+
+
 
 
 	/*! Camera acquire time. Value and epicstimestamp.	*/

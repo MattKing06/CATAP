@@ -36,6 +36,7 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 //	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
 	else if (pvStruct.pvRecord == HDF_Capture_RBV)		{		pvStruct.updateFunction = this->update_HDF_Capture_RBV;	}
 	else if (pvStruct.pvRecord == CAM_Acquire_RBV)		{		pvStruct.updateFunction = this->update_CAM_Acquire_RBV;	}
+	else if (pvStruct.pvRecord == CAM2_ArrayData)		{		pvStruct.updateFunction = this->update_CAM2_ArrayData;}
 	else if (pvStruct.pvRecord == HDF_NumCapture_RBV)	{		pvStruct.updateFunction = this->update_HDF_NumCapture_RBV;	}
 	else if (pvStruct.pvRecord == ANA_NPointStepSize_RBV)	{		pvStruct.updateFunction = this->update_ANA_NPointStepSize_RBV;	}
 	else if (pvStruct.pvRecord == ANA_EnableCallbacks_RBV)	{		pvStruct.updateFunction = this->update_ANA_EnableCallbacks_RBV;	}
@@ -91,12 +92,29 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	else if (pvStruct.pvRecord == ANA_OVERLAY_1_CROSS_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_1_CROSS_RBV;	}
 	else if (pvStruct.pvRecord == ANA_OVERLAY_2_RESULT_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_2_RESULT_RBV;	}
 	else if (pvStruct.pvRecord == ANA_OVERLAY_3_MASK_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_3_MASK_RBV;	}
+	else if (pvStruct.pvRecord == CAM_Active_Count)	{		pvStruct.updateFunction = this->update_CAM_Active_Count;	}
+	else if (pvStruct.pvRecord == CAM_Active_Limit)	{		pvStruct.updateFunction = this->update_CAM_Active_Limit;	}
 	else	
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);
 	}
 }
-
+void EPICSCameraInterface::update_CAM_Active_Count(const struct event_handler_args args)
+{
+	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	updateTimeStampDoublePair(args, recastCamera->active_camera_limit);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Count = ",
+		recastCamera->active_camera_limit.second);
+}
+void EPICSCameraInterface::update_CAM_Active_Limit(const struct event_handler_args args)
+{
+	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+	updateTimeStampDoublePair(args, recastCamera->active_camera_limit);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Limit = ",
+		recastCamera->active_camera_limit.second);
+}
 void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
@@ -270,6 +288,10 @@ void EPICSCameraInterface::update_CAM_BlackLevel_RBV(const struct event_handler_
 	updateTimeStampLongPair(args, recastCamera->black_level);
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_BlackLevel_RBV = ",
 		recastCamera->black_level.second);
+}
+void EPICSCameraInterface::update_CAM2_ArrayData(const struct event_handler_args args)
+{
+	messenger.printMessage("UPDATE ARRAY DATA");
 }
 void EPICSCameraInterface::update_CAM_Gain_RBV(const struct event_handler_args args)
 {

@@ -242,7 +242,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getMechCentreXPixel", &Camera::getMechCentreXPixel)
 			.def("getMechCentreYPixel", &Camera::getMechCentreYPixel)
 
-
+				
+				
+				
+			.def("getActiveCameraLimit", &Camera::getActiveCameraLimit)
+			.def("getActiveCameraCount", &Camera::getActiveCameraCount)
+			.def("canStartCamera", &Camera::canStartCamera)
 
 				
 			.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)
@@ -525,6 +530,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getBlackLevel", &CameraFactory::getBlackLevel)
 
 			.def("areAllRunningStatsFull", &CameraFactory::areAllRunningStatsFull)
+
+
+
+			.def("getActiveCameraLimit", &CameraFactory::getActiveCameraLimit)
+			.def("getActiveCameraCount", &CameraFactory::getActiveCameraCount)
+			.def("canStartCamera", &CameraFactory::canStartCamera)
 
 
 			.def("enableOverlayCross", &CameraFactory::enableOverlayCross)

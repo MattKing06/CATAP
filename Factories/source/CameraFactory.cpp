@@ -1465,6 +1465,35 @@ boost::python::dict CameraFactory::getMaskandROI_Py(const std::string& name)cons
 	}
 	return to_py_dict<std::string, long>(getMaskandROI(name));
 }
+
+
+double CameraFactory::getActiveCameraLimit(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getActiveCameraLimit();
+	}
+	return GlobalConstants::double_min;
+}
+double CameraFactory::getActiveCameraCount(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getActiveCameraCount();
+	}
+	return GlobalConstants::double_min;
+}
+bool CameraFactory::canStartCamera(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getMaskandROI_Py();
+	}
+	return to_py_dict<std::string, long>(getMaskandROI(name));
+}
 bool CameraFactory::startAcquiring(const std::string& name)
 {
 	std::string full_name = getFullName(name);

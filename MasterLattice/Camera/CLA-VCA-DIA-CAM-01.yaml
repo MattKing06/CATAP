@@ -32,7 +32,7 @@ controls_information:
         ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
         ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
         ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
-        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
+        ANA_CenterY_RBV    : CLA-VCA-DIA-01:ANA:CenterY_RBV
         # start stop acquiring images 
         CAM_Start_Acquire   : CLA-VCA-DIA-CAM-01:CAM:Start
         CAM_Stop_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Stop

@@ -37,6 +37,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	sigma_x_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_y_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_xy_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	active_camera_limit(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+	active_camera_count(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
@@ -1634,9 +1636,23 @@ size_t Camera::getRunningStatNumDataValues()const
 
 
 
+
+double Camera::getActiveCameraLimit() const
+{
+	return active_camera_limit.second;
+}
+double Camera::getActiveCameraCount() const
+{
+	return active_camera_count.second;
+}
+bool Camera::canStartCamera()const
+{
+	return getActiveCameraLimit() > getActiveCameraCount();
+}
 bool Camera::startAcquiring()
 {
-	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
+	// we could put a canStartCamera check in here, but why bother???
+	return epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
 }
 bool Camera::stopAcquiring()
 {

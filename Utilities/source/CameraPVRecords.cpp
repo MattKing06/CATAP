@@ -173,7 +173,6 @@ namespace CameraRecords
 		ANA_CovXYPix_RBV					,		ANA_PixelResults_RBV				,		ANA_MMResults_RBV					,  //16
 		ANA_MaskYCenter_RBV					,		ANA_MaskXRad_RBV					,		ANA_MaskYRad_RBV					,  //17
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
-		ANA_UseBkgrnd_RBV					,		ANA_UseNPoint_RBV					,		ANA_NPointStepSize_RBV				,  //19
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
 		ANA_MaskXCenter_RBV,
 		//// ATM these ones don't come with an _RBV suffix for a read only PV 
