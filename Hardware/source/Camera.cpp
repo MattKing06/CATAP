@@ -1649,6 +1649,62 @@ bool Camera::canStartCamera()const
 {
 	return getActiveCameraLimit() > getActiveCameraCount();
 }
+
+
+bool Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
+{
+	while (true) 
+	{
+		if (cv.wait_for(lck, std::chrono::milliseconds(3000), myPredicate)) //something wrong?  
+			cout << "print something...1" << endl
+		else
+			cout << "print something...2" << endl
+	}
+
+
+	csw.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
+
+
+	csw.cam->isAcquiring()
+
+	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
+	return true;
+}
+
+int stopAcquiringAndWait_NewThread()
+{
+
+	std::thread wait_for_cam_to_stop_thread = = new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
+
+
+
+
+	return 1;
+}
+
+/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
+@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+bool Camera::stopAcquiringAndWait()
+{
+	if (isNotAcquiring())
+		return true;
+	if (stopAcquiring())
+	{
+		cam_stop_waiter_struct.cam = this;
+		cam_stop_waiter_struct.wait_ms = 50000;
+		
+		std::thread wait_for_cam_to_stop_thread;
+
+
+
+		cam_stop_waiter_struct.thread->join();
+		delete cam_stop_waiter_struct.thread;
+		cam_stop_waiter_struct.thread = nullptr;
+	}
+	return false;
+}
+
+
 bool Camera::startAcquiring()
 {
 	// we could put a canStartCamera check in here, but why bother???

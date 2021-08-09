@@ -23,8 +23,7 @@
 
 class Camera;
 class ImageCapture;
-/*	Image collection and saving happens in a new thread,
-	this struct is passed to the new thread function		*/
+/*	Image collection and saving happens in a new thread, this struct is passed to the new thread function		*/
 class ImageCapture
 {
 	public: 
@@ -39,6 +38,11 @@ class ImageCapture
 		size_t       num_shots;
 		bool is_busy;
 		STATE status;
+};
+/*	Wait for camera to stop acquiring, this struct is passed to the new thread function		*/
+class CamStopWaiter
+{
+public:	CamStopWaiter() : cam(nullptr), thread(nullptr), wait_ms(5000) {}	Camera* cam; 	std::thread* thread; size_t wait_ms;
 };
 
 class EPICSCameraInterface;
@@ -621,6 +625,13 @@ public:
 	@param[out] bool */
 	bool canStartCamera()const;
 	
+
+	/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool stopAcquiringAndWait(size_t timeout = 5);
+	static void staticEntryWaitForCamStopAcquiring();
+	CamStopWaiter cam_stop_waiter_struct;
+
 	/*! Start image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
