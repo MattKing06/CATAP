@@ -23,8 +23,6 @@ set( TEST_FILES
 
 cmake_policy(SET CMP0022 NEW)
 add_library(EPICSTools STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
-find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.76 REQUIRED COMPONENTS python38)
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(EPICSTools PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
@@ -35,14 +33,14 @@ target_include_directories(EPICSTools PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/inc
 target_include_directories(EPICSTools PRIVATE include)
 target_include_directories(EPICSTools PRIVATE ${Boost_INCLUDE_DIR})
 target_include_directories(EPICSTools PUBLIC ${Boost_INCLUDE_DIR})
-target_include_directories(EPICSTools PUBLIC ${PYTHON_INCLUDE_DIR})
+target_include_directories(EPICSTools PUBLIC ${Python3_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(EPICSTools
 					  PUBLIC
 					    PV
 					  PRIVATE
 						Utilities
 			     	    ${Boost_LIBRARIES}
-						${PYTHON_LIBRARY}
+						${Python3_LIBRARY}
 		    			EPICSInterface
 						LoggingSystem)
 set_property(TARGET EPICSTools PROPERTY FOLDER "EPICSTools")

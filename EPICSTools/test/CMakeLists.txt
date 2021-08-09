@@ -1,10 +1,10 @@
 message( "Processing EPICSTools Unit Tests")
 enable_testing()
-find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework chrono thread)
+#find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework chrono thread)
 add_executable(EPICSToolsTests ${TEST_FILES})
 cmake_policy(SET CMP0023 NEW)
 #link to Boost libs AND whatever else
-target_include_directories(EPICSToolsTests PRIVATE ${Boost_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR}
+target_include_directories(EPICSToolsTests PRIVATE ${Boost_INCLUDE_DIR} ${Python3_INCLUDE_DIRS}
 												${PROJECT_SOURCE_DIR}/EPICSTools/include 
 												${PROJECT_SOURCE_DIR}/EPICSInterface/include
 												${PROJECT_SOURCE_DIR}/LoggingSystem/include
@@ -31,4 +31,15 @@ if ( Boost_FOUND )
 			 COMMAND ${CMAKE_BINARY_DIR}/testBin/EPICSToolsTests
 			 )
 	endforeach(testFile ${TEST_FILES})
+	if(WIN32)
+		#file(GLOB RELEASE_LIBS ${THIRD_PARTY_LIBS}/Windows/x64/Release/*.dll)
+		#file(GLOB DEBUG_LIBS ${THIRD_PARTY_LIBS}/Windows/x64/Debug/*.dll)
+		#message("THIRD PARTY LOCATION: " ${THIRD_PARTY_LIBS})
+		#message("REL LIBS: " ${RELEASE_LIBS})
+		#message("DEB LIBS: " ${DEBUG_LIBS})
+		get_target_property(RELEASE_OUTPUT_DIRECTORY EPICSToolsTests RUNTIME_OUTPUT_DIRECTORY)
+		get_target_property(DEBUG_OUTPUT_DIRECTORY EPICSToolsTests RUNTIME_OUTPUT_DIRECTORY)
+		add_custom_command(TARGET EPICSToolsTests PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug $<1:${DEBUG_OUTPUT_DIRECTORY}/Debug>)
+		add_custom_command(TARGET EPICSToolsTests PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release $<1:${RELEASE_OUTPUT_DIRECTORY}/Release>)
+	endif(WIN32)
 endif(Boost_FOUND)
