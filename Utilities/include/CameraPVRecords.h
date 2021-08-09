@@ -50,6 +50,8 @@ namespace CameraRecords
 	extern std::string const CAM_Acquire_RBV;
 	extern std::string const CAM_Start_Acquire;
 	extern std::string const CAM_Stop_Acquire;
+	extern std::string const CAM_Active_Count;
+	extern std::string const CAM_Active_Limit;
 	extern std::string const CAM_AcquireTime_RBV;
 	extern std::string const CAM_AcquirePeriod_RBV;
 	extern std::string const CAM_ArrayRate_RBV;
@@ -136,6 +138,7 @@ namespace CameraRecords
 	extern std::string const CAM_BlackLevel_RBV;
 	extern std::string const CAM_Gain;
 	extern std::string const CAM_Gain_RBV;
+
 
 
 

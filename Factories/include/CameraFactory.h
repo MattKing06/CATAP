@@ -880,127 +880,105 @@ public:
 	@param[out] dict, values */
 	boost::python::dict getAllRunningStats(const std::string& name)const;
 
+//
+// TODO implment snapshot functions 
+//----------------------------------------------------------------------------------------------------------------
+//			 __             __   __        __  ___    
+//			/__` |\ |  /\  |__) /__` |__| /  \  |     
+//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+//			                                          
+//	/*! Save the current factory settings to the default filepath and filename
+//		@param[in] string, comments	(optional input, default as empty)
+//		@param[out] STATE, success, failure, etc.	*/
+//	STATE saveSnapshot(const std::string& comments = "");
+//	/*! Save the current factory settings to filepath and filename
+//	@param[in] string, filepath
+//	@param[in] string, filename
+//	@param[in] string, comments	(optional input, default as empty)
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments = "");
+//	/*! Save snap_dict to the default filepath and filename
+//	@param[in] dict, snap_dict
+//	@param[in] string, comments	(optional input, default as empty)
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict, const std::string& comments = "");
+//	/*! Save snap_dict to filepath and filename
+//	@param[in] string, filepath
+//	@param[in] string, filename
+//	@param[in] dict, snap_dict
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments = "");
+//	/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+//	@param[in] string, filepath
+//	@param[in] string, filename
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
+//	/*! Load snapshot_dict by copying the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+//	@param[in] dict, snapshot_dict
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
+//	/*! Get the latest snapshot data for this factory.
+//	@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
+//	std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
+//	/*! Get the latest snapshot data for this factory. Python Version
+//	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
+//	boost::python::dict getSnapshot_Py(); // return current state as py dict 
+//	/*! Get the snapshot data from filepath and filename. Python Version
+//	@param[in] string, filepath
+//	@param[in] string, filename
+//	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
+//	boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
+//	/*! Apply a Python dict snapshot.
+//	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name
+//	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE applySnaphot(const boost::python::dict& snapshot_dict, TYPE magnets = TYPE::MAGNET);
+//	/*! Apply a snapshot data from filepath and filename.
+//	@param[in] string, filepath
+//	@param[in] string, filename
+//	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE applySnaphot(const std::string& filepath, const std::string& filename, TYPE objects = TYPE::CAMERA);
+//	/*! Apply the member variable hardwareSnapshotMap (which could have already been loaded with loadSnapshot()).
+//	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+//	@param[out] STATE, success, failure, etc.			*/
+//	STATE applyLoadedSnaphost(TYPE magnets = TYPE::MAGNET);
+//private:
+//	/*! Snaphsot data is placed here, when loaded from file, or applied  */
+//	std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
+//	/*! Each factory must know how to convert a YAML NODE read from snaphsot YAML file into a map of hardwareSnapshots.
+//		It must be done in the factory so we know how to convert the type for each record
+//		This function should also check the YAML::NODE is compliant with our definitions.
+//		@param[in] YAML::Node, input_node to convert
+//		@param[out] map<string, HardwareSnapshot>, return map */
+//	std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
+//	/*! Each factory must know how to convert a ython Dictionary into a map of hardwareSnapshots.
+//		It must be done in the factory so we know how to convert the type for each record
+//		@param[in] dict, input_dict to convert
+//		@param[out] map<string, HardwareSnapshot>, return map */
+//	std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
+//
+//	YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
+//	/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed
+//		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply
+//		@param[out] STATE, success, failure, etc */
+//	STATE applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE type = TYPE::CAMERA);
+
+public:
 
 
 
-
-	//double pix2mmX(const std::string& name, double value)const;
-	//double pix2mmY(const std::string& name, double value)const;
-	//double mm2pixX(const std::string& name, double value)const;
-	//double mm2pixY(const std::string& name, double value)const;
-
-	//double getpix2mmX(const std::string& name)const;
-	//double getpix2mmY(const std::string& name)const;
-	//double setpix2mmX(const std::string& name, double value);
-	//double setpix2mmY(const std::string& name, double value);
-
-
-	//double getX(const std::string& name)const;
-	//double getY(const std::string& name)const;
-	//double getSigX(const std::string& name)const;
-	//double getSigY(const std::string& name)const;
-	//double getSigXY(const std::string& name)const;
-	//double getXPix(const std::string& name)const;
-	//double getYPix(const std::string& name)const;
-	//double getSigXPix(const std::string& name)const;
-	//double getSigYPix(const std::string& name)const;
-	//double getSigXYPix(const std::string& name)const;
-
-
-	///*! get the Npoint scaling stepsize
-	//@param[in] const std::string, name of camera to set value for
-	//@param[out] long, value */
-	//long getStepSize(const std::string& name)const;
-	///*! set the Npoint scaling stepsize
-	//@param[in] const std::string, name of camera to set value for
-	//@param[in] long, new stepsize
-	//@param[out] bool, value */
-	//bool setStepSize(const std::string& name, long val);
-
-
-
-
-	//boost::python::dict getRunningStats(const std::string& name)const;
-	//boost::python::dict getAllRunningStats()const;
-
-	//bool setX(const std::string& name, double value);
-	//bool setY(const std::string& name, double value);
-	//bool setSigX(const std::string& name, double value);
-	//bool setSigY(const std::string& name, double value);
-	//bool setSigXY(const std::string& name, double value);
-	////bool setXPix(const std::string& name, double value);
-	////bool setYPix(const std::string& name, double value);
-	////bool setSigXPix(const std::string& name, double value);
-	////bool setSigYPix(const std::string& name, double value);
-	////bool setSigXYPix(const std::string& name, double value);
-
-	//double getSumIntensity(const std::string& name)const;
-	//double getAvgIntensity(const std::string& name)const;
-	//bool setSumIntensity(const std::string& name, double value);
-	//bool setAvgIntensity(const std::string& name, double value);
-
-	////unsigned short getMaskXCenter(const std::string& name)const;
-	////unsigned short getMaskYCenter(const std::string& name)const;
-	////unsigned short getMaskXRadius(const std::string& name)const;
-	////unsigned short getMaskYRadius(const std::string& name)const;
-
-	////unsigned short setMaskXCenter(const std::string& name, unsigned short val);
-	////unsigned short setMaskYCenter(const std::string& name, unsigned short val);
-	////unsigned short setMaskXRadius(const std::string& name, unsigned short val);
-	////unsigned short setMaskYRadius(const std::string& name, unsigned short val);
-
-	//long getMaskXCenter(const std::string& name)const;
-	//long getMaskYCenter(const std::string& name)const;
-	//long getMaskXRadius(const std::string& name)const;
-	//long getMaskYRadius(const std::string& name)const;
-	//
-	//long setMaskXCenter(const std::string& name, long val);
-	//long setMaskYCenter(const std::string& name, long val);
-	//long setMaskXRadius(const std::string& name, long val);
-	//long setMaskYRadius(const std::string& name, long val);
-
-
-	//bool useNPoint(const std::string& name, bool v);
-	//bool useBackground(const std::string& name, bool v);
-	//STATE getNPointState(const std::string& name)const;
-
-	//bool isUsingNPoint(const std::string& name)const;
-	//bool isUsingBackground(const std::string& name)const;
-	//STATE getUsingBackgroundState(const std::string& name)const;
-
-
-	//bool stopAcquiring(const std::string& cam_name);
-	//bool stopAllAcquiring();
-	//bool stopAllAcquiringExceptVC();
-	//bool startAcquiring(const std::string& cam_name, bool stop_all = true);
-	//std::map<std::string, STATE> getAllAcquireStates()const;
-	//boost::python::dict getAllAcquireStates_Py()const;
-
-	//bool isAcquiring(const std::string& name)const;
-	//bool isNotAcquiring(const std::string& name) const;
-	//STATE getAcquireState(const std::string& name)const;
-
-	//bool startAnalysing(const std::string& name);
-	//bool stopAnalysing(const std::string& name);
-	//bool isAnalysing(const std::string& name)const;
-	//bool isNotAnalysing(const std::string& name) const;
-	//STATE getAnalysisState(const std::string& name)const;
-	//std::map<std::string, STATE> getAllAnalysisState()const;
-	//boost::python::dict getAllAnalysisState_Py()const;
 
 
 	std::string getFullName(const std::string& name_to_check) const;
 
-	///*! get the name alises for this 
-	//@param[out] names, vector containing  all the alias names */
-	//std::vector<std::string> getNameAliases(const std::string cam_name) const;
-	///*! get the name alises for this LLRF (python version)
-	//	@param[out] names, python list containing all the alias names */
-	//boost::python::list getNameAliases_Py(const std::string cam_name) const;
-	//
-	//std::string getScreen(const std::string cam_name) const;
-	//std::vector<std::string> getScreenNames(const std::string cam_name) const;
-	//boost::python::list getScreenNames_Py(const std::string cam_name) const;
+	/*! get the name alises for this 
+	@param[out] names, vector containing  all the alias names */
+	std::vector<std::string> getNameAliases(const std::string& cam_name) const;
+	/*! get the name alises for this LLRF (python version)
+		@param[out] names, python list containing all the alias names */
+	boost::python::list getNameAliases_Py(const std::string& cam_name) const;
+	
 
 	/*! Enable debug messages*/
 	void debugMessagesOn();
@@ -1055,3 +1033,95 @@ private:
 };
 
 #endif // CAMERA_FACTORY_H_
+
+
+
+
+//double pix2mmX(const std::string& name, double value)const;
+//double pix2mmY(const std::string& name, double value)const;
+//double mm2pixX(const std::string& name, double value)const;
+//double mm2pixY(const std::string& name, double value)const;
+//double getpix2mmX(const std::string& name)const;
+//double getpix2mmY(const std::string& name)const;
+//double setpix2mmX(const std::string& name, double value);
+//double setpix2mmY(const std::string& name, double value);
+//double getX(const std::string& name)const;
+//double getY(const std::string& name)const;
+//double getSigX(const std::string& name)const;
+//double getSigY(const std::string& name)const;
+//double getSigXY(const std::string& name)const;
+//double getXPix(const std::string& name)const;
+//double getYPix(const std::string& name)const;
+//double getSigXPix(const std::string& name)const;
+//double getSigYPix(const std::string& name)const;
+//double getSigXYPix(const std::string& name)const;
+///*! get the Npoint scaling stepsize
+//@param[in] const std::string, name of camera to set value for
+//@param[out] long, value */
+//long getStepSize(const std::string& name)const;
+///*! set the Npoint scaling stepsize
+//@param[in] const std::string, name of camera to set value for
+//@param[in] long, new stepsize
+//@param[out] bool, value */
+//bool setStepSize(const std::string& name, long val);
+//boost::python::dict getRunningStats(const std::string& name)const;
+//boost::python::dict getAllRunningStats()const;
+//bool setX(const std::string& name, double value);
+//bool setY(const std::string& name, double value);
+//bool setSigX(const std::string& name, double value);
+//bool setSigY(const std::string& name, double value);
+//bool setSigXY(const std::string& name, double value);
+////bool setXPix(const std::string& name, double value);
+////bool setYPix(const std::string& name, double value);
+////bool setSigXPix(const std::string& name, double value);
+////bool setSigYPix(const std::string& name, double value);
+////bool setSigXYPix(const std::string& name, double value);
+//double getSumIntensity(const std::string& name)const;
+//double getAvgIntensity(const std::string& name)const;
+//bool setSumIntensity(const std::string& name, double value);
+//bool setAvgIntensity(const std::string& name, double value);
+////unsigned short getMaskXCenter(const std::string& name)const;
+////unsigned short getMaskYCenter(const std::string& name)const;
+////unsigned short getMaskXRadius(const std::string& name)const;
+////unsigned short getMaskYRadius(const std::string& name)const;
+////unsigned short setMaskXCenter(const std::string& name, unsigned short val);
+////unsigned short setMaskYCenter(const std::string& name, unsigned short val);
+////unsigned short setMaskXRadius(const std::string& name, unsigned short val);
+////unsigned short setMaskYRadius(const std::string& name, unsigned short val);
+//long getMaskXCenter(const std::string& name)const;
+//long getMaskYCenter(const std::string& name)const;
+//long getMaskXRadius(const std::string& name)const;
+//long getMaskYRadius(const std::string& name)const;
+//
+//long setMaskXCenter(const std::string& name, long val);
+//long setMaskYCenter(const std::string& name, long val);
+//long setMaskXRadius(const std::string& name, long val);
+//long setMaskYRadius(const std::string& name, long val);
+
+//bool useNPoint(const std::string& name, bool v);
+//bool useBackground(const std::string& name, bool v);
+//STATE getNPointState(const std::string& name)const;
+
+//bool isUsingNPoint(const std::string& name)const;
+//bool isUsingBackground(const std::string& name)const;
+//STATE getUsingBackgroundState(const std::string& name)const;
+
+
+//bool stopAcquiring(const std::string& cam_name);
+//bool stopAllAcquiring();
+//bool stopAllAcquiringExceptVC();
+//bool startAcquiring(const std::string& cam_name, bool stop_all = true);
+//std::map<std::string, STATE> getAllAcquireStates()const;
+//boost::python::dict getAllAcquireStates_Py()const;
+
+//bool isAcquiring(const std::string& name)const;
+//bool isNotAcquiring(const std::string& name) const;
+//STATE getAcquireState(const std::string& name)const;
+
+//bool startAnalysing(const std::string& name);
+//bool stopAnalysing(const std::string& name);
+//bool isAnalysing(const std::string& name)const;
+//bool isNotAnalysing(const std::string& name) const;
+//STATE getAnalysisState(const std::string& name)const;
+//std::map<std::string, STATE> getAllAnalysisState()const;
+//boost::python::dict getAllAnalysisState_Py()const;

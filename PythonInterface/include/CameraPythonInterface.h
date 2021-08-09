@@ -20,9 +20,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	}
 	void expose_camera_object() 
 	{
-		
-
-		
 		// function pointers for overloads we want to expose
 		bool(Camera::*setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
 		bool(Camera::*setROI_4PARAM)(long, long, long, long) = &Camera::setROI;

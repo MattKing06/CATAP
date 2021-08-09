@@ -40,6 +40,8 @@ namespace CameraRecords
 	std::string const CAM_Acquire_RBV				= "CAM_Acquire_RBV"			;
 	std::string const CAM_Start_Acquire		        = "CAM_Start_Acquire"			;
 	std::string const CAM_Stop_Acquire				= "CAM_Stop_Acquire"		;
+	std::string const CAM_Active_Count				= "CAM_Active_Count"		;
+	std::string const CAM_Active_Limit				= "CAM_Active_Limit"		;
 	std::string const CAM_AcquireTime_RBV			= "CAM_AcquireTime_RBV"		;
 	std::string const CAM_AcquirePeriod_RBV		    = "CAM_AcquirePeriod_RBV"		;
 	std::string const CAM_ArrayRate_RBV			    = "CAM_ArrayRate_RBV"			;
@@ -147,7 +149,8 @@ namespace CameraRecords
 	ANA_NPointStepSize_RBV			  ,ANA_NPointStepSize				  ,LED_Sta							  ,
 	LED_Off							  ,LED_On,
 	ANA_OVERLAY_1_CROSS_RBV, ANA_OVERLAY_2_RESULT_RBV, ANA_OVERLAY_3_MASK_RBV,
-	ANA_OVERLAY_1_CROSS, ANA_OVERLAY_2_RESULT, ANA_OVERLAY_3_MASK
+	ANA_OVERLAY_1_CROSS, ANA_OVERLAY_2_RESULT, ANA_OVERLAY_3_MASK,
+	CAM_Active_Limit, CAM_Active_Count
 	};
          
 	std::vector<std::string> cameraMonitorRecordsList
@@ -156,7 +159,7 @@ namespace CameraRecords
 		HDF_Capture_RBV						,		HDF_NumCapture_RBV					,		HDF_FilePath_RBV					,  //4
 		HDF_FileName_RBV					,		HDF_FileNumber_RBV					,		HDF_WriteFile_RBV					,  //5
 		ROI1_MinX_RBV						,		ROI1_MinY_RBV						,		ROI1_SizeX_RBV						,  //2
-		ROI1_SizeY_RBV						,		HDF_WriteStatus						,  //3
+		ROI1_SizeY_RBV						,		HDF_WriteStatus						,  		HDF_WriteMessage					,  // 58
 		CAM_Acquire_RBV						,		CAM_AcquireTime_RBV					,		CAM_AcquirePeriod_RBV				,  //6
 		CAM_ArrayRate_RBV					,		CAM_Gain_RBV						,		CAM_BlackLevel_RBV					,  //7
 		ANA_EnableCallbacks_RBV				,		ANA_UseFloor_RBV					,		ANA_FloorLevel_RBV					,  //8
@@ -170,14 +173,13 @@ namespace CameraRecords
 		ANA_CovXYPix_RBV					,		ANA_PixelResults_RBV				,		ANA_MMResults_RBV					,  //16
 		ANA_MaskYCenter_RBV					,		ANA_MaskXRad_RBV					,		ANA_MaskYRad_RBV					,  //17
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
-		ANA_UseBkgrnd_RBV					,		
-		ANA_UseNPoint_RBV					,		
-		ANA_NPointStepSize_RBV				,  //19
+		ANA_UseBkgrnd_RBV					,		ANA_UseNPoint_RBV					,		ANA_NPointStepSize_RBV				,  //19
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
 		ANA_MaskXCenter_RBV,
 		//// ATM these ones don't come with an _RBV suffix for a read only PV 
-		HDF_WriteMessage, // 58
-		LED_Sta		      // 59
+		LED_Sta,	      // 59
+		CAM_Active_Limit, // 59
+		CAM_Active_Count  // 59
 	};
 
 }

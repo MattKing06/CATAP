@@ -2654,48 +2654,22 @@ boost::python::list CameraFactory::getCameraNames_Py()
 	return to_py_list<std::string>(getCameraNames());
 }
 
-//
-//
-//
-//std::string CameraFactory::getScreen(const std::string& cam_name) const
-//{
-//	std::string full_name = getFullName(cam_name);
-//	if (GlobalFunctions::entryExists(camera_map, full_name))
-//	{
-//		return camera_map.at(full_name).getScreen();
-//	}
-//	return "UNKNOWN";
-//}
-//std::vector<std::string> CameraFactory::getScreenNames(const std::string& cam_name) const
-//{
-//	std::string full_name = getFullName(cam_name);
-//	if (GlobalFunctions::entryExists(camera_map, full_name))
-//	{
-//		return camera_map.at(full_name).getScreenNames();
-//	}
-//	return std::vector<std::string>{"UNKNOWN"};
-//}
-//boost::python::list CameraFactory::getScreenNames_Py(const std::string& cam_name) const
-//{
-//	return to_py_list<std::string>(getScreenNames(cam_name));
-//}
-//
-//
-//std::vector<std::string> CameraFactory::getNameAliases(const std::string& cam_name) const
-//{
-//	std::string full_name = getFullName(cam_name);
-//	if (GlobalFunctions::entryExists(camera_map, full_name))
-//	{
-//		return camera_map.at(full_name).getAliases();
-//	}
-//	return std::vector<std::string>{dummy_cam.getHardwareName()};
-//}
-///*! get the name alises for this LLRF (python version)
-//	@param[ou	return to_py_list<std::string>(getAliases(cam_name));t] names, python list containing all the alias names */
-//boost::python::list CameraFactory::getNameAliases_Py(const std::string& cam_name) const
-//{
-//	return to_py_list<std::string>(getNameAliases(cam_name));
-//}
+
+std::vector<std::string> CameraFactory::getNameAliases(const std::string& cam_name) const
+{
+	std::string full_name = getFullName(cam_name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getAliases();
+	}
+	return std::vector<std::string>{dummy_cam.getHardwareName()};
+}
+/*! get the name alises for this LLRF (python version)
+	@param[ou	return to_py_list<std::string>(getAliases(cam_name));t] names, python list containing all the alias names */
+boost::python::list CameraFactory::getNameAliases_Py(const std::string& cam_name) const
+{
+	return to_py_list<std::string>(getNameAliases(cam_name));
+}
 
 Camera& CameraFactory::getCamera(const std::string& cam_name)
 {

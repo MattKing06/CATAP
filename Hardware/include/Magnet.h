@@ -151,7 +151,6 @@ class Magnet : public Hardware
 		double getMinI()const;
 	/*! get the maximum I value that can be set for this magnet,  defined in the master lattice yaml file*/
 		double getMaxI()const;
-
 	/*! Get the field integral coefficents, defined in the master lattice yaml file
 		@param[out] result  */
 		std::vector<double> getFieldIntegralCoefficients() const;
@@ -168,46 +167,44 @@ class Magnet : public Hardware
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
-
 	/*! get the magnet TYPE (quadrupole, dipole, correctoer, solenoid, etc.)
 		@param[out] result  */
 		TYPE getMagType() const;
 	/*! get the current READI 
-		@param[out] result  */
+		@param[out] double, result  */
 		double getREADI() const;
 	/*! get the current SETI value 
-		@param[out] result  */
+		@param[out] double, result  */
 		double getSETI() const;
 	/*! get the current state of the interlock 
-		@param[out] result  */
+		@param[out] double, result  */
 		STATE getIlkState() const;
 	/*! get the current state of the PSU 
 		@param[out] result  */
 		STATE getPSUState() const;
 	/*! The beam momentum can be found by setting the dipoles to bend the beam at 45 degrees and reading getKDipP
-		@param[out] result  */
+		@param[out] double, result  */
 		double getKDipP() const;
 	/*! Integrated strength, this is in T for quads and T/mm for correctors, solenoids and dipoles
-		@param[out] result  */
+		@param[out] double, result  */
 		double getIntStr_mm() const;
 	/*! ntegrated strength, this is in T for all magnet types 
-		@param[out] result  */
+		@param[out]double, result  */
 		double getIntStr() const;
 	/*! Assumed beam momentum here (MeV/c) used for magnet
-		@param[out] result  */
+		@param[out]double, result  */
 		double getKSetP() const;
 	/*! The bend angle for the dipole in degrees
-		@param[out] result  */
+		@param[out]double, result  */
 		double getKAng() const;
 	/*! The bend angle for the correctors in milliradians
-		@param[out] result  */
+		@param[out] double, result  */
 		double getKmrad() const;
 	/*! The K factor for the Quads in 1/m2
-		@param[out] result  */
+		@param[out] double,result  */
 		double getKVal() const;
-
-
-	/*! returns TRUE if the magnet is performing a degauss procedure*/
+	/*! returns TRUE if the magnet is performing a degauss procedure
+	* 	@param[out] bool, result  */
 		bool isDegaussing()const;
 	/*! set the current to value
 		@param[in] value			
@@ -233,12 +230,10 @@ class Magnet : public Hardware
 		@param[in] value, (in OFFLINE mode can probably be an arbitrary value)
 		@param[out] bool, if the command got sent (not if setting that value was successfull!)	*/
 		bool offlineSetIlkState(const STATE value);
-
 	/*! switch the magnet PSU on to STATE value
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
 		@param[out] bool, if the command got sent (not if setting that current was successfull!)	*/
 		bool offlineSetPSUState(const STATE value);
-	
 
 	/*! check if the current READI is equal to a value, to within the Master Lattice  defeind tolerance
 		@param[in]  value to compare with READI

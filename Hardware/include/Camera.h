@@ -13,7 +13,7 @@
 #include <vector>
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
-
+#include "HardwareSnapshot.h"
 #include "CameraPVRecords.h"
 #include <boost/make_shared.hpp>
 #include <boost/python/dict.hpp>

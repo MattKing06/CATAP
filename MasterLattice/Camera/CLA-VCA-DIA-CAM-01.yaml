@@ -2,8 +2,7 @@
 controls_information:
     PV: true
     pv_record_map:
-        # NO _RBV versions of these PVs 
-        # THESE SET TH EMAS AND ROI TOGTHER AND SHOULD BE USED 
+        # THESE SET THE MASK AND ROI TOGTHER AND SHOULD BE USED,         # NO _RBV versions of these PVs 
         ROIandMask_SetX : CLA-VCA-DIA-CAM-01:ANA:SetX
         ROIandMask_SetY : CLA-VCA-DIA-CAM-01:ANA:SetY
         ROIandMask_SetXrad : CLA-VCA-DIA-CAM-01:ANA:SetXRad
@@ -29,7 +28,7 @@ controls_information:
         ROI1_SizeY_RBV : CLA-VCA-DIA-CAM-01:ROI1:SizeY_RBV
         ROI1_SizeY : CLA-VCA-DIA-CAM-01:ROI1:SizeY
         ROI1_ImageData_RBV  : CLA-VCA-DIA-CAM-01:CAM3:ArrayData
-        # central axis definition 
+        # central co-ord definition 
         ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
         ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
         ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
@@ -38,6 +37,8 @@ controls_information:
         CAM_Start_Acquire   : CLA-VCA-DIA-CAM-01:CAM:Start
         CAM_Stop_Acquire    : CLA-VCA-DIA-CAM-01:CAM:Stop
         CAM_Acquire_RBV    : CLA-VCA-DIA-CAM-01:CAM:Acquire_RBV
+        CAM_Active_Count    : CLA-C10-IOC-CS-02:cameraCount
+        CAM_Active_Limit    : CLA-C10-IOC-CS-02:cameraLimit
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
