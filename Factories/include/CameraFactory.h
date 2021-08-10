@@ -648,6 +648,9 @@ public:
 	@param[out] bool, values ) */
 	bool canStartCamera(const std::string& name)const;
 
+
+
+
 	/*! Start image acquiring.
 	@param[in] std::string, name
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -656,6 +659,11 @@ public:
 	@param[in] std::string, name
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool stopAcquiring(const std::string& name);
+	/*! Stop image acquiring, and wait for the stop acquiring to be verified by the control system (or timeout).
+	@param[in] std::string, name
+	@param[in] size_t, wait time, in ms, before a timeout	
+	@param[out] bool, true if camera stopped before timeout ms, otherwsie false*/
+	bool stopAcquiringAndWait(const std::string& name, size_t timeout);
 	/*! Is camera acquire state == ACQUIRING.
 	@param[in] std::string, name
 	@param[out] bool, result*/

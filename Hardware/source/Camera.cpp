@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Camera.h"
 #include "GlobalFunctions.h"
 #include "CameraPVRecords.h"
 #include "PythonTypeConversions.h"
@@ -1651,55 +1652,55 @@ bool Camera::canStartCamera()const
 }
 
 
-bool Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
+void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 {
-	while (true) 
+	// maybe we could do something more facny ??? 
+	// //std::condition_variable cv;
+	//while (true) {
+	//	std::unique_lock<std::mutex> lck(mtx);
+	//	if (cv.wait_for(lck, std::chrono::milliseconds(csw.wait_ms), []{csw.cam->isNotAcquiring();)) //something wrong?  
+	//	{ csw.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running"); }
+	auto start = std::chrono::high_resolution_clock::now();
+	bool timed_out = false;
+	while (true)
 	{
-		if (cv.wait_for(lck, std::chrono::milliseconds(3000), myPredicate)) //something wrong?  
-			cout << "print something...1" << endl
-		else
-			cout << "print something...2" << endl
+		auto duration  = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+		/* check if time ran out */
+		if (duration.count() > csw.wait_ms)
+		{
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring. ");
+			timed_out = true;
+			break;
+		}
+		if(csw.cam->isNotAcquiring() )
+		{
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has Stopped Acquiring.");
+			break;
+		}
 	}
-
-
-	csw.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
-
-
-	csw.cam->isAcquiring()
-
-	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
-	return true;
+	if (timed_out)
+		csw.result = STATE::TIMEOUT;
+	else
+		csw.result = STATE::SUCCESS;
 }
-
-int stopAcquiringAndWait_NewThread()
-{
-
-	std::thread wait_for_cam_to_stop_thread = = new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
-
-
-
-
-	return 1;
-}
-
 /*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
 @param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-bool Camera::stopAcquiringAndWait()
+bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 {
 	if (isNotAcquiring())
 		return true;
 	if (stopAcquiring())
 	{
+		cam_stop_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_waiter_struct));
 		cam_stop_waiter_struct.cam = this;
-		cam_stop_waiter_struct.wait_ms = 50000;
-		
-		std::thread wait_for_cam_to_stop_thread;
-
-
-
+		cam_stop_waiter_struct.wait_ms = timeout;
+		std::thread wait_for_cam_to_stop_thread(staticEntryWaitForCamStopAcquiring, cam_stop_waiter_struct);
 		cam_stop_waiter_struct.thread->join();
 		delete cam_stop_waiter_struct.thread;
 		cam_stop_waiter_struct.thread = nullptr;
+
+		if (cam_stop_waiter_struct.result == STATE::SUCCESS)
+			return true;
 	}
 	return false;
 }
@@ -2686,7 +2687,11 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 //	//}
 //	return &image_data.second;
 //}
-
+//const std::vector<long>& Camera::getImageData_Ref()const
+//{
+//	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
+//	return image_data.second;
+//}
 std::vector<long> Camera::getImageData()const
 {
 	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();

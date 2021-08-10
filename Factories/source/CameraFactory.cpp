@@ -1512,6 +1512,16 @@ bool CameraFactory::stopAcquiring(const std::string& name)
 	}
 	return false;
 }
+bool CameraFactory::stopAcquiringAndWait(const std::string& name, size_t timeout = 3000)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).stopAcquiringAndWait(timeout);
+	}
+	return false;
+}
+
 bool CameraFactory::isAcquiring(const std::string& name)const
 {
 	std::string full_name = getFullName(name);

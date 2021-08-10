@@ -259,6 +259,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 				
 			.def("resetCaptureAndSaveError", &Camera::resetCaptureAndSaveError)
+
+
+			.def("stopAcquiringAndWait", &Camera::stopAcquiringAndWait)
 			
 				
 				
@@ -494,6 +497,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getLastestBufferFileName", &CameraFactory::getLastBufferFileName)
 			.def("startAcquiring", &CameraFactory::startAcquiring)
 			.def("stopAcquiring", &CameraFactory::stopAcquiring)
+			.def("stopAcquiringAndWait", &CameraFactory::stopAcquiringAndWait)
 			.def("isAcquiring", &CameraFactory::isAcquiring)
 			.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
 			.def("getAcquireState", &CameraFactory::getAcquireState)

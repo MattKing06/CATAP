@@ -42,7 +42,8 @@ class ImageCapture
 /*	Wait for camera to stop acquiring, this struct is passed to the new thread function		*/
 class CamStopWaiter
 {
-public:	CamStopWaiter() : cam(nullptr), thread(nullptr), wait_ms(5000) {}	Camera* cam; 	std::thread* thread; size_t wait_ms;
+public:	
+CamStopWaiter() :cam(nullptr), thread(nullptr), wait_ms(5000),result(STATE::UNKNOWN){}Camera* cam; std::thread* thread; size_t wait_ms; STATE result;
 };
 
 class EPICSCameraInterface;
@@ -627,9 +628,9 @@ public:
 	
 
 	/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool stopAcquiringAndWait(size_t timeout = 5);
-	static void staticEntryWaitForCamStopAcquiring();
+	@param[out] bool, true if camera stopped before timeout ms, otherwsie false*/
+	bool stopAcquiringAndWait(size_t timeout);
+	static void staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw);
 	CamStopWaiter cam_stop_waiter_struct;
 
 	/*! Start image acquiring.
@@ -755,6 +756,11 @@ public:
 	to reduce network load Camera data ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
 	std::vector<long> getImageData()const;
+	///*! Get a copy of the current image data. Until an updateImage function is called this will be empty,
+	//to reduce network load Camera data ARE NOT continuously monitored.
+	//@param[out] vector<long>, latest data */
+	//std::vector<long>& getImageData_Ref()const;
+
 	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored. 
 	@param[out] list, latest data */
