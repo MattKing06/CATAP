@@ -1654,12 +1654,8 @@ bool Camera::canStartCamera()const
 
 void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 {
-	// maybe we could do something more facny ??? 
-	// //std::condition_variable cv;
-	//while (true) {
-	//	std::unique_lock<std::mutex> lck(mtx);
-	//	if (cv.wait_for(lck, std::chrono::milliseconds(csw.wait_ms), []{csw.cam->isNotAcquiring();)) //something wrong?  
-	//	{ csw.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running"); }
+	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait tim e = ", csw.wait_ms);
+
 	auto start = std::chrono::high_resolution_clock::now();
 	bool timed_out = false;
 	while (true)
@@ -1690,11 +1686,10 @@ bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 	if (isNotAcquiring())
 		return true;
 	if (stopAcquiring())
-	{
-		cam_stop_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_waiter_struct));
+	{	// TODO and tudy up 
 		cam_stop_waiter_struct.cam = this;
 		cam_stop_waiter_struct.wait_ms = timeout;
-		std::thread wait_for_cam_to_stop_thread(staticEntryWaitForCamStopAcquiring, cam_stop_waiter_struct);
+		cam_stop_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_waiter_struct));
 		cam_stop_waiter_struct.thread->join();
 		delete cam_stop_waiter_struct.thread;
 		cam_stop_waiter_struct.thread = nullptr;
