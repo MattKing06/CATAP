@@ -135,6 +135,14 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		}
 		messenger.printMessage("LaserHWPFactory has been setup.");
 	}
+	else if (hardwareType == "Lighting")
+	{
+		if (!lightingFactory.hasBeenSetup)
+		{
+			setup = lightingFactory.setup(VERSION);
+		}
+		messenger.printMessage("lightingFactory has been setup.");
+	}
 	return setup;
 }
 
@@ -215,8 +223,6 @@ RFModulatorFactory& HardwareFactory::getRFModulatorFactory(const std::vector<TYP
 		return rfmodulatorFactory;
 	}
 }
-
-
 
 ShutterFactory& HardwareFactory::getShutterFactory()
 {
@@ -314,7 +320,27 @@ MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machin
 	}
 }
 
-
+LightingFactory& HardwareFactory::getLightingFactory()
+{
+	if (!lightingFactory.hasBeenSetup)
+	{
+		bool setup = lightingFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getValveFactory Complete");
+			return lightingFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ValveFactory");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getValveFactory Complete");
+		return lightingFactory;
+	}
+}
 
 ValveFactory& HardwareFactory::getValveFactory()
 {

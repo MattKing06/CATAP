@@ -167,9 +167,9 @@ DEFINE_ENUM_WITH_STRING_CONVERSIONS(TYPE,   //(ERROR) !!YOU CAN'T USE THE WORD E
 	// RF modulator heartbeats
 	(RFHEARTBEAT)
 
-
+	(LIGHTING)
 	// TODO 
-	// THIS MAY NOT BE THE BEST PLACE FOR THESE, but i was trying to find a simple way to dfein them in a more global context 
+	// THIS MAY NOT BE THE BEST PLACE FOR THESE, but i was trying to find a simple way to defin them in a more global context 
 	// maybe cameraPVrecrods, should be renamed to "camerastuff"
 	//(CAMERA_X_PIX_RS)
 	//(CAMERA_Y_PIX_RS)

@@ -133,6 +133,10 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::HWP), TYPE::HWP},
 		{"LaserHWP", TYPE::HWP},
 		{"LHW", TYPE::HWP},
+		
+		
+		{ ENUM_TO_STRING(TYPE::LIGHTING), TYPE::LIGHTING},
+		{ "Lighting", TYPE::LIGHTING},
 
 		// magnet types
 		{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},

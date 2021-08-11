@@ -7,6 +7,7 @@
 #include "ValveFactory.h"
 #include "IMGFactory.h"
 #include "LLRFFactory.h"
+#include "LightingFactory.h"
 #include "ShutterFactory.h"
 #include "CameraFactory.h"
 #include "LaserEnergyMeterFactory.h"
@@ -100,6 +101,9 @@ public:
 	RFModulatorFactory& getRFModulatorFactory_Py(const boost::python::list& machine_areas);
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 	RFHeartbeatFactory& getRFHeartbeatFactory();
+	
+	
+	LightingFactory& getLightingFactory();
 
 	bool saveMachineSnapshot();
 	bool saveMachineSnapshot(const std::string& location);
@@ -124,6 +128,7 @@ public:
 	ValveFactory valveFactory;
 	IMGFactory imgFactory;
 	LLRFFactory llrffactory;
+	LightingFactory lightingFactory;
 	BPMFactory bpmFactory;
 	CameraFactory cameraFactory;
 	LaserEnergyMeterFactory laserEnergyMeterFactory;

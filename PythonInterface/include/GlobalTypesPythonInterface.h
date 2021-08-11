@@ -20,7 +20,8 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("IMG_TYPE", TYPE::IMG_TYPE)
 			.value("LLRF_TYPE", TYPE::LLRF_TYPE)
 			.value("SCREEN", TYPE::SCREEN)
-			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE)
+			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE) // TODO is this used??? Shuold it just be Camera ???  
+			.value("LIGHTING", TYPE::LIGHTING)
 			// screen stuff 
 			.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
 			.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)

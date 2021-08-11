@@ -162,7 +162,7 @@ public:
 	size_t getRunningStatNumDataValues()const;
 
 	friend class ChargeFactory;
-	friend class EPICSCameraInterface;
+	friend class EPICSCameraInterface; // TODO huh???
 	friend class PILaserSystem;
 
 protected:

@@ -213,8 +213,6 @@ public:
     //{LLRFRecords::LLRF_TRACES, this->update_LLRF_TRACES },
     {LLRFRecords::LLRF_TRACES_SCAN, this->update_LLRF_TRACES_SCAN	    },
     {LLRFRecords::LLRF_TRACES_ACQM, this->update_LLRF_TRACES_ACQM		},
-
-
     {LLRFRecords::CH1_INTERLOCK_STATUS,  this->update_CH1_INTERLOCK_STATUS},
     {LLRFRecords::CH2_INTERLOCK_STATUS,  this->update_CH2_INTERLOCK_STATUS},
     {LLRFRecords::CH3_INTERLOCK_STATUS,  this->update_CH3_INTERLOCK_STATUS},
@@ -223,7 +221,7 @@ public:
     {LLRFRecords::CH6_INTERLOCK_STATUS,  this->update_CH6_INTERLOCK_STATUS},
     {LLRFRecords::CH7_INTERLOCK_STATUS,  this->update_CH7_INTERLOCK_STATUS},
     {LLRFRecords::CH8_INTERLOCK_STATUS,  this->update_CH8_INTERLOCK_STATUS},
-
+    
     {LLRFRecords::CH1_INTERLOCK_P,  this->update_CH1_INTERLOCK_P},
     {LLRFRecords::CH2_INTERLOCK_P,  this->update_CH2_INTERLOCK_P},
     {LLRFRecords::CH3_INTERLOCK_P,  this->update_CH3_INTERLOCK_P},

@@ -65,7 +65,7 @@ public:
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of
 	* the associated hardware object.*/
 	std::string ownerName;
-	// We also need to create a STATIC messenger in derived epicsinterface claases, 
+	// We also need to create a STATIC messenger in derived epicsinterface classes, 
 	LoggingSystem messenger;
 	/*! turns debug messaging on for this EPICSInterface instance*/
 	void debugMessagesOn();
