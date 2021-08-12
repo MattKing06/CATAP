@@ -27,9 +27,12 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	pix2mmX_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	pix2mmY_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	max_shots_number(GlobalConstants::size_zero),  // MAGIC STRING
-	pix2mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+
+	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+
 	x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
+
 	sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_xy_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -71,8 +74,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	y_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	
 	
-	rf_centre_x(GlobalConstants::long_min),
-	rf_centre_y(GlobalConstants::long_min),
+	operating_centre_x(GlobalConstants::long_min),
+	operating_centre_y(GlobalConstants::long_min),
 	mechanical_centre_x(GlobalConstants::long_min),
 	mechanical_centre_y(GlobalConstants::long_min),
 	x_center_def(GlobalConstants::size_zero),
@@ -93,15 +96,11 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	use_npoint(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	use_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cross_hair_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-	center_of_mass_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	analysis_result_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	analysis_mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-	cross_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-	mask_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
-	result_overlay(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "roi_x", "roi_y", "x_rad", "y_rad" }),  //MAGIC STRING TOD better place for these ??? 
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
@@ -542,24 +541,22 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	messenger.printDebugMessage(hardwareName, " find RF_CENTER_X");
-	if (GlobalFunctions::entryExists(paramMap, "RF_CENTER_X"))
+	messenger.printDebugMessage(hardwareName, " find OPERATING_CENTER_X");
+	if (GlobalFunctions::entryExists(paramMap, "OPERATING_CENTER_X"))
 	{
-		rf_centre_x = std::stod(paramMap.find("RF_CENTER_X")->second);
-		messenger.printDebugMessage(hardwareName, " Found RF_CENTER_X, value = ", rf_centre_x);
-
+		operating_centre_x = std::stod(paramMap.find("OPERATING_CENTER_X")->second);
+		messenger.printDebugMessage(hardwareName, " Found OPERATING_CENTER_X, value = ", operating_centre_x);
 	}
 	else
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_X");
 	}
 	//-------------------------------------------------------------------------------------------------
-	messenger.printDebugMessage(hardwareName, " find RF_CENTER_Y");
-	if (GlobalFunctions::entryExists(paramMap, "RF_CENTER_Y"))
+	messenger.printDebugMessage(hardwareName, " find OPERATING_CENTER_Y");
+	if (GlobalFunctions::entryExists(paramMap, "OPERATING_CENTER_Y"))
 	{
-		rf_centre_y = std::stod(paramMap.find("RF_CENTER_Y")->second);
-		messenger.printDebugMessage(hardwareName, " Found RF_CENTER_Y, value = ", rf_centre_y);
-
+		operating_centre_y = std::stod(paramMap.find("OPERATING_CENTER_Y")->second);
+		messenger.printDebugMessage(hardwareName, " Found OPERATING_CENTER_Y, value = ", operating_centre_y);
 	}
 	else
 	{
@@ -632,15 +629,12 @@ array_rate(copyCamera.array_rate),
 use_npoint(copyCamera.use_npoint),
 use_background(copyCamera.use_background),
 cross_hair_overlay(copyCamera.cross_hair_overlay),
-center_of_mass_overlay(copyCamera.center_of_mass_overlay),
+analysis_result_overlay(copyCamera.analysis_result_overlay),
 analysis_mask_overlay(copyCamera.analysis_mask_overlay),
 pixel_to_mm(copyCamera.pixel_to_mm),
 black_level(copyCamera.black_level),
 gain(copyCamera.gain),
 set_new_background(copyCamera.set_new_background),
-cross_overlay(copyCamera.cross_overlay),
-mask_overlay(copyCamera.mask_overlay),
-result_overlay(copyCamera.result_overlay),
 array_data_num_pix_x(copyCamera.array_data_num_pix_x),
 array_data_num_pix_y(copyCamera.array_data_num_pix_y),
 array_data_pixel_count(copyCamera.array_data_pixel_count),
@@ -672,9 +666,7 @@ last_capture_and_save_success(copyCamera.last_capture_and_save_success)
 //roi_keywords_Py(copyCamera.roi_keywords_Py)
 {
 }
-Camera::~Camera()
-{
-}
+Camera::~Camera(){}
 void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)
@@ -711,42 +703,48 @@ void Camera::setPVStructs()
 		}
 	}
 }
-
-
-
-
-TYPE Camera::getCamType()const
+//
+//                   ___  __  
+//  |\ |  /\   |\/| |__  /__` 
+//  | \| /~~\  |  | |___ .__/ 
+// 
+std::vector<std::string> Camera::getAliases()const { return aliases; }
+boost::python::list Camera::getAliases_Py()const { return to_py_list<std::string>(getAliases()); }
+std::string Camera::getScreen()const
 {
-	return cam_type;
+	if (screen_names.size() > 0)
+	{
+		return screen_names[0];
+	}
+	return ENUM_TO_STRING(STATE::UNKNOWN_NAME);
 }
-
-double Camera::getPixelToMM()const
-{
- return pix_to_mm.second;
-}
-bool Camera::setPixelToMM(double value )const
-{
- return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ANA_PixMM), (epicsFloat64)value);
-}
-
-long Camera::getCentreXPixel()const
-{
- return x_center_pixel.second;
-}
-long Camera::getCentreYPixel()const
-{
- return y_center_pixel.second;
-}
-bool Camera::setCentreXPixel(long value)
-{
- return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterX), (epicsInt32)value);
-}
-bool Camera::setCentreYPixel(long value)
-{
-	 return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterY), (epicsInt32)value);
-}
-
-
+std::vector<std::string> Camera::getScreenNames()const { return screen_names; }
+boost::python::list Camera::getScreenNames_Py()const { return to_py_list<std::string>(getScreenNames()); }
+// 
+//  __         ___         ___  __                 
+// |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
+// |    | / \ |___ |___     |  \__/     |  |  |  | 
+//   
+double Camera::getPixelToMM()const{	return pixel_to_mm.second;}
+bool Camera::setPixelToMM(double value)const{return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ANA_PixMM), (epicsFloat64)value);}
+double Camera::pix2mm(double value)const{ return value / pixel_to_mm.second;}
+double Camera::mm2pix(double value)const{ return value * pixel_to_mm.second;}
+double Camera::pix2mmX(double value)const{ return value / pix2mmX_ratio;}
+double Camera::pix2mmY(double value)const{ return value / pix2mmY_ratio;}
+double Camera::mm2pixX(double value)const{ return value * pix2mmX_ratio;}
+double Camera::mm2pixY(double value)const{ return value * pix2mmX_ratio;}
+double Camera::getpix2mmX()const{ return pix2mmX_ratio;}
+double Camera::getpix2mmY()const{ return pix2mmY_ratio;}
+double Camera::setpix2mmX(double value){ return pix2mmX_ratio = value;}
+double Camera::setpix2mmY(double value){ return pix2mmY_ratio = value;}
+//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
+//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
+//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
+//  
+long Camera::getCentreXPixel()const{	return x_center_pixel.second;}
+long Camera::getCentreYPixel()const{	return y_center_pixel.second;}
+bool Camera::setCentreXPixel(long value){	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterX), (epicsInt32)value);}
+bool Camera::setCentreYPixel(long value){	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterY), (epicsInt32)value);}
 bool Camera::setCentrePixels(long x, long y)
 {
 	if (setCentreXPixel(x))
@@ -755,30 +753,665 @@ bool Camera::setCentrePixels(long x, long y)
 	}
 	return false;
 }
-bool Camera::setMechanicalCentre()
+bool Camera::setMechanicalCentre(){	return setCentrePixels(mechanical_centre_x, mechanical_centre_y);}
+bool Camera::setOperatingCenter(){	return setCentrePixels(operating_centre_x, operating_centre_y);}
+long Camera::getOperatingCentreXPixel()const{	return operating_centre_x;}
+long Camera::getOperatingCentreYPixel()const{	return operating_centre_y;}
+long Camera::getMechanicalCentreXPixel()const{	return mechanical_centre_x;}
+long Camera::getMechanicalCentreYPixel()const{	return mechanical_centre_y;}
+//  			  __   ___ __    __  ___
+//  |  |\/|  /\  / _` |__ /__` |  / |__
+//  |  |  | /~~\ \__> |___.__/ | /_ |___
+// 
+long Camera::getPixelWidth()const{	return epics_pixel_width.second;}
+long Camera::getPixelHeight()const{	return epics_pixel_height.second;}
+size_t Camera::getArrayDataPixelCountX()const{	return array_data_num_pix_x;}
+size_t Camera::getArrayDataPixelCountY()const{	return array_data_num_pix_y;}
+size_t Camera::getBinaryDataPixelCountX()const{	return binary_num_pix_x;}
+size_t Camera::getBinaryDataPixelCountY()const{	return binary_num_pix_y;}
+//	 __   __                __        __  
+//	/  ` |__) |  |    |    /  \  /\  |  \ 
+//	\__, |    \__/    |___ \__/ /~~\ |__/ 
+//	                                      
+long Camera::getCPUTotal()const{	return cpu_total.second;}
+long Camera::getCPUCropSubMask()const{	return cpu_crop_sub_mask.second;}
+long Camera::getCPUNPoint()const{	return cpu_npoint.second;}
+long Camera::getCPUDot()const{	return cpu_dot.second;}
+//	              __   ___     __        ___  __                 __  
+//	|  |\/|  /\  / _` |__     /  \ \  / |__  |__) |     /\  \ / /__` 
+//	|  |  | /~~\ \__> |___    \__/  \/  |___ |  \ |___ /~~\  |  .__/ 
+//
+bool Camera::enableOverlayCross(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_ushort);}
+bool Camera::disableOverlayCross(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_ushort);}
+STATE Camera::getOverlayCrossState()const{	return cross_hair_overlay.second;}
+bool Camera::isOverlayCrossEnabled()const{	return cross_hair_overlay.second == STATE::ENABLED;}
+bool Camera::isOverlayCrossDisabled()const{	return cross_hair_overlay.second == STATE::DISABLED;}
+bool Camera::enableOverlayMask(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_ushort);}
+bool Camera::disableOverlayMask(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_ushort);}
+STATE Camera::getOverlayMaskState()const{	return analysis_mask_overlay.second;}
+bool Camera::isOverlayMaskEnabled()const{	return analysis_mask_overlay.second == STATE::ENABLED;}
+bool Camera::isOverlayMaskDisabled()const{	return analysis_mask_overlay.second == STATE::DISABLED;}
+bool Camera::enableOverlayResult(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_ushort);}
+bool Camera::disableOverlayResult(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_ushort);}
+STATE Camera::getOverlayResultState()const{	return analysis_result_overlay.second;}
+bool Camera::isOverlayResultEnabled()const{	return analysis_result_overlay.second == STATE::ENABLED;}
+bool Camera::isOverlayResultDisabled()const{	return analysis_result_overlay.second == STATE::DISABLED;}
+bool Camera::disableAllOverlay()
 {
-	return setCentrePixels(mechanical_centre_x, mechanical_centre_y);
+	bool m_dis = disableOverlayMask();
+	bool c_dis = disableOverlayCross();
+	bool r_dis = disableOverlayResult();
+	if (m_dis)
+	{
+		if (c_dis)
+		{
+			if (r_dis)
+			{
+				return true;
+			}
+		}
+	}
+	return true;
 }
-bool Camera::setRFCenter()
+//	              __   ___     __        ___  ___  ___  __  
+//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
+//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
+//	
+bool Camera::saveImageBuffer()
 {
-	return setCentrePixels(rf_centre_x, rf_centre_y);
+	if (busy)
+	{
+		return false;
+	}
+	if (makeANewDirectoryAndNameBuffer())
+	{
+		epicsUInt8 proc = 1;
+		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::HDFB_image_buffer_trigger), proc);
+	}
+	return false;
 }
-long Camera::getRFCentreXPixel()const
+char Camera::getImageBufferTrigger()const{return image_buffer_trigger.second;}
+std::string Camera::getImageBufferFilePath()const{return image_buffer_filepath.second;}
+std::string Camera::getImageBufferFileName()const{return image_buffer_filename.second;}
+long Camera::getImageBufferFileNumber()const{return image_buffer_filenumber.second;}
+std::string Camera::getLastDirectoryandFileName()const{return getLastDirectory() + "/" + getLastFileName(); }// WARNING!! TODO unix / windows conventions :(( USE BOOST! 
+std::string Camera::getLastDirectory()const{return save_filepath.second;}
+std::string Camera::getLastFileName()const{return save_filename.second;}
+std::string Camera::getLastImageBufferDirectoryandFileName() const{	return getLastImageBufferDirectory() + "/" + getLastImageBufferFileName();}// WARNING!! TODO unix / windows conventions :(( USE BOOST! 
+std::string Camera::getLastImageBufferDirectory()const{	return image_buffer_filepath.second;}
+std::string Camera::getLastImageBufferFileName()const{	return image_buffer_filename.second;}
+bool Camera::makeANewDirectoryAndNameBuffer()///YUCK (make it look nice)
 {
-	return rf_centre_x;
+	messenger.printDebugMessage("makeANewDirectoryAndNameBuffer ");
+	bool ans = false;
+	messenger.printDebugMessage("char: ", sizeof(char));
+	//std::string time_now = globalfunctions::time_iso_8601();
+	// this sets up the directory structure, based on year, month date
+	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+	std::time_t t = std::chrono::system_clock::to_time_t(p);
+	// now we jump into some c because, meh 
+	// use local timezone 
+	tm local_tm = *localtime(&t);
+	////struct tm local_tm;
+	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
+	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
+	std::string strpath = "/CameraImages/" +
+		std::to_string(local_tm.tm_year + 1900) +
+		"/" + std::to_string(local_tm.tm_mon + 1) +
+		"/" + std::to_string(local_tm.tm_mday) + "/";
+	strcpy(newPath, strpath.c_str());
+	char newName[256] = "defaultname";
+	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_ImageBuffer";
+	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
+	strcpy(newName, strName.c_str());
+	messenger.printDebugMessage("File Directory would be: ", newPath);
+	messenger.printDebugMessage("File name is: ", newName);
+	std::stringstream s;
+	for (auto&& t : newPath)
+	{
+		s << static_cast<unsigned>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	s.clear();
+	for (auto&& t : newPath)
+	{
+		s << static_cast<signed>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
+	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
+	if (ca_state(pvStructs.at(CameraRecords::HDFB_image_buffer_filename).CHID) == cs_conn)
+	{
+		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDFB_image_buffer_filename).CHID, newName);
+		MY_SEVCHK(status);
+		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK(status);
+		if (status == ECA_NORMAL)
+		{
+			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
+			{
+				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDFB_image_buffer_filepath).CHID, newPath);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+				if (status == ECA_NORMAL)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				messenger.printDebugMessage(hardwareName, " HDFB_image_buffer_filepath is not connected");
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " HDFB_image_buffer_filename is not connected");
+	}
+	return ans;
 }
-long Camera::getRFCentreYPixel()const
+//	              __   ___     __        __  ___       __   ___               __      __             _ 
+//	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
+//	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
+//	 
+bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
 {
-	return rf_centre_y;
+	messenger.printDebugMessage("makeANewDirectoryAndName ");
+	bool ans = false;
+	messenger.printDebugMessage("char: ", sizeof(char));
+	//std::string time_now = globalfunctions::time_iso_8601();
+
+	// this sets up the directory structure, based on year, month date
+	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
+	std::time_t t = std::chrono::system_clock::to_time_t(p);
+
+	// now we jump into some c because, meh 
+	// use local timezone 
+	tm local_tm = *localtime(&t);
+	////struct tm local_tm;
+	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
+	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
+	std::string strpath = "/CameraImages/" +
+		std::to_string(local_tm.tm_year + 1900) +
+		"/" + std::to_string(local_tm.tm_mon + 1) +
+		"/" + std::to_string(local_tm.tm_mday) + "/";
+
+	strcpy(newPath, strpath.c_str());
+
+	char newName[256] = "defaultname";
+	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
+	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
+	strcpy(newName, strName.c_str());
+	messenger.printDebugMessage("File Directory would be: ", newPath);
+	messenger.printDebugMessage("File name is: ", newName);
+	std::stringstream s;
+	for (auto&& t : newPath)
+	{
+		s << static_cast<unsigned>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	s.clear();
+	for (auto&& t : newPath)
+	{
+		s << static_cast<signed>(t);
+		s << " ";
+	}
+	messenger.printDebugMessage("t = ", s.str());
+	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
+	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
+
+	if (ca_state(pvStructs.at(CameraRecords::HDF_FileName).CHID) == cs_conn)
+	{
+		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FileName).CHID, newName);
+		MY_SEVCHK(status);
+		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK(status);
+
+		if (status == ECA_NORMAL)
+		{
+
+			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
+			{
+				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FilePath).CHID, newPath);
+				MY_SEVCHK(status);
+				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+				MY_SEVCHK(status);
+				if (status == ECA_NORMAL)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				messenger.printDebugMessage(hardwareName, " HDF_FilePath is not connected");
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
+		}
+
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " HDF_FileName is not connected");
+	}
+
+	return ans;
 }
-long Camera::getMechCentreXPixel()const
+bool Camera::isWriting()const
 {
-	return mechanical_centre_x;
+	return write_state.second == STATE::WRITING;
 }
-long Camera::getMechCentreYPixel()const
+bool Camera::isNotWriting()const
 {
-	return mechanical_centre_y;
+	return write_state.second == STATE::NOT_WRITING;
 }
+STATE Camera::getCaptureState()const
+{
+	return capture_state.second;
+}
+bool Camera::didLastCaptureAndSaveSucceed()const{	return last_capture_and_save_success == true;}
+bool Camera::captureAndSave(){	return captureAndSave(GlobalConstants::zero_sizet);}
+bool Camera::captureAndSave(size_t num_shots)
+{
+	if (isNotAcquiring())
+	{
+		return false;
+	}
+	else
+	{
+		busy = true;
+		messenger.printDebugMessage(hardwareName, " collectAndSave passed num_shots = ", num_shots);
+		/*
+			kill any finished threads
+		*/
+		killFinishedImageCollectThread();
+		messenger.printDebugMessage("killFinishedImageCollectThreads fin");
+		messenger.printDebugMessage(" exists in imageCollectStructs");
+		if (image_capture.thread == nullptr)
+		{
+			messenger.printDebugMessage(" is not busy");
+			if (num_shots <= max_shots_number)
+			{
+				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
+
+				image_capture.is_busy = true;
+				image_capture.status = STATE::CAPTURING;
+				image_capture.num_shots = num_shots;
+				image_capture.cam = this;
+				image_capture.thread
+					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
+				//GlobalFunctions::pause_500();
+				messenger.printDebugMessage("new imageCollectStruct created and running");
+				return true;
+			}
+			else
+			{
+				messenger.printDebugMessage("!!ERROR!! Requested number of camera images too large. Please set to be less than or equal to ",
+					max_shots_number);
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName, " imageCollectStructs is busy ");
+		}
+	}
+	return false;
+}
+void Camera::killFinishedImageCollectThread()
+{
+	messenger.printDebugMessage("killFinishedImageCollectThreads");
+	if (image_capture.is_busy)
+	{
+		messenger.printDebugMessage(hardwareName, " ImageCapture is busy");
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " ImageCapture is NOT busy");
+		if (image_capture.thread)
+		{
+			messenger.printDebugMessage(hardwareName, " thread is not nullptr, can delete");
+			/*
+				join before deleting...
+				http://stackoverflow.com/questions/25397874/deleting-stdthread-pointer-raises-exception-libcabi-dylib-terminating
+			*/
+			image_capture.thread->join();
+			delete image_capture.thread;
+			image_capture.thread = nullptr;
+		}
+	}
+}
+void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
+{
+	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
+	ic.cam->epicsInterface->attachTo_thisCaContext();
+	ic.cam->imageCaptureAndSave(ic.num_shots);
+	ic.cam->epicsInterface->detachFrom_thisCaContext();
+	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
+}
+void Camera::imageCaptureAndSave(size_t num_shots)
+{
+	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
+	bool timed_out = false;
+
+	bool carry_on = true;
+	if (num_shots > GlobalConstants::zero_sizet)
+	{
+		bool carry_on = setNumberOfShotsToCapture(num_shots);
+	}
+	if (carry_on)
+	{
+		messenger.printDebugMessage(hardwareName, " Set number of shots success");
+		if (capture())
+		{
+			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
+			//GlobalFunctions::pause_500();
+			// add a time out here
+			time_t wait_time = num_shots * 10 + 5; // MAGIC numbers 
+			time_t time_start = GlobalFunctions::timeNow();
+			while (isCapturing())   //wait until collecting is done...
+			{
+				GlobalFunctions::pause_50(); //MAGIC_NUMBER
+				messenger.printDebugMessage(hardwareName, " isCapturing is TRUE");
+				/* check if time ran out */
+				if (GlobalFunctions::timeNow() - time_start > wait_time)
+				{
+					timed_out = true;
+				}
+			}
+			if (timed_out)
+			{
+				messenger.printDebugMessage(hardwareName, " timed out during capture");
+				image_capture.status = STATE::TIMEOUT;
+				image_capture.is_busy = false;
+			}
+			else
+			{
+				if (makeANewDirectoryAndName(num_shots))
+				{
+					//GlobalFunctions::pause_500();
+					//GlobalFunctions::pause_500();
+					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
+					if (write())
+					{
+						//message("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
+						while (isWriting())   //wait until saving is done...
+						{
+							GlobalFunctions::pause_50(); //MAGIC_NUMBER
+						}
+						messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
+						// pause and wait for EPICS to UPDATE
+						//GlobalFunctions::pause_500();
+						//GlobalFunctions::pause_500();
+						///check status of save/write
+						if (write_state_check.second == STATE::WRITE_CHECK_OK)
+						{
+							last_capture_and_save_success = true;//this->message("Successful wrote image to disk.");
+							image_capture.status = STATE::SUCCESS;
+						}
+						else
+						{
+							messenger.printDebugMessage("!!SAVE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
+							last_capture_and_save_success = false;
+							image_capture.status = STATE::WRITE_CHECK_ERROR;
+						}
+						image_capture.is_busy = false;
+					}
+					else
+					{
+						messenger.printDebugMessage(hardwareName, " write returned false.");
+					}
+				}
+				else
+				{
+					messenger.printDebugMessage(hardwareName, " makeANewDirectoryAndName returned false.");
+				}
+			}
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " setNumberOfShotsToCapture returned false.");
+	}
+	image_capture.is_busy = false;
+	busy = false;
+}
+size_t Camera::getNumberOfShotsToCapture()const{	return capture_count.second;}
+bool Camera::setNumberOfShotsToCapture(size_t num)
+{
+	if (num <= max_shots_number)
+	{
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
+	}
+	return false;
+}
+bool Camera::capture()
+{
+	bool ans = false;
+	if (isAcquiring())
+	{
+		ans = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::one_ushort);
+		messenger.printDebugMessage("Capture set to 1 on camera ", hardwareName);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " is not acquiring");
+	}
+	return ans;
+}
+bool Camera::write()
+{
+	bool ans = false;
+	int startNumber(1);// MAGIC_NUMBER should this be a one or a zero?
+	// WHAT IS THIS DOING???? OLD stuff to converted to jpg automatically that has not been implmented 
+	//setStartFileNumberJPG(startNumber);
+	if (isNotCapturing())
+	{
+		ans = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::one_ushort);
+		messenger.printDebugMessage("WriteFile set to 1 on camera = ", hardwareName);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " still collecting images when write function was called.");
+	}
+	return ans;
+}
+bool Camera::resetCaptureAndSaveError()
+{
+	bool set_capture = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::zero_ushort);
+	bool set_write_file = epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::zero_ushort);
+	bool set_write_stat = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_WriteStatus), GlobalConstants::zero_ushort);
+	if (set_capture)
+	{
+		if (set_write_file)
+		{
+			if (set_write_stat)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+bool Camera::isCapturing()const
+{
+	if (getCaptureState() == STATE::CAPTURING)
+	{
+		//messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
+		return true;
+	}
+	//messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
+	return false;
+}
+bool Camera::isNotCapturing()const
+{
+	if (getCaptureState() == STATE::NOT_CAPTURING)
+	{
+		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is TRUE");
+		return true;
+	}
+	messenger.printDebugMessage("isNotCapturing ", hardwareName, " is FALSE");
+	return false;
+}
+bool Camera::isCapturingOrSaving()const
+{
+	if (isCapturing())
+	{
+		return true;
+	}
+	if (isWriting())
+	{
+		return true;
+	}
+	return false;
+}
+bool Camera::isNotCapturingOrSaving()const
+{
+	return !isCapturingOrSaving();
+}
+//	 __  ___       __  ___   /  __  ___  __   __           __   __          __          __  
+//	/__`  |   /\  |__)  |   /  /__`  |  /  \ |__)     /\  /  ` /  \ |  | | |__) | |\ | / _` 
+//	.__/  |  /~~\ |  \  |  /   .__/  |  \__/ |       /~~\ \__, \__X \__/ | |  \ | | \| \__> 
+//
+double Camera::getActiveCameraLimit() const
+{
+	return active_camera_limit.second;
+}
+double Camera::getActiveCameraCount() const
+{
+	return active_camera_count.second;
+}
+bool Camera::canStartCamera()const
+{
+	return getActiveCameraLimit() > getActiveCameraCount();
+}
+void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
+{
+	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait tim e = ", csw.wait_ms);
+
+	auto start = std::chrono::high_resolution_clock::now();
+	bool timed_out = false;
+	while (true)
+	{
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+		/* check if time ran out */
+		if (duration.count() > csw.wait_ms)
+		{
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring. ");
+			timed_out = true;
+			break;
+		}
+		if (csw.cam->isNotAcquiring())
+		{
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has Stopped Acquiring.");
+			break;
+		}
+	}
+	if (timed_out)
+		csw.result = STATE::TIMEOUT;
+	else
+		csw.result = STATE::SUCCESS;
+}
+/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
+@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
+{
+	if (isNotAcquiring())
+		return true;
+	if (stopAcquiring())
+	{	// TODO and tudy up 
+		cam_stop_waiter_struct.cam = this;
+		cam_stop_waiter_struct.wait_ms = timeout;
+		cam_stop_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_waiter_struct));
+		cam_stop_waiter_struct.thread->join();
+		delete cam_stop_waiter_struct.thread;
+		cam_stop_waiter_struct.thread = nullptr;
+
+		if (cam_stop_waiter_struct.result == STATE::SUCCESS)
+			return true;
+	}
+	return false;
+}
+bool Camera::startAcquiring()
+{
+	// we could put a canStartCamera check in here, but why bother???
+	return epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
+}
+bool Camera::stopAcquiring()
+{
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
+}
+bool Camera::isAcquiring()const
+{
+	return getAcquireState() == STATE::ACQUIRING;
+}
+bool Camera::isNotAcquiring() const
+{
+	return getAcquireState() == STATE::NOT_ACQUIRING;
+}
+STATE Camera::getAcquireState()const
+{
+	return acquire_state.second;
+}
+
+
+
+
+
+
+
+
+bool Camera::isBusy()const
+{
+	return busy == true;
+}
+bool Camera::isNotBusy()const
+{
+	return busy == false;
+}
+
+
+
+
+
+
+
+
+
+//size_t Camera::getNumXPixFromArrayData() const
+//{
+//	return array_data_num_pix_x;
+//}
+//size_t Camera::getNumYPixFromArrayData() const
+//{
+//	return array_data_num_pix_y;
+//}
+//size_t Camera::getFullNumXPix() const
+//{
+//	return binary_num_pix_x;
+//}
+//size_t Camera::getFullNumYPix() const
+//{
+//	return binary_num_pix_y;
+//}
+
+
+
+TYPE Camera::getCamType()const
+{
+	return cam_type;
+}
+
 
 
 
@@ -799,55 +1432,8 @@ boost::python::dict Camera::getAnalysisResultsPixels_Py()const
 	return  to_py_dict<std::string, double>(getAnalysisResultsPixels());
 }
 
-size_t Camera::getArrayDataPixelCountX()const
-{
-	return array_data_num_pix_x;
-}
-size_t Camera::getArrayDataPixelCountY()const
-{
-	return array_data_num_pix_y;
-}
-size_t Camera::getBinaryDataPixelCountX()const
-{
-	return binary_num_pix_x;
-}
-size_t Camera::getBinaryDataPixelCountY()const
-{
-	return binary_num_pix_y;
-}
 
-double Camera::pix2mmX(double value)const
-{
-	return value / pix2mmX_ratio;
-}
-double Camera::pix2mmY(double value)const
-{
-	return value / pix2mmY_ratio;
-}
-double Camera::mm2pixX(double value)const
-{
-	return value * pix2mmX_ratio;
-}
-double Camera::mm2pixY(double value)const
-{
-	return value * pix2mmX_ratio;
-}
-double Camera::getpix2mmX()const
-{
-	return pix2mmX_ratio;
-}
-double Camera::getpix2mmY()const
-{
-	return pix2mmY_ratio;
-}
-double Camera::setpix2mmX(double value)
-{
-	return pix2mmX_ratio = value;
-}
-double Camera::setpix2mmY(double value)
-{
-	return pix2mmY_ratio = value;
-}
+
 double Camera::getX()const
 {
 	return x_mm.second;
@@ -898,22 +1484,7 @@ double Camera::getSigXYPix()const
 }
 
 
-size_t Camera::getNumXPixFromArrayData() const
-{
-	return array_data_num_pix_x;
-}
-size_t Camera::getNumYPixFromArrayData() const
-{
-	return array_data_num_pix_y;
-}
-size_t Camera::getFullNumXPix() const
-{
-	return binary_num_pix_x;
-}
-size_t Camera::getFullNumYPix() const
-{
-	return binary_num_pix_y;
-}
+
 
 double Camera::getSumIntensity()const
 {
@@ -990,15 +1561,6 @@ bool Camera::setSigXY(double value)
 	//sigma_xy_pix = std::make_pair(epicsTimeStamp(), mm2pixX(value));
 	return true;
 }
-bool Camera::setBufferTrigger()
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		epicsUInt8 v = 1;
-		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), v);
-	}
-	return false;
-}
 bool Camera::hasLED()const
 {
 	return has_led;
@@ -1046,83 +1608,6 @@ STATE Camera::getLEDState()const
 }
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
-bool Camera::enableOverlayCross()
-{
-	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::zero_ushort);
-}
-bool Camera::disableOverlayCross()
-{
-	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_1_CROSS), GlobalConstants::one_ushort);
-}
-STATE Camera::getOverlayCrossState()const
-{
-	return cross_overlay.second;
-}
-bool Camera::isOverlayCrossEnabled()const
-{
-	return cross_overlay.second == STATE::ENABLED;
-}
-bool Camera::isOverlayCrossDisabled()const
-{
-	return cross_overlay.second == STATE::DISABLED;
-}
-bool Camera::enableOverlayMask()
-{
-	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::one_ushort);
-}
-bool Camera::disableOverlayMask()
-{
-	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_3_MASK), GlobalConstants::zero_ushort);
-}
-STATE Camera::getOverlayMaskState()const
-{
-	return mask_overlay.second;
-}
-bool Camera::isOverlayMaskEnabled()const
-{
-	return mask_overlay.second == STATE::ENABLED;
-}
-bool Camera::isOverlayMaskDisabled()const
-{
-	return mask_overlay.second == STATE::DISABLED;
-}
-bool Camera::enableOverlayResult()
-{
-	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::one_ushort);
-}
-bool Camera::disableOverlayResult()
-{
-	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_OVERLAY_2_RESULT), GlobalConstants::zero_ushort);
-}
-STATE Camera::getOverlayResultState()const
-{
-	return result_overlay.second;
-}
-bool Camera::isOverlayResultEnabled()const
-{
-	return mask_overlay.second == STATE::ENABLED;
-}
-bool Camera::isOverlayResultDisabled()const
-{
-	return mask_overlay.second == STATE::DISABLED;
-}
-bool Camera::disableAllOverlay()
-{
-	bool m_dis = disableOverlayMask();
-	bool c_dis = disableOverlayCross();
-	bool r_dis = disableOverlayResult();
-	if (m_dis)
-	{
-		if (c_dis)
-		{
-			if (r_dis)
-			{
-				return true;
-			}
-		}
-	}
-	return true;
-}
 
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
@@ -1489,10 +1974,8 @@ STATE Camera::getUsingBackgroundState()const
 {
 	return use_background.second;
 }
-double Camera::getPix2mm()const
-{
-	return pixel_to_mm.second;
-}
+
+
 
 
 
@@ -1638,90 +2121,7 @@ size_t Camera::getRunningStatNumDataValues()const
 
 
 
-double Camera::getActiveCameraLimit() const
-{
-	return active_camera_limit.second;
-}
-double Camera::getActiveCameraCount() const
-{
-	return active_camera_count.second;
-}
-bool Camera::canStartCamera()const
-{
-	return getActiveCameraLimit() > getActiveCameraCount();
-}
 
-
-void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
-{
-	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait tim e = ", csw.wait_ms);
-
-	auto start = std::chrono::high_resolution_clock::now();
-	bool timed_out = false;
-	while (true)
-	{
-		auto duration  = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
-		/* check if time ran out */
-		if (duration.count() > csw.wait_ms)
-		{
-			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring. ");
-			timed_out = true;
-			break;
-		}
-		if(csw.cam->isNotAcquiring() )
-		{
-			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has Stopped Acquiring.");
-			break;
-		}
-	}
-	if (timed_out)
-		csw.result = STATE::TIMEOUT;
-	else
-		csw.result = STATE::SUCCESS;
-}
-/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
-@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
-{
-	if (isNotAcquiring())
-		return true;
-	if (stopAcquiring())
-	{	// TODO and tudy up 
-		cam_stop_waiter_struct.cam = this;
-		cam_stop_waiter_struct.wait_ms = timeout;
-		cam_stop_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_waiter_struct));
-		cam_stop_waiter_struct.thread->join();
-		delete cam_stop_waiter_struct.thread;
-		cam_stop_waiter_struct.thread = nullptr;
-
-		if (cam_stop_waiter_struct.result == STATE::SUCCESS)
-			return true;
-	}
-	return false;
-}
-
-
-bool Camera::startAcquiring()
-{
-	// we could put a canStartCamera check in here, but why bother???
-	return epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
-}
-bool Camera::stopAcquiring()
-{
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
-}
-bool Camera::isAcquiring()const
-{
-	return getAcquireState() == STATE::ACQUIRING;
-}
-bool Camera::isNotAcquiring() const
-{
-	return getAcquireState() == STATE::NOT_ACQUIRING;
-}
-STATE Camera::getAcquireState()const
-{
-	return acquire_state.second;
-}
 bool Camera::startAnalysing()
 {
 	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
@@ -1742,553 +2142,9 @@ STATE Camera::getAnalysisState( )const
 {
 	return analysis_state.second;
 }
-//
-//  __   __             ___  __  ___               __      __             ___                  __   ___
-// /  ` /  \ |    |    |__  /  `  |      /\  |\ | |  \    /__`  /\  \  / |__     |  |\/|  /\  / _` |__
-// \__, \__/ |___ |___ |___ \__,  |     /~~\ | \| |__/    .__/ /~~\  \/  |___    |  |  | /~~\ \__> |___
-//
-//
-//-------------------------------------------------------------------------------------------------------
-//
-//
-bool Camera::captureAndSave()
-{
-	return captureAndSave(GlobalConstants::zero_sizet);
-}
-bool Camera::captureAndSave(size_t num_shots)
-{
-	if (isNotAcquiring())
-	{
-		return false;
-	}
-	else
-	{
-		busy = true;
-		messenger.printDebugMessage(hardwareName, " collectAndSave passed num_shots = ", num_shots);
-		/*
-			kill any finished threads
-		*/
-		killFinishedImageCollectThread();
-		messenger.printDebugMessage("killFinishedImageCollectThreads fin");
-		messenger.printDebugMessage(" exists in imageCollectStructs");
-		if (image_capture.thread == nullptr)
-		{
-			messenger.printDebugMessage(" is not busy");
-			if (num_shots <= max_shots_number)
-			{
-				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
-
-				image_capture.is_busy= true;
-				image_capture.status = STATE::CAPTURING;
-				image_capture.num_shots = num_shots;
-				image_capture.cam = this;
-				image_capture.thread
-					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
-				//GlobalFunctions::pause_500();
-				messenger.printDebugMessage("new imageCollectStruct created and running");
-				return true;
-			}
-			else
-			{
-				messenger.printDebugMessage("!!ERROR!! Requested number of camera images too large. Please set to be less than or equal to ",
-					max_shots_number);
-			}
-		}
-		else
-		{
-			messenger.printDebugMessage(hardwareName, " imageCollectStructs is busy ");
-		}
-	}
-	return false;
-}
-void Camera::killFinishedImageCollectThread()
-{
-	messenger.printDebugMessage("killFinishedImageCollectThreads");
-	if (image_capture.is_busy)
-	{
-		messenger.printDebugMessage(hardwareName, " ImageCapture is busy");
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " ImageCapture is NOT busy");
-		if (image_capture.thread)
-		{
-			messenger.printDebugMessage(hardwareName, " thread is not nullptr, can delete");
-			/*
-				join before deleting...
-				http://stackoverflow.com/questions/25397874/deleting-stdthread-pointer-raises-exception-libcabi-dylib-terminating
-			*/
-			image_capture.thread->join();
-			delete image_capture.thread;
-			image_capture.thread = nullptr;
-		}
-	}
-}
-void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
-{
-	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
-	ic.cam->epicsInterface->attachTo_thisCaContext();
-	ic.cam->imageCaptureAndSave(ic.num_shots);
-	ic.cam->epicsInterface->detachFrom_thisCaContext();
-	ic.cam->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
-}
-void Camera::imageCaptureAndSave(size_t num_shots)
-{
-	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
-	bool timed_out = false;
-
-	bool carry_on = true;
-	if (num_shots > GlobalConstants::zero_sizet)
-	{
-		bool carry_on = setNumberOfShotsToCapture(num_shots);
-	}
-	if (carry_on)
-	{
-		messenger.printDebugMessage(hardwareName, " Set number of shots success");
-		if (capture())
-		{
-			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
-			//GlobalFunctions::pause_500();
-			// add a time out here
-			time_t wait_time = num_shots * 10 + 5; // MAGIC numbers 
-			time_t time_start = GlobalFunctions::timeNow();
-			while (isCapturing())   //wait until collecting is done...
-			{
-				GlobalFunctions::pause_50(); //MAGIC_NUMBER
-				messenger.printDebugMessage(hardwareName, " isCapturing is TRUE");
-				/* check if time ran out */
-				if (GlobalFunctions::timeNow() - time_start > wait_time)
-				{
-					timed_out = true;
-				}
-			}
-			if (timed_out)
-			{
-				messenger.printDebugMessage(hardwareName," timed out during capture");
-				image_capture.status = STATE::TIMEOUT;
-				image_capture.is_busy = false;
-			}
-			else
-			{
-				if (makeANewDirectoryAndName(num_shots))
-				{
-					//GlobalFunctions::pause_500();
-					//GlobalFunctions::pause_500();
-					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
-					if (write())
-					{
-						//message("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
-						while (isWriting())   //wait until saving is done...
-						{
-							GlobalFunctions::pause_50(); //MAGIC_NUMBER
-						}
-						messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
-						// pause and wait for EPICS to UPDATE
-						//GlobalFunctions::pause_500();
-						//GlobalFunctions::pause_500();
-						///check status of save/write
-						if (write_state_check.second == STATE::WRITE_CHECK_OK)
-						{
-							last_capture_and_save_success = true;//this->message("Successful wrote image to disk.");
-							image_capture.status = STATE::SUCCESS;
-						}
-						else
-						{
-							messenger.printDebugMessage("!!SAVE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
-							last_capture_and_save_success = false;
-							image_capture.status = STATE::WRITE_CHECK_ERROR;
-						}
-						image_capture.is_busy = false;
-					}
-					else
-					{
-						messenger.printDebugMessage(hardwareName, " write returned false.");
-					}
-				}
-				else
-				{
-					messenger.printDebugMessage(hardwareName, " makeANewDirectoryAndName returned false.");
-				}
-			}
-		}
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " setNumberOfShotsToCapture returned false."); 
-	}
-	image_capture.is_busy = false;
-	busy = false;
-}
-//-------------------------------------------------------------------------------------------------------
-size_t Camera::getNumberOfShotsToCapture()const
-{
-	return capture_count.second;
-}
-bool Camera::setNumberOfShotsToCapture(size_t num)
-{
-	if (num <= max_shots_number)
-	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
-	}
-	return false;
-}
-bool Camera::capture()
-{
-	bool ans = false;
-	if (isAcquiring())
-	{
-		ans = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::one_ushort);
-		messenger.printDebugMessage("Capture set to 1 on camera ", hardwareName);
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " is not acquiring");
-	}
-	return ans;
-}
-bool Camera::write()
-{
-	bool ans = false;
-	int startNumber(1);// MAGIC_NUMBER should this be a one or a zero?
-	// WHAT IS THIS DOING???? OLD stuff to converted to jpg automatically that has not been implmented 
-	//setStartFileNumberJPG(startNumber);
-	if (isNotCapturing())
-	{
-		ans = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::one_ushort);
-		messenger.printDebugMessage("WriteFile set to 1 on camera = ", hardwareName);
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " still collecting images when write function was called.");
-	}
-	return ans;
-}
-//-------------------------------------------------------------------------------------------------------
-bool Camera::saveImageBuffer()
-{
-	if (busy)
-	{
-		return false;
-	}
-	if (makeANewDirectoryAndNameBuffer())
-	{
-		epicsUInt8 proc = 1;
-		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::HDFB_Buffer_Trigger), proc);
-	}
-	return false;
-}
-//-------------------------------------------------------------------------------------------------------
-bool Camera::makeANewDirectoryAndNameBuffer()///YUCK (make it look nice)
-{
-	messenger.printDebugMessage("makeANewDirectoryAndNameBuffer ");
-	bool ans = false;
-	messenger.printDebugMessage("char: ", sizeof(char));
-	//std::string time_now = globalfunctions::time_iso_8601();
-	// this sets up the directory structure, based on year, month date
-	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
-	std::time_t t = std::chrono::system_clock::to_time_t(p);
-	// now we jump into some c because, meh 
-	// use local timezone 
-	tm local_tm = *localtime(&t);
-	////struct tm local_tm;
-	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
-	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
-	std::string strpath = "/CameraImages/" +
-		std::to_string(local_tm.tm_year + 1900) +
-		"/" + std::to_string(local_tm.tm_mon + 1) +
-		"/" + std::to_string(local_tm.tm_mday) + "/";
-	strcpy(newPath, strpath.c_str());
-	char newName[256] = "defaultname";
-	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_ImageBuffer";
-	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
-	strcpy(newName, strName.c_str());
-	messenger.printDebugMessage("File Directory would be: ", newPath);
-	messenger.printDebugMessage("File name is: ", newName);
-	std::stringstream s;
-	for (auto&& t : newPath)
-	{
-		s << static_cast<unsigned>(t);
-		s << " ";
-	}
-	messenger.printDebugMessage("t = ", s.str());
-	s.clear();
-	for (auto&& t : newPath)
-	{
-		s << static_cast<signed>(t);
-		s << " ";
-	}
-	messenger.printDebugMessage("t = ", s.str());
-	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
-	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
-	if (ca_state(pvStructs.at(CameraRecords::HDFB_Buffer_FileName).CHID) == cs_conn)
-	{
-		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDFB_Buffer_FileName).CHID, newName);
-		MY_SEVCHK(status);
-		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-		MY_SEVCHK(status);
-		if (status == ECA_NORMAL)
-		{
-			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
-			{
-				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDFB_Buffer_FilePath).CHID, newPath);
-				MY_SEVCHK(status);
-				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-				MY_SEVCHK(status);
-				if (status == ECA_NORMAL)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				messenger.printDebugMessage(hardwareName, " HDFB_Buffer_FilePath is not connected");
-			}
-		}
-		else
-		{
-			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
-		}
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " HDFB_Buffer_FileName is not connected");
-	}
-	return ans;
-}
 
 
-bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
-{
-	messenger.printDebugMessage("makeANewDirectoryAndName ");
-	bool ans = false;
-	messenger.printDebugMessage("char: ", sizeof(char));
-	//std::string time_now = globalfunctions::time_iso_8601();
-	
-	// this sets up the directory structure, based on year, month date
-	std::chrono::system_clock::time_point p = std::chrono::system_clock::now();
-	std::time_t t = std::chrono::system_clock::to_time_t(p);
 
-	// now we jump into some c because, meh 
-	// use local timezone 
-	tm local_tm = *localtime(&t);
-	////struct tm local_tm;
-	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
-	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
-	std::string strpath = "/CameraImages/" +
-		std::to_string(local_tm.tm_year + 1900) +
-		"/" + std::to_string(local_tm.tm_mon + 1) +
-		"/" + std::to_string(local_tm.tm_mday) + "/";
-
-	strcpy(newPath, strpath.c_str());
-
-	char newName[256] = "defaultname";
-	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
-	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
-	strcpy(newName, strName.c_str());
-	messenger.printDebugMessage("File Directory would be: ", newPath);
-	messenger.printDebugMessage("File name is: ", newName);
-	std::stringstream s;
-	for (auto&& t : newPath)
-	{
-		s << static_cast<unsigned>(t);
-		s << " ";
-	}
-	messenger.printDebugMessage("t = ", s.str());
-	s.clear();
-	for (auto&& t : newPath)
-	{
-		s << static_cast<signed>(t);
-		s << " ";
-	}
-	messenger.printDebugMessage("t = ", s.str());
-	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
-	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
-
-	if (ca_state(pvStructs.at(CameraRecords::HDF_FileName).CHID) == cs_conn)
-	{
-		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FileName).CHID, newName);
-		MY_SEVCHK(status);
-		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-		MY_SEVCHK(status);
-
-		if (status == ECA_NORMAL)
-		{
-
-			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
-			{
-				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FilePath).CHID, newPath);
-				MY_SEVCHK(status);
-				status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-				MY_SEVCHK(status);
-				if (status == ECA_NORMAL)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				messenger.printDebugMessage(hardwareName, " HDF_FilePath is not connected");
-			}
-		}
-		else
-		{
-			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
-		}
-
-
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " HDF_FileName is not connected");
-	}
-
-	return ans;
-}
-bool Camera::isWriting()const
-{
-	return write_state.second == STATE::WRITING;
-}
-bool Camera::isNotWriting()const
-{
-	return write_state.second == STATE::NOT_WRITING;
-}
-STATE Camera::getCaptureState()const
-{
-	return capture_state.second;
-}
-bool Camera::isBusy()
-{
-	return busy == true;
-}
-bool Camera::isNotBusy()
-{
-	return busy == false;
-}
-bool Camera::didLastCaptureAndSaveSucceed()
-{
-	return last_capture_and_save_success == true;
-}
-//---------------------------------------------------------------------------------
-bool Camera::resetCaptureAndSaveError()
-{
-	bool set_capture = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_Capture), GlobalConstants::zero_ushort);
-	bool set_write_file = epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::HDF_WriteFile), GlobalConstants::zero_ushort);
-	bool set_write_stat = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::HDF_WriteStatus), GlobalConstants::zero_ushort);
-	if (set_capture)
-	{
-		if (set_write_file)
-		{
-			if (set_write_stat)
-			{
-				return true;
-			}
-		}
-	}
-	return false;
-}
- 
-//---------------------------------------------------------------------------------
-bool Camera::isCapturing()const
-{
-	if (getCaptureState() == STATE::CAPTURING)
-	{
-		//messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
-		return true;
-	}
-	//messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
-	return false;
-}
-bool Camera::isNotCapturing()const
-{
-	if (getCaptureState() == STATE::NOT_CAPTURING)
-	{
-		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is TRUE");
-		return true;
-	}
-	messenger.printDebugMessage("isNotCapturing ", hardwareName, " is FALSE");
-	return false;
-}
-bool Camera::isCapturingOrSaving()const
-{
-	if(isCapturing())
-	{
-		return true;
-	}
-	if (isWriting())
-	{
-		return true;
-	}
-	return false;
-}
-bool Camera::isNotCapturingOrSaving()const
-{
-	return !isCapturingOrSaving();
-}
-
-std::string Camera::getLastDirectoryandFileName() const
-{
-	return getLastDirectory() + "/" + getLastFileName(); // WARNING!! TODO unix / windows conventions :(( 
-}
-std::string Camera::getLastDirectory()const
-{
-	return save_filepath.second;
-}
-std::string Camera::getLastFileName()const
-{
-	return save_filename.second;
-}
-std::string Camera::getLastBufferDirectoryandFileName() const
-{
-	return getLastBufferDirectory() + "/" + getLastBufferFileName();
-}
-std::string Camera::getLastBufferDirectory()const
-{
-	return buffer_filepath.second;
-}
-std::string Camera::getLastBufferFileName()const
-{
-	return buffer_filename.second;
-}
-std::vector<std::string> Camera::getAliases() const
-{
-	return aliases;
-}
-boost::python::list Camera::getAliases_Py() const
-{
-	return to_py_list<std::string>(getAliases());
-}
-std::string Camera::getScreen()const
-{
-	if (screen_names.size() > 0)
-	{
-		return screen_names[0];
-	}
-	return "UNKNOWN";
-}
-std::vector<std::string> Camera::getScreenNames() const
-{
-	return screen_names;
-}
-boost::python::list Camera::getScreenNames_Py() const
-{
-	return to_py_list<std::string>(getScreenNames());
-}
-char Camera::getBufferTrigger()const
-{
-	return buffer_trigger.second;
-}
-std::string Camera::getBufferFilePath()const
-{
-	return buffer_filepath.second;
-}
-std::string Camera::getBufferFileName()const
-{
-	return buffer_filename.second;
-}
-long Camera::getBufferFileNumber()const
-{
-	return buffer_filenumber.second;
-}
 //long Camera::getBufferROIminX()const
 //{
 //	return roi_min_x.second;
@@ -2406,30 +2262,6 @@ long Camera::getFlooredPtsCount()const
 double Camera::getFlooredPtsPercent()const
 {
 	return floored_pts_percent.second;
-}
-long Camera::getCPUTotal()const
-{
-	return cpu_total.second;
-}
-long Camera::getCPUCropSubMask()const
-{
-	return cpu_crop_sub_mask.second;
-}
-long Camera::getCPUNPoint()const
-{
-	return cpu_npoint.second;
-}
-long Camera::getCPUDot()const
-{
-	return cpu_dot.second;
-}
-long Camera::getPixelWidth()const
-{
-	return pixel_width.second;
-}
-long Camera::getPixelHeight()const
-{
-	return pixel_height.second;
 }
 void Camera::debugMessagesOn()
 {

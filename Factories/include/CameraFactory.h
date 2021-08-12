@@ -48,7 +48,6 @@ public:
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
-
 	/*! setup function using std::vector of camera names 
 		@param[in] version, (a placeholder for future extensions)
 		@param[in] names, only setup magnets that match a (fullname) in names 
@@ -56,62 +55,23 @@ public:
 	bool setup(const std::string& version, const std::vector<std::string>& names);
 
 
+	/*! get a reference to a camera object
+	@param[in] cam_name, name of camera object to return
+	@param[out] camera object*/
+	Camera& getCamera(const std::string& cam_name);
+
+
+	//
+	//                   ___  __  
+	//  |\ |  /\   |\/| |__  /__` 
+	//  | \| /~~\  |  | |___ .__/ 
+	//
 	/*! get the names of all the cameras in Factory 
 	@param[out] vector of strings, camera names*/
 	std::vector<std::string> getCameraNames();
 	/*! get the names of all the cameras in Factory, python version
 	@param[out] python list of strings, camera names*/
 	boost::python::list getCameraNames_Py();
-
-	/*! get a reference to a camera object 
-	@param[in] cam_name, name of camera object to return 
-	@param[out] camera object*/
-	Camera& getCamera(const std::string& cam_name);
-	
-
-
-	/*! get Anlaysis results in pixels
-	@param[in] std::string, name
-	@param[out] map<string, double>, values, keyed by names in master lattice */
-	std::map<std::string, double> getAnalysisResultsPixels(const std::string& name)const;
-	/*! get Anlaysis results in pixels, Python version
-	@param[in] std::string, name
-	@param[out] map<string, double>, values, keyed by names in master lattice */
-	boost::python::dict getAnalysisResultsPixels_Py(const std::string& name)const;
-
-	/*! Set the black level (for vela camera types only),
-	@param[in] std::string, name
-	@param[in] long, values
-	@param[out] bool, values */
-	bool setBlackLevel(const std::string& name, long value);
-	/*! Set the black level (for VELA camera types only),
-	@param[in] std::string, name
-	@param[out] bool, if command got sent to EPICS (not if it was accepted) */
-	long getBlackLevel(const std::string& name )const;
-	/*! Set the black level (for VELA camera types only),
-	@param[in] std::string, name
-	@param[out] long, latest value */
-	bool setGain(const std::string& name, long value);
-	/*! Get the gain (for VELA camera types only),
-	@param[in] std::string, name
-	@param[out] long, latest value */
-	long getGain(const std::string& name )const;
-	/*! Get the total number of pixels in X for the standard image sent over the network 
-	@param[in] std::string, name
-	@param[out] size_t, value */
-	size_t getArrayDataPixelCountX(const std::string& name)const;
-	/*! Get the total number of pixels in Y for the standard image sent over the network 
-	@param[in] std::string, name
-	@param[out] size_t, value */
-	size_t getArrayDataPixelCountY(const std::string& name)const;
-	/*! Get the total number of pixels in X for the full binary image saved to disc
-	@param[in] std::string, name
-	@param[out] size_t, value */
-	size_t getBinaryDataPixelCountX(const std::string& name)const;
-	/*! Get the total number of pixels in Y for the full binary image saved to disc
-	@param[in] std::string, name
-	@param[out] size_t, value */
-	size_t getBinaryDataPixelCountY(const std::string& name)const;
 	/*! get the name alises for this Camera
 	@param[in] std::string, name
 	@param[out] names, vector containing  all the alias names */
@@ -119,7 +79,7 @@ public:
 	/*! get the name alises for this Camera (python version)
 	@param[in] std::string, name
 	@param[out] names, python list containing all the alias names */
-	boost::python::list getAliases_Py(const std::string& name ) const;
+	boost::python::list getAliases_Py(const std::string& name) const;
 	/*! get the screen name (and aliases) the camera is attached to
 	@param[in] std::string, name
 	@param[out] names, vector containing  all the screen names (and their aliases) */
@@ -132,10 +92,30 @@ public:
 	@param[in] std::string, name
 	@param[out] name, */
 	std::string getScreen(const std::string& name)const;
-	/*! get the type of the camera (e.g. vela_camera, clara_camera
+	// 
+	//  __         ___         ___  __                 
+	// |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
+	// |    | / \ |___ |___     |  \__/     |  |  |  | 
+	//  
+	/*! Get the pixel to mm conversion factor,
 	@param[in] std::string, name
-	@param[out] type */
-	TYPE getCamType(const std::string& name)const;
+	@param[out] double, value */
+	double getPixelToMM(const std::string& name)const;
+	/*! Set the pixel to mm conversion factor,
+	@param[in] std::string, name
+	@param[in] double, value 
+	@param[out] bool, if command got sent to EPICS (not if it was accepted) */
+	bool setPixelToMM(const std::string& name, double value);
+	/*! Convert a length in pixels to mm.
+	@param[in] std::string, name
+	@param[in] double, length in pixels
+	@param[out] double, length in mm*/
+	double pix2mm(const std::string& name, double value)const;
+	/*! Convert a length in mm to pixels.
+	@param[in] std::string, name
+	@param[in] double, length in mm
+	@param[out] double, length in pixels*/
+	double mm2pix(const std::string& name, double value)const;
 	/*! convert a horizontal length in pixels to mm for this camera
 	@param[in] std::string, name
 	@param[in] length in pixels
@@ -172,6 +152,247 @@ public:
 	@param[in] std::string, name
 	@param[in] double, new value */
 	double setpix2mmY(const std::string& name, double value);
+
+
+	//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
+	//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
+	//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
+	//  
+
+	/*! Get the X Pixel defined as the "horizontal" centre of the image data.
+	* 	@param[in] std::string, name
+	*	@param[out] long, value */
+	long getCentreXPixel(const std::string& name)const;
+	/*! Get the Y Pixel defined as the "vertical" centre of the image-array.
+	* 	@param[in] std::string, name
+	*	@param[out] long, value */
+	long getCentreYPixel(const std::string& name)const;
+	/*! Set the X Pixel to be defined as the "horizontal" centre of the image-array.
+	* 	@param[in] std::string, name
+	*	@param[in] long, value to set
+	*	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreXPixel(const std::string& name,long value);
+	/*! Set the Y Pixel to be defined as the "vertical" centre of the image-array.
+	* 	@param[in] std::string, name
+	*	@param[in] long, value to set
+	*	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentreYPixel(const std::string& name, long value);
+	/*! Set the X and Y Pixels to be defined as the centre of the image-array.
+	* 	@param[in] std::string, name
+	*	@param[in] long, x value to set
+	*	@param[in] long, y value to set
+	*	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setCentrePixels(const std::string& name,long x, long y);
+	/*! Sets the analysis centre to be the main lattice values for the mechanical center (in pixels).
+	* 	@param[in] std::string, name
+	* Sets the analysis centre to be the main lattice values.
+	*	@param[out] bool, if the value got sent to epics.*/
+	bool setMechanicalCentre(const std::string& name);
+	/*! For the virtual Cathode the centre of the screen can be defined using the RF centre of the injector.
+	* 	@param[in] std::string, name
+	* Sets the analysis centre to be the main lattice values (in pixels).
+	*	@param[out] bool, if the value got sent to epics.*/
+	bool setOperatingCenter(const std::string& name);
+	/*! Get the RF center X Pixel, from the Main Lattice.
+	* 	@param[in] std::string, name
+	*	@param[out] long, value */
+	long getOperatingCentreXPixel(const std::string& name)const;
+	/*! Get the RF center Y Pixel, from the Main Lattice.
+	* 	@param[in] std::string, name
+	*	@param[out] long, value */
+	long getOperatingCentreYPixel(const std::string& name)const;
+	/*! Get the mechanical center X Pixel, from the Main Lattice.
+	* 	@param[in] std::string, name
+	*	@param[out] long, value */
+	long getMechanicalCentreXPixel(const std::string& name)const;
+	/*! Get the mechanical center Y Pixel, from the Main Lattice.
+	* 	@param[in] std::string, name
+	*	@param[out] long, value */
+	long getMechanicalCentreYPixel(const std::string& name)const;
+//  
+//  			  __   ___ __    __  ___
+//  |  |\/|  /\  / _` |__ /__` |  / |__
+//  |  |  | /~~\ \__> |___.__/ | /_ |___
+// 
+	/*! Get the Number of pixels in the width of the (full) image.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getPixelWidth(const std::string& name)const;
+	/*! Get the Number of pixels in the height of the (full) image.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getPixelHeight(const std::string& name)const;
+		/*! Get the total number of pixels in X for the standard image sent over the network
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getArrayDataPixelCountX(const std::string& name)const;
+	/*! Get the total number of pixels in Y for the standard image sent over the network
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getArrayDataPixelCountY(const std::string& name)const;
+	/*! Get the total number of pixels in X for the full binary image saved to disc
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getBinaryDataPixelCountX(const std::string& name)const;
+	/*! Get the total number of pixels in Y for the full binary image saved to disc
+	@param[in] std::string, name
+	@param[out] size_t, value */
+	size_t getBinaryDataPixelCountY(const std::string& name)const;
+
+	//	 __   __                __        __  
+	//	/  ` |__) |  |    |    /  \  /\  |  \ 
+	//	\__, |    \__/    |___ \__/ /~~\ |__/ 
+	//	                                      
+	/*! Get the total CPU usage of the camera.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getCPUTotal(const std::string& name)const;
+	/*! Get the CPU usage of the CropSubMask procedure.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getCPUCropSubMask(const std::string& name)const;
+	/*! Get the CPU usage of the NPoint scaling procedure.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getCPUNPoint(const std::string& name)const;
+	/*! Get the CPU usage of the dot product procedure.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getCPUDot(const std::string& name)const;
+	/*! Get the Acquire Time for the camera (shutter open time, units??).
+	@param[in] std::string, name
+	@param[out] double, value */
+//	              __   ___     __        ___  ___  ___  __  
+//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
+//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
+//
+	/*! Get the buffer trigger value.
+	@param[in] std::string, name
+	@param[out] double, value */
+	char getImageBufferTrigger(const std::string& name)const;
+	/*! Get the buffer dump file-path.
+	@param[in] std::string, name
+	@param[out] double, value */
+	std::string getImageBufferFilePath(const std::string& name)const;
+	/*! Get the buffer dump file-name.
+	@param[in] std::string, name
+	@param[out] double, value */
+	std::string getImageBufferFileName(const std::string& name)const;
+	/*! Get the buffer dump file-number.
+	@param[in] std::string, name
+	@param[out] double, value */
+	long getImageBufferFileNumber(const std::string& name)const;
+	/*! Get the last directory / filename that the HDF5 buffer data was saved to.
+	@param[in] std::string, name
+	@param[out] string, value */
+	std::string getLastImageBufferDirectoryandFileName(const std::string& name) const;
+	/*! Get the last directory that the HDF5 buffer data was saved to.
+	@param[in] std::string, name
+	@param[out] string, value */
+	std::string getLastImageBufferDirectory(const std::string& name)const;
+	/*! Get the last filename that the HDF5 buffer data was saved to.
+	@param[in] std::string, name
+	@param[out] string, value */
+	std::string getLastImageBufferFileName(const std::string& name)const;
+//	              __   ___     __        __  ___       __   ___               __      __             _ 
+//	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
+//	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
+//	                                                                                                     
+	//
+	/* set the number of shots that will be "collected and written to disk."
+		@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	bool setNumberOfShotsToCapture(const std::string& name, size_t num);
+	/* set the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	size_t getNumberOfShotsToCapture(const std::string& name)const;
+	/*! Capture and save images to disc, using the currently set number of shots to capture.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave(const std::string& name);
+	/*! Capture and save images to disc.
+	@param[in] std::string, name
+	@param[in] size_t, num_images, number of images to capture and write to file
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave(const std::string& name, size_t num_images);
+	/*! Get Capture state.
+	@param[in] std::string, name
+	@param[out] STATE, value from capture_state*/
+	STATE getCaptureState(const std::string& name)const;
+	/*! Is camera capturing images, capture_state == CAPTURING.
+	@param[in] std::string, name
+	@param[out] bool*/
+	bool isCapturing(const std::string& name)const;
+	/*! Is camera capturing images, capture_state == NOT_CAPTURING.
+	@param[in] std::string, name
+	@param[out] bool*/
+	bool isNotCapturing(const std::string& name)const;
+	/*! Is camera writing data to file, write_state == WRITING.
+	@param[in] std::string, name
+	@param[out] bool*/
+	bool isWriting(const std::string& name)const;
+	/*! Is camera writing data to file, write_state == NOT_WRITING.
+	@param[in] std::string, name
+	@param[out] bool*/
+	bool isNotWriting(const std::string& name)const;
+	/*! Is camera capture_state == CAPTURING  OR is write_state == NOT_WRITING.
+	@param[in] std::string, name
+	@param[out] bool*/
+	bool isCapturingOrSaving(const std::string& name)const;
+	/*! Did the last capture and save procedure complete succesfully?
+	* 	@param[in] std::string, name
+	@param[out] bool	*/
+	bool didLastCaptureAndSaveSucceed(const std::string& name)const;
+
+
+
+
+
+	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true
+	* while busy attempts to write more data to disc will fail.
+	@param[in] std::string, name
+	@param[out] bool	*/
+	bool isBusy(const std::string& name);
+	/*! Is the camera NOT busy doing some collect, capture, save, write procedure, busy == false
+	* while busy attempts to write more data to disc will fail.
+	@param[in] std::string, name
+	@param[out] bool	*/
+	bool isNotBusy(const std::string& name);
+
+
+
+	/*! get Anlaysis results in pixels
+	@param[in] std::string, name
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	std::map<std::string, double> getAnalysisResultsPixels(const std::string& name)const;
+	/*! get Anlaysis results in pixels, Python version
+	@param[in] std::string, name
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	boost::python::dict getAnalysisResultsPixels_Py(const std::string& name)const;
+
+	/*! Set the black level (for vela camera types only),
+	@param[in] std::string, name
+	@param[in] long, values
+	@param[out] bool, values */
+	bool setBlackLevel(const std::string& name, long value);
+	/*! Set the black level (for VELA camera types only),
+	@param[in] std::string, name
+	@param[out] bool, if command got sent to EPICS (not if it was accepted) */
+	long getBlackLevel(const std::string& name )const;
+	/*! Set the black level (for VELA camera types only),
+	@param[in] std::string, name
+	@param[out] long, latest value */
+	bool setGain(const std::string& name, long value);
+	/*! Get the gain (for VELA camera types only),
+	@param[in] std::string, name
+	@param[out] long, latest value */
+	long getGain(const std::string& name )const;
+
+
+	/*! get the type of the camera (e.g. vela_camera, clara_camera
+	@param[in] std::string, name
+	@param[out] type */
+	TYPE getCamType(const std::string& name)const;
+
+
 	// THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
 	@param[in] std::string, name
@@ -239,23 +460,7 @@ public:
 	@param[in] std::string, name
 	@param[out] double, value */
 	double getSigXYPix(const std::string& name)const;
-	/*! Get the buffer trigger value.
-	@param[in] std::string, name
-	@param[out] double, value */
-	char getBufferTrigger(const std::string& name)const;
-	/*! Get the buffer dump file-path.
-	@param[in] std::string, name
-	@param[out] double, value */
-	std::string getBufferFilePath(const std::string& name)const;
-	/*! Get the buffer dump file-name.
-	@param[in] std::string, name
-	@param[out] double, value */
-	std::string getBufferFileName(const std::string& name)const;
-	/*! Get the buffer dump file-number.
-	@param[in] std::string, name
-	@param[out] double, value */
-	long getBufferFileNumber(const std::string& name)const;
-
+	
 
 
 
@@ -274,33 +479,7 @@ public:
 	//@param[out] long, value */
 	//long getBufferROIsizeY()const;
 
-	/*! Get the total CPU usage of the camera.
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getCPUTotal(const std::string& name)const;
-	/*! Get the CPU usage of the CropSubMask procedure.
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getCPUCropSubMask(const std::string& name)const;
-	/*! Get the CPU usage of the NPoint scaling procedure.
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getCPUNPoint(const std::string& name)const;
-	/*! Get the CPU usage of the dot product procedure.
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getCPUDot(const std::string& name)const;
-	/*! Get the Number of pixels in the width of the (full) image.
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getPixelWidth(const std::string& name)const;
-	/*! Get the Number of pixels in the height of the (full) image.
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getPixelHeight(const std::string& name)const;
-	/*! Get the Acquire Time for the camera (shutter open time, units??).
-	@param[in] std::string, name
-	@param[out] double, value */
+
 	double getAcquireTime(const std::string& name)const;
 	/*! Get the Acquire Period for the camera (shutter open time, units??).
 	@param[in] std::string, name
@@ -314,10 +493,7 @@ public:
 	@param[in] std::string, name
 	@param[out] double, value */
 	double getTemperature(const std::string& name)const;
-	/*! Set the buffer trigger to dump the camera image buffer to disc.
-	@param[in] std::string, name
-	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool setBufferTrigger(const std::string& name);
+
 	/*! Set the Region Of Interest minimum x pixel.
 	@param[in] std::string, name
 	@param[in] long, new val
@@ -499,18 +675,7 @@ public:
 	@param[in] std::string, name
 	@param[out] string, value */
 	std::string getLastFileName(const std::string& name)const;
-	/*! Get the last directory / filename that the HDF5 buffer data was saved to.
-	@param[in] std::string, name
-	@param[out] string, value */
-	std::string getLastBufferDirectoryandFileName(const std::string& name) const;
-	/*! Get the last directory that the HDF5 buffer data was saved to.
-	@param[in] std::string, name
-	@param[out] string, value */
-	std::string getLastBufferDirectory(const std::string& name)const;
-	/*! Get the last filename that the HDF5 buffer data was saved to.
-	@param[in] std::string, name
-	@param[out] string, value */
-	std::string getLastBufferFileName(const std::string& name)const;
+
 	/*! Set the mask x center position, setting the Mask and ROI together is preferred using setMaskAndROIxPos
 	@param[in] std::string, name
 	@param[in] long, value
@@ -695,58 +860,9 @@ public:
 	@param[in] std::string, name
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState(const std::string& name)const;
-	/* set the number of shots that will be "collected and written to disk."
-	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
-	bool setNumberOfShotsToCapture(const std::string& name, size_t num);
-	/* set the number of shots that will be "collected and written to disk."
-	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
-	size_t getNumberOfShotsToCapture(const std::string& name)const;
-	/*! Capture and save images to disc, using the currently set number of shots to capture.
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool captureAndSave(const std::string& name);
-	/*! Capture and save images to disc.
-	@param[in] std::string, name
-	@param[in] size_t, num_images, number of images to capture and write to file
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool captureAndSave(const std::string& name, size_t num_images);
-	/*! Get Capture state.
-	@param[in] std::string, name
-	@param[out] STATE, value from capture_state*/
-	STATE getCaptureState(const std::string& name)const;
-	/*! Is camera capturing images, capture_state == CAPTURING.
-	@param[in] std::string, name
-	@param[out] bool*/
-	bool isCapturing(const std::string& name)const;
-	/*! Is camera capturing images, capture_state == NOT_CAPTURING.
-	@param[in] std::string, name
-	@param[out] bool*/
-	bool isNotCapturing(const std::string& name)const;
-	/*! Is camera writing data to file, write_state == WRITING.
-	@param[in] std::string, name
-	@param[out] bool*/
-	bool isWriting(const std::string& name)const;
-	/*! Is camera writing data to file, write_state == NOT_WRITING.
-	@param[in] std::string, name
-	@param[out] bool*/
-	bool isNotWriting(const std::string& name)const;
-	/*! Is camera capture_state == CAPTURING  OR is write_state == NOT_WRITING.
-	@param[in] std::string, name
-	@param[out] bool*/
-	bool isCapturingOrSaving(const std::string& name)const;
-	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true
-	* while busy attempts to write more data to disc will fail.
-	@param[in] std::string, name
-	@param[out] bool	*/
-	bool isBusy(const std::string& name);
-	/*! Is the camera NOT busy doing some collect, capture, save, write procedure, busy == false
-	* while busy attempts to write more data to disc will fail.
-	@param[in] std::string, name
-	@param[out] bool	*/
-	bool isNotBusy(const std::string& name);
-	/*! Did the last capture and save procedure complete succesfully?
-	@param[in] std::string, name
-	@param[out] bool	*/
-	bool didLastCaptureAndSaveSucceed(const std::string& name);
+	
+
+
 	/*! Does the camera / screen combination have an LED.
 	@param[in] std::string, name
 	@param[out] bool, value of has_led	*/
@@ -833,10 +949,8 @@ public:
 	void setRunningStatSize(const std::string& name, size_t size);
 	/*! clears the RS object for a given camera */
 	void clearRunningStats(const std::string& name);
-	/*! Get the pixel to mm conversion factor,
-	@param[in] std::string, name
-	@param[out] double, value */
-	double getPix2mm(const std::string& name)const;
+
+
 
 
 	bool areAllRunningStatsFull(const std::string& name)const;

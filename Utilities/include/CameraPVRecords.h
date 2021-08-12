@@ -10,13 +10,13 @@
 namespace CameraRecords
 {
 	// BUFFER DUMPING (7)
-	extern std::string const HDFB_Buffer_Trigger;                                 
-	extern std::string const HDFB_Buffer_FilePath;
-	extern std::string const HDFB_Buffer_FilePath_RBV;
-	extern std::string const HDFB_Buffer_FileName;
-	extern std::string const HDFB_Buffer_FileName_RBV;
-	extern std::string const HDFB_Buffer_FileNumber;
-	extern std::string const HDFB_Buffer_FileNumber_RBV;
+	extern std::string const HDFB_image_buffer_trigger;                                 
+	extern std::string const HDFB_image_buffer_filepath;
+	extern std::string const HDFB_image_buffer_filepath_RBV;
+	extern std::string const HDFB_image_buffer_filename;
+	extern std::string const HDFB_image_buffer_filename_RBV;
+	extern std::string const HDFB_image_buffer_filenumber;
+	extern std::string const HDFB_image_buffer_filenumber_RBV;
 	// REGION OF INTEREST (AND MASK) (13)
 	extern std::string const ROI1_MinX_RBV;
 	extern std::string const ROI1_MinY_RBV;

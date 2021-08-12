@@ -105,11 +105,11 @@ controls_information:
         LED_Off    : CLA-LAS-DIA-LED-01:Off
         LED_On    : CLA-LAS-DIA-LED-01:On
         # image buffer dumping
-        HDFB_Buffer_Trigger : CLA-VCA-DIA-CAM-01:CAM:Trigger.PROC
-        HDFB_Buffer_FilePath : CLA-VCA-DIA-CAM-01:HDFB:FilePath
-        HDFB_Buffer_FilePath_RBV : CLA-VCA-DIA-CAM-01:HDFB:FilePath_RBV
-        HDFB_Buffer_FileName : CLA-VCA-DIA-CAM-01:HDFB:FileName
-        HDFB_Buffer_FileName_RBV : CLA-VCA-DIA-CAM-01:HDFB:FileName_RBV
+        HDFB_image_buffer_trigger : CLA-VCA-DIA-CAM-01:CAM:Trigger.PROC
+        HDFB_image_buffer_filePath : CLA-VCA-DIA-CAM-01:HDFB:FilePath
+        HDFB_image_buffer_filePath_RBV : CLA-VCA-DIA-CAM-01:HDFB:FilePath_RBV
+        HDFB_image_buffer_fileName : CLA-VCA-DIA-CAM-01:HDFB:FileName
+        HDFB_image_buffer_fileName_RBV : CLA-VCA-DIA-CAM-01:HDFB:FileName_RBV
         # HDFB_Buffer_FileNumber : CLA-VCA-DIA-CAM-01:HDFB:FileNumber
         HDFB_Buffer_FileNumber_RBV : CLA-VCA-DIA-CAM-01:HDFB:FileNumber_RBV
         # HDF_NumCapture_RBV    : CLA-VCAWws-DIA-CAM-01:HDF:NumCapture_RBV
@@ -207,9 +207,10 @@ properties:
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
     HAS_LED : FALSE # so far only the virtual cathode needs this flag 
-    # empircally determined, adn used to set the center 
-    RF_CENTER_X : 1000
-    RF_CENTER_Y : 1000
+
+    # empircally determined, and used to set the center 
+    OPERATING_CENTER_X : 1000
+    OPERATING_CENTER_Y : 1000
     MECHANICAL_CENTER_X : 1080
     MECHANICAL_CENTER_Y : 1000
     

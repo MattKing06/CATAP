@@ -27,9 +27,9 @@ public:
 
 
    
-static void update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args);
-static void update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args);
-static void update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args);
+static void update_HDFB_image_buffer_filepath_RBV(const struct event_handler_args args);
+static void update_HDFB_image_buffer_filename_RBV(const struct event_handler_args args);
+static void update_HDFB_image_buffer_filenumber_RBV(const struct event_handler_args args);
 static void update_ROI1_MinX_RBV(const struct event_handler_args args);
 static void update_ROI1_MinY_RBV(const struct event_handler_args args);
 static void update_ROI1_SizeX_RBV(const struct event_handler_args args);
@@ -145,11 +145,11 @@ static void update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args);
     //static void update_CAM_Temperature_RBV(const struct event_handler_args args);
     ////static void update_ANA_UseNPoint(const struct event_handler_args args);
 
-    ////static void update_HDFB_Buffer_FilePath(const struct event_handler_args args);
-    //static void update_HDFB_Buffer_Trigger(const struct event_handler_args args);
-    //static void update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args);
-    //static void update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args);
-    //static void update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args);
+    ////static void update_HDFB_image_buffer_filepath(const struct event_handler_args args);
+    //static void update_HDFB_image_buffer_trigger(const struct event_handler_args args);
+    //static void update_HDFB_image_buffer_filepath_RBV(const struct event_handler_args args);
+    //static void update_HDFB_image_buffer_filename_RBV(const struct event_handler_args args);
+    //static void update_HDFB_image_buffer_filenumber_RBV(const struct event_handler_args args);
     //static void update_ROI1_MinX_RBV(const struct event_handler_args args);
     //static void update_ROI1_MinY_RBV(const struct event_handler_args args);
     //static void update_ROI1_SizeX_RBV(const struct event_handler_args args);

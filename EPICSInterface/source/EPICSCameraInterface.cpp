@@ -65,9 +65,9 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	else if (pvStruct.pvRecord == CAM_AcquirePeriod_RBV){		pvStruct.updateFunction = this->update_CAM_AcquirePeriod_RBV;	}
 	else if (pvStruct.pvRecord == CAM_ArrayRate_RBV)	{		pvStruct.updateFunction = this->update_CAM_ArrayRate_RBV;	}
 	else if (pvStruct.pvRecord == CAM_Temperature_RBV)	{		pvStruct.updateFunction = this->update_CAM_Temperature_RBV;	}	
-	else if (pvStruct.pvRecord == HDFB_Buffer_FilePath_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FilePath_RBV;	}
-	else if (pvStruct.pvRecord == HDFB_Buffer_FileName_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FileName_RBV;	}
-	else if (pvStruct.pvRecord == HDFB_Buffer_FileNumber_RBV)	{		pvStruct.updateFunction = this->update_HDFB_Buffer_FileNumber_RBV;	}
+	else if (pvStruct.pvRecord == HDFB_image_buffer_filepath_RBV)	{		pvStruct.updateFunction = this->update_HDFB_image_buffer_filepath_RBV;	}
+	else if (pvStruct.pvRecord == HDFB_image_buffer_filename_RBV)	{		pvStruct.updateFunction = this->update_HDFB_image_buffer_filename_RBV;	}
+	else if (pvStruct.pvRecord == HDFB_image_buffer_filenumber_RBV)	{		pvStruct.updateFunction = this->update_HDFB_image_buffer_filenumber_RBV;	}
 	else if (pvStruct.pvRecord == ROI1_MinX_RBV)		{		pvStruct.updateFunction = this->update_ROI1_MinX_RBV;	}
 	else if (pvStruct.pvRecord == ROI1_MinY_RBV)		{		pvStruct.updateFunction = this->update_ROI1_MinY_RBV;	}
 	else if (pvStruct.pvRecord == ROI1_SizeX_RBV)		{		pvStruct.updateFunction = this->update_ROI1_SizeX_RBV;	}
@@ -120,48 +120,48 @@ void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS_RBV(const struct event_han
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->cross_overlay.first = new_value.first;
+	recastCamera->cross_hair_overlay.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->cross_overlay.second = STATE::DISABLED; break;
-	case GlobalConstants::one_ushort:  recastCamera->cross_overlay.second = STATE::ENABLED; break;
+	case GlobalConstants::zero_ushort: recastCamera->cross_hair_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->cross_hair_overlay.second = STATE::ENABLED; break;
 	default:
-		recastCamera->cross_overlay.second = STATE::ERR;
+		recastCamera->cross_hair_overlay.second = STATE::ERR;
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_1_CROSS_RBV = ",
-		ENUM_TO_STRING(recastCamera->cross_overlay.second));
+		ENUM_TO_STRING(recastCamera->cross_hair_overlay.second));
 }
 void EPICSCameraInterface::update_ANA_OVERLAY_2_RESULT_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->result_overlay.first = new_value.first;
+	recastCamera->analysis_result_overlay.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->result_overlay.second = STATE::DISABLED; break;
-	case GlobalConstants::one_ushort:  recastCamera->result_overlay.second = STATE::ENABLED; break;
+	case GlobalConstants::zero_ushort: recastCamera->analysis_result_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->analysis_result_overlay.second = STATE::ENABLED; break;
 	default:
-		recastCamera->result_overlay.second = STATE::ERR;
+		recastCamera->analysis_result_overlay.second = STATE::ERR;
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_2_CROSS_RBV = ",
-		ENUM_TO_STRING(recastCamera->result_overlay.second));
+		ENUM_TO_STRING(recastCamera->analysis_result_overlay.second));
 }
 void EPICSCameraInterface::update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->mask_overlay.first = new_value.first;
+	recastCamera->analysis_mask_overlay.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->mask_overlay.second = STATE::DISABLED; break;
-	case GlobalConstants::one_ushort:  recastCamera->mask_overlay.second = STATE::ENABLED; break;
+	case GlobalConstants::zero_ushort: recastCamera->analysis_mask_overlay.second = STATE::DISABLED; break;
+	case GlobalConstants::one_ushort:  recastCamera->analysis_mask_overlay.second = STATE::ENABLED; break;
 	default:
-		recastCamera->mask_overlay.second = STATE::ERR;
+		recastCamera->analysis_mask_overlay.second = STATE::ERR;
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_OVERLAY_3_CROSS_RBV = ",
-		ENUM_TO_STRING(recastCamera->mask_overlay.second));
+		ENUM_TO_STRING(recastCamera->analysis_mask_overlay.second));
 }
 void EPICSCameraInterface::update_HDF_WriteFile_RBV(const struct event_handler_args args)
 {
@@ -667,20 +667,20 @@ void EPICSCameraInterface::update_HDF_FileName_RBV(const struct event_handler_ar
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ",
 		recastCamera->save_filename.second);
 }
-//void EPICSCameraInterface::update_HDFB_Buffer_Trigger(const struct event_handler_args args)
+//void EPICSCameraInterface::update_HDFB_image_buffer_trigger(const struct event_handler_args args)
 //{
 //	Camera* recastCamera = static_cast<Camera*>(args.usr);
-//	//std::pair<epicsTimeStamp, char> buffer_trigger;
+//	//std::pair<epicsTimeStamp, char> image_buffer_trigger;
 //	// TODO
 //
 //}
-void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_handler_args args)
+void EPICSCameraInterface::update_HDFB_image_buffer_filepath_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV");
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_image_buffer_filepath_RBV");
 	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
-	recastCamera->buffer_filepath.first = new_data->stamp;
+	recastCamera->image_buffer_filepath.first = new_data->stamp;
 	const dbr_char_t* value;
 	value = &new_data->value;
 	//std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
@@ -692,16 +692,16 @@ void EPICSCameraInterface::update_HDFB_Buffer_FilePath_RBV(const struct event_ha
 		//std::cout << (int)value[i] << std::endl;
 	}
 	std::string dummy_string(dummy_char);
-	recastCamera->buffer_filepath.second = dummy_string;
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FilePath_RBV = ",
-	//	recastCamera->buffer_filepath.second);
+	recastCamera->image_buffer_filepath.second = dummy_string;
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_image_buffer_filepath_RBV = ",
+	//	recastCamera->image_buffer_filepath.second);
 }
-void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_handler_args args)
+void EPICSCameraInterface::update_HDFB_image_buffer_filename_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	const dbr_time_char* new_data = (const struct dbr_time_char*)args.dbr;
-	recastCamera->buffer_filename.first = new_data->stamp;
+	recastCamera->image_buffer_filename.first = new_data->stamp;
 	const dbr_char_t* value;
 	value = &new_data->value;
 	// std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
@@ -712,17 +712,17 @@ void EPICSCameraInterface::update_HDFB_Buffer_FileName_RBV(const struct event_ha
 		dummy_char[i] = (char)value[i];
 	}
 	std::string dummy_string(dummy_char);
-	recastCamera->buffer_filename.second = dummy_string;
+	recastCamera->image_buffer_filename.second = dummy_string;
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_FileName_RBV = ",
-	//	recastCamera->buffer_filename.second);
+	//	recastCamera->image_buffer_filename.second);
 }
-void EPICSCameraInterface::update_HDFB_Buffer_FileNumber_RBV(const struct event_handler_args args)
+void EPICSCameraInterface::update_HDFB_image_buffer_filenumber_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampLongPair(args, recastCamera->buffer_filenumber);
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_Buffer_FileNumber_RBV = ",
-	//	recastCamera->buffer_filenumber.second);
+	updateTimeStampLongPair(args, recastCamera->image_buffer_filenumber);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_HDFB_image_buffer_filenumber_RBV = ",
+	//	recastCamera->image_buffer_filenumber.second);
 }
 void EPICSCameraInterface::update_ROI1_MinX_RBV(const struct event_handler_args args)
 {
@@ -858,7 +858,7 @@ void EPICSCameraInterface::update_ANA_PixW_RBV(const struct event_handler_args a
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampLongPair(args, recastCamera->pixel_width);
+	updateTimeStampLongPair(args, recastCamera->epics_pixel_width);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_PixW_RBV = ",
 	//	recastCamera->pixel_width.second);
 }
@@ -867,7 +867,7 @@ void EPICSCameraInterface::update_ANA_PixH_RBV(const struct event_handler_args a
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	//std::pair<epicsTimeStamp, long> pixel_height;
-	updateTimeStampLongPair(args, recastCamera->pixel_height);
+	updateTimeStampLongPair(args, recastCamera->epics_pixel_height);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " R = ",recastCamera->pixel_height.second);
 }
 //
@@ -922,16 +922,16 @@ void EPICSCameraInterface::update_OVERLAY_CENTRE_OF_MASS(const struct event_hand
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> new_value = getTimeStampUnsignedShortPair(args);
-	recastCamera->center_of_mass_overlay.first = new_value.first;
+	recastCamera->analysis_result_overlay.first = new_value.first;
 	switch (new_value.second)
 	{
-	case GlobalConstants::zero_ushort: recastCamera->center_of_mass_overlay.second = STATE::OFF; break;
-	case GlobalConstants::one_ushort:  recastCamera->center_of_mass_overlay.second = STATE::ON; break;
+	case GlobalConstants::zero_ushort: recastCamera->analysis_result_overlay.second = STATE::OFF; break;
+	case GlobalConstants::one_ushort:  recastCamera->analysis_result_overlay.second = STATE::ON; break;
 	default:
-		recastCamera->center_of_mass_overlay.second = STATE::ERR;
+		recastCamera->analysis_result_overlay.second = STATE::ERR;
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_OVERLAY_CENTRE_OF_MASS = ",
-		ENUM_TO_STRING(recastCamera->center_of_mass_overlay.second));
+		ENUM_TO_STRING(recastCamera->analysis_result_overlay.second));
 }
 void EPICSCameraInterface::update_OVERLAY_MASK(const struct event_handler_args args)
 {

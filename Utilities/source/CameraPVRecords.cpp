@@ -3,13 +3,13 @@
 
 namespace CameraRecords
 {
-	std::string const HDFB_Buffer_Trigger		    = "HDFB_Buffer_Trigger";
-	std::string const HDFB_Buffer_FilePath		    = "HDFB_Buffer_FilePath";
-	std::string const HDFB_Buffer_FilePath_RBV      = "HDFB_Buffer_FilePath_RBV";
-	std::string const HDFB_Buffer_FileName		    = "HDFB_Buffer_FileName";
-	std::string const HDFB_Buffer_FileName_RBV	    = "HDFB_Buffer_FileName_RBV";
-	std::string const HDFB_Buffer_FileNumber	    = "HDFB_Buffer_FileNumber";
-	std::string const HDFB_Buffer_FileNumber_RBV    = "HDFB_Buffer_FileNumber_RBV";
+	std::string const HDFB_image_buffer_trigger		    = "HDFB_image_buffer_trigger";
+	std::string const HDFB_image_buffer_filepath		    = "HDFB_image_buffer_filepath";
+	std::string const HDFB_image_buffer_filepath_RBV      = "HDFB_image_buffer_filepath_RBV";
+	std::string const HDFB_image_buffer_filename		    = "HDFB_image_buffer_filename";
+	std::string const HDFB_image_buffer_filename_RBV	    = "HDFB_image_buffer_filename_RBV";
+	std::string const HDFB_image_buffer_filenumber	    = "HDFB_image_buffer_filenumber";
+	std::string const HDFB_image_buffer_filenumber_RBV    = "HDFB_image_buffer_filenumber_RBV";
 	std::string const ROI1_MinX_RBV				    = "ROI1_MinX_RBV"				;
 	std::string const ROI1_MinY_RBV				    = "ROI1_MinY_RBV"				;
 	std::string const ROI1_MinX					    = "ROI1_MinX"					;
@@ -113,9 +113,9 @@ namespace CameraRecords
 	std::string const ANA_OVERLAY_3_MASK_RBV = "ANA_OVERLAY_3_MASK_RBV";
 	 
 	std::vector<std::string> cameraRecordList = {
-	HDFB_Buffer_Trigger               ,HDFB_Buffer_FilePath 			  ,HDFB_Buffer_FilePath_RBV 		  ,
-	HDFB_Buffer_FileName 			  ,HDFB_Buffer_FileName_RBV 		  ,HDFB_Buffer_FileNumber 			  ,
-	HDFB_Buffer_FileNumber_RBV 		  ,ROI1_MinX_RBV 					  ,ROI1_MinY_RBV 					  ,
+	HDFB_image_buffer_trigger               ,HDFB_image_buffer_filepath 			  ,HDFB_image_buffer_filepath_RBV 		  ,
+	HDFB_image_buffer_filename 			  ,HDFB_image_buffer_filename_RBV 		  ,HDFB_image_buffer_filenumber 			  ,
+	HDFB_image_buffer_filenumber_RBV 		  ,ROI1_MinX_RBV 					  ,ROI1_MinY_RBV 					  ,
 	ROI1_MinX 						  ,ROI1_MinY 						  ,ROI1_SizeX_RBV					  ,
 	ROI1_SizeY_RBV					  ,ROI1_SizeX						  ,ROI1_SizeY						  ,
 	ROI1_ImageData_RBV				  ,ROIandMask_SetX					  ,ROIandMask_SetY					  ,
@@ -155,7 +155,7 @@ namespace CameraRecords
          
 	std::vector<std::string> cameraMonitorRecordsList
 	{
-		HDFB_Buffer_FilePath_RBV            ,		HDFB_Buffer_FileName_RBV			,		HDFB_Buffer_FileNumber_RBV			,  //1
+		HDFB_image_buffer_filepath_RBV            ,		HDFB_image_buffer_filename_RBV			,		HDFB_image_buffer_filenumber_RBV			,  //1
 		HDF_Capture_RBV						,		HDF_NumCapture_RBV					,		HDF_FilePath_RBV					,  //4
 		HDF_FileName_RBV					,		HDF_FileNumber_RBV					,		HDF_WriteFile_RBV					,  //5
 		ROI1_MinX_RBV						,		ROI1_MinY_RBV						,		ROI1_SizeX_RBV						,  //2
