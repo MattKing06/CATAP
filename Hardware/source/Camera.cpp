@@ -1363,6 +1363,364 @@ STATE Camera::getAcquireState()const
 {
 	return acquire_state.second;
 }
+//	                         __     __           __     __   ___     ___       __   __   __  
+//	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
+//	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
+//
+STATE Camera::getUseFloorState()const{	return use_floor.second;}
+bool Camera::isUsingFloor()const{	return use_floor.second == STATE::USING_FLOOR;}
+bool Camera::isNotUsingFloor()const{	return use_floor.second == STATE::NOT_USING_FLOOR;}
+bool Camera::setUseFloor()
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		//messenger.printDebugMessage("Send ANA_UseFloor 1");
+		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		{
+			//messenger.printDebugMessage("PV FOUND");
+			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+		}
+		//messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
+		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+	}
+	return false;
+}
+bool Camera::setDoNotUseFloor()
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		messenger.printDebugMessage("Send ANA_UseFloor 0");
+		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		{
+			messenger.printDebugMessage("PV FOUND");
+			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+		}
+		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
+
+	}
+	return false;
+}
+bool Camera::setFloorLevel(long v)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), (epicsInt32)v);
+	}
+	return false;
+}
+
+//	                         __     __           __   __         ___     __   __                    __  
+//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
+//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
+//	                                                                                                    
+// 
+bool Camera::useNPoint(bool v)
+{
+	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
+}
+STATE Camera::getNPointState()const{	return use_npoint.second;}
+bool Camera::isUsingNPoint()const{	return use_npoint.second == STATE::USING_NPOINT;}
+bool Camera::isNotUsingNPoint()const{	return use_npoint.second == STATE::NOT_USING_NPOINT;}
+long Camera::getNpointStepSize()const{	return step_size.second;}
+bool Camera::setNpointStepSize(long val){	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);}
+//                         __     __      __        __        __   __   __             __     
+// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+//                                                                                            
+//
+
+bool Camera::setNewBackground(bool v)
+{
+	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
+}
+STATE Camera::getSetNewBackgroundState(){	return set_new_background.second;}
+bool Camera::useBackground(bool v)
+{
+	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	//messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
+}
+bool Camera::isUsingBackground()const{	return use_background.second == STATE::USING_BACKGROUND;}
+bool Camera::isNotUsingBackground()const{	return use_background.second == STATE::NOT_USING_BACKGROUND;}
+STATE Camera::getUsingBackgroundState()const{	return use_background.second;}
+//	                         __     __                 __       
+//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
+//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
+//
+bool Camera::setMaskXCenter(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskXCenter), (epicsInt32)val);}
+bool Camera::setMaskYCenter(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYCenter), (epicsInt32)val);}
+bool Camera::setMaskXRadius(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskXRad), (epicsInt32)val);}
+bool Camera::setMaskYRadius(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYRad), (epicsInt32)val);}
+bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
+{
+	if (setMaskXCenter(mask_x))
+	{
+		if (setMaskYCenter(mask_y))
+		{
+			if (setMaskXRadius(mask_rad_x))
+			{
+				if (setMaskYRadius(mask_rad_y))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool Camera::setMask(std::map<std::string, long> settings)
+{
+	if (GlobalFunctions::entriesExist(settings, mask_keywords))
+	{
+		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
+	}
+	std::cout << "!!ERROR!! wrong setMask keywords: ";
+	for (auto&& item : settings)
+	{
+		std::cout << item.first << ", ";
+	}
+	std::cout << std::endl;
+	std::cout << "Expecting: ";
+	for (auto&& item : mask_keywords)
+	{
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
+	return false;
+}
+bool Camera::setMask_Py(boost::python::dict settings){	return setMask(to_std_map<std::string, long>(settings));}
+long Camera::getMaskXCenter()const{	return mask_x_center.second;}
+long Camera::getMaskYCenter()const{	return mask_y_center.second;}
+long Camera::getMaskXRadius()const{	return mask_x_radius.second;}
+long Camera::getMaskYRadius()const{	return mask_y_radius.second;}
+std::map<std::string, long> Camera::getMask()const
+{
+	std::map<std::string, long> r;
+	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
+	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
+	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
+	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getMask_Py()const{	return  to_py_dict<std::string, long>(getMask());}
+//	 __   __    
+//	|__) /  \ | 
+//	|  \ \__/ | 
+//
+bool Camera::setROIMinX(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinX), (epicsInt32)val);}
+bool Camera::setROIMinY(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinY), (epicsInt32)val);}
+bool Camera::setROISizeX(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeX), (epicsInt32)val);}
+bool Camera::setROISizeY(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeY), (epicsInt32)val);}
+bool Camera::setROI(long x_max, long  y_max, long x_rad, long y_rad)
+{
+	if (setMaskAndROIxMax(x_max))
+	{
+		if (setMaskAndROIyMax(y_max))
+		{
+			if (setMaskAndROIxSize(x_rad))
+			{
+				if (setMaskAndROIySize(y_rad))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool Camera::setROI(std::map<std::string, long> settings)
+{
+	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
+	{
+		return setROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
+	}
+	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_max, y_max, x_rad, y_rad");
+	return false;
+}
+bool Camera::setROI_Py(boost::python::dict settings){	return setROI(to_std_map<std::string, long>(settings));}
+long Camera::getROIMinX()const{	return roi_min_x.second;}
+long Camera::getROIMinY()const{	return roi_min_y.second;}
+long Camera::getROISizeX()const{	return roi_size_x.second;}
+long Camera::getROISizeY()const{	return roi_size_y.second;}
+std::map<std::string, long> Camera::getROI()const
+{
+	std::map<std::string, long> r;
+	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
+	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
+	r["roi_x_size"] = getROISizeX();// MAGIC STRING
+	r["roi_y_size"] = getROISizeY();// MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getROI_Py()const
+{
+	return  to_py_dict<std::string, long>(getROI());
+}
+
+
+//	 __   __                  __                 __           __   __         __   __  
+//	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
+//	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
+//
+long Camera::getMaskAndROIxMax()const{	return roi_and_mask_centre_x.second; }
+long Camera::getMaskAndROIyMax()const{	return roi_and_mask_centre_y.second; }
+long Camera::getMaskAndROIxSize()const{	return roi_and_mask_radius_x.second; }
+long Camera::getMaskAndROIySize()const{	return roi_and_mask_radius_y.second; }
+bool Camera::setMaskAndROIxMax(long val){	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)val);}
+bool Camera::setMaskAndROIyMax(long val){	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)val);}
+bool Camera::setMaskAndROIxSize(long val)
+{
+	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (epicsFloat64)val);
+}
+bool Camera::setMaskAndROIySize(long val)
+{
+	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (epicsFloat64)val);
+}
+bool Camera::setMaskandROI(long x_max, long  y_max, long x_rad, long y_rad)
+{
+	if (setMaskAndROIxMax(x_max))
+	{
+		if (setMaskAndROIyMax(y_max))
+		{
+			if (setMaskAndROIxSize(x_rad))
+			{
+				if (setMaskAndROIySize(y_rad))
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+bool Camera::setMaskandROI(std::map<std::string, long> settings)
+{
+	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
+	{
+		return setMaskandROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("x_rad"), settings.at("y_rad"));
+	}
+	std::cout << "!!ERROR!! wrong setMaskandROI keywords: ";
+	for (auto&& item : settings)
+	{
+		std::cout << item.first << ", ";
+	}
+	std::cout << std::endl;
+	std::cout << "Expecting: ";
+	for (auto&& item : mask_and_roi_keywords)
+	{
+		std::cout << item << ", ";
+	}
+	std::cout << std::endl;
+	return false;
+}
+bool Camera::setMaskandROI_Py(boost::python::dict settings)
+{
+	return setMaskandROI(to_std_map<std::string, long>(settings));
+}
+std::map<std::string, long> Camera::getMaskandROI()const
+{
+	std::map<std::string, long> r;
+	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
+	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
+	r["roi_x_size"] = getROISizeX();// MAGIC STRING
+	r["roi_y_size"] = getROISizeY();// MAGIC STRING
+	r["mask_center_x"] = getMaskXCenter(); // MAGIC STRING
+	r["mask_center_y"] = getMaskYCenter(); // MAGIC STRING
+	r["mask_x_size"] = getMaskXRadius();// MAGIC STRING
+	r["mask_y_size"] = getMaskYRadius();// MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getMaskandROI_Py()const
+{
+	return  to_py_dict<std::string, long>(getMaskandROI());
+}
+
+
+
+//	       ___   __   
+//	|     |__   |  \  
+//	|___ .|___ .|__/ .
+//
+bool Camera::hasLED()const
+{
+	return has_led;
+}
+bool Camera::setLEDOn()
+{
+	// ALSO HAVE IN SCREENS 
+	if (has_led)
+	{
+		if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+			return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_SEND);
+		}
+		messenger.printDebugMessage(hardwareName, " Send setLEDOn EPICS_ACTIVATE failed ");
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " Does not have a LED, setLEDOn failed ");
+	}
+	return false;
+}
+bool Camera::setLEDOff()
+{
+	// ALSO HAVE IN SCREENS
+	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_SEND);
+	}
+	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
+	return false;
+}
+bool Camera::isLEDOn()const
+{
+	return led_state.second == STATE::ON;
+}
+bool Camera::isLEDOff()const
+{
+	return led_state.second == STATE::OFF;
+}
+STATE Camera::getLEDState()const
+{
+	return led_state.second;
+}
+
+
+
+
+
+
+//	 __                            __      __             __                ___       ___      
+//	/ _`  /\  | |\ |     /\  |\ | |  \    |__) |     /\  /  ` |__/    |    |__  \  / |__  |    
+//	\__> /~~\ | | \|    /~~\ | \| |__/    |__) |___ /~~\ \__, |  \    |___ |___  \/  |___ |___ 
+//
+
+
+
+
+
+
+boost::python::dict Camera::getAllRunningStats()const
+{
+	boost::python::dict r;
+	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
+	r["y_pix"] = y_pix_rs.getRunningStats();  				// MAGIC STRING
+	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();    // MAGIC STRING
+	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();    // MAGIC STRING
+	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();  // MAGIC STRING
+	r["x_mm"] = x_mm_rs.getRunningStats();				    // MAGIC STRING
+	r["y_mm"] = y_mm_rs.getRunningStats();				    // MAGIC STRING
+	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();	    // MAGIC STRING
+	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();	    // MAGIC STRING
+	r["sigma_xy_mm"] = sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
+	return r;
+}
+
+
+
 
 
 
@@ -1561,51 +1919,7 @@ bool Camera::setSigXY(double value)
 	//sigma_xy_pix = std::make_pair(epicsTimeStamp(), mm2pixX(value));
 	return true;
 }
-bool Camera::hasLED()const
-{
-	return has_led;
-}
-bool Camera::setLEDOn()
-{
-	// ALSO HAVE IN SCREENS 
-	if (has_led)
-	{
-		if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
-		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
-			return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_SEND);
-		}
-		messenger.printDebugMessage(hardwareName," Send setLEDOn EPICS_ACTIVATE failed ");
-	}
-	else
-	{
-		messenger.printDebugMessage(hardwareName, " Does not have a LED, setLEDOn failed ");
-	}
-	return false;
-}
-bool Camera::setLEDOff()
-{
-	// ALSO HAVE IN SCREENS
-	if(epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
-		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_SEND);
-	}
-	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
-	return false;
-}
-bool Camera::isLEDOn()const
-{
-	return led_state.second == STATE::ON;
-}
-bool Camera::isLEDOff()const
-{
-	return led_state.second == STATE::OFF;
-}
-STATE Camera::getLEDState()const
-{
-	return led_state.second;
-}
+
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
 
@@ -1691,216 +2005,7 @@ bool Camera::hasNoBeam()const
 {
 	return !hasBeam();
 }
-bool Camera::setMaskXCenter(long val)
-{
-	messenger.printMessage("setMaskXCenter ", val);
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskXCenter), (epicsInt32)val);
-}
-bool Camera::setMaskYCenter(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYCenter), (epicsInt32)val);
-}
-bool Camera::setMaskXRadius(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskXRad), (epicsInt32)val);
-}
-bool Camera::setMaskYRadius(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYRad), (epicsInt32)val);
-}
-bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
-{
-	if (setMaskXCenter(mask_x))
-	{
-		if (setMaskYCenter(mask_y))
-		{
-			if (setMaskXRadius(mask_rad_x))
-			{
-				if (setMaskYRadius(mask_rad_y))
-				{
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-bool Camera::setMask(std::map<std::string, long> settings)
-{
-	if (GlobalFunctions::entriesExist(settings, mask_keywords))
-	{
-		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
-	}
-	std::cout << "!!ERROR!! wrong setMask keywords: ";
-	for (auto&& item : settings)
-	{
-		std::cout << item.first << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "Expecting: ";
-	for (auto&& item : mask_keywords)
-	{
-		std::cout << item << ", ";
-	}
-	std::cout << std::endl;
-	return false;
-}
-bool Camera::setMask_Py(boost::python::dict settings)
-{
-	return setMask(to_std_map<std::string, long>(settings));
 
-}
-bool Camera::setROIMinX(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinX), (epicsInt32)val);
-}
-bool Camera::setROIMinY(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinY), (epicsInt32)val);
-}
-bool Camera::setROISizeX(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeX), (epicsInt32)val);
-}
-bool Camera::setROISizeY(long val)
-{
-	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeY), (epicsInt32)val);
-}
-bool Camera::setROI(long x_max, long  y_max, long x_rad, long y_rad)
-{
-	if (setMaskAndROIxMax(x_max))
-	{
-		if (setMaskAndROIyMax(y_max))
-		{
-			if (setMaskAndROIxSize(x_rad))
-			{
-				if (setMaskAndROIySize(y_rad))
-				{
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-bool Camera::setROI(std::map<std::string, long> settings)
-{
-	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
-	{
-		return setROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
-	}
-	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_max, y_max, x_rad, y_rad");
-	return false;
-}
-bool Camera::setROI_Py(boost::python::dict settings)
-{
-	return setROI(to_std_map<std::string, long>(settings));
-
-}
-long Camera::getMaskAndROIxMax()const
-{
-	return roi_and_mask_centre_x.second; // NEEDS CHECKING
-}
-long Camera::getMaskAndROIyMax()const
-{
-	return roi_and_mask_centre_y.second; // NEEDS CHECKING
-}
-long Camera::getMaskAndROIxSize()const
-{
-	return roi_and_mask_radius_x.second; // NEEDS CHECKING 
-}
-long Camera::getMaskAndROIySize()const
-{
-	return roi_and_mask_radius_y.second; // NEEDS CHECKING
-}
-bool Camera::setMaskAndROIxMax(long val)
-{
-	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)val);
-}
-bool Camera::setMaskAndROIyMax(long val)
-{
-	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)val);
-}
-bool Camera::setMaskAndROIxSize(long val)
-{
-	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (epicsFloat64)val);
-}
-bool Camera::setMaskAndROIySize(long val)
-{
-	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (epicsFloat64)val);
-}
-bool Camera::setMaskandROI(long x_max, long  y_max, long x_rad, long y_rad)
-{
-	if(setMaskAndROIxMax(x_max))
-	{
-		if (setMaskAndROIyMax(y_max))
-		{
-			if (setMaskAndROIxSize(x_rad))
-			{
-				if (setMaskAndROIySize(y_rad))
-				{
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-bool Camera::setMaskandROI(std::map<std::string, long> settings)
-{
-	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
-	{
-		return setMaskandROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("x_rad"), settings.at("y_rad"));
-	}
-	std::cout << "!!ERROR!! wrong setMaskandROI keywords: ";  
-	for (auto&& item : settings)
-	{
-		std::cout << item.first << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "Expecting: ";
-	for (auto&& item : mask_and_roi_keywords)
-	{
-		std::cout << item << ", ";
-	}
-	std::cout << std::endl;
-	return false;
-}
-bool Camera::setMaskandROI_Py(boost::python::dict settings)
-{
-	return setMaskandROI(to_std_map<std::string, long>(settings));
-}
-/* 			 __   __         ___     __   __                    __
-	|\ | __ |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _`
-	| \|    |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__>
-*/
-bool Camera::useNPoint(bool v)
-{
-	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
-}
-STATE Camera::getNPointState()const
-{
-	return use_npoint.second;
-}
-bool Camera::isUsingNPoint()const
-{
-	return use_npoint.second == STATE::USING_NPOINT;
-}
-bool Camera::isNotUsingNPoint()const
-{
-	return use_npoint.second == STATE::NOT_USING_NPOINT;
-}
-long Camera::getNpointStepSize()const
-{
-	return step_size.second;
-}
-bool Camera::setNpointStepSize(long val)
-{
-	std::cout << "setNpointStepSize, val = " << (epicsInt32)val << std::endl;
-	//return false;
-	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);
-}
 
 
 
@@ -1947,129 +2052,7 @@ bool Camera::areAllRunningStatsFull()const
 }
 
 
-bool Camera::setNewBackground(bool v)
-{
-	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
-}
-STATE Camera::getSetNewBackgroundState()
-{
-	return set_new_background.second;
-}
-bool Camera::useBackground(bool v)
-{
-	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	//messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
-}
-bool Camera::isUsingBackground()const
-{
-	return use_background.second == STATE::USING_BACKGROUND;
-}
-bool Camera::isNotUsingBackground()const
-{
-	return use_background.second == STATE::NOT_USING_BACKGROUND;
-}
-STATE Camera::getUsingBackgroundState()const
-{
-	return use_background.second;
-}
 
-
-
-
-
-long Camera::getMaskXCenter()const
-{
-	return mask_x_center.second;
-}
-long Camera::getMaskYCenter()const
-{
-	return mask_y_center.second;
-}
-long Camera::getMaskXRadius()const
-{
-	return mask_x_radius.second;
-}
-long Camera::getMaskYRadius()const
-{
-	return mask_y_radius.second;
-}
-std::map<std::string, long> Camera::getMask()const
-{
-	std::map<std::string, long> r;
-	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
-	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
-	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
-	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
-	return r;
-}
-boost::python::dict Camera::getMask_Py()const
-{
-	return  to_py_dict<std::string, long>(getMask());
-}
-long Camera::getROIMinX()const
-{
-	return roi_min_x.second;
-}
-long Camera::getROIMinY()const
-{
-	return roi_min_y.second;
-}
-long Camera::getROISizeX()const
-{
-	return roi_size_x.second;
-}
-long Camera::getROISizeY()const
-{
-	return roi_size_y.second;
-}
-std::map<std::string, long> Camera::getROI()const
-{
-	std::map<std::string, long> r;
-	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
-	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
-	r["roi_x_size"] = getROISizeX();// MAGIC STRING
-	r["roi_y_size"] = getROISizeY();// MAGIC STRING
-	return r;
-}
-boost::python::dict Camera::getROI_Py()const
-{
-	return  to_py_dict<std::string, long>(getROI());
-}
-std::map<std::string, long> Camera::getMaskandROI()const
-{
-	std::map<std::string, long> r;
-	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
-	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
-	r["roi_x_size"] = getROISizeX();// MAGIC STRING
-	r["roi_y_size"] = getROISizeY();// MAGIC STRING
-	r["mask_center_x"] = getMaskXCenter(); // MAGIC STRING
-	r["mask_center_y"] = getMaskYCenter(); // MAGIC STRING
-	r["mask_x_size"] = getMaskXRadius();// MAGIC STRING
-	r["mask_y_size"] = getMaskYRadius();// MAGIC STRING
-	return r;
-}
-boost::python::dict Camera::getMaskandROI_Py()const
-{
-	return  to_py_dict<std::string, long>(getMaskandROI());
-}
-
-boost::python::dict Camera::getAllRunningStats()const
-{
-	boost::python::dict r;
-	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
-	r["y_pix"] = y_pix_rs.getRunningStats();  				// MAGIC STRING
-	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();    // MAGIC STRING
-	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();    // MAGIC STRING
-	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();  // MAGIC STRING
-	r["x_mm"] = x_mm_rs.getRunningStats();				    // MAGIC STRING
-	r["y_mm"] = y_mm_rs.getRunningStats();				    // MAGIC STRING
-	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();	    // MAGIC STRING
-	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();	    // MAGIC STRING
-	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
-	return r;
-}
 
 RunningStats& Camera::getXPixRunningStats(){	return x_pix_rs;}
 RunningStats& Camera::getYPixRunningStats(){	return y_pix_rs;}
@@ -2161,56 +2144,7 @@ STATE Camera::getAnalysisState( )const
 //{
 //	return roi_size_y.second;
 //}
-STATE Camera::getUseFloorState()const
-{
-	return use_floor.second;
-}
-bool Camera::isUsingFloor()const
-{
-	return use_floor.second == STATE::USING_FLOOR;
-}
-bool Camera::isNotUsingFloor()const
-{
-	return use_floor.second == STATE::NOT_USING_FLOOR;
-}
-bool Camera::setUseFloor()
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		//messenger.printDebugMessage("Send ANA_UseFloor 1");
-		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
-		{
-			//messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
-		}
-		//messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
-		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
-	}
-	return false;
-}
-bool Camera::setDoNotUseFloor()
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		messenger.printDebugMessage("Send ANA_UseFloor 0");
-		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
-		{
-			messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
-		}
-		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
 
-	}
-	return false;
-}
-bool Camera::setFloorLevel(long v)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), (epicsInt32)v);
-	}
-	return false;
-}
 std::vector<double> Camera::getPixelResults() const
 {
 	//std::cout << "X_POS: " << std::setprecision(15) << pixelResults.second.at(0)<< std::endl;

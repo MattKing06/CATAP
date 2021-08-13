@@ -30,11 +30,18 @@ std::map<std::string, STATE> Lighting::getLEDState()const
 	std::map < std::string, STATE> r;
 	return r;
 }
+boost::python::dict Lighting::getLEDState_Py()const
+{
+	return to_py_dict<std::string, STATE>(getLEDState());
+}
 std::map<std::string, STATE> Lighting::getLightingState()const
 {
 	std::map < std::string, STATE> r;
 	return r;
-
+}
+boost::python::dict Lighting::getLightingState_Py()const
+{
+	return to_py_dict<std::string, STATE>(getLightingState());
 }
 bool Lighting::allLEDOn()
 {

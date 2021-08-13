@@ -11,5 +11,5 @@ controls_information:
 properties:
     hardware_type : Lighting
     machine_area : 
-    name : all_lights
+    name : ALL_LIGHTS
         

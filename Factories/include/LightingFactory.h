@@ -16,9 +16,12 @@ public:
 	LoggingSystem messenger;
 	bool hasBeenSetup;
 
+	Lighting& getLighting(const std::string& name);
 
 	std::map<std::string, STATE> getLEDState(const std::string& name)const;
+	boost::python::dict getLEDState_Py(const std::string& name)const;
 	std::map<std::string, STATE> getLightingState(const std::string& name)const;
+	boost::python::dict getLightingState_Py(const std::string& name)const;
 	bool allLEDOn(const std::string& name);
 	bool allLEDOff(const std::string& name);
 	STATE getClaraLEDState(const std::string& name)const;
@@ -44,7 +47,9 @@ public:
 	bool isMessagingOn();
 
 private:
-	
+	/*! The kind of Factory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
+	hardware objects when they are created by ConfigReader*/
+	STATE mode;
 	void setMonitorStatus(pvStruct& pvStruct);
 	void setupChannels();
 
@@ -53,7 +58,8 @@ private:
 
 	// private
 	ConfigReader reader;
-
+	// used when we need to return values from a requested camera name that does not exist 
+	Lighting dummy_light;
 };
 
 #endif // LIGHTING_FACTORY_H_

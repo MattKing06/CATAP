@@ -103,6 +103,17 @@ Shutter& PILaserSystem::getShutter02()
 	return shutterFactory.getShutter(shutterNames.at(1));
 }
 
+Lighting& getLighting();
+{
+	// WE HAVE TO GET THIS FROM THE FACTORY //
+	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 
+	// SET OF MEMORY ADDRESS THAT ARE NEVER UPDATED //
+	// BY EPICS.  //
+	// ASK MATT OR DUNCAN WHY THIS WORKS. //
+	return lightingFactory.getLighting(lightingName);
+}
+
+
 size_t PILaserSystem_RS_size;
 /*! Clear all the values assoociated with the Running mean and variance stats.*/
 void PILaserSystem::clearAllRunningStat()

@@ -546,6 +546,8 @@ public:
 	/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
 	@param[out] bool, true if camera stopped before timeout ms, otherwsie false*/
 	bool stopAcquiringAndWait(size_t timeout);
+	/*! Function in which the stop acquiring and wait procedure runs (in a new thread).
+	@param[in] CamStopWaiter, struct holding data for the procedure*/
 	static void staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw);
 	/*! Start image acquiring, if active_camera_count == active_camera_count this will likley not work. 
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/

@@ -1,16 +1,27 @@
 #include <LightingFactory.h>
 #include <LightingPVRecords.h>
 #include <GlobalConstants.h>
+#include "PythonTypeConversions.h"
 
-LightingFactory::LightingFactory()
+
+LightingFactory::LightingFactory() {}
+
+
+LightingFactory::LightingFactory(STATE mode):
+	mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Lighting", mode)),
+messenger(LoggingSystem(true, true)),
+dummy_light(Lighting())
 {
 }
 
-LightingFactory::LightingFactory(STATE mode)
-{
-}
 
-LightingFactory::LightingFactory(const LightingFactory& copyFactory)
+LightingFactory::LightingFactory(const LightingFactory& copyFactory):
+	hasBeenSetup(copyFactory.hasBeenSetup),
+	mode(copyFactory.mode),
+	messenger(copyFactory.messenger),
+	reader(copyFactory.reader)
 {
 }
 
@@ -153,6 +164,16 @@ void LightingFactory::setMonitorStatus(pvStruct& pvStruct)
 }
 
 
+Lighting& LightingFactory::getLighting(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name);
+	}
+	return dummy_light;
+}
+
 std::string LightingFactory::getFullName(const std::string& name)const
 {
 	return name;
@@ -170,6 +191,10 @@ std::map<std::string, STATE> LightingFactory::getLEDState(const std::string& nam
 	r[name] = STATE::UNKNOWN_NAME;
 	return r;
 }
+boost::python::dict LightingFactory::getLEDState_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, STATE>(getLEDState(name));
+}
 std::map<std::string, STATE> LightingFactory::getLightingState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -180,6 +205,10 @@ std::map<std::string, STATE> LightingFactory::getLightingState(const std::string
 	std::map<std::string, STATE> r;
 	r[name] = STATE::UNKNOWN_NAME;
 	return r;
+}
+boost::python::dict LightingFactory::getLightingState_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, STATE>(getLightingState(name));
 }
 bool LightingFactory::allLEDOn(const std::string& name)
 {

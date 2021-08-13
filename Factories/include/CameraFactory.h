@@ -53,14 +53,10 @@ public:
 		@param[in] names, only setup magnets that match a (fullname) in names 
 		@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const std::vector<std::string>& names);
-
-
 	/*! get a reference to a camera object
 	@param[in] cam_name, name of camera object to return
 	@param[out] camera object*/
 	Camera& getCamera(const std::string& cam_name);
-
-
 	//
 	//                   ___  __  
 	//  |\ |  /\   |\/| |__  /__` 
@@ -152,13 +148,10 @@ public:
 	@param[in] std::string, name
 	@param[in] double, new value */
 	double setpix2mmY(const std::string& name, double value);
-
-
 	//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 	//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 	//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
 	//  
-
 	/*! Get the X Pixel defined as the "horizontal" centre of the image data.
 	* 	@param[in] std::string, name
 	*	@param[out] long, value */
@@ -185,12 +178,12 @@ public:
 	bool setCentrePixels(const std::string& name,long x, long y);
 	/*! Sets the analysis centre to be the main lattice values for the mechanical center (in pixels).
 	* 	@param[in] std::string, name
-	* Sets the analysis centre to be the main lattice values.
+	*   Sets the analysis centre to be the main lattice values.
 	*	@param[out] bool, if the value got sent to epics.*/
 	bool setMechanicalCentre(const std::string& name);
 	/*! For the virtual Cathode the centre of the screen can be defined using the RF centre of the injector.
 	* 	@param[in] std::string, name
-	* Sets the analysis centre to be the main lattice values (in pixels).
+	*   Sets the analysis centre to be the main lattice values (in pixels).
 	*	@param[out] bool, if the value got sent to epics.*/
 	bool setOperatingCenter(const std::string& name);
 	/*! Get the RF center X Pixel, from the Main Lattice.
@@ -238,7 +231,6 @@ public:
 	@param[in] std::string, name
 	@param[out] size_t, value */
 	size_t getBinaryDataPixelCountY(const std::string& name)const;
-
 	//	 __   __                __        __  
 	//	/  ` |__) |  |    |    /  \  /\  |  \ 
 	//	\__, |    \__/    |___ \__/ /~~\ |__/ 
@@ -452,7 +444,6 @@ public:
 	@param[out] double, value */
 	double getSigXPix(const std::string& name)const;
 	/*! Get the y width in pixels from the online analysis.
-
 	@param[in] std::string, name
 	@param[out] double, value */
 	double getSigYPix(const std::string& name)const;
@@ -460,8 +451,6 @@ public:
 	@param[in] std::string, name
 	@param[out] double, value */
 	double getSigXYPix(const std::string& name)const;
-	
-
 
 
 
