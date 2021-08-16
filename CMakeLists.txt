@@ -3,16 +3,16 @@ project(CATAP)
 cmake_policy(SET CMP0074 NEW)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CXX_STANDARD 17)
-# These are default versions for CATAP build
-# They can be set here or via cmake-gui
-# Setting here will persist between caches, 
-# setting via gui will change if cache is deleted.
-set(CATAP_PY_VERSION "NOT-SET" CACHE STRING "Python Version")
-set(CATAP_BOOST_VERSION 1.76)
-set(Boost_INCLUDE_DIR "C:/boost/boost_1_76_0")
+
 if (WIN32)
   message(STATUS "WIN32 BUILD")
-
+  # These are default versions for CATAP build
+  # They can be set here or via cmake-gui
+  # Setting here will persist between caches, 
+  # setting via gui will change if cache is deleted.
+  set(CATAP_PY_VERSION "NOT-SET" CACHE STRING "Python Version")
+  set(CATAP_BOOST_VERSION 1.76)
+  set(Boost_INCLUDE_DIR "C:/boost/boost_1_76_0")
   IF(NOT ${CATAP_PY_VERSION} MATCHES 3.6)
     IF(NOT ${CATAP_PY_VERSION} MATCHES 3.8)
       message(FATAL_ERROR "Please set the python version you require for CATAP (Ungrouped Entries > CATAP_PY_VERSION).
