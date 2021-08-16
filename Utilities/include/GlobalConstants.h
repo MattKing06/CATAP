@@ -481,12 +481,6 @@ namespace GlobalConstants
 
 
 
-
-
-
-
-
-
 	// LLRF stuff to sort out  TODO MOVE the LLRFRECORDS
 
 	//const std::string LRRG_CAVITY_REVERSE_PHASE = "LRRG_CAVITY_REVERSE_PHASE";

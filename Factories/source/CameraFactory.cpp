@@ -4,6 +4,7 @@
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
+#include "SnapshotFileManager.h"
 #include <algorithm>
 #include <exception>
 
@@ -3070,11 +3071,1354 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 
 
 
+//----------------------------------------------------------------------------------------------------------------
+//			 __             __   __        __  ___    
+//			/__` |\ |  /\  |__) /__` |__| /  \  |     
+//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+//
 
 
+STATE CameraFactory::saveSnapshot(const std::string& comments)
+{
+	return saveSnapshot(SnapshotFileManager::defaultMachineSnapshotLocation, GlobalFunctions::getTimeAndDateString(), comments);
+}
+STATE CameraFactory::saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments)
+{
+	messenger.printDebugMessage("saveSnapshot, call getSnapshot");
+	hardwareSnapshotMap = getSnapshot();
+	messenger.printDebugMessage("getSnapshot, writeSnapshotToYAML, ", "\n", filepath, "\n", filename, "\n", comments);
+	bool written = SnapshotFileManager::writeSnapshotToYAML(filepath, filename, hardwareSnapshotMapToYAMLNode(hardwareSnapshotMap), mode, comments);
+	if (written)
+	{
+		return STATE::SUCCESS;
+	}
+	return STATE::FAIL;
+}
+STATE CameraFactory::saveSnapshot_Pydict(const boost::python::dict& snapshot_dict, const std::string& comments)
+{
+	messenger.printDebugMessage("saveSnapshot_Pydict");
+	return saveSnapshot_Pyfile(SnapshotFileManager::defaultMachineSnapshotLocation, GlobalFunctions::getTimeAndDateString(), snapshot_dict, comments);
+}
+STATE CameraFactory::saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments)
+{
+	messenger.printDebugMessage("saveSnapshot_Pyfile, convert dict to hssm ");
+	auto hssm = pyDictToHardwareSnapshotMap(snapshot_dict);
+	messenger.printDebugMessage("hssm size = ", hssm.size());
+	auto yn = hardwareSnapshotMapToYAMLNode(hssm);
+	messenger.printDebugMessage("yn size = ", yn.size());
+	bool written = SnapshotFileManager::writeSnapshotToYAML(filepath, filename, yn, mode, comments);
+	if (written)
+	{
+		return STATE::SUCCESS;
+	}
+	return STATE::FAIL;
+}
+
+STATE CameraFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
+{
+	messenger.printDebugMessage("loadSnapshot");
+	YAML::Node file_node = SnapshotFileManager::readSnapshotFile(filepath, filename);
+	messenger.printDebugMessage("loadSnapshot get a file_node with size() ", file_node.size());
+	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
+	return STATE::SUCCESS; // TODO do we need some error checking 
+}
+STATE CameraFactory::loadSnapshot_Py(const boost::python::dict& snapshot_dict) // put d into hardwareSnapshotMap
+{
+	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
+	return STATE::SUCCESS;
+}
+std::map<std::string, HardwareSnapshot> CameraFactory::getSnapshot() // c++ version 
+{
+	std::map<std::string, HardwareSnapshot> snapshot_map;
+	for (auto& item : camera_map)
+	{
+		messenger.printDebugMessage("getSnapshot, found ", item.first);
+		snapshot_map[item.first] = item.second.getSnapshot();
+	}
+	messenger.printDebugMessage("returning snapshot_map with size =  ", snapshot_map.size());
+	return snapshot_map;
+}
+boost::python::dict CameraFactory::getSnapshot_Py() // return current state as py dict 
+{
+	messenger.printDebugMessage("getSnapshot_Py, calling getSnapshot ");
+	// FIRST GET A snaphot that is current (i.e. live!)! 
+	std::map<std::string, HardwareSnapshot> current_snapshot = getSnapshot();
+	boost::python::dict r; 
+	messenger.printDebugMessage("loop over current_snapshot (.size() =", current_snapshot.size());
+	for (auto&& item : current_snapshot)
+	{
+		// THIS IS NOT UPDATEING ANY DATA IN THE HARDWARE SNAPSHOT _ ITS CONVERTING WHAT ALREADY EXIST "
+		messenger.printDebugMessage(item.first, " get snap data");
+		r[item.first] = item.second.getSnapshot_Py();
+	}
+	boost::python::dict r2;
+	r2[ENUM_TO_STRING(TYPE::MAGNET)] = r;
+	return r2;
+}
+boost::python::dict CameraFactory::getSnapshotFromFile_Py(const std::string& location, const std::string& filename) // return file contents as py dict 
+{
+	messenger.printDebugMessage("getSnapshotFromFile_Py loadSnapshot");
+	loadSnapshot(location, filename);
+	boost::python::dict r;
+	messenger.printDebugMessage("loop over hardwareSnapshotMap, with size = ", hardwareSnapshotMap.size());
+	for (auto&& item : hardwareSnapshotMap)
+	{
+		messenger.printDebugMessage(item.first, " get snap data");
+		// THIS IS NOT UPDTAEING ANY DATA IN TH EHARDWRAE SNAPSHOT _ ITS CONVERTING WAHT ALREADY EXIST "
+		r[item.first] = item.second.getSnapshot_Py();
+	}
+	boost::python::dict r2;
+	r2[ENUM_TO_STRING(TYPE::MAGNET)] = r;
+	return r2;
+}
 
 
+STATE CameraFactory::applySnaphot(const boost::python::dict& snapshot_dict, TYPE type)
+{
+	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
+	return applyhardwareSnapshotMap(hardwareSnapshotMap, type);
+}
+STATE CameraFactory::applySnaphot(const std::string& filepath, const std::string& filename, TYPE type)
+{
+	loadSnapshot(filepath, filename); // this sets the hardwareSnapshotMap member variables 
+	return applyhardwareSnapshotMap(hardwareSnapshotMap, type);
+}
+STATE CameraFactory::applyLoadedSnaphost(TYPE type)
+{
+	return applyhardwareSnapshotMap(hardwareSnapshotMap, type);
+}
+STATE CameraFactory::applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE type)
+{
+	for (auto&& snap : hardwaresnapshot_map)
+	{
+		std::string fullName = getFullName(snap.first);
+		if (GlobalFunctions::entryExists(camera_map, fullName))
+		{
+			for (auto&& state_items : snap.second.state)
+			{
+				if (state_items.first == CameraRecords::CAM_BlackLevel_RBV)
+				{
+					camera_map.at(fullName).setBlackLevel(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::CAM_Gain_RBV) 
+				{
+					camera_map.at(fullName).setGain(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ROI1_MinX_RBV) 
+				{
+					camera_map.at(fullName).setROIMinX(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ROI1_MinY_RBV) 
+				{
+					camera_map.at(fullName).setROIMinY(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ROI1_SizeX_RBV) 
+				{
+					camera_map.at(fullName).setROISizeX(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ROI1_SizeY_RBV) 
+				{
+					camera_map.at(fullName).setROISizeY(snap.second.get<long>(state_items.first));
+				}
+				//else if (state_items.first == CameraRecords::ROIandMask_SetX) 
+				//{
+				//	camera_map.at(fullName).setGain(snap.second.get<long>(state_items.first));
+				//}
+				//else if (state_items.first == CameraRecords::ROIandMask_SetY) 
+				//{
+				//	camera_map.at(fullName).setGain(snap.second.get<long>(state_items.first));
+				//}
+				//else if (state_items.first == CameraRecords::ROIandMask_SetXrad) 
+				//{
+				//	camera_map.at(fullName).setGain(snap.second.get<long>(state_items.first));
+				//}
+				//else if (state_items.first == CameraRecords::ROIandMask_SetYrad) 
+				//{
+				//	camera_map.at(fullName).setGain(snap.second.get<long>(state_items.first));
+				//}
+				else if (state_items.first == CameraRecords::ANA_MaskXCenter_RBV) 
+				{
+					camera_map.at(fullName).setMaskXCenter(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_MaskYCenter_RBV) 
+				{
+					camera_map.at(fullName).setMaskYCenter(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_MaskXRad_RBV)
+				{
+					camera_map.at(fullName).setMaskXRadius(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_MaskYRad_RBV)
+				{
+					camera_map.at(fullName).setMaskYRadius(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_UseFloor_RBV)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::USING_FLOOR)
+					{
+						camera_map.at(fullName).setUseFloor();
+					}
+					else
+					{
+						camera_map.at(fullName).setDoNotUseFloor();
+					}
+				}
+				else if (state_items.first == CameraRecords::ANA_FloorLevel_RBV)
+				{
+					camera_map.at(fullName).setFloorLevel(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_UseNPoint_RBV)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::USING_NPOINT)
+					{
+						camera_map.at(fullName).useNPoint(true);
+					}
+					else
+					{
+						camera_map.at(fullName).useNPoint(false);
+					}
+				}
+				else if (state_items.first == CameraRecords::ANA_NPointStepSize_RBV)
+				{
+					camera_map.at(fullName).setNpointStepSize(snap.second.get<long>(state_items.first));
+				}
+				// can't set background as backgroudn data can't be saved ... 
+				//else if (state_items.first == CameraRecords::ANA_UseBkgrnd_RBV)
+				//{
+				//	camera_map.at(fullName).setMaskYRadius(snap.second.get<long>(state_items.first));
+				//}
+				else if (state_items.first == CameraRecords::ANA_OVERLAY_1_CROSS_RBV)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::ENABLED)
+					{
+						camera_map.at(fullName).enableOverlayCross();
+					}
+					else
+					{
+						camera_map.at(fullName).disableOverlayCross();
+					}
+				}
+				else if (state_items.first == CameraRecords::ANA_OVERLAY_2_RESULT)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::ENABLED)
+					{
+						camera_map.at(fullName).enableOverlayResult();
+					}
+					else
+					{
+						camera_map.at(fullName).disableOverlayResult();
+					}
+				}
+				else if (state_items.first == CameraRecords::ANA_OVERLAY_3_MASK_RBV)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::ENABLED)
+					{
+						camera_map.at(fullName).enableOverlayMask();
+					}
+					else
+					{
+						camera_map.at(fullName).disableOverlayMask();
+					}
+				}
+//				else if (state_items.first == CameraRecords::HDF_Capture_RBV) {}
+				else if (state_items.first == CameraRecords::LED_Sta)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::ON)
+					{
+						camera_map.at(fullName).setLEDOn();
+					}
+					else
+					{
+						camera_map.at(fullName).setLEDOff();
+					}
+				}
+				//else if (state_items.first == CameraRecords::HDF_NumCapture_RBV) 
+				else if (state_items.first == CameraRecords::ANA_CenterX_RBV) 
+				{
+					camera_map.at(fullName).setCentreXPixel(snap.second.get<long>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_CenterY_RBV)
+				{
+					camera_map.at(fullName).setCentreYPixel(snap.second.get<long>(state_items.first));
+				}
+				//else if (state_items.first == CameraRecords::ANA_XPix_RBV)
+				//{
+				//camera_map.at(fullName).setCentreYPixel(snap.second.get<long>(state_items.first));
+				//}
+				//else if (state_items.first == CameraRecords::ANA_YPix_RBV) {}
+				//else if (state_items.first == CameraRecords::ANA_SigmaXPix_RBV) {}
+				//else if (state_items.first == CameraRecords::ANA_SigmaYPix_RBV) {}
+				//else if (state_items.first == CameraRecords::ANA_CovXYPix_RBV) {}
+				else if (state_items.first == CameraRecords::ANA_X_RBV)
+				{
+					camera_map.at(fullName).setX(snap.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_Y_RBV)
+				{
+					camera_map.at(fullName).setY(snap.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_SigmaX_RBV)
+				{
+						camera_map.at(fullName).setSigX(snap.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_SigmaY_RBV)
+				{
+					camera_map.at(fullName).setSigY(snap.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_CovXY_RBV)
+				{
+					camera_map.at(fullName).setSigXY(snap.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_AvgIntensity_RBV)
+				{
+					camera_map.at(fullName).setAvgIntensity(snap.second.get<double>(state_items.first));
+				}
+				else if (state_items.first == CameraRecords::ANA_Intensity_RBV)
+				{
+					camera_map.at(fullName).setSumIntensity(snap.second.get<double>(state_items.first));
+				}
+				//else if (state_items.first == "busy")
+				//{
+				//}
+				//else if (state_items.first == "max_shots_number") {}
+				//else if (state_items.first == "last_capture_and_save_success") {}
+				//else if (state_items.first == "aliases") {}
+				//else if (state_items.first == "screen_names") {}
+				//else if (state_items.first == "average_pixel_value_for_beam") {}
+				//else if (state_items.first == "array_data_num_pix_x") {}
+				//else if (state_items.first == "array_data_num_pix_y") {}
+				//else if (state_items.first == "array_data_pixel_count") {}
+				//else if (state_items.first == "binary_num_pix_x") {}
+				//else if (state_items.first == "binary_num_pix_y") {}
+				//else if (state_items.first == "binary_data_pixel_count") {}
+				//else if (state_items.first == "roi_total_pixel_count") {}
+				//else if (state_items.first == "operating_centre_x") {}
+				//else if (state_items.first == "operating_centre_y") {}
+				//else if (state_items.first == "mechanical_centre_x") {}
+				//else if (state_items.first == "mechanical_centre_y") {}
+				//else if (state_items.first == "pix2mmX_ratio") {}
+				//else if (state_items.first == "pix2mmY_ratio") {}
+				//else if (state_items.first == "cam_type") {}
+				//else if (state_items.first == "roi_max_x") {}
+				//else if (state_items.first == "roi_max_y") {}
+				//else if (state_items.first == "x_pix_scale_factor") {}
+				//else if (state_items.first == "y_pix_scale_factor") {}
+				//else if (state_items.first == "x_mask_rad_max") {}
+				//else if (state_items.first == "y_mask_rad_max") {}
+				//else if (state_items.first == "use_mask_rad_limits") {}
+				//else if (state_items.first == "sensor_max_temperature") {}
+				//else if (state_items.first == "sensor_max_temperature") {}
+				//else if (state_items.first == "sensor_min_temperature") {}
+				//else if (state_items.first == "average_pixel_value_for_beam") {}
+				//else if (state_items.first == "min_x_pixel_pos") {}
+				//else if (state_items.first == "max_x_pixel_pos") {}
+				//else if (state_items.first == "min_y_pixel_pos") {}
+				//else if (state_items.first == "min_y_pixel_pos") {}
+				//else if (state_items.first == "mask_and_roi_keywords") {}
+				//else if (state_items.first == "mask_keywords") {}
+				//else if (state_items.first == "roi_keywords") {}
 
+				else if (state_items.first == CameraRecords::ANA_EnableCallbacks_RBV) 
+				{
+					if(STATE::ANALYSING)
+
+					if (snap.second.get<STATE>(state_items.first) == STATE::ANALYSING)
+					{
+						camera_map.at(fullName).startAnalysing();
+					}
+					else
+					{
+						camera_map.at(fullName).stopAnalysing();
+					}
+				}
+				else if (state_items.first == CameraRecords::CAM_Acquire_RBV)
+				{
+					if (snap.second.get<STATE>(state_items.first) == STATE::ANALYSING)
+					{
+						camera_map.at(fullName).startAnalysing();
+					}
+					else
+					{
+						camera_map.at(fullName).stopAnalysing();
+					}
+				}
+			}
+		}
+	}
+	return STATE::SUCCESS;
+}
+
+// CONVERTERS between boost:python::dict yaml::node and hssm (other conversion happen else where, e.g. hssm to pydict / yaml::node HardwareSnapshot.h
+std::map<std::string, HardwareSnapshot> CameraFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
+{
+	// This function returns a map of <OBJECT NAME: snap parameters> 
+	// We fill it from the yaml node data 
+	// map of < hardwarename, HardwareSnapshot > 
+	// each HardwareSnapshot will be passed to its correpsonding hardware object in another function  
+	//
+	// Without reading more of the manual, it seem that you can access "nodes within the main node" 
+	//  so auto& lower_level_node = snapshot_data[ENUM_TO_STRING(TYPE::MAGNET)] APPEARS NOT TO WORK!!! 
+	// (BUT IT MIGHT IF YOU DO IT CORRECTLY) 
+	// 
+	// TODOD once thsi i sup and runnign maybe write a something better than a long if else tree 
+	//
+	std::map<std::string, HardwareSnapshot> return_map;
+	messenger.printMessage("yamlNodeToHardwareSnapshotMap");
+	messenger.printMessage("loop over input_node ");
+	for (auto& it : input_node["CAMERA"])
+	{
+		std::string object_name = getFullName(it.first.as<std::string>());
+		std::cout << "(objectname) key = " << object_name << std::endl;
+		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
+
+		//return_map[object_name] = HardwareSnapshot();
+		for (auto&& map_it : value)
+		{
+			std::string record = map_it.first;
+			if (record == CameraRecords::CAM_BlackLevel_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::CAM_Gain_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROI1_MinX_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROI1_MinY_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROI1_SizeX_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROI1_SizeY_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROIandMask_SetX) 
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROIandMask_SetY) 
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROIandMask_SetXrad) 
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ROIandMask_SetYrad) 
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_MaskXCenter_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_MaskYCenter_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_MaskXRad_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_MaskYRad_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_UseFloor_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_FloorLevel_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_UseNPoint_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_NPointStepSize_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			// can't set background as backgroudn data can't be saved ... 
+			else if (record == CameraRecords::ANA_UseBkgrnd_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_OVERLAY_1_CROSS_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_OVERLAY_2_RESULT)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_OVERLAY_3_MASK_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::HDF_Capture_RBV) 
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::LED_Sta)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::HDF_NumCapture_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_CenterX_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_CenterY_RBV)
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_XPix_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_YPix_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_SigmaXPix_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_SigmaYPix_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_CovXYPix_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_X_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_Y_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_SigmaX_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_SigmaY_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_CovXY_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_AvgIntensity_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == CameraRecords::ANA_Intensity_RBV)
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "busy")
+			{
+				bool new_val = (bool)std::stoi(map_it.second);
+				return_map[object_name].update<bool>(record, new_val);
+			}
+			else if (record == "max_shots_number")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "last_capture_and_save_success")
+			{
+				bool new_val = (bool)std::stoi(map_it.second);
+				return_map[object_name].update<bool>(record, new_val);
+			}
+			else if (record == "aliases")
+			{
+				return_map[object_name].update<std::string>(record, map_it.second);
+			}
+			else if (record == "screen_names")
+			{
+				return_map[object_name].update<std::string>(record, map_it.second);
+			}
+			else if (record == "average_pixel_value_for_beam")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "array_data_num_pix_x")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "array_data_num_pix_y")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "array_data_pixel_count")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "binary_num_pix_x") 
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "binary_num_pix_y")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "binary_data_pixel_count")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "roi_total_pixel_count")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "operating_centre_x")
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == "operating_centre_y")
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == "mechanical_centre_x")
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == "mechanical_centre_y")
+			{
+				long new_val = std::stol(map_it.second);
+				return_map[object_name].update<long>(record, new_val);
+			}
+			else if (record == "pix2mmX_ratio")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "pix2mmY_ratio")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "cam_type")
+			{
+				TYPE new_val = GlobalFunctions::stringToType(map_it.second);
+				return_map[object_name].update<TYPE>(record, new_val);
+			}
+			else if (record == "roi_max_x")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "roi_max_y")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "x_pix_scale_factor")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "y_pix_scale_factor")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "x_mask_rad_max")
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "y_mask_rad_max") 
+			{
+				size_t new_val = (size_t)std::stoi(map_it.second);
+				return_map[object_name].update<size_t>(record, new_val);
+			}
+			else if (record == "use_mask_rad_limits")
+			{
+				bool new_val = (bool)std::stoi(map_it.second);
+				return_map[object_name].update<bool>(record, new_val);
+			}
+			else if (record == "sensor_max_temperature")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}			
+			else if (record == "sensor_min_temperature")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "average_pixel_value_for_beam")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "min_x_pixel_pos")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "max_x_pixel_pos")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "min_y_pixel_pos")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "min_y_pixel_pos")
+			{
+				double new_val = std::stod(map_it.second);
+				return_map[object_name].update<double>(record, new_val);
+			}
+			else if (record == "mask_and_roi_keywords")
+			{
+				return_map[object_name].update<std::string>(record, map_it.second);
+			}
+			else if (record == "mask_keywords")
+			{
+				return_map[object_name].update<std::string>(record, map_it.second);
+			}
+			else if (record == "roi_keywords")
+			{
+				return_map[object_name].update<std::string>(record, map_it.second);
+			}
+			else if (record == CameraRecords::ANA_EnableCallbacks_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+			else if (record == CameraRecords::CAM_Acquire_RBV)
+			{
+				STATE new_val = GlobalFunctions::stringToState(map_it.second);
+				return_map[object_name].update<STATE>(record, new_val);
+			}
+		}
+	}
+	//// loop over each node (map) in the YAML.NODE
+	//messenger.printMessage("loop over Magnet snapshot data");
+	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
+	return return_map;
+}
+std::map<std::string, HardwareSnapshot> CameraFactory::pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict)
+{
+	// This function returns a map of <OBJECT NAME: HardwareSnapshot > 
+	// it is created from a python dictionary that ius assuemd to contain a 3 deep nested dict stcuture
+	// IT COULD LOOK Something like :
+//{'MAGNET': 
+//{'CLA-C2V-MAG-DIP-01': 
+//	{'INT_STR': 0.0, 'INT_STR_MM': 0.0, 'K_ANG': 0.0, 'K_DIP_P': 0.0, 'K_MRAD': 0.0, 'K_SET_P': 0.0, 'READI': 5.67, 
+//		'RILK': _HardwareFactory.STATE.OK, 'RPOWER': _HardwareFactory.STATE.ON}, 
+//	'CLA-C2V-MAG-DIP-02': 
+//	{'INT_STR': 0.0, 'INT_STR_MM': 0.0, 'K_ANG': 0.0, 'K_DIP_P': 0.0, 'K_MRAD': 0.0, 'K_SET_P': 0.0, 'READI': 2.09, 
+//		'RILK': _HardwareFactory.STATE.OK, 'RPOWER': _HardwareFactory.STATE.ON},
+// 'CLA-C2V-MAG-HCOR-01': 
+//	{...
+//	}
+//	...
+	std::map<std::string, HardwareSnapshot> return_map;
+	messenger.printMessage("pyDictToHardwareSnapshotMap");
+	messenger.printMessage("loop over input_node ");
+	// TO SOLVE THIS PROPBLEM WE HAVE HAD TO FIURE OUT HOW TO ITERATE OVER NESTED boost::python::dict, 
+	// HOW TO ITERATE OVER A BOOST::PYTHON::DICT ???? (after 7 year sof trying ... :( )
+	// https://stackoverflow.com/questions/58096040/how-iterate-key-value-boostpythondict
+	// 
+	auto input_dict_items = input_dict.items();
+	for (ssize_t i = 0; i < len(input_dict_items); ++i)
+	{
+		//messenger.printMessage("loop over input_node ");
+		boost::python::object key = input_dict_items[i][0];  // SHOULD BE ''CAMERA'
+		boost::python::dict objects = boost::python::extract<boost::python::dict>(input_dict_items[i][1]); // SHOULD BE dict of {magnames: dict of mag snapshot data }
+		std::string key_str = boost::python::extract<std::string>(key);
+		//messenger.printMessage(key_str, " == MAGNET   ... ??? ");
+		auto objects_list = objects.items();
+		for (size_t i = 0; i < len(objects_list); ++i)
+		{
+			boost::python::object name = objects_list[i][0];  // SHOULD BE ''CAMERA'
+			boost::python::dict magnet_snapshotdata = boost::python::extract<boost::python::dict>(objects_list[i][1]); // SHOULD BE dict of {magnames: dict of mag snapshot data }
+			auto magnet_snapshotdata_items_list = magnet_snapshotdata.items();
+
+			std::string object_name = boost::python::extract<std::string>(name);
+			//messenger.printMessage(object_name, " == object_name   ... ??? ");
+
+			for (ssize_t i = 0; i < len(magnet_snapshotdata_items_list); ++i)
+			{
+				std::string record = boost::python::extract<std::string>(magnet_snapshotdata_items_list[i][0]);   // SHOULD BE ''MAGNET'
+				boost::python::object record_value = magnet_snapshotdata_items_list[i][1]; // SHOULD BE dict of {magnames: dict of mag snapshot data }
+				//messenger.printMessage("Next record is ", record);
+
+				if (record == CameraRecords::CAM_BlackLevel_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::CAM_Gain_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROI1_MinX_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROI1_MinY_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROI1_SizeX_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROI1_SizeY_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROIandMask_SetX)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROIandMask_SetY)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROIandMask_SetXrad)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ROIandMask_SetYrad)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_MaskXCenter_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_MaskYCenter_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_MaskXRad_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_MaskYRad_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_UseFloor_RBV)
+				{
+					STATE new_val = boost::python::extract<STATE>(record_value);
+					return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_FloorLevel_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_UseNPoint_RBV)
+				{
+					STATE new_val = boost::python::extract<STATE>(record_value);
+					return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_NPointStepSize_RBV)
+				{
+					long new_val = boost::python::extract<long>(record_value);
+					return_map[object_name].update<long>(record, new_val);
+				}
+				// can't set background as backgroudn data can't be saved ... 
+				else if (record == CameraRecords::ANA_UseBkgrnd_RBV)
+				{
+					STATE new_val = boost::python::extract<STATE>(record_value);
+					return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_OVERLAY_1_CROSS_RBV)
+				{
+					STATE new_val = boost::python::extract<STATE>(record_value);
+					return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_OVERLAY_2_RESULT)
+				{
+				STATE new_val = boost::python::extract<STATE>(record_value);
+				return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_OVERLAY_3_MASK_RBV)
+				{
+				STATE new_val = boost::python::extract<STATE>(record_value);
+				return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::HDF_Capture_RBV)
+				{
+				STATE new_val = boost::python::extract<STATE>(record_value);
+				return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::LED_Sta)
+				{
+				STATE new_val = boost::python::extract<STATE>(record_value);
+				return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::HDF_NumCapture_RBV)
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_CenterX_RBV)
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_CenterY_RBV)
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_XPix_RBV)
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_YPix_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_SigmaXPix_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_SigmaYPix_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_CovXYPix_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_X_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_Y_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_SigmaX_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_SigmaY_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_CovXY_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_AvgIntensity_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_Intensity_RBV)
+				{
+				double new_val = boost::python::extract<double>(record_value);
+				return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "busy")
+				{
+					bool new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<bool>(record, new_val);
+				}
+				else if (record == "max_shots_number")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "last_capture_and_save_success")
+				{
+					bool new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<bool>(record, new_val);
+				}
+				else if (record == "aliases")
+				{
+					std::string new_val = boost::python::extract<std::string>(record_value);
+					return_map[object_name].update<std::string>(record, new_val);
+				}
+				else if (record == "screen_names")
+				{
+					std::string new_val = boost::python::extract<std::string>(record_value);
+					return_map[object_name].update<std::string>(record, new_val);
+				}
+				else if (record == "average_pixel_value_for_beam")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "array_data_num_pix_x")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "array_data_num_pix_y")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "array_data_pixel_count")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "binary_num_pix_x")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "binary_num_pix_y")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "binary_data_pixel_count")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "roi_total_pixel_count")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "operating_centre_x")
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == "operating_centre_y")
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == "mechanical_centre_x")
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == "mechanical_centre_y")
+				{
+				long new_val = boost::python::extract<long>(record_value);
+				return_map[object_name].update<long>(record, new_val);
+				}
+				else if (record == "pix2mmX_ratio")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "pix2mmY_ratio")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "cam_type")
+				{
+					TYPE new_val = boost::python::extract<TYPE>(record_value);
+					return_map[object_name].update<TYPE>(record, new_val);
+				}
+				else if (record == "roi_max_x")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "roi_max_y")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "x_pix_scale_factor")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "y_pix_scale_factor")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "x_mask_rad_max")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "y_mask_rad_max")
+				{
+					size_t new_val = boost::python::extract<size_t>(record_value);
+					return_map[object_name].update<size_t>(record, new_val);
+				}
+				else if (record == "use_mask_rad_limits")
+				{
+					bool new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<bool>(record, new_val);
+				}
+				else if (record == "sensor_max_temperature")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "sensor_min_temperature")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "average_pixel_value_for_beam")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "min_x_pixel_pos")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "max_x_pixel_pos")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "min_y_pixel_pos")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "min_y_pixel_pos")
+				{
+					double new_val = boost::python::extract<double>(record_value);
+					return_map[object_name].update<double>(record, new_val);
+				}
+				else if (record == "mask_and_roi_keywords")
+				{
+					std::string new_val = boost::python::extract<std::string>(record_value);
+					return_map[object_name].update<std::string>(record, new_val);
+				}
+				else if (record == "mask_keywords")
+				{
+					std::string new_val = boost::python::extract<std::string>(record_value);
+					return_map[object_name].update<std::string>(record, new_val);
+				}
+				else if (record == "roi_keywords")
+				{
+					std::string new_val = boost::python::extract<std::string>(record_value);
+					return_map[object_name].update<std::string>(record, new_val);
+				}
+				else if (record == CameraRecords::ANA_EnableCallbacks_RBV)
+				{
+					STATE new_val = boost::python::extract<STATE>(record_value);
+					return_map[object_name].update<STATE>(record, new_val);
+				}
+				else if (record == CameraRecords::CAM_Acquire_RBV)
+				{
+					STATE new_val = boost::python::extract<STATE>(record_value);
+					return_map[object_name].update<STATE>(record, new_val);
+				}
+			}
+		}
+	}
+	//// loop over each node (map) in the YAML.NODE
+	//messenger.printMessage("loop over Magnet snapshot data");
+	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
+	return return_map;
+}
+YAML::Node CameraFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map)
+{
+	YAML::Node return_node;
+	for (auto& item : hardwaresnapshot_map)
+	{
+		return_node[ENUM_TO_STRING(TYPE::CAMERA_TYPE)][item.first] = item.second.getYAMLNode();
+	}
+	return return_node;
+}
+STATE CameraFactory::checkLastAppliedSnapshot(TYPE type_to_check)
+{
+	STATE return_state = STATE::SUCCESS;
+	//std::map<std::string, HardwareSnapshot> current_snapshot = getSnapshot();
+
+	//std::vector<std::string> wrong_seti;
+	//std::vector<std::string> wrong_psu;
+	//std::vector<std::string> wrong_name;
+
+	//set_wrong_seti.clear();
+	//set_wrong_psu.clear();
+	//set_wrong_name.clear();
+
+	//for (auto&& item : hardwareSnapshotMap)
+	//{
+	//	std::string fullName = getFullName(item.first);
+
+	//	// only apply to magnets that match magnet_type
+	//	bool correct_magnet_type = false;
+	//	switch (mag_type_to_check)
+	//	{
+	//	case TYPE::CORRECTOR:
+	//		correct_magnet_type = isACor(fullName);
+	//		break;
+	//	case TYPE::VERTICAL_CORRECTOR:
+	//		correct_magnet_type = isAVCor(fullName);
+	//		break;
+	//	case TYPE::HORIZONTAL_CORRECTOR: correct_magnet_type =
+	//		isAHCor(fullName);
+	//		break;
+	//	case TYPE::QUADRUPOLE:
+	//		correct_magnet_type = isAQuad(fullName);
+	//		break;
+	//	case TYPE::MAGNET:
+	//		correct_magnet_type = true;
+	//		break;
+	//	default:
+	//		correct_magnet_type = false;
+	//	}
+
+	//	if (correct_magnet_type)
+	//	{
+
+	//		if (GlobalFunctions::entryExists(current_snapshot, fullName))
+	//		{
+	//			auto& hss_ref = current_snapshot.at(fullName);
+
+	//			for (auto&& state_items : item.second.state)
+	//			{
+	//				if (state_items.first == "GETSETI")
+	//				{
+	//					if (GlobalFunctions::entryExists(hss_ref.state, state_items.first))
+	//					{
+	//						double val_now = hss_ref.get<double>("GETSETI");
+	//						double val_ref = item.second.get<double>("GETSETI");
+	//						double tol = magnetMap.at(fullName).READI_tolerance;
+	//						bool compare = GlobalFunctions::areSame(val_now, val_ref, tol);
+	//						if (!compare)
+	//						{
+	//							return_state = STATE::FAIL;
+	//							std::pair<double, double> new_seti_pair;
+	//							new_seti_pair.first = val_ref;
+	//							new_seti_pair.second = val_now;
+	//							set_wrong_seti[std::string(fullName)] = new_seti_pair;
+	//							messenger.printDebugMessage(fullName, " has wrong GETSETI, (now, ref) ", val_now, " !+ ", val_ref, "  tol set_wrong_seti.size() = ", set_wrong_psu.size());
+	//						}
+	//					}
+	//				}
+	//				else if (state_items.first == "RPOWER")
+	//				{
+	//					if (GlobalFunctions::entryExists(hss_ref.state, state_items.first))
+	//					{
+	//						bool comp = hss_ref.get<STATE>("RPOWER") == item.second.get<STATE>("RPOWER");
+	//						if (!comp)
+	//						{
+	//							return_state = STATE::FAIL;
+	//							std::pair<STATE, STATE> new_psu_pair;
+	//							new_psu_pair.first = hss_ref.get<STATE>("RPOWER");
+	//							new_psu_pair.second = item.second.get<STATE>("RPOWER");
+	//							set_wrong_psu[std::string(fullName)] = new_psu_pair;
+	//							messenger.printDebugMessage(fullName, " has wrong RPOWER, set_wrong_psu.size() = ", set_wrong_psu.size());
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		else
+	//		{
+	//			return_state = STATE::FAIL;
+	//			set_wrong_name.push_back(item.first);
+	//			messenger.printDebugMessage(item.first, " has wrong NAME ");
+	//		}
+	//	}
+	//}
+	return  STATE::UNKNOWN;
+}
 void CameraFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

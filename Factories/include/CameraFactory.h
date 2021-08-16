@@ -1012,82 +1012,85 @@ public:
 //			/__` |\ |  /\  |__) /__` |__| /  \  |     
 //			.__/ | \| /~~\ |    .__/ |  | \__/  |     
 //			                                          
-//	/*! Save the current factory settings to the default filepath and filename
-//		@param[in] string, comments	(optional input, default as empty)
-//		@param[out] STATE, success, failure, etc.	*/
-//	STATE saveSnapshot(const std::string& comments = "");
-//	/*! Save the current factory settings to filepath and filename
-//	@param[in] string, filepath
-//	@param[in] string, filename
-//	@param[in] string, comments	(optional input, default as empty)
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments = "");
-//	/*! Save snap_dict to the default filepath and filename
-//	@param[in] dict, snap_dict
-//	@param[in] string, comments	(optional input, default as empty)
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict, const std::string& comments = "");
-//	/*! Save snap_dict to filepath and filename
-//	@param[in] string, filepath
-//	@param[in] string, filename
-//	@param[in] dict, snap_dict
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments = "");
-//	/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
-//	@param[in] string, filepath
-//	@param[in] string, filename
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
-//	/*! Load snapshot_dict by copying the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
-//	@param[in] dict, snapshot_dict
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
-//	/*! Get the latest snapshot data for this factory.
-//	@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
-//	std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
-//	/*! Get the latest snapshot data for this factory. Python Version
-//	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
-//	boost::python::dict getSnapshot_Py(); // return current state as py dict 
-//	/*! Get the snapshot data from filepath and filename. Python Version
-//	@param[in] string, filepath
-//	@param[in] string, filename
-//	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
-//	boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
-//	/*! Apply a Python dict snapshot.
-//	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name
-//	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE applySnaphot(const boost::python::dict& snapshot_dict, TYPE magnets = TYPE::MAGNET);
-//	/*! Apply a snapshot data from filepath and filename.
-//	@param[in] string, filepath
-//	@param[in] string, filename
-//	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE applySnaphot(const std::string& filepath, const std::string& filename, TYPE objects = TYPE::CAMERA);
-//	/*! Apply the member variable hardwareSnapshotMap (which could have already been loaded with loadSnapshot()).
-//	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
-//	@param[out] STATE, success, failure, etc.			*/
-//	STATE applyLoadedSnaphost(TYPE magnets = TYPE::MAGNET);
-//private:
-//	/*! Snaphsot data is placed here, when loaded from file, or applied  */
-//	std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
-//	/*! Each factory must know how to convert a YAML NODE read from snaphsot YAML file into a map of hardwareSnapshots.
-//		It must be done in the factory so we know how to convert the type for each record
-//		This function should also check the YAML::NODE is compliant with our definitions.
-//		@param[in] YAML::Node, input_node to convert
-//		@param[out] map<string, HardwareSnapshot>, return map */
-//	std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
-//	/*! Each factory must know how to convert a ython Dictionary into a map of hardwareSnapshots.
-//		It must be done in the factory so we know how to convert the type for each record
-//		@param[in] dict, input_dict to convert
-//		@param[out] map<string, HardwareSnapshot>, return map */
-//	std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
-//
-//	YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
-//	/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed
-//		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply
-//		@param[out] STATE, success, failure, etc */
-//	STATE applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE type = TYPE::CAMERA);
+	/*! Save the current factory settings to the default filepath and filename
+		@param[in] string, comments	(optional input, default as empty)
+		@param[out] STATE, success, failure, etc.	*/
+	STATE saveSnapshot(const std::string& comments = "");
+	/*! Save the current factory settings to filepath and filename
+	@param[in] string, filepath
+	@param[in] string, filename
+	@param[in] string, comments	(optional input, default as empty)
+	@param[out] STATE, success, failure, etc.			*/
+	STATE saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments = "");
+	/*! Save snap_dict to the default filepath and filename
+	@param[in] dict, snap_dict
+	@param[in] string, comments	(optional input, default as empty)
+	@param[out] STATE, success, failure, etc.			*/
+	STATE saveSnapshot_Pydict(const boost::python::dict& snap_dict, const std::string& comments = "");
+	/*! Save snap_dict to filepath and filename
+	@param[in] string, filepath
+	@param[in] string, filename
+	@param[in] dict, snap_dict
+	@param[out] STATE, success, failure, etc.			*/
+	STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments = "");
+	/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+	@param[in] string, filepath
+	@param[in] string, filename
+	@param[out] STATE, success, failure, etc.			*/
+	STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
+	/*! Load snapshot_dict by copying the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+	@param[in] dict, snapshot_dict
+	@param[out] STATE, success, failure, etc.			*/
+	STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
+	/*! Get the latest snapshot data for this factory.
+	@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
+	std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
+	/*! Get the latest snapshot data for this factory. Python Version
+	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
+	boost::python::dict getSnapshot_Py(); // return current state as py dict 
+	/*! Get the snapshot data from filepath and filename. Python Version
+	@param[in] string, filepath
+	@param[in] string, filename
+	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
+	boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
+	/*! Apply a Python dict snapshot.
+	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name
+	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+	@param[out] STATE, success, failure, etc.			*/
+	STATE applySnaphot(const boost::python::dict& snapshot_dict, TYPE type = TYPE::CAMERA_TYPE);
+	/*! Apply a snapshot data from filepath and filename.
+	@param[in] string, filepath
+	@param[in] string, filename
+	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+	@param[out] STATE, success, failure, etc.			*/
+	STATE applySnaphot(const std::string& filepath, const std::string& filename, TYPE type = TYPE::CAMERA_TYPE);
+	/*! Apply the member variable hardwareSnapshotMap (which could have already been loaded with loadSnapshot()).
+	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
+	@param[out] STATE, success, failure, etc.			*/
+	STATE applyLoadedSnaphost(TYPE type = TYPE::CAMERA_TYPE);
+
+	STATE checkLastAppliedSnapshot(TYPE type_to_check);
+
+private:
+	/*! Snaphsot data is placed here, when loaded from file, or applied  */
+	std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
+	/*! Each factory must know how to convert a YAML NODE read from snaphsot YAML file into a map of hardwareSnapshots.
+		It must be done in the factory so we know how to convert the type for each record
+		This function should also check the YAML::NODE is compliant with our definitions.
+		@param[in] YAML::Node, input_node to convert
+		@param[out] map<string, HardwareSnapshot>, return map */
+	std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
+	/*! Each factory must know how to convert a ython Dictionary into a map of hardwareSnapshots.
+		It must be done in the factory so we know how to convert the type for each record
+		@param[in] dict, input_dict to convert
+		@param[out] map<string, HardwareSnapshot>, return map */
+	std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
+
+	YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
+	/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed
+		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply
+		@param[out] STATE, success, failure, etc */
+	STATE applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE type = TYPE::CAMERA_TYPE);
 
 public:
 

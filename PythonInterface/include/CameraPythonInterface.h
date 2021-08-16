@@ -41,31 +41,31 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
 
-			//                   ___  __  
-			//  |\ |  /\   |\/| |__  /__` 
-			//  | \| /~~\  |  | |___ .__/ 
-			//
-			.def("getAliases", &Camera::getAliases_Py)
-			.def("getScreenNames", &Camera::getScreenNames_Py)
-			//   __         ___         ___  __                 
-			//  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
-			//  |    | / \ |___ |___     |  \__/     |  |  |  | 
-			//  
-			.def("getPixelToMM", &Camera::getPixelToMM)
-			.def("setPixelToMM", &Camera::setPixelToMM)
-			.def("getPix2mm", &Camera::getPixelToMM) // bkwards comp.
-			.def("pix2mmX", &Camera::pix2mmX)
-			.def("pix2mmY", &Camera::pix2mmY)
-			.def("mm2pixX", &Camera::mm2pixX)
-			.def("mm2pixY", &Camera::mm2pixY)
-			.def("getpix2mmX", &Camera::getpix2mmX)
-			.def("getpix2mmY", &Camera::getpix2mmY)
-			.def("setpix2mmX", &Camera::setpix2mmX)
-			.def("setpix2mmY", &Camera::setpix2mmY)
-//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
-//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
-//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
-// 
+		//                   ___  __  
+		//  |\ |  /\   |\/| |__  /__` 
+		//  | \| /~~\  |  | |___ .__/ 
+		//
+		.def("getAliases", &Camera::getAliases_Py)
+		.def("getScreenNames", &Camera::getScreenNames_Py)
+		//   __         ___         ___  __                 
+		//  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
+		//  |    | / \ |___ |___     |  \__/     |  |  |  | 
+		//  
+		.def("getPixelToMM", &Camera::getPixelToMM)
+		.def("setPixelToMM", &Camera::setPixelToMM)
+		.def("getPix2mm", &Camera::getPixelToMM) // bkwards comp.
+		.def("pix2mmX", &Camera::pix2mmX)
+		.def("pix2mmY", &Camera::pix2mmY)
+		.def("mm2pixX", &Camera::mm2pixX)
+		.def("mm2pixY", &Camera::mm2pixY)
+		.def("getpix2mmX", &Camera::getpix2mmX)
+		.def("getpix2mmY", &Camera::getpix2mmY)
+		.def("setpix2mmX", &Camera::setpix2mmX)
+		.def("setpix2mmY", &Camera::setpix2mmY)
+		//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
+		//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
+		//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
+		// 
 			.def("getCentreXPixel", &Camera::getCentreXPixel)
 			.def("getCentreYPixel", &Camera::getCentreYPixel)
 			.def("setCentreXPixel", &Camera::setCentreXPixel)
@@ -77,21 +77,21 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getOperatingCentreYPixel", &Camera::getOperatingCentreYPixel)
 			.def("getMechanicalCentreXPixel", &Camera::getMechanicalCentreXPixel)
 			.def("getMechanicalCentreYPixel", &Camera::getMechanicalCentreYPixel)
-//  
-//  			  __   ___ __    __  ___
-//  |  |\/|  /\  / _` |__ /__` |  / |__
-//  |  |  | /~~\ \__> |___.__/ | /_ |___
-// 
+			//  
+			//  			  __   ___ __    __  ___
+			//  |  |\/|  /\  / _` |__ /__` |  / |__
+			//  |  |  | /~~\ \__> |___.__/ | /_ |___
+			// 
 			.def("getPixelWidth", &Camera::getPixelWidth)
 			.def("getPixelHeight", &Camera::getPixelHeight)
 			.def("getArrayDataPixelCountX", &Camera::getArrayDataPixelCountX)
 			.def("getArrayDataPixelCountY", &Camera::getArrayDataPixelCountY)
 			.def("getBinaryDataPixelCountX", &Camera::getBinaryDataPixelCountX)
 			.def("getBinaryDataPixelCountY", &Camera::getBinaryDataPixelCountY)
-//	 __   __                __        __  
-//	/  ` |__) |  |    |    /  \  /\  |  \ 
-//	\__, |    \__/    |___ \__/ /~~\ |__/ 
-//	  
+			//	 __   __                __        __  
+			//	/  ` |__) |  |    |    /  \  /\  |  \ 
+			//	\__, |    \__/    |___ \__/ /~~\ |__/ 
+			//	  
 			.def("getCPUTotal", &Camera::getCPUTotal)
 			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
 			.def("getCPUNPoint", &Camera::getCPUNPoint)
@@ -303,29 +303,17 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isLEDOff", &Camera::isLEDOff)
 			.def("getLEDState", &Camera::getLEDState)
 			.def("getMMResults", &Camera::getMMResults_Py)
-				
 
-
-				
-				
+			.def("getMMResults", &Camera::getMMResults_Py)
 				
 			.def("getActiveCameraLimit", &Camera::getActiveCameraLimit)
 			.def("getActiveCameraCount", &Camera::getActiveCameraCount)
 			.def("canStartCamera", &Camera::canStartCamera)
-
 				
 			.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)
-
-
 			.def("saveImageBuffer", &Camera::saveImageBuffer)
-
-				
 			.def("resetCaptureAndSaveError", &Camera::resetCaptureAndSaveError)
-
-
 			.def("stopAcquiringAndWait", &Camera::stopAcquiringAndWait)
-			
-				
 			
 			// TODO the runnings atsts and buffersd a re being updated 
 
@@ -382,11 +370,35 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		bool(CameraFactory::*captureAndSave_with_shotcount)(const std::string&, size_t) = &CameraFactory::captureAndSave;
 		bool(CameraFactory::*captureAndSave_without_shotcount)(const std::string & ) = &CameraFactory::captureAndSave;
 
+
+
+
+		STATE(CameraFactory:: * saveSnapshot_nofile)(const std::string&) = &CameraFactory::saveSnapshot;
+		STATE(CameraFactory:: * saveSnapshot_withfile)(const std::string&, const std::string&, const std::string&) = &CameraFactory::saveSnapshot;
+		STATE(CameraFactory:: * applySnaphot_withDict)(const boost::python::dict&, TYPE) = &CameraFactory::applySnaphot;
+		STATE(CameraFactory:: * applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &CameraFactory::applySnaphot;
+
 		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
 
 		boost::python::class_<CameraFactory, boost::noncopyable>("CameraFactory", boost::python::no_init)
+
+			.def("saveSnapshot", saveSnapshot_nofile, (boost::python::arg("self"), boost::python::arg("comments") = ""))
+			.def("saveSnapshot", saveSnapshot_withfile,
+				(boost::python::arg("self"), boost::python::arg("filepath"), boost::python::arg("filename"), boost::python::arg("comments") = ""))
+			.def("applySnaphot", applySnaphot_withDict, 
+				(boost::python::arg("self"), boost::python::arg("snapshot_dict"), boost::python::arg("magnet_type") = TYPE::CAMERA_TYPE))
+			.def("applySnaphot", applySnaphot_withfile,
+				(boost::python::arg("self"), boost::python::arg("filepath"), boost::python::arg("filename"), boost::python::arg("magnet_type") = TYPE::CAMERA_TYPE))
+			.def("getSnapshot", &CameraFactory::getSnapshot_Py, (boost::python::args("self")))
+			.def("getSnapshot", &CameraFactory::getSnapshotFromFile_Py, (boost::python::args("self"), boost::python::args("filepath"), boost::python::args("filename")))
+			.def("loadSnapshot", &CameraFactory::loadSnapshot, (boost::python::args("self", "filepath", "filename")))
+			.def("loadSnapshot", &CameraFactory::loadSnapshot_Py, (boost::python::args("self", "snapshot_dict")))
+			
+			
+			.def("checkLastAppliedSnapshot", &CameraFactory::checkLastAppliedSnapshot, (boost::python::args("self")))
+
 
 			//                   ___  __  
 			//  |\ |  /\   |\/| |__  /__` 

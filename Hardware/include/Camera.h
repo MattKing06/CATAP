@@ -20,6 +20,8 @@
 #include <boost/python/list.hpp>
 #include "RunningStats.h"
 #include <thread>
+#include "HardwareSnapshot.h"
+
 
 class Camera;
 class ImageCapture;
@@ -60,12 +62,10 @@ public:
 	~Camera();
 	void setPVStructs();
 
-
 	/*! get the type of the camera (e.g. vela_camera, clara_camera
 	@param[out] type */
 	TYPE getCamType()const;
 
-	
 //                   ___  __  
 //  |\ |  /\   |\/| |__  /__` 
 //  | \| /~~\  |  | |___ .__/ 
@@ -354,7 +354,7 @@ protected:
 	std::pair<epicsTimeStamp, STATE> cross_hair_overlay;
 	///*! Mask-overlay status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> analysis_mask_overlay;
-	//	              __   ___     __        ___  ___  ___  __  
+//	              __   ___     __        ___  ___  ___  __  
 //	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
 //	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
 //	  
@@ -906,8 +906,14 @@ public:
 	@param[out] long, latest value */
 	long getGain()const;
 
-
-
+	//----------------------------------------------------------------------------------------------------------------
+	//			 __             __   __        __  ___    
+	//			/__` |\ |  /\  |__) /__` |__| /  \  |     
+	//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+	//
+public:
+	HardwareSnapshot getSnapshot();
+	boost::python::dict getSnapshot_Py();
 
 
 

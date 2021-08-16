@@ -14,10 +14,6 @@ HardwareSnapshot::~HardwareSnapshot()
 }
 
 
-
-
-
-
 std::map<std::string, std::string> HardwareSnapshot::readStateFromYaml()
 {
 	return std::map<std::string, std::string>();
