@@ -87,6 +87,25 @@ public:
 	bool toggleVelaLED();
 
 
+	// TODO !!!
+	///*! Get the state of the Hall 1 Light.
+	//@param[out] STATE, ON, OFF etc	*/
+	//STATE getHall1LightState()const;
+	///*! Turn the Hall 1 Light off.
+	//@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	//bool setHall1LightOn();
+	///*! Turn the Hall 1 Light off.
+	//@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	//bool setHall1LightOff();
+	///*! Is the Hall 1 Light on,
+	//@param[out] bool, is state == ON.*/
+	//bool isHall1LightOn()const;
+	///*! Is the Hall 1 Light off,
+	//@param[out] bool, is state == OFF.*/
+	//bool isHall1LightOff()const;
+	///*! Toggle between ON / OFF states for the Hall 1 light,
+	//@param[out] bool,  if command got sent to EPICS (not if it was accepted)	*/
+	//bool toggleHall1Light();
 
 
 	friend class LightingFactory;

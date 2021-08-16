@@ -141,7 +141,6 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 		STATE(MagnetFactory::*saveSnapshot_nofile)(const std::string&) = &MagnetFactory::saveSnapshot;
 		STATE(MagnetFactory::*saveSnapshot_withfile)(const std::string&, const std::string&, const std::string&) = &MagnetFactory::saveSnapshot;
-
 		STATE(MagnetFactory::*applySnaphot_withDict)(const boost::python::dict&, TYPE) = &MagnetFactory::applySnaphot;
 		STATE(MagnetFactory::*applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &MagnetFactory::applySnaphot;
 
