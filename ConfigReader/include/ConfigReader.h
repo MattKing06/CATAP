@@ -3,6 +3,7 @@
 
 #include "yaml-cpp/parser.h"
 #include "yaml-cpp/yaml.h"
+#include <boost/filesystem.hpp>
 #include <ConfigReaderExceptions.h>
 #include <LoggingSystem.h>
 #include <Magnet.h>
@@ -44,7 +45,8 @@ public:
 	STATE mode;
 	std::map<std::string, bool> yamlFilenamesAndParsedStatusMap;
 	int numberOfParsesExpected;
-
+	bool doesLocationExist(const boost::filesystem::path& location);
+	bool isEmptyDirectory(const boost::filesystem::path& location);
 
 
 	LoggingSystem messenger;

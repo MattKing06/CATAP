@@ -20,17 +20,39 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode, c
 	hardwareFolder(hardwareType)
 {
 	messenger.printDebugMessage("ConfigReader( " + hardwareType + ", " + ENUM_TO_STRING(mode) + ") Constructor called");
-	if (primeLatticeLocation.empty())
+	try
 	{
+		if (!doesLocationExist(primeLatticeLocation))
+		{
+			throw LatticeLocationDoesNotExistException(primeLatticeLocation);
+		}
+		if (isEmptyDirectory(primeLatticeLocation))
+		{
+			throw EmptyLatticeDirectoryException(primeLatticeLocation);
+		}
+		if (primeLatticeLocation.empty())
+		{
+			yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
+			initialiseFilenameAndParsedStatusMap();
+		}
+		else
+		{
+			yamlFileDestination = primeLatticeLocation + SEPARATOR + hardwareFolder;
+			initialiseFilenameAndParsedStatusMap();
+		}
+	}
+	catch (LatticeLocationDoesNotExistException notExist)
+	{
+		notExist.printError();
 		yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 		initialiseFilenameAndParsedStatusMap();
 	}
-	else
+	catch (EmptyLatticeDirectoryException dirEmpty)
 	{
-		yamlFileDestination = primeLatticeLocation + SEPARATOR + hardwareFolder;
+		dirEmpty.printError();
+		yamlFileDestination = MASTER_LATTICE_FILE_LOCATION + SEPARATOR + hardwareFolder;
 		initialiseFilenameAndParsedStatusMap();
 	}
-
 }
 
 void ConfigReader::initialiseFilenameAndParsedStatusMap()
@@ -147,6 +169,20 @@ bool ConfigReader::hasMoreFilesToParse() const
 		}
 	}
 	return false;
+}
+
+bool ConfigReader::doesLocationExist(const boost::filesystem::path& location)
+{
+	return boost::filesystem::exists(location);
+}
+
+bool ConfigReader::isEmptyDirectory(const boost::filesystem::path& location)
+{
+	if (boost::filesystem::is_directory(location))
+	{
+		return boost::filesystem::is_empty(location);
+	}
+
 }
 
 void ConfigReader::debugMessagesOn()
