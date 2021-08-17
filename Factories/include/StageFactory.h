@@ -10,11 +10,14 @@ class StageFactory
 public:
 	StageFactory();
 	StageFactory(STATE mode);
+	StageFactory(STATE mode, const std::string& primeLatticeLocation);
 	StageFactory(const StageFactory& copyFactory);
 	~StageFactory();
 	LoggingSystem messenger;
 	void setup(std::string version);
 	bool hasBeenSetup;
+	STATE mode;
+	ConfigReader reader;
 	std::map<std::string, Stage> stageMap;
 	void debugMessagesOn();
 	void debugMessagesOff();

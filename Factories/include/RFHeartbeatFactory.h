@@ -12,6 +12,7 @@ public:
 	RFHeartbeatFactory();
 	/*! Default Constuctor (typically not used) */
 	RFHeartbeatFactory(STATE mode);
+	RFHeartbeatFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Bespoke copy constructor  */
 	RFHeartbeatFactory(const RFHeartbeatFactory& copyFactory);
 	/*! Destructor */

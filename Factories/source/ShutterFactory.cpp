@@ -8,10 +8,15 @@ ShutterFactory::ShutterFactory()
 }
 
 ShutterFactory::ShutterFactory(STATE mode):
-	messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Shutter", mode))
+ShutterFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+ShutterFactory::ShutterFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Shutter", mode, primeLatticeLocation))
 {
 }
 

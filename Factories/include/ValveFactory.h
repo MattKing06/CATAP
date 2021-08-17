@@ -25,6 +25,8 @@ public:
 	VIRTUAL ValveFactory will perform operations of Virtual Vacuum Valves.
 	OFFLINE ValveFactory will perform operations on Offline Valves.*/
 	ValveFactory(STATE mode);
+
+	ValveFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for ValveFactory (used for = operator)
 	@param[in] copyValveFactory the ValveFactory we want to copy over.*/
 	ValveFactory(const ValveFactory& copyValveFactory);

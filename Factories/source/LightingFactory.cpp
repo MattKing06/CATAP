@@ -8,6 +8,11 @@ LightingFactory::LightingFactory(STATE mode)
 {
 }
 
+LightingFactory::LightingFactory(STATE mode, const std::string& primeLatticeLocation) :
+reader(ConfigReader("Lighting", mode, primeLatticeLocation))
+{
+}
+
 LightingFactory::LightingFactory(const LightingFactory& copyFactory)
 {
 }

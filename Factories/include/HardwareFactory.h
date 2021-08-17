@@ -38,6 +38,7 @@ class HardwareFactory
 public:
 	HardwareFactory();
 	HardwareFactory(STATE mode);
+	HardwareFactory(STATE mode, const std::string& primeLatticeLocation);
 	//HardwareFactory(std::string hardwareType, std::string VERSION);
 	~HardwareFactory();
 	bool setup(const std::string& hardwareType, const std::string& VERSION);

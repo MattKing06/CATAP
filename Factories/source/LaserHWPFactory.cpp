@@ -16,9 +16,13 @@ LaserHWPFactory::LaserHWPFactory() : LaserHWPFactory(STATE::OFFLINE)
 	std::cout << "LaserHWPFactory DEFAULT constRUCTOR called " << std::endl;
 }
 LaserHWPFactory::LaserHWPFactory(STATE mode):
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("LaserHWP", mode))
+LaserHWPFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+LaserHWPFactory::LaserHWPFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("LaserHWP", mode, primeLatticeLocation))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;

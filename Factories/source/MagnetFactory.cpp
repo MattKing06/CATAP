@@ -18,11 +18,15 @@ MagnetFactory::MagnetFactory() :
 }
 
 MagnetFactory::MagnetFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Magnet", mode)),
-	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
+MagnetFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+MagnetFactory::MagnetFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Magnet", mode, primeLatticeLocation)),
+machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
 {
 	// messenger.printDebugMessage("Magnet Factory constructed");
 }
