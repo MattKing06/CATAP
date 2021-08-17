@@ -27,6 +27,8 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<StageFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<StageFactory, boost::noncopyable>("StageFactory", boost::python::no_init)
+			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("debugMessagesOn", &StageFactory::debugMessagesOn)
 			.def("debugMessagesOff", &StageFactory::debugMessagesOff)
 			.def("messagesOn", &StageFactory::messagesOn)

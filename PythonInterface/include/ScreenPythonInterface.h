@@ -152,6 +152,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 		//screen Factory Exposure
 		boost::python::class_<ScreenFactory>("ScreenFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			//.def(boost::python::init<TYPE>())
 			.def("setup", &ScreenFactory::setup)
 			.add_property("screenMap", &ScreenFactory::screenMap)

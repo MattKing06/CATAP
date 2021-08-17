@@ -36,6 +36,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 		void(ValveFactory:: * closeSingle)(const std::string&) = &ValveFactory::close;
 		boost::python::class_<ValveFactory, boost::noncopyable>("ValveFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &ValveFactory::setup,(boost::python::arg("self"), boost::python::arg("version")))
 			.def("getValve", &ValveFactory::getValve,(boost::python::arg("self"), boost::python::arg("name")), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllValveNames", &ValveFactory::getAllValveNames_Py,(boost::python::arg("self")))
