@@ -103,7 +103,7 @@ Shutter& PILaserSystem::getShutter02()
 	return shutterFactory.getShutter(shutterNames.at(1));
 }
 
-Lighting& getLighting();
+Lighting& PILaserSystem::getLighting()
 {
 	// WE HAVE TO GET THIS FROM THE FACTORY //
 	// OTHERWISE WE ARE COPYING THE HARDWARE TO A NEW // 

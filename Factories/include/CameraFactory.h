@@ -603,7 +603,7 @@ public:
 	/*! Toggle Npoint scaling on / off. 
 	@param[in] std::string, name
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
-	bool toggleUseNpointScaling(const std::string& name);
+	bool toggleUseNPointScaling(const std::string& name);
 	/*! get the use Npoint scaling state
 	@param[in] std::string, name
 	@param[out] STATE, */
@@ -1066,9 +1066,6 @@ public:
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
 	boost::python::dict getAllOverlayStates_Py()const;
 
-
-
-
 	/*! Get the running stats buffer,
 	@param[in] std::string, name
 	@param[out] dict, values */
@@ -1139,7 +1136,12 @@ public:
 	STATE applyLoadedSnaphost(TYPE type = TYPE::CAMERA_TYPE);
 
 	STATE checkLastAppliedSnapshot(TYPE type_to_check);
-
+	/*! Get the last filename that was used to save a snapshot
+	@param[out] string, filename */
+	std::string getLastSnapshotFilename()const;
+	/*! Get the last filename that was used to save a snapshot
+	@param[out] string, directory */
+	std::string getLastSnapshotDirectory()const;
 private:
 	/*! Snaphsot data is placed here, when loaded from file, or applied  */
 	std::map<std::string, HardwareSnapshot> hardwareSnapshotMap;
@@ -1156,16 +1158,16 @@ private:
 	std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
 
 	YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
-	/*! This funciton actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed
-		@param[in] map, Mpa of magnet HardwareSnapshot objects, keyed by the magnet name, to apply
+	/*! This function actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed
+		@param[in] map, Map of camera HardwareSnapshot objects, keyed by the camera name, to apply
 		@param[out] STATE, success, failure, etc */
 	STATE applyhardwareSnapshotMap(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map, TYPE type = TYPE::CAMERA_TYPE);
 
+private:
+	std::string last_snapshot_save_filename;
+	std::string last_snapshot_save_directory;
+
 public:
-
-
-
-
 
 	std::string getFullName(const std::string& name_to_check) const;
 

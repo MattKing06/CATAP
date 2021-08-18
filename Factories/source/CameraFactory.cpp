@@ -18,7 +18,9 @@ CameraFactory::CameraFactory(STATE mode) :
 	reader(ConfigReader("Camera", mode)),
 	messenger(LoggingSystem(true, true)),
 	machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
-	dummy_cam(Camera())
+	dummy_cam(Camera()),
+	last_snapshot_save_filename(ENUM_TO_STRING(STATE::UNKNOWN_NAME)),
+	last_snapshot_save_directory(ENUM_TO_STRING(STATE::UNKNOWN_NAME))
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
@@ -55,11 +57,11 @@ CameraFactory::~CameraFactory()
 	}
 }
 
-bool CameraFactory::setup(){	return setup(GlobalConstants::nominal);}
-bool CameraFactory::setup(const std::string& version){	return setup(version, TYPE::ALL_VELA_CLARA);}
-bool CameraFactory::setup(TYPE machineArea){	return setup(GlobalConstants::nominal, machineArea);}
-bool CameraFactory::setup(const std::string& version, TYPE machineArea){	return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});}
-bool CameraFactory::setup(const std::vector<TYPE>& machineAreas){	return setup(GlobalConstants::nominal, machineAreas);}
+bool CameraFactory::setup(){ return setup(GlobalConstants::nominal);}
+bool CameraFactory::setup(const std::string& version){ return setup(version, TYPE::ALL_VELA_CLARA);}
+bool CameraFactory::setup(TYPE machineArea){ return setup(GlobalConstants::nominal, machineArea);}
+bool CameraFactory::setup(const std::string& version, TYPE machineArea){ return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});}
+bool CameraFactory::setup(const std::vector<TYPE>& machineAreas){ return setup(GlobalConstants::nominal, machineAreas);}
 bool CameraFactory::setup(const boost::python::list& machineAreas){	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));}
 bool CameraFactory::setup(const std::string& version, const boost::python::list& machineAreas){	return setup(version, to_std_vector<TYPE>(machineAreas));}
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
@@ -1338,12 +1340,12 @@ bool CameraFactory::setDoNotUseNPointScaling(const std::string& name)
 	}
 	return false;
 }
-bool CameraFactory::toggleUseNpointScaling(const std::string& name)
+bool CameraFactory::toggleUseNPointScaling(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).toggleUseNpointScaling();
+		return camera_map.at(full_name).toggleUseNPointScaling();
 	}
 	return false;
 }
@@ -2236,13 +2238,6 @@ boost::python::dict CameraFactory::getAllOverlayStates_Py()const
 
 
 
-
-
-
-
-
-
-
 /*
 
 double CameraFactory::pix2mmX(const std::string& name, double value)const
@@ -3119,9 +3114,6 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 }
 
 
-
-
-
 //----------------------------------------------------------------------------------------------------------------
 //			 __             __   __        __  ___    
 //			/__` |\ |  /\  |__) /__` |__| /  \  |     
@@ -3131,7 +3123,7 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 
 STATE CameraFactory::saveSnapshot(const std::string& comments)
 {
-	return saveSnapshot(SnapshotFileManager::defaultMachineSnapshotLocation, GlobalFunctions::getTimeAndDateString(), comments);
+	return saveSnapshot(SnapshotFileManager::camera_snapshot_default_path, GlobalFunctions::getTimeAndDateString() + ".yaml", comments);
 }
 STATE CameraFactory::saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments)
 {
@@ -3141,6 +3133,8 @@ STATE CameraFactory::saveSnapshot(const std::string& filepath, const std::string
 	bool written = SnapshotFileManager::writeSnapshotToYAML(filepath, filename, hardwareSnapshotMapToYAMLNode(hardwareSnapshotMap), mode, comments);
 	if (written)
 	{
+		last_snapshot_save_directory = filepath;
+		last_snapshot_save_filename = filename;
 		return STATE::SUCCESS;
 	}
 	return STATE::FAIL;
@@ -3160,11 +3154,14 @@ STATE CameraFactory::saveSnapshot_Pyfile(const std::string& filepath, const std:
 	bool written = SnapshotFileManager::writeSnapshotToYAML(filepath, filename, yn, mode, comments);
 	if (written)
 	{
+		last_snapshot_save_directory = filepath;
+		last_snapshot_save_filename = filename;
 		return STATE::SUCCESS;
 	}
 	return STATE::FAIL;
 }
-
+std::string CameraFactory::getLastSnapshotFilename()const{	return last_snapshot_save_filename;}
+std::string CameraFactory::getLastSnapshotDirectory()const{	return last_snapshot_save_directory;}
 STATE CameraFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
 {
 	messenger.printDebugMessage("loadSnapshot");
@@ -3498,7 +3495,6 @@ STATE CameraFactory::applyhardwareSnapshotMap(const std::map<std::string, Hardwa
 	}
 	return STATE::SUCCESS;
 }
-
 // CONVERTERS between boost:python::dict yaml::node and hssm (other conversion happen else where, e.g. hssm to pydict / yaml::node HardwareSnapshot.h
 std::map<std::string, HardwareSnapshot> CameraFactory::yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node)
 {
@@ -4470,6 +4466,8 @@ STATE CameraFactory::checkLastAppliedSnapshot(TYPE type_to_check)
 	//}
 	return  STATE::UNKNOWN;
 }
+
+
 void CameraFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

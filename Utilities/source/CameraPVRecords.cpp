@@ -175,6 +175,9 @@ namespace CameraRecords
 		ANA_CenterX_RBV						,		ANA_CenterY_RBV						,		ANA_NewBkgrnd_RBV					,  //18
 		ANA_OVERLAY_1_CROSS_RBV				,		ANA_OVERLAY_2_RESULT_RBV			,		ANA_OVERLAY_3_MASK_RBV				,  //20	
 		ANA_MaskXCenter_RBV,
+		ANA_UseNPoint_RBV,
+		ANA_NPointStepSize_RBV,
+		ANA_UseBkgrnd_RBV,
 		//// ATM these ones don't come with an _RBV suffix for a read only PV 
 		LED_Sta,	      // 59
 		CAM_Active_Limit, // 59

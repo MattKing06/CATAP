@@ -1265,24 +1265,45 @@ double Camera::getActiveCameraCount()const{ return active_camera_count.second;}
 bool Camera::canStartCamera()const{	return getActiveCameraLimit() > getActiveCameraCount();}
 void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 {
-	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait tim e = ", csw.wait_ms);
-
+	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait time = ", csw.wait_ms);
 	auto start = std::chrono::high_resolution_clock::now();
 	bool timed_out = false;
+	// first wait fro isbusy to be false
+
 	while (true)
 	{
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
 		/* check if time ran out */
 		if (duration.count() > csw.wait_ms)
 		{
-			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring. ");
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for isNotBusy. ");
 			timed_out = true;
 			break;
 		}
-		if (csw.cam->isNotAcquiring())
+		if (csw.cam->isNotBusy())
 		{
-			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has Stopped Acquiring.");
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " is NOT busy!");
 			break;
+		}
+	}
+	if (!timed_out)
+	{
+		start = std::chrono::high_resolution_clock::now();
+		while (true)
+		{
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+			/* check if time ran out */
+			if (duration.count() > csw.wait_ms)
+			{
+				csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring. ");
+				timed_out = true;
+				break;
+			}
+			if (csw.cam->isNotAcquiring())
+			{
+				csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has Stopped Acquiring.");
+				break;
+			}
 		}
 	}
 	if (timed_out)
@@ -1439,7 +1460,8 @@ bool Camera::setUseNPointScaling()
 	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
 	if (stopped)
 	{
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::zero_ushort);
+		std::cout << "setUseNPointScaling putValue2 1 " << std::endl;
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::one_ushort);
 		if (should_stop_and_restart) { startAcquiring(); }
 	}
 	return r;
@@ -1452,15 +1474,21 @@ bool Camera::setDoNotUseNPointScaling()
 	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
 	if (stopped)
 	{
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+		std::cout << "isUsingNsetDoNotUseNPointScalingPointScaling putValue2 0 " << std::endl;
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::zero_ushort);
 		if (should_stop_and_restart) { startAcquiring(); }
 	}
 	return  r;
 }
-bool Camera::toggleUseNpointScaling()
+bool Camera::toggleUseNPointScaling()
 {
+	std::cout << "toggleUseNPointScaling" << std::endl;
 	if (isUsingNPointScaling())
+	{
+		std::cout << "isUsingNPointScaling = true, setDoNotUseNPointScaling" << std::endl;
 		return setDoNotUseNPointScaling();
+	}
+	std::cout << "isUsingNPointScaling = FALSE, setUseNPointScaling" << std::endl;
 	return setUseNPointScaling();
 }
 STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
@@ -1485,6 +1513,7 @@ bool Camera::setUseBackgroundImage()
 	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
 	if (stopped)
 	{
+		std::cout << "setUseBackgroundImage putValue2 0 " << std::endl;
 		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::one_ushort);
 		if (should_stop_and_restart) { startAcquiring(); }
 	}
@@ -1498,6 +1527,7 @@ bool Camera::setDoNotUseBackgroundImage()
 	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
 	if (stopped)
 	{
+		std::cout << "setDoNotUseBackgroundImage putValue2 0 " << std::endl;
 		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::zero_ushort);
 		if (should_stop_and_restart) { startAcquiring(); }
 	}
@@ -1505,7 +1535,8 @@ bool Camera::setDoNotUseBackgroundImage()
 }
 bool Camera::toggleUseBackgroundImage()
 {
-	if (isUsingNPointScaling())
+	std::cout << "toggleUseBackgroundImage" << std::endl;
+	if (isUsingBackgroundImage())
 		return setDoNotUseBackgroundImage();
 	return setUseBackgroundImage();
 }
@@ -1808,127 +1839,6 @@ bool Camera::isNotBusy()const
 
 
 
-
-
-//----------------------------------------------------------------------------------------------------------------
-//			 __             __   __        __  ___    
-//			/__` |\ |  /\  |__) /__` |__| /  \  |     
-//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
-//
-HardwareSnapshot Camera::getSnapshot()
-{
-	currentSnapshot.update(CameraRecords::CAM_BlackLevel_RBV, black_level.second);
-	currentSnapshot.update(CameraRecords::CAM_Gain_RBV, gain.second);
-	currentSnapshot.update(CameraRecords::CAM_ArrayRate_RBV, array_rate.second);
-	currentSnapshot.update(CameraRecords::CAM_AcquirePeriod_RBV, acquire_period.second);
-	currentSnapshot.update(CameraRecords::CAM_AcquireTime_RBV, acquire_time.second);
-	currentSnapshot.update(CameraRecords::CAM_Acquire_RBV, acquire_state.second);
-	currentSnapshot.update(CameraRecords::CAM_Active_Count, active_camera_count.second);
-	currentSnapshot.update(CameraRecords::CAM_Active_Limit, active_camera_limit.second);
-	currentSnapshot.update(CameraRecords::ROI1_MinX_RBV, roi_min_x.second);
-	currentSnapshot.update(CameraRecords::ROI1_MinY_RBV, roi_min_y.second);
-	currentSnapshot.update(CameraRecords::ROI1_SizeX_RBV, roi_size_x.second);
-	currentSnapshot.update(CameraRecords::ROI1_SizeY_RBV, roi_size_y.second);
-	currentSnapshot.update(CameraRecords::ROIandMask_SetX, roi_and_mask_centre_x.second);
-	currentSnapshot.update(CameraRecords::ROIandMask_SetY, roi_and_mask_centre_y.second);
-	currentSnapshot.update(CameraRecords::ROIandMask_SetXrad, roi_and_mask_radius_x.second);
-	currentSnapshot.update(CameraRecords::ROIandMask_SetYrad, roi_and_mask_radius_y.second);
-	currentSnapshot.update(CameraRecords::ANA_MaskXCenter_RBV, mask_x_center.second);
-	currentSnapshot.update(CameraRecords::ANA_MaskYCenter_RBV, mask_y_center.second);
-	currentSnapshot.update(CameraRecords::ANA_MaskXRad_RBV, mask_x_radius.second);
-	currentSnapshot.update(CameraRecords::ANA_MaskYRad_RBV, mask_y_radius.second);
-	currentSnapshot.update(CameraRecords::ANA_UseFloor_RBV, use_floor.second);
-	currentSnapshot.update(CameraRecords::ANA_FloorLevel_RBV, floor_level.second);
-	currentSnapshot.update(CameraRecords::ANA_FlooredPoints_RBV, floored_pts_count.second);
-	currentSnapshot.update(CameraRecords::ANA_UseNPoint_RBV, use_npoint.second);
-	currentSnapshot.update(CameraRecords::ANA_NPointStepSize_RBV, step_size.second);
-	currentSnapshot.update(CameraRecords::ANA_UseBkgrnd_RBV, use_background.second);
-	currentSnapshot.update(CameraRecords::ANA_OVERLAY_1_CROSS_RBV, cross_hair_overlay.second);
-	currentSnapshot.update(CameraRecords::ANA_OVERLAY_2_RESULT, analysis_result_overlay.second);
-	currentSnapshot.update(CameraRecords::ANA_OVERLAY_3_MASK_RBV, analysis_mask_overlay.second);
-	currentSnapshot.update(CameraRecords::ANA_FlooredPercent_RBV, floored_pts_percent.second);
-	currentSnapshot.update(CameraRecords::CAM_Temperature_RBV, temperature.second);
-	currentSnapshot.update(CameraRecords::ANA_CPU_RBV, cpu_total.second);
-	currentSnapshot.update(CameraRecords::ANA_CPU_CropSubMask_RBV, cpu_crop_sub_mask.second);
-	currentSnapshot.update(CameraRecords::ANA_CPU_Npoint_RBV, cpu_npoint.second);
-	currentSnapshot.update(CameraRecords::ANA_CPU_Dot_RBV, cpu_dot.second);
-	currentSnapshot.update(CameraRecords::HDF_Capture_RBV, capture_state.second);
-	currentSnapshot.update(CameraRecords::LED_Sta, led_state.second);
-	currentSnapshot.update(CameraRecords::HDF_WriteFile_RBV, write_state.second);
-	currentSnapshot.update(CameraRecords::HDF_WriteStatus, write_state_check.second);
-	currentSnapshot.update(CameraRecords::HDF_WriteMessage, write_error_message.second);
-	currentSnapshot.update(CameraRecords::HDF_FilePath_RBV, save_filepath.second);
-	currentSnapshot.update(CameraRecords::HDF_FileName_RBV, save_filename.second);
-	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
-	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filepath_RBV, image_buffer_filepath.second);
-	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filename_RBV, image_buffer_filename.second);
-	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
-	currentSnapshot.update(CameraRecords::ANA_EnableCallbacks_RBV, analysis_state.second);
-	currentSnapshot.update(CameraRecords::HDF_NumCapture_RBV, capture_count.second);
-	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
-	currentSnapshot.update(CameraRecords::ANA_PixW_RBV, epics_pixel_width.second);
-	currentSnapshot.update(CameraRecords::ANA_PixH_RBV, epics_pixel_height.second);
-	currentSnapshot.update(CameraRecords::ANA_CenterX_RBV, x_center_pixel.second);
-	currentSnapshot.update(CameraRecords::ANA_CenterY_RBV, y_center_pixel.second);
-	currentSnapshot.update(CameraRecords::ANA_PixMM_RBV, pixel_to_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_XPix_RBV, x_pix.second);
-	currentSnapshot.update(CameraRecords::ANA_YPix_RBV, y_pix.second);
-	currentSnapshot.update(CameraRecords::ANA_SigmaXPix_RBV, sigma_x_pix.second);
-	currentSnapshot.update(CameraRecords::ANA_SigmaYPix_RBV, sigma_y_pix.second);
-	currentSnapshot.update(CameraRecords::ANA_CovXYPix_RBV, sigma_xy_pix.second);
-	currentSnapshot.update(CameraRecords::ANA_X_RBV, x_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_Y_RBV, y_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_SigmaX_RBV, sigma_x_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_SigmaY_RBV, sigma_y_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_CovXY_RBV, sigma_xy_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_AvgIntensity_RBV, avg_intensity.second);
-	currentSnapshot.update(CameraRecords::ANA_Intensity_RBV, sum_intensity.second);
-	currentSnapshot.update("busy", busy);
-	currentSnapshot.update("max_shots_number", max_shots_number);
-	currentSnapshot.update("last_capture_and_save_success", last_capture_and_save_success);
-	currentSnapshot.update("aliases", GlobalFunctions::toString(aliases));
-	currentSnapshot.update("screen_names", GlobalFunctions::toString(screen_names));
-	currentSnapshot.update("average_pixel_value_for_beam", average_pixel_value_for_beam);
-	currentSnapshot.update("array_data_num_pix_x", array_data_num_pix_x);
-	currentSnapshot.update("array_data_num_pix_y", array_data_num_pix_y);
-	currentSnapshot.update("array_data_pixel_count", array_data_pixel_count);
-	currentSnapshot.update("binary_num_pix_x", binary_num_pix_x);
-	currentSnapshot.update("binary_num_pix_y", binary_num_pix_y);
-	currentSnapshot.update("binary_data_pixel_count", binary_data_pixel_count);
-	currentSnapshot.update("roi_total_pixel_count", roi_total_pixel_count);
-	currentSnapshot.update("operating_centre_x", operating_centre_x);
-	currentSnapshot.update("operating_centre_y", operating_centre_y);
-	currentSnapshot.update("mechanical_centre_x", mechanical_centre_x);
-	currentSnapshot.update("mechanical_centre_y", mechanical_centre_y);
-	currentSnapshot.update("pix2mmX_ratio", pix2mmX_ratio);
-	currentSnapshot.update("pix2mmY_ratio", pix2mmY_ratio);
-	currentSnapshot.update("cam_type", cam_type);
-	currentSnapshot.update("roi_max_x", roi_max_x);
-	currentSnapshot.update("roi_max_y", roi_max_y);
-	currentSnapshot.update("x_pix_scale_factor", x_pix_scale_factor);
-	currentSnapshot.update("y_pix_scale_factor", y_pix_scale_factor);
-	currentSnapshot.update("x_mask_rad_max", x_mask_rad_max);
-	currentSnapshot.update("y_mask_rad_max", y_mask_rad_max);
-	currentSnapshot.update("use_mask_rad_limits", use_mask_rad_limits);
-	currentSnapshot.update("sensor_max_temperature", sensor_max_temperature);
-	currentSnapshot.update("sensor_min_temperature", sensor_min_temperature);
-	currentSnapshot.update("average_pixel_value_for_beam", average_pixel_value_for_beam);
-	currentSnapshot.update("min_x_pixel_pos", min_x_pixel_pos);
-	currentSnapshot.update("max_x_pixel_pos", max_x_pixel_pos);
-	currentSnapshot.update("min_y_pixel_pos", min_y_pixel_pos);
-	currentSnapshot.update("max_y_pixel_pos", max_y_pixel_pos);
-	currentSnapshot.update("mask_and_roi_keywords", GlobalFunctions::toString(mask_and_roi_keywords));
-	currentSnapshot.update("mask_keywords", GlobalFunctions::toString(mask_keywords));
-	currentSnapshot.update("roi_keywords", GlobalFunctions::toString(roi_keywords));
-	
-
-	return currentSnapshot;
-}
-boost::python::dict Camera::getSnapshot_Py()
-{
-	getSnapshot();
-	return currentSnapshot.getSnapshot_Py();
-}
 
 
 //size_t Camera::getNumXPixFromArrayData() const
@@ -2623,6 +2533,12 @@ std::vector<long>& Camera::getROIDataConstRef()
 {
 	return roi_data.second;
 }
+
+
+//	 __                            __      __             __                ___       ___      
+//	/ _`  /\  | |\ |     /\  |\ | |  \    |__) |     /\  /  ` |__/    |    |__  \  / |__  |    
+//	\__> /~~\ | | \|    /~~\ | \| |__/    |__) |___ /~~\ \__, |  \    |___ |___  \/  |___ |___ 
+//
 bool Camera::setBlackLevel(long value)
 {
 	if (getCamType() == TYPE::VELA_CAMERA)
@@ -2647,7 +2563,124 @@ long Camera::getGain()const
 {
 	return gain.second;
 }
+//			 __             __   __        __  ___    
+//			/__` |\ |  /\  |__) /__` |__| /  \  |     
+//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+//
+HardwareSnapshot Camera::getSnapshot()
+{
+	currentSnapshot.update(CameraRecords::CAM_BlackLevel_RBV, black_level.second);
+	currentSnapshot.update(CameraRecords::CAM_Gain_RBV, gain.second);
+	currentSnapshot.update(CameraRecords::CAM_ArrayRate_RBV, array_rate.second);
+	currentSnapshot.update(CameraRecords::CAM_AcquirePeriod_RBV, acquire_period.second);
+	currentSnapshot.update(CameraRecords::CAM_AcquireTime_RBV, acquire_time.second);
+	currentSnapshot.update(CameraRecords::CAM_Acquire_RBV, acquire_state.second);
+	currentSnapshot.update(CameraRecords::CAM_Active_Count, active_camera_count.second);
+	currentSnapshot.update(CameraRecords::CAM_Active_Limit, active_camera_limit.second);
+	currentSnapshot.update(CameraRecords::ROI1_MinX_RBV, roi_min_x.second);
+	currentSnapshot.update(CameraRecords::ROI1_MinY_RBV, roi_min_y.second);
+	currentSnapshot.update(CameraRecords::ROI1_SizeX_RBV, roi_size_x.second);
+	currentSnapshot.update(CameraRecords::ROI1_SizeY_RBV, roi_size_y.second);
+	currentSnapshot.update(CameraRecords::ROIandMask_SetX, roi_and_mask_centre_x.second);
+	currentSnapshot.update(CameraRecords::ROIandMask_SetY, roi_and_mask_centre_y.second);
+	currentSnapshot.update(CameraRecords::ROIandMask_SetXrad, roi_and_mask_radius_x.second);
+	currentSnapshot.update(CameraRecords::ROIandMask_SetYrad, roi_and_mask_radius_y.second);
+	currentSnapshot.update(CameraRecords::ANA_MaskXCenter_RBV, mask_x_center.second);
+	currentSnapshot.update(CameraRecords::ANA_MaskYCenter_RBV, mask_y_center.second);
+	currentSnapshot.update(CameraRecords::ANA_MaskXRad_RBV, mask_x_radius.second);
+	currentSnapshot.update(CameraRecords::ANA_MaskYRad_RBV, mask_y_radius.second);
+	currentSnapshot.update(CameraRecords::ANA_UseFloor_RBV, use_floor.second);
+	currentSnapshot.update(CameraRecords::ANA_FloorLevel_RBV, floor_level.second);
+	currentSnapshot.update(CameraRecords::ANA_FlooredPoints_RBV, floored_pts_count.second);
+	currentSnapshot.update(CameraRecords::ANA_UseNPoint_RBV, use_npoint.second);
+	currentSnapshot.update(CameraRecords::ANA_NPointStepSize_RBV, step_size.second);
+	currentSnapshot.update(CameraRecords::ANA_UseBkgrnd_RBV, use_background.second);
+	currentSnapshot.update(CameraRecords::ANA_OVERLAY_1_CROSS_RBV, cross_hair_overlay.second);
+	currentSnapshot.update(CameraRecords::ANA_OVERLAY_2_RESULT, analysis_result_overlay.second);
+	currentSnapshot.update(CameraRecords::ANA_OVERLAY_3_MASK_RBV, analysis_mask_overlay.second);
+	currentSnapshot.update(CameraRecords::ANA_FlooredPercent_RBV, floored_pts_percent.second);
+	currentSnapshot.update(CameraRecords::CAM_Temperature_RBV, temperature.second);
+	currentSnapshot.update(CameraRecords::ANA_CPU_RBV, cpu_total.second);
+	currentSnapshot.update(CameraRecords::ANA_CPU_CropSubMask_RBV, cpu_crop_sub_mask.second);
+	currentSnapshot.update(CameraRecords::ANA_CPU_Npoint_RBV, cpu_npoint.second);
+	currentSnapshot.update(CameraRecords::ANA_CPU_Dot_RBV, cpu_dot.second);
+	currentSnapshot.update(CameraRecords::HDF_Capture_RBV, capture_state.second);
+	currentSnapshot.update(CameraRecords::LED_Sta, led_state.second);
+	currentSnapshot.update(CameraRecords::HDF_WriteFile_RBV, write_state.second);
+	currentSnapshot.update(CameraRecords::HDF_WriteStatus, write_state_check.second);
+	currentSnapshot.update(CameraRecords::HDF_WriteMessage, write_error_message.second);
+	currentSnapshot.update(CameraRecords::HDF_FilePath_RBV, save_filepath.second);
+	currentSnapshot.update(CameraRecords::HDF_FileName_RBV, save_filename.second);
+	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
+	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filepath_RBV, image_buffer_filepath.second);
+	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filename_RBV, image_buffer_filename.second);
+	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
+	currentSnapshot.update(CameraRecords::ANA_EnableCallbacks_RBV, analysis_state.second);
+	currentSnapshot.update(CameraRecords::HDF_NumCapture_RBV, capture_count.second);
+	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
+	currentSnapshot.update(CameraRecords::ANA_PixW_RBV, epics_pixel_width.second);
+	currentSnapshot.update(CameraRecords::ANA_PixH_RBV, epics_pixel_height.second);
+	currentSnapshot.update(CameraRecords::ANA_CenterX_RBV, x_center_pixel.second);
+	currentSnapshot.update(CameraRecords::ANA_CenterY_RBV, y_center_pixel.second);
+	currentSnapshot.update(CameraRecords::ANA_PixMM_RBV, pixel_to_mm.second);
+	currentSnapshot.update(CameraRecords::ANA_XPix_RBV, x_pix.second);
+	currentSnapshot.update(CameraRecords::ANA_YPix_RBV, y_pix.second);
+	currentSnapshot.update(CameraRecords::ANA_SigmaXPix_RBV, sigma_x_pix.second);
+	currentSnapshot.update(CameraRecords::ANA_SigmaYPix_RBV, sigma_y_pix.second);
+	currentSnapshot.update(CameraRecords::ANA_CovXYPix_RBV, sigma_xy_pix.second);
+	currentSnapshot.update(CameraRecords::ANA_X_RBV, x_mm.second);
+	currentSnapshot.update(CameraRecords::ANA_Y_RBV, y_mm.second);
+	currentSnapshot.update(CameraRecords::ANA_SigmaX_RBV, sigma_x_mm.second);
+	currentSnapshot.update(CameraRecords::ANA_SigmaY_RBV, sigma_y_mm.second);
+	currentSnapshot.update(CameraRecords::ANA_CovXY_RBV, sigma_xy_mm.second);
+	currentSnapshot.update(CameraRecords::ANA_AvgIntensity_RBV, avg_intensity.second);
+	currentSnapshot.update(CameraRecords::ANA_Intensity_RBV, sum_intensity.second);
+	currentSnapshot.update("busy", busy);
+	currentSnapshot.update("max_shots_number", max_shots_number);
+	currentSnapshot.update("last_capture_and_save_success", last_capture_and_save_success);
+	currentSnapshot.update("aliases", GlobalFunctions::toString(aliases));
+	currentSnapshot.update("screen_names", GlobalFunctions::toString(screen_names));
+	currentSnapshot.update("average_pixel_value_for_beam", average_pixel_value_for_beam);
+	currentSnapshot.update("array_data_num_pix_x", array_data_num_pix_x);
+	currentSnapshot.update("array_data_num_pix_y", array_data_num_pix_y);
+	currentSnapshot.update("array_data_pixel_count", array_data_pixel_count);
+	currentSnapshot.update("binary_num_pix_x", binary_num_pix_x);
+	currentSnapshot.update("binary_num_pix_y", binary_num_pix_y);
+	currentSnapshot.update("binary_data_pixel_count", binary_data_pixel_count);
+	currentSnapshot.update("roi_total_pixel_count", roi_total_pixel_count);
+	currentSnapshot.update("operating_centre_x", operating_centre_x);
+	currentSnapshot.update("operating_centre_y", operating_centre_y);
+	currentSnapshot.update("mechanical_centre_x", mechanical_centre_x);
+	currentSnapshot.update("mechanical_centre_y", mechanical_centre_y);
+	currentSnapshot.update("pix2mmX_ratio", pix2mmX_ratio);
+	currentSnapshot.update("pix2mmY_ratio", pix2mmY_ratio);
+	currentSnapshot.update("cam_type", cam_type);
+	currentSnapshot.update("roi_max_x", roi_max_x);
+	currentSnapshot.update("roi_max_y", roi_max_y);
+	currentSnapshot.update("x_pix_scale_factor", x_pix_scale_factor);
+	currentSnapshot.update("y_pix_scale_factor", y_pix_scale_factor);
+	currentSnapshot.update("x_mask_rad_max", x_mask_rad_max);
+	currentSnapshot.update("y_mask_rad_max", y_mask_rad_max);
+	currentSnapshot.update("use_mask_rad_limits", use_mask_rad_limits);
+	currentSnapshot.update("sensor_max_temperature", sensor_max_temperature);
+	currentSnapshot.update("sensor_min_temperature", sensor_min_temperature);
+	currentSnapshot.update("average_pixel_value_for_beam", average_pixel_value_for_beam);
+	currentSnapshot.update("min_x_pixel_pos", min_x_pixel_pos);
+	currentSnapshot.update("max_x_pixel_pos", max_x_pixel_pos);
+	currentSnapshot.update("min_y_pixel_pos", min_y_pixel_pos);
+	currentSnapshot.update("max_y_pixel_pos", max_y_pixel_pos);
+	currentSnapshot.update("mask_and_roi_keywords", GlobalFunctions::toString(mask_and_roi_keywords));
+	currentSnapshot.update("mask_keywords", GlobalFunctions::toString(mask_keywords));
+	currentSnapshot.update("roi_keywords", GlobalFunctions::toString(roi_keywords));
 
+
+	return currentSnapshot;
+}
+boost::python::dict Camera::getSnapshot_Py()
+{
+	getSnapshot();
+	return currentSnapshot.getSnapshot_Py();
+}
 
 std::map<std::string, double> Camera::getAnalayisData() const
 {

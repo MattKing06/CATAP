@@ -19,6 +19,7 @@ set( SOURCE_FILES
     source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
     source/LLRFPythonInterface.cpp
+    source/PILaserSystemPythonInterface.cpp
     source/RFHeartbeatPythonInterface.cpp
     source/RFModulatorPythonInterface.cpp
     source/RFProtectionPythonInterface.cpp
@@ -44,6 +45,7 @@ set( INCLUDE_FILES
 	include/GlobalTypesPythonInterface.h
     include/HardwareFactoryPythonInterface.h
     include/HardwarePythonInterface.h
+    include/HardwarePythonInterface.h
 	include/IMGPythonInterface.h
     include/LaserEnergyMeterPythonInterface.h
     include/LaserHWPPythonInterface.h
@@ -51,6 +53,7 @@ set( INCLUDE_FILES
     include/LEDPythonInterface.h
     include/LightingPythonInterface.h
     include/LLRFPythonInterface.h
+	include/PILaserSystemPythonInterface.h
     include/RFHeartbeatPythonInterface.h
     include/RFModulatorPythonInterface.h
     include/RFProtectionPythonInterface.h
@@ -113,6 +116,7 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/HighLevelSystems/PILaserSystem/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSTools/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
 	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
@@ -121,6 +125,7 @@ foreach(FILE ${SOURCE_FILES})
 						 PRIVATE
 						 Factories
 						 Hardware
+						 PILaserSystem
 						 EPICSTools
 						 ConfigReader
 						 Utilities)

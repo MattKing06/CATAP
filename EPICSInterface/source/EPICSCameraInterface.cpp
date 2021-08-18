@@ -596,7 +596,7 @@ void EPICSCameraInterface::update_ANA_NewBkgrnd_RBV(const struct event_handler_a
 	default:
 		recastCamera->set_new_background.second = STATE::ERR;
 	}
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseBkgrnd = ",
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_NewBkgrnd_RBV = ",
 		ENUM_TO_STRING(recastCamera->use_background.second));
 }
 void EPICSCameraInterface::update_ANA_UseBkgrnd_RBV(const struct event_handler_args args)

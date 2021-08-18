@@ -49,7 +49,6 @@ class CamStopWaiter
 public:	
 CamStopWaiter() :cam(nullptr), thread(nullptr), wait_ms(5000),result(STATE::UNKNOWN){}Camera* cam; std::thread* thread; size_t wait_ms; STATE result;
 };
-
 class EPICSCameraInterface;
 typedef boost::shared_ptr<EPICSCameraInterface> EPICSCameraInterface_sptr;
 /*! main camera object */
@@ -683,7 +682,7 @@ public:
 	bool setDoNotUseNPointScaling();
 	/*! Toggle the use floor state between USING_FLOOR / NOT_USING_FLOOR (values below the floor level get set to zero).
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool toggleUseNpointScaling();
+	bool toggleUseNPointScaling();
 	/*! get the use Npoint scaling state
 	@param[out] STATE, */
 	STATE getNPointScalingState()const;
@@ -1457,13 +1456,10 @@ private:
 	std::vector<std::string> roi_keywords;
 
 
-
-	/*!  */
+	/*! Set up the PV structs */
 	void setPVStructs();
 	/*! Parse the Master Lattice data for this camera */
 	void getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode);
-
-
 	// TODO issue 101, move to globalfunctions 
 	bool areEqualEpicsTimeStamps(const epicsTimeStamp& t1, const epicsTimeStamp& t2)const 
 	{

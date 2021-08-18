@@ -37,9 +37,7 @@ public:
 		{
 			return boost::get<T>(state.at(PV));
 		}
-
 	}
-
 	// Convert a state into a YAML Node (std::map<std::string, boost::variant<STATE, TYPE, double, long, int, unsigned short, std::string>>)
 	YAML::Node getYAMLNode()const
 	{
@@ -47,57 +45,55 @@ public:
 		for (auto& item : state)
 		{
 			const std::string record_name = item.first;
-			std::cout << record_name;
+			//std::cout << record_name;
 			if (item.second.type() == typeid(STATE))
 			{
-				std::cout << " is a STATE" << std::endl;
+				//std::cout << " is a STATE" << std::endl;
 				return_node[record_name] = ENUM_TO_STRING(boost::get< STATE >(state.at(item.first)));
 			}
 			else if (item.second.type() == typeid(TYPE))
 			{
-				std::cout << " is a TYPE" << std::endl; 
+				//std::cout << " is a TYPE" << std::endl; 
 				return_node[record_name] = ENUM_TO_STRING(boost::get< TYPE >(state.at(item.first)));
 			}
 			else if (item.second.type() == typeid(bool))
 			{
-				std::cout << " is a bool" << std::endl;
+				//std::cout << " is a bool" << std::endl;
 				return_node[record_name] = boost::get<bool>(state.at(item.first));
 			}
 			else if (item.second.type() == typeid(size_t))
 			{
-				std::cout << " is a size_t" << std::endl;
+				//std::cout << " is a size_t" << std::endl;
 				return_node[record_name] = boost::get<size_t>(state.at(item.first));
 			}
 			else if (item.second.type() == typeid(long))
 			{
-				std::cout << " is a long" << std::endl;
+				//std::cout << " is a long" << std::endl;
 				return_node[record_name] = boost::get<long>(state.at(item.first));
 			}
 			else if (item.second.type() == typeid(int))
 			{
-				std::cout << " is a int " << std::endl;
+				//std::cout << " is a int " << std::endl;
 				return_node[record_name] = boost::get< int >(state.at(item.first));
 			}
 			else if (item.second.type() == typeid(unsigned short))
 			{
-				std::cout << " is a unsigned short " << std::endl;
+				//std::cout << " is a unsigned short " << std::endl;
 				return_node[record_name] = boost::get< unsigned short >(state.at(item.first));
 			}
 			else if (item.second.type() == typeid(std::string))
 			{
-				std::cout << " is a string " << std::endl;
+				//std::cout << " is a string " << std::endl;
 				return_node[record_name] = boost::get< std::string>(state.at(item.first));
 			}
 			else if (item.second.type() == typeid(double))
 			{
-				std::cout << " is a double " << std::endl;
+				//std::cout << " is a double " << std::endl;
 				return_node[record_name] = boost::get< double>(state.at(item.first));
 			}
 			else
 			{
-
 			}
-
 		}
 		return return_node;
 	}
@@ -113,7 +109,6 @@ public:
 		}
 		return to_py_dict(pyValueMap);
 	}
-
 	template<typename T>
 	void update(const std::string& PV, T value)  
 	{
@@ -126,7 +121,6 @@ public:
 			add(PV, value);
 		}
 	}
-
 	template<typename T>
 	void add(const std::string& PV, T value) 
 	{

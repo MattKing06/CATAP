@@ -9,13 +9,11 @@
 namespace SnapshotFileManager
 {
 	extern const std::string magnet_snapshot_default_path;
+	extern const std::string camera_snapshot_default_path;
 	extern const std::string defaultMachineSnapshotLocation;
 	extern const std::string snapshot_file_reference;// = "SNAPSHOT_FILE_REFERENCE";
 	extern const std::vector<std::string> dburt_extensions;
 	extern const std::vector<std::string> extensions;
-
-
-
 
 	extern std::vector<std::string> getAllFilesInDirectory(const std::string& dirPath, const std::vector<std::string> skipList = {});
 	extern bool isLocationValid(const std::string& location);
@@ -29,8 +27,6 @@ namespace SnapshotFileManager
 	// WE ARE DEFINING THAT THE SNAPSHOTFILEMANAGER ONLY DEALS WITH YAML::NODES
 	// SO PASS IN A YAML NODE TO WRIT ETO FILE, OR GET A YAML NODE FROM A FILE 
 	extern YAML::Node readSnapshotFile(const std::string& location, const std::string& filename);
-
-	
 //		 __   __        __  ___     __  ___       ___  ___ 
 //		|  \ |__) |  | |__)  |     /__`  |  |  | |__  |__  
 //		|__/ |__) \__/ |  \  |     .__/  |  \__/ |    |    
@@ -42,6 +38,4 @@ namespace SnapshotFileManager
 	extern YAML::Node DBURT2YAMLNode(const boost::filesystem::path& full_path) ;
 	extern std::vector<std::string> getDBURTKeyVal(const std::string& trimmedLine, const char delim);
 }
-
-
 #endif //! SNAPSHOT_FILE_MANAGER_H_
