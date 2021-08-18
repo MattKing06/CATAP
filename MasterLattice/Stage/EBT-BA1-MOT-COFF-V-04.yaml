@@ -1,0 +1,29 @@
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# there is a general, and often tacit, assumption that "CLEAR_FOR_BEAM" will exist for each stage!!!
+#
+controls_information:
+  PV: true
+  pv_record_map:
+    MABSS: EBT-BA1-MOT-COFF-V-04:MABSS
+    RPOSS: EBT-BA1-MOT-COFF-V-04:RPOSS
+properties:
+  hardware_type: Stage
+  machine_area: BA1
+  name: EBT-BA1-MOT-COFF-V-04
+  name_alias: V4
+  stage_number: 7
+  max_pos: 30.0
+  min_pos: 0.0 # DO NOT touch this if EO is installed and you aren't DW or TP
+  has_yag: false
+  in_pos: -20.0
+  out_pos: 2.0
+  #devices_and_positions:
+  CLEAR_FOR_BEAM: 4.0
+  V_SLIT: 4.0
+  H_SLIT: 4.0
+  EO_CRYSTAL: 7.5
+  EO_YAG: 0.0
+  precision: 3

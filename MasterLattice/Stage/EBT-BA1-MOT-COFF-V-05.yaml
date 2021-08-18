@@ -1,0 +1,27 @@
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# !!!!!!!!!!! READ THIS !!!!!!!!!!!!!!!!!!! 
+# there is a general, and often tacit, assumption that "CLEAR_FOR_BEAM" will exist for each stage!!!
+#
+controls_information:
+  PV: true
+  pv_record_map:
+    MABSS: EBT-BA1-MOT-COFF-V-05:MABSS
+    RPOSS: EBT-BA1-MOT-COFF-V-05:RPOSS
+properties:
+  hardware_type: Stage
+  machine_area: BA1
+  name: EBT-BA1-MOT-COFF-V-05
+  name_alias: V5
+  stage_number: 8
+  max_pos: 55.0
+  min_pos: -10.0
+  has_yag: false
+  in_pos: -20.0
+  out_pos: 2.0
+  #devices_and_positions
+  CLEAR_FOR_BEAM: 55.0
+  YAG_DOWN: 23.0
+  YAG_RECTICLE: -3.0
+  precision: 2
