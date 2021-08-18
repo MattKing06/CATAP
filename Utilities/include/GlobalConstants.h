@@ -166,6 +166,9 @@ namespace GlobalConstants
 			
 		{"Screen", TYPE::SCREEN},
 		{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
+
+		{"Stage", TYPE::STAGE},
+		{ENUM_TO_STRING(TYPE::STAGE), TYPE::STAGE},
 				
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
@@ -175,7 +178,7 @@ namespace GlobalConstants
 		{ "RFModulator", TYPE::RF_MODULATOR },
 		{ ENUM_TO_STRING(TYPE::RF_MODULATOR), TYPE::RF_MODULATOR },
 
-			
+		
 
 				
 		//{ENUM_TO_STRING(TYPE::HVCOR), TYPE::HVCOR},

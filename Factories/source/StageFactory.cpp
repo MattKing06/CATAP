@@ -4,7 +4,10 @@ StageFactory::StageFactory()
 {
 }
 
-StageFactory::StageFactory(STATE mode)
+StageFactory::StageFactory(STATE mode) :
+	mode(mode), hasBeenSetup(false),
+	reader(ConfigReader("Stage", mode)),
+	messenger(LoggingSystem(true, true))
 {
 }
 
@@ -16,8 +19,35 @@ StageFactory::~StageFactory()
 {
 }
 
-void StageFactory::setup(std::string version)
+
+void StageFactory::populateStageMap()
 {
+	messenger.printDebugMessage("StageFactory is populating Stage Map");
+	if (!reader.hasMoreFilesToParse())
+	{
+		throw std::runtime_error("Did not receive configuration parameters from ConfigReader, please contact support.");
+	}
+	while (reader.hasMoreFilesToParse())
+	{
+		messenger.printDebugMessage("Stage Factory calling parseNextYamlFile");
+		reader.parseNextYamlFile(stageMap);
+	}
+	messenger.printDebugMessage("Stage Factory has finished populating Stage Map");
+}
+
+
+bool StageFactory::setup(std::string version)
+{
+	if (hasBeenSetup)
+	{
+		return true;
+	}
+	populateStageMap();
+	if (reader.yamlFilenamesAndParsedStatusMap.empty())
+	{
+		hasBeenSetup = false;
+		return hasBeenSetup;
+	}
 }
 
 void StageFactory::debugMessagesOn()

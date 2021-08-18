@@ -5,6 +5,7 @@
 #include <EPICSStageInterface.h>
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
+#include <GlobalFunctions.h>
 #include <boost/make_shared.hpp>
 
 class EPICSStageInterface;
@@ -25,6 +26,26 @@ public:
 	void debugMessagesOff();
 	void messagesOn();
 	void messagesOff();
+	std::pair<epicsTimeStamp, double> getCurrentPosition();
+	std::pair<epicsTimeStamp, double> getPositionSetpoint();
+	double getMinPosition();
+	double getMaxPosition();
+	double getInPosition();
+	double getOutPosition();
+	size_t getStageNumber();
+	bool doesHaveYag();
+	size_t getPrecision();
+private:
+	std::pair<epicsTimeStamp, double> currentPosition;
+	std::pair<epicsTimeStamp, double> positionSetpoint;
+	double minPosition;
+	double maxPosition;
+	double inPosition;
+	double outPosition;
+	size_t stageNumber;
+	bool hasYag;
+	size_t precision;
+	std::map<std::string, double> deviceAndPositionMap;
 };
 
 

@@ -13,7 +13,10 @@ public:
 	StageFactory(const StageFactory& copyFactory);
 	~StageFactory();
 	LoggingSystem messenger;
-	void setup(std::string version);
+	STATE mode;
+	ConfigReader reader;
+	bool setup(std::string version);
+	void populateStageMap();
 	bool hasBeenSetup;
 	std::map<std::string, Stage> stageMap;
 	void debugMessagesOn();
