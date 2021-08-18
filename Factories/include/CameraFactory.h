@@ -202,11 +202,10 @@ public:
 	* 	@param[in] std::string, name
 	*	@param[out] long, value */
 	long getMechanicalCentreYPixel(const std::string& name)const;
-//  
-//  			  __   ___ __    __  ___
-//  |  |\/|  /\  / _` |__ /__` |  / |__
-//  |  |  | /~~\ \__> |___.__/ | /_ |___
-// 
+	//  			  __   ___ __    __  ___
+	//  |  |\/|  /\  / _` |__ /__` |  / |__
+	//  |  |  | /~~\ \__> |___.__/ | /_ |___
+	// 
 	/*! Get the Number of pixels in the width of the (full) image.
 	@param[in] std::string, name
 	@param[out] long, value */
@@ -254,10 +253,10 @@ public:
 	/*! Get the Acquire Time for the camera (shutter open time, units??).
 	@param[in] std::string, name
 	@param[out] double, value */
-//	              __   ___     __        ___  ___  ___  __  
-//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
-//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
-//
+	//	              __   ___     __        ___  ___  ___  __  
+	//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
+	//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
+	//
 	/*! Get the buffer trigger value.
 	@param[in] std::string, name
 	@param[out] double, value */
@@ -286,13 +285,12 @@ public:
 	@param[in] std::string, name
 	@param[out] string, value */
 	std::string getLastImageBufferFileName(const std::string& name)const;
-//	              __   ___     __        __  ___       __   ___               __      __             _ 
-//	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
-//	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
-//	                                                                                                     
-	//
-	/* set the number of shots that will be "collected and written to disk."
-		@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	//	              __   ___     __        __  ___       __   ___               __      __             _ 
+	//	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
+	//	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
+	//	                                                                                                     
+	/*! Set the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
 	bool setNumberOfShotsToCapture(const std::string& name, size_t num);
 	/* set the number of shots that will be "collected and written to disk."
 	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
@@ -545,6 +543,10 @@ public:
 	@param[in] std::string, name
 	@param[out] dict, with new values  */
 	boost::python::dict getROI_Py(const std::string& name)const;
+	//	                         __     __           __     __   ___     ___       __   __   __  
+	//	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
+	//	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
+	//
 	/*! Set the using a Floor during image analysis to true .
 	@param[in] std::string, name
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
@@ -553,6 +555,9 @@ public:
 	@param[in] std::string, name
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setDoNotUseFloor(const std::string& name);
+	/*! Toggle the use florr state between USING_FLOOR / NOT_USING_FLOOR (values below the floor level get set to zero).
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool toggleUseFloor(const std::string& name);
 	/*! Set the Floor level to use during image analysis (value below floor get set to zero).
 	@param[in] std::string, name
 	@param[in] long, value to use
@@ -583,57 +588,121 @@ public:
 	@param[in] std::string, name	
 	@param[out] long, value*/
 	double getFlooredPtsPercent(const std::string& name)const;
-	/*! set use Npoint scaling or not
+	//	                         __     __           __   __         ___     __   __                    __  
+	//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
+	//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
+	//	                                                                                                    
+	/*! Set use Npoint scaling. 
 	@param[in] std::string, name
-	@param[in] bool, true for use NPoint, False for do not use NPoint
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
-	bool useNPoint(const std::string& name, bool v);
+	bool setUseNPointScaling(const std::string& name);
+	/*! Set do not use Npoint scaling.
+	@param[in] std::string, name
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setDoNotUseNPointScaling(const std::string& name);
+	/*! Toggle Npoint scaling on / off. 
+	@param[in] std::string, name
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool toggleUseNpointScaling(const std::string& name);
 	/*! get the use Npoint scaling state
 	@param[in] std::string, name
 	@param[out] STATE, */
-	STATE getNPointState(const std::string& name)const;
+	STATE getNPointScalingState(const std::string& name)const;
 	/*! check if analysis is using NPoint scaling
 	@param[in] std::string, name
 	@param[out] bool, true if using NPoint scaling*/
-	bool isUsingNPoint(const std::string& name)const;
+	bool isUsingNPointScaling(const std::string& name)const;
 	/*! check if analysis is Not using NPoint scaling
 	@param[in] std::string, name
 	@param[out] bool, true if using NPoint scaling*/
-	bool isNotUsingNPoint(const std::string& name)const;
-	/*! Get the state of the Flag to set the next image as background.
+	bool isNotUsingNPointScaling(const std::string& name)const;
+	/*! Set the Npoint scaling step size.  
+	@param[in] std::string, name
+	@param[in] long, val to set
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setNpointScalingStepSize(const std::string& name, long val);
+	/*! Set the Npoint scaling step size.
+	@param[in] std::string, name
+	@param[out] long, value */
+	long getNpointScalingStepSize(const std::string& name)const;
+	//                         __     __      __        __        __   __   __             __     
+	// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+	///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+	//                                                                                            
+	/*! Get the state of the use background image flag.
 	@param[in] std::string, name of camera
 	@param[out] STATE, value fo flag, YES or NO */
-	STATE getSetNewBackgroundState(const std::string& name);
-	/*! set the netx image to be the background image subtracted during the analysis procedure. 
+	STATE getUsingBackgroundImageState(const std::string& name);
+	/*! set the netx image to be the background image subtracted during the analysis procedure.
 	@param[in] std::string, name of camera
 	@param[out] bool, true if value sent to EPICSt, not if it was succesfully applied */
-	bool setNewBackground(const std::string& name, bool v);
-	/*! set use the background image during the analysis  procedure
+	bool setNewBackgroundImage(const std::string& name);
+	/*! Set using the stored background image will be subtracted from the image data before the analysis calculation.. 
+	@param[in] std::string, name of camera
+	@param[out] bool, true if value sent to EPICSt, not if it was succesfully applied */
+	bool setUseBackgroundImage(const std::string& name);
+	/*! Set use the background image during the analysis  procedure
 	@param[in] std::string, name
 	@param[in] bool, true to use the background, False to not use the background
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
-	bool useBackground(const std::string& name, bool v);
-	/*! get the use background state
-	@param[in] std::string, name
-	@param[out] STATE, */
-	STATE getUsingBackgroundState(const std::string& name)const;
-	/*! check if analysis is using a background data
+	bool setDoNotUseBackgroundImage(const std::string& name);
+	/*! Toggle using the background image during the analysis procedure.
+	@param[in] std::string, name 
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool toggleUseBackgroundImage(const std::string& name);
+	/*! check if analysis is subtracting a background image.
 	@param[in] std::string, name
 	@param[out] bool, true if using background image during analysis */
-	bool isUsingBackground(const std::string& name)const;
-	/*! check if analysis is Not using a background data
+	bool isUsingBackgroundImage(const std::string& name)const;
+	/*! check if analysis is NOT subtracting a background data
 	@param[in] std::string, name
 	@param[out] bool, true if NOT  using background image during analysis*/
-	bool isNotUsingBackground(const std::string& name)const;
-	/*! get the latest pixel sum for the image
-	@param[in] std::string, name
-	@param[out] long, value */
-	long getNpointStepSize(const std::string& name)const;
-	/*! set the Npoint scaling stepsize
-	@param[in] std::string, name
-	@param[in] long, new stepsize
-	@param[out] bool, value */
-	bool setNpointStepSize(const std::string& name,long val);
+	bool isNotUsingBackgroundImage(const std::string& name)const;
+
+                                                                                          
+//	                         __     __                 __       
+//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
+//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
+//	                                                            
+//	 __   __    
+//	|__) /  \ | 
+//	|  \ \__/ | 
+//	 
+
+//	 __                            __      __             __                ___       ___      
+//	/ _`  /\  | |\ |     /\  |\ | |  \    |__) |     /\  /  ` |__/    |    |__  \  / |__  |    
+//	\__> /~~\ | | \|    /~~\ | \| |__/    |__) |___ /~~\ \__, |  \    |___ |___  \/  |___ |___ 
+//	 
+
+//	 __   __                  __                 __           __   __         __   __  
+//	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
+//	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
+//	
+
+//	       ___   __   
+//	|     |__   |  \  
+//	|___ .|___ .|__/ .
+//
+
+	//----------------------------------------------------------------------------------------------------------------
+	//			 __             __   __        __  ___    
+	//			/__` |\ |  /\  |__) /__` |__| /  \  |     
+	//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+	//
+
+//	 __         ___          __   __            ___  __  
+//	|__) | \_/ |__  |       /  ` /  \ |  | |\ |  |  /__` 
+//	|    | / \ |___ |___    \__, \__/ \__/ | \|  |  .__/ 
+//	        
+
+/*
+				  __   ___                             __     __
+	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__`
+	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/
+
+*/
+
+
 	/*! get the latest pixel sum for the image
 	@param[in] std::string, name	
 	@param[out] double, value */

@@ -66,297 +66,319 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 		//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
 		// 
-			.def("getCentreXPixel", &Camera::getCentreXPixel)
-			.def("getCentreYPixel", &Camera::getCentreYPixel)
-			.def("setCentreXPixel", &Camera::setCentreXPixel)
-			.def("setCentreYPixel", &Camera::setCentreYPixel)
-			.def("setCentrePixels", &Camera::setCentrePixels)
-			.def("setMechanicalCentre", &Camera::setMechanicalCentre)
-			.def("setOperatingCenter", &Camera::setOperatingCenter)
-			.def("getOperatingCentreYPixel", &Camera::getOperatingCentreYPixel)
-			.def("getOperatingCentreYPixel", &Camera::getOperatingCentreYPixel)
-			.def("getMechanicalCentreXPixel", &Camera::getMechanicalCentreXPixel)
-			.def("getMechanicalCentreYPixel", &Camera::getMechanicalCentreYPixel)
-			//  
-			//  			  __   ___ __    __  ___
-			//  |  |\/|  /\  / _` |__ /__` |  / |__
-			//  |  |  | /~~\ \__> |___.__/ | /_ |___
-			// 
-			.def("getPixelWidth", &Camera::getPixelWidth)
-			.def("getPixelHeight", &Camera::getPixelHeight)
-			.def("getArrayDataPixelCountX", &Camera::getArrayDataPixelCountX)
-			.def("getArrayDataPixelCountY", &Camera::getArrayDataPixelCountY)
-			.def("getBinaryDataPixelCountX", &Camera::getBinaryDataPixelCountX)
-			.def("getBinaryDataPixelCountY", &Camera::getBinaryDataPixelCountY)
-			//	 __   __                __        __  
-			//	/  ` |__) |  |    |    /  \  /\  |  \ 
-			//	\__, |    \__/    |___ \__/ /~~\ |__/ 
-			//	  
-			.def("getCPUTotal", &Camera::getCPUTotal)
-			.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
-			.def("getCPUNPoint", &Camera::getCPUNPoint)
-			.def("getCPUDot", &Camera::getCPUDot)
-			//	              __   ___     __        ___  __                 __  
-			//	|  |\/|  /\  / _` |__     /  \ \  / |__  |__) |     /\  \ / /__` 
-			//	|  |  | /~~\ \__> |___    \__/  \/  |___ |  \ |___ /~~\  |  .__/ 
-			//	
-			.def("enableOverlayCross", &Camera::enableOverlayCross)
-			.def("disableOverlayCross", &Camera::disableOverlayCross)
-			.def("getOverlayCrossState", &Camera::getOverlayCrossState)
-			.def("isOverlayCrossEnabled", &Camera::isOverlayCrossEnabled)
-			.def("isOverlayCrossDisabled", &Camera::isOverlayCrossDisabled)
-			.def("enableOverlayMask", &Camera::enableOverlayMask)
-			.def("disableOverlayMask", &Camera::disableOverlayMask)
-			.def("getOverlayMaskState", &Camera::getOverlayMaskState)
-			.def("isOverlayMaskEnabled", &Camera::isOverlayMaskEnabled)
-			.def("isOverlayMaskDisabled", &Camera::isOverlayMaskDisabled)
-			.def("enableOverlayResult", &Camera::enableOverlayResult)
-			.def("disableOverlayResult", &Camera::disableOverlayResult)
-			.def("getOverlayResultState", &Camera::getOverlayResultState)
-			.def("isOverlayResultEnabled", &Camera::isOverlayResultEnabled)
-			.def("isOverlayResultDisabled", &Camera::isOverlayResultDisabled)
-			.def("disableAllOverlay", &Camera::disableAllOverlay)
-			//	              __   ___     __        ___  ___  ___  __  
-			//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
-			//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
-			//	
+		.def("getCentreXPixel", &Camera::getCentreXPixel)
+		.def("getCentreYPixel", &Camera::getCentreYPixel)
+		.def("setCentreXPixel", &Camera::setCentreXPixel)
+		.def("setCentreYPixel", &Camera::setCentreYPixel)
+		.def("setCentrePixels", &Camera::setCentrePixels)
+		.def("setMechanicalCentre", &Camera::setMechanicalCentre)
+		.def("setOperatingCenter", &Camera::setOperatingCenter)
+		.def("getOperatingCentreYPixel", &Camera::getOperatingCentreYPixel)
+		.def("getOperatingCentreYPixel", &Camera::getOperatingCentreYPixel)
+		.def("getMechanicalCentreXPixel", &Camera::getMechanicalCentreXPixel)
+		.def("getMechanicalCentreYPixel", &Camera::getMechanicalCentreYPixel)
+		//  
+		//  			  __   ___ __    __  ___
+		//  |  |\/|  /\  / _` |__ /__` |  / |__
+		//  |  |  | /~~\ \__> |___.__/ | /_ |___
+		// 
+		.def("getPixelWidth", &Camera::getPixelWidth)
+		.def("getPixelHeight", &Camera::getPixelHeight)
+		.def("getArrayDataPixelCountX", &Camera::getArrayDataPixelCountX)
+		.def("getArrayDataPixelCountY", &Camera::getArrayDataPixelCountY)
+		.def("getBinaryDataPixelCountX", &Camera::getBinaryDataPixelCountX)
+		.def("getBinaryDataPixelCountY", &Camera::getBinaryDataPixelCountY)
+		//	 __   __                __        __  
+		//	/  ` |__) |  |    |    /  \  /\  |  \ 
+		//	\__, |    \__/    |___ \__/ /~~\ |__/ 
+		//	  
+		.def("getCPUTotal", &Camera::getCPUTotal)
+		.def("getCPUCropSubMask", &Camera::getCPUCropSubMask)
+		.def("getCPUNPoint", &Camera::getCPUNPoint)
+		.def("getCPUDot", &Camera::getCPUDot)
+		//	              __   ___     __        ___  __                 __  
+		//	|  |\/|  /\  / _` |__     /  \ \  / |__  |__) |     /\  \ / /__` 
+		//	|  |  | /~~\ \__> |___    \__/  \/  |___ |  \ |___ /~~\  |  .__/ 
+		//	
+		.def("enableOverlayCross", &Camera::enableOverlayCross)
+		.def("disableOverlayCross", &Camera::disableOverlayCross)
+		.def("getOverlayCrossState", &Camera::getOverlayCrossState)
+		.def("isOverlayCrossEnabled", &Camera::isOverlayCrossEnabled)
+		.def("isOverlayCrossDisabled", &Camera::isOverlayCrossDisabled)
+		.def("enableOverlayMask", &Camera::enableOverlayMask)
+		.def("disableOverlayMask", &Camera::disableOverlayMask)
+		.def("getOverlayMaskState", &Camera::getOverlayMaskState)
+		.def("isOverlayMaskEnabled", &Camera::isOverlayMaskEnabled)
+		.def("isOverlayMaskDisabled", &Camera::isOverlayMaskDisabled)
+		.def("enableOverlayResult", &Camera::enableOverlayResult)
+		.def("disableOverlayResult", &Camera::disableOverlayResult)
+		.def("getOverlayResultState", &Camera::getOverlayResultState)
+		.def("isOverlayResultEnabled", &Camera::isOverlayResultEnabled)
+		.def("isOverlayResultDisabled", &Camera::isOverlayResultDisabled)
+		.def("disableAllOverlay", &Camera::disableAllOverlay)
+		//	              __   ___     __        ___  ___  ___  __  
+		//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
+		//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
+		//	
 
-			.def("getImageBufferTrigger", &Camera::getImageBufferTrigger)
-			.def("getImageBufferFilePath", &Camera::getImageBufferFilePath)
-			.def("getImageBufferFileName", &Camera::getImageBufferFileName)
-			.def("getImageBufferFileNumber", &Camera::getImageBufferFileNumber)
-			//.def("triggerImageBuffer", &Camera::triggerImageBuffer)
-			.def("getLastImageBufferDirectoryandFileName", &Camera::getLastImageBufferDirectoryandFileName)
-			//.def("getLastestBufferDirectoryandFileName", &Camera::getLastImageBufferDirectoryandFileName)
-			.def("getLastImageBufferDirectory", &Camera::getLastImageBufferDirectory)
-			//.def("getLastestBufferDirectory", &Camera::getLastImageBufferDirectory)
-			.def("getLastImageBufferFileName", &Camera::getLastImageBufferFileName)
-			//.def("getLastestBufferFileName", &Camera::getLastImageBufferFileName)
+		.def("getImageBufferTrigger", &Camera::getImageBufferTrigger)
+		.def("getImageBufferFilePath", &Camera::getImageBufferFilePath)
+		.def("getImageBufferFileName", &Camera::getImageBufferFileName)
+		.def("getImageBufferFileNumber", &Camera::getImageBufferFileNumber)
+		//.def("triggerImageBuffer", &Camera::triggerImageBuffer)
+		.def("getLastImageBufferDirectoryandFileName", &Camera::getLastImageBufferDirectoryandFileName)
+		//.def("getLastestBufferDirectoryandFileName", &Camera::getLastImageBufferDirectoryandFileName)
+		.def("getLastImageBufferDirectory", &Camera::getLastImageBufferDirectory)
+		//.def("getLastestBufferDirectory", &Camera::getLastImageBufferDirectory)
+		.def("getLastImageBufferFileName", &Camera::getLastImageBufferFileName)
+		//.def("getLastestBufferFileName", &Camera::getLastImageBufferFileName)
 
-			//              __   ___     __        __  ___       __   ___               __      __             _ 
-			//|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
-			//|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
-			//
-			.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
-			.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
-			.def("getLastDirectory", &Camera::getLastDirectory)
-			.def("getLatestDirectory", &Camera::getLastDirectory)
-			.def("getLastestFileName", &Camera::getLastFileName)
-			.def("getLastFileName", &Camera::getLastFileName)
-			.def("getCaptureState", &Camera::getCaptureState)
-			.def("isCapturing", &Camera::isCapturing)
-			.def("isNotCapturing", &Camera::isNotCapturing)
-			.def("isWriting", &Camera::isWriting)
-			.def("isNotWriting", &Camera::isNotWriting)
-			.def("isCapturingOrSaving", &Camera::isCapturingOrSaving)
-			.def("isNotCapturingOrSaving", &Camera::isNotCapturingOrSaving)
-			.def("isSaving", &Camera::isWriting)
-			.def("isNotSaving", &Camera::isNotWriting)
-			// image captur e/ save 
-			.def("captureAndSave", captureAndSave_with_shotcount)
-			.def("collectAndSave", captureAndSave_without_shotcount)
-			.def("isCollectingOrSaving", &Camera::isCapturingOrSaving) // VCC backwards compatability 
-			.def("isCollecting", &Camera::isCapturing)
-			.def("isNotCollecting", &Camera::isNotCapturing)
-			.def("didLastCaptureAndSaveSucceed", &Camera::didLastCaptureAndSaveSucceed)
-
-
-
-
-
-
-
-
-
-
-			.def("getCamType", &Camera::getCamType)
-
-
-			.def("getX", &Camera::getX			) // backwards compatibale, prefer to not use
-			.def("getY", &Camera::getY			) // backwards compatibale, prefer to not use
-			.def("getXmm", &Camera::getX)
-			.def("getYmm", &Camera::getY)
-			.def("getSigX", &Camera::getSigX		)
-			.def("getSigY", &Camera::getSigY		)
-			.def("getSigXY", &Camera::getSigXY		)
-			.def("getSigXmm", &Camera::getSigX)
-			.def("getSigYmm", &Camera::getSigY)
-			.def("getSigXYmm", &Camera::getSigXY)
-			.def("getXPix", &Camera::getXPix		)
-			.def("getXPixScaleFactor", &Camera::getXPixScaleFactor)
-			.def("getYPix", &Camera::getYPix		)
-			.def("getYPixScaleFactor", &Camera::getYPixScaleFactor)
-			.def("getSigXPix", &Camera::getSigXPix		)
-			.def("getSigYPix", &Camera::getSigYPix		)
-			.def("getSigXYPix", &Camera::getSigXYPix	)
-			//.def("getNumXPixFromArrayData", &Camera::getNumXPixFromArrayData)
-			//.def("getNumYPixFromArrayData", &Camera::getNumYPixFromArrayData)
-			//.def("getFullNumXPix", &Camera::getFullNumXPix)
-			//.def("getFullNumYPix", &Camera::getFullNumYPix)
-			.def("setX", &Camera::setX			)
-			.def("setY", &Camera::setY			)
-			.def("setSigX", &Camera::setSigX		)
-			.def("setSigY", &Camera::setSigY		)
-			.def("setSigXY", &Camera::setSigXY		)
-			.def("setXmm", &Camera::setX)
-			.def("setYmm", &Camera::setY)
-			.def("setSigXmm", &Camera::setSigX)
-			.def("setSigYmm", &Camera::setSigY)
-			.def("setSigXYmm", &Camera::setSigXY)
-			.def("isBusy", &Camera::isBusy)
-			.def("isNotBusy", &Camera::isNotBusy)
-			.def("getANAPixelResults", &Camera::getPixelResults_Py)
-			.def("getMaskXCenter", &Camera::getMaskXCenter)
-			.def("getMaskYCenter", &Camera::getMaskYCenter)
-			.def("getMaskXRadius", &Camera::getMaskXRadius)
-			.def("getMaskYRadius", &Camera::getMaskYRadius)
-			.def("getMask", &Camera::getMask_Py)
-			.def("getROIMinX", &Camera::getROIMinX)
-			.def("getROIMinY", &Camera::getROIMinY)
-			.def("getROISizeX", &Camera::getROISizeX)
-			.def("getROISizeY", &Camera::getROISizeY)
-			.def("getROI", &Camera::getROI_Py)
-			.def("getMaskAndROIxMax", &Camera::getMaskAndROIxMax)
-			.def("getMaskAndROIyMax", &Camera::getMaskAndROIyMax)
-			.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
-			.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
-			.def("getMaskandROI", &Camera::getMaskandROI_Py)
-			.def("updateImageData", &Camera::updateImageData)
-			.def("updateImageDataWithTimeStamp", &Camera::updateImageDataWithTimeStamp)
-			.def("updateROIData", &Camera::updateROIData)
-			.def("updateROIDataWithTimeStamp", &Camera::updateROIDataWithTimeStamp)
-			.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getImageData", &Camera::getImageData_Py)
-			.def("getROIData", &Camera::getROIData_Py)
-			.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
-			.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
-			.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
-			.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
-			.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
-			.def("setMaskandROI", &Camera::setMaskandROI_Py)
-			.def("setMaskXCenter", &Camera::setMaskXCenter) 			// we don:t want people to use these!! 
-			.def("setMaskYCenter", &Camera::setMaskYCenter)
-			.def("setMaskXRadius", &Camera::setMaskXRadius)
-			.def("setMaskYRadius", &Camera::setMaskYRadius)
-			.def("setMask", setMask_4PARAM)
-			.def("setMask", &Camera::setMask_Py)
-			.def("setROIMinX", &Camera::setROIMinX)
-			.def("setROIMinY", &Camera::setROIMinY)
-			.def("setROISizeX", &Camera::setROISizeX)
-			.def("setROIsizeY", &Camera::setROISizeY)
-			.def("setROI", setROI_4PARAM)
-			.def("setROI", &Camera::setROI_Py)
-			.def("setUseFloor", &Camera::setUseFloor)
-			.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
-			.def("setFloorLevel", &Camera::setFloorLevel)
-			.def("getUseFloorState", &Camera::getUseFloorState)
-			.def("isUsingFloor", &Camera::isUsingFloor)
-			.def("isNotUsingFloor", &Camera::isNotUsingFloor)
-			.def("getFloorLevel", &Camera::getFloorLevel)
-			.def("getFlooredPtsCount", &Camera::getFlooredPtsCount)
-			.def("getFlooredPtsPercent", &Camera::getFlooredPtsPercent)
+		//              __   ___     __        __  ___       __   ___               __      __             _ 
+		//|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
+		//|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
+		//
+		.def("getLastDirectoryandFileName", &Camera::getLastDirectoryandFileName)
+		.def("getLastestDirectoryandFileName", &Camera::getLastDirectoryandFileName)
+		.def("getLastDirectory", &Camera::getLastDirectory)
+		.def("getLatestDirectory", &Camera::getLastDirectory)
+		.def("getLastestFileName", &Camera::getLastFileName)
+		.def("getLastFileName", &Camera::getLastFileName)
+		.def("getCaptureState", &Camera::getCaptureState)
+		.def("isCapturing", &Camera::isCapturing)
+		.def("isNotCapturing", &Camera::isNotCapturing)
+		.def("isWriting", &Camera::isWriting)
+		.def("isNotWriting", &Camera::isNotWriting)
+		.def("isCapturingOrSaving", &Camera::isCapturingOrSaving)
+		.def("isNotCapturingOrSaving", &Camera::isNotCapturingOrSaving)
+		.def("isSaving", &Camera::isWriting)
+		.def("isNotSaving", &Camera::isNotWriting)
+		// image captur e/ save 
+		.def("captureAndSave", captureAndSave_with_shotcount)
+		.def("collectAndSave", captureAndSave_without_shotcount)
+		.def("isCollectingOrSaving", &Camera::isCapturingOrSaving) // VCC backwards compatability 
+		.def("isCollecting", &Camera::isCapturing)
+		.def("isNotCollecting", &Camera::isNotCapturing)
+		.def("didLastCaptureAndSaveSucceed", &Camera::didLastCaptureAndSaveSucceed)
+		//	 __  ___       __  ___   /  __  ___  __   __           __   __          __          __  
+		//	/__`  |   /\  |__)  |   /  /__`  |  /  \ |__)     /\  /  ` /  \ |  | | |__) | |\ | / _` 
+		//	.__/  |  /~~\ |  \  |  /   .__/  |  \__/ |       /~~\ \__, \__X \__/ | |  \ | | \| \__> 
+		//
+		.def("startAcquiring", &Camera::startAcquiring)
+		.def("stopAcquiring", &Camera::stopAcquiring)
+		.def("toggleAcquiring", &Camera::toggleAcquiring)
+		.def("isAcquiring", &Camera::isAcquiring)
+		.def("isNotAcquiring", &Camera::isNotAcquiring)
+		.def("getAcquireState", &Camera::getAcquireState)
+		.def("getAcquireTime", &Camera::getAcquireTime)
+		.def("getAcquirePeriod", &Camera::getAcquirePeriod)
+		.def("getArrayRate", &Camera::getArrayRate)
+		//	              __   ___                             __     __  
+		//	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
+		//	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/ 
+		//
+		.def("startAnalysing", &Camera::startAnalysing)
+		.def("stopAnalysing", &Camera::stopAnalysing)
+		.def("toggleAnalysing", &Camera::toggleAnalysing)
+		.def("isAnalysing", &Camera::isAnalysing)
+		.def("isNotAnalysing", &Camera::isNotAnalysing)
+		.def("getAnalysisState", &Camera::getAnalysisState)
+		//	                         __     __           __   __         ___     __   __                    __  
+		//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
+		//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
+		//	                                                                                                    
+		.def("setUseNPointScaling", &Camera::setUseNPointScaling)
+		.def("setDoNotUseNPointScaling", &Camera::setDoNotUseNPointScaling)
+		.def("toggleUseNpointScaling", &Camera::toggleUseNpointScaling)
+		.def("getNPointScalingState", &Camera::getNPointScalingState)
+		.def("isUsingNPointScaling", &Camera::isUsingNPointScaling)
+		.def("isNotUsingNPointScaling", &Camera::isNotUsingNPointScaling)
+		.def("getNpointScalingStepSize", &Camera::getNpointScalingStepSize)
+		.def("setNpointScalingStepSize", &Camera::setNpointScalingStepSize)
+		//	                         __     __           __     __   ___     ___       __   __   __  
+		//	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
+		//	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
+		//	 
+		.def("setUseFloor", &Camera::setUseFloor)
+		.def("setDoNotUseFloor", &Camera::setDoNotUseFloor)
+		.def("toggleUseFloor", &Camera::toggleUseFloor)
+		.def("setFloorLevel", &Camera::setFloorLevel)
+		.def("getUseFloorState", &Camera::getUseFloorState)
+		.def("isUsingFloor", &Camera::isUsingFloor)
+		.def("isNotUsingFloor", &Camera::isNotUsingFloor)
+		.def("getFloorLevel", &Camera::getFloorLevel)
+		.def("getFlooredPtsCount", &Camera::getFlooredPtsCount)
+		.def("getFlooredPtsPercent", &Camera::getFlooredPtsPercent)
+		//                         __     __      __        __        __   __   __             __     
+		// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+		///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+		//  
+		.def("setNewBackgroundImage", &Camera::setNewBackgroundImage)
+		.def("setUseBackgroundImage", &Camera::setUseBackgroundImage)
+		.def("setDoNotUseBackgroundImage", &Camera::setDoNotUseBackgroundImage)
+		.def("toggleUseBackgroundImage", &Camera::toggleUseBackgroundImage)
+		.def("getUsingBackgroundImageState", &Camera::getUsingBackgroundImageState)
+		.def("isUsingBackgroundImage", &Camera::isUsingBackgroundImage)
+		.def("isNotUsingBackgroundImage", &Camera::isNotUsingBackgroundImage)
 
 
-			.def("setNewBackground", &Camera::setNewBackground)
-			.def("useBackground", &Camera::useBackground)
-			.def("getUsingBackgroundState", &Camera::getUsingBackgroundState)
-			.def("isUsingBackground", &Camera::isUsingBackground)
-			.def("isNotUsingBackground", &Camera::isNotUsingBackground)
-			.def("useNPoint", &Camera::useNPoint)
-			.def("getNPointState", &Camera::getNPointState)
-			.def("isUsingNPoint", &Camera::isUsingNPoint)
-			.def("isNotUsingNPoint", &Camera::isNotUsingNPoint)
-			//.def("getStepSize", &Camera::getStepSize)
-			//.def("getAnalysisStepSize", &Camera::getStepSize)
-			.def("getNpointStepSize", &Camera::getNpointStepSize)
-			//.def("setStepSize", &Camera::setAnalysisStepSize)
-			//.def("setAnalysisStepSize", &Camera::setStepSize)
-			.def("setNpointStepSize", &Camera::setNpointStepSize)
+
+
+
+
+
+		.def("getCamType", &Camera::getCamType)
+
+
+		.def("getX", &Camera::getX			) // backwards compatibale, prefer to not use
+		.def("getY", &Camera::getY			) // backwards compatibale, prefer to not use
+		.def("getXmm", &Camera::getX)
+		.def("getYmm", &Camera::getY)
+		.def("getSigX", &Camera::getSigX		)
+		.def("getSigY", &Camera::getSigY		)
+		.def("getSigXY", &Camera::getSigXY		)
+		.def("getSigXmm", &Camera::getSigX)
+		.def("getSigYmm", &Camera::getSigY)
+		.def("getSigXYmm", &Camera::getSigXY)
+		.def("getXPix", &Camera::getXPix		)
+		.def("getXPixScaleFactor", &Camera::getXPixScaleFactor)
+		.def("getYPix", &Camera::getYPix		)
+		.def("getYPixScaleFactor", &Camera::getYPixScaleFactor)
+		.def("getSigXPix", &Camera::getSigXPix		)
+		.def("getSigYPix", &Camera::getSigYPix		)
+		.def("getSigXYPix", &Camera::getSigXYPix	)
+		//.def("getNumXPixFromArrayData", &Camera::getNumXPixFromArrayData)
+		//.def("getNumYPixFromArrayData", &Camera::getNumYPixFromArrayData)
+		//.def("getFullNumXPix", &Camera::getFullNumXPix)
+		//.def("getFullNumYPix", &Camera::getFullNumYPix)
+		.def("setX", &Camera::setX			)
+		.def("setY", &Camera::setY			)
+		.def("setSigX", &Camera::setSigX		)
+		.def("setSigY", &Camera::setSigY		)
+		.def("setSigXY", &Camera::setSigXY		)
+		.def("setXmm", &Camera::setX)
+		.def("setYmm", &Camera::setY)
+		.def("setSigXmm", &Camera::setSigX)
+		.def("setSigYmm", &Camera::setSigY)
+		.def("setSigXYmm", &Camera::setSigXY)
+		.def("isBusy", &Camera::isBusy)
+		.def("isNotBusy", &Camera::isNotBusy)
+		.def("getANAPixelResults", &Camera::getPixelResults_Py)
+		.def("getMaskXCenter", &Camera::getMaskXCenter)
+		.def("getMaskYCenter", &Camera::getMaskYCenter)
+		.def("getMaskXRadius", &Camera::getMaskXRadius)
+		.def("getMaskYRadius", &Camera::getMaskYRadius)
+		.def("getMask", &Camera::getMask_Py)
+		.def("getROIMinX", &Camera::getROIMinX)
+		.def("getROIMinY", &Camera::getROIMinY)
+		.def("getROISizeX", &Camera::getROISizeX)
+		.def("getROISizeY", &Camera::getROISizeY)
+		.def("getROI", &Camera::getROI_Py)
+		.def("getMaskAndROIxMax", &Camera::getMaskAndROIxMax)
+		.def("getMaskAndROIyMax", &Camera::getMaskAndROIyMax)
+		.def("getMaskAndROIxSize", &Camera::getMaskAndROIxSize)
+		.def("getMaskAndROIySize", &Camera::getMaskAndROIySize)
+		.def("getMaskandROI", &Camera::getMaskandROI_Py)
+		.def("updateImageData", &Camera::updateImageData)
+		.def("updateImageDataWithTimeStamp", &Camera::updateImageDataWithTimeStamp)
+		.def("updateROIData", &Camera::updateROIData)
+		.def("updateROIDataWithTimeStamp", &Camera::updateROIDataWithTimeStamp)
+		.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getImageData", &Camera::getImageData_Py)
+		.def("getROIData", &Camera::getROIData_Py)
+		.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
+		.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
+		.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
+		.def("setMaskAndROIySize", &Camera::setMaskAndROIySize)
+		.def("setMaskandROI_4PARAM", setMaskandROI_4PARAM)
+		.def("setMaskandROI", &Camera::setMaskandROI_Py)
+		.def("setMaskXCenter", &Camera::setMaskXCenter) 			// we don:t want people to use these!! 
+		.def("setMaskYCenter", &Camera::setMaskYCenter)
+		.def("setMaskXRadius", &Camera::setMaskXRadius)
+		.def("setMaskYRadius", &Camera::setMaskYRadius)
+		.def("setMask", setMask_4PARAM)
+		.def("setMask", &Camera::setMask_Py)
+		.def("setROIMinX", &Camera::setROIMinX)
+		.def("setROIMinY", &Camera::setROIMinY)
+		.def("setROISizeX", &Camera::setROISizeX)
+		.def("setROIsizeY", &Camera::setROISizeY)
+		.def("setROI", setROI_4PARAM)
+		.def("setROI", &Camera::setROI_Py)
+
+			
 			.def("getSumIntensity", &Camera::getSumIntensity)
-			.def("getAvgIntensity", &Camera::getAvgIntensity)
-			.def("setSumIntensity", &Camera::setSumIntensity)
-			.def("setAvgIntensity", &Camera::setAvgIntensity)
-			.def("setAvgPixValueForBeam", &Camera::setAveragePixelValueForBeam)
-			.def("getAvgPixValueForBeam", &Camera::getAveragePixelValueForBeam)
-			.def("hasBeam", &Camera::hasBeam)
-			.def("hasNoBeam", &Camera::hasNoBeam)
-			.def("getAnalysisData", &Camera::getAnalayisData_Py)
-			.def("startAcquiring", &Camera::startAcquiring)
-			.def("stopAcquiring", &Camera::stopAcquiring)
-			.def("isAcquiring", &Camera::isAcquiring)
-			.def("isNotAcquiring", &Camera::isNotAcquiring)
-			.def("getAcquireState", &Camera::getAcquireState)
-			.def("startAnalysing", &Camera::startAnalysing)
-			.def("stopAnalysing", &Camera::stopAnalysing)
-			.def("isAnalysing", &Camera::isAnalysing)
-			.def("isNotAnalysing", &Camera::isNotAnalysing)
-			.def("getAnalysisState", &Camera::getAnalysisState)
-			.def("getAcquireTime", &Camera::getAcquireTime)
-			.def("getAcquirePeriod", &Camera::getAcquirePeriod)
-			.def("getArrayRate", &Camera::getArrayRate)
-			.def("getTemperature", &Camera::getTemperature)
-			.def("hasLED", &Camera::hasLED)
-			.def("setLEDOn", &Camera::setLEDOn)
-			.def("setLEDOff", &Camera::setLEDOff)
-			.def("isLEDOn", &Camera::isLEDOn)
-			.def("isLEDOff", &Camera::isLEDOff)
-			.def("getLEDState", &Camera::getLEDState)
-			.def("getMMResults", &Camera::getMMResults_Py)
+		.def("getAvgIntensity", &Camera::getAvgIntensity)
+		.def("setSumIntensity", &Camera::setSumIntensity)
+		.def("setAvgIntensity", &Camera::setAvgIntensity)
+		.def("setAvgPixValueForBeam", &Camera::setAveragePixelValueForBeam)
+		.def("getAvgPixValueForBeam", &Camera::getAveragePixelValueForBeam)
+		.def("hasBeam", &Camera::hasBeam)
+		.def("hasNoBeam", &Camera::hasNoBeam)
+		.def("getAnalysisData", &Camera::getAnalayisData_Py)
 
-			.def("getMMResults", &Camera::getMMResults_Py)
+		
+		.def("getTemperature", &Camera::getTemperature)
+		.def("hasLED", &Camera::hasLED)
+		.def("setLEDOn", &Camera::setLEDOn)
+		.def("setLEDOff", &Camera::setLEDOff)
+		.def("isLEDOn", &Camera::isLEDOn)
+		.def("isLEDOff", &Camera::isLEDOff)
+		.def("getLEDState", &Camera::getLEDState)
+		.def("getMMResults", &Camera::getMMResults_Py)
+
+		.def("getMMResults", &Camera::getMMResults_Py)
 				
-			.def("getActiveCameraLimit", &Camera::getActiveCameraLimit)
-			.def("getActiveCameraCount", &Camera::getActiveCameraCount)
-			.def("canStartCamera", &Camera::canStartCamera)
+		.def("getActiveCameraLimit", &Camera::getActiveCameraLimit)
+		.def("getActiveCameraCount", &Camera::getActiveCameraCount)
+		.def("canStartCamera", &Camera::canStartCamera)
 				
-			.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)
-			.def("saveImageBuffer", &Camera::saveImageBuffer)
-			.def("resetCaptureAndSaveError", &Camera::resetCaptureAndSaveError)
-			.def("stopAcquiringAndWait", &Camera::stopAcquiringAndWait)
+		.def("areAllRunningStatsFull", &Camera::areAllRunningStatsFull)
+		.def("saveImageBuffer", &Camera::saveImageBuffer)
+		.def("resetCaptureAndSaveError", &Camera::resetCaptureAndSaveError)
+		.def("stopAcquiringAndWait", &Camera::stopAcquiringAndWait)
 			
-			// TODO the runnings atsts and buffersd a re being updated 
+		// TODO the runnings atsts and buffersd a re being updated 
 
-			.def("getBufferSize", &Camera::getBufferSize)
-			.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
-			.def("setAllRunningStatBufferSizes", &Camera::setAllRunningStatBufferSizes)
-			.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
-			.def("clearAllRunningStatBuffers", &Camera::clearAllRunningStatBuffers)
-			.def("getRunningStats", &Camera::getAllRunningStats)
+		.def("getBufferSize", &Camera::getBufferSize)
+		.def("setBufferSize", &Camera::setAllRunningStatBufferSizes)
+		.def("setAllRunningStatBufferSizes", &Camera::setAllRunningStatBufferSizes)
+		.def("clearBuffers", &Camera::clearAllRunningStatBuffers)
+		.def("clearAllRunningStatBuffers", &Camera::clearAllRunningStatBuffers)
+		.def("getRunningStats", &Camera::getAllRunningStats)
 
-			.def("clearAllRunningStats", &Camera::clearAllRunningStats)
-			.def("setAllRunningStatSizes", &Camera::setAllRunningStatSizes)
+		.def("clearAllRunningStats", &Camera::clearAllRunningStats)
+		.def("setAllRunningStatSizes", &Camera::setAllRunningStatSizes)
 
-			.def("getXPixRunningStats", &Camera::getXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getYPixRunningStats", &Camera::getYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSigmaXPixRunningStats", &Camera::getSigmaXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSigmaYPixRunningStats", &Camera::getSigmaYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSigmaXYPixRunningStats", &Camera::getSigmaXYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getXmmRunningStats", &Camera::getXmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getYmmRunningStats", &Camera::getYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSigmaXmmRunningStats", &Camera::getSigmaXmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSigmaYmmRunningStats", &Camera::getSigmaYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSigmaXYmmRunningStats", &Camera::getSigmaXYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getAvgIntensityRunningStats", &Camera::getAvgIntensityRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getSumIntensityRunningStats", &Camera::getSumIntensityRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getScreen", &Camera::getScreen)
+		.def("getXPixRunningStats", &Camera::getXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getYPixRunningStats", &Camera::getYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSigmaXPixRunningStats", &Camera::getSigmaXPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSigmaYPixRunningStats", &Camera::getSigmaYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSigmaXYPixRunningStats", &Camera::getSigmaXYPixRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getXmmRunningStats", &Camera::getXmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getYmmRunningStats", &Camera::getYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSigmaXmmRunningStats", &Camera::getSigmaXmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSigmaYmmRunningStats", &Camera::getSigmaYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSigmaXYmmRunningStats", &Camera::getSigmaXYmmRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getAvgIntensityRunningStats", &Camera::getAvgIntensityRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getSumIntensityRunningStats", &Camera::getSumIntensityRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>())
+		.def("getScreen", &Camera::getScreen)
 			
-			.def("setGain", &Camera::setGain)
-			.def("getGain", &Camera::getGain)
-			.def("setBlackLevel", &Camera::setBlackLevel)
-			.def("getBlackLevel", &Camera::getBlackLevel)
+		.def("setGain", &Camera::setGain)
+		.def("getGain", &Camera::getGain)
+		.def("setBlackLevel", &Camera::setBlackLevel)
+		.def("getBlackLevel", &Camera::getBlackLevel)
 			
 				
-			.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)
+		.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)
 
 
 
-			.def("debugMessagesOff", &Camera::debugMessagesOff)
-			.def("messagesOn", &Camera::messagesOn)
-			.def("messagesOff", &Camera::messagesOff)
-			.def("isDebugOn", &Camera::isDebugOn)
-			.def("isMessagingOn", &Camera::isMessagingOn)
-			;
+		.def("debugMessagesOff", &Camera::debugMessagesOff)
+		.def("messagesOn", &Camera::messagesOn)
+		.def("messagesOff", &Camera::messagesOff)
+		.def("isDebugOn", &Camera::isDebugOn)
+		.def("isMessagingOn", &Camera::isMessagingOn)
+		;
 	}
 	void expose_camera_factory_object() 
 	{
@@ -398,8 +420,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			
 			
 			.def("checkLastAppliedSnapshot", &CameraFactory::checkLastAppliedSnapshot, (boost::python::args("self")))
-
-
 			//                   ___  __  
 			//  |\ |  /\   |\/| |__  /__` 
 			//  | \| /~~\  |  | |___ .__/ 
@@ -435,7 +455,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getOperatingCentreYPixel", &CameraFactory::getOperatingCentreYPixel)
 			.def("getMechanicalCentreXPixel", &CameraFactory::getMechanicalCentreXPixel)
 			.def("getMechanicalCentreYPixel", &CameraFactory::getMechanicalCentreYPixel)
-			//  
 			//  			  __   ___ __    __  ___
 			//  |  |\/|  /\  / _` |__ /__` |  / |__
 			//  |  |  | /~~\ \__> |___.__/ | /_ |___
@@ -446,7 +465,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getArrayDataPixelCountY", &CameraFactory::getArrayDataPixelCountY)
 			.def("getBinaryDataPixelCountX", &CameraFactory::getBinaryDataPixelCountX)
 			.def("getBinaryDataPixelCountY", &CameraFactory::getBinaryDataPixelCountY)
-
 			//	 __   __                __        __  
 			//	/  ` |__) |  |    |    /  \  /\  |  \ 
 			//	\__, |    \__/    |___ \__/ /~~\ |__/ 
@@ -455,49 +473,26 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getCPUCropSubMask", &CameraFactory::getCPUCropSubMask)
 			.def("getCPUNPoint", &CameraFactory::getCPUNPoint)
 			.def("getCPUDot", &CameraFactory::getCPUDot)
-			//	              __   ___     __        ___  __                 __  
-			//	|  |\/|  /\  / _` |__     /  \ \  / |__  |__) |     /\  \ / /__` 
-			//	|  |  | /~~\ \__> |___    \__/  \/  |___ |  \ |___ /~~\  |  .__/ 
-			//	
-			//	TODO  
-			//	
-			//.def("enableOverlayCross", &CameraFactory::enableOverlayCross)
-			//.def("disableOverlayCross", &CameraFactory::disableOverlayCross)
-			//.def("getOverlayCrossState", &CameraFactory::getOverlayCrossState)
-			//.def("isOverlayCrossEnabled", &CameraFactory::isOverlayCrossEnabled)
-			//.def("isOverlayCrossDisabled", &CameraFactory::isOverlayCrossDisabled)
-			//.def("enableOverlayMask", &CameraFactory::enableOverlayMask)
-			//.def("disableOverlayMask", &CameraFactory::disableOverlayMask)
-			//.def("getOverlayMaskState", &CameraFactory::getOverlayMaskState)
-			//.def("isOverlayMaskEnabled", &CameraFactory::isOverlayMaskEnabled)
-			//.def("isOverlayMaskDisabled", &CameraFactory::isOverlayMaskDisabled)
-			//.def("enableOverlayResult", &CameraFactory::enableOverlayResult)
-			//.def("disableOverlayResult", &CameraFactory::disableOverlayResult)
-			//.def("getOverlayResultState", &CameraFactory::getOverlayResultState)
-			//.def("isOverlayResultEnabled", &CameraFactory::isOverlayResultEnabled)
-			//.def("isOverlayResultDisabled", &CameraFactory::isOverlayResultDisabled)
-			//.def("disableAllOverlay", &CameraFactory::disableAllOverlay)
-//	              __   ___     __        ___  ___  ___  __  
-//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
-//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
-//	
-			//.def("triggerImageBuffer", &CameraFactory::triggerImageBuffer)
-			.def("getImageBufferTrigger", &CameraFactory::getImageBufferTrigger)
-			.def("getImageBufferFilePath", &CameraFactory::getImageBufferFilePath)
-			.def("getImageBufferFileName", &CameraFactory::getImageBufferFileName)
-			.def("getImageBufferFileNumber", &CameraFactory::getImageBufferFileNumber)
-			.def("getLastImageBufferDirectoryandFileName", &CameraFactory::getLastImageBufferDirectoryandFileName)
-			//.def("getLastestBufferDirectoryandFileName", &CameraFactory::getLastImageBufferDirectoryandFileName)
+		//	              __   ___     __        ___  ___  ___  __  
+		//	|  |\/|  /\  / _` |__     |__) |  | |__  |__  |__  |__) 
+		//	|  |  | /~~\ \__> |___    |__) \__/ |    |    |___ |  \ 
+		//	
+		//.def("triggerImageBuffer", &CameraFactory::triggerImageBuffer)
+		.def("getImageBufferTrigger", &CameraFactory::getImageBufferTrigger)
+		.def("getImageBufferFilePath", &CameraFactory::getImageBufferFilePath)
+		.def("getImageBufferFileName", &CameraFactory::getImageBufferFileName)
+		.def("getImageBufferFileNumber", &CameraFactory::getImageBufferFileNumber)
+		.def("getLastImageBufferDirectoryandFileName", &CameraFactory::getLastImageBufferDirectoryandFileName)
+		//.def("getLastestBufferDirectoryandFileName", &CameraFactory::getLastImageBufferDirectoryandFileName)
 
-			.def("getLastImageBufferDirectory", &CameraFactory::getLastImageBufferDirectory)
-			//.def("getLastestBufferDirectory", &CameraFactory::getLastImageBufferDirectory)
-			.def("getLastImageBufferFileName", &CameraFactory::getLastImageBufferFileName)
-			//.def("getLastestBufferFileName", &CameraFactory::getLastImageBufferFileName)
-//	              __   ___     __        __  ___       __   ___               __      __             _ 
-//	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
-//	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
-//	 
-
+		.def("getLastImageBufferDirectory", &CameraFactory::getLastImageBufferDirectory)
+		//.def("getLastestBufferDirectory", &CameraFactory::getLastImageBufferDirectory)
+		.def("getLastImageBufferFileName", &CameraFactory::getLastImageBufferFileName)
+		//.def("getLastestBufferFileName", &CameraFactory::getLastImageBufferFileName)
+		//	              __   ___     __        __  ___       __   ___               __      __             _ 
+		//	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
+		//	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
+		//	 
 			.def("getLastDirectoryandFileName", &CameraFactory::getLastDirectoryandFileName)
 			.def("getLastestDirectoryandFileName", &CameraFactory::getLastDirectoryandFileName)
 			.def("getLastDirectory", &CameraFactory::getLastDirectory)
@@ -519,10 +514,139 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("isCollectingOrSaving", &CameraFactory::isCapturingOrSaving)
 			.def("isCollecting", &CameraFactory::isCapturing)
 			.def("isNotCollecting", &CameraFactory::isNotCapturing)
+	//	 __        __      
+	//	|__) |  | /__` \ / 
+	//	|__) \__/ .__/  |  
+	//
+
+
+//	 __  ___       __  ___   /  __  ___  __   __           __   __          __          __  
+//	/__`  |   /\  |__)  |   /  /__`  |  /  \ |__)     /\  /  ` /  \ |  | | |__) | |\ | / _` 
+//	.__/  |  /~~\ |  \  |  /   .__/  |  \__/ |       /~~\ \__, \__X \__/ | |  \ | | \| \__> 
+//
+//	              __   ___                             __     __  
+//	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
+//	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/ 
+// 
+//	                         __     __           __     __   ___     ___       __   __   __  
+//	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
+//	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
+//
+	.def("setUseFloor", &CameraFactory::setUseFloor)
+	.def("setDoNotUseFloor", &CameraFactory::setDoNotUseFloor)
+	.def("toggleUseFloor", &CameraFactory::toggleUseFloor)
+	.def("setFloorLevel", &CameraFactory::setFloorLevel)
+	.def("getUseFloorState", &CameraFactory::getUseFloorState)
+	.def("isUsingFloor", &CameraFactory::isUsingFloor)
+	.def("isNotUsingFloor", &CameraFactory::isNotUsingFloor)
+	.def("getFloorLevel", &CameraFactory::getFloorLevel)
+	.def("getFlooredPtsCount", &CameraFactory::getFlooredPtsCount)
+	.def("getFlooredPtsPercent", &CameraFactory::getFlooredPtsPercent)
+	//	                         __     __           __   __         ___     __   __                    __  
+	//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
+	//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
+	//	
+	.def("setUseNPointScaling", &CameraFactory::setUseNPointScaling)
+	.def("setDoNotUseNPointScaling", &CameraFactory::setDoNotUseNPointScaling)
+	.def("toggleUseNpointScaling", &CameraFactory::toggleUseNpointScaling)
+	.def("getNPointScalingState", &CameraFactory::getNPointScalingState)
+	.def("isUsingNPointScaling", &CameraFactory::isUsingNPointScaling)
+	.def("isNotUsingNPointScaling", &CameraFactory::isNotUsingNPointScaling)
+	.def("setNpointScalingStepSize", &CameraFactory::setNpointScalingStepSize)
+	.def("getNpointScalingStepSize", &CameraFactory::getNpointScalingStepSize)
+
+
+//                         __     __      __        __        __   __   __             __     
+// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+//                                                                                            
+//	                         __     __                 __       
+//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
+//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
+//	                                                            
+//	 __   __    
+//	|__) /  \ | 
+//	|  \ \__/ | 
+//	 
+
+//	 __                            __      __             __                ___       ___      
+//	/ _`  /\  | |\ |     /\  |\ | |  \    |__) |     /\  /  ` |__/    |    |__  \  / |__  |    
+//	\__> /~~\ | | \|    /~~\ | \| |__/    |__) |___ /~~\ \__, |  \    |___ |___  \/  |___ |___ 
+//	 
+
+//	 __   __                  __                 __           __   __         __   __  
+//	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
+//	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
+//	
+
+//	       ___   __   
+//	|     |__   |  \  
+//	|___ .|___ .|__/ .
+//
+
+	//----------------------------------------------------------------------------------------------------------------
+	//			 __             __   __        __  ___    
+	//			/__` |\ |  /\  |__) /__` |__| /  \  |     
+	//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+	//
+
+//	 __         ___          __   __            ___  __  
+//	|__) | \_/ |__  |       /  ` /  \ |  | |\ |  |  /__` 
+//	|    | / \ |___ |___    \__, \__/ \__/ | \|  |  .__/ 
+//	        
+
+/*
+				  __   ___                             __     __
+	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__`
+	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/
+
+*/
+
+			.def("startAcquiring", &CameraFactory::startAcquiring)
+				.def("stopAcquiring", &CameraFactory::stopAcquiring)
+				.def("stopAcquiringAndWait", &CameraFactory::stopAcquiringAndWait)
+				.def("isAcquiring", &CameraFactory::isAcquiring)
+				.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
+				.def("getAcquireState", &CameraFactory::getAcquireState)
+				.def("startAnalysing", &CameraFactory::startAnalysing)
+				.def("stopAnalysing", &CameraFactory::stopAnalysing)
+				.def("isAnalysing", &CameraFactory::isAnalysing)
+				.def("isNotAnalysing", &CameraFactory::isNotAnalysing)
+				.def("getAnalysisState", &CameraFactory::getAnalysisState)
+				.def("getAcquireTime", &CameraFactory::getAcquireTime)
+				.def("getAcquirePeriod", &CameraFactory::getAcquirePeriod)
+				.def("getArrayRate", &CameraFactory::getArrayRate)
 
 
 
-			.def("didLastCaptureAndSaveSucceed", &CameraFactory::didLastCaptureAndSaveSucceed)
+
+				.def("setUseFloor", &CameraFactory::setUseFloor)
+				.def("toggleUseFloor", &CameraFactory::toggleUseFloor)
+				.def("setDoNotUseFloor", &CameraFactory::setDoNotUseFloor)
+				.def("setFloorLevel", &CameraFactory::setFloorLevel)
+				.def("getUseFloorState", &CameraFactory::getUseFloorState)
+				.def("isUsingFloor", &CameraFactory::isUsingFloor)
+				.def("isNotUsingFloor", &CameraFactory::isNotUsingFloor)
+				.def("getFloorLevel", &CameraFactory::getFloorLevel)
+				.def("getFlooredPtsCount", &CameraFactory::getFlooredPtsCount)
+				.def("getFlooredPtsPercent", &CameraFactory::getFlooredPtsPercent)
+
+
+
+				.def("setNewBackgroundImage", &CameraFactory::setNewBackgroundImage)
+				.def("setUseBackgroundImage", &CameraFactory::setUseBackgroundImage)
+				.def("toggleUseBackgroundImage", &CameraFactory::toggleUseBackgroundImage)
+				.def("setDoNotUseBackgroundImage", &CameraFactory::setDoNotUseBackgroundImage)
+				.def("getUsingBackgroundImageState", &CameraFactory::getUsingBackgroundImageState)
+				.def("isUsingBackgroundImage", &CameraFactory::isUsingBackgroundImage)
+				.def("isNotUsingBackgroundImage", &CameraFactory::isNotUsingBackgroundImage)
+
+
+
+
+
+
+//			.def("didLastCaptureAndSaveSucceed", &CameraFactory::didLastCaptureAndSaveSucceed)
 
 
 
@@ -604,49 +728,14 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("setROIsizeY", &CameraFactory::setROISizeY)
 			.def("setROI", setROI_4PARAM)
 			.def("setROI", &CameraFactory::setROI_Py)
-			.def("setUseFloor", &CameraFactory::setUseFloor)
-			.def("setDoNotUseFloor", &CameraFactory::setDoNotUseFloor)
-			.def("setFloorLevel", &CameraFactory::setFloorLevel)
-			.def("getUseFloorState", &CameraFactory::getUseFloorState)
-			.def("isUsingFloor", &CameraFactory::isUsingFloor)
-			.def("isNotUsingFloor", &CameraFactory::isNotUsingFloor)
-			.def("getFloorLevel", &CameraFactory::getFloorLevel)
-			.def("getFlooredPtsCount", &CameraFactory::getFlooredPtsCount)
-			.def("getFlooredPtsPercent", &CameraFactory::getFlooredPtsPercent)
 
-
+			
 				
-				.def("setNewBackground", &CameraFactory::setNewBackground)
-			.def("useBackground", &CameraFactory::useBackground)
-			.def("getUsingBackgroundState", &CameraFactory::getUsingBackgroundState)
-			.def("isUsingBackground", &CameraFactory::isUsingBackground)
-			.def("isNotUsingBackground", &CameraFactory::isNotUsingBackground)
-			.def("useNPoint", &CameraFactory::useNPoint)
-			.def("getNPointState", &CameraFactory::getNPointState)
-			.def("isUsingNPoint", &CameraFactory::isUsingNPoint)
-			.def("isNotUsingNPoint", &CameraFactory::isNotUsingNPoint)
-			//.def("getStepSize", &CameraFactory::getStepSize)
-			.def("getNpointStepSize", &CameraFactory::getNpointStepSize)
-			//.def("setStepSize", &CameraFactory::setStepSize)
-			.def("setNpointStepSize", &CameraFactory::setNpointStepSize)
 			.def("getSumIntensity", &CameraFactory::getSumIntensity)
 			.def("getAvgIntensity", &CameraFactory::getAvgIntensity)
 			.def("setSumIntensity", &CameraFactory::setSumIntensity)
 			.def("setAvgIntensity", &CameraFactory::setAvgIntensity)
-			.def("startAcquiring", &CameraFactory::startAcquiring)
-			.def("stopAcquiring", &CameraFactory::stopAcquiring)
-			.def("stopAcquiringAndWait", &CameraFactory::stopAcquiringAndWait)
-			.def("isAcquiring", &CameraFactory::isAcquiring)
-			.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
-			.def("getAcquireState", &CameraFactory::getAcquireState)
-			.def("startAnalysing", &CameraFactory::startAnalysing)
-			.def("stopAnalysing", &CameraFactory::stopAnalysing)
-			.def("isAnalysing", &CameraFactory::isAnalysing)
-			.def("isNotAnalysing", &CameraFactory::isNotAnalysing)
-			.def("getAnalysisState", &CameraFactory::getAnalysisState)
-			.def("getAcquireTime", &CameraFactory::getAcquireTime)
-			.def("getAcquirePeriod", &CameraFactory::getAcquirePeriod)
-			.def("getArrayRate", &CameraFactory::getArrayRate)
+
 			.def("getTemperature", &CameraFactory::getTemperature)
 			.def("hasLED", &CameraFactory::hasLED)
 			.def("setLEDOn", &CameraFactory::setLEDOn)
@@ -677,6 +766,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getActiveCameraCount", &CameraFactory::getActiveCameraCount)
 			.def("canStartCamera", &CameraFactory::canStartCamera)
 
+				//	              __   ___     __        ___  __                 __  
+				//	|  |\/|  /\  / _` |__     /  \ \  / |__  |__) |     /\  \ / /__` 
+				//	|  |  | /~~\ \__> |___    \__/  \/  |___ |  \ |___ /~~\  |  .__/ 
+				//	
+				//	TODO  
+				//	
 
 			.def("enableOverlayCross", &CameraFactory::enableOverlayCross)
 			.def("disableOverlayCross", &CameraFactory::disableOverlayCross)

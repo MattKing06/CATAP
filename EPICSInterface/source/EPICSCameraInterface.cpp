@@ -238,7 +238,6 @@ void EPICSCameraInterface::update_HDF_Capture_RBV(const struct event_handler_arg
 	}
 	messenger.printDebugMessage(recastCamera->hardwareName, " update_HDF_Capture_RBV = ",
 		ENUM_TO_STRING(recastCamera->capture_state.second));
-
 }
 void EPICSCameraInterface::update_CAM_Acquire_RBV(const struct event_handler_args args)
 {

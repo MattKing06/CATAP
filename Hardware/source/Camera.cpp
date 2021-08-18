@@ -743,7 +743,10 @@ double Camera::setpix2mmY(double value){ return pix2mmY_ratio = value;}
 //  
 long Camera::getCentreXPixel()const{	return x_center_pixel.second;}
 long Camera::getCentreYPixel()const{	return y_center_pixel.second;}
-bool Camera::setCentreXPixel(long value){	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterX), (epicsInt32)value);}
+bool Camera::setCentreXPixel(long value)
+{	
+	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterX), (epicsInt32)value);
+}
 bool Camera::setCentreYPixel(long value){	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_CenterY), (epicsInt32)value);}
 bool Camera::setCentrePixels(long x, long y)
 {
@@ -967,17 +970,14 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	messenger.printDebugMessage("t = ", s.str());
 	//auto  name_pvs = &pvStructs.at(CameraRecords::HDF_FileName);
 	//auto  path_pvs = &pvStructs.at(CameraRecords::HDF_FilePath);
-
 	if (ca_state(pvStructs.at(CameraRecords::HDF_FileName).CHID) == cs_conn)
 	{
 		int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FileName).CHID, newName);
 		MY_SEVCHK(status);
 		status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 		MY_SEVCHK(status);
-
 		if (status == ECA_NORMAL)
 		{
-
 			if (ca_state(pvStructs.at(CameraRecords::HDF_FilePath).CHID) == cs_conn)
 			{
 				int status = ca_array_put(DBR_CHAR, 256, pvStructs.at(CameraRecords::HDF_FilePath).CHID, newPath);
@@ -998,8 +998,6 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 		{
 			messenger.printDebugMessage(hardwareName, " send file name failed status = ", status);
 		}
-
-
 	}
 	else
 	{
@@ -1186,7 +1184,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 	image_capture.is_busy = false;
 	busy = false;
 }
-size_t Camera::getNumberOfShotsToCapture()const{	return capture_count.second;}
+size_t Camera::getNumberOfShotsToCapture()const{return capture_count.second;}
 bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
@@ -1243,26 +1241,8 @@ bool Camera::resetCaptureAndSaveError()
 	}
 	return false;
 }
-bool Camera::isCapturing()const
-{
-	if (getCaptureState() == STATE::CAPTURING)
-	{
-		//messenger.printDebugMessage("isCapturing ", hardwareName, " is TRUE");
-		return true;
-	}
-	//messenger.printDebugMessage("isCapturing ", hardwareName, " is FALSE");
-	return false;
-}
-bool Camera::isNotCapturing()const
-{
-	if (getCaptureState() == STATE::NOT_CAPTURING)
-	{
-		messenger.printDebugMessage("isNotCapturing ", hardwareName, " is TRUE");
-		return true;
-	}
-	messenger.printDebugMessage("isNotCapturing ", hardwareName, " is FALSE");
-	return false;
-}
+bool Camera::isCapturing()const{	return getCaptureState() == STATE::CAPTURING; }
+bool Camera::isNotCapturing()const { return getCaptureState() == STATE::NOT_CAPTURING; }
 bool Camera::isCapturingOrSaving()const
 {
 	if (isCapturing())
@@ -1275,26 +1255,14 @@ bool Camera::isCapturingOrSaving()const
 	}
 	return false;
 }
-bool Camera::isNotCapturingOrSaving()const
-{
-	return !isCapturingOrSaving();
-}
+bool Camera::isNotCapturingOrSaving()const{	return !isCapturingOrSaving();}
 //	 __  ___       __  ___   /  __  ___  __   __           __   __          __          __  
 //	/__`  |   /\  |__)  |   /  /__`  |  /  \ |__)     /\  /  ` /  \ |  | | |__) | |\ | / _` 
 //	.__/  |  /~~\ |  \  |  /   .__/  |  \__/ |       /~~\ \__, \__X \__/ | |  \ | | \| \__> 
 //
-double Camera::getActiveCameraLimit() const
-{
-	return active_camera_limit.second;
-}
-double Camera::getActiveCameraCount() const
-{
-	return active_camera_count.second;
-}
-bool Camera::canStartCamera()const
-{
-	return getActiveCameraLimit() > getActiveCameraCount();
-}
+double Camera::getActiveCameraLimit()const{ return active_camera_limit.second;}
+double Camera::getActiveCameraCount()const{ return active_camera_count.second;}
+bool Camera::canStartCamera()const{	return getActiveCameraLimit() > getActiveCameraCount();}
 void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 {
 	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait tim e = ", csw.wait_ms);
@@ -1322,8 +1290,6 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 	else
 		csw.result = STATE::SUCCESS;
 }
-/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
-@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 {
 	if (isNotAcquiring())
@@ -1351,37 +1317,78 @@ bool Camera::stopAcquiring()
 {
 	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
 }
-bool Camera::isAcquiring()const
+bool Camera::toggleAcquiring()
 {
-	return getAcquireState() == STATE::ACQUIRING;
+	if (isAcquiring())
+		return stopAcquiring();
+	return startAcquiring();
 }
-bool Camera::isNotAcquiring() const
+bool Camera::isAcquiring()const{ return getAcquireState() == STATE::ACQUIRING; }
+bool Camera::isNotAcquiring()const{ return getAcquireState() == STATE::NOT_ACQUIRING; }
+STATE Camera::getAcquireState()const{ return acquire_state.second; }
+double Camera::getAcquireTime()const{	return acquire_time.second;}
+double Camera::getAcquirePeriod()const{	return acquire_period.second;}
+double Camera::getArrayRate()const{	return array_rate.second;}
+//	              __   ___                             __     __  
+//	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
+//	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/ 
+// 
+bool Camera::startAnalysing()
 {
-	return getAcquireState() == STATE::NOT_ACQUIRING;
+	bool  r = false;
+	bool stopped = true;
+	bool should_stop_and_restart = isAcquiring();
+	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+	if(stopped)
+	{ 
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+	}
+	return r;
 }
-STATE Camera::getAcquireState()const
+bool Camera::stopAnalysing()
 {
-	return acquire_state.second;
+	bool  r = false;
+	bool stopped = true;
+	bool should_stop_and_restart = isAcquiring();
+	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+	if (stopped)
+	{
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::zero_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+	}
+	return r;
 }
+bool Camera::toggleAnalysing()
+{
+	if (isAnalysing())
+		return stopAnalysing();
+	return startAnalysing();
+}
+bool Camera::isAnalysing()const{ return getAnalysisState() == STATE::ANALYSING;}
+bool Camera::isNotAnalysing()const{	return getAnalysisState() == STATE::NOT_ANALYSING;}
+STATE Camera::getAnalysisState()const{ return analysis_state.second;}
+bool Camera::isAnalysisUpdating(){	return isResultUpdated;}
 //	                         __     __           __     __   ___     ___       __   __   __  
 //	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
 //	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
 //
-STATE Camera::getUseFloorState()const{	return use_floor.second;}
-bool Camera::isUsingFloor()const{	return use_floor.second == STATE::USING_FLOOR;}
-bool Camera::isNotUsingFloor()const{	return use_floor.second == STATE::NOT_USING_FLOOR;}
+STATE Camera::getUseFloorState()const{ return use_floor.second;}
+bool Camera::isUsingFloor()const{ return use_floor.second == STATE::USING_FLOOR;}
+bool Camera::isNotUsingFloor()const{ return use_floor.second == STATE::NOT_USING_FLOOR;}
 bool Camera::setUseFloor()
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		//messenger.printDebugMessage("Send ANA_UseFloor 1");
-		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		bool  r = false;
+		bool stopped = true;
+		bool should_stop_and_restart = isAcquiring();
+		if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+		if (stopped)
 		{
-			//messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+			r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+			if (should_stop_and_restart) { startAcquiring(); }
 		}
-		//messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
-		//return epicsInterface->putValue2<unsigned short>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
 	}
 	return false;
 }
@@ -1389,62 +1396,122 @@ bool Camera::setDoNotUseFloor()
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		messenger.printDebugMessage("Send ANA_UseFloor 0");
-		if (GlobalFunctions::entryExists(pvStructs, CameraRecords::ANA_UseFloor))
+		bool  r = false;
+		bool stopped = true;
+		bool should_stop_and_restart = isAcquiring();
+		if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+		if (stopped)
 		{
-			messenger.printDebugMessage("PV FOUND");
-			return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+			r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+			if (should_stop_and_restart) { startAcquiring(); }
 		}
-		messenger.printDebugMessage("ERROR ANA_UseFloor PV not found");
-
 	}
 	return false;
+}
+bool Camera::toggleUseFloor()
+{
+	if (isUsingFloor())
+		return setDoNotUseFloor();
+	return setUseFloor();
 }
 bool Camera::setFloorLevel(long v)
 {
 	if (mode == STATE::PHYSICAL)
 	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), (epicsInt32)v);
+		bool should_stop_and_restart = isAcquiring();
+		if (should_stop_and_restart) { stopAcquiringAndWait(); }
+		bool r = epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+		return r;
 	}
 	return false;
 }
-
 //	                         __     __           __   __         ___     __   __                    __  
 //	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
 //	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
 //	                                                                                                    
 // 
-bool Camera::useNPoint(bool v)
+bool Camera::setUseNPointScaling()
 {
-	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::ANA_UseNPoint), comm);
+	bool  r = false;
+	bool stopped = true;
+	bool should_stop_and_restart = isAcquiring();
+	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+	if (stopped)
+	{
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::zero_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+	}
+	return r;
 }
-STATE Camera::getNPointState()const{	return use_npoint.second;}
-bool Camera::isUsingNPoint()const{	return use_npoint.second == STATE::USING_NPOINT;}
-bool Camera::isNotUsingNPoint()const{	return use_npoint.second == STATE::NOT_USING_NPOINT;}
-long Camera::getNpointStepSize()const{	return step_size.second;}
-bool Camera::setNpointStepSize(long val){	return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);}
+bool Camera::setDoNotUseNPointScaling()
+{
+	bool  r = false;
+	bool stopped = true;
+	bool should_stop_and_restart = isAcquiring();
+	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+	if (stopped)
+	{
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+	}
+	return  r;
+}
+bool Camera::toggleUseNpointScaling()
+{
+	if (isUsingNPointScaling())
+		return setDoNotUseNPointScaling();
+	return setUseNPointScaling();
+}
+STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
+bool Camera::isUsingNPointScaling()const{ return use_npoint.second == STATE::USING_NPOINT;}
+bool Camera::isNotUsingNPointScaling()const{ return use_npoint.second == STATE::NOT_USING_NPOINT;}
+long Camera::getNpointScalingStepSize()const{ return step_size.second;}
+bool Camera::setNpointScalingStepSize(long val){ return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);}
 //                         __     __      __        __        __   __   __             __     
 // /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
 ///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
 //                                                                                            
 //
-
-bool Camera::setNewBackground(bool v)
+bool Camera::setNewBackgroundImage()
 {
-	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
+	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), GlobalConstants::one_ushort);
 }
-STATE Camera::getSetNewBackgroundState(){	return set_new_background.second;}
-bool Camera::useBackground(bool v)
+bool Camera::setUseBackgroundImage()
 {
-	epicsUInt16 comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	//messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
+	bool  r = false;
+	bool stopped = true;
+	bool should_stop_and_restart = isAcquiring();
+	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+	if (stopped)
+	{
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::one_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+	}
+	return r;
 }
-bool Camera::isUsingBackground()const{	return use_background.second == STATE::USING_BACKGROUND;}
-bool Camera::isNotUsingBackground()const{	return use_background.second == STATE::NOT_USING_BACKGROUND;}
-STATE Camera::getUsingBackgroundState()const{	return use_background.second;}
+bool Camera::setDoNotUseBackgroundImage()
+{	
+	bool  r = false;
+	bool stopped = true;
+	bool should_stop_and_restart = isAcquiring();
+	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+	if (stopped)
+	{
+		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::zero_ushort);
+		if (should_stop_and_restart) { startAcquiring(); }
+	}
+	return r;
+}
+bool Camera::toggleUseBackgroundImage()
+{
+	if (isUsingNPointScaling())
+		return setDoNotUseBackgroundImage();
+	return setUseBackgroundImage();
+}
+bool Camera::isUsingBackgroundImage()const{	return use_background.second == STATE::USING_BACKGROUND;}
+bool Camera::isNotUsingBackgroundImage()const{	return use_background.second == STATE::NOT_USING_BACKGROUND;}
+STATE Camera::getUsingBackgroundImageState()const{	return use_background.second;}
 //	                         __     __                 __       
 //	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
 //	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
@@ -1755,7 +1822,7 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::CAM_ArrayRate_RBV, array_rate.second);
 	currentSnapshot.update(CameraRecords::CAM_AcquirePeriod_RBV, acquire_period.second);
 	currentSnapshot.update(CameraRecords::CAM_AcquireTime_RBV, acquire_time.second);
-	currentSnapshot.update(CameraRecords::CAM_Acquire_RBV, analysis_state.second);
+	currentSnapshot.update(CameraRecords::CAM_Acquire_RBV, acquire_state.second);
 	currentSnapshot.update(CameraRecords::CAM_Active_Count, active_camera_count.second);
 	currentSnapshot.update(CameraRecords::CAM_Active_Limit, active_camera_limit.second);
 	currentSnapshot.update(CameraRecords::ROI1_MinX_RBV, roi_min_x.second);
@@ -1771,10 +1838,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ANA_MaskXRad_RBV, mask_x_radius.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskYRad_RBV, mask_y_radius.second);
 	currentSnapshot.update(CameraRecords::ANA_UseFloor_RBV, use_floor.second);
-
-
-
-
 	currentSnapshot.update(CameraRecords::ANA_FloorLevel_RBV, floor_level.second);
 	currentSnapshot.update(CameraRecords::ANA_FlooredPoints_RBV, floored_pts_count.second);
 	currentSnapshot.update(CameraRecords::ANA_UseNPoint_RBV, use_npoint.second);
@@ -1789,7 +1852,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ANA_CPU_CropSubMask_RBV, cpu_crop_sub_mask.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_Npoint_RBV, cpu_npoint.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_Dot_RBV, cpu_dot.second);
-
 	currentSnapshot.update(CameraRecords::HDF_Capture_RBV, capture_state.second);
 	currentSnapshot.update(CameraRecords::LED_Sta, led_state.second);
 	currentSnapshot.update(CameraRecords::HDF_WriteFile_RBV, write_state.second);
@@ -1801,11 +1863,9 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filepath_RBV, image_buffer_filepath.second);
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filename_RBV, image_buffer_filename.second);
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
-	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
 	currentSnapshot.update(CameraRecords::ANA_EnableCallbacks_RBV, analysis_state.second);
 	currentSnapshot.update(CameraRecords::HDF_NumCapture_RBV, capture_count.second);
 	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
-	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
 	currentSnapshot.update(CameraRecords::ANA_PixW_RBV, epics_pixel_width.second);
 	currentSnapshot.update(CameraRecords::ANA_PixH_RBV, epics_pixel_height.second);
 	currentSnapshot.update(CameraRecords::ANA_CenterX_RBV, x_center_pixel.second);
@@ -1821,15 +1881,11 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ANA_SigmaX_RBV, sigma_x_mm.second);
 	currentSnapshot.update(CameraRecords::ANA_SigmaY_RBV, sigma_y_mm.second);
 	currentSnapshot.update(CameraRecords::ANA_CovXY_RBV, sigma_xy_mm.second);
-	currentSnapshot.update(CameraRecords::ANA_AvgIntensity_RBV, sum_intensity.second);
-	currentSnapshot.update(CameraRecords::ANA_Intensity_RBV, avg_intensity.second);
-	
-
+	currentSnapshot.update(CameraRecords::ANA_AvgIntensity_RBV, avg_intensity.second);
+	currentSnapshot.update(CameraRecords::ANA_Intensity_RBV, sum_intensity.second);
 	currentSnapshot.update("busy", busy);
 	currentSnapshot.update("max_shots_number", max_shots_number);
 	currentSnapshot.update("last_capture_and_save_success", last_capture_and_save_success);
-		
-
 	currentSnapshot.update("aliases", GlobalFunctions::toString(aliases));
 	currentSnapshot.update("screen_names", GlobalFunctions::toString(screen_names));
 	currentSnapshot.update("average_pixel_value_for_beam", average_pixel_value_for_beam);
@@ -1852,9 +1908,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update("x_pix_scale_factor", x_pix_scale_factor);
 	currentSnapshot.update("y_pix_scale_factor", y_pix_scale_factor);
 	currentSnapshot.update("x_mask_rad_max", x_mask_rad_max);
-
-
-
 	currentSnapshot.update("y_mask_rad_max", y_mask_rad_max);
 	currentSnapshot.update("use_mask_rad_limits", use_mask_rad_limits);
 	currentSnapshot.update("sensor_max_temperature", sensor_max_temperature);
@@ -2236,30 +2289,6 @@ size_t Camera::getRunningStatNumDataValues()const
 
 
 
-
-bool Camera::startAnalysing()
-{
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
-}
-bool Camera::stopAnalysing()
-{
-	return  epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::zero_ushort);
-}
-bool Camera::isAnalysing()const
-{
-	return getAnalysisState() == STATE::ANALYSING;
-}
-bool Camera::isNotAnalysing() const
-{
-	return getAnalysisState() == STATE::NOT_ANALYSING;
-}
-STATE Camera::getAnalysisState( )const
-{
-	return analysis_state.second;
-}
-
-
-
 //long Camera::getBufferROIminX()const
 //{
 //	return roi_min_x.second;
@@ -2297,22 +2326,6 @@ boost::python::list Camera::getMMResults_Py()
 	return to_py_list<double>(pixelResults.second);
 }
 
-bool Camera::isAnalysisUpdating()
-{
-	return isResultUpdated;
-}
-double Camera::getAcquireTime()const
-{
-	return acquire_time.second;
-}
-double Camera::getAcquirePeriod()const
-{
-	return acquire_period.second;
-}
-double Camera::getArrayRate()const
-{
-	return array_rate.second;
-}
 double Camera::getTemperature()const
 {
 	return temperature.second;
@@ -2655,9 +2668,9 @@ std::map<std::string, double> Camera::getAnalayisData() const
 	r["pix2mmY"] = getpix2mmY();
 	r["floor_state"] = getUseFloorState();
 	r["floor_level"] = getFloorLevel();
-	r["npoint_state"] = getNPointState();
-	r["step_size"] = getNpointStepSize();
-	r["using_background_state"] = getUsingBackgroundState();
+	r["npoint_state"] = getNPointScalingState();
+	r["step_size"] = getNpointScalingStepSize();
+	r["using_background_state"] = getUsingBackgroundImageState();
 	r["avg_intensity"] = getAvgIntensity();
 	r["avg_intensity"] = getAvgIntensity();
 
@@ -2665,29 +2678,28 @@ std::map<std::string, double> Camera::getAnalayisData() const
 }
 boost::python::dict Camera::getAnalayisData_Py() const
 {
-	boost::python::dict r;
-	r["x_pix"] = getXPix();
-	r["y_pix"] = getYPix();
-	r["sigma_x_pix"] = getSigXPix();
-	r["sigma_y_pix"] = getSigYPix();
-	r["sigma_xy_pix"] = getSigXYPix();
-	r["x_mm"] = getX();
-	r["y_mm"] = getY();
-	r["sigma_x_mm"] = getSigX();
-	r["sigma_y_mm"] = getSigY();
-	r["sigma_x_pix"] = getSigXPix();
-	r["sigma_y_pix"] = getSigYPix();
-	r["sigma_xy_pix"] = getSigXYPix();
-	r["pix2mmX"] = getpix2mmX();
-	r["pix2mmY"] = getpix2mmY();
-	r["floor_state"] = getUseFloorState();
-	r["floor_level"] = getFloorLevel();
-	r["npoint_state"] = getNPointState();
-	r["npoint_state"] = getNPointState();
-	r["npoint_step_size"] = getNpointStepSize();
-	r["using_background_state"] = getUsingBackgroundState();
-	r["sum_intensity"] = getSumIntensity();
-	r["avg_intensity"] = getAvgIntensity();
+	//boost::python::dict r;
+	//r["x_pix"] = getXPix();
+	//r["y_pix"] = getYPix();
+	//r["sigma_x_pix"] = getSigXPix();
+	//r["sigma_y_pix"] = getSigYPix();
+	//r["sigma_xy_pix"] = getSigXYPix();
+	//r["x_mm"] = getX();
+	//r["y_mm"] = getY();
+	//r["sigma_x_mm"] = getSigX();
+	//r["sigma_y_mm"] = getSigY();
+	//r["sigma_x_pix"] = getSigXPix();
+	//r["sigma_y_pix"] = getSigYPix();
+	//r["sigma_xy_pix"] = getSigXYPix();
+	//r["pix2mmX"] = getpix2mmX();
+	//r["pix2mmY"] = getpix2mmY();
+	//r["floor_state"] = getUseFloorState();
+	//r["floor_level"] = getFloorLevel();
+	//r["npoint_state"] = getNPointState();
+	//r["npoint_step_size"] = getNpointStepSize();
+	//r["using_background_state"] = getUsingBackgroundState();
+	//r["sum_intensity"] = getSumIntensity();
+	//r["avg_intensity"] = getAvgIntensity();
 
-	return r;
+	return to_py_dict<std::string, double>(getAnalayisData());
 }

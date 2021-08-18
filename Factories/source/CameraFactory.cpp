@@ -733,7 +733,6 @@ std::string CameraFactory::getLastImageBufferFileName(const std::string& name)co
 	}
 	return std::string(name + "DOES NOT EXIST");
 }
-
 //	              __   ___     __        __  ___       __   ___               __      __             _ 
 //	|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
 //	|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
@@ -1246,6 +1245,15 @@ bool CameraFactory::setDoNotUseFloor(const std::string& name )
 	}
 	return false;
 }
+bool CameraFactory::toggleUseFloor(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).toggleUseFloor();
+	}
+	return false;
+}
 bool CameraFactory::setFloorLevel(const std::string& name, long value)
 {
 	std::string full_name = getFullName(name);
@@ -1309,114 +1317,157 @@ double CameraFactory::getFlooredPtsPercent(const std::string& name)const
 	}
 	return GlobalConstants::double_min;
 }
-bool CameraFactory::useNPoint(const std::string& name,bool v)
+
+
+
+bool CameraFactory::setUseNPointScaling(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).useNPoint(v);
+		return camera_map.at(full_name).setUseNPointScaling();
 	}
 	return false;
 }
-STATE CameraFactory::getNPointState(const std::string& name)const
+bool CameraFactory::setDoNotUseNPointScaling(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getNPointState();
-	}
-	return STATE::ERR;
-}
-bool CameraFactory::isUsingNPoint(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).isUsingNPoint();
+		return camera_map.at(full_name).setDoNotUseNPointScaling();
 	}
 	return false;
 }
-bool CameraFactory::isNotUsingNPoint(const std::string& name)const
+bool CameraFactory::toggleUseNpointScaling(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).isNotUsingNPoint();
+		return camera_map.at(full_name).toggleUseNpointScaling();
 	}
 	return false;
 }
-STATE CameraFactory::getSetNewBackgroundState(const std::string& name)
+STATE CameraFactory::getNPointScalingState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getSetNewBackgroundState();
+		return camera_map.at(full_name).getNPointScalingState();
 	}
 	return STATE::UNKNOWN_NAME;
 }
-bool CameraFactory::setNewBackground(const std::string& name, bool v)
+bool CameraFactory::isUsingNPointScaling(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setNewBackground(v);
+		return camera_map.at(full_name).isUsingNPointScaling();
 	}
 	return false;
 }
-bool CameraFactory::useBackground(const std::string& name,bool v)
+bool CameraFactory::isNotUsingNPointScaling(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).useBackground(v);
+		return camera_map.at(full_name).isNotUsingNPointScaling();
 	}
 	return false;
 }
-STATE CameraFactory::getUsingBackgroundState(const std::string& name)const
+bool CameraFactory::setNpointScalingStepSize(const std::string& name, long v)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getUsingBackgroundState();
-	}
-	return STATE::ERR;
-}
-bool CameraFactory::isUsingBackground(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).isUsingBackground();
+		return camera_map.at(full_name).setNpointScalingStepSize(v);
 	}
 	return false;
 }
-bool CameraFactory::isNotUsingBackground(const std::string& name)const
+long CameraFactory::getNpointScalingStepSize(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).isNotUsingBackground();
-	}
-	return false;
-}
-long CameraFactory::getNpointStepSize(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).getNpointStepSize();
+		return camera_map.at(full_name).getNpointScalingStepSize();
 	}
 	return GlobalConstants::long_min;
 }
-bool CameraFactory::setNpointStepSize(const std::string& name, long val)
+
+
+//                          __     __      __        __        __   __   __             __     
+//  /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+// /~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+// 
+STATE CameraFactory::getUsingBackgroundImageState(const std::string& name)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setNpointStepSize(val);
+		return camera_map.at(full_name).getUsingBackgroundImageState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+bool CameraFactory::setNewBackgroundImage(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setNewBackgroundImage();
 	}
 	return false;
 }
+bool CameraFactory::setUseBackgroundImage(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setUseBackgroundImage();
+	}
+	return false;
+}
+bool CameraFactory::setDoNotUseBackgroundImage(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setDoNotUseBackgroundImage();
+	}
+	return false;
+}
+bool CameraFactory::toggleUseBackgroundImage(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).toggleUseBackgroundImage();
+	}
+	return false;
+}
+bool CameraFactory::isUsingBackgroundImage(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isUsingBackgroundImage();
+	}
+	return false;
+}
+bool CameraFactory::isNotUsingBackgroundImage(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).isNotUsingBackgroundImage();
+	}
+	return false;
+}
+
+
+
+
+
+
+
 double CameraFactory::getSumIntensity(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -3271,16 +3322,16 @@ STATE CameraFactory::applyhardwareSnapshotMap(const std::map<std::string, Hardwa
 				{
 					if (snap.second.get<STATE>(state_items.first) == STATE::USING_NPOINT)
 					{
-						camera_map.at(fullName).useNPoint(true);
+						camera_map.at(fullName).setUseNPointScaling();
 					}
 					else
 					{
-						camera_map.at(fullName).useNPoint(false);
+						camera_map.at(fullName).setDoNotUseNPointScaling();
 					}
 				}
 				else if (state_items.first == CameraRecords::ANA_NPointStepSize_RBV)
 				{
-					camera_map.at(fullName).setNpointStepSize(snap.second.get<long>(state_items.first));
+					camera_map.at(fullName).setNpointScalingStepSize(snap.second.get<long>(state_items.first));
 				}
 				// can't set background as backgroudn data can't be saved ... 
 				//else if (state_items.first == CameraRecords::ANA_UseBkgrnd_RBV)

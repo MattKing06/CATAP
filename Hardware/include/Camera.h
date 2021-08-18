@@ -60,12 +60,22 @@ public:
 	Camera(const std::map<std::string, std::string>& paramMap, STATE mode);
 	Camera(const Camera& copyCamera);
 	~Camera();
-	void setPVStructs();
 
+	friend class EPICSCameraInterface;
+	friend class CameraFactory;
+
+public:
 	/*! get the type of the camera (e.g. vela_camera, clara_camera
 	@param[out] type */
 	TYPE getCamType()const;
+private:
+	/*! Type of camera, different camera types have different funcionality, defined in Master Lattice  */
+	TYPE cam_type;
 
+public:
+	/*! Get the Sensor Temperature for the camera (degrees Celsius).
+	@param[out] double, value */
+	double getTemperature()const;
 //                   ___  __  
 //  |\ |  /\   |\/| |__  /__` 
 //  | \| /~~\  |  | |___ .__/ 
@@ -215,7 +225,6 @@ private:
 	long mechanical_centre_x;
 	/*! The vertical mechanical centre of the image in pixels defined in main lattice */
 	long mechanical_centre_y;
-//  
 //  			  __   ___ __    __  ___
 //  |  |\/|  /\  / _` |__ /__` |  / |__
 //  |  |  | /~~\ \__> |___.__/ | /_ |___
@@ -400,13 +409,13 @@ protected:
 	std::pair<epicsTimeStamp, std::string> image_buffer_filename;
 	/*! Latest file number for camera buffer data to. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> image_buffer_filenumber;
-public:
 //              __   ___     __        __  ___       __   ___               __      __             _ 
 //|  |\/|  /\  / _` |__     /  `  /\  |__)  |  |  | |__) |__      /\  |\ | |  \    /__`  /\  \  / |__  
 //|  |  | /~~\ \__> |___    \__, /~~\ |     |  \__/ |  \ |___    /~~\ | \| |__/    .__/ /~~\  \/  |___ 
 //                                                                                                     
 // for capturing images and saving to disk 
 //
+public:
 	/*! Set the number of shots to capture when "collecting frames and writing to disc."
 	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
 	bool setNumberOfShotsToCapture(size_t num);
@@ -482,6 +491,8 @@ protected:
 	std::pair<epicsTimeStamp, std::string> save_filename;
 	/*! Latest filenumber when write image data to disc. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> save_filenumber;
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > capture_count;
 private:
 	/*! ImageCapture class to hold data for image capturing and saving thread */
 	ImageCapture image_capture;
@@ -504,8 +515,7 @@ private:
 //	|__) |  | /__` \ / 
 //	|__) \__/ .__/  |  
 //	                   
-// When the camera is collecting and saving this flag is set and some funcitonality is stopped
-// 
+// When the camera is collecting and saving this flag is set and some functionality is stopped until collecting and saving is complete
 public:
 	/*! Is the camera busy doing some collect, capture, save, write procedure, busy == true
 	* while busy attempts to write more data to disc will fail.
@@ -524,14 +534,6 @@ private:
 //	                                                                                        
 //	Acquiring is whne the camera is cpaturing frames of data 
 //	!!As a general rule to increase operational reliablity!!  stopAcquiringAndWait should be called befowe changing camera settings 
-protected:
-	/*! Active camera limit for this IOC.	*/
-	std::pair<epicsTimeStamp, double > active_camera_limit;
-	/*! Active camera count for this IOC.	*/
-	std::pair<epicsTimeStamp, double > active_camera_count;
-private:
-	/*! Struct to hold data for the thread called by stopAcquiringAndWait */
-	CamStopWaiter cam_stop_waiter_struct;
 public:
 	/*! Get IOC active camera limit. The maximum number of cameras that can be active for this IOC. 
 	* Running at this limit does not imply that everything will run smoothly!)
@@ -543,7 +545,7 @@ public:
 	/*! Test if the active camera limit is greater than than the active camera count
 	@param[out] bool */
 	bool canStartCamera()const;
-	/*! Stop image acquiring, and wait for the stop acquirign to be cverified by the control system .
+	/*! Stop image acquiring, and wait for the stop acquiring signal to be verified by the control system .
 	@param[out] bool, true if camera stopped before timeout ms, otherwsie false*/
 	bool stopAcquiringAndWait(size_t timeout);
 	/*! Function in which the stop acquiring and wait procedure runs (in a new thread).
@@ -555,6 +557,9 @@ public:
 	/*! Stop image acquiring.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool stopAcquiring();
+	/*! Toggle the use Acquiring state between ACQUIRING / NOT_ACQUIRING 
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool toggleAcquiring();
 	/*! Is camera acquire state == ACQUIRING.
 	@param[out] bool, result*/
 	bool isAcquiring()const;
@@ -564,6 +569,61 @@ public:
 	/*! Get image acquire state .
 	@param[out] STATE, value from acquire_state*/
 	STATE getAcquireState()const;
+	/*! Get the Acquire Time for the camera (shutter open time, units??).
+	@param[out] double, value */
+	double getAcquireTime()const;
+	/*! Get the Acquire Period for the camera (shutter open period, units??).
+	@param[out] double, value */
+	double getAcquirePeriod()const;
+	/*! Get the Array Rate for the camera (repetition rate, Hz).
+	@param[out] double, value */
+	double getArrayRate()const;
+protected:
+	/*! Camera acquire time. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > acquire_time;
+	/*! Camera acquire period. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > acquire_period;
+	/*! Camera array rate. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > array_rate;
+	/*! Active camera limit for this IOC.	*/
+	std::pair<epicsTimeStamp, double > active_camera_limit;
+	/*! Active camera count for this IOC.	*/
+	std::pair<epicsTimeStamp, double > active_camera_count;
+	/*! Acquire status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> acquire_state;
+private:
+	/*! Struct to hold data for the thread called by stopAcquiringAndWait */
+	CamStopWaiter cam_stop_waiter_struct;
+//		          __   ___                             __     __  
+//	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
+//	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/ 
+//                                                              
+public:
+	/*! Start image analysis.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool startAnalysing();
+	/*! Stop image analysis.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool stopAnalysing();
+	/*! Toggle the image analysis between ANALYSIING / NOT_ANALYSIING.
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool toggleAnalysing();
+	/*! Is camera analysis state == ANALYSING.
+	@param[out] bool, result*/
+	bool isAnalysing()const;
+	/*! Is camera analysis state == NOT_ANALYSING.
+	@param[out] bool, result*/
+	bool isNotAnalysing() const;
+	/*! Get image analysis state .
+	@param[out] STATE, value from analysis_state*/
+	STATE getAnalysisState()const;
+	/*! Check if the image analysis results are updating.
+	@param[out] bool, ture if updating */
+	bool isAnalysisUpdating();
+protected:
+	/*! Analysis status. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE> analysis_state;
+//
 //	                         __     __           __     __   ___     ___       __   __   __  
 //	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
 //	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
@@ -578,12 +638,15 @@ protected:
 	/*! Percentage of points rejected by floor. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double> floored_pts_percent;
 public:
-	/*! Set the using a Floor during image analysis to true .
+	/*! Set the using a Noise Floor during image analysis to true .
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setUseFloor();
 	/*! Set the using a Floor during image analysis to false.
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setDoNotUseFloor();
+	/*! Toggle the use floor state between USING_FLOOR / NOT_USING_FLOOR (values below the floor level get set to zero).
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool toggleUseFloor();
 	/*! Set the Floor level to use during image analysis (value below floor get set to zero).
 	@param[in] long, value to use
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
@@ -607,64 +670,78 @@ public:
 	/*! get the percentage of pixels that have been floored
 	@param[out] long, value*/
 	double getFlooredPtsPercent()const;
-//	                         __     __           __   __         ___     __   __                    __  
-//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
-//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
-//	                                                                                                    
-// 
-	/*! set use Npoint scaling or not
-	@param[in] bool, true for use NPoint, False for do not use NPoint
+	//	                         __     __           __   __         ___     __   __                    __  
+	//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
+	//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
+	//	                                                                                                    
+public:
+	/*! Set use Npoint Scaling, (for more details see  VELA-EN-20150818 Method of Estimating Beam Size from VELA Screen Images). 
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
-	bool useNPoint(bool v);
+	bool setUseNPointScaling();
+	/*! Set do not use Npoint Scaling, (for more details see  VELA-EN-20150818 Method of Estimating Beam Size from VELA Screen Images).
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setDoNotUseNPointScaling();
+	/*! Toggle the use floor state between USING_FLOOR / NOT_USING_FLOOR (values below the floor level get set to zero).
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool toggleUseNpointScaling();
 	/*! get the use Npoint scaling state
 	@param[out] STATE, */
-	STATE getNPointState()const;
+	STATE getNPointScalingState()const;
 	/*! check if analysis is using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
-	bool isUsingNPoint()const;
+	bool isUsingNPointScaling()const;
 	/*! check if analysis is Not using NPoint scaling
 	@param[out] bool, true if using NPoint scaling*/
-	bool isNotUsingNPoint()const;
+	bool isNotUsingNPointScaling()const;
 	/*! get the Npoint scaling stepsize
 	@param[out] long, value */
-	long getNpointStepSize()const;
+	long getNpointScalingStepSize()const;
 	/*! set the Npoint scaling stepsize
 	@param[in] long, new stepsize
-	@param[out] bool, value */
-	bool setNpointStepSize(long val);
-//                         __     __      __        __        __   __   __             __     
-// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
-///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
-//                                                                                            
-//
-	/*! Get the state of the Flag to set the next image as background
-	@param[out] STATE, the STATE of teh set new background flag, YES or NO  */
-	STATE getSetNewBackgroundState();
-	/*! Flag to set the next image as background
-	@param[out] bool, true if using NPoint scaling*/
-	bool setNewBackground(bool v);
-	/*! Flag to set the next image as background
-	@param[out] bool, true if using NPoint scaling*/
-	bool getSetNewBackground(bool v);
-	/*! set use the background image during the analysis  procedure
-	@param[in] bool, true to use the background, False to not use the background
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setNpointScalingStepSize(long val);
+protected:
+	/*! State of using NPoint scaling. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE > use_npoint;
+	/*! latest stepsize (Npoint scaling step size). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long > step_size;
+	//                          __     __      __        __        __   __   __             __     
+	//  /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+	// /~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+	//                                                                                            
+public:
+	/*! Sets the next captured image to be the background image, that can be subtracted during the analysis routine.
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
-	bool useBackground(bool v);
+	bool setNewBackgroundImage();
+	/*! The stored background image will  be subtracted from the image data before the analysis calculation.
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setUseBackgroundImage();
+	/*! The stored background image will NOT be subtracted from the image data before the analysis calculation.
+	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
+	bool setDoNotUseBackgroundImage();
+	/*! Toggle subtractign the stored background image.
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool toggleUseBackgroundImage();
 	/*! get the use background state
 	@param[out] STATE, */
-	STATE getUsingBackgroundState()const;
-	/*! check if analysis is using a background data
+	STATE getUsingBackgroundImageState()const;
+	/*! Check if analysis is using a background image.
 	@param[out] bool, true if using background image during analysis */
-	bool isUsingBackground()const;
-	/*! check if analysis is Not using a background data
-	@param[out] bool, true if NOT  using background image during analysis*/
-	bool isNotUsingBackground()const;
-//	                         __     __                 __       
-//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
-//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
-//	                                                            
-//	The 1st and 2nd central moments about the mean (with simple background subtraction) can be performed on a defined sub-region (the analysis mask)  
-//	These function get / set that mask 
+	bool isUsingBackgroundImage()const;
+	/*! Check if analysis is Not using a background image.
+	@param[out] bool, true if NOT using background image during analysis*/
+	bool isNotUsingBackgroundImage()const;
+protected:
+	/*! Camera set new background STATE. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE > set_new_background;
+	/*! State of background data  scaling. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, STATE > use_background;
+	//	                         __     __                 __       
+	//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
+	//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
+	//	                                                            
+	//	The 1st and 2nd central moments about the mean (with simple background subtraction) can be performed on a defined sub-region (the analysis mask)  
+	//	These function get / set that mask 
 protected:
 	/*! analaysis mask center x position (pixels). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> mask_x_center;
@@ -724,12 +801,12 @@ public:
 	/*! Get the mask settings (python version).
 	@param[in] map<string, long>, value */
 	boost::python::dict getMask_Py()const;
-//	 __   __    
-//	|__) /  \ | 
-//	|  \ \__/ | 
-//	            
-// A region fo interest can be defined, and the array data in this ROI is written to a sperate PV 
-//
+	//	 __   __    
+	//	|__) /  \ | 
+	//	|  \ \__/ | 
+	//	            
+	// A region of interest can be defined, and the array data in this ROI is written to a sperate PV 
+	//
 protected:
 	/*! Rectangular ROI X corner, ROI used to extract masked data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> roi_min_x;
@@ -789,10 +866,10 @@ public:
 	/*! Get the Region Of Interest values.
 	@param[out] dict, with new values  */
 	boost::python::dict getROI_Py()const;
-//	 __   __                  __                 __           __   __         __   __  
-//	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
-//	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
-//	                                                                                   
+	//	 __   __                  __                 __           __   __         __   __  
+	//	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
+	//	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
+	//	                                                                                   
 protected:
 	/*! Rectangular ROI AND Mask X centre. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double> roi_and_mask_centre_x; // MAY NOT NEED AS MONITORS
@@ -905,25 +982,65 @@ public:
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
-
-	//----------------------------------------------------------------------------------------------------------------
-	//			 __             __   __        __  ___    
-	//			/__` |\ |  /\  |__) /__` |__| /  \  |     
-	//			.__/ | \| /~~\ |    .__/ |  | \__/  |     
+	//	 __             __   __        __  ___    
+	//	/__` |\ |  /\  |__) /__` |__| /  \  |     
+	//	.__/ | \| /~~\ |    .__/ |  | \__/  |     
 	//
 public:
 	HardwareSnapshot getSnapshot();
 	boost::python::dict getSnapshot_Py();
 
+//	 __         ___          __   __            ___  __  
+//	|__) | \_/ |__  |       /  ` /  \ |  | |\ |  |  /__` 
+//	|    | / \ |___ |___    \__, \__/ \__/ | \|  |  .__/ 
+//	                                                     
+public:
+	/*! get the latest pixel sum for the image
+	@param[out] double, value */
+	double getSumIntensity()const;
+	/*! get the latest pixel average for the image
+	@param[out] double, value */
+	double getAvgIntensity()const;
+	/*! Set the latest pixel sum for the image (Only available when NOT in PHYSICAL mode)
+	@param[in] double, value
+	@param[out] bool, value */
+	bool setSumIntensity(double value);
+	/*! Set the latest pixel average for the image (Only available when NOT in PHYSICAL mode)
+	@param[in] double, value
+	@param[out] bool, value */
+	bool setAvgIntensity(double value);
+	/*! Get the average pixel value that determines if beam is present in image
+	@param[out] double, average_pixel_value_for_beam*/
+	double getAveragePixelValueForBeam()const;
+	/*! Set the average pixel value that determines if beam is present in image
+	@param[in] double, averagePixelValueForBeam
+	@param[out] bool, isSetSucessfully*/
+	bool setAveragePixelValueForBeam(const double& value);
+	/*! Determines if beam is present in image data using AveragePixValue and AveragePixValueForBeam
+	@param[out]: bool, true if AveragePixValue > AveragePixValueForBeam*/
+	bool hasBeam()const;
+	/*! Determines if beam is present in image data using AveragePixValue (from online analysis) and AveragePixValueForBeam (defined in Prime Lattice)
+	@param[out]: bool, true if AveragePixValue < AveragePixValueForBeam*/
+	bool hasNoBeam()const;
+protected:
+	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sum_intensity; // just intensity in pv name
+	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > avg_intensity;
+/*
+				  __   ___                             __     __
+	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__`
+	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/
 
-
-
-
-
-
-
-
+*/
+public:
 // THESE ARE JUST FOR ANLAYSIS RESULTS WHEN USING VIRTUAL CLARA 
+	/*! Get relevant analysis data in a map
+	@param[out] std::map<std::string, double> */
+	std::map<std::string, double> getAnalayisData() const;
+	/*! Get relevant analysis data in a python dict
+	@param[out] dict of analysis data */
+	boost::python::dict getAnalayisData_Py() const;
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
 	@param[in] double, value 
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
@@ -980,39 +1097,12 @@ public:
 	/*! Get the x-y coviariance in pixels from the online analysis.
 	@param[out] double, value */
 	double getSigXYPix()const;
-	///*!*/
-	//size_t getNumXPixFromArrayData() const;
-	///*!*/
-	//size_t getNumYPixFromArrayData() const;
-	///*!*/
-	//size_t getFullNumXPix() const;
-	///*!*/
-	//size_t getFullNumYPix() const;
-
-
-	/*! Clear all the values assoociated with the Running mean and variance stats.*/
-	void clearAllRunningStats();
-	/*! Set the size of all Running mean and variance stats.*/
-	void setAllRunningStatSizes(size_t new_val);
-
-
-
-
-	/*! Get relevant analysis data in a map 
-	@param[out] std::map<std::string, double> */
-	std::map<std::string, double> getAnalayisData() const;
-	boost::python::dict getAnalayisData_Py() const;
-
-
-	/*! get Anlaysis results in pixels 
+	/*! get Anlaysis results in pixels
 	@param[out] map<string, double>, values, keyed by names in master lattice */
 	std::map<std::string, double> getAnalysisResultsPixels()const;
 	/*! get Anlaysis results in pixels, Python version
 	@param[out] map<string, double>, values, keyed by names in master lattice */
 	boost::python::dict getAnalysisResultsPixels_Py()const;
-
-
-
 	/*! Get the PixelResults from analysis. The values expected back are in the following order:
 		[0] - X_POSITION
 		[1] - Y_POSITION
@@ -1027,153 +1117,46 @@ public:
 	[1] - Y_POSITION
 	[2] - X_SIGMA
 	[3] - Y_SIGMA
-	[4] - COVARIANCE 
+	[4] - COVARIANCE
 	@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
 	std::vector<double> getMMResults() const;
-	boost::python::list getMMResults_Py() ;
-
-	/*! Get the Acquire Time for the camera (shutter open time, units??).
-@param[out] double, value */
-	double getAcquireTime()const;
-	/*! Get the Acquire Period for the camera (shutter open time, units??).
-	@param[out] double, value */
-	double getAcquirePeriod()const;
-	/*! Get the Array Rate for the camera (repetition rate, Hz).
-	@param[out] double, value */
-	double getArrayRate()const;
-	/*! Get the Sensor Temperature for the camera (degrees Celsius).
-	@param[out] double, value */
-	double getTemperature()const;
-	
-	
-	
-	/*! Check if the image analysis results are updating.
-	@param[out] bool, ture if updating */
-	bool isAnalysisUpdating();
-
-
-
-
-
-
-	/*! get the latest pixel sum for the image 
-	@param[out] double, value */
-	double getSumIntensity()const;
-	/*! get the latest pixel average for the image
-	@param[out] double, value */
-	double getAvgIntensity()const;
-	/*! Set the latest pixel sum for the image (Only available when NOT in PHYSICAL mode)
-	@param[in] double, value 
-	@param[out] bool, value */
-	bool setSumIntensity(double value);
-	/*! Set the latest pixel average for the image (Only available when NOT in PHYSICAL mode)
-	@param[in] double, value 
-	@param[out] bool, value */
-	bool setAvgIntensity(double value);
-	/*! Get the average pixel value that determines if beam is present in image
-	@param[out] double, average_pixel_value_for_beam*/
-	double getAveragePixelValueForBeam()const;
-	/*! Set the average pixel value that determines if beam is present in image
-	@param[in] double, averagePixelValueForBeam
-	@param[out] bool, isSetSucessfully*/
-	bool setAveragePixelValueForBeam(const double& value);
-	/*! Determines if beam is present in image data using AveragePixValue and AveragePixValueForBeam
-	@param[out]: bool, true if AveragePixValue > AveragePixValueForBeam*/
-	bool hasBeam()const;
-	/*! Determines if beam is present in image data using AveragePixValue (from online analysis) and AveragePixValueForBeam (defined in Prime Lattice)
-	@param[out]: bool, true if AveragePixValue < AveragePixValueForBeam*/
-	bool hasNoBeam()const;
-
-
-
-
-	/*! Start image analysis.
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool startAnalysing();
-	/*! Stop image analysis.
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool stopAnalysing();
-	/*! Is camera analysis state == ANALYSING.
-	@param[out] bool, result*/
-	bool isAnalysing()const;
-	/*! Is camera analysis state == NOT_ANALYSING.
-	@param[out] bool, result*/
-	bool isNotAnalysing() const;
-	/*! Get image analysis state .
-	@param[out] STATE, value from analysis_state*/
-	STATE getAnalysisState()const;
-
-
-
-
-	bool areAllRunningStatsFull()const;
-
-
-	/*! Get the latest image data (decimated array for passing accross network, not full image).
-	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
-
-	bool updateImageData();
-	/*! Get the latest image data AND time stamp.
-	It is possible in the current implementation that the time stamp is not synchronized with the data.
-	(decimated array for passing accross network, not full image).
-	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
-	bool updateImageDataWithTimeStamp();
-	/*! Get the latest ROI data (decimated array for passing accross network, not full image, !!ROI is new, not been tested!!). 
-	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
-	bool updateROIData();
-	/*! Get the latest ROI data AND time stamp.
-	It is possible in the current implementation that the time stamp is not synchronized with the data.
-	(decimated array for passing accross network, not full image).
-	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
-	bool updateROIDataWithTimeStamp();
-	/*! Get a copy of the current image data. Until an updateImage function is called this will be empty, 
-	to reduce network load Camera data ARE NOT continuously monitored.
-	@param[out] vector<long>, latest data */
-	std::vector<long> getImageData()const;
-	///*! Get a copy of the current image data. Until an updateImage function is called this will be empty,
-	//to reduce network load Camera data ARE NOT continuously monitored.
-	//@param[out] vector<long>, latest data */
-	//std::vector<long>& getImageData_Ref()const;
-
-	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored. 
-	@param[out] list, latest data */
-	boost::python::list getImageData_Py()const;
-	/*! Get a copy of the current image data. Until an updateROI function is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored.
-	@param[out] vector<long>, latest data */
-	std::vector<long> getROIData()const;
-	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored.
-	@param[out] list, latest data */
-	boost::python::list getROIData_Py()const;
-	/*! Get a reference to the current image data. Gives access to image data without copying 
-	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
-	std::vector<long>& getImageDataConstRef();
-	/*! Get a reference to the current ROI data. Gives access to data without copying
-	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
-	std::vector<long>& getROIDataConstRef();
-	/*! Get the size of the running stats buffer, running_stats_buffer_size
-	@param[out] size_t, value */
-	size_t getBufferSize()const;
-	/*! set the size of the running stats buffer, running_stats_buffer_size
-	@param[in] size_t, value */
-	void setAllRunningStatBufferSizes(size_t v);
-	/*! clear all runing stats buffers */
-	void clearAllRunningStatBuffers();
-	/*! Get the current number of data values being used by the Running Stats.
-* 	@param[out] size_t: number of data values.*/
-	size_t getRunningStatNumDataValues()const;
-
-	///*! Get the running stats for a particular analsys results (x position, or y position, etc.) 
-	//@param[out] string, string of the TYPE of running stat to return  
-	//@param[out] dict, value */
-	//boost::python::dict getRunningStats(const std::string& type_str)const;
-	///*! Get the running stats for a particular analsys results (x position, or y position, etc.)
-	//@param[out] TYPE, TYPE of running stat to return
-	//@param[out] dict, value */
-	//boost::python::dict getRunningStats(TYPE type)const;
-	/*! Get the running stats buffer,
+	boost::python::list getMMResults_Py();
+protected:
+	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > x_pix;
+	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > y_pix;
+	/*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sigma_x_pix;
+	/*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sigma_y_pix;
+	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sigma_xy_pix;
+	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > x_mm;
+	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > y_mm;
+	/*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sigma_x_mm;
+	/*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sigma_y_mm;
+	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, double > sigma_xy_mm;
+	/*! Pixel Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
+	std::pair<epicsTimeStamp, std::vector<double> > pixelResults;
+	/*! mm Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
+	std::pair<epicsTimeStamp, std::vector<double> > mmResults;
+	/*! Stores the last time the ANA Pixel Results were updated, will be used to set isResultUpdated*/
+	epicsTimeStamp lastResultsUpdateTime;
+	/*! Stores the last time the ANA MM Results were updated, purely used fro pushign to the running stats */
+	epicsTimeStamp lastResultsUpdateTime_mm_ana_results;
+/*
+//							__     __      __                         __      __  ___      ___  __
+//  /\  |\ |  /\  |    \ / /__` | /__`    |__) |  | |\ | |\ | | |\ | / _`    /__`  |   /\   |  /__`
+// /~~\ | \| /~~\ |___  |  .__/ | .__/    |  \ \__/ | \| | \| | | \| \__>    .__/  |  /~~\  |  .__/	*/
+// 
+public:
+	/*! Get the image analysis running stats data.
 	@param[out] dict, values */
 	boost::python::dict getAllRunningStats()const;
 	/*! Returns the running stats object for x_pix, not just the dict
@@ -1212,27 +1195,143 @@ public:
 	/*! Returns the running stats object for sum_intensity, not just the dict
 	@param[out] RunningStats, rs*/
 	RunningStats& getSumIntensityRunningStats();
-
-
-
-	/*! testing returning pointer to image array instead of copying 	*/
-	//std::vector<double>* Camera::getImagedataPointer();
-	
-
-
-
-
-	/* Enable debug messages*/
+	/*! Clear all the values assoociated with the Running mean and variance stats.*/
+	void clearAllRunningStats();
+	/*! Set the size of all Running mean and variance stats.*/
+	void setAllRunningStatSizes(size_t new_val);
+	/*! Check if all running stats in the camera are full.
+	* 	@param[out] bool, */
+	bool areAllRunningStatsFull()const;
+protected:
+	/* Number of shots to buffer for the analysis results*/
+	size_t running_stats_buffer_size;
+	/* X position (pixels) running stats buffer*/
+	RunningStats x_pix_rs;
+	/* Y position (pixels) running stats buffer*/
+	RunningStats y_pix_rs;
+	/* X standard deviation (pixels) running stats buffer*/
+	RunningStats sigma_x_pix_rs;
+	/* Y standard deviation (pixels) running stats buffer*/
+	RunningStats sigma_y_pix_rs;
+	/* X-Y  standard deviatio(pixels) running stats buffer*/
+	RunningStats sigma_xy_pix_rs;
+	/* X position (mm) running stats buffer*/
+	RunningStats x_mm_rs;
+	/* Y position (mm) running stats buffer*/
+	RunningStats y_mm_rs;
+	/* X standard deviation (mm) running stats buffer*/
+	RunningStats sigma_x_mm_rs;
+	/* X standard deviation (mm) running stats buffer*/
+	RunningStats sigma_y_mm_rs;
+	/* X-Y standard deviation  (mm^2) running stats buffer*/
+	RunningStats sigma_xy_mm_rs;
+	/* avergae pixel intensity  running stats buffer*/
+	RunningStats avg_intensity_rs;
+	/* sum pixel running stats buffer*/
+	RunningStats sum_intensity_rs;
+//	
+//      __   __       ___  ___               __      __   ___ ___                  __   ___     __       ___         
+//|  | |__) |  \  /\   |  |__      /\  |\ | |  \    / _` |__   |     |  |\/|  /\  / _` |__     |  \  /\   |   /\     
+//\__/ |    |__/ /~~\  |  |___    /~~\ | \| |__/    \__> |___  |     |  |  | /~~\ \__> |___    |__/ /~~\  |  /~~\    
+//                                                                                                                   
+public:
+	/*! Get the latest image data (decimated array for passing accross network, not full image).
+	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
+	bool updateImageData();
+	/*! Get the latest image data AND time stamp.
+	It is possible in the current implementation that the time stamp is not synchronized with the data.
+	(decimated array for passing accross network, not full image).
+	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
+	bool updateImageDataWithTimeStamp();
+	/*! Get the latest ROI data (decimated array for passing accross network, not full image, !!ROI is new, not been tested!!). 
+	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
+	bool updateROIData();
+	/*! Get the latest ROI data AND time stamp.
+	It is possible in the current implementation that the time stamp is not synchronized with the data.
+	(decimated array for passing accross network, not full image).
+	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
+	bool updateROIDataWithTimeStamp();
+	/*! Get a copy of the current image data. Until an updateImage function is called this will be empty, 
+	to reduce network load Camera data ARE NOT continuously monitored.
+	@param[out] vector<long>, latest data */
+	std::vector<long> getImageData()const;
+	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored. 
+	@param[out] list, latest data */
+	boost::python::list getImageData_Py()const;
+	/*! Get a copy of the current image data. Until an updateROI function is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored.
+	@param[out] vector<long>, latest data */
+	std::vector<long> getROIData()const;
+	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored.
+	@param[out] list, latest data */
+	boost::python::list getROIData_Py()const;
+	/*! Get a reference to the current image data. Gives access to image data without copying 
+	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
+	std::vector<long>& getImageDataConstRef();
+	/*! Get a reference to the current ROI data. Gives access to data without copying
+	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
+	std::vector<long>& getROIDataConstRef();
+	/*! Get the size of the running stats buffer, running_stats_buffer_size
+	@param[out] size_t, value */
+	size_t getBufferSize()const;
+	/*! set the size of the running stats buffer, running_stats_buffer_size
+	@param[in] size_t, value */
+	void setAllRunningStatBufferSizes(size_t v);
+	/*! clear all runing stats buffers */
+	void clearAllRunningStatBuffers();
+	/*! Get the current number of data values being used by the Running Stats.
+* 	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues()const;
+private:
+	/*! Get the latest time stamp for an image / ROI  array
+	@param[in] struct dbr_time_long*, pointer to DBR_TIME_LONG struct
+	@param[in] const pvStruct&, pvStruct with channel information
+	@param[in] epicsTimeStamp&, value to update with timestamp
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct& pvs, epicsTimeStamp& ts_to_update);
+	/*! Get the latest data an image / ROI  array
+	@param[in] std::vector<long>&, vector to write new data to
+	@param[in] const pvStruct&, pvStruct with channel information
+	@param[in] size_t, count of array elemnts to get (for ROI this changes depend on the size of the ROI
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool getArrayValue(std::vector<long>& data_vec, const pvStruct& pvs, size_t count);
+	/*! Resize vector to array_data_pixel_count size, (to save memory only done on request)
+	@param[in] std::vector<long>&, vector to resize
+	@param[out] bool, if resize succeeded */
+	bool vector_resize(std::vector<long>& vec);
+	/*! Allocate memory for image_data dbr_time_long pointer (to save memory only done on request) */
+	void malloc_imagedata();
+	/*! Allocate memory roi_data dbr_time_long pointer (to save memory only done on request) */
+	void malloc_roidata();
+	/*! Flag set if the dbr_image_data has had memory allocated for it.
+	To save application memory this ony happens when requesting image data accross the network */
+	bool image_data_has_not_malloced;
+	/*! Flag set if the image_data vector has had memory allocated for it.
+	To save application memory this ony happens when requesting image data accross the network */
+	bool image_data_has_not_vector_resized;
+	/*! Flag set if the dbr_roi_data has had memory allocated for it.
+	To save application memory this ony happens when requesting image data accross the network */
+	bool roi_data_has_not_malloced;
+	/*! Flag set if the roi_data vector has had memory allocated for it.
+	To save application memory this ony happens when requesting image data accross the network */
+	bool roi_data_has_not_vector_resized;
+//       ___  __   __        __   ___  __  
+// |\/| |__  /__` /__`  /\  / _` |__  /__` 
+// |  | |___ .__/ .__/ /~~\ \__> |___ .__/ 
+//                                         
+public:
+	/*! Enable debug messages*/
 	void debugMessagesOn();
-	/* Disbale debug messages*/
+	/*! Disbale debug messages*/
 	void debugMessagesOff();
-	/* Enable messages*/
+	/*! Enable messages*/
 	void messagesOn();
-	/* Disable messages*/
+	/*! Disable messages*/
 	void messagesOff();
 
-	friend class EPICSCameraInterface;
-	friend class CameraFactory;
+
 protected:
 	/* 
 		In general we put data that comes back from EPICS into a timestamp, data pair. 
@@ -1240,77 +1339,16 @@ protected:
 	*/
 
 
-	/*! Camera set new background STATE. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE > set_new_background;
-	
-	
-	
-	
-	/*! Camera set new background STATE. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long > capture_count;
-	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > x_pix;
-	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > y_pix;
-	/*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_x_pix;
-	/*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_y_pix;
-	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_xy_pix;
-	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > x_mm;
-	/*! latest vertical position (expected value) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > y_mm;
-	/*! latest horizontal rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_x_mm;
-	/*! latest vertical rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_y_mm;
-	/*! latest tilt rms (width) in pixels. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sigma_xy_mm;
-	/*! State of using NPoint scaling. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE > use_npoint;
-	/*! latest stepsize (Npoint scaling step size). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long > step_size;
-	/*! State of background data  scaling. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE > use_background;
-	/*! latest Sum Intensity (sum of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > sum_intensity; // just intensity in pv name
-	/*! latest Average Intensity (mean of pixel values). Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > avg_intensity;
 
-	/*! Pixel Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
-	std::pair<epicsTimeStamp, std::vector<double> > pixelResults;
-	/*! mm Results from Analysis: [x_position, y_position, x_sigma_position, y_sigma_position, covariance_pos]*/
-	std::pair<epicsTimeStamp, std::vector<double> > mmResults;
-	/*! Stores the last time the ANA Pixel Results were updated, will be used to set isResultUpdated*/
-	epicsTimeStamp lastResultsUpdateTime;
-	/*! Stores the last time the ANA MM Results were updated, purely used fro pushign to the running stats */
-	epicsTimeStamp lastResultsUpdateTime_mm_ana_results;
 	/*! Flag for showing that the ANA Pixel Results are updating */
 	bool isResultUpdated;
 	/*! ROI image data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, std::vector<long>> roi_imagedata;
 
-	
-
-
-
-
-	/*! Camera acquire time. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > acquire_time;
-	/*! Camera acquire period. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > acquire_period;
-	/*! Camera array rate. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, double > array_rate;
 	/*! Camera temperature. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > temperature;
 
 
-	/*! Acquire status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> acquire_state;
-	/*! Analysis status. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, STATE> analysis_state;
 
 
 
@@ -1341,32 +1379,7 @@ protected:
 	//boost::python::list mask_and_roi_keywords_Py;
 	/*! Keywords used for setting mask, python version  (Not prefferred, use mask and ROI together) */
 	//boost::python::list mask_keywords_Py;
-	/* Number of shots to buffer for the analysis results*/  
-	size_t running_stats_buffer_size;
-	/* X position (pixels) running stats buffer*/
-	RunningStats x_pix_rs;
-	/* Y position (pixels) running stats buffer*/
-	RunningStats y_pix_rs;
-	/* X standard deviation (pixels) running stats buffer*/
-	RunningStats sigma_x_pix_rs;
-	/* Y standard deviation (pixels) running stats buffer*/
-	RunningStats sigma_y_pix_rs;
-	/* X-Y  standard deviatio(pixels) running stats buffer*/
-	RunningStats sigma_xy_pix_rs;
-	/* X position (mm) running stats buffer*/
-	RunningStats x_mm_rs;
-	/* Y position (mm) running stats buffer*/
-	RunningStats y_mm_rs;
-	/* X standard deviation (mm) running stats buffer*/
-	RunningStats sigma_x_mm_rs;
-	/* X standard deviation (mm) running stats buffer*/
-	RunningStats sigma_y_mm_rs;
-	/* X-Y standard deviation  (mm^2) running stats buffer*/
-	RunningStats sigma_xy_mm_rs;
-	/* avergae pixel intensity  running stats buffer*/
-	RunningStats avg_intensity_rs;
-	/* sum pixel running stats buffer*/
-	RunningStats sum_intensity_rs;
+
 
 	// protected so cam-factory can get these easily 
 	double master_lattice_pixel_to_mm;
@@ -1374,9 +1387,6 @@ protected:
 	long  master_lattice_centre_y;
 
 private:
-	/*! Type of camera, different camera types have different funcionality, defined in Master Lattice  */
-	TYPE cam_type;
-
 
 
 	
@@ -1395,9 +1405,6 @@ private:
 
 	size_t roi_max_x;
 	size_t roi_max_y;
-
-
-
 
 
 	/* total number of pixels in the image array data*/
@@ -1439,14 +1446,6 @@ private:
 	/*! empircally determined value used to decide if the beam is close to the edge*/
 	double max_y_pixel_pos;
 
-
-
-	/*! Parse the Master Lattice data for this camera */
-	void getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode);
-
-
-
-
 	EPICSCameraInterface_sptr epicsInterface;
 	std::map<std::string, std::string> CameraParamMap;
 	
@@ -1458,39 +1457,11 @@ private:
 	std::vector<std::string> roi_keywords;
 
 
-	/*! Get the latest time stamp for an image / ROI  array 
-	@param[in] struct dbr_time_long*, pointer to DBR_TIME_LONG struct 
-	@param[in] const pvStruct&, pvStruct with channel information 
-	@param[in] epicsTimeStamp&, value to update with timestamp 
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool getArrayTimeStamp(struct dbr_time_long* dbr_struct, 
-						  const pvStruct& pvs, epicsTimeStamp& ts_to_update);
-	/*! Get the latest data an image / ROI  array
-	@param[in] std::vector<long>&, vector to write new data to 
-	@param[in] const pvStruct&, pvStruct with channel information
-	@param[in] size_t, count of array elemnts to get (for ROI this changes depend on the size of the ROI  
-	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	bool getArrayValue(std::vector<long>& data_vec, const pvStruct& pvs, size_t count);
-	/*! Resize vector to array_data_pixel_count size, (to save memory only done on request) 
-	@param[in] std::vector<long>&, vector to resize
-	@param[out] bool, if resize succeeded */
-	bool vector_resize(std::vector<long>& vec);
-	/*! Allocate memory for image_data dbr_time_long pointer (to save memory only done on request) */
-	void malloc_imagedata();
-	/*! Allocate memory roi_data dbr_time_long pointer (to save memory only done on request) */
-	void malloc_roidata();
-	/*! Flag set if the dbr_image_data has had memory allocated for it. 
-	To save application memory this ony happens when requesting image data accross the network */
-	bool image_data_has_not_malloced;
-	/*! Flag set if the image_data vector has had memory allocated for it.
-	To save application memory this ony happens when requesting image data accross the network */
-	bool image_data_has_not_vector_resized;
-	/*! Flag set if the dbr_roi_data has had memory allocated for it.
-	To save application memory this ony happens when requesting image data accross the network */
-	bool roi_data_has_not_malloced;
-	/*! Flag set if the roi_data vector has had memory allocated for it.
-	To save application memory this ony happens when requesting image data accross the network */
-	bool roi_data_has_not_vector_resized;
+
+	/*!  */
+	void setPVStructs();
+	/*! Parse the Master Lattice data for this camera */
+	void getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode);
 
 
 	// TODO issue 101, move to globalfunctions 
@@ -1511,67 +1482,4 @@ private:
 	}
 
 };
-
-
 #endif //CAMERA_H_
-
-
-
-
-
-
-
-
-
-	///*! Enable the Cross-Overlay on the decimated camera image array sent over the network. 
-	//* Will be visiable to many camera image viewing apps, 
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool enableOverlayCross();
-	///*! Disable the Cross-Overlay on the decimated camera image array sent over the network. 	
-	//* The overlay will be visable to many camera image viewing apps,
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool disableOverlayCross();
-	///*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
-	//@param[out] STATE, current state of overla, ENABLED, DISBALED, */
-	//STATE getOverlayCrossState()const;
-	///*! Compare the current state of the cross overlay to ENABLED.
-	//@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
-	//bool isOverlayCrossEnabled()const;
-	///*! Compare the current state of the cross overlay to DISABLED.
-	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
-	//bool isOverlayCrossDisabled()const;
-	///*! Enable the Mask-Overlay on the decimated camera image array sent over the network.
-	//* Will be visiable to many camera image viewing apps,
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool enableOverlayMask();
-	///*! Disable the Mask-Overlay on the decimated camera image array sent over the network.
-	//* The overlay will be visable to many camera image viewing apps,
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool disableOverlayMask();
-	///*! Get the state of Cross-Overlay on the decimated camera image array sent over the network.
-	//@param[out] STATE, current state of overla, ENABLED, DISBALED, */
-	//STATE getOverlayMaskState()const;
-	///*! Compre the current state of the Mask-Overlay to ENABLED.
-	//@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
-	//bool isOverlayMaskEnabled()const;
-	///*! Compare the current state of the Mask-Overlay to DISABLED.
-	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
-	//bool isOverlayMaskDisabled()const;
-	///*! Enable the Results-Overlay on the decimated camera image array sent over the network.
-	//* Will be visiable to many camera image viewing apps,
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool enableOverlayResult();
-	///*! Disable the Results-Overlay on the decimated camera image array sent over the network.
-	//* The overlay will be visable to many camera image viewing apps,
-	//@param[out] bool, true if value got sent to epics (not if it was received)*/
-	//bool disableOverlayResult();
-	///*! Get the state of Results-Overlay on the decimated camera image array sent over the network.
-	//@param[out] STATE, current state of overla, ENABLED, DISBALED, */
-	//STATE getOverlayResultState()const;
-	///*! Comapre the current state of the Results-Overlay to ENABLED.
-	//@param[out] bool, returns true if the overlay is ENABLED,  otherwise false.*/
-	//bool isOverlayResultEnabled()const;
-	///*! Compare the current state of the Results-Overlay to DISABLED.
-	//@param[out] bool, returns true if the overlay is DISABLED,  otherwise false.*/
-	//bool isOverlayResultDisabled()const;
-
