@@ -1807,6 +1807,17 @@ bool CameraFactory::canStartCamera(const std::string& name)const
 	}
 	return to_py_dict<std::string, long>(getMaskandROI(name));
 }
+bool CameraFactory::stopAllAcquiring()
+{
+	for (auto& cam : camera_map)
+	{
+		cam.second.stopAcquiring();
+	}
+
+	return true;
+}
+
+
 bool CameraFactory::startAcquiring(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -3123,6 +3134,7 @@ void CameraFactory::cutLHarwdareMapByNames(const std::vector<std::string>& names
 
 STATE CameraFactory::saveSnapshot(const std::string& comments)
 {
+	messenger.printDebugMessage("saveSnapshot with comment, calling main comments");
 	return saveSnapshot(SnapshotFileManager::camera_snapshot_default_path, GlobalFunctions::getTimeAndDateString() + ".yaml", comments);
 }
 STATE CameraFactory::saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments)

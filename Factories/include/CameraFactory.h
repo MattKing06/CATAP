@@ -872,7 +872,9 @@ public:
 	bool canStartCamera(const std::string& name)const;
 
 
-
+	/*! Stop All cameras acquiring.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool stopAllAcquiring();
 
 	/*! Start image acquiring.
 	@param[in] std::string, name

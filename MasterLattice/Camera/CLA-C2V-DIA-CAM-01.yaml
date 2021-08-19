@@ -162,10 +162,10 @@ properties:
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
-    ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
-    BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
-    BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_X : 1080 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
+    BINARY_NUM_PIX_X : 2160 #; the binary image is bigger than the array data passed through EPICS
+    BINARY_NUM_PIX_Y : 2560 #; the binary image is bigger than the array data passed through EPICS
     X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
     Y_PIX_SCALE_FACTOR : 2 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.2 #;  emprically determined value for when laser is present

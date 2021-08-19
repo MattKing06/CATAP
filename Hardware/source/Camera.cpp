@@ -2569,14 +2569,34 @@ long Camera::getGain()const
 //
 HardwareSnapshot Camera::getSnapshot()
 {
+	messenger.printDebugMessage("CAM_Acquire_RBV:  ", ENUM_TO_STRING(acquire_state.second));
+	currentSnapshot.update<STATE>(CameraRecords::CAM_Acquire_RBV, acquire_state.second);
+	currentSnapshot.update<STATE>(CameraRecords::ANA_OVERLAY_1_CROSS_RBV, cross_hair_overlay.second);
+	currentSnapshot.update<STATE>(CameraRecords::ANA_OVERLAY_2_RESULT, analysis_result_overlay.second);
+	currentSnapshot.update<STATE>(CameraRecords::ANA_OVERLAY_3_MASK_RBV, analysis_mask_overlay.second);
+	currentSnapshot.update<STATE>(CameraRecords::ANA_UseNPoint_RBV, use_npoint.second);
+	currentSnapshot.update<STATE>(CameraRecords::ANA_EnableCallbacks_RBV, analysis_state.second);
+	currentSnapshot.update<STATE>(CameraRecords::HDF_WriteFile_RBV, write_state.second);
+	currentSnapshot.update<STATE>(CameraRecords::HDF_WriteStatus, write_state_check.second);
+	currentSnapshot.update<STATE>(CameraRecords::LED_Sta, led_state.second);
+	currentSnapshot.update<STATE>(CameraRecords::HDF_Capture_RBV, capture_state.second);
+	currentSnapshot.update<STATE>(CameraRecords::ANA_UseFloor_RBV, use_floor.second);
+	currentSnapshot.update<TYPE>("cam_type", cam_type);
+
+	currentSnapshot.update(CameraRecords::ANA_FloorLevel_RBV, floor_level.second);
+
+
 	currentSnapshot.update(CameraRecords::CAM_BlackLevel_RBV, black_level.second);
 	currentSnapshot.update(CameraRecords::CAM_Gain_RBV, gain.second);
+	
 	currentSnapshot.update(CameraRecords::CAM_ArrayRate_RBV, array_rate.second);
 	currentSnapshot.update(CameraRecords::CAM_AcquirePeriod_RBV, acquire_period.second);
 	currentSnapshot.update(CameraRecords::CAM_AcquireTime_RBV, acquire_time.second);
-	currentSnapshot.update(CameraRecords::CAM_Acquire_RBV, acquire_state.second);
-	currentSnapshot.update(CameraRecords::CAM_Active_Count, active_camera_count.second);
-	currentSnapshot.update(CameraRecords::CAM_Active_Limit, active_camera_limit.second);
+	messenger.printDebugMessage("CAM_Active_Count:  ", active_camera_count.second);
+	messenger.printDebugMessage("CAM_Active_Limit:  ", active_camera_limit.second);
+	currentSnapshot.update<double>(CameraRecords::CAM_Active_Count, active_camera_count.second);
+	currentSnapshot.update<double>(CameraRecords::CAM_Active_Limit, active_camera_limit.second);
+	
 	currentSnapshot.update(CameraRecords::ROI1_MinX_RBV, roi_min_x.second);
 	currentSnapshot.update(CameraRecords::ROI1_MinY_RBV, roi_min_y.second);
 	currentSnapshot.update(CameraRecords::ROI1_SizeX_RBV, roi_size_x.second);
@@ -2585,29 +2605,24 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ROIandMask_SetY, roi_and_mask_centre_y.second);
 	currentSnapshot.update(CameraRecords::ROIandMask_SetXrad, roi_and_mask_radius_x.second);
 	currentSnapshot.update(CameraRecords::ROIandMask_SetYrad, roi_and_mask_radius_y.second);
+
 	currentSnapshot.update(CameraRecords::ANA_MaskXCenter_RBV, mask_x_center.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskYCenter_RBV, mask_y_center.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskXRad_RBV, mask_x_radius.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskYRad_RBV, mask_y_radius.second);
-	currentSnapshot.update(CameraRecords::ANA_UseFloor_RBV, use_floor.second);
-	currentSnapshot.update(CameraRecords::ANA_FloorLevel_RBV, floor_level.second);
+
 	currentSnapshot.update(CameraRecords::ANA_FlooredPoints_RBV, floored_pts_count.second);
-	currentSnapshot.update(CameraRecords::ANA_UseNPoint_RBV, use_npoint.second);
 	currentSnapshot.update(CameraRecords::ANA_NPointStepSize_RBV, step_size.second);
 	currentSnapshot.update(CameraRecords::ANA_UseBkgrnd_RBV, use_background.second);
-	currentSnapshot.update(CameraRecords::ANA_OVERLAY_1_CROSS_RBV, cross_hair_overlay.second);
-	currentSnapshot.update(CameraRecords::ANA_OVERLAY_2_RESULT, analysis_result_overlay.second);
-	currentSnapshot.update(CameraRecords::ANA_OVERLAY_3_MASK_RBV, analysis_mask_overlay.second);
 	currentSnapshot.update(CameraRecords::ANA_FlooredPercent_RBV, floored_pts_percent.second);
 	currentSnapshot.update(CameraRecords::CAM_Temperature_RBV, temperature.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_RBV, cpu_total.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_CropSubMask_RBV, cpu_crop_sub_mask.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_Npoint_RBV, cpu_npoint.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_Dot_RBV, cpu_dot.second);
-	currentSnapshot.update(CameraRecords::HDF_Capture_RBV, capture_state.second);
-	currentSnapshot.update(CameraRecords::LED_Sta, led_state.second);
-	currentSnapshot.update(CameraRecords::HDF_WriteFile_RBV, write_state.second);
-	currentSnapshot.update(CameraRecords::HDF_WriteStatus, write_state_check.second);
+
+
+
 	currentSnapshot.update(CameraRecords::HDF_WriteMessage, write_error_message.second);
 	currentSnapshot.update(CameraRecords::HDF_FilePath_RBV, save_filepath.second);
 	currentSnapshot.update(CameraRecords::HDF_FileName_RBV, save_filename.second);
@@ -2615,7 +2630,7 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filepath_RBV, image_buffer_filepath.second);
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filename_RBV, image_buffer_filename.second);
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
-	currentSnapshot.update(CameraRecords::ANA_EnableCallbacks_RBV, analysis_state.second);
+
 	currentSnapshot.update(CameraRecords::HDF_NumCapture_RBV, capture_count.second);
 	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
 	currentSnapshot.update(CameraRecords::ANA_PixW_RBV, epics_pixel_width.second);
@@ -2635,6 +2650,7 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ANA_CovXY_RBV, sigma_xy_mm.second);
 	currentSnapshot.update(CameraRecords::ANA_AvgIntensity_RBV, avg_intensity.second);
 	currentSnapshot.update(CameraRecords::ANA_Intensity_RBV, sum_intensity.second);
+
 	currentSnapshot.update("busy", busy);
 	currentSnapshot.update("max_shots_number", max_shots_number);
 	currentSnapshot.update("last_capture_and_save_success", last_capture_and_save_success);
@@ -2654,7 +2670,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update("mechanical_centre_y", mechanical_centre_y);
 	currentSnapshot.update("pix2mmX_ratio", pix2mmX_ratio);
 	currentSnapshot.update("pix2mmY_ratio", pix2mmY_ratio);
-	currentSnapshot.update("cam_type", cam_type);
 	currentSnapshot.update("roi_max_x", roi_max_x);
 	currentSnapshot.update("roi_max_y", roi_max_y);
 	currentSnapshot.update("x_pix_scale_factor", x_pix_scale_factor);
