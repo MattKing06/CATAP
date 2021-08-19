@@ -6,6 +6,7 @@
 #
 controls_information:
   PV: true
+  records: MABSS, RPOSS
   pv_record_map:
     MABSS: EBT-BA1-MOT-COFF-V-04:MABSS
     RPOSS: EBT-BA1-MOT-COFF-V-04:RPOSS
