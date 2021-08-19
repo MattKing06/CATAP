@@ -13,6 +13,7 @@ StageFactory::StageFactory(STATE mode) :
 
 StageFactory::StageFactory(const StageFactory& copyFactory)
 {
+	stageMap.insert(copyFactory.stageMap.begin(), copyFactory.stageMap.end());
 }
 
 StageFactory::~StageFactory()
@@ -35,6 +36,43 @@ void StageFactory::populateStageMap()
 	messenger.printDebugMessage("Stage Factory has finished populating Stage Map");
 }
 
+void StageFactory::setupChannels()
+{
+	for (auto&& stage : stageMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = stage.second.getPVStructs();
+		
+		for (auto&& pv : pvStructs)
+		{
+			std::cout << pv.second.fullPVName << std::endl;
+			stage.second.epicsInterface->retrieveCHID(pv.second);
+		}
+	}
+}
+
+void StageFactory::retrieveMonitorStatus(pvStruct& pv)
+{
+	if (pv.pvRecord == StageRecords::MABSS)
+	{
+		pv.monitor = true;
+	}
+	if (pv.pvRecord == StageRecords::RPOSS)
+	{
+		pv.monitor = true;
+	}
+}
+
+Stage& StageFactory::getStage(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name);
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", name, " in stages. Please use a valid stage name.");
+	}
+}
 
 bool StageFactory::setup(std::string version)
 {
@@ -48,6 +86,37 @@ bool StageFactory::setup(std::string version)
 		hasBeenSetup = false;
 		return hasBeenSetup;
 	}
+	setupChannels();
+	EPICSInterface::sendToEPICS();
+	for (auto&& stage : stageMap)
+	{
+		std::map<std::string, pvStruct>& pvStructs = stage.second.getPVStructs();
+		for (auto&& pv : pvStructs)
+		{
+			if (ca_state(pv.second.CHID) == cs_conn)
+			{
+				retrieveMonitorStatus(pv.second);
+				stage.second.epicsInterface->retrieveCHTYPE(pv.second);
+				stage.second.epicsInterface->retrieveCOUNT(pv.second);
+				stage.second.epicsInterface->retrieveUpdateFunctionForRecord(pv.second);
+				pv.second.MASK = DBE_VALUE;
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
+				if (pv.second.monitor)
+				{
+					stage.second.epicsInterface->createSubscription(stage.second, pv.second);
+				}
+			}
+			else
+			{
+				messenger.printMessage(stage.first, " CANNOT CONNECT TO EPICS");
+			}
+			EPICSInterface::sendToEPICS();
+		}
+	}
+	hasBeenSetup = true;
+	return hasBeenSetup;
 }
 
 void StageFactory::debugMessagesOn()

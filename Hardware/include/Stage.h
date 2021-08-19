@@ -7,6 +7,7 @@
 #include <GlobalStateEnums.h>
 #include <GlobalFunctions.h>
 #include <boost/make_shared.hpp>
+#include <StagePVRecords.h>
 
 class EPICSStageInterface;
 
@@ -27,7 +28,10 @@ public:
 	void messagesOn();
 	void messagesOff();
 	std::pair<epicsTimeStamp, double> getCurrentPosition();
+	void setCurrentPosition(std::pair<epicsTimeStamp, double> newValue);
 	std::pair<epicsTimeStamp, double> getPositionSetpoint();
+	void setPositionSetpoint(std::pair<epicsTimeStamp, double> newValue);
+	void setNewPosition(double newPosition);
 	double getMinPosition();
 	double getMaxPosition();
 	double getInPosition();

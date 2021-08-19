@@ -22,8 +22,70 @@ positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConst
 	{inPosition = std::stod(paramMap.at("in_pos"));}
 	if (GlobalFunctions::entryExists(paramMap, "out_pos"))
 	{outPosition = std::stod(paramMap.at("out_pos"));}
+	setPVStructs();
+	epicsInterface = boost::make_shared<EPICSStageInterface>(EPICSStageInterface());
+	messenger = LoggingSystem(true, true);
 }
 
+Stage::Stage(const Stage& copyStage) :
+	epicsInterface(copyStage.epicsInterface)
+{}
+
+Stage::~Stage()
+{
+}
+
+void Stage::setPVStructs()
+{
+	for (auto&& record : StageRecords::stageRecordList)
+	{
+		pvStructs[record] = pvStruct();
+		pvStructs[record].pvRecord = record;
+		std::string PV = specificHardwareParameters.at(record);
+		switch (mode)
+		{
+		case STATE::VIRTUAL:
+			pvStructs[record].fullPVName = "VM-" + PV;
+			break;
+		default:
+			pvStructs[record].fullPVName = PV;
+			break;
+		}
+	}
+}
+
+void Stage::setCurrentPosition(std::pair<epicsTimeStamp, double> newPosition)
+{
+	currentPosition = newPosition;
+}
+
+std::pair<epicsTimeStamp, double> Stage::getCurrentPosition()
+{
+	return currentPosition;
+}
+
+void Stage::setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint)
+{
+	positionSetpoint = newSetpoint;
+}
+
+std::pair<epicsTimeStamp, double> Stage::getPositionSetpoint()
+{
+	return positionSetpoint;
+}
+
+void Stage::setNewPosition(double newPosition)
+{
+	std::cout << "setting new pos" << std::endl;
+	if (!epicsInterface->setNewPosition(pvStructs.at(StageRecords::MABSS), newPosition))
+	{
+		messenger.printDebugMessage("Unable to send ", newPosition, " to ", pvStructs.at(StageRecords::MABSS).fullPVName);
+	}
+	else
+	{
+		std::cout << "set new pos" << std::endl;
+	}
+}
 double Stage::getMinPosition()
 {
 	return minPosition;
@@ -39,17 +101,6 @@ double Stage::getMaxPosition()
 	return maxPosition;
 }
 
-Stage::Stage(const Stage& copyStage)
-{
-}
-
-Stage::~Stage()
-{
-}
-
-void Stage::setPVStructs()
-{
-}
 
 void Stage::debugMessagesOff()
 {

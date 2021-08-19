@@ -17,6 +17,9 @@ public:
 	ConfigReader reader;
 	bool setup(std::string version);
 	void populateStageMap();
+	void setupChannels();
+	void retrieveMonitorStatus(pvStruct& pv);
+	Stage& getStage(const std::string& name);
 	bool hasBeenSetup;
 	std::map<std::string, Stage> stageMap;
 	void debugMessagesOn();
