@@ -22,6 +22,14 @@ positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConst
 	{inPosition = std::stod(paramMap.at("in_pos"));}
 	if (GlobalFunctions::entryExists(paramMap, "out_pos"))
 	{outPosition = std::stod(paramMap.at("out_pos"));}
+	for (auto&& device : StageDevices::devices)
+	{
+		if (GlobalFunctions::entryExists(paramMap, device))
+		{
+			deviceAndPositionMap[device] = stod(paramMap.at(device));
+		}
+
+	}
 	setPVStructs();
 	epicsInterface = boost::make_shared<EPICSStageInterface>(EPICSStageInterface());
 	messenger = LoggingSystem(true, true);
@@ -74,18 +82,107 @@ std::pair<epicsTimeStamp, double> Stage::getPositionSetpoint()
 	return positionSetpoint;
 }
 
-void Stage::setNewPosition(double newPosition)
+bool Stage::canStageMove(double newPosition)
 {
-	std::cout << "setting new pos" << std::endl;
-	if (!epicsInterface->setNewPosition(pvStructs.at(StageRecords::MABSS), newPosition))
+	return(minPosition <= newPosition) && (maxPosition >= newPosition);
+}
+
+void Stage::moveOverRange(double startPosition, double endPosition, int numberOfSteps)
+{
+	if (numberOfSteps > 0)
 	{
-		messenger.printDebugMessage("Unable to send ", newPosition, " to ", pvStructs.at(StageRecords::MABSS).fullPVName);
+		double newPosition = startPosition;
+		std::vector<double> positions = std::vector<double>();
+		double stepSize = (endPosition - startPosition) / double(numberOfSteps);
+
+		for (double i = startPosition; i != endPosition + stepSize; i += stepSize)
+		{
+			positions.push_back(i);
+		}
+		setNewPositions(positions);
 	}
 	else
 	{
-		std::cout << "set new pos" << std::endl;
+		messenger.printMessage("Cannot set number of step less than or equal to zero.");
 	}
 }
+
+void Stage::setNewPositions(std::vector<double> positions)
+{
+	for (double& position : positions)
+	{
+		setNewPosition(position);
+	}
+}
+
+void Stage::setNewPosition(double newPosition)
+{
+	if (canStageMove(newPosition))
+	{
+		//if (!epicsInterface->setNewPosition(pvStructs.at(StageRecords::MABSS), newPosition))
+		//{
+		//	messenger.printDebugMessage("Unable to send ", newPosition, " to ", pvStructs.at(StageRecords::MABSS).fullPVName);
+		//
+	}
+	else
+	{
+		messenger.printMessage("Tried to move to: ", newPosition, " because it's outside of min/max limits.");
+	}
+}
+
+std::map<std::string, double> Stage::getDevicesAndPositions()
+{
+	return deviceAndPositionMap;
+}
+
+double Stage::getInPosition()
+{
+	if (GlobalFunctions::entryExists(specificHardwareParameters, "in_pos"))
+	{
+		return std::stod(specificHardwareParameters.at("in_pos"));
+	}
+	else
+	{
+		messenger.printMessage("IN_POS not defined for: ", hardwareName);
+	}
+}
+
+double Stage::getOutPosition()
+{
+	if (GlobalFunctions::entryExists(specificHardwareParameters, "out_pos"))
+	{
+		return std::stod(specificHardwareParameters.at("out_pos"));
+	}
+	else
+	{
+		messenger.printMessage("OUT_POS not defined for: ", hardwareName);
+	}
+}
+
+size_t Stage::getStageNumber()
+{
+	if (GlobalFunctions::entryExists(specificHardwareParameters, "stage_number"))
+	{
+		return std::stoi(specificHardwareParameters.at("stage_number"));
+	}
+	else
+	{
+		messenger.printMessage("stage_number not defined for: ", hardwareName);
+	}
+}
+
+size_t Stage::getPrecision()
+{
+	if (GlobalFunctions::entryExists(specificHardwareParameters, "precision"))
+	{
+		return std::stoi(specificHardwareParameters.at("precision"));
+	}
+	else
+	{
+		messenger.printMessage("precision not defined for: ", hardwareName);
+	}
+}
+
 double Stage::getMinPosition()
 {
 	return minPosition;
@@ -129,3 +226,42 @@ void Stage::messagesOn()
 	messenger.printMessage(hardwareName, " - MESSAGES ON");
 	epicsInterface->messagesOn();
 }
+
+
+
+
+
+std::string const StageDevices::CLEAR_FOR_BEAM = "CLEAR_FOR_BEAM";
+std::string const StageDevices::YAG_UP = "YAG_UP";
+std::string const StageDevices::YAG_DOWN = "YAG_DOWN";
+std::string const StageDevices::YAG_RECTICLE = "YAG_RECTICLE";
+std::string const StageDevices::COLL_D2_5MM = "COLL_D2_5MM";
+std::string const StageDevices::COLL_D2MM = "COLL_D2MM";
+std::string const StageDevices::COLL_D1_5MM = "COLL_D1_5MM";
+std::string const StageDevices::COLL_D1MM = "COLL_D1MM";
+std::string const StageDevices::OTR = "OTR";
+std::string const StageDevices::GAS_JET = "GAS_JET";
+std::string const StageDevices::DCP = "DCP";
+std::string const StageDevices::DTH = "DTH";
+std::string const StageDevices::YAG_DCP_5x5 = "5x5_YAG_DCP";
+std::string const StageDevices::V_SLIT = "V_SLIT";
+std::string const StageDevices::H_SLIT = "H_SLIT";
+std::string const StageDevices::EO_CRYSTAL = "EO_CRYSTAL";
+std::string const StageDevices::EO_YAG = "EO_YAG";
+std::vector<std::string> StageDevices::devices = {StageDevices::CLEAR_FOR_BEAM,
+													StageDevices::YAG_UP,
+													StageDevices::YAG_DOWN,
+													StageDevices::YAG_RECTICLE,
+													StageDevices::COLL_D2_5MM,
+													StageDevices::COLL_D2MM,
+													StageDevices::COLL_D1_5MM,
+													StageDevices::COLL_D1MM,
+													StageDevices::OTR,
+													StageDevices::GAS_JET,
+													StageDevices::DCP,
+													StageDevices::DTH,
+													StageDevices::YAG_DCP_5x5,
+													StageDevices::V_SLIT,
+													StageDevices::H_SLIT,
+													StageDevices::EO_CRYSTAL,
+													StageDevices::EO_YAG };
