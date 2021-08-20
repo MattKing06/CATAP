@@ -46,5 +46,6 @@ void EPICSStageInterface::updateRPOSS(const struct event_handler_args args)
 bool EPICSStageInterface::setNewPosition(const pvStruct& pv, const double& newPosition)
 {
 	bool status = putValue2<double>(pv, newPosition);
+	EPICSInterface::sendToEPICS();
 	return status;
 }

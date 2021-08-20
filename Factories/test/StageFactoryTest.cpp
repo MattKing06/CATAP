@@ -25,19 +25,25 @@ BOOST_AUTO_TEST_CASE(construct_stage_factory_test)
 	Stage& stage = fac.getStage(stageName);
 	std::cout << "getting stage: " << stageName << std::endl;
 	std::pair<epicsTimeStamp, double> currentPosition = stage.getCurrentPosition();
-	if (stage.getMinPosition() <= currentPosition.second - 1.0)
-	{
-		if (stage.getMaxPosition() >= currentPosition.second - 1.0)
-		{
-			stage.setNewPosition(currentPosition.second - 1.0);
-		}
-	}
-	else
-	{
-		std::cout << stageName << " AT MAX POSITION " << std::endl;
-	}
+	std::cout << "current pos: " << currentPosition.second << std::endl;
+	stage.moveOverRange(59.0, 63.0, 4.0);
+	//stage.setNewPosition(5.0);
+	std::pair<epicsTimeStamp, double> newPosition = stage.getCurrentPosition();
+	std::cout << "new pos: " << newPosition.second << std::endl;
 
+}
 
+BOOST_AUTO_TEST_CASE(get_all_stage_devices_and_positions_test)
+{
+	StageFactory fac = StageFactory(STATE::VIRTUAL);
+	fac.setup("nominal");
+	std::string stageName = "EBT-BA1-MOT-COFF-H-04";
+	Stage& stage = fac.getStage(stageName);
+	auto devicesAndPositions = stage.getDevicesAndPositions();
+	for (auto& device : devicesAndPositions)
+	{
+		std::cout << "DEVICE: " << device.first << "/// POSITION: " << device.second << std::endl;
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()
