@@ -104,16 +104,16 @@ void EPICSCameraInterface::update_CAM_Active_Count(const struct event_handler_ar
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->active_camera_limit);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Count = ",
-		recastCamera->active_camera_limit.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Count = ",
+	//	recastCamera->active_camera_limit.second);
 }
 void EPICSCameraInterface::update_CAM_Active_Limit(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampDoublePair(args, recastCamera->active_camera_limit);
-	messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Limit = ",
-		recastCamera->active_camera_limit.second);
+	//messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Limit = ",
+	//	recastCamera->active_camera_limit.second);
 }
 void EPICSCameraInterface::update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args)
 {
@@ -793,15 +793,16 @@ void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_ar
 	default:
 		recastCamera->use_floor.second = STATE::ERR;
 	}
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV = ", ENUM_TO_STRING(recastCamera->use_floor.second));
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_UseFloor_RBV = ", 
+		ENUM_TO_STRING(recastCamera->use_floor.second));
 }
 void EPICSCameraInterface::update_ANA_FloorLevel_RBV(const struct event_handler_args args)
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
 	updateTimeStampLongPair(args, recastCamera->floor_level);
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_FloorLevel_RBV = ",
-	//	recastCamera->floor_level.second);
+	messenger.printDebugMessage(recastCamera->hardwareName, " update_ANA_FloorLevel_RBV = ",
+		recastCamera->floor_level.second);
 }
 void EPICSCameraInterface::update_ANA_FlooredPoints_RBV(const struct event_handler_args args)
 {

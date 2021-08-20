@@ -949,7 +949,7 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	strcpy(newPath, strpath.c_str());
 
 	char newName[256] = "defaultname";
-	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "_" + std::to_string(numbOfShots) + "_images";
+	std::string strName = hardwareName + "_" + GlobalFunctions::time_iso_8601() + "UTC_" + std::to_string(numbOfShots) + "_images";
 	strName = GlobalFunctions::replaceStrChar(strName, ":", '-');
 	strcpy(newName, strName.c_str());
 	messenger.printDebugMessage("File Directory would be: ", newPath);
@@ -1019,11 +1019,13 @@ STATE Camera::getCaptureState()const
 	return capture_state.second;
 }
 bool Camera::didLastCaptureAndSaveSucceed()const{	return last_capture_and_save_success == true;}
-bool Camera::captureAndSave(){	return captureAndSave(GlobalConstants::zero_sizet);}
+bool Camera::captureAndSave(){	return captureAndSave(GlobalConstants::one_sizet);}
 bool Camera::captureAndSave(size_t num_shots)
 {
+	messenger.printDebugMessage("**** captureAndSave ****\n", hardwareName);
 	if (isNotAcquiring())
 	{
+		messenger.printDebugMessage(hardwareName," Is not acquiring so no images cna be captured adn saved");
 		return false;
 	}
 	else
@@ -1035,10 +1037,9 @@ bool Camera::captureAndSave(size_t num_shots)
 		*/
 		killFinishedImageCollectThread();
 		messenger.printDebugMessage("killFinishedImageCollectThreads fin");
-		messenger.printDebugMessage(" exists in imageCollectStructs");
 		if (image_capture.thread == nullptr)
 		{
-			messenger.printDebugMessage(" is not busy");
+			messenger.printDebugMessage("image_capture.thread is not busy");
 			if (num_shots <= max_shots_number)
 			{
 				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
@@ -1050,7 +1051,7 @@ bool Camera::captureAndSave(size_t num_shots)
 				image_capture.thread
 					= new std::thread(staticEntryImageCollectAndSave, std::ref(image_capture));
 				//GlobalFunctions::pause_500();
-				messenger.printDebugMessage("new imageCollectStruct created and running");
+				messenger.printDebugMessage("new imageCollectStruct created and running in new thread");
 				return true;
 			}
 			else
@@ -1071,7 +1072,7 @@ void Camera::killFinishedImageCollectThread()
 	messenger.printDebugMessage("killFinishedImageCollectThreads");
 	if (image_capture.is_busy)
 	{
-		messenger.printDebugMessage(hardwareName, " ImageCapture is busy");
+		messenger.printDebugMessage(hardwareName, " ImageCapture is busy, no images can be captured and saved at this time, try again later.");
 	}
 	else
 	{
@@ -1099,9 +1100,12 @@ void Camera::staticEntryImageCollectAndSave(ImageCapture& ic)
 }
 void Camera::imageCaptureAndSave(size_t num_shots)
 {
+	/*
+		WHATEVER YOU DO TO THIS FUNCTION 
+	
+	*/
 	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
 	bool timed_out = false;
-
 	bool carry_on = true;
 	if (num_shots > GlobalConstants::zero_sizet)
 	{
@@ -1135,23 +1139,25 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 			}
 			else
 			{
+				messenger.printDebugMessage(hardwareName, " makeANewDirectoryAndName out during capture");
 				if (makeANewDirectoryAndName(num_shots))
 				{
-					//GlobalFunctions::pause_500();
+					GlobalFunctions::pause_500();
 					//GlobalFunctions::pause_500();
 					messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is going to write collected data");
 					if (write())
 					{
-						//message("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
+						messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " is waiting for writing to finish");
 						while (isWriting())   //wait until saving is done...
 						{
 							GlobalFunctions::pause_50(); //MAGIC_NUMBER
 						}
 						messenger.printDebugMessage("imageCollectAndSave ", hardwareName, " writing has finished");
 						// pause and wait for EPICS to UPDATE
-						//GlobalFunctions::pause_500();
-						//GlobalFunctions::pause_500();
-						///check status of save/write
+						GlobalFunctions::pause_500();
+						GlobalFunctions::pause_500();
+						GlobalFunctions::pause_500();
+						//check status of save/write
 						if (write_state_check.second == STATE::WRITE_CHECK_OK)
 						{
 							last_capture_and_save_success = true;//this->message("Successful wrote image to disk.");
@@ -1159,7 +1165,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 						}
 						else
 						{
-							messenger.printDebugMessage("!!SAVE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
+							messenger.printDebugMessage("!!WRITE ERROR!!: camera = ", hardwareName, ", error message =  ", write_error_message.second);
 							last_capture_and_save_success = false;
 							image_capture.status = STATE::WRITE_CHECK_ERROR;
 						}
@@ -1241,7 +1247,7 @@ bool Camera::resetCaptureAndSaveError()
 	}
 	return false;
 }
-bool Camera::isCapturing()const{	return getCaptureState() == STATE::CAPTURING; }
+bool Camera::isCapturing()const{ return getCaptureState() == STATE::CAPTURING; }
 bool Camera::isNotCapturing()const { return getCaptureState() == STATE::NOT_CAPTURING; }
 bool Camera::isCapturingOrSaving()const
 {
@@ -1265,7 +1271,7 @@ double Camera::getActiveCameraCount()const{ return active_camera_count.second;}
 bool Camera::canStartCamera()const{	return getActiveCameraLimit() > getActiveCameraCount();}
 void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 {
-	csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait time = ", csw.wait_ms);
+	//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait time = ", csw.wait_ms);
 	auto start = std::chrono::high_resolution_clock::now();
 	bool timed_out = false;
 	// first wait fro isbusy to be false
@@ -1276,13 +1282,13 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 		/* check if time ran out */
 		if (duration.count() > csw.wait_ms)
 		{
-			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for isNotBusy. ");
+			//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for isNotBusy. ");
 			timed_out = true;
 			break;
 		}
 		if (csw.cam->isNotBusy())
 		{
-			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " is NOT busy!");
+			//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " is NOT busy!");
 			break;
 		}
 	}
@@ -1295,7 +1301,7 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 			/* check if time ran out */
 			if (duration.count() > csw.wait_ms)
 			{
-				csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring. ");
+				//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring.");
 				timed_out = true;
 				break;
 			}
@@ -1307,9 +1313,17 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 		}
 	}
 	if (timed_out)
+	{
+		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring.");
 		csw.result = STATE::TIMEOUT;
+	}
 	else
+	{
+		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has waited for  Stopped Acquiring.");
 		csw.result = STATE::SUCCESS;
+
+	}
+
 }
 bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 {
@@ -1323,7 +1337,6 @@ bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 		cam_stop_waiter_struct.thread->join();
 		delete cam_stop_waiter_struct.thread;
 		cam_stop_waiter_struct.thread = nullptr;
-
 		if (cam_stop_waiter_struct.result == STATE::SUCCESS)
 			return true;
 	}
@@ -1340,14 +1353,19 @@ bool Camera::stopAcquiring()
 }
 bool Camera::toggleAcquiring()
 {
+	std::cout << "toggleAcquiring" << std::endl;
 	if (isAcquiring())
+	{
+		std::cout << "isAcquiring = true, stopAcquiring" << std::endl;
 		return stopAcquiring();
+	}
+	std::cout << "isAnalysing = FALSE, startAcquiring" << std::endl;
 	return startAcquiring();
 }
 bool Camera::isAcquiring()const{ return getAcquireState() == STATE::ACQUIRING; }
 bool Camera::isNotAcquiring()const{ return getAcquireState() == STATE::NOT_ACQUIRING; }
 STATE Camera::getAcquireState()const{ return acquire_state.second; }
-double Camera::getAcquireTime()const{	return acquire_time.second;}
+double Camera::getAcquireTime()const{return acquire_time.second;}
 double Camera::getAcquirePeriod()const{	return acquire_period.second;}
 double Camera::getArrayRate()const{	return array_rate.second;}
 //	              __   ___                             __     __  
@@ -1382,8 +1400,13 @@ bool Camera::stopAnalysing()
 }
 bool Camera::toggleAnalysing()
 {
+	std::cout << "toggleUseNPointScaling" << std::endl;
 	if (isAnalysing())
+	{
+		std::cout << "isAnalysing = true, stopAnalysing" << std::endl;
 		return stopAnalysing();
+	}
+	std::cout << "isAnalysing = FALSE, startAnalysing" << std::endl;
 	return startAnalysing();
 }
 bool Camera::isAnalysing()const{ return getAnalysisState() == STATE::ANALYSING;}
@@ -1399,40 +1422,84 @@ bool Camera::isUsingFloor()const{ return use_floor.second == STATE::USING_FLOOR;
 bool Camera::isNotUsingFloor()const{ return use_floor.second == STATE::NOT_USING_FLOOR;}
 bool Camera::setUseFloor()
 {
+	messenger.printDebugMessage("setUseFloor");
 	if (mode == STATE::PHYSICAL)
 	{
 		bool  r = false;
 		bool stopped = true;
 		bool should_stop_and_restart = isAcquiring();
-		if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+		if (should_stop_and_restart) 
+		{ 
+			messenger.printDebugMessage("should_stop_and_restart, stopAcquiringAndWait");
+			bool stopped = stopAcquiringAndWait();
+		}
 		if (stopped)
 		{
+			messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor one_ushort");
 			r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
-			if (should_stop_and_restart) { startAcquiring(); }
+
+			if (r)
+			{
+				GlobalFunctions::pause_50();
+				if (should_stop_and_restart) 
+				{
+					messenger.printDebugMessage("should_stop_and_restart, startAcquiring");
+					//startAcquiring();
+				}
+				return true;
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
 		}
 	}
 	return false;
 }
 bool Camera::setDoNotUseFloor()
 {
+	messenger.printDebugMessage("setUseFloor");
 	if (mode == STATE::PHYSICAL)
 	{
 		bool  r = false;
 		bool stopped = true;
 		bool should_stop_and_restart = isAcquiring();
-		if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
+		if (should_stop_and_restart)
+		{
+			messenger.printDebugMessage("should_stop_and_restart, stopAcquiringAndWait");
+			bool stopped = stopAcquiringAndWait();
+		}
 		if (stopped)
 		{
+			messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor one_ushort");
 			r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
-			if (should_stop_and_restart) { startAcquiring(); }
+			if (r)
+			{
+				GlobalFunctions::pause_50();
+				if (should_stop_and_restart)
+				{
+					messenger.printDebugMessage("should_stop_and_restart, startAcquiring");
+					//startAcquiring();
+				}
+				return true;
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
 		}
 	}
 	return false;
 }
 bool Camera::toggleUseFloor()
 {
+	std::cout << "toggleUseFloor" << std::endl;
 	if (isUsingFloor())
+	{
+		std::cout << "isUsingFloor = true, setDoNotUseFloor" << std::endl;
 		return setDoNotUseFloor();
+	}
+	std::cout << "isUsingFloor = FALSE, setUseFloor" << std::endl;
 	return setUseFloor();
 }
 bool Camera::setFloorLevel(long v)
@@ -1476,6 +1543,9 @@ bool Camera::setDoNotUseNPointScaling()
 	{
 		std::cout << "isUsingNsetDoNotUseNPointScalingPointScaling putValue2 0 " << std::endl;
 		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::zero_ushort);
+
+
+
 		if (should_stop_and_restart) { startAcquiring(); }
 	}
 	return  r;
@@ -1536,9 +1606,13 @@ bool Camera::setDoNotUseBackgroundImage()
 bool Camera::toggleUseBackgroundImage()
 {
 	std::cout << "toggleUseBackgroundImage" << std::endl;
-	if (isUsingBackgroundImage())
-		return setDoNotUseBackgroundImage();
-	return setUseBackgroundImage();
+	if (isUsingNPointScaling())
+	{
+		std::cout << "isUsingNPointScaling = true, setDoNotUseNPointScaling" << std::endl;
+		return setDoNotUseNPointScaling();
+	}
+	std::cout << "isUsingNPointScaling = FALSE, setUseNPointScaling" << std::endl;
+	return setUseNPointScaling();
 }
 bool Camera::isUsingBackgroundImage()const{	return use_background.second == STATE::USING_BACKGROUND;}
 bool Camera::isNotUsingBackgroundImage()const{	return use_background.second == STATE::NOT_USING_BACKGROUND;}
@@ -1733,9 +1807,6 @@ boost::python::dict Camera::getMaskandROI_Py()const
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
-
-
-
 //	       ___   __   
 //	|     |__   |  \  
 //	|___ .|___ .|__/ .
@@ -2605,12 +2676,10 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ROIandMask_SetY, roi_and_mask_centre_y.second);
 	currentSnapshot.update(CameraRecords::ROIandMask_SetXrad, roi_and_mask_radius_x.second);
 	currentSnapshot.update(CameraRecords::ROIandMask_SetYrad, roi_and_mask_radius_y.second);
-
 	currentSnapshot.update(CameraRecords::ANA_MaskXCenter_RBV, mask_x_center.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskYCenter_RBV, mask_y_center.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskXRad_RBV, mask_x_radius.second);
 	currentSnapshot.update(CameraRecords::ANA_MaskYRad_RBV, mask_y_radius.second);
-
 	currentSnapshot.update(CameraRecords::ANA_FlooredPoints_RBV, floored_pts_count.second);
 	currentSnapshot.update(CameraRecords::ANA_NPointStepSize_RBV, step_size.second);
 	currentSnapshot.update(CameraRecords::ANA_UseBkgrnd_RBV, use_background.second);
@@ -2620,9 +2689,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ANA_CPU_CropSubMask_RBV, cpu_crop_sub_mask.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_Npoint_RBV, cpu_npoint.second);
 	currentSnapshot.update(CameraRecords::ANA_CPU_Dot_RBV, cpu_dot.second);
-
-
-
 	currentSnapshot.update(CameraRecords::HDF_WriteMessage, write_error_message.second);
 	currentSnapshot.update(CameraRecords::HDF_FilePath_RBV, save_filepath.second);
 	currentSnapshot.update(CameraRecords::HDF_FileName_RBV, save_filename.second);
@@ -2630,7 +2696,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filepath_RBV, image_buffer_filepath.second);
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filename_RBV, image_buffer_filename.second);
 	currentSnapshot.update(CameraRecords::HDFB_image_buffer_filenumber_RBV, image_buffer_filenumber.second);
-
 	currentSnapshot.update(CameraRecords::HDF_NumCapture_RBV, capture_count.second);
 	currentSnapshot.update(CameraRecords::HDF_FileNumber_RBV, save_filenumber.second);
 	currentSnapshot.update(CameraRecords::ANA_PixW_RBV, epics_pixel_width.second);
@@ -2650,7 +2715,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update(CameraRecords::ANA_CovXY_RBV, sigma_xy_mm.second);
 	currentSnapshot.update(CameraRecords::ANA_AvgIntensity_RBV, avg_intensity.second);
 	currentSnapshot.update(CameraRecords::ANA_Intensity_RBV, sum_intensity.second);
-
 	currentSnapshot.update("busy", busy);
 	currentSnapshot.update("max_shots_number", max_shots_number);
 	currentSnapshot.update("last_capture_and_save_success", last_capture_and_save_success);
@@ -2687,7 +2751,6 @@ HardwareSnapshot Camera::getSnapshot()
 	currentSnapshot.update("mask_and_roi_keywords", GlobalFunctions::toString(mask_and_roi_keywords));
 	currentSnapshot.update("mask_keywords", GlobalFunctions::toString(mask_keywords));
 	currentSnapshot.update("roi_keywords", GlobalFunctions::toString(roi_keywords));
-
 
 	return currentSnapshot;
 }

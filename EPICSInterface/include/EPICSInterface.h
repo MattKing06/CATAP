@@ -357,8 +357,8 @@ public:
 		{
 			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
 			MY_SEVCHK(status);
-			//status = ca_pend_io(CA_PEND_IO_TIMEOUT);
-			status = ca_flush_io();
+			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			//status = ca_flush_io();
 			MY_SEVCHK(status);
 			return true;
 

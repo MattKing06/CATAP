@@ -217,13 +217,6 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("isUsingBackgroundImage", &Camera::isUsingBackgroundImage)
 		.def("isNotUsingBackgroundImage", &Camera::isNotUsingBackgroundImage)
 
-
-
-
-
-
-
-
 		.def("getCamType", &Camera::getCamType)
 
 
