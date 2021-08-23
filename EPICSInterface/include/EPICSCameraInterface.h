@@ -8,6 +8,7 @@
 #include <chrono> 
 #include <iostream>
 #include <GlobalStateEnums.h>
+#include "CameraPVRecords.h"
 
 // forward declaratiOn of Magnet class
 // tells compiler that we will use this class.
@@ -97,11 +98,13 @@ static void update_ANA_OVERLAY_1_CROSS_RBV(const struct event_handler_args args)
 static void update_ANA_OVERLAY_2_RESULT_RBV(const struct event_handler_args args);
 static void update_ANA_OVERLAY_3_MASK_RBV(const struct event_handler_args args);
 
-
 static void update_OVERLAY_CROSS_HAIR(const struct event_handler_args args);
 static void update_OVERLAY_CENTRE_OF_MASS(const struct event_handler_args args);
 static void update_OVERLAY_MASK(const struct event_handler_args args);
 
+    
+//bool setUseFloor(const std::map<std::string, pvStruct>& pvStructs) { return putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort); }
+//bool setDoNotUseFloor(const std::map<std::string, pvStruct>& pvStructs) { return putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); }
 
     static bool get_camera_array(std::vector<long>& data_vec, const pvStruct& pvs, size_t count)
     {

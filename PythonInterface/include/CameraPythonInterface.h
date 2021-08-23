@@ -376,14 +376,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<CameraFactory>())->to_python_target_type());
 		if (is_registered) return;
 
-		bool(CameraFactory:: * setMaskandROI_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setMaskandROI;
-		bool(CameraFactory:: * setROI_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setROI;
-		bool(CameraFactory:: * setMask_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setMask;
+		bool(CameraFactory::*setMaskandROI_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setMaskandROI;
+		bool(CameraFactory::*setROI_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setROI;
+		bool(CameraFactory::*setMask_4PARAM)(const std::string&, long, long, long, long) = &CameraFactory::setMask;
 
 		bool(CameraFactory::*captureAndSave_with_shotcount)(const std::string&, size_t) = &CameraFactory::captureAndSave;
 		bool(CameraFactory::*captureAndSave_without_shotcount)(const std::string & ) = &CameraFactory::captureAndSave;
-
-
 
 
 		STATE(CameraFactory:: * saveSnapshot_nofile)(const std::string&) = &CameraFactory::saveSnapshot;
@@ -611,20 +609,20 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("getArrayRate", &CameraFactory::getArrayRate)
 
 
-	.def("setUseFloor", &CameraFactory::setUseFloor)
-	.def("toggleUseFloor", &CameraFactory::toggleUseFloor)
-	.def("setDoNotUseFloor", &CameraFactory::setDoNotUseFloor)
-	.def("setFloorLevel", &CameraFactory::setFloorLevel)
-	.def("getUseFloorState", &CameraFactory::getUseFloorState)
-	.def("isUsingFloor", &CameraFactory::isUsingFloor)
-	.def("isNotUsingFloor", &CameraFactory::isNotUsingFloor)
-	.def("getFloorLevel", &CameraFactory::getFloorLevel)
-	.def("getFlooredPtsCount", &CameraFactory::getFlooredPtsCount)
-	.def("getFlooredPtsPercent", &CameraFactory::getFlooredPtsPercent)
+	//.def("setUseFloor", &CameraFactory::setUseFloor)
+	//.def("toggleUseFloor", &CameraFactory::toggleUseFloor)
+	//.def("setDoNotUseFloor", &CameraFactory::setDoNotUseFloor)
+	//.def("setFloorLevel", &CameraFactory::setFloorLevel)
+	//.def("getUseFloorState", &CameraFactory::getUseFloorState)
+	//.def("isUsingFloor", &CameraFactory::isUsingFloor)
+	//.def("isNotUsingFloor", &CameraFactory::isNotUsingFloor)
+	//.def("getFloorLevel", &CameraFactory::getFloorLevel)
+	//.def("getFlooredPtsCount", &CameraFactory::getFlooredPtsCount)
+	//.def("getFlooredPtsPercent", &CameraFactory::getFlooredPtsPercent)
 
 
 
-	.def("setNewBackgroundImage", &CameraFactory::setNewBackgroundImage)
+	.def(" ", &CameraFactory::setNewBackgroundImage)
 	.def("setUseBackgroundImage", &CameraFactory::setUseBackgroundImage)
 	.def("toggleUseBackgroundImage", &CameraFactory::toggleUseBackgroundImage)
 	.def("setDoNotUseBackgroundImage", &CameraFactory::setDoNotUseBackgroundImage)

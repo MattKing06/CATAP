@@ -357,6 +357,47 @@ public:
 		{
 			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
 			MY_SEVCHK(status);
+			//status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			status = ca_flush_io();
+			MY_SEVCHK(status);
+			return true;
+
+			// we should return true here if the put command got sent correctly 
+		}
+		return false;
+	}
+
+	/*! Send a value to an EPICS PV over Channel Access using ca_put, and flush the IO https://epics.anl.gov/base/R3-14/10-docs/CAref.html#ca_flush_io
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
+	* @param[in] value : The value we want to ca_put.
+	* @param[out] status : return true if ca_put request sent successfully, false otherwise.*/
+	template<typename T>
+	static bool putValue_flushio(const pvStruct& pvStruct, const T& value)
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
+			MY_SEVCHK(status);
+			//status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			status = ca_flush_io();
+			MY_SEVCHK(status);
+			return true;
+
+			// we should return true here if the put command got sent correctly 
+		}
+		return false;
+	}
+	/*! Send a value to an EPICS PV over Channel Access using ca_put, and pend the IO https://epics.anl.gov/base/R3-14/10-docs/CAref.html#ca_pend_io
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
+	* @param[in] value : The value we want to ca_put.
+	* @param[out] status : return true if ca_put request sent successfully, false otherwise.*/
+	template<typename T>
+	static bool putValue_pendio(const pvStruct& pvStruct, const T& value)
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
+			MY_SEVCHK(status);
 			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
 			//status = ca_flush_io();
 			MY_SEVCHK(status);

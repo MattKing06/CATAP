@@ -1278,11 +1278,11 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 
 	while (true)
 	{
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
 		/* check if time ran out */
 		if (duration.count() > csw.wait_ms)
 		{
-			//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for isNotBusy. ");
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for isNotBusy, DT = ", duration.count());
 			timed_out = true;
 			break;
 		}
@@ -1297,11 +1297,11 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 		start = std::chrono::high_resolution_clock::now();
 		while (true)
 		{
-			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
 			/* check if time ran out */
 			if (duration.count() > csw.wait_ms)
 			{
-				//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring.");
+				csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring, DT = ", duration.count());
 				timed_out = true;
 				break;
 			}
@@ -1314,7 +1314,7 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 	}
 	if (timed_out)
 	{
-		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring.");
+		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for StopAcquiring");
 		csw.result = STATE::TIMEOUT;
 	}
 	else
@@ -1420,66 +1420,86 @@ bool Camera::isAnalysisUpdating(){	return isResultUpdated;}
 STATE Camera::getUseFloorState()const{ return use_floor.second;}
 bool Camera::isUsingFloor()const{ return use_floor.second == STATE::USING_FLOOR;}
 bool Camera::isNotUsingFloor()const{ return use_floor.second == STATE::NOT_USING_FLOOR;}
+
+
+bool Camera::epics_setUseFloor()
+{ 
+	return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort); 
+}
+bool Camera::epics_setDoNotUseFloor()
+{ 
+	return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); 
+}
+
+
 bool Camera::setUseFloor()
 {
-	messenger.printDebugMessage("setUseFloor");
-	if (mode == STATE::PHYSICAL)
-	{
-		bool  r = false;
-		bool stopped = true;
-		bool should_stop_and_restart = isAcquiring();
-		if (should_stop_and_restart) 
-		{ 
-			messenger.printDebugMessage("should_stop_and_restart, stopAcquiringAndWait");
-			bool stopped = stopAcquiringAndWait();
-		}
-		if (stopped)
-		{
-			messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor one_ushort");
-			r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+	return genericStopAcquiringApplySetting(this->Camera::*epics_setUseFloor());
+	
+	//
+	//messenger.printDebugMessage("setUseFloor");
+	//if (mode == STATE::PHYSICAL)
+	//{
+	//	/* is teh camera currently acquirign adn analyzing? */
+	//	bool is_acquiring_at_start = isAcquiring();
+	//	bool is_analyzing_at_start = isAnalysing();
+	//	
+	//	/* flag to store result of stop acquiring attempt */
+	//	bool stopped_acquiring = !is_acquiring_at_start;
 
-			if (r)
-			{
-				GlobalFunctions::pause_50();
-				if (should_stop_and_restart) 
-				{
-					messenger.printDebugMessage("should_stop_and_restart, startAcquiring");
-					//startAcquiring();
-				}
-				return true;
-			}
-		}
-		else
-		{
-			messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
-		}
-	}
+	//	messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
+	//	if (is_acquiring_at_start)
+	//	{
+	//		messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
+	//		stopped_acquiring = stopAcquiringAndWait();
+	//	}
+	//	if (stopped_acquiring)
+	//	{
+	//		messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor one_ushort");
+	//		bool sent_use_floor = epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort);
+	//		if (sent_use_floor)
+	//		{
+	//			if (is_acquiring_at_start)
+	//			{
+	//				messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
+	//				return startAcquiring();
+	//			}
+	//			return true;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
+	//	}
+	//}
 	return false;
 }
 bool Camera::setDoNotUseFloor()
 {
-	messenger.printDebugMessage("setUseFloor");
+	messenger.printDebugMessage("setDoNotUseFloor");
 	if (mode == STATE::PHYSICAL)
 	{
-		bool  r = false;
-		bool stopped = true;
-		bool should_stop_and_restart = isAcquiring();
-		if (should_stop_and_restart)
+		/* is teh camera currently acquirign adn analyzing? */
+		bool is_acquiring_at_start = isAcquiring();
+		bool is_analyzing_at_start = isAnalysing();
+		/* flag to store result of stop acquiring attempt */
+		bool stopped_acquiring = !is_acquiring_at_start;
+		messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
+		if (is_acquiring_at_start)
 		{
-			messenger.printDebugMessage("should_stop_and_restart, stopAcquiringAndWait");
-			bool stopped = stopAcquiringAndWait();
+			messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
+			stopped_acquiring = stopAcquiringAndWait();
 		}
-		if (stopped)
+		if (stopped_acquiring)
 		{
-			messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor one_ushort");
-			r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
-			if (r)
+			messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor zero_ushort");
+			bool sent_use_fllor = epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+			if (sent_use_fllor)
 			{
-				GlobalFunctions::pause_50();
-				if (should_stop_and_restart)
+				if (is_acquiring_at_start)
 				{
-					messenger.printDebugMessage("should_stop_and_restart, startAcquiring");
-					//startAcquiring();
+					messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
+					return startAcquiring();
 				}
 				return true;
 			}
@@ -1508,7 +1528,7 @@ bool Camera::setFloorLevel(long v)
 	{
 		bool should_stop_and_restart = isAcquiring();
 		if (should_stop_and_restart) { stopAcquiringAndWait(); }
-		bool r = epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort);
+		bool r = epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
 		if (should_stop_and_restart) { startAcquiring(); }
 		return r;
 	}
@@ -1542,6 +1562,7 @@ bool Camera::setDoNotUseNPointScaling()
 	if (stopped)
 	{
 		std::cout << "isUsingNsetDoNotUseNPointScalingPointScaling putValue2 0 " << std::endl;
+		
 		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::zero_ushort);
 
 
@@ -2813,4 +2834,47 @@ boost::python::dict Camera::getAnalayisData_Py() const
 	//r["avg_intensity"] = getAvgIntensity();
 
 	return to_py_dict<std::string, double>(getAnalayisData());
+}
+
+
+
+
+
+bool Camera::genericStopAcquiringApplySetting(bool(*epics_caput_function_ptr)(const std::map<std::string, pvStruct>& pvStructs) )
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		/* is teh camera currently acquirign adn analyzing? */
+		bool is_acquiring_at_start = isAcquiring();
+		bool is_analyzing_at_start = isAnalysing();
+
+		/* flag to store result of stop acquiring attempt */
+		bool stopped_acquiring = !is_acquiring_at_start;
+
+		messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
+		if (is_acquiring_at_start)
+		{
+			messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
+			stopped_acquiring = stopAcquiringAndWait();
+		}
+		if (stopped_acquiring)
+		{
+			messenger.printDebugMessage("stopAcquiringAndWait success, now putValue2, ANA_UseFloor one_ushort");
+			bool sent_use_floor = epics_caput_function_ptr;
+			if (sent_use_floor)
+			{
+				if (is_acquiring_at_start)
+				{
+					messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
+					return startAcquiring();
+				}
+				return true;
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
+		}
+	}
+	return false;
 }

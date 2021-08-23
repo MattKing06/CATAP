@@ -94,6 +94,7 @@ void EPICSCameraInterface::retrieveupdateFunctionForRecord(pvStruct& pvStruct) c
 	else if (pvStruct.pvRecord == ANA_OVERLAY_3_MASK_RBV)	{		pvStruct.updateFunction = this->update_ANA_OVERLAY_3_MASK_RBV;	}
 	else if (pvStruct.pvRecord == CAM_Active_Count)	{		pvStruct.updateFunction = this->update_CAM_Active_Count;	}
 	else if (pvStruct.pvRecord == CAM_Active_Limit)	{		pvStruct.updateFunction = this->update_CAM_Active_Limit;	}
+	else if (pvStruct.pvRecord == LED_Sta)	{		pvStruct.updateFunction = this->update_LED_Sta;	}
 	else	
 	{
 		messenger.printDebugMessage("!!WARNING!! NO UPDATE FUNCTION FOUND FOR: " + pvStruct.pvRecord);

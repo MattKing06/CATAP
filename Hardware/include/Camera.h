@@ -1477,5 +1477,18 @@ private:
 		return !areEqualEpicsTimeStamps(t1,t2);
 	}
 
+
+	bool epics_setUseFloor();//{ return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort); }
+	bool epics_setDoNotUseFloor();// { return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); }
+
+
+	//bool setUseFloor(const std::map<std::string, pvStruct>& pvStructs) {  }
+//bool setDoNotUseFloor(const std::map<std::string, pvStruct>& pvStructs) { return putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); }
+
+
+
+	bool genericStopAcquiringApplySetting(bool(*epics_caput_function_ptr)(const std::map<std::string, pvStruct>&));
+
+
 };
 #endif //CAMERA_H_
