@@ -669,6 +669,9 @@ public:
 	/*! get the percentage of pixels that have been floored
 	@param[out] long, value*/
 	double getFlooredPtsPercent()const;
+private:
+	bool epics_setUseFloor();
+	bool epics_setDoNotUseFloor();
 	//	                         __     __           __   __         ___     __   __                    __  
 	//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
 	//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
@@ -735,6 +738,9 @@ protected:
 	std::pair<epicsTimeStamp, STATE > set_new_background;
 	/*! State of background data  scaling. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE > use_background;
+private:
+	bool epics_setUseBackgroundImage();
+	bool epics_setDoNotUseBackgroundImage();
 	//	                         __     __                 __       
 	//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
 	//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
@@ -1478,16 +1484,64 @@ private:
 	}
 
 
-	bool epics_setUseFloor();//{ return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort); }
-	bool epics_setDoNotUseFloor();// { return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); }
+
+	//https://isocpp.org/wiki/faq/pointers-to-members
+	typedef bool(Camera::*epics_caput_function_ptr)();
+	bool genericStopAcquiringApplySetting(epics_caput_function_ptr f);
 
 
-	//bool setUseFloor(const std::map<std::string, pvStruct>& pvStructs) {  }
-//bool setDoNotUseFloor(const std::map<std::string, pvStruct>& pvStructs) { return putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); }
+	bool epics_setFloorLevel(long v);
 
+	//template<typename T>
+	//using epics_caput_function_ptr2 = bool(Camera::*)(T);
+	//template<typename T> 
+	//bool genericStopAcquiringApplySetting2(bool(Camera::*)(T), T value)
+	// https://stackoverflow.com/questions/9779105/generic-member-function-pointer-as-a-template-parameter
+	//template <typename T, typename ...Args>
+	//bool genericStopAcquiringApplySetting2(bool(Camera::* mf)(Args...), Args &&... args)
+	//{
+	//	return (this.*mf)(std::forward<Args>(args)...);
+	//}
 
+	template <typename T>
+	bool genericStopAcquiringApplySetting2(bool(Camera::* mf)(T), T v)
+	{
+		return (*this.*mf)(std::forward<T>(v));
+		//return (this->*mf)(std::forward<T>(v));
+	}
 
-	bool genericStopAcquiringApplySetting(bool(*epics_caput_function_ptr)(const std::map<std::string, pvStruct>&));
+	
+	//	/* is the camera currently acquiring and analyzing? */
+	//	//bool is_acquiring_at_start = isAcquiring();
+	//	//bool is_analyzing_at_start = isAnalysing();
+	//	///* flag to store result of stop acquiring attempt */ 
+	//	//bool stopped_acquiring = !is_acquiring_at_start;
+	//	////messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
+	//	//if (is_acquiring_at_start)
+	//	//{
+	//	//	//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
+	//	//	stopped_acquiring = stopAcquiringAndWait();
+	//	//}
+	//	//if (stopped_acquiring)
+	//	//{
+	//	//	//messenger.printDebugMessage("stopAcquiringAndWait success, now calling passed member function ptr ");
+	//	//	bool sent_use_floor = (*this.*f)(value);
+	//	//	if (sent_use_floor)
+	//	//	{
+	//	//		if (is_acquiring_at_start)
+	//	//		{
+	//	//			//messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
+	//	//			return startAcquiring();
+	//	//		}
+	//	//		return true;
+	//	//	}
+	//	//}
+	//	//else
+	//	//{
+	//	//	//messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
+	//	//}
+		//return false;
+	//}
 
 
 };
