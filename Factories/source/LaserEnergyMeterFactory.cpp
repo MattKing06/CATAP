@@ -15,10 +15,15 @@ LaserEnergyMeterFactory::LaserEnergyMeterFactory() : LaserEnergyMeterFactory(STA
 {
 	std::cout << "LaserFactory DEFAULT constRUCTOR called " << std::endl;
 }
-LaserEnergyMeterFactory::LaserEnergyMeterFactory(STATE mode):
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("LaserEnergyMeter", mode))
+LaserEnergyMeterFactory::LaserEnergyMeterFactory(STATE mode) :
+LaserEnergyMeterFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+
+}
+LaserEnergyMeterFactory::LaserEnergyMeterFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("LaserEnergyMeter", mode, primeLatticeLocation))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;

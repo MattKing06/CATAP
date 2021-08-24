@@ -33,6 +33,7 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<RFHeartbeatFactory, boost::noncopyable>("RFHeartbeatFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &RFHeartbeatFactory::setup, (boost::python::arg("self"), boost::python::arg("version")))
 			.def("getValue", &RFHeartbeatFactory::getValue)
 			.def("setValue", &RFHeartbeatFactory::setValue)

@@ -32,4 +32,22 @@ public:
 	/*! The list of the parameters that the file was missing if we are missing multiple parameters.*/
 	std::vector<std::string> missingEntries;
 };
+
+class LatticeLocationDoesNotExistException : std::runtime_error
+{
+public:
+	LatticeLocationDoesNotExistException(const std::string& location);
+	void printError();
+	std::string location;
+};
+
+
+class EmptyLatticeDirectoryException : std::runtime_error
+{
+public:
+	EmptyLatticeDirectoryException(const std::string& location);
+	void printError();
+	std::string location;
+};
+
 /*!@}*/

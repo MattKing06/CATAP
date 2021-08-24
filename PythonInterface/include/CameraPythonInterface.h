@@ -289,6 +289,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			;
 
 		boost::python::class_<CameraFactory, boost::noncopyable>("CameraFactory", boost::python::no_init)
+			.def(boost::python::init<STATE, const std::string>())
+			.def(boost::python::init<STATE>())
 			.def("getCameraNames", &CameraFactory::getCameraNames_Py)
 			.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>() )
 

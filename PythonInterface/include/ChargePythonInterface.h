@@ -53,6 +53,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 		//charge Factory Exposure
 		boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &ChargeFactory::setup)
 			.add_property("chargeMap", &ChargeFactory::chargeMap)
 			.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())

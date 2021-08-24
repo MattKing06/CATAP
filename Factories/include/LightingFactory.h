@@ -10,11 +10,13 @@ class LightingFactory
 public:
 	LightingFactory();
 	LightingFactory(STATE mode);
+	LightingFactory(STATE mode, const std::string& primeLatticeLocation);
 	LightingFactory(const LightingFactory& copyFactory);
 	~LightingFactory();
 	void setup(std::string version);
 	LoggingSystem messenger;
 	bool hasBeenSetup;
+	ConfigReader reader;
 	std::map<std::string, Lighting> lightingMap;
 	void debugMessagesOn();
 	void debugMessagesOff();

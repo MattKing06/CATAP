@@ -10,6 +10,7 @@ class ShutterFactory
 public:
 	ShutterFactory();
 	ShutterFactory(STATE mode);
+	ShutterFactory(STATE mode, const std::string& primeLatticeLocation);
 	ShutterFactory(const ShutterFactory& copyFactory);
 	~ShutterFactory();
 	bool hasBeenSetup;

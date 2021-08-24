@@ -5,10 +5,14 @@ LaserMirrorFactory::LaserMirrorFactory()
 }
 
 LaserMirrorFactory::LaserMirrorFactory(STATE mode) :
+LaserMirrorFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+LaserMirrorFactory::LaserMirrorFactory(STATE mode, const std::string& primeLatticeLocation)
+	:
 	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("LaserMirror", mode)),
-	messenger(LoggingSystem(true, true))
+	reader(ConfigReader("LaserMirror", mode, primeLatticeLocation))
 {
 }
 

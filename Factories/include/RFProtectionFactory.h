@@ -10,6 +10,7 @@ class RFProtectionFactory
 public:
 	RFProtectionFactory();
 	RFProtectionFactory(STATE mode);
+	RFProtectionFactory(STATE mode, const std::string& primeLatticeLocation);
 	RFProtectionFactory(const RFProtectionFactory& copyFactory);
 	~RFProtectionFactory();
 	LoggingSystem messenger;

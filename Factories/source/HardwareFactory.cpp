@@ -12,24 +12,27 @@ HardwareFactory::~HardwareFactory()
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	magnetFactory(MagnetFactory(mode)),
-	bpmFactory(BPMFactory(mode)),
-	chargeFactory(ChargeFactory(mode)),
-	screenFactory(ScreenFactory(mode)),
-	valveFactory(ValveFactory(mode)),
-	imgFactory(IMGFactory(mode)),
-	rfProtectionFactory(RFProtectionFactory(mode)),
-	llrffactory(LLRFFactory(mode)),
-	cameraFactory(CameraFactory(mode)),
-	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
-	laserHWPFactory(LaserHWPFactory(mode)),
-	shutterFactory(ShutterFactory(mode)),
-	rfmodulatorFactory(RFModulatorFactory(mode)),
-	rfHeartbeatFactory(RFHeartbeatFactory(mode)),
-	mode(mode)
+	HardwareFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+HardwareFactory::HardwareFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+magnetFactory(MagnetFactory(mode, primeLatticeLocation)),
+bpmFactory(BPMFactory(mode, primeLatticeLocation)),
+chargeFactory(ChargeFactory(mode, primeLatticeLocation)),
+screenFactory(ScreenFactory(mode, primeLatticeLocation)),
+valveFactory(ValveFactory(mode, primeLatticeLocation)),
+imgFactory(IMGFactory(mode, primeLatticeLocation)),
+rfProtectionFactory(RFProtectionFactory(mode, primeLatticeLocation)),
+llrffactory(LLRFFactory(mode, primeLatticeLocation)),
+cameraFactory(CameraFactory(mode, primeLatticeLocation)),
+laserEnergyMeterFactory(LaserEnergyMeterFactory(mode, primeLatticeLocation)),
+laserHWPFactory(LaserHWPFactory(mode, primeLatticeLocation)),
+shutterFactory(ShutterFactory(mode, primeLatticeLocation)),
+rfmodulatorFactory(RFModulatorFactory(mode, primeLatticeLocation)),
+rfHeartbeatFactory(RFHeartbeatFactory(mode, primeLatticeLocation)),
+mode(mode)
 {
-	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
 

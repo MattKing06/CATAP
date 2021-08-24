@@ -11,9 +11,9 @@ class LaserMirrorFactory
 public:
 	LaserMirrorFactory();
 	LaserMirrorFactory(STATE mode);
+	LaserMirrorFactory(STATE mode, const std::string& primeLatticeLocation);
 	LaserMirrorFactory(const LaserMirrorFactory& copyFactory);
 	~LaserMirrorFactory();
-	
 	bool setup(const std::string& version);
 	void populateLaserMirrorMap();
 	void retrieveMonitorStatus(pvStruct& pvStruct);
@@ -39,9 +39,6 @@ public:
 	double getRightSense(const std::string& mirrorName);
 	double getUpSense(const std::string& mirrorName);
 	double getDownSense(const std::string& mirrorName);
-
-
-
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

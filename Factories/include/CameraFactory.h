@@ -10,6 +10,7 @@ class CameraFactory
 public:
 	CameraFactory();
 	CameraFactory(STATE mode);
+	CameraFactory(STATE mode, const std::string& primeLatticeLocation);
 	CameraFactory(const CameraFactory& copyFactory);
 	~CameraFactory();
 	LoggingSystem messenger;

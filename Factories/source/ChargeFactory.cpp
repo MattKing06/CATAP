@@ -14,9 +14,15 @@ ChargeFactory::ChargeFactory() : ChargeFactory(STATE::OFFLINE)
 }
 
 ChargeFactory::ChargeFactory(STATE mode) :
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Charge", mode))
+ChargeFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+
+}
+
+ChargeFactory::ChargeFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Charge", mode, primeLatticeLocation))
 {
 	messenger = LoggingSystem(false, false);
 	//hasBeenSetup = false;
@@ -25,6 +31,7 @@ ChargeFactory::ChargeFactory(STATE mode) :
 	//mode = mode;
 	//reader = ConfigReader("Charge", mode);
 }
+
 ChargeFactory::ChargeFactory(const ChargeFactory& copyChargeFactory)
 	: hasBeenSetup(copyChargeFactory.hasBeenSetup),
 	mode(copyChargeFactory.mode),

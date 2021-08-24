@@ -25,6 +25,7 @@ class MagnetFactory
 		/*! Custom constructor for MagnetFactory object
 		@param[in] STATE mode, mode is OFFLINE, VIRTUAL, or PHYSICAL, dependign on which machine to try and connect to */
 		MagnetFactory(STATE mode);
+		MagnetFactory(STATE mode, const std::string& primeLatticeLocation);
 		/*! Copy constructor for MagnetFactory object
 			@param[in] copyMagnetFactory references to magnet to be copied					*/
 		MagnetFactory(const MagnetFactory& copyMagnetFactory);
