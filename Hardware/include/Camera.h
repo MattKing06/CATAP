@@ -746,8 +746,8 @@ protected:
 	/*! State of background data  scaling. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE > use_background;
 private:
-	bool epics_setUseBackgroundImage();
-	bool epics_setDoNotUseBackgroundImage();
+	bool epics_setUseBackgroundImage(epicsUInt16 v);
+	bool epics_setDoNotUseBackgroundImage(epicsUInt16 v);
 	//	                         __     __                 __       
 	//	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 
 	//	/~~\ | \| /~~\ |___  |  .__/ | .__/     |  | /~~\ .__/ |  \ 
@@ -851,7 +851,7 @@ public:
 	@param[in] long, new x_size value
 	@param[in] long, new y_size value
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool setROI(long x, long  y, long x_size, long y_size);
+	bool setROI(long x_min, long  y_min, long x_size, long y_size);
 	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
 	@param[in] map<std::string, long>, with new values (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/

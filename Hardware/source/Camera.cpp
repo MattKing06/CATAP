@@ -703,7 +703,6 @@ void Camera::setPVStructs()
 		}
 	}
 }
-//
 //                   ___  __  
 //  |\ |  /\   |\/| |__  /__` 
 //  | \| /~~\  |  | |___ .__/ 
@@ -1455,45 +1454,11 @@ long Camera::getNpointScalingStepSize()const{ return step_size.second;}
 // /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
 ///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
 //                                                                                            
-//
-bool Camera::setNewBackgroundImage()
-{
-	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), GlobalConstants::one_ushort);
-}
-
-bool Camera::epics_setUseBackgroundImage(){	return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::one_ushort);}
-bool Camera::epics_setDoNotUseBackgroundImage(){ return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::zero_ushort);}
-
-
-bool Camera::setUseBackgroundImage()
-{
-
-	bool  r = false;
-	bool stopped = true;
-	bool should_stop_and_restart = isAcquiring();
-	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
-	if (stopped)
-	{
-		std::cout << "setUseBackgroundImage putValue2 0 " << std::endl;
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::one_ushort);
-		if (should_stop_and_restart) { startAcquiring(); }
-	}
-	return r;
-}
-bool Camera::setDoNotUseBackgroundImage()
-{	
-	bool  r = false;
-	bool stopped = true;
-	bool should_stop_and_restart = isAcquiring();
-	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
-	if (stopped)
-	{
-		std::cout << "setDoNotUseBackgroundImage putValue2 0 " << std::endl;
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), GlobalConstants::zero_ushort);
-		if (should_stop_and_restart) { startAcquiring(); }
-	}
-	return r;
-}
+bool Camera::setNewBackgroundImage(){return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), GlobalConstants::one_ushort);}
+bool Camera::epics_setUseBackgroundImage(epicsUInt16 v){return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), v);}
+bool Camera::epics_setDoNotUseBackgroundImage(epicsUInt16 v){ return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), v);}
+bool Camera::setUseBackgroundImage(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseBackgroundImage, GlobalConstants::one_ushort); }
+bool Camera::setDoNotUseBackgroundImage() { return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseBackgroundImage, GlobalConstants::zero_ushort); }
 bool Camera::toggleUseBackgroundImage()
 {
 	std::cout << "toggleUseBackgroundImage" << std::endl;
@@ -1518,6 +1483,12 @@ bool Camera::setMaskXRadius(long val){	return  epicsInterface->putValue2<epicsIn
 bool Camera::setMaskYRadius(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_MaskYRad), (epicsInt32)val);}
 bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
 {
+	bool is_analysing_at_start = isAnalysing();
+	if (is_analysing_at_start)
+	{
+		stopAnalysing();
+		GlobalFunctions::pause_50();
+	}
 	if (setMaskXCenter(mask_x))
 	{
 		if (setMaskYCenter(mask_y))
@@ -1526,11 +1497,16 @@ bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y
 			{
 				if (setMaskYRadius(mask_rad_y))
 				{
+					if (is_analysing_at_start)
+					{
+						startAnalysing();
+					}
 					return true;
 				}
 			}
 		}
 	}
+
 	return false;
 }
 bool Camera::setMask(std::map<std::string, long> settings)
@@ -1576,16 +1552,26 @@ bool Camera::setROIMinX(long val){	return  epicsInterface->putValue2<epicsInt32>
 bool Camera::setROIMinY(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_MinY), (epicsInt32)val);}
 bool Camera::setROISizeX(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeX), (epicsInt32)val);}
 bool Camera::setROISizeY(long val){	return  epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ROI1_SizeY), (epicsInt32)val);}
-bool Camera::setROI(long x_max, long  y_max, long x_rad, long y_rad)
+bool Camera::setROI(long x_min, long  y_min, long x_size, long y_size)
 {
-	if (setMaskAndROIxMax(x_max))
+	bool is_analysing_at_start = isAnalysing();
+	if (is_analysing_at_start)
 	{
-		if (setMaskAndROIyMax(y_max))
+		stopAnalysing();
+		GlobalFunctions::pause_50();
+	}
+	if(setROIMinX(x_min))
+	{
+		if (setROIMinY(y_min))
 		{
-			if (setMaskAndROIxSize(x_rad))
+			if (setROISizeX(x_size))
 			{
-				if (setMaskAndROIySize(y_rad))
+				if (setROISizeY(y_size))
 				{
+					if (is_analysing_at_start)
+					{
+						startAnalysing();
+					}
 					return true;
 				}
 			}
@@ -1605,8 +1591,8 @@ bool Camera::setROI(std::map<std::string, long> settings)
 bool Camera::setROI_Py(boost::python::dict settings){	return setROI(to_std_map<std::string, long>(settings));}
 long Camera::getROIMinX()const{	return roi_min_x.second;}
 long Camera::getROIMinY()const{	return roi_min_y.second;}
-long Camera::getROISizeX()const{	return roi_size_x.second;}
-long Camera::getROISizeY()const{	return roi_size_y.second;}
+long Camera::getROISizeX()const{ return roi_size_x.second;}
+long Camera::getROISizeY()const{ return roi_size_y.second;}
 std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
@@ -1628,8 +1614,8 @@ long Camera::getMaskAndROIxMax()const{	return roi_and_mask_centre_x.second; }
 long Camera::getMaskAndROIyMax()const{	return roi_and_mask_centre_y.second; }
 long Camera::getMaskAndROIxSize()const{	return roi_and_mask_radius_x.second; }
 long Camera::getMaskAndROIySize()const{	return roi_and_mask_radius_y.second; }
-bool Camera::setMaskAndROIxMax(long val){	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)val);}
-bool Camera::setMaskAndROIyMax(long val){	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)val);}
+bool Camera::setMaskAndROIxMax(long val){return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)val);}
+bool Camera::setMaskAndROIyMax(long val){return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)val);}
 bool Camera::setMaskAndROIxSize(long val)
 {
 	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (epicsFloat64)val);
@@ -2062,8 +2048,6 @@ bool Camera::hasNoBeam()const
 }
 
 
-
-
 bool Camera::areAllRunningStatsFull()const
 {
 	if (x_pix_rs.Full())
@@ -2105,8 +2089,6 @@ bool Camera::areAllRunningStatsFull()const
 	}
 	return false;
 }
-
-
 
 
 RunningStats& Camera::getXPixRunningStats(){	return x_pix_rs;}
@@ -2155,8 +2137,6 @@ size_t Camera::getRunningStatNumDataValues()const
 	NumDataValuesVector[10] = avg_intensity_rs.NumDataValues();	NumDataValuesVector[11] = sum_intensity_rs.NumDataValues();
 	return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());;
 }
-
-
 
 
 //long Camera::getBufferROIminX()const
