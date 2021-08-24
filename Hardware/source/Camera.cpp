@@ -1419,60 +1419,23 @@ bool Camera::isAnalysisUpdating(){	return isResultUpdated;}
 STATE Camera::getUseFloorState()const{ return use_floor.second;}
 bool Camera::isUsingFloor()const{ return use_floor.second == STATE::USING_FLOOR;}
 bool Camera::isNotUsingFloor()const{ return use_floor.second == STATE::NOT_USING_FLOOR;}
-bool Camera::epics_setUseFloor(){ return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::one_ushort); }
-bool Camera::epics_setDoNotUseFloor(){ return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), GlobalConstants::zero_ushort); }
+bool Camera::epics_setUseFloor(epicsUInt16 v){ return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), v); }
+bool Camera::epics_setDoNotUseFloor(epicsUInt16 v){ return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseFloor), v); }
 bool Camera::epics_setFloorLevel(long v) { return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), v); }
-bool Camera::setUseFloor(){ return genericStopAcquiringApplySetting(&Camera::epics_setUseFloor);}
-bool Camera::setDoNotUseFloor(){ return genericStopAcquiringApplySetting(&Camera::epics_setDoNotUseFloor);}
+bool Camera::setUseFloor(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseFloor, GlobalConstants::one_ushort);}
+bool Camera::setDoNotUseFloor(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseFloor, GlobalConstants::zero_ushort);}
 bool Camera::toggleUseFloor(){ return isUsingFloor()?setDoNotUseFloor():setUseFloor();}
-bool Camera::setFloorLevel(long v)
-{
-	return genericStopAcquiringApplySetting2(&Camera::epics_setFloorLevel, v);
-
-	//if (mode == STATE::PHYSICAL)
-	//{
-	//	bool should_stop_and_restart = isAcquiring();
-	//	if (should_stop_and_restart) { stopAcquiringAndWait(); }
-	//	bool r = epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
-	//	if (should_stop_and_restart) { startAcquiring(); }
-	//	return r;
-	//}
-	//return false;
-}
+bool Camera::setFloorLevel(long v){	return genericStopAcquiringApplySetting<long>(&Camera::epics_setFloorLevel, v);}
 //	                         __     __           __   __         ___     __   __                    __  
 //	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
 //	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
 //	                                                                                                    
-// 
-bool Camera::setUseNPointScaling()
-{
-	bool  r = false;
-	bool stopped = true;
-	bool should_stop_and_restart = isAcquiring();
-	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
-	if (stopped)
-	{
-		std::cout << "setUseNPointScaling putValue2 1 " << std::endl;
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::one_ushort);
-		if (should_stop_and_restart) { startAcquiring(); }
-	}
-	return r;
-}
-bool Camera::setDoNotUseNPointScaling()
-{
-	bool  r = false;
-	bool stopped = true;
-	bool should_stop_and_restart = isAcquiring();
-	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
-	if (stopped)
-	{
-		std::cout << "isUsingNsetDoNotUseNPointScalingPointScaling putValue2 0 " << std::endl;
-		
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::zero_ushort);
-		if (should_stop_and_restart) { startAcquiring(); }
-	}
-	return  r;
-}
+bool Camera::epics_setUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
+bool Camera::epics_setDoNotUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
+bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::one_ushort); }
+bool Camera::setUseNPointScaling(){	return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseNPointScaling, GlobalConstants::one_ushort); }
+bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::one_ushort); }
+bool Camera::setNpointScalingStepSize(long val){return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, (epicsUInt16)val);}
 bool Camera::toggleUseNPointScaling()
 {
 	std::cout << "toggleUseNPointScaling" << std::endl;
@@ -1488,7 +1451,6 @@ STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
 bool Camera::isUsingNPointScaling()const{ return use_npoint.second == STATE::USING_NPOINT;}
 bool Camera::isNotUsingNPointScaling()const{ return use_npoint.second == STATE::NOT_USING_NPOINT;}
 long Camera::getNpointScalingStepSize()const{ return step_size.second;}
-bool Camera::setNpointScalingStepSize(long val){ return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), (epicsInt32)val);}
 //                         __     __      __        __        __   __   __             __     
 // /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
 ///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
@@ -2744,37 +2706,3 @@ boost::python::dict Camera::getAnalayisData_Py() const
 
 
 
-bool Camera::genericStopAcquiringApplySetting(epics_caput_function_ptr f)
-{
-	/* is the camera currently acquiring and analyzing? */
-	bool is_acquiring_at_start = isAcquiring();
-	bool is_analyzing_at_start = isAnalysing();
-	/* flag to store result of stop acquiring attempt */
-	bool stopped_acquiring = !is_acquiring_at_start;
-	//messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
-	if (is_acquiring_at_start)
-	{
-		//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
-		stopped_acquiring = stopAcquiringAndWait();
-	}
-	if (stopped_acquiring)
-	{
-		//messenger.printDebugMessage("stopAcquiringAndWait success, now calling passed member function ptr ");
-		bool sent_use_floor = (*this.*f)(); // TODO use std::invoke ?? 
-		//bool sent_use_floor = (*this.*f)();
-		if (sent_use_floor)
-		{
-			if (is_acquiring_at_start)
-			{
-				//messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
-				return startAcquiring();
-			}
-			return true;
-		}
-	}
-	else
-	{
-		//messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
-	}
-	return false;
-}

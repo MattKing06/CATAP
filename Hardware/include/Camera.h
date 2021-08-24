@@ -670,8 +670,9 @@ public:
 	@param[out] long, value*/
 	double getFlooredPtsPercent()const;
 private:
-	bool epics_setUseFloor();
-	bool epics_setDoNotUseFloor();
+	bool epics_setUseFloor(epicsUInt16 v);
+	bool epics_setDoNotUseFloor(epicsUInt16 v);
+	bool epics_setFloorLevel(long v);
 	//	                         __     __           __   __         ___     __   __                    __  
 	//	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
 	//	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
@@ -707,6 +708,12 @@ protected:
 	std::pair<epicsTimeStamp, STATE > use_npoint;
 	/*! latest stepsize (Npoint scaling step size). Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > step_size;
+private:
+	bool epics_setUseNPointScaling(epicsUInt16 v);
+	bool epics_setDoNotUseNPointScaling(epicsUInt16 v);
+	bool epics_setNpointScalingStepSize(long val);
+
+
 	//                          __     __      __        __        __   __   __             __     
 	//  /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
 	// /~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
@@ -1485,12 +1492,9 @@ private:
 
 
 
-	//https://isocpp.org/wiki/faq/pointers-to-members
-	typedef bool(Camera::*epics_caput_function_ptr)();
-	bool genericStopAcquiringApplySetting(epics_caput_function_ptr f);
 
 
-	bool epics_setFloorLevel(long v);
+
 
 	//template<typename T>
 	//using epics_caput_function_ptr2 = bool(Camera::*)(T);
@@ -1502,46 +1506,77 @@ private:
 	//{
 	//	return (this.*mf)(std::forward<Args>(args)...);
 	//}
-
-	template <typename T>
-	bool genericStopAcquiringApplySetting2(bool(Camera::* mf)(T), T v)
-	{
-		return (*this.*mf)(std::forward<T>(v));
-		//return (this->*mf)(std::forward<T>(v));
-	}
-
-	
+	////https://isocpp.org/wiki/faq/pointers-to-members
+	//typedef bool(Camera::* epics_caput_function_ptr)();
+	//bool genericStopAcquiringApplySetting(epics_caput_function_ptr f);#
+	//bool Camera::genericStopAcquiringApplySetting(epics_caput_function_ptr f)
+	//{
 	//	/* is the camera currently acquiring and analyzing? */
-	//	//bool is_acquiring_at_start = isAcquiring();
-	//	//bool is_analyzing_at_start = isAnalysing();
-	//	///* flag to store result of stop acquiring attempt */ 
-	//	//bool stopped_acquiring = !is_acquiring_at_start;
-	//	////messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
-	//	//if (is_acquiring_at_start)
-	//	//{
-	//	//	//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
-	//	//	stopped_acquiring = stopAcquiringAndWait();
-	//	//}
-	//	//if (stopped_acquiring)
-	//	//{
-	//	//	//messenger.printDebugMessage("stopAcquiringAndWait success, now calling passed member function ptr ");
-	//	//	bool sent_use_floor = (*this.*f)(value);
-	//	//	if (sent_use_floor)
-	//	//	{
-	//	//		if (is_acquiring_at_start)
-	//	//		{
-	//	//			//messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
-	//	//			return startAcquiring();
-	//	//		}
-	//	//		return true;
-	//	//	}
-	//	//}
-	//	//else
-	//	//{
-	//	//	//messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
-	//	//}
-		//return false;
+	//	bool is_acquiring_at_start = isAcquiring();
+	//	bool is_analyzing_at_start = isAnalysing();
+	//	/* flag to store result of stop acquiring attempt */
+	//	bool stopped_acquiring = !is_acquiring_at_start;
+	//	//messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
+	//	if (is_acquiring_at_start)
+	//	{
+	//		//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
+	//		stopped_acquiring = stopAcquiringAndWait();
+	//	}
+	//	if (stopped_acquiring)
+	//	{
+	//		//messenger.printDebugMessage("stopAcquiringAndWait success, now calling passed member function ptr ");
+	//		bool sent_use_floor = (*this.*f)(); // TODO use std::invoke ?? 
+	//		//bool sent_use_floor = (*this.*f)();
+	//		if (sent_use_floor)
+	//		{
+	//			if (is_acquiring_at_start)
+	//			{
+	//				//messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
+	//				return startAcquiring();
+	//			}
+	//			return true;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		//messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
+	//	}
+	//	return false;
 	//}
+	template <typename T>
+	bool genericStopAcquiringApplySetting(bool(Camera::*mf)(T), T v)
+	{
+		/* is the camera currently acquiring and analyzing? */
+		bool is_acquiring_at_start = isAcquiring();
+		bool is_analyzing_at_start = isAnalysing();
+		/* flag to store result of stop acquiring attempt */ 
+		bool stopped_acquiring = !is_acquiring_at_start;
+		//messenger.printDebugMessage(hardwareName, " is_acquiring_at_start = ", is_acquiring_at_start, ", is_analyzing_at_start = ", is_analyzing_at_start);
+		if (is_acquiring_at_start)
+		{
+			//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
+			stopped_acquiring = stopAcquiringAndWait();
+		}
+		if (stopped_acquiring)
+		{
+			//messenger.printDebugMessage("stopAcquiringAndWait success, now calling passed member function ptr ");
+			bool sent_use_floor = (*this.*mf)(std::forward<T>(v));
+			if (sent_use_floor)
+			{
+				if (is_acquiring_at_start)
+				{
+					//messenger.printDebugMessage("is_acquiring_at_start, startAcquiring");
+					return startAcquiring();
+				}
+				return true;
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage("!!Failed!! stopAcquiringAndWait");
+		}
+		return false;
+	}
 
 
 };
