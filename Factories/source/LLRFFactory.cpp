@@ -11,13 +11,17 @@ LLRFFactory(STATE::OFFLINE)
 }
 
 LLRFFactory::LLRFFactory(STATE mode) :
-mode(mode), 
+LLRFFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+LLRFFactory::LLRFFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
 hasBeenSetup(false),
-reader(ConfigReader("LLRF", mode)),
+reader(ConfigReader("LLRF", mode, primeLatticeLocation)),
 messenger(LoggingSystem(true, true)),
 machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
 dummy_llrf(LLRF()),
-dummy_trace_data(std::vector<double>(1017,GlobalConstants::double_min))
+dummy_trace_data(std::vector<double>(1017, GlobalConstants::double_min))
 {
 	messenger.printDebugMessage("LLRFFactory constructed");
 }

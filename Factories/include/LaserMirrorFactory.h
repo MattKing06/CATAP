@@ -10,10 +10,12 @@ class LaserMirrorFactory
 public:
 	LaserMirrorFactory();
 	LaserMirrorFactory(STATE mode);
+	LaserMirrorFactory(STATE mode, const std::string& primeLatticeLocation);
 	LaserMirrorFactory(const LaserMirrorFactory& copyFactory);
 	~LaserMirrorFactory();
 	LoggingSystem messenger;
 	ConfigReader reader;
+	STATE mode;
 	void setup(std::string version);
 	bool hasBeenSetup;
 	std::map<std::string, LaserMirror> LaserMirrorMap;

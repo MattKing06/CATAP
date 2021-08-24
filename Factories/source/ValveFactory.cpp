@@ -8,9 +8,14 @@ ValveFactory::ValveFactory() :
 }
 
 ValveFactory::ValveFactory(STATE mode) : 
-	mode(mode), hasBeenSetup(false),
-	reader(ConfigReader("Valve", mode)),
-	messenger(LoggingSystem(true,true))
+ValveFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+ValveFactory::ValveFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode), hasBeenSetup(false),
+reader(ConfigReader("Valve", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true))
 {
 }
 

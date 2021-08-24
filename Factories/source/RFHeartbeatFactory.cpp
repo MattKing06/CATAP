@@ -7,10 +7,15 @@ RFHeartbeatFactory::RFHeartbeatFactory()
 }
 
 RFHeartbeatFactory::RFHeartbeatFactory(STATE mode) :
+RFHeartbeatFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+RFHeartbeatFactory::RFHeartbeatFactory(STATE mode, const std::string& primeLatticeLocation) :
 messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("RFHeartbeat", mode))
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("RFHeartbeat", mode, primeLatticeLocation))
 {
 }
 

@@ -4,7 +4,14 @@ StageFactory::StageFactory()
 {
 }
 
-StageFactory::StageFactory(STATE mode)
+StageFactory::StageFactory(STATE mode) :
+	StageFactory(mode, MASTER_LATTICE_LOCATION)
+{
+}
+
+StageFactory::StageFactory(STATE mode, const std::string& primeLatticeLocation) :
+	mode(mode),
+	reader(ConfigReader("Stage", mode, primeLatticeLocation))
 {
 }
 

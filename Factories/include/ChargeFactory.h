@@ -29,6 +29,7 @@ public:
 	VIRTUAL ChargeFactory will perform operations of Virtual charge diagnostics.
 	OFFLINE ChargeFactory will perform operations on Offline charge diagnostics.*/
 	ChargeFactory(STATE mode);
+	ChargeFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for ChargeFactory (used for = operator)
 	@param[in] copyChargeFactory: the ChargeFactory we want to copy over.*/
 	ChargeFactory(const ChargeFactory& copyChargeFactory);

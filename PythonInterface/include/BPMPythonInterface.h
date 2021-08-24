@@ -104,6 +104,7 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 		//bpm Factory Exposure
 		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &BPMFactory::setup)
 			.add_property("bpmMap", &BPMFactory::bpmMap)
 			.def("getBPM", &BPMFactory::getBPM, boost::python::return_value_policy<boost::python::reference_existing_object>())

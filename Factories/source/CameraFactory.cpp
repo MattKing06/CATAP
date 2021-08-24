@@ -11,12 +11,16 @@ CameraFactory::CameraFactory()
 }
 
 CameraFactory::CameraFactory(STATE mode) :
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Camera", mode)),
-	messenger(LoggingSystem(true, true)),
-	machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
-	dummy_cam(Camera())
+CameraFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+CameraFactory::CameraFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Camera", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true)),
+machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
+dummy_cam(Camera())
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
