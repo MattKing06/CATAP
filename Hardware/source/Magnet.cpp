@@ -385,6 +385,7 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 			seti_success = ds.magnet->SETI(next_value); // expposed to PYTHON
 			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
 			{
+				ds.magnet->messenger.printDebugMessage("Degauss Step ", ds.magnet->current_degauss_step, " success");
 			}
 			else
 			{
@@ -419,6 +420,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		I've done the conditional flags very verbose
 		just to make sure i follow what I'm doing
 	*/
+	messenger.printDebugMessage("\n");
 	messenger.printDebugMessage(hardwareName, " waitForMagnetToSettle, value = ", value, " tolerance = ", tolerance, " waitTime = ", waitTime);
 
 	
@@ -449,12 +451,13 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		{
 			// Complete , we are where we want to be
 			messenger.printDebugMessage(hardwareName + " isREADIequalValue(", value, ", ", tolerance, ") = true, SETTLED");
+			shouldBreak = true;
 		}
 		else if (settingZero) // We are supposed to be setting zero....
 		{
 			if (has_READI_settled)
 			{
-				messenger.printDebugMessage(hardwareName + " is setting 0.0 and READI_new == READI_old. SETTLED = True ");
+				messenger.printDebugMessage(hardwareName + " is setting 0.0 and READI_new == READI_old. SETTLED");
 				shouldBreak = true;
 			}
 		}
@@ -478,7 +481,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 				//	" RI_new != 0.0&& RI_new == RI_old RI. SETTLED = True ",
 				//	currentRIValues[i], ", ", oldRIValues[i],
 				//	", ", tolerances[i]);
-				messenger.printDebugMessage(hardwareName + " Not setting zero and READI has settled NOT at zero. I think we have settled correctly.");
+				messenger.printDebugMessage(hardwareName + " Not setting zero and READI has settled NOT at zero. SETTLED.");
 				shouldBreak = true;
 			}
 		}
@@ -501,6 +504,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		/*  really 2000 milliseconds while we wait for RI to update>>>> ?
 			YES!!
 		*/
+		GlobalFunctions::pause_2000();
 		GlobalFunctions::pause_2000();
 		GlobalFunctions::pause_500();
 	} /// while
