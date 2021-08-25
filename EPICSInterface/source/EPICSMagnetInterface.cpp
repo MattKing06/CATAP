@@ -106,8 +106,8 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 		default: recastMagnet->psu_state.second = STATE::ERR;
 		//messenger.printDebugMessage("!!WARNING!! EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ",a);
 	}
-	messenger.printDebugMessage("EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ", 
-								 pairToUpdate.second, " = " + ENUM_TO_STRING(recastMagnet->psu_state.second));
+	//messenger.printDebugMessage("EPICS_UPDATE RPOWER VALUE FOR: " + recastMagnet->getHardwareName() + ": ", 
+	//							 pairToUpdate.second, " = " + ENUM_TO_STRING(recastMagnet->psu_state.second));
 }
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)

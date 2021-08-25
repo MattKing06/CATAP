@@ -419,6 +419,9 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		I've done the conditional flags very verbose
 		just to make sure i follow what I'm doing
 	*/
+	messenger.printDebugMessage(hardwareName, " waitForMagnetToSettle, value = ", value, " tolerance = ", tolerance, " waitTime = ", waitTime);
+
+	
 	bool timeOut = false;
 
 	double oldRIValue = GlobalConstants::double_min;
@@ -445,7 +448,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		if (isREADIequalValue(value, tolerance))
 		{
 			// Complete , we are where we want to be
-			shouldBreak = true;
+			messenger.printDebugMessage(hardwareName + " isREADIequalValue(", value, ", ", tolerance, ") = true, SETTLED");
 		}
 		else if (settingZero) // We are supposed to be setting zero....
 		{
@@ -499,6 +502,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 			YES!!
 		*/
 		GlobalFunctions::pause_2000();
+		GlobalFunctions::pause_500();
 	} /// while
 
 	return !timed_out;
