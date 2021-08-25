@@ -30,7 +30,7 @@ properties:
   name_alias: C2V-DIP02,C2V-DIP-02, C2V-DIP2,INJ-DIP01,INJ-DIP-01,INJ-DIP1
   num_degauss_steps: 11
   position: 7.972725978
-  ri_tolerance: 0.001
+  ri_tolerance: 0.1
   serial_number: '13257'
   min_i : -180.0
   max_i : 180.0
