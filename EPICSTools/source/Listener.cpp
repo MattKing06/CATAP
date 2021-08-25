@@ -60,7 +60,9 @@ void Listener::setupChannels()
 	epicsInterface->retrieveCHID(pv);
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
+	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCOUNT(pv);
+	EPICSInterface::sendToEPICS();
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
 	EPICSInterface::sendToEPICS();
