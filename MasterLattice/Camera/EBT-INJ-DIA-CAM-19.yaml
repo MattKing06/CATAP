@@ -51,8 +51,10 @@ controls_information:
         ANA_UseBkgrnd     : EBT-INJ-DIA-CAM-19:ANA:UseBkgrnd
         ANA_UseBkgrnd_RBV : EBT-INJ-DIA-CAM-19:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
-        ANA_UseNPoint      : EBT-INJ-DIA-CAM-19:ANA:UseNPoint     
-        ANA_NPointStepSize : EBT-INJ-DIA-CAM-19:ANA:UseNPoint_RBV           
+        ANA_UseNPoint          : EBT-INJ-DIA-CAM-19:ANA:UseNPoint   
+        ANA_UseNPoint_RBV      : EBT-INJ-DIA-CAM-19:ANA:UseNPoint_RBV   
+        ANA_NPointStepSize     : EBT-INJ-DIA-CAM-19:ANA:StepSize
+        ANA_NPointStepSize_RBV : EBT-INJ-DIA-CAM-19:ANA:StepSize_RBV             
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : EBT-INJ-DIA-CAM-19:ANA:UseFloor
         ANA_UseFloor_RBV : EBT-INJ-DIA-CAM-19:ANA:UseFloor_RBV
