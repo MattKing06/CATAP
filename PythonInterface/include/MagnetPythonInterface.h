@@ -85,6 +85,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getFieldIntegralCoefficients", &Magnet::getFieldIntegralCoefficients_Py)
 			.def("setDegaussValues", &Magnet::setDegaussValues_Py)
 			.def("setDegaussTolerance", &Magnet::setDegaussTolerance)
+			.def("getLastDegaussSuccess", &Magnet::getLastDegaussSuccess)
+
+
 			.def("setREADITolerance", &Magnet::setREADITolerance)
 			.def("offlineSetILKState", &Magnet::offlineSetIlkState)
 			.def("offlineSetILKState", &Magnet::getFullPSUName)

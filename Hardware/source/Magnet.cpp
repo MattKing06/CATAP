@@ -46,7 +46,8 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	READI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	psu_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
 	ilk_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
-	is_degaussing(false)
+	is_degaussing(false),
+	last_degauss_success(true)
 {
 	messenger.printDebugMessage("Magnet Constructor");
 	for (auto&& item : paramsMap)
@@ -279,6 +280,11 @@ double Magnet::setDegaussTolerance(const double value)
 	degaussTolerance = value;
 	return degaussTolerance;
 }
+bool Magnet::getLastDegaussSuccess()const
+{
+	return last_degauss_success;
+}
+
 
 std::vector<double> Magnet::getFieldIntegralCoefficients() const
 {

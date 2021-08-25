@@ -168,6 +168,10 @@ class Magnet : public Hardware
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
+	/*! Returns the value of the flag "last_degauss_success" 
+		@param[out] degaussTolerance now being used */
+		bool getLastDegaussSuccess()const;
+
 
 	/*! get the magnet TYPE (quadrupole, dipole, correctoer, solenoid, etc.)
 		@param[out] result  */
