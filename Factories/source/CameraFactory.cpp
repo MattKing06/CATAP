@@ -1867,7 +1867,7 @@ bool CameraFactory::stopAcquiringAndWait(const std::vector<std::string>& cam_nam
 	auto start = std::chrono::high_resolution_clock::now();
 	bool all_stopped = false;
 	bool timed_out = false;
-	size_t wait_time = 5000;
+	size_t wait_time = 10000;
 	while (true)
 	{
 		all_stopped = true;
