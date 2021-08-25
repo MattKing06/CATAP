@@ -45,10 +45,7 @@ class ImageCapture
 };
 /*!	Wait for camera to stop acquiring, this struct is passed to the new thread function		*/
 class CamStopWaiter
-{
-public:	
-CamStopWaiter() :cam(nullptr), thread(nullptr), wait_ms(5000),result(STATE::UNKNOWN){}Camera* cam; std::thread* thread; size_t wait_ms; STATE result;
-};
+{public:CamStopWaiter() :cam(nullptr), thread(nullptr), wait_ms(5000),result(STATE::UNKNOWN){}Camera* cam; std::thread* thread; size_t wait_ms; STATE result;};
 class EPICSCameraInterface;
 typedef boost::shared_ptr<EPICSCameraInterface> EPICSCameraInterface_sptr;
 /*! main camera object */
@@ -89,7 +86,7 @@ public:
 	/*! Get all the name alises for this Camera (python version)
 	@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
-	/*! Get the screen names the camera is attached to.
+	/*! Get the screen names the camera is attached to.c
 	@param[out] names, vector containing  all the screen names (and their aliases) */
 	std::vector<std::string> getScreenNames() const;
 	/*! Get the screen names the camera is attached to (python version).
@@ -492,6 +489,8 @@ protected:
 	std::pair<epicsTimeStamp, long> save_filenumber;
 	/*! Camera set new background STATE. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > capture_count;
+	/*! Number of images to capture. Value and epicstimestamp.	*/
+	std::pair<epicsTimeStamp, long> num_capture;
 private:
 	/*! ImageCapture class to hold data for image capturing and saving thread */
 	ImageCapture image_capture;
@@ -502,7 +501,8 @@ private:
 	void imageCaptureAndSave(size_t num_shots);
 	/*! Kills any completed image collect threads */
 	void killFinishedImageCollectThread();
-	/*! static function that runs the capture and save fucntions */
+	/*! static function that runs the capture and save procedure
+	* 	@param[in] ImageCapture, a struct with information used during the image capture and save procedure */
 	static void staticEntryImageCollectAndSave(ImageCapture& ic);
 	/*! Capture images
 	@param[out] bool, if the value got sent to epics */
@@ -545,11 +545,9 @@ public:
 	@param[out] bool */
 	bool canStartCamera()const;
 	/*! Stop image acquiring, and wait for the stop acquiring signal to be verified by the control system .
-	@param[out] bool, true if camera stopped before timeout ms, otherwsie false*/
+	* @param[in] size_t, timeout time in ms, (if no value is passed the default is 3000) 
+	@param[out] bool, true if camera stopped before timeout ms, otherwise false*/
 	bool stopAcquiringAndWait(size_t timeout);
-	/*! Function in which the stop acquiring and wait procedure runs (in a new thread).
-	@param[in] CamStopWaiter, struct holding data for the procedure*/
-	static void staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw);
 	/*! Start image acquiring, if active_camera_count == active_camera_count this will likley not work. 
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
@@ -592,11 +590,20 @@ protected:
 	std::pair<epicsTimeStamp, STATE> acquire_state;
 private:
 	/*! Struct to hold data for the thread called by stopAcquiringAndWait */
-	CamStopWaiter cam_stop_waiter_struct;
+	CamStopWaiter cam_stop_acquiring_waiter_struct;
+	/*! Function in which the stop acquiring and wait procedure runs (in a new thread).
+	@param[in] CamStopWaiter, struct holding data for the procedure*/
+	static void staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw);
 //		          __   ___                             __     __  
 //	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
 //	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/ 
 //                                                              
+private:
+	/*! Function in which the stop analyzing and wait procedure runs (in a new thread).
+	@param[in] CamStopWaiter, struct holding data for the procedure*/
+	/*! Struct to hold data for the thread called by stopAcquiringAndWait */
+	CamStopWaiter cam_stop_analysing_waiter_struct;
+	static void staticEntryWaitForCamStopAnalyzing(CamStopWaiter& csw);
 public:
 	/*! Start image analysis.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
@@ -604,6 +611,10 @@ public:
 	/*! Stop image analysis.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool stopAnalysing();
+	/*! Stop Analyzing, and wait for the signal to be verified by the control system .
+	* @param[in] size_t, timeout time in ms, (if no value is passed the default is 3000)
+	@param[out] bool, true if camera stopped before timeout ms, otherwise false*/
+	bool stopAnalysingAndWait(size_t timeout);
 	/*! Toggle the image analysis between ANALYSIING / NOT_ANALYSIING.
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool toggleAnalysing();
@@ -619,10 +630,13 @@ public:
 	/*! Check if the image analysis results are updating.
 	@param[out] bool, ture if updating */
 	bool isAnalysisUpdating();
+
 protected:
 	/*! Analysis status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> analysis_state;
-//
+private:
+	bool epics_startAnalysing(epicsUInt16 v);
+	bool epics_stopAnalysing(epicsUInt16 v);
 //	                         __     __           __     __   ___     ___       __   __   __  
 //	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
 //	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
@@ -1241,11 +1255,16 @@ protected:
 	RunningStats avg_intensity_rs;
 	/* sum pixel running stats buffer*/
 	RunningStats sum_intensity_rs;
-//	
-//      __   __       ___  ___               __      __   ___ ___                  __   ___     __       ___         
-//|  | |__) |  \  /\   |  |__      /\  |\ | |  \    / _` |__   |     |  |\/|  /\  / _` |__     |  \  /\   |   /\     
-//\__/ |    |__/ /~~\  |  |___    /~~\ | \| |__/    \__> |___  |     |  |  | /~~\ \__> |___    |__/ /~~\  |  /~~\    
-//                                                                                                                   
+private:
+	/*! analysis data results, x, y , sigma_x, sigma_y, sigma_xy (can be re-defined in config file ) */
+	std::pair<epicsTimeStamp, std::vector<double>> analysis_data;
+	/*! names for each element in the pixel results array, defined in the master lattice config file  */
+	std::vector<std::string> analysis_data_names;
+//	 	
+//	      __   __       ___  ___               __      __   ___ ___                  __   ___     __       ___         
+//	|  | |__) |  \  /\   |  |__      /\  |\ | |  \    / _` |__   |     |  |\/|  /\  / _` |__     |  \  /\   |   /\     
+//	\__/ |    |__/ /~~\  |  |___    /~~\ | \| |__/    \__> |___  |     |  |  | /~~\ \__> |___    |__/ /~~\  |  /~~\    
+//	                                                                                                                   
 public:
 	/*! Get the latest image data (decimated array for passing accross network, not full image).
 	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
@@ -1360,15 +1379,6 @@ protected:
 	/*! Camera temperature. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > temperature;
 
-
-
-
-
-
-
-
-	/*! Number of images to capture. Value and epicstimestamp.	*/
-	std::pair<epicsTimeStamp, long> num_capture;
 	/*! pointer to dbr_time_stuct, used to get timestmp for images*/
 	struct dbr_time_long* dbr_image_data;
 	/*! image_data vector to hold image data */
@@ -1379,10 +1389,7 @@ protected:
 	std::pair<epicsTimeStamp, std::vector<long>> roi_data;
 
 
-	/*! analysis data results, x, y , sigma_x, sigma_y, sigma_xy (can be re-defined in config file ) */
-	std::pair<epicsTimeStamp, std::vector<double>> analysis_data;
-	/*! names for each element in the pixel results array, defined in the master lattice config file  */
-	std::vector<std::string> analysis_data_names;
+
 
 
 
@@ -1460,7 +1467,20 @@ private:
 
 	EPICSCameraInterface_sptr epicsInterface;
 	std::map<std::string, std::string> CameraParamMap;
-	
+
+	// TODO make const at some point (HA!) 
+	std::string roi_min_x_str; // This actually could be MAX! waiting on SK to update co-ord system! :( smh 
+	std::string roi_min_y_str;
+	std::string roi_x_size_str;
+	std::string roi_y_size_str;
+	std::string mask_x_str;
+	std::string mask_y_str;
+	std::string mask_rad_x_str;
+	std::string mask_rad_y_str;
+	std::string mask_and_roi_x_str;
+	std::string mask_and_roi_y_str;
+	std::string mask_and_roi_x_size_str;
+	std::string mask_and_roi_y_size_str;
 	/*! Keywords used for setting ROI and mask together (OUR PREFFERRED INTERFACE!) */
 	std::vector<std::string> mask_and_roi_keywords;
 	/*! Keywords used for setting mask (Not prefferred, use mask and ROI together) */
@@ -1495,6 +1515,7 @@ private:
 
 
 
+	// TODO Now the templated fucniton pointers seem to work well - even more tidying up could be done 
 
 	//template<typename T>
 	//using epics_caput_function_ptr2 = bool(Camera::*)(T);

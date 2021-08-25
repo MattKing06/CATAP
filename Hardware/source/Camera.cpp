@@ -15,10 +15,7 @@ std::mutex mtx;           // mutex for critical section
 #include "GlobalConstants.h"
 
 
-Camera::Camera():
-Hardware()
-{
-}
+Camera::Camera():Hardware(){}
 
 Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
@@ -62,29 +59,22 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 																	  GlobalConstants::double_min, //Y_SIGMA
 																	  GlobalConstants::double_min  //COV
 																	 })),
-
 	master_lattice_pixel_to_mm(GlobalConstants::double_min),
 	master_lattice_centre_x(GlobalConstants::long_min),
 	master_lattice_centre_y(GlobalConstants::long_min),
-
 	lastResultsUpdateTime(epicsTimeStamp()),
 	lastResultsUpdateTime_mm_ana_results(epicsTimeStamp()),
 	isResultUpdated(false),
 	x_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	y_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-	
-	
 	operating_centre_x(GlobalConstants::long_min),
 	operating_centre_y(GlobalConstants::long_min),
 	mechanical_centre_x(GlobalConstants::long_min),
 	mechanical_centre_y(GlobalConstants::long_min),
 	x_center_def(GlobalConstants::size_zero),
 	y_center_def(GlobalConstants::size_zero),
-
-
 	dbr_image_data(nullptr),
 	dbr_roi_data(nullptr),
-
 	image_data(std::make_pair(epicsTimeStamp(), std::vector<long>())),
 	roi_data(std::make_pair(epicsTimeStamp(), std::vector<long>())),
 	analysis_data(std::make_pair(epicsTimeStamp(), std::vector<double>())),
@@ -102,9 +92,21 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
-	mask_and_roi_keywords({ "roi_x", "roi_y", "x_rad", "y_rad" }),  //MAGIC STRING TOD better place for these ??? 
-	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
-	//roi_keywords({ "roi_x", "roi_y", "roi_rad_x", "roi_rad_y" }),     //MAGIC STRING
+	roi_min_x_str("roi_min_x"),
+	roi_min_y_str("roi_min_y"),
+	roi_x_size_str("roi_x_size"),
+	roi_y_size_str("roi_y_size"),
+	roi_keywords({ roi_min_x_str, roi_min_y_str, roi_x_size_str, roi_y_size_str }),  //MAGIC STRING TOD better place for these ??? 
+	mask_x_str("mask_x"),
+	mask_y_str("mask_y"),
+	mask_rad_x_str("mask_rad_x"),
+	mask_rad_y_str("mask_rad_y"),
+	mask_keywords({ mask_x_str, mask_y_str, mask_rad_x_str, mask_rad_y_str }),//MAGIC STRING 
+	mask_and_roi_x_str("mask_and_roi_x"),
+	mask_and_roi_y_str("mask_and_roi_y"),
+	mask_and_roi_x_size_str("mask_and_roi_x_size"),
+	mask_and_roi_y_size_str("mask_and_roi_y_size"),
+	mask_and_roi_keywords({ mask_and_roi_x_str, mask_and_roi_y_str, mask_and_roi_x_size_str, mask_and_roi_y_size_str }),//MAGIC STRING 
 	image_data_has_not_malloced(true),
 	image_data_has_not_vector_resized(true),
 	roi_data_has_not_malloced(true),
@@ -155,9 +157,6 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	}
 	getMasterLatticeData(paramMap, mode);
 	setPVStructs();
-	//mask_and_roi_keywords_Py = to_py_list(mask_and_roi_keywords);
-	//mask_keywords_Py = to_py_list(mask_keywords);
-	//roi_keywords_Py = to_py_list(roi_keywords);
 }
 
 void Camera::getMasterLatticeData(const std::map<std::string, std::string>& paramMap, STATE mode)
@@ -661,11 +660,7 @@ max_y_pixel_pos(copyCamera.max_y_pixel_pos),
 busy(copyCamera.busy),
 has_led(copyCamera.has_led),
 last_capture_and_save_success(copyCamera.last_capture_and_save_success)
-//mask_and_roi_keywords_Py(copyCamera.mask_and_roi_keywords_Py),
-//mask_keywords_Py(copyCamera.mask_keywords_Py),
-//roi_keywords_Py(copyCamera.roi_keywords_Py)
-{
-}
+{}
 Camera::~Camera(){}
 void Camera::setPVStructs()
 {
@@ -1272,8 +1267,7 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 	//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait time = ", csw.wait_ms);
 	auto start = std::chrono::high_resolution_clock::now();
 	bool timed_out = false;
-	// first wait fro isbusy to be false
-
+	// first wait for isbusy to be false
 	while (true)
 	{
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
@@ -1317,11 +1311,9 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 	}
 	else
 	{
-		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has waited for  Stopped Acquiring.");
+		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " succesfully  waited for  Stopped Acquiring.");
 		csw.result = STATE::SUCCESS;
-
 	}
-
 }
 bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 {
@@ -1329,37 +1321,26 @@ bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
 		return true;
 	if (stopAcquiring())
 	{	// TODO and tudy up 
-		cam_stop_waiter_struct.cam = this;
-		cam_stop_waiter_struct.wait_ms = timeout;
-		cam_stop_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_waiter_struct));
-		cam_stop_waiter_struct.thread->join();
-		delete cam_stop_waiter_struct.thread;
-		cam_stop_waiter_struct.thread = nullptr;
-		if (cam_stop_waiter_struct.result == STATE::SUCCESS)
+		cam_stop_acquiring_waiter_struct.cam = this;
+		cam_stop_acquiring_waiter_struct.wait_ms = timeout;
+		cam_stop_acquiring_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAcquiring, std::ref(cam_stop_acquiring_waiter_struct));
+		cam_stop_acquiring_waiter_struct.thread->join();
+		delete cam_stop_acquiring_waiter_struct.thread;
+		cam_stop_acquiring_waiter_struct.thread = nullptr;
+		if (cam_stop_acquiring_waiter_struct.result == STATE::SUCCESS)
 			return true;
 	}
 	return false;
 }
 bool Camera::startAcquiring()
-{
-	// we could put a canStartCamera check in here, but why bother???
+{	// we could put a canStartCamera check in here, but why bother???
 	return epicsInterface->putValue2<epicsUInt16 >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
 }
 bool Camera::stopAcquiring()
 {
 	return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::CAM_Stop_Acquire), GlobalConstants::zero_ushort);
 }
-bool Camera::toggleAcquiring()
-{
-	std::cout << "toggleAcquiring" << std::endl;
-	if (isAcquiring())
-	{
-		std::cout << "isAcquiring = true, stopAcquiring" << std::endl;
-		return stopAcquiring();
-	}
-	std::cout << "isAnalysing = FALSE, startAcquiring" << std::endl;
-	return startAcquiring();
-}
+bool Camera::toggleAcquiring(){	return isAcquiring() ? stopAcquiring() : startAcquiring(); }
 bool Camera::isAcquiring()const{ return getAcquireState() == STATE::ACQUIRING; }
 bool Camera::isNotAcquiring()const{ return getAcquireState() == STATE::NOT_ACQUIRING; }
 STATE Camera::getAcquireState()const{ return acquire_state.second; }
@@ -1370,47 +1351,84 @@ double Camera::getArrayRate()const{	return array_rate.second;}
 //	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
 //	|  |  | /~~\ \__> |___    /~~\ | \| /~~\ |___  |  .__/ | .__/ 
 // 
-bool Camera::startAnalysing()
-{
-	bool  r = false;
-	bool stopped = true;
-	bool should_stop_and_restart = isAcquiring();
-	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
-	if(stopped)
-	{ 
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::one_ushort);
-		if (should_stop_and_restart) { startAcquiring(); }
-	}
-	return r;
-}
-bool Camera::stopAnalysing()
-{
-	bool  r = false;
-	bool stopped = true;
-	bool should_stop_and_restart = isAcquiring();
-	if (should_stop_and_restart) { bool stopped = stopAcquiringAndWait(); }
-	if (stopped)
-	{
-		r = epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), GlobalConstants::zero_ushort);
-		if (should_stop_and_restart) { startAcquiring(); }
-	}
-	return r;
-}
-bool Camera::toggleAnalysing()
-{
-	std::cout << "toggleUseNPointScaling" << std::endl;
-	if (isAnalysing())
-	{
-		std::cout << "isAnalysing = true, stopAnalysing" << std::endl;
-		return stopAnalysing();
-	}
-	std::cout << "isAnalysing = FALSE, startAnalysing" << std::endl;
-	return startAnalysing();
-}
+bool Camera::epics_startAnalysing(epicsUInt16 v) { return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), v); }
+bool Camera::epics_stopAnalysing(epicsUInt16 v) { return epicsInterface->putValue_flushio<epicsUInt16>(pvStructs.at(CameraRecords::ANA_EnableCallbacks), v); }
+bool Camera::startAnalysing(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_startAnalysing, GlobalConstants::one_ushort); }
+bool Camera::stopAnalysing(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_stopAnalysing, GlobalConstants::zero_ushort); }
+bool Camera::toggleAnalysing(){ return isAnalysing()?stopAnalysing():startAnalysing();}
 bool Camera::isAnalysing()const{ return getAnalysisState() == STATE::ANALYSING;}
 bool Camera::isNotAnalysing()const{	return getAnalysisState() == STATE::NOT_ANALYSING;}
 STATE Camera::getAnalysisState()const{ return analysis_state.second;}
 bool Camera::isAnalysisUpdating(){	return isResultUpdated;}
+void Camera::staticEntryWaitForCamStopAnalyzing(CamStopWaiter& csw)
+{
+	//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " timeout wait time = ", csw.wait_ms);
+	auto start = std::chrono::high_resolution_clock::now();
+	bool timed_out = false;
+	// first wait for isbusy to be false
+	while (true)
+	{
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
+		/* check if time ran out */
+		if (duration.count() > csw.wait_ms)
+		{
+			csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for isNotBusy, DT = ", duration.count());
+			timed_out = true;
+			break;
+		}
+		if (csw.cam->isNotBusy())
+		{
+			//csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " is NOT busy!");
+			break;
+		}
+	}
+	if (!timed_out)
+	{
+		start = std::chrono::high_resolution_clock::now();
+		while (true)
+		{
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
+			if (duration.count() > csw.wait_ms) 			/* check if time ran out */
+			{
+				csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for stopAnalysing, DT = ", duration.count());
+				timed_out = true;
+				break;
+			}
+			if (csw.cam->isNotAnalysing())
+			{
+				csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has Stopped Analysing.");
+				break;
+			}
+		}
+	}
+	if (timed_out)
+	{
+		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " has timed out waiting for stopAnalysing");
+		csw.result = STATE::TIMEOUT;
+	}
+	else
+	{
+		csw.cam->messenger.printDebugMessage(csw.cam->hardwareName + " succesfully waited for Stopped Acquiring.");
+		csw.result = STATE::SUCCESS;
+	}
+}
+bool Camera::stopAnalysingAndWait(size_t timeout = 3000)
+{
+	if (isNotAnalysing())
+		return true;
+	if (stopAnalysing())
+	{	// TODO and tudy up 
+		cam_stop_analysing_waiter_struct.cam = this;
+		cam_stop_analysing_waiter_struct.wait_ms = timeout;
+		cam_stop_analysing_waiter_struct.thread = new std::thread(staticEntryWaitForCamStopAnalyzing, std::ref(cam_stop_analysing_waiter_struct));
+		cam_stop_analysing_waiter_struct.thread->join();
+		delete cam_stop_analysing_waiter_struct.thread;
+		cam_stop_analysing_waiter_struct.thread = nullptr;
+		if (cam_stop_analysing_waiter_struct.result == STATE::SUCCESS)
+			return true;
+	}
+	return false;
+}
 //	                         __     __           __     __   ___     ___       __   __   __  
 //	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
 //	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
@@ -1425,27 +1443,20 @@ bool Camera::setUseFloor(){ return genericStopAcquiringApplySetting<epicsUInt16>
 bool Camera::setDoNotUseFloor(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseFloor, GlobalConstants::zero_ushort);}
 bool Camera::toggleUseFloor(){ return isUsingFloor()?setDoNotUseFloor():setUseFloor();}
 bool Camera::setFloorLevel(long v){	return genericStopAcquiringApplySetting<long>(&Camera::epics_setFloorLevel, v);}
+long Camera::getFloorLevel()const{ return floor_level.second;}
+long Camera::getFlooredPtsCount()const{	return floored_pts_count.second;}
+double Camera::getFlooredPtsPercent()const{	return floored_pts_percent.second;}
 //	                         __     __           __   __         ___     __   __                    __  
 //	 /\  |\ | |     /\  \ / /__` | /__`    |\ | |__) /  \ | |\ |  |     /__` /  `  /\  |    | |\ | / _` 
 //	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
 //	                                                                                                    
 bool Camera::epics_setUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
 bool Camera::epics_setDoNotUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), GlobalConstants::one_ushort); }
+bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NPointStepSize), GlobalConstants::one_ushort); }
 bool Camera::setUseNPointScaling(){	return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseNPointScaling, GlobalConstants::one_ushort); }
-bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::one_ushort); }
-bool Camera::setNpointScalingStepSize(long val){return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, (epicsUInt16)val);}
-bool Camera::toggleUseNPointScaling()
-{
-	std::cout << "toggleUseNPointScaling" << std::endl;
-	if (isUsingNPointScaling())
-	{
-		std::cout << "isUsingNPointScaling = true, setDoNotUseNPointScaling" << std::endl;
-		return setDoNotUseNPointScaling();
-	}
-	std::cout << "isUsingNPointScaling = FALSE, setUseNPointScaling" << std::endl;
-	return setUseNPointScaling();
-}
+bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::zero_ushort); }
+bool Camera::setNpointScalingStepSize(long v){return genericStopAcquiringApplySetting<long>(&Camera::epics_setNpointScalingStepSize, v);}
+bool Camera::toggleUseNPointScaling() {	return isUsingNPointScaling() ? setDoNotUseNPointScaling() : setUseNPointScaling(); }
 STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
 bool Camera::isUsingNPointScaling()const{ return use_npoint.second == STATE::USING_NPOINT;}
 bool Camera::isNotUsingNPointScaling()const{ return use_npoint.second == STATE::NOT_USING_NPOINT;}
@@ -1459,17 +1470,7 @@ bool Camera::epics_setUseBackgroundImage(epicsUInt16 v){return epicsInterface->p
 bool Camera::epics_setDoNotUseBackgroundImage(epicsUInt16 v){ return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), v);}
 bool Camera::setUseBackgroundImage(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseBackgroundImage, GlobalConstants::one_ushort); }
 bool Camera::setDoNotUseBackgroundImage() { return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseBackgroundImage, GlobalConstants::zero_ushort); }
-bool Camera::toggleUseBackgroundImage()
-{
-	std::cout << "toggleUseBackgroundImage" << std::endl;
-	if (isUsingNPointScaling())
-	{
-		std::cout << "isUsingNPointScaling = true, setDoNotUseNPointScaling" << std::endl;
-		return setDoNotUseNPointScaling();
-	}
-	std::cout << "isUsingNPointScaling = FALSE, setUseNPointScaling" << std::endl;
-	return setUseNPointScaling();
-}
+bool Camera::toggleUseBackgroundImage() { return isUsingBackgroundImage() ? setDoNotUseBackgroundImage() : setUseBackgroundImage(); }
 bool Camera::isUsingBackgroundImage()const{	return use_background.second == STATE::USING_BACKGROUND;}
 bool Camera::isNotUsingBackgroundImage()const{	return use_background.second == STATE::NOT_USING_BACKGROUND;}
 STATE Camera::getUsingBackgroundImageState()const{	return use_background.second;}
@@ -1484,49 +1485,41 @@ bool Camera::setMaskYRadius(long val){	return  epicsInterface->putValue2<epicsIn
 bool Camera::setMask(long mask_x, long  mask_y, long mask_rad_x, long mask_rad_y)
 {
 	bool is_analysing_at_start = isAnalysing();
-	if (is_analysing_at_start)
+	if (stopAnalysingAndWait())
 	{
-		stopAnalysing();
-		GlobalFunctions::pause_50();
-	}
-	if (setMaskXCenter(mask_x))
-	{
-		if (setMaskYCenter(mask_y))
+		if (setMaskXCenter(mask_x))
 		{
-			if (setMaskXRadius(mask_rad_x))
+			if (setMaskYCenter(mask_y))
 			{
-				if (setMaskYRadius(mask_rad_y))
+				if (setMaskXRadius(mask_rad_x))
 				{
-					if (is_analysing_at_start)
+					if (setMaskYRadius(mask_rad_y))
 					{
-						startAnalysing();
+						if (is_analysing_at_start)
+						{
+							startAnalysing();
+						}
+						return true;
 					}
-					return true;
 				}
 			}
 		}
 	}
-
 	return false;
 }
 bool Camera::setMask(std::map<std::string, long> settings)
 {
 	if (GlobalFunctions::entriesExist(settings, mask_keywords))
 	{
-		return setMask(settings.at("mask_x"), settings.at("mask_y"), settings.at("mask_rad_x"), settings.at("mask_rad_y"));
+		return setMask(settings.at(mask_x_str), settings.at(mask_y_str), settings.at(mask_rad_x_str), settings.at(mask_rad_y_str));
 	}
-	std::cout << "!!ERROR!! wrong setMask keywords: ";
-	for (auto&& item : settings)
-	{
-		std::cout << item.first << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "Expecting: ";
-	for (auto&& item : mask_keywords)
-	{
-		std::cout << item << ", ";
-	}
-	std::cout << std::endl;
+	std::stringstream s;
+	s  << "!!ERROR!! setMask passed wrong keywords: ";
+	for (auto&& item : settings){	s << item.first << ", ";	}
+	s << std::endl << "Expecting: ";
+	for (auto&& item : mask_keywords){	s << item << ", ";	}
+	s << std::endl;
+	messenger.printDebugMessage(s.str());
 	return false;
 }
 bool Camera::setMask_Py(boost::python::dict settings){	return setMask(to_std_map<std::string, long>(settings));}
@@ -1537,13 +1530,11 @@ long Camera::getMaskYRadius()const{	return mask_y_radius.second;}
 std::map<std::string, long> Camera::getMask()const
 {
 	std::map<std::string, long> r;
-	r["mask_x"] = getMaskXCenter(); // MAGIC STRING
-	r["mask_y"] = getMaskYCenter(); // MAGIC STRING
-	r["mask_rad_x"] = getMaskXRadius();// MAGIC STRING
-	r["mask_rad_y"] = getMaskYRadius();// MAGIC STRING
+	r[mask_y_str] = getMaskYCenter(); r[mask_rad_x_str] = getMaskXRadius();
+	r[mask_x_str] = getMaskXCenter(); r[mask_rad_y_str] = getMaskYRadius();
 	return r;
 }
-boost::python::dict Camera::getMask_Py()const{	return  to_py_dict<std::string, long>(getMask());}
+boost::python::dict Camera::getMask_Py()const{ return to_py_dict<std::string, long>(getMask());}
 //	 __   __    
 //	|__) /  \ | 
 //	|  \ \__/ | 
@@ -1555,24 +1546,22 @@ bool Camera::setROISizeY(long val){	return  epicsInterface->putValue2<epicsInt32
 bool Camera::setROI(long x_min, long  y_min, long x_size, long y_size)
 {
 	bool is_analysing_at_start = isAnalysing();
-	if (is_analysing_at_start)
+	if (stopAnalysingAndWait())
 	{
-		stopAnalysing();
-		GlobalFunctions::pause_50();
-	}
-	if(setROIMinX(x_min))
-	{
-		if (setROIMinY(y_min))
+		if (setROIMinX(x_min))
 		{
-			if (setROISizeX(x_size))
+			if (setROIMinY(y_min))
 			{
-				if (setROISizeY(y_size))
+				if (setROISizeX(x_size))
 				{
-					if (is_analysing_at_start)
+					if (setROISizeY(y_size))
 					{
-						startAnalysing();
+						if (is_analysing_at_start)
+						{
+							startAnalysing();
+						}
+						return true;
 					}
-					return true;
 				}
 			}
 		}
@@ -1581,14 +1570,20 @@ bool Camera::setROI(long x_min, long  y_min, long x_size, long y_size)
 }
 bool Camera::setROI(std::map<std::string, long> settings)
 {
-	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
+	if (GlobalFunctions::entriesExist(settings, roi_keywords))
 	{
-		return setROI(settings.at("x_max"), settings.at("y_max"), settings.at("x_rad"), settings.at("y_rad"));
+		return setROI(settings.at(roi_min_x_str), settings.at(roi_min_y_str), settings.at(roi_x_size_str), settings.at(roi_y_size_str));
 	}
-	messenger.printDebugMessage("!!Failed!! setROI passed incorrect keywords, expecting, x_max, y_max, x_rad, y_rad");
+	std::stringstream s;
+	s << "!!ERROR!! setROI passed wrong keywords: ";
+	for (auto&& item : settings) { s << item.first << ", "; }
+	s << std::endl << "Expecting: ";
+	for (auto&& item : roi_keywords) { s << item << ", "; }
+	s << std::endl;
+	messenger.printDebugMessage(s.str());
 	return false;
 }
-bool Camera::setROI_Py(boost::python::dict settings){	return setROI(to_std_map<std::string, long>(settings));}
+bool Camera::setROI_Py(boost::python::dict settings){ return setROI(to_std_map<std::string, long>(settings));}
 long Camera::getROIMinX()const{	return roi_min_x.second;}
 long Camera::getROIMinY()const{	return roi_min_y.second;}
 long Camera::getROISizeX()const{ return roi_size_x.second;}
@@ -1596,45 +1591,42 @@ long Camera::getROISizeY()const{ return roi_size_y.second;}
 std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
-	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
-	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
-	r["roi_x_size"] = getROISizeX();// MAGIC STRING
-	r["roi_y_size"] = getROISizeY();// MAGIC STRING
+	r[roi_min_x_str] = getROIMinX(); r[roi_x_size_str] = getROISizeX();	
+	r[roi_min_y_str] = getROIMinY(); r[roi_y_size_str] = getROISizeY();
 	return r;
 }
-boost::python::dict Camera::getROI_Py()const
-{
-	return  to_py_dict<std::string, long>(getROI());
-}
+boost::python::dict Camera::getROI_Py()const{ return to_py_dict<std::string, long>(getROI());}
 //	 __   __                  __                 __           __   __         __   __  
 //	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
 //	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
 //
-long Camera::getMaskAndROIxMax()const{	return roi_and_mask_centre_x.second; }
-long Camera::getMaskAndROIyMax()const{	return roi_and_mask_centre_y.second; }
-long Camera::getMaskAndROIxSize()const{	return roi_and_mask_radius_x.second; }
-long Camera::getMaskAndROIySize()const{	return roi_and_mask_radius_y.second; }
-bool Camera::setMaskAndROIxMax(long val){return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)val);}
-bool Camera::setMaskAndROIyMax(long val){return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)val);}
-bool Camera::setMaskAndROIxSize(long val)
-{
-	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (epicsFloat64)val);
-}
-bool Camera::setMaskAndROIySize(long val)
-{
-	return  epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (epicsFloat64)val);
-}
+long Camera::getMaskAndROIxMax()const{return roi_and_mask_centre_x.second; }
+long Camera::getMaskAndROIyMax()const{return roi_and_mask_centre_y.second; }
+long Camera::getMaskAndROIxSize()const{return roi_and_mask_radius_x.second; }
+long Camera::getMaskAndROIySize()const{return roi_and_mask_radius_y.second; }
+bool Camera::setMaskAndROIxMax(long v){return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetX), (epicsFloat64)v);}
+bool Camera::setMaskAndROIyMax(long v){return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetY), (epicsFloat64)v);}
+bool Camera::setMaskAndROIxSize(long v){return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetXrad), (epicsFloat64)v);}
+bool Camera::setMaskAndROIySize(long v){return epicsInterface->putValue2<epicsFloat64>(pvStructs.at(CameraRecords::ROIandMask_SetYrad), (epicsFloat64)v);}
 bool Camera::setMaskandROI(long x_max, long  y_max, long x_rad, long y_rad)
 {
-	if (setMaskAndROIxMax(x_max))
+	bool is_analysing_at_start = isAnalysing();
+	if (stopAnalysingAndWait())
 	{
-		if (setMaskAndROIyMax(y_max))
+		if (setMaskAndROIxMax(x_max))
 		{
-			if (setMaskAndROIxSize(x_rad))
+			if (setMaskAndROIyMax(y_max))
 			{
-				if (setMaskAndROIySize(y_rad))
+				if (setMaskAndROIxSize(x_rad))
 				{
-					return true;
+					if (setMaskAndROIySize(y_rad))
+					{
+						if (is_analysing_at_start)
+						{
+							startAnalysing();
+						}
+						return true;
+					}
 				}
 			}
 		}
@@ -1645,54 +1637,35 @@ bool Camera::setMaskandROI(std::map<std::string, long> settings)
 {
 	if (GlobalFunctions::entriesExist(settings, mask_and_roi_keywords))
 	{
-		return setMaskandROI(settings.at("roi_x"), settings.at("roi_y"), settings.at("x_rad"), settings.at("y_rad"));
+		return setMaskandROI(settings.at(mask_and_roi_x_str), settings.at(mask_and_roi_y_str), settings.at(mask_and_roi_x_size_str), settings.at(mask_and_roi_y_size_str));
 	}
-	std::cout << "!!ERROR!! wrong setMaskandROI keywords: ";
-	for (auto&& item : settings)
-	{
-		std::cout << item.first << ", ";
-	}
-	std::cout << std::endl;
-	std::cout << "Expecting: ";
-	for (auto&& item : mask_and_roi_keywords)
-	{
-		std::cout << item << ", ";
-	}
-	std::cout << std::endl;
+	std::stringstream s;
+	s << "!!ERROR!! setROI passed wrong keywords: ";
+	for (auto&& item : settings) { s << item.first << ", "; }
+	s << std::endl << "Expecting: ";
+	for (auto&& item : mask_and_roi_keywords) { s << item << ", "; }
+	s << std::endl;
+	messenger.printDebugMessage(s.str());
 	return false;
 }
-bool Camera::setMaskandROI_Py(boost::python::dict settings)
-{
-	return setMaskandROI(to_std_map<std::string, long>(settings));
-}
+bool Camera::setMaskandROI_Py(boost::python::dict settings){ return setMaskandROI(to_std_map<std::string, long>(settings));}
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
-	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
-	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
-	r["roi_x_size"] = getROISizeX();// MAGIC STRING
-	r["roi_y_size"] = getROISizeY();// MAGIC STRING
-	r["mask_center_x"] = getMaskXCenter(); // MAGIC STRING
-	r["mask_center_y"] = getMaskYCenter(); // MAGIC STRING
-	r["mask_x_size"] = getMaskXRadius();// MAGIC STRING
-	r["mask_y_size"] = getMaskYRadius();// MAGIC STRING
+	r[roi_min_x_str] = getROIMinX();  r[roi_x_size_str] = getROISizeX();	
+	r[roi_min_y_str] = getROIMinY();  r[roi_y_size_str] = getROISizeY();
+	r[mask_x_str] = getMaskXCenter(); r[mask_rad_x_str] = getMaskXRadius();
+	r[mask_y_str] = getMaskYCenter(); r[mask_rad_y_str] = getMaskYRadius();
 	return r;
 }
-boost::python::dict Camera::getMaskandROI_Py()const
-{
-	return  to_py_dict<std::string, long>(getMaskandROI());
-}
+boost::python::dict Camera::getMaskandROI_Py()const{ return to_py_dict<std::string, long>(getMaskandROI());}
 //	       ___   __   
 //	|     |__   |  \  
 //	|___ .|___ .|__/ .
 //
-bool Camera::hasLED()const
-{
-	return has_led;
-}
+bool Camera::hasLED()const{	return has_led;}
 bool Camera::setLEDOn()
-{
-	// ALSO HAVE IN SCREENS 
+{	// ALSO HAVE IN SCREENS 
 	if (has_led)
 	{
 		if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
@@ -1709,8 +1682,7 @@ bool Camera::setLEDOn()
 	return false;
 }
 bool Camera::setLEDOff()
-{
-	// ALSO HAVE IN SCREENS
+{	// ALSO HAVE IN SCREENS
 	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(CameraRecords::LED_Off), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
@@ -1719,36 +1691,40 @@ bool Camera::setLEDOff()
 	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
 	return false;
 }
-bool Camera::isLEDOn()const
-{
-	return led_state.second == STATE::ON;
-}
-bool Camera::isLEDOff()const
-{
-	return led_state.second == STATE::OFF;
-}
-STATE Camera::getLEDState()const
-{
-	return led_state.second;
-}
-
-
-
-
-
-
+bool Camera::isLEDOn()const{ return led_state.second == STATE::ON;}
+bool Camera::isLEDOff()const{return led_state.second == STATE::OFF;}
+STATE Camera::getLEDState()const{ return led_state.second;}
 //	 __                            __      __             __                ___       ___      
 //	/ _`  /\  | |\ |     /\  |\ | |  \    |__) |     /\  /  ` |__/    |    |__  \  / |__  |    
 //	\__> /~~\ | | \|    /~~\ | \| |__/    |__) |___ /~~\ \__, |  \    |___ |___  \/  |___ |___ 
 //
-
-
-
-
-
+bool Camera::setBlackLevel(long value)
+{
+	if (getCamType() == TYPE::VELA_CAMERA)
+	{
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::CAM_BlackLevel), (epicsInt32)value);
+	}
+	return false;
+}
+long Camera::getBlackLevel()const{	return black_level.second;}
+bool Camera::setGain(long value)
+{
+	if (getCamType() == TYPE::VELA_CAMERA)
+	{
+		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::CAM_Gain), (epicsInt32)value);
+	}
+	return false;
+}
+long Camera::getGain()const{ return gain.second;}
+//	 __        __      
+//	|__) |  | /__` \ / 
+//	|__) \__/ .__/  |  
+//	
+bool Camera::isBusy()const{	return busy == true;}
+bool Camera::isNotBusy()const{ return busy == false;}
 
 boost::python::dict Camera::getAllRunningStats()const
-{
+{	// TODO 
 	boost::python::dict r;
 	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
 	r["y_pix"] = y_pix_rs.getRunningStats();  				// MAGIC STRING
@@ -1759,61 +1735,10 @@ boost::python::dict Camera::getAllRunningStats()const
 	r["y_mm"] = y_mm_rs.getRunningStats();				    // MAGIC STRING
 	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();	    // MAGIC STRING
 	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();	    // MAGIC STRING
-	r["sigma_xy_mm"] = sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
+	r["sigma_xy_mm"] = sigma_xy_mm_rs.getRunningStats();    // MAGIC STRING
 	return r;
 }
-
-
-
-
-
-
-
-
-
-
-
-bool Camera::isBusy()const
-{
-	return busy == true;
-}
-bool Camera::isNotBusy()const
-{
-	return busy == false;
-}
-
-
-
-
-
-
-//size_t Camera::getNumXPixFromArrayData() const
-//{
-//	return array_data_num_pix_x;
-//}
-//size_t Camera::getNumYPixFromArrayData() const
-//{
-//	return array_data_num_pix_y;
-//}
-//size_t Camera::getFullNumXPix() const
-//{
-//	return binary_num_pix_x;
-//}
-//size_t Camera::getFullNumYPix() const
-//{
-//	return binary_num_pix_y;
-//}
-
-
-
-TYPE Camera::getCamType()const
-{
-	return cam_type;
-}
-
-
-
-
+TYPE Camera::getCamType()const{	return cam_type;}
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
 	std::map<std::string, double> r;
@@ -1828,73 +1753,25 @@ std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 }
 boost::python::dict Camera::getAnalysisResultsPixels_Py()const
 {
-	return  to_py_dict<std::string, double>(getAnalysisResultsPixels());
+	return to_py_dict<std::string, double>(getAnalysisResultsPixels());
 }
 
+double Camera::getX()const{	return x_mm.second;}
+double Camera::getY()const{	return y_mm.second;}
+double Camera::getSigX()const{ return sigma_x_mm.second;}
+double Camera::getSigY()const{ return sigma_y_mm.second;}
+double Camera::getSigXY()const{	return sigma_xy_mm.second;}
+double Camera::getXPix()const{ return x_pix.second;}
+size_t Camera::getXPixScaleFactor()const{ return x_pix_scale_factor;}
+double Camera::getYPix()const{	return y_pix.second;}
+size_t Camera::getYPixScaleFactor()const{ return y_pix_scale_factor;}
+double Camera::getSigXPix()const{ return sigma_x_pix.second;}
+double Camera::getSigYPix()const{ return sigma_y_pix.second; }
+double Camera::getSigXYPix()const{	return sigma_xy_pix.second;}
 
 
-double Camera::getX()const
-{
-	return x_mm.second;
-}
-double Camera::getY()const
-{
-	return y_mm.second;
-}
-double Camera::getSigX()const
-{
-	return sigma_x_mm.second;
-}
-double Camera::getSigY()const
-{
-	return sigma_y_mm.second;
-}
-double Camera::getSigXY()const
-{
-	return sigma_xy_mm.second;
-}
-double Camera::getXPix()const
-{
-	return x_pix.second;
-}
-size_t Camera::getXPixScaleFactor() const
-{
-	return x_pix_scale_factor;
-}
-double Camera::getYPix()const
-{
-	return y_pix.second;
-}
-size_t Camera::getYPixScaleFactor() const
-{
-	return y_pix_scale_factor;
-}
-double Camera::getSigXPix()const
-{
-	return sigma_x_pix.second;
-}
-double Camera::getSigYPix()const
-{
-	return sigma_y_pix.second;
-}
-double Camera::getSigXYPix()const
-{
-	return sigma_xy_pix.second;
-}
-
-
-
-
-double Camera::getSumIntensity()const
-{
-	return sum_intensity.second;
-}
-double Camera::getAvgIntensity()const
-{
-	return avg_intensity.second;
-}
-
-
+double Camera::getSumIntensity()const{ return sum_intensity.second;}
+double Camera::getAvgIntensity()const{ return avg_intensity.second;}
 bool Camera::setX(double value)
 {
 	if(mode == STATE::PHYSICAL)
@@ -1962,55 +1839,7 @@ bool Camera::setSigXY(double value)
 }
 
 //--------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------
-//bool Camera::setXPix(double value)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return false;
-//	}
-//	x_pix = std::make_pair(epicsTimeStamp(), value);
-//	return true;
-//}
-//bool Camera::setYPix(double value)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return false;
-//	}
-//	y_pix = std::make_pair(epicsTimeStamp(), value);
-//	return true;
-//}
-//bool Camera::setSigXPix(double value)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return false;
-//	}
-//	sigma_x_pix = std::make_pair(epicsTimeStamp(), value);
-//	return true;
-//}
-//bool Camera::setSigYPix(double value)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return false;
-//	}
-//	sigma_y_pix = std::make_pair(epicsTimeStamp(), value);
-//	return true;
-//}
-//bool Camera::setSigXYPix(double value)
-//{
-//	if (mode == STATE::PHYSICAL)
-//	{
-//		return false;
-//	}
-//	sigma_xy_pix = std::make_pair(epicsTimeStamp(), value);
-//	return true;
-//}
 bool Camera::setSumIntensity(double value)
 {
 	if (mode == STATE::PHYSICAL)
@@ -2029,25 +1858,14 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
-double Camera::getAveragePixelValueForBeam()const
-{
-	return average_pixel_value_for_beam;
-}
+double Camera::getAveragePixelValueForBeam()const{	return average_pixel_value_for_beam;}
 bool Camera::setAveragePixelValueForBeam(const double& value)
 {
 	average_pixel_value_for_beam = value;
 	return true;
 }
-bool Camera::hasBeam()const
-{
-	return getAvgIntensity() > getAveragePixelValueForBeam();
-}
-bool Camera::hasNoBeam()const
-{
-	return !hasBeam();
-}
-
-
+bool Camera::hasBeam()const{ return getAvgIntensity() > getAveragePixelValueForBeam();}
+bool Camera::hasNoBeam()const{ return !hasBeam();}
 bool Camera::areAllRunningStatsFull()const
 {
 	if (x_pix_rs.Full())
@@ -2090,21 +1908,19 @@ bool Camera::areAllRunningStatsFull()const
 	return false;
 }
 
-
-RunningStats& Camera::getXPixRunningStats(){	return x_pix_rs;}
-RunningStats& Camera::getYPixRunningStats(){	return y_pix_rs;}
-RunningStats& Camera::getSigmaXPixRunningStats(){	return sigma_x_pix_rs;}
-RunningStats& Camera::getSigmaYPixRunningStats(){	return sigma_y_pix_rs;}
-RunningStats& Camera::getSigmaXYPixRunningStats(){	return sigma_xy_pix_rs;}
+RunningStats& Camera::getXPixRunningStats(){ return x_pix_rs;}
+RunningStats& Camera::getYPixRunningStats(){ return y_pix_rs;}
+RunningStats& Camera::getSigmaXPixRunningStats(){ return sigma_x_pix_rs;}
+RunningStats& Camera::getSigmaYPixRunningStats(){ return sigma_y_pix_rs;}
+RunningStats& Camera::getSigmaXYPixRunningStats(){ return sigma_xy_pix_rs;}
 RunningStats& Camera::getXmmRunningStats(){	return x_mm_rs;}
 RunningStats& Camera::getYmmRunningStats(){	return y_mm_rs;}
 RunningStats& Camera::getSigmaXmmRunningStats(){	return sigma_x_mm_rs;}
-
-RunningStats& Camera::getSigmaYmmRunningStats(){	return sigma_y_mm_rs;	}
-RunningStats& Camera::getSigmaXYmmRunningStats(){	return sigma_xy_mm_rs;	}
-RunningStats& Camera::getAvgIntensityRunningStats(){	return avg_intensity_rs;}
-RunningStats& Camera::getSumIntensityRunningStats(){	return sum_intensity_rs;}
-size_t Camera::getBufferSize()const{return running_stats_buffer_size;}
+RunningStats& Camera::getSigmaYmmRunningStats(){ return sigma_y_mm_rs;	}
+RunningStats& Camera::getSigmaXYmmRunningStats(){ return sigma_xy_mm_rs;	}
+RunningStats& Camera::getAvgIntensityRunningStats(){ return avg_intensity_rs;}
+RunningStats& Camera::getSumIntensityRunningStats(){ return sum_intensity_rs;}
+size_t Camera::getBufferSize()const{ return running_stats_buffer_size;}
 void Camera::setAllRunningStatBufferSizes(size_t v)
 {
 	x_pix_rs.setBufferSize(v);			y_pix_rs.setBufferSize(v);	sigma_x_pix_rs.setBufferSize(v);	sigma_y_pix_rs.setBufferSize(v);
@@ -2138,60 +1954,13 @@ size_t Camera::getRunningStatNumDataValues()const
 	return *std::min_element(NumDataValuesVector.begin(), NumDataValuesVector.end());;
 }
 
+std::vector<double> Camera::getPixelResults()const{	return pixelResults.second;}
+boost::python::list Camera::getPixelResults_Py(){ return to_py_list<double>(pixelResults.second);}
+std::vector<double> Camera::getMMResults() const{	return mmResults.second;}
+boost::python::list Camera::getMMResults_Py(){	return to_py_list<double>(pixelResults.second);}
 
-//long Camera::getBufferROIminX()const
-//{
-//	return roi_min_x.second;
-//}
-//long Camera::getBufferROIminY()const
-//{
-//	return roi_min_y.second;
-//}
-//long Camera::getBufferROIsizeX()const
-//{
-//	return roi_size_x.second;
-//}
-//long Camera::getBufferROIsizeY()const
-//{
-//	return roi_size_y.second;
-//}
+double Camera::getTemperature()const{	return temperature.second;}
 
-std::vector<double> Camera::getPixelResults() const
-{
-	//std::cout << "X_POS: " << std::setprecision(15) << pixelResults.second.at(0)<< std::endl;
-	return pixelResults.second;
-}
-boost::python::list Camera::getPixelResults_Py()
-{
-	//std::cout << "X_POS_PY: " << pixelResults.second.at(0) << std::endl;
-	//std::vector<double> returnList = pixelResults.second;
-	return to_py_list<double>(pixelResults.second);
-}
-std::vector<double> Camera::getMMResults() const
-{
-	return mmResults.second;
-}
-boost::python::list Camera::getMMResults_Py()
-{
-	return to_py_list<double>(pixelResults.second);
-}
-
-double Camera::getTemperature()const
-{
-	return temperature.second;
-}
-long Camera::getFloorLevel()const
-{
-	return floor_level.second;
-}
-long Camera::getFlooredPtsCount()const
-{
-	return floored_pts_count.second;
-}
-double Camera::getFlooredPtsPercent()const
-{
-	return floored_pts_percent.second;
-}
 void Camera::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
@@ -2473,36 +2242,6 @@ std::vector<long>& Camera::getROIDataConstRef()
 {
 	return roi_data.second;
 }
-
-
-//	 __                            __      __             __                ___       ___      
-//	/ _`  /\  | |\ |     /\  |\ | |  \    |__) |     /\  /  ` |__/    |    |__  \  / |__  |    
-//	\__> /~~\ | | \|    /~~\ | \| |__/    |__) |___ /~~\ \__, |  \    |___ |___  \/  |___ |___ 
-//
-bool Camera::setBlackLevel(long value)
-{
-	if (getCamType() == TYPE::VELA_CAMERA)
-	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::CAM_BlackLevel), (epicsInt32)value);
-	}
-	return false;
-}
-long Camera::getBlackLevel()const
-{
-	return black_level.second;
-}
-bool Camera::setGain(long value)
-{
-	if (getCamType() == TYPE::VELA_CAMERA)
-	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::CAM_Gain), (epicsInt32)value);
-	}
-	return false;
-}
-long Camera::getGain()const
-{
-	return gain.second;
-}
 //			 __             __   __        __  ___    
 //			/__` |\ |  /\  |__) /__` |__| /  \  |     
 //			.__/ | \| /~~\ |    .__/ |  | \__/  |     
@@ -2683,6 +2422,3 @@ boost::python::dict Camera::getAnalayisData_Py() const
 
 	return to_py_dict<std::string, double>(getAnalayisData());
 }
-
-
-

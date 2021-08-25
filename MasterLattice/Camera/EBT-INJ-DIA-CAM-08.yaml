@@ -40,6 +40,8 @@ controls_information:
         CAM_Start_Acquire    : EBT-INJ-DIA-CAM-08:CAM:Start
         CAM_Stop_Acquire     : EBT-INJ-DIA-CAM-08:CAM:Stop
         CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-08:CAM:Acquire_RBV
+        CAM_Active_Count  : EBT-B03-IOC-CS-05:cameraCount
+        CAM_Active_Limit  : EBT-B03-IOC-CS-05:cameraLimit
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-08:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-08:ANA:EnableCallbacks

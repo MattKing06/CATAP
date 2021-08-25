@@ -36,6 +36,8 @@ controls_information:
         CAM_Start_Acquire    : EBT-INJ-DIA-CAM-02:CAM:Start
         CAM_Stop_Acquire     : EBT-INJ-DIA-CAM-02:CAM:Stop
         CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-02:CAM:Acquire_RBV
+        CAM_Active_Count  : EBT-B03-IOC-CS-05:cameraCount
+        CAM_Active_Limit  : EBT-B03-IOC-CS-05:cameraLimit
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-02:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-02:ANA:EnableCallbacks
@@ -45,8 +47,10 @@ controls_information:
         ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-02:ANA:UseBkgrnd
         ANA_UseBkgrnd_RBV    : EBT-INJ-DIA-CAM-02:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-02:ANA:UseNPoint     
-        ANA_NPointStepSize    : EBT-INJ-DIA-CAM-02:ANA:UseNPoint_RBV           
+        ANA_UseNPoint          : EBT-INJ-DIA-CAM-02:ANA:UseNPoint   
+        ANA_UseNPoint_RBV      : EBT-INJ-DIA-CAM-02:ANA:UseNPoint_RBV   
+        ANA_NPointStepSize     : EBT-INJ-DIA-CAM-02:ANA:StepSize
+        ANA_NPointStepSize_RBV : EBT-INJ-DIA-CAM-02:ANA:StepSize_RBV         
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : EBT-INJ-DIA-CAM-02:ANA:UseFloor
         ANA_UseFloor_RBV : EBT-INJ-DIA-CAM-02:ANA:UseFloor_RBV
