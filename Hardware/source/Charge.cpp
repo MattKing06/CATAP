@@ -15,9 +15,9 @@ Charge::Charge()
 
 Charge::Charge(const std::map<std::string, std::string>& paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
-chargeType(paramsMap.find("charge_type")->second),
-name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second)),
+chargeType(paramsMap.at("charge_type")),
+name(paramsMap.at("name")),
+position(std::stod(paramsMap.at("position"))),
 qStats(RunningStats())
 {
 	messenger.printDebugMessage("constructor");

@@ -116,14 +116,16 @@ bool LaserHWPFactory::setup(const std::string& VERSION)
 	//// epics magnet interface has been initialized in laser constructor
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
-	messenger.printMessage(" populateLaserHWPMap");
+	messenger.printMessage("populateLaserHWPMap");
 	populateLaserHWPMap();
-	messenger.printMessage(" setupChannels");
+	messenger.printMessage("setupChannels");
 	setupChannels();
-	EPICSInterface::sendToEPICS();
+	messenger.printMessage("sendToEPICS");
+	EPICSInterface::sendToEPICSm("LaserHWPFactory setupChannels");
+	messenger.printMessage("sent");
 	for (auto& laser : laserHWPMap)
 	{
-		messenger.printMessage(" getPVStructs");
+		messenger.printMessage("getPVStructs");
 		std::map<std::string, pvStruct>& laserPVStructs = laser.second.getPVStructs();
 		for (auto& pv : laserPVStructs)
 		{

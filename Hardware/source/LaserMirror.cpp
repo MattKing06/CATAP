@@ -8,11 +8,11 @@ LaserMirror::LaserMirror(const std::map<std::string, std::string>& paramMap, STA
 	Hardware(paramMap, mode),
 	currentHorizontalPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
 	currentVerticalPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
-	maximumStepSize(std::stod(paramMap.find("step_max")->second)),
-	leftSense(std::stod(paramMap.find("left_sense")->second)),
-	rightSense(std::stod(paramMap.find("right_sense")->second)),
-	upSense(std::stod(paramMap.find("up_sense")->second)),
-	downSense(std::stod(paramMap.find("down_sense")->second)),
+	maximumStepSize(std::stod(paramMap.at("step_max"))),
+	leftSense(std::stod(paramMap.at("left_sense"))),
+	rightSense(std::stod(paramMap.at("right_sense"))),
+	upSense(std::stod(paramMap.at("up_sense"))),
+	downSense(std::stod(paramMap.at("down_sense"))),
 	hStep(GlobalConstants::ten_double),
 	vStep(GlobalConstants::ten_double)
 {
