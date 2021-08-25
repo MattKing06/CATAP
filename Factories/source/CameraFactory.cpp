@@ -1813,11 +1813,95 @@ bool CameraFactory::stopAllAcquiring()
 	{
 		cam.second.stopAcquiring();
 	}
-
 	return true;
 }
 
-
+bool CameraFactory::stopAllVELACamsAndWait()
+{
+	std::vector<std::string> cam_names;
+	for (auto&& cam : camera_map)
+	{
+		if (cam.second.getCamType() == TYPE::VELA_CAMERA)
+		{
+			cam_names.push_back(cam.first);
+		}
+	}
+	return stopAcquiringAndWait(cam_names);
+}
+bool CameraFactory::stopAllCLARACamsAndWait()
+{
+	std::vector<std::string> cam_names;
+	for (auto&& cam : camera_map)
+	{
+		if (cam.second.getCamType() == TYPE::CLARA_CAMERA)
+		{
+			cam_names.push_back(cam.first);
+		}
+	}
+	return stopAcquiringAndWait(cam_names);
+}
+bool CameraFactory::stopAllAcquiringAndWait()
+{
+	std::vector<std::string> cam_names;
+	for (auto&& cam : camera_map)
+	{
+		cam_names.push_back(cam.first);
+	}
+	return stopAcquiringAndWait(cam_names);
+}
+bool CameraFactory::stopAcquiringAndWait_Py(const boost::python::list& cam_names)
+{
+	return stopAcquiringAndWait(to_std_vector<std::string>(cam_names));
+}
+bool CameraFactory::stopAcquiringAndWait(const std::vector<std::string>& cam_names)
+{
+	for (auto&& name : cam_names)
+	{
+		std::string full_name = getFullName(name);
+		if (GlobalFunctions::entryExists(camera_map, full_name))
+		{
+			messenger.printMessage("stopAcquiring ", full_name);
+			camera_map.at(full_name).stopAcquiring();
+		}
+	}
+	auto start = std::chrono::high_resolution_clock::now();
+	bool all_stopped = false;
+	bool timed_out = false;
+	size_t wait_time = 5000;
+	while (true)
+	{
+		all_stopped = true;
+		for (auto&& name : cam_names)
+		{
+			std::string full_name = getFullName(name);
+			if (GlobalFunctions::entryExists(camera_map, full_name))
+			{
+				if (camera_map.at(full_name).isAcquiring())
+				{
+					all_stopped = false;
+				}
+				else
+				{
+					messenger.printMessage(full_name, " has stopped ");
+				}
+			}
+		}
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
+		if (duration.count() > wait_time)
+		{
+			timed_out = true;
+			messenger.printMessage("stopAcquiringAndWait timemout, DT = ", duration.count());
+			break;
+		}
+		if (all_stopped)
+		{
+			break;
+		}
+	}
+	if (timed_out)
+		return false;
+	return true;
+}
 bool CameraFactory::startAcquiring(const std::string& name)
 {
 	std::string full_name = getFullName(name);

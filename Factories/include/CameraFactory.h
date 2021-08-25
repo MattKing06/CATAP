@@ -876,6 +876,28 @@ public:
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool stopAllAcquiring();
 
+	/*! Stop All cameras acquiring, and wait for verification by the control system (or timeout after 10000 ms).
+	@param[out] bool, true if all cameras have stopped acquiring before timeout */
+	bool stopAllAcquiringAndWait();
+
+	/*! Stop All VELA cameras acquiring, and wait for verification by the control system (or timeout after 10000 ms).
+	@param[out] bool, true if all VELA cameras have stopped acquiring before timeout */
+	bool stopAllVELACamsAndWait();
+	/*! Stop All CLARA cameras acquiring, and wait for verification by the control system (or timeout after 10000 ms).
+	@param[out] bool, if all CLARA cameras have stopped acquiring before timeout */
+	bool stopAllCLARACamsAndWait();
+	/*! Stop cameras acquiring, and wait for verification by the control system (or timeout) (Python Version).
+* 	@param[in] list, names of cmaeras to stop
+	@param[out] bool, true if all cameras successfull y stopped */
+	bool stopAcquiringAndWait_Py(const boost::python::list& cam_names);
+
+	/*! Stop cameras acquiring, and wait for verification by the control system (or timeout after 10000 ms).
+	* 	@param[in] vector<string>, names of cmaeras to stop
+	@param[out] bool, true if all cameras successfull y stopped */
+	bool stopAcquiringAndWait(const std::vector<std::string>& cam_names);
+
+
+
 	/*! Start image acquiring.
 	@param[in] std::string, name
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/

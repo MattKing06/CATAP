@@ -493,13 +493,19 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	//	|__) |  | /__` \ / 
 	//	|__) \__/ .__/  |  
 	//
-
+			.def("isBusy", &CameraFactory::isBusy)
+			.def("isNotBusy", &CameraFactory::isNotBusy)
 
 //	 __  ___       __  ___   /  __  ___  __   __           __   __          __          __  
 //	/__`  |   /\  |__)  |   /  /__`  |  /  \ |__)     /\  /  ` /  \ |  | | |__) | |\ | / _` 
 //	.__/  |  /~~\ |  \  |  /   .__/  |  \__/ |       /~~\ \__, \__X \__/ | |  \ | | \| \__> 
 //
 		.def("stopAllAcquiring", &CameraFactory::stopAllAcquiring)
+		.def("stopAllAcquiringAndWait", &CameraFactory::stopAllAcquiringAndWait)
+		.def("stopAllVELACamsAndWait", &CameraFactory::stopAllVELACamsAndWait)
+		.def("stopAllCLARACamsAndWait", &CameraFactory::stopAllCLARACamsAndWait)
+		.def("stopAcquiringAndWait", &CameraFactory::stopAcquiringAndWait_Py)
+
 
 //	              __   ___                             __     __  
 //	|  |\/|  /\  / _` |__      /\  |\ |  /\  |    \ / /__` | /__` 
@@ -595,7 +601,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 */
 	.def("startAcquiring", &CameraFactory::startAcquiring)
 	.def("stopAcquiring", &CameraFactory::stopAcquiring)
-	.def("stopAcquiringAndWait", &CameraFactory::stopAcquiringAndWait)
+
 	.def("isAcquiring", &CameraFactory::isAcquiring)
 	.def("isNotAcquiring", &CameraFactory::isNotAcquiring)
 	.def("getAcquireState", &CameraFactory::getAcquireState)
@@ -662,8 +668,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("setSigXmm", &CameraFactory::setSigX)
 	.def("setSigYmm", &CameraFactory::setSigY)
 	.def("setSigXYmm", &CameraFactory::setSigXY)
-	.def("isBusy", &CameraFactory::isBusy)
-	.def("isNotBusy", &CameraFactory::isNotBusy)
+
 
 	.def("getMaskXCenter", &CameraFactory::getMaskXCenter)
 	.def("getMaskYCenter", &CameraFactory::getMaskYCenter)
