@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(construct_stage_factory_test)
 
 BOOST_AUTO_TEST_CASE(get_all_stage_devices_and_positions_test)
 {
-	StageFactory fac = StageFactory(STATE::VIRTUAL);
+	StageFactory fac = StageFactory(STATE::PHYSICAL);
 	fac.setup("nominal");
 	std::string stageName = "EBT-BA1-MOT-COFF-H-04";
 	Stage& stage = fac.getStage(stageName);
