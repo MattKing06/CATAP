@@ -1,12 +1,12 @@
 controls_information:
-    PV: true
-    records: Q
-    pv_record_map:
-        Q: CLA-S02-DIA-FCUP-01:Q
-properties:
-    machine_area: S02
-    hardware_type: Charge
-    name: CLA-S02-DIA-FCUP-01
-    virtual_name: VM-CLA-S02-DIA-FCUP-01
-    position: 6.6601
-    charge_type: FCUP
+    PV :  true
+    records : Q
+    pv_record_map :
+        Q : CLA-S02-DIA-FCUP-01:Q
+properties :
+    machine_area : S02
+    hardware_type : Charge
+    name : CLA-S02-DIA-FCUP-01
+    virtual_name : VM-CLA-S02-DIA-FCUP-01
+    position : 6.6601
+    charge_type : FCUP
