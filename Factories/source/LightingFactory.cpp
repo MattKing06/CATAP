@@ -15,18 +15,40 @@ messenger(LoggingSystem(true, true)),
 dummy_light(Lighting())
 {
 }
-
-
-LightingFactory::LightingFactory(const LightingFactory& copyFactory):
+LightingFactory::LightingFactory(STATE mode, const std::string& primeLatticeLocation) :
+reader(ConfigReader("Lighting", mode, primeLatticeLocation))
+{
+}
+LightingFactory::LightingFactory(const LightingFactory& copyFactory) :
 	hasBeenSetup(copyFactory.hasBeenSetup),
 	mode(copyFactory.mode),
 	messenger(copyFactory.messenger),
 	reader(copyFactory.reader)
 {
 }
-LightingFactory::LightingFactory(STATE mode, const std::string& primeLatticeLocation) :
-reader(ConfigReader("Lighting", mode, primeLatticeLocation))
+LightingFactory::~LightingFactory()
 {
+	messenger.printDebugMessage("CameraFactory Destructor Called");
+	if (hasBeenSetup)
+	{
+		for (auto& camera : lightingMap)
+		{
+			auto pvStructsList = camera.second.getPVStructs();
+			for (auto& pvStruct : pvStructsList)
+			{
+				if (pvStruct.second.monitor)
+				{
+					if (pvStruct.second.EVID)
+					{
+						camera.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
+				}
+				camera.second.epicsInterface->removeChannel(pvStruct.second);
+				ca_pend_io(CA_PEND_IO_TIMEOUT);
+			}
+		}
+	}
 }
 
 
