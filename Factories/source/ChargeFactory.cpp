@@ -81,8 +81,7 @@ void ChargeFactory::populateChargeMap()
 
 void ChargeFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == ChargeRecords::Q
-		)
+	if (pvStruct.pvRecord == ChargeRecords::Q)
 	{
 		pvStruct.monitor = true;
 	}

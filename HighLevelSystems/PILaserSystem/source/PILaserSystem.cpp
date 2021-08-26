@@ -19,6 +19,7 @@ bool PILaserSystem::setup(const std::string& version)
 	
 	messenger.printMessage("PILaserSystem calling mirrorFactory.setup.");
 	mirrorFactory.setup(version);
+
 	messenger.printMessage("PILaserSystem calling shutterFactory.setup.");
 	shutterFactory.setup(version);
 	messenger.printMessage("PILaserSystem calling halfWavePlateFactory.setup.");

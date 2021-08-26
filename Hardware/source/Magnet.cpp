@@ -506,30 +506,31 @@ double Magnet::setREADITolerance(const double value)
 	return READI_tolerance;
 }
 
-
-std::vector<double> Magnet::getFieldIntegralCoefficients() const
-{
-	return field_integral_coefficients;
-}
-
-boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
-{
-	return to_py_list(getFieldIntegralCoefficients());
-}
-
-
-double Magnet::getMagneticLength() const
-{
-	return magnetic_length;
-}
-std::string Magnet::getFullPSUName() const
-{
-	return fullPSUName;
-}
-std::string Magnet::getMeasurementDataLocation() const
-{
-	return measurementDataLocation;
-}
+//
+//std::vector<double> Magnet::getFieldIntegralCoefficients() const
+//{
+//	return field_integral_coefficients;
+//}
+//
+//
+//boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
+//{
+//	return to_py_list(getFieldIntegralCoefficients());
+//}
+//
+//
+//double Magnet::getMagneticLength() const
+//{
+//	return magnetic_length;
+//}
+//std::string Magnet::getFullPSUName() const
+//{
+//	return fullPSUName;
+//}
+//std::string Magnet::getMeasurementDataLocation() const
+//{
+//	return measurementDataLocation;
+//}
 
 // THIS IS "SETTING" A SETI, WE NEVER READ SET WE USE GETSETI
 // PYTHON users call this function, then we decide what to do 
