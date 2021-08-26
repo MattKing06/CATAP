@@ -346,6 +346,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 	bool timed_out = false;
 	while (true)
 	{
+		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
 		// current READI value
 		double currentRIValue = READI.second;
 		// if the old value is the same as the current value, lets assume READI has settled
@@ -414,8 +415,9 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 			YES!!
 		*/
 		GlobalFunctions::pause_2000();
-		GlobalFunctions::pause_2000();
-		GlobalFunctions::pause_500();
+
+		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
+
 	} /// while
 	return !timed_out;
 }

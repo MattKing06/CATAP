@@ -547,7 +547,7 @@ public:
 	/*! Stop image acquiring, and wait for the stop acquiring signal to be verified by the control system .
 	* @param[in] size_t, timeout time in ms, (if no value is passed the default is 3000) 
 	@param[out] bool, true if camera stopped before timeout ms, otherwise false*/
-	bool stopAcquiringAndWait(size_t timeout);
+	bool stopAcquiringAndWait(size_t timeout = 3000);
 	/*! Start image acquiring, if active_camera_count == active_camera_count this will likley not work. 
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool startAcquiring();
