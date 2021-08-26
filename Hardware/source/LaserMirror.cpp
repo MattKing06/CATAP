@@ -46,7 +46,7 @@ void LaserMirror::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-		std::string PV = specificHardwareParameters.find(record)->second.data();
+		std::string PV = specificHardwareParameters.at(record).data();
 		if (mode == STATE::PHYSICAL)
 		{
 			pvStructs[record].fullPVName = PV;

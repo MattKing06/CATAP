@@ -142,11 +142,12 @@ namespace GlobalFunctions {
     template<class T, class U>
     bool entryExists(const std::map<U, T>& m, const U& name)
     {
-        bool ret = false;
-        auto it = m.find(name);
-        if (it != m.end())
-            ret = true;
-        return ret;
+//        bool ret = false;
+        //auto it = m.find(name);
+		return m.find(name) != m.end();
+		//if (it != m.end())
+  //          ret = true;
+  //      return ret;
     }
 
 

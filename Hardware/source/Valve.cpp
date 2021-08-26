@@ -29,7 +29,7 @@ void Valve::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-		std::string PV = specificHardwareParameters.find(record)->second.data();
+		std::string PV = specificHardwareParameters.at(record).data();
 		messenger.printDebugMessage("Constructing PV information for ", PV);
 		switch (mode) {
 		case STATE::VIRTUAL:

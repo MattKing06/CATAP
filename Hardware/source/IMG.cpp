@@ -26,7 +26,7 @@ imgType(paramMap.find("img_type")->second)
 	setPVStructs();
 	messenger = LoggingSystem(true, true);
 	// convert value for YAML key "name_aliases", to vector of strings and set equal to memebr variable aliases
-	boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+	boost::split(aliases, paramMap.at("name_alias"), [](char c) {return c == ','; });
 	// convert yaml mag_type strings to CATAP.TYPE enum
 }
 

@@ -24,12 +24,9 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	pix2mmX_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	pix2mmY_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	max_shots_number(GlobalConstants::size_zero),  // MAGIC STRING
-
 	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-
 	x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
-
 	sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_xy_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -175,7 +172,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_X_PIX_2_MM");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_X_PIX_2_MM"))
 	{
-		pix2mmY_ratio = std::stof(paramMap.find("ARRAY_DATA_Y_PIX_2_MM")->second);
+		pix2mmY_ratio = std::stof(paramMap.at("ARRAY_DATA_Y_PIX_2_MM"));
 	}
 	else
 	{
@@ -185,7 +182,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MAX_SHOTS_NUMBER");
 	if (GlobalFunctions::entryExists(paramMap, "MAX_SHOTS_NUMBER"))
 	{
-		max_shots_number = (size_t)std::stof(paramMap.find("MAX_SHOTS_NUMBER")->second);
+		max_shots_number = (size_t)std::stof(paramMap.at("MAX_SHOTS_NUMBER"));
 	}
 	else
 	{
@@ -195,7 +192,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find name_alias");
 	if (GlobalFunctions::entryExists(paramMap, "name_alias"))
 	{
-		boost::split(aliases, paramMap.find("name_alias")->second, [](char c) {return c == ','; });
+		boost::split(aliases, paramMap.at("name_alias"), [](char c) {return c == ','; });
 		for (auto& name : aliases)
 		{
 			name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
@@ -207,7 +204,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find SCREEN_NAME");
 	if (GlobalFunctions::entryExists(paramMap, "SCREEN_NAME"))
 	{
-		boost::split(screen_names, paramMap.find("SCREEN_NAME")->second, [](char c) {return c == ','; });
+		boost::split(screen_names, paramMap.at("SCREEN_NAME"), [](char c) {return c == ','; });
 		for (auto& name : screen_names)
 		{
 			name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
@@ -243,7 +240,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_X"))
 	{
-		array_data_num_pix_x = (size_t)std::stof(paramMap.find("ARRAY_DATA_NUM_PIX_X")->second);
+		array_data_num_pix_x = (size_t)std::stof(paramMap.at("ARRAY_DATA_NUM_PIX_X"));
 	}
 	else
 	{
@@ -253,7 +250,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
 	{
-		array_data_num_pix_y = (size_t)std::stof(paramMap.find("ARRAY_DATA_NUM_PIX_Y")->second);
+		array_data_num_pix_y = (size_t)std::stof(paramMap.at("ARRAY_DATA_NUM_PIX_Y"));
 	}
 	else
 	{
@@ -266,7 +263,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "BINARY_NUM_PIX_X"))
 	{
-		binary_num_pix_x = (size_t)std::stof(paramMap.find("BINARY_NUM_PIX_X")->second);
+		binary_num_pix_x = (size_t)std::stof(paramMap.at("BINARY_NUM_PIX_X"));
 	}
 	else
 	{
@@ -275,7 +272,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "BINARY_NUM_PIX_X"))
 	{
-		binary_num_pix_y = (size_t)std::stof(paramMap.find("BINARY_NUM_PIX_Y")->second);
+		binary_num_pix_y = (size_t)std::stof(paramMap.at("BINARY_NUM_PIX_Y"));
 	}
 	else
 	{
@@ -286,7 +283,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find X_PIX_SCALE_FACTOR");
 	if (GlobalFunctions::entryExists(paramMap, "X_PIX_SCALE_FACTOR"))
 	{
-		x_pix_scale_factor = (size_t)std::stof(paramMap.find("X_PIX_SCALE_FACTOR")->second);
+		x_pix_scale_factor = (size_t)std::stof(paramMap.at("X_PIX_SCALE_FACTOR"));
 	}
 	else
 	{
@@ -296,7 +293,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_PIX_SCALE_FACTOR");
 	if (GlobalFunctions::entryExists(paramMap, "Y_PIX_SCALE_FACTOR"))
 	{
-		y_pix_scale_factor = (size_t)std::stof(paramMap.find("Y_PIX_SCALE_FACTOR")->second);
+		y_pix_scale_factor = (size_t)std::stof(paramMap.at("Y_PIX_SCALE_FACTOR"));
 	}
 	else
 	{
@@ -326,7 +323,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find SENSOR_MIN_TEMP");
 	if (GlobalFunctions::entryExists(paramMap, "SENSOR_MIN_TEMP"))
 	{
-		sensor_min_temperature = std::stof(paramMap.find("SENSOR_MIN_TEMP")->second);
+		sensor_min_temperature = std::stof(paramMap.at("SENSOR_MIN_TEMP"));
 	}
 	else
 	{
@@ -336,7 +333,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MIN_X_PIXEL_POS");
 	if (GlobalFunctions::entryExists(paramMap, "MIN_X_PIXEL_POS"))
 	{
-		min_x_pixel_pos = std::stof(paramMap.find("MIN_X_PIXEL_POS")->second);
+		min_x_pixel_pos = std::stof(paramMap.at("MIN_X_PIXEL_POS"));
 	}
 	else
 	{
@@ -346,7 +343,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MAX_X_PIXEL_POS");
 	if (GlobalFunctions::entryExists(paramMap, "MAX_X_PIXEL_POS"))
 	{
-		max_x_pixel_pos = std::stof(paramMap.find("MAX_X_PIXEL_POS")->second);
+		max_x_pixel_pos = std::stof(paramMap.at("MAX_X_PIXEL_POS"));
 	}
 	else
 	{
@@ -356,7 +353,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MIN_Y_PIXEL_POS");
 	if (GlobalFunctions::entryExists(paramMap, "MIN_Y_PIXEL_POS"))
 	{
-		min_y_pixel_pos = std::stof(paramMap.find("MIN_Y_PIXEL_POS")->second);
+		min_y_pixel_pos = std::stof(paramMap.at("MIN_Y_PIXEL_POS"));
 	}
 	else
 	{
@@ -366,7 +363,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MAX_Y_PIXEL_POS");
 	if (GlobalFunctions::entryExists(paramMap, "MAX_Y_PIXEL_POS"))
 	{
-		max_y_pixel_pos = std::stof(paramMap.find("MAX_Y_PIXEL_POS")->second);
+		max_y_pixel_pos = std::stof(paramMap.at("MAX_Y_PIXEL_POS"));
 	}
 	else
 	{
@@ -416,7 +413,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find X_MASK_RAD_MAX");
 	if (GlobalFunctions::entryExists(paramMap, "X_MASK_RAD_MAX"))
 	{
-		x_mask_rad_max = (size_t)std::stof(paramMap.find("X_MASK_RAD_MAX")->second);
+		x_mask_rad_max = (size_t)std::stof(paramMap.at("X_MASK_RAD_MAX"));
 	}
 	else
 	{
@@ -426,7 +423,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_MASK_RAD_MAX");
 	if (GlobalFunctions::entryExists(paramMap, "Y_MASK_RAD_MAX"))
 	{
-		y_mask_rad_max = (size_t)std::stof(paramMap.find("Y_MASK_RAD_MAX")->second);
+		y_mask_rad_max = (size_t)std::stof(paramMap.at("Y_MASK_RAD_MAX"));
 	}
 	else
 	{
@@ -436,7 +433,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find X_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "X_CENTER_DEF"))
 	{
-		master_lattice_centre_x = (long)std::stoi(paramMap.find("X_CENTER_DEF")->second);
+		master_lattice_centre_x = (long)std::stoi(paramMap.at("X_CENTER_DEF"));
 	}
 	else
 	{
@@ -446,7 +443,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "Y_CENTER_DEF"))
 	{
-		master_lattice_centre_y = (long)std::stoi(paramMap.find("Y_CENTER_DEF")->second);
+		master_lattice_centre_y = (long)std::stoi(paramMap.at("Y_CENTER_DEF"));
 	}
 	else
 	{
@@ -456,7 +453,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find PIX_2_MM_RATIO_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "PIX_2_MM_RATIO_DEF"))
 	{
-		master_lattice_pixel_to_mm  = std::stod(paramMap.find("PIX_2_MM_RATIO_DEF")->second);
+		master_lattice_pixel_to_mm  = std::stod(paramMap.at("PIX_2_MM_RATIO_DEF"));
 		messenger.printDebugMessage(hardwareName, " Found PIX_2_MM_RATIO_DEF, value = ", master_lattice_pixel_to_mm);
 
 	}
@@ -471,11 +468,11 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find USE_MASK_RAD_LIMITS");
 	if (GlobalFunctions::entryExists(paramMap, "USE_MASK_RAD_LIMITS"))
 	{
-		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::TRUE_STR )
+		if( std::string(paramMap.at("USE_MASK_RAD_LIMITS")) == GlobalConstants::TRUE_STR )
 		{
 			use_mask_rad_limits = true;
 		}
-		if( std::string(paramMap.find("USE_MASK_RAD_LIMITS")->second) == GlobalConstants::FALSE_STR )
+		if( std::string(paramMap.at("USE_MASK_RAD_LIMITS")) == GlobalConstants::FALSE_STR )
 		{
 			use_mask_rad_limits = false;
 		}
@@ -490,8 +487,8 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "RESULTS_COUNT"))
 	{
-		analysis_data.second.resize( (size_t)std::stof(paramMap.find("RESULTS_COUNT")->second));
-		analysis_data_names.resize( (size_t)std::stof(paramMap.find("RESULTS_COUNT")->second));
+		analysis_data.second.resize( (size_t)std::stof(paramMap.at("RESULTS_COUNT")));
+		analysis_data_names.resize( (size_t)std::stof(paramMap.at("RESULTS_COUNT")));
 	}
 	else
 	{
@@ -500,7 +497,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 
 	if (GlobalFunctions::entryExists(paramMap, "X_POS"))
 	{
-		size_t pos = (size_t)std::stoi(paramMap.find("X_POS")->second);
+		size_t pos = (size_t)std::stoi(paramMap.at("X_POS"));
 		if (GlobalFunctions::entryExists(paramMap, "X_NAME"))
 		{
 			analysis_data_names[pos] = std::string(paramMap.find("X_NAME")->second);
@@ -508,26 +505,26 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	}
 	if (GlobalFunctions::entryExists(paramMap, "Y_POS"))
 	{
-		size_t pos = (size_t)std::stoi(paramMap.find("Y_POS")->second);
+		size_t pos = (size_t)std::stoi(paramMap.at("Y_POS"));
 		if (GlobalFunctions::entryExists(paramMap, "Y_NAME"))
 		{
-			analysis_data_names[pos] = std::string(paramMap.find("Y_NAME")->second);
+			analysis_data_names[pos] = std::string(paramMap.at("Y_NAME"));
 		}
 	}
 	if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_POS"))
 	{
-		size_t pos = (size_t)std::stoi(paramMap.find("X_SIGMA_POS")->second);
+		size_t pos = (size_t)std::stoi(paramMap.at("X_SIGMA_POS"));
 		if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_NAME"))
 		{
-			analysis_data_names[pos] = std::string(paramMap.find("X_SIGMA_NAME")->second);
+			analysis_data_names[pos] = std::string(paramMap.at("X_SIGMA_NAME"));
 		}
 	}
 	if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_POS"))
 	{
-		size_t pos = (size_t)std::stoi(paramMap.find("Y_SIGMA_POS")->second);
+		size_t pos = (size_t)std::stoi(paramMap.at("Y_SIGMA_POS"));
 		if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_NAME"))
 		{
-			analysis_data_names[pos] = std::string(paramMap.find("Y_SIGMA_NAME")->second);
+			analysis_data_names[pos] = std::string(paramMap.at("Y_SIGMA_NAME"));
 		}
 	}
 	if (GlobalFunctions::entryExists(paramMap, "COV_POS"))
