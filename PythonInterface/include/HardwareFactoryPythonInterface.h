@@ -37,6 +37,7 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 		bool(HardwareFactory:: * saveSnapshotToLocation)(const std::string&) = &HardwareFactory::saveMachineSnapshot;
 		// Hardware Factory Exposure
 		boost::python::class_<HardwareFactory>("HardwareFactory", "The holder of all hardware", boost::python::init<STATE>((boost::python::args("self"), boost::python::args("mode"))))
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", setup_single, (boost::python::arg("self"), boost::python::arg("hardwareType"), boost::python::arg("version")))
 			.def("setup", setup_all, (boost::python::arg("self"), boost::python::arg("version")))
 			.def("setup", setup_multiple, (boost::python::arg("self"), boost::python::arg("hardwareTypes"), boost::python::arg("version")))

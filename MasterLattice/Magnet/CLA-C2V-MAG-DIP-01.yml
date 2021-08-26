@@ -17,9 +17,9 @@ controls_information:
     K_VAL:      CLA-C2V-MAG-DIP-01:K_VAL
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
-  degauss_tolerance: 0.5
-  degauss_values: "124.0,-124.0,65.0,-65.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
-  field_integral_coefficients: "0.142064204721245,0.00344016005203196"
+  degauss_tolerance: 1.0
+  degauss_values: "123.0,-123.0,65.0,-65.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
+  field_integral_coefficients: "-1.10355E-09, 3.40411E-07, -4.20048E-05, 2.168E-03, 1.357714, 0.696315"
   hardware_type: Magnet
   machine_area: C2V
   mag_set_max_wait_time: 45.0

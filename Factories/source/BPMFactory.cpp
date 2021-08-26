@@ -11,14 +11,16 @@
 #endif
 #include "yaml-cpp/emitter.h"
 
-BPMFactory::BPMFactory() : BPMFactory(STATE::OFFLINE)
-{
-	std::cout << "BPMFactory DEFAULT constRUCTOR called " << std::endl;
-}
+BPMFactory::BPMFactory() :
+BPMFactory(STATE::OFFLINE)
+{}
 BPMFactory::BPMFactory(STATE mode) :
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("BPM", mode))
+BPMFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+BPMFactory::BPMFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("BPM", mode, primeLatticeLocation))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;

@@ -10,6 +10,7 @@ class LightingFactory
 public:
 	LightingFactory();
 	LightingFactory(STATE mode);
+	LightingFactory(STATE mode, const std::string& primeLatticeLocation);
 	LightingFactory(const LightingFactory& copyFactory);
 	~LightingFactory();
 	bool setup(std::string version);
@@ -38,6 +39,7 @@ public:
 	bool toggleVelaLED(const std::string& name);
 
 	std::string getFullName(const std::string& name)const;
+
 
 	void debugMessagesOn();
 	void debugMessagesOff();

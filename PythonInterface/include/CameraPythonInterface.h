@@ -394,6 +394,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			;
 
 		boost::python::class_<CameraFactory, boost::noncopyable>("CameraFactory", boost::python::no_init)
+			.def(boost::python::init<STATE, const std::string>())
+			.def(boost::python::init<STATE>())
+			.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>() )
 
 			//                   ___  __  
 			//  |\ |  /\   |\/| |__  /__` 
@@ -639,7 +642,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 //			.def("didLastCaptureAndSaveSucceed", &CameraFactory::didLastCaptureAndSaveSucceed)
 
-	.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>())
+//	.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>())
 	.def("getCamType", &CameraFactory::getCamType)
 
 

@@ -44,7 +44,8 @@ namespace BOOST_PYTHON_RF_PROTECTION_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<RFProtectionFactory, boost::noncopyable>("RFProtectionFactory", boost::python::no_init)
 			
-			
+			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("resetGun", &RFProtectionFactory::resetGun)
 			.def("resetL01", &RFProtectionFactory::resetL01)
 			.def("enableGun", &RFProtectionFactory::enableGun)

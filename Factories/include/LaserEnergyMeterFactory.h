@@ -25,6 +25,7 @@ public:
 	VIRTUAL LaserEnergyMeterFactory will perform operations of Virtual laser energy meters.
 	OFFLINE LaserEnergyMeterFactory will perform operations on Offline laser energy meters.*/
 	LaserEnergyMeterFactory(STATE mode);
+	LaserEnergyMeterFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for LaserEnergyMeterFactory (used for = operator)
 	@param[in] copyLaserEnergyMeterFactory: the LaserEnergyMeterFactory we want to copy over.*/
 	LaserEnergyMeterFactory(const LaserEnergyMeterFactory& copyLaserEnergyMeterFactory);

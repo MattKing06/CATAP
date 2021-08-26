@@ -7,10 +7,15 @@ RFModulatorFactory::RFModulatorFactory()
 }
 
 RFModulatorFactory::RFModulatorFactory(STATE mode):
-	messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("RFModulator", mode))
+RFModulatorFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+RFModulatorFactory::RFModulatorFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("RFModulator", mode, primeLatticeLocation))
 {
 }
 

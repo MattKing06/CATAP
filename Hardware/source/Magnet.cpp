@@ -46,7 +46,8 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	READI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	psu_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
 	ilk_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
-	is_degaussing(false)
+	is_degaussing(false),
+	last_degauss_success(true)
 {
 	messenger.printDebugMessage("Magnet Constructor");
 	for (auto&& item : paramsMap)
@@ -194,6 +195,30 @@ double Magnet::setDegaussTolerance(const double value)
 	degaussTolerance = value;
 	return degaussTolerance;
 }
+bool Magnet::getLastDegaussSuccess()const
+{
+	return last_degauss_success;
+}
+std::vector<double> Magnet::getFieldIntegralCoefficients() const
+{
+	return field_integral_coefficients;
+}
+boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
+{
+	return to_py_list(getFieldIntegralCoefficients());
+}
+double Magnet::getMagneticLength() const
+{
+	return magnetic_length;
+}
+std::string Magnet::getFullPSUName() const
+{
+	return fullPSUName;
+}
+std::string Magnet::getMeasurementDataLocation() const
+{
+	return measurementDataLocation;
+}
 bool Magnet::isDegaussing()const
 {
 	return is_degaussing;
@@ -269,6 +294,7 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 			seti_success = ds.magnet->SETI(next_value); // expposed to PYTHON
 			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
 			{
+				ds.magnet->messenger.printDebugMessage("Degauss Step ", ds.magnet->current_degauss_step, " success");
 			}
 			else
 			{
@@ -303,6 +329,10 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		I've done the conditional flags very verbose
 		just to make sure i follow what I'm doing
 	*/
+	messenger.printDebugMessage("\n");
+	messenger.printDebugMessage(hardwareName, " waitForMagnetToSettle, value = ", value, " tolerance = ", tolerance, " waitTime = ", waitTime);
+
+	
 	bool timeOut = false;
 
 	double oldRIValue = GlobalConstants::double_min;
@@ -329,13 +359,14 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		if (isREADIequalValue(value, tolerance))
 		{
 			// Complete , we are where we want to be
+			messenger.printDebugMessage(hardwareName + " isREADIequalValue(", value, ", ", tolerance, ") = true, SETTLED");
 			shouldBreak = true;
 		}
 		else if (settingZero) // We are supposed to be setting zero....
 		{
 			if (has_READI_settled)
 			{
-				messenger.printDebugMessage(hardwareName + " is setting 0.0 and READI_new == READI_old. SETTLED = True ");
+				messenger.printDebugMessage(hardwareName + " is setting 0.0 and READI_new == READI_old. SETTLED");
 				shouldBreak = true;
 			}
 		}
@@ -359,7 +390,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 				//	" RI_new != 0.0&& RI_new == RI_old RI. SETTLED = True ",
 				//	currentRIValues[i], ", ", oldRIValues[i],
 				//	", ", tolerances[i]);
-				messenger.printDebugMessage(hardwareName + " Not setting zero and READI has settled NOT at zero. I think we have settled correctly.");
+				messenger.printDebugMessage(hardwareName + " Not setting zero and READI has settled NOT at zero. SETTLED.");
 				shouldBreak = true;
 			}
 		}
@@ -383,6 +414,8 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 			YES!!
 		*/
 		GlobalFunctions::pause_2000();
+		GlobalFunctions::pause_2000();
+		GlobalFunctions::pause_500();
 	} /// while
 	return !timed_out;
 }

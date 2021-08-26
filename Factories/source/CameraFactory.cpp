@@ -13,17 +13,21 @@ CameraFactory::CameraFactory()
 }
 
 CameraFactory::CameraFactory(STATE mode) :
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Camera", mode)),
-	messenger(LoggingSystem(true, true)),
-	machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
-	dummy_cam(Camera()),
-	last_snapshot_save_filename(ENUM_TO_STRING(STATE::UNKNOWN_NAME)),
-	last_snapshot_save_directory(ENUM_TO_STRING(STATE::UNKNOWN_NAME))
+CameraFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+CameraFactory::CameraFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Camera", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true)),
+machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
+dummy_cam(Camera())
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
+
+
 CameraFactory::CameraFactory(const CameraFactory& copyFactory) :
 	hasBeenSetup(copyFactory.hasBeenSetup),
 	mode(copyFactory.mode),

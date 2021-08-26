@@ -24,10 +24,11 @@ LightingFactory::LightingFactory(const LightingFactory& copyFactory):
 	reader(copyFactory.reader)
 {
 }
-
-LightingFactory::~LightingFactory()
+LightingFactory::LightingFactory(STATE mode, const std::string& primeLatticeLocation) :
+reader(ConfigReader("Lighting", mode, primeLatticeLocation))
 {
 }
+
 
 bool LightingFactory::setup(std::string version)
 {

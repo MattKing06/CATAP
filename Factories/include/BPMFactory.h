@@ -29,6 +29,7 @@ public:
 	VIRTUAL BPMFactory will perform operations of Virtual BPMs.
 	OFFLINE BPMFactory will perform operations on Offline BPMs.*/
 	BPMFactory(STATE mode);
+	BPMFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for BPMFactory (used for = operator)
 	@param[in] copyBPMFactory: the BPMFactory we want to copy over.*/
 	BPMFactory(const BPMFactory& copyBPMFactory);

@@ -85,6 +85,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getFieldIntegralCoefficients", &Magnet::getFieldIntegralCoefficients_Py)
 			.def("setDegaussValues", &Magnet::setDegaussValues_Py)
 			.def("setDegaussTolerance", &Magnet::setDegaussTolerance)
+			.def("getLastDegaussSuccess", &Magnet::getLastDegaussSuccess)
+
+
 			.def("setREADITolerance", &Magnet::setREADITolerance)
 			.def("offlineSetILKState", &Magnet::offlineSetIlkState)
 			.def("offlineSetILKState", &Magnet::getFullPSUName)
@@ -185,6 +188,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			//.def(boost::python::init<STATE>())
 			//.def(boost::python::init<STATE, TYPE>())
 			//.def(boost::python::init<STATE, boost::python::list>())
+			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", setup_NoArg)
 			.def("setup", setup_VersionArg)
 			.def("setup", setup_TypeArg)

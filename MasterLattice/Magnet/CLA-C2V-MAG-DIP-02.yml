@@ -17,8 +17,8 @@ controls_information:
     K_VAL:      CLA-C2V-MAG-DIP-02:K_VAL
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
-  degauss_tolerance: 0.5
-  degauss_values: "190.0,-190.0,80.0,-80.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
+  degauss_tolerance: 1.0
+  degauss_values: "123.0,-123.0,65.0,-65.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
   field_integral_coefficients: "-9.5201E-07,0.000151557,0.894506059,0.126202232"
   hardware_type: Magnet
   machine_area: C2V
@@ -30,7 +30,7 @@ properties:
   name_alias: C2V-DIP02,C2V-DIP-02, C2V-DIP2,INJ-DIP01,INJ-DIP-01,INJ-DIP1
   num_degauss_steps: 11
   position: 7.972725978
-  ri_tolerance: 0.001
+  ri_tolerance: 0.1
   serial_number: '13257'
   min_i : -180.0
   max_i : 180.0

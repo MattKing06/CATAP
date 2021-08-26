@@ -18,12 +18,15 @@ MagnetFactory::MagnetFactory() :
 	// std::cout << "MagnetFactory DEFAULT CONSTRUCTOR called " << std::endl;
 }
 MagnetFactory::MagnetFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Magnet", mode)),
-	machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
-	LEGACY_DBURT_IDENT(".dburt")
+MagnetFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+MagnetFactory::MagnetFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Magnet", mode, primeLatticeLocation)),
+machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA})
 {
 	// messenger.printDebugMessage("Magnet Factory constructed");
 }

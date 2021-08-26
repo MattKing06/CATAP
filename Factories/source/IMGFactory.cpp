@@ -9,10 +9,14 @@ IMGFactory::IMGFactory() : IMGFactory(STATE::OFFLINE)
 }
 
 IMGFactory::IMGFactory(STATE mode) :
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("IMG", mode)),
-	messenger(LoggingSystem(true,true))
+IMGFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+IMGFactory::IMGFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("IMG", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true))
 {
 	messenger.printDebugMessage("IMG Factory constructed");
 }

@@ -9,10 +9,15 @@ RFProtectionFactory::RFProtectionFactory()
 }
 
 RFProtectionFactory::RFProtectionFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("RFProtection", mode))
+RFProtectionFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+RFProtectionFactory::RFProtectionFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("RFProtection", mode, primeLatticeLocation))
 {
 }
 

@@ -12,24 +12,27 @@ HardwareFactory::~HardwareFactory()
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	magnetFactory(MagnetFactory(mode)),
-	bpmFactory(BPMFactory(mode)),
-	chargeFactory(ChargeFactory(mode)),
-	screenFactory(ScreenFactory(mode)),
-	valveFactory(ValveFactory(mode)),
-	imgFactory(IMGFactory(mode)),
-	rfProtectionFactory(RFProtectionFactory(mode)),
-	llrffactory(LLRFFactory(mode)),
-	cameraFactory(CameraFactory(mode)),
-	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
-	laserHWPFactory(LaserHWPFactory(mode)),
-	shutterFactory(ShutterFactory(mode)),
-	rfmodulatorFactory(RFModulatorFactory(mode)),
-	rfHeartbeatFactory(RFHeartbeatFactory(mode)),
-	mode(mode)
+	HardwareFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+HardwareFactory::HardwareFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+magnetFactory(MagnetFactory(mode, primeLatticeLocation)),
+bpmFactory(BPMFactory(mode, primeLatticeLocation)),
+chargeFactory(ChargeFactory(mode, primeLatticeLocation)),
+screenFactory(ScreenFactory(mode, primeLatticeLocation)),
+valveFactory(ValveFactory(mode, primeLatticeLocation)),
+imgFactory(IMGFactory(mode, primeLatticeLocation)),
+rfProtectionFactory(RFProtectionFactory(mode, primeLatticeLocation)),
+llrffactory(LLRFFactory(mode, primeLatticeLocation)),
+cameraFactory(CameraFactory(mode, primeLatticeLocation)),
+laserEnergyMeterFactory(LaserEnergyMeterFactory(mode, primeLatticeLocation)),
+laserHWPFactory(LaserHWPFactory(mode, primeLatticeLocation)),
+shutterFactory(ShutterFactory(mode, primeLatticeLocation)),
+rfmodulatorFactory(RFModulatorFactory(mode, primeLatticeLocation)),
+rfHeartbeatFactory(RFHeartbeatFactory(mode, primeLatticeLocation)),
+mode(mode)
 {
-	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
 }
 
@@ -709,49 +712,83 @@ void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
-	magnetFactory.debugMessagesOn();
 	bpmFactory.debugMessagesOn();
-	chargeFactory.debugMessagesOn();
 	cameraFactory.debugMessagesOn();
+	chargeFactory.debugMessagesOn();
+	imgFactory.debugMessagesOn();
 	laserEnergyMeterFactory.debugMessagesOn();
 	laserHWPFactory.debugMessagesOn();
+	llrffactory.debugMessagesOn();
+	magnetFactory.debugMessagesOn();
+	rfHeartbeatFactory.debugMessagesOn();
+	rfmodulatorFactory.debugMessagesOn();
+	rfProtectionFactory.debugMessagesOn();
+	screenFactory.debugMessagesOn();
+	shutterFactory.debugMessagesOn();
+	valveFactory.debugMessagesOn();
 }
 
 void HardwareFactory::debugMessagesOff()
 {
 	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG OFF");
 	messenger.debugMessagesOff();
-	magnetFactory.debugMessagesOff();
 	bpmFactory.debugMessagesOff();
+	cameraFactory.debugMessagesOff();
 	chargeFactory.debugMessagesOff();
-	valveFactory.debugMessagesOff();
+	imgFactory.debugMessagesOff();
 	laserEnergyMeterFactory.debugMessagesOff();
 	laserHWPFactory.debugMessagesOff();
+	llrffactory.debugMessagesOff();
+	magnetFactory.debugMessagesOff();
+	rfHeartbeatFactory.debugMessagesOff();
+	rfmodulatorFactory.debugMessagesOff();
+	rfProtectionFactory.debugMessagesOff();
+	screenFactory.debugMessagesOff();
+	shutterFactory.debugMessagesOff();
+	valveFactory.debugMessagesOff();
 }
 
 void HardwareFactory::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
-	magnetFactory.messagesOn();
 	bpmFactory.messagesOn();
+	cameraFactory.messagesOn();
 	chargeFactory.messagesOn();
-	valveFactory.messagesOn();
+	imgFactory.messagesOn();
 	laserEnergyMeterFactory.messagesOn();
 	laserHWPFactory.messagesOn();
+	llrffactory.messagesOn();
+	magnetFactory.messagesOn();
+	rfHeartbeatFactory.messagesOn();
+	rfmodulatorFactory.messagesOn();
+	rfProtectionFactory.messagesOn();
+	screenFactory.messagesOn();
+	shutterFactory.messagesOn();
+	valveFactory.messagesOn();
 }
 
 void HardwareFactory::messagesOff()
 {
 	messenger.printMessage("HARDWARE-FAC - MESSAGES OFF");
 	messenger.messagesOff();
-	magnetFactory.messagesOff();
+
 	bpmFactory.messagesOff();
+	cameraFactory.messagesOff();
 	chargeFactory.messagesOff();
-	valveFactory.messagesOff();
+	imgFactory.messagesOff();
 	laserEnergyMeterFactory.messagesOff();
 	laserHWPFactory.messagesOff();
+	llrffactory.messagesOff();
+	magnetFactory.messagesOff();
+	rfHeartbeatFactory.messagesOff();
+	rfmodulatorFactory.messagesOff();
+	rfProtectionFactory.messagesOff();
+	screenFactory.messagesOff();
+	shutterFactory.messagesOff();
+	valveFactory.messagesOff();
 }
+
 
 bool HardwareFactory::isMessagingOn()
 {

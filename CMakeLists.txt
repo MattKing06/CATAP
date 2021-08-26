@@ -3,49 +3,37 @@ project(CATAP)
 cmake_policy(SET CMP0074 NEW)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CXX_STANDARD 17)
-# These are default versions for CATAP build
-# They can be set here or via cmake-gui
-# Setting here will persist between caches, 
-# setting via gui will change if cache is deleted.
-#set(CATAP_PY_VERSION "NOT-SET" CACHE STRING "Python Version")
-set(CATAP_BOOST_VERSION "NOT-SET" CACHE STRING "Boost Version")
 
 if (WIN32)
   message(STATUS "WIN32 BUILD")
-
-  IF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.63)
-    IF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.76)
-      message(FATAL_ERROR "Please set the boost version you require for CATAP (Ungrouped Entries > CATAP_BOOST_VERSION).
-      Currently boost 1.63 uses python3.6 and boost 1.76 uses python3.8. ")
-    ENDIF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.76) 
-  ENDIF(NOT ${CATAP_BOOST_VERSION} MATCHES 1.63)
-
-  #########################################
-  # Boost 1.63 ONLY BUILT WITH PYTHON 3.6 #
-  # So we are settings PY VERSION EXPLICIT#
-  #########################################
-  if (${CATAP_BOOST_VERSION} MATCHES 1.63)
-	  set(Boost_INCLUDE_DIR "C:/boost/boost_1_63_0")
-	  set(CATAP_PY_VERSION 3.6)
-	  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
-  	  message("PYTHON 3.6 BUILD: ")
-      find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
-	  message("include: ${Python3_INCLUDE_DIRS}")
-	  message("libs: ${Python3_LIBRARIES}")
-  endif(${CATAP_BOOST_VERSION} MATCHES 1.63)
+  # These are default versions for CATAP build
+  # They can be set here or via cmake-gui
+  # Setting here will persist between caches, 
+  # setting via gui will change if cache is deleted.
+  set(CATAP_PY_VERSION "NOT-SET" CACHE STRING "Python Version")
+  set(CATAP_BOOST_VERSION 1.76)
+  set(Boost_INCLUDE_DIR "C:/boost/boost_1_76_0")
+  IF(NOT ${CATAP_PY_VERSION} MATCHES 3.6)
+    IF(NOT ${CATAP_PY_VERSION} MATCHES 3.8)
+      message(FATAL_ERROR "Please set the python version you require for CATAP (Ungrouped Entries > CATAP_PY_VERSION).
+      Currently we only support versions: 3.6, 3.8 ")
+    ENDIF(NOT c MATCHES 3.8)
+  ENDIF(NOT ${CATAP_PY_VERSION} MATCHES 3.6)
   #########################################
   # Boost 1.76 ONLY BUILT WITH PYTHON 3.8 #
-  # So we are settings PY VERSION EXPLICIT#
+  # and 3.6                               #
+  # So we are setting PY VERSION EXPLICIT #
   #########################################
-  if (${CATAP_BOOST_VERSION} MATCHES 1.76)
-	  set(Boost_INCLUDE_DIR "C:/boost/boost_1_76_0")
-	  set(CATAP_PY_VERSION 3.8)
-      find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python38 system filesystem thread chrono atomic date_time unit_test_framework)
-	  message("PYTHON 3.8 BUILD: ")
-      find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
-	  message("include: ${Python3_INCLUDE_DIRS}")
-	  message("libs: ${Python3_LIBRARIES}")
-  endif(${CATAP_BOOST_VERSION} MATCHES 1.76)
+  IF(${CATAP_PY_VERSION} MATCHES 3.8)
+  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python38 system filesystem thread chrono atomic date_time unit_test_framework)
+  ENDIF(${CATAP_PY_VERSION} MATCHES 3.8)
+  IF(${CATAP_PY_VERSION} MATCHES 3.6)
+  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python36 system filesystem thread chrono atomic date_time unit_test_framework)
+  ENDIF(${CATAP_PY_VERSION} MATCHES 3.6)
+  message("PYTHON 3.8 BUILD: ")
+  find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
+  message("include: ${Python3_INCLUDE_DIRS}")
+  message("libs: ${Python3_LIBRARIES}")
 
   set(EPICS_DIR "C:/epics/base-3.14.12.5")
   set(YAML_PARSER_LIB_RELEASE_DIR "C:/yaml-cpp-build/Release")

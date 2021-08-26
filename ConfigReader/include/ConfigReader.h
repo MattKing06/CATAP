@@ -3,6 +3,7 @@
 
 #include "yaml-cpp/parser.h"
 #include "yaml-cpp/yaml.h"
+#include <boost/filesystem.hpp>
 #include <ConfigReaderExceptions.h>
 #include <LoggingSystem.h>
 #include <Magnet.h>
@@ -19,11 +20,9 @@
 #include <iostream>
 #include <map>
 
-
-// TODO this is hardcoded in, which is fine, but we do need a way of passing a different location 
-//const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\test\\CATAP\\MasterLattice";//MASTER_LATTICE_LOCATION;
 const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\development\\CATAP\\djs56\\new_pc\\src\\MasterLattice";//MASTER_LATTICE_LOCATION;
-//const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\development\\CATAP\\djs56\\new_pc\\src\\MasterLattice";//MASTER_LATTICE_LOCATION;
+//const std::string MASTER_LATTICE_FILE_LOCATION = "\\\\192.168.83.14\\claranet\\test\\CATAP\\MasterLattice";//MASTER_LATTICE_LOCATION;
+
 #if defined(__unix__) ||  defined(_unix)
 const std::string SEPARATOR = "/";
 #endif
@@ -39,6 +38,7 @@ class ConfigReader
 public:
 
 	ConfigReader(const std::string& hardwareType, const STATE& mode);
+	ConfigReader(const std::string& hardwareType, const STATE& mode, const std::string& primeLatticeLocation);
 	ConfigReader();
 
 	std::string yamlFileDestination;
@@ -47,12 +47,10 @@ public:
 	STATE mode;
 	std::map<std::string, bool> yamlFilenamesAndParsedStatusMap;
 	int numberOfParsesExpected;
-	// defining the allowed hardware types and their EPICS abbreviations
-	// these are currently hard-coded, we should get the folder names from
-	// MasterLattice directory to initialize the map
-	const static std::map<std::string, std::string> allowedHardwareTypes;
 	std::map<std::string, std::string> offlineProperties;
 	std::map<std::string, std::string> onlineProperties;
+	bool doesLocationExist(const boost::filesystem::path& location);
+	bool isEmptyDirectory(const boost::filesystem::path& location);
 
 	LoggingSystem messenger;
 	void debugMessagesOn();
@@ -64,7 +62,6 @@ public:
 
 	const std::map <std::string, std::string> extractRecordsIntoMap(const YAML::Node& configInformationNode) const;
 
-	std::string getHardwareTypeFromName(const std::string& fullPVName) const;
 	std::vector<std::string> compareFileWithTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string& version);
 	void initialiseFilenameAndParsedStatusMap();
