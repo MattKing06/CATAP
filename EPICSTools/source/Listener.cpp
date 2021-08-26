@@ -61,6 +61,7 @@ void Listener::setupChannels()
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
 	EPICSInterface::sendToEPICS();
+	initialiseCurrentValue(pv);
 	epicsInterface->retrieveCOUNT(pv);
 	EPICSInterface::sendToEPICS();
 	pv.MASK = DBE_VALUE;
@@ -86,6 +87,51 @@ std::string Listener::getEPICSPVName(const std::string& pv)
 	{
 		return pv;
 	}
+}
+
+void Listener::initialiseCurrentValue(const pvStruct& pv)
+{
+
+	switch (ca_field_type(pv.CHID))
+	{
+	case(DBR_TIME_DOUBLE):
+		currentValue = static_cast<double>(0.0);
+		break;
+	case(DBR_DOUBLE):
+		currentValue = static_cast<double>(0.0);
+		break;
+	case(DBR_TIME_INT):
+		currentValue = static_cast<int>(0);
+		break;
+	case(DBR_INT):
+		currentValue = static_cast<int>(0);
+		break;
+	case(DBR_TIME_ENUM):
+		currentValue = static_cast<unsigned short>(0);
+		break;
+	case(DBR_ENUM):
+		currentValue = static_cast<unsigned short>(0);
+		break;
+	case(DBR_TIME_LONG):
+		currentValue = static_cast<long>(0);
+		break;
+	case(DBR_LONG):
+		currentValue = static_cast<long>(0);
+		break;
+	case(DBR_TIME_FLOAT):
+		currentValue = static_cast<float>(0.0);
+		break;
+	case(DBR_FLOAT):
+		currentValue = static_cast<float>(0.0);
+		break;
+	case(DBR_TIME_STRING):
+		currentValue = static_cast<std::string>("");
+		break;
+	case(DBR_STRING):
+		currentValue = static_cast<std::string>("");
+		break;
+	}
+
 }
 
 bool Listener::isConnected()
@@ -230,31 +276,33 @@ boost::python::list Listener::getArrayBufferAverageArray_Py()
 
 boost::python::object Listener::getValue_Py()
 {
-	if (isDouble())
-	{
-		return static_cast<boost::python::object>(boost::get<double>(currentValue));
-	}
-	else if (isLong())
-	{
-		return static_cast<boost::python::object>(boost::get<long>(currentValue));
-	}
-	else if (isInt())
-	{
-		return static_cast<boost::python::object>(boost::get<int>(currentValue));
+	//if (isDouble())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<double>(currentValue));
+	//}
+	//else if (isLong())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<long>(currentValue));
+	//}
+	//else if (isInt())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<int>(currentValue));
 
-	}
-	else if (isEnum())
-	{
-		return static_cast<boost::python::object>(boost::get<unsigned short>(currentValue));
-	}
-	else if (isFloat())
-	{
-		return static_cast<boost::python::object>(boost::get<float>(currentValue));
-	}
-	else if (isString())
-	{
-		return static_cast<boost::python::object>(boost::get<std::string>(currentValue));
-	}
+	//}
+	//else if (isEnum())
+	//{ 
+	//	return static_cast<boost::python::object>(boost::get<unsigned short>(currentValue));
+	//}
+	//else if (isFloat())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<float>(currentValue));
+	//}
+	//else if (isString())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<std::string>(currentValue));
+	//}
+	std::cout << "get value py type: " << currentValue.type().name() << std::endl;
+	return boost::apply_visitor(convert_to_py{}, currentValue);
 }
 
 boost::python::list Listener::getBuffer_Py()
