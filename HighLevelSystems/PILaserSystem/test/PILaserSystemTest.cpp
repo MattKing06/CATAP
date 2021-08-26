@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(move_laser_mirror_test)
 	bool status = PIL.setup("");
 	LaserMirror mirror = PIL.getLaserMirror();
 	mirror.setHStep(5.0);
-	mirror.moveLeft();
+	//mirror.moveLeft();
 }
 
 BOOST_AUTO_TEST_CASE(get_10_image_test)
