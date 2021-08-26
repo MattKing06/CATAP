@@ -9,8 +9,8 @@ LaserMirrorFactory(mode, MASTER_LATTICE_FILE_LOCATION)
 {
 }
 
-LaserMirrorFactory::LaserMirrorFactory(STATE mode, const std::string& primeLatticeLocation)
-	:
+LaserMirrorFactory::LaserMirrorFactory(STATE mode, const std::string& primeLatticeLocation) :
+	hasBeenSetup(false),
 	mode(mode),
 	reader(ConfigReader("LaserMirror", mode, primeLatticeLocation))
 {
@@ -93,8 +93,11 @@ LaserMirror& LaserMirrorFactory::getLaserMirror(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(laserMirrorMap, name))
 	{
+		
 		return laserMirrorMap.at(name);
 	}
+	std::cout << "NO MIRROR NAMED " << name << std::endl;
+	// return a dummy mirror ??? 
 }
 
 bool LaserMirrorFactory::setup(const std::string& version)
