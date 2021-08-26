@@ -1576,7 +1576,7 @@ private:
 		if (is_acquiring_at_start)
 		{
 			//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
-			stopped_acquiring = stopAcquiringAndWait();
+			stopped_acquiring = stopAcquiringAndWait(5000);
 		}
 		if (stopped_acquiring)
 		{

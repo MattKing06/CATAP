@@ -1312,7 +1312,7 @@ void Camera::staticEntryWaitForCamStopAcquiring(CamStopWaiter& csw)
 		csw.result = STATE::SUCCESS;
 	}
 }
-bool Camera::stopAcquiringAndWait(size_t timeout = 3000)
+bool Camera::stopAcquiringAndWait(size_t timeout)
 {
 	if (isNotAcquiring())
 		return true;
