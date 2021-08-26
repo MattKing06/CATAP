@@ -201,7 +201,6 @@ template<typename T>
 inline void Listener::setValue(T value)
 {
 	currentValue = static_cast<T>(value);
-	std::cout << "set value type: " << currentValue.type().name() << std::endl;
 }
 
 template<typename T>
