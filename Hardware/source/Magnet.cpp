@@ -342,10 +342,8 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 	*/
 	messenger.printDebugMessage("\n");
 	messenger.printDebugMessage(hardwareName, " waitForMagnetToSettle, value = ", value, " tolerance = ", tolerance, " waitTime = ", waitTime);
-
 	
 	bool timeOut = false;
-
 	double oldRIValue = GlobalConstants::double_min;
 	/*
 		To test if we are supposed to be setting zero.
@@ -425,10 +423,11 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		/*  really 2000 milliseconds while we wait for RI to update>>>> ?
 			YES!!
 		*/
-		GlobalFunctions::pause_2000();
-
+		GlobalFunctions::pause_1000();
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
-
+		GlobalFunctions::pause_1000();
+		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
+		GlobalFunctions::pause_1000();
 	} /// while
 	return !timed_out;
 }
