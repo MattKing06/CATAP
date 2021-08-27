@@ -297,7 +297,7 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 			seti_success = ds.magnet->SETI(next_value); // expposed to PYTHON
 			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
 			{
-				ds.magnet->messenger.printDebugMessage("Degauss Step ", ds.magnet->current_degauss_step, " success");
+				ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " Degauss Step ", ds.magnet->current_degauss_step, " success");
 			}
 			else
 			{
@@ -423,6 +423,9 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		/*  really 2000 milliseconds while we wait for RI to update>>>> ?
 			YES!!
 		*/
+
+		// we're doing this because of peculiarities in some of the cheaper PSU / controls interfaces, maybe one day we will be able to get rid of this 
+
 		GlobalFunctions::pause_1000();
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
 		GlobalFunctions::pause_1000();
