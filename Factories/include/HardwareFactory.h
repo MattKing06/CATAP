@@ -15,6 +15,7 @@
 #include "RFProtectionFactory.h"
 #include "RFModulatorFactory.h"
 #include <RFHeartbeatFactory.h>
+#include "LinacPIDFactory.h"
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -105,6 +106,8 @@ public:
 	
 	
 	LightingFactory& getLightingFactory();
+	LinacPIDFactory& getLinacPIDFactory();
+
 
 	bool saveMachineSnapshot();
 	bool saveMachineSnapshot(const std::string& location);
@@ -138,6 +141,7 @@ public:
 	RFProtectionFactory rfProtectionFactory;
 	RFModulatorFactory rfmodulatorFactory;
 	RFHeartbeatFactory rfHeartbeatFactory;
+	LinacPIDFactory linacPIDFactory;
 
 	// virtual physical or offline
 	STATE mode;

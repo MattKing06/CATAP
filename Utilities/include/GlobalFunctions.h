@@ -243,6 +243,9 @@ namespace GlobalFunctions {
 	extern std::string replaceStrChar(std::string str, const std::string& replace, char ch);
 
 
+	extern unsigned short scanSTATEToNumber(const STATE state);
+	extern unsigned short scanSTATEToNumber(const std::string state);
+	extern STATE numberToLLRFSCAN(const unsigned short scan_num);
 
 	extern void pause_x(std::chrono::milliseconds x);
 	void standard_pause();
@@ -253,8 +256,6 @@ namespace GlobalFunctions {
 	void pause_50()  ;
 	void pause_2()   ;
 	void pause_1()   ;
-
-
 
 	extern TYPE stringToType(const std::string& string_to_compare);
 	extern STATE stringToState(const std::string& string_to_compare);
@@ -267,8 +268,7 @@ namespace GlobalFunctions {
 	extern std::string trimAllWhiteSpaceExceptBetweenDoubleQuotes(std::string strIN);
 
 
-
-
+	extern STATE stringToSTATE(const std::string& state_str);
 }
 /*! @}*/
 #endif

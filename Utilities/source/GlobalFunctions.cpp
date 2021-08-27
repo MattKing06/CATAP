@@ -33,6 +33,57 @@ namespace GlobalFunctions {
 	//	return r;
 	//}
 
+	STATE stringToSTATE(const std::string& state_str)
+	{
+		if (entryExists<STATE>(GlobalConstants::stringToStateMap, state_str))
+		{
+			return GlobalConstants::stringToStateMap.at(state_str);
+		}
+		return STATE::UNKNOWN;
+	}
+
+	// /THESE LLRF SCAN are used in multiple places (LLRF, PID), TODO name is not so great 
+	unsigned short scanSTATEToNumber(const STATE state)
+	{
+		switch(state){
+			case STATE::PASSIVE:return GlobalConstants::zero_ushort;
+			case STATE::EVENT: return GlobalConstants::one_ushort;
+			case STATE::IO_INTR: return GlobalConstants::two_ushort;
+			case STATE::TEN: return GlobalConstants::three_ushort;
+			case STATE::FIVE: return GlobalConstants::four_ushort;
+			case STATE::TWO: return GlobalConstants::five_ushort;
+			case STATE::ONE: return GlobalConstants::six_ushort;
+			case STATE::ZERO_POINT_FIVE: return GlobalConstants::seven_ushort;
+			case STATE::ZERO_POINT_TWO: return GlobalConstants::eight_ushort;
+			case STATE::ZERO_POINT_ONE: return GlobalConstants::nine_ushort;
+			case STATE::ZERO_POINT_ZERO_FIVE: return GlobalConstants::ten_ushort;
+			default: return 0;
+		}
+	}
+	unsigned short scanSTATEStringToNumber(const std::string state_str)
+	{
+		return scanSTATEToNumber(stringToSTATE(state_str));
+	}
+
+	STATE numberToLLRFSCAN(const unsigned short scan_num)
+	{
+		switch (scan_num) {
+			case GlobalConstants::zero_ushort:  return STATE::PASSIVE;
+			case GlobalConstants::one_ushort:	return STATE::EVENT;
+			case GlobalConstants::two_ushort:	return STATE::IO_INTR;
+			case GlobalConstants::three_ushort: return STATE::TEN;
+			case GlobalConstants::four_ushort:	return STATE::FIVE;
+			case GlobalConstants::five_ushort:	return STATE::TWO;
+			case GlobalConstants::six_ushort:	return STATE::ONE;
+			case GlobalConstants::seven_ushort: return STATE::ZERO_POINT_FIVE;
+			case GlobalConstants::eight_ushort: return STATE::ZERO_POINT_TWO;
+			case GlobalConstants::nine_ushort:	return STATE::ZERO_POINT_ONE;
+			case GlobalConstants::ten_ushort:	return STATE::ZERO_POINT_ZERO_FIVE;
+			default: return STATE::UNKNOWN;
+		}
+	}
+
+
 	time_t timeNow(){ return time(nullptr); }
 
 

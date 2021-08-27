@@ -115,6 +115,11 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
 		{"llrf", TYPE::LLRF_TYPE},
+		
+		{ENUM_TO_STRING(TYPE::LINAC_PID), TYPE::LINAC_PID},
+		{"LinacPID", TYPE::LINAC_PID},
+		{"linacPID", TYPE::LINAC_PID},
+		{"LINAC_PID", TYPE::LINAC_PID},
 
 		// RF PROTECTION
 		{ENUM_TO_STRING(TYPE::RF_PROTECTION), TYPE::RF_PROTECTION},
@@ -318,6 +323,11 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::UNKNOWN_SET_STATE), STATE::UNKNOWN_SET_STATE}
 	};
 
+
+
+
+
+
 	/*! Minimum possible value of a double */
 	const double double_min = std::numeric_limits<double>::min();
 	/*! Maximum possible value of a double */
@@ -344,6 +354,25 @@ namespace GlobalConstants
 	const unsigned short zero_ushort = 0;
 	/*! Unsigned short-type variable for 1 */
 	const unsigned short one_ushort = 1;
+	/*! Unsigned short-type variable for 2 */
+	const unsigned short two_ushort = 2;
+	/*! Unsigned short-type variable for 3 */
+	const unsigned short three_ushort = 3;
+	/*! Unsigned short-type variable for 4 */
+	const unsigned short four_ushort = 4;
+	/*! Unsigned short-type variable for 5 */
+	const unsigned short five_ushort = 5;
+	/*! Unsigned short-type variable for 6 */
+	const unsigned short six_ushort = 6;
+	/*! Unsigned short-type variable for 7 */
+	const unsigned short seven_ushort = 7;
+	/*! Unsigned short-type variable for 8 */
+	const unsigned short eight_ushort = 8;
+	/*! Unsigned short-type variable for 9 */
+	const unsigned short nine_ushort = 9;
+	/*! Unsigned short-type variable for 10 */
+	const unsigned short ten_ushort = 10;
+
 
 	//// epics versions 
 	///*! epicsUInt16 variable for 0 */

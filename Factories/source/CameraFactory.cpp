@@ -107,17 +107,14 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		std::string name(item.second.getHardwareName());
 		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
 		// update aliases for camera item in map
-		//updateAliasNameMap(item.second);
-
-		//follow this through it seems to be empty! 
+		updateAliasNameMap(item.second);
 		std::map<std::string, pvStruct>& pvstruct = item.second.getPVStructs();
 
 		for (auto&& pv : pvstruct)
 		{
-			messenger.printDebugMessage("PVRecord = ", pv.second.pvRecord);
-			// sets the monitor state in the pvstruict to true or false
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
+				// sets the monitor state in the pvstruict to true or false
 				setMonitorStatus(pv.second);
 				item.second.epicsInterface->retrieveCHTYPE(pv.second);
 				item.second.epicsInterface->retrieveCOUNT(pv.second);

@@ -7,9 +7,6 @@
 #include <PythonTypeConversions.h>
 
 
-// map to convert yaml file strings to magnet TYPE enums
-//const std::map<std::string, TYPE> Hardware::string_to_hardware_type_map = Hardware::create_map();
-
 Hardware::Hardware() :
 	machine_area(TYPE::UNKNOWN_TYPE),
 	hardware_type(TYPE::UNKNOWN_TYPE),

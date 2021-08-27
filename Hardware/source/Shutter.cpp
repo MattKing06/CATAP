@@ -245,6 +245,8 @@ bool Shutter::close()
 	// TODO move into epicsShutterInterface
 	if(epicsInterface->putValue2(pvStructs.at(ShutterRecords::Close), GlobalConstants::EPICS_ACTIVATE))
 	{
+		// todo  MAYBE WE NEED ONE OF THESE??
+		//GlobalFunctions::pause_500();
 		return epicsInterface->putValue2(pvStructs.at(ShutterRecords::Close), GlobalConstants::EPICS_SEND);
 	}
 	return false;
@@ -254,6 +256,8 @@ bool Shutter::open()
 	// TODO move into epicsShutterInterface
 	if (epicsInterface->putValue2(pvStructs.at(ShutterRecords::Open), GlobalConstants::EPICS_ACTIVATE))
 	{
+		// todo  MAYBE WE NEED ONE OF THESE??
+		//GlobalFunctions::pause_500();
 		return epicsInterface->putValue2(pvStructs.at(ShutterRecords::Open), GlobalConstants::EPICS_SEND);
 	}
 	return false;
