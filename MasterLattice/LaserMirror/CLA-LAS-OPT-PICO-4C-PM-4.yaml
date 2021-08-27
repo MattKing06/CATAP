@@ -1,4 +1,4 @@
-controls_information: 
+controls_information : 
     PV : true
     pv_record_map:
         H_MREL : CLA-LAS-OPT-PICO-4C-PM-4:H:MREL
