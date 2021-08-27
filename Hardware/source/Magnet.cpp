@@ -431,6 +431,8 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		GlobalFunctions::pause_1000();
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
 		GlobalFunctions::pause_1000();
+		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
+		GlobalFunctions::pause_1000();
 	} /// while
 	return !timed_out;
 }
