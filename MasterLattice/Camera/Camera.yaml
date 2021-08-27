@@ -233,5 +233,5 @@ properties:
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
-    #HAS_LED : FALSE # so far only the virtual cathode needs this flag 
+    HAS_LED : FALSE # so far only the virtual cathode needs this flag 
 

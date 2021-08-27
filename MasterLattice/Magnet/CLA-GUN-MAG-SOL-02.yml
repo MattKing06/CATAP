@@ -25,5 +25,5 @@ properties:
   position: 0.127
   ri_tolerance: 0.1
   serial_number: '01'
-  min_i: -250.0
-  max_i: 250.0
+  min_i : -250.0
+  max_i : 250.0
