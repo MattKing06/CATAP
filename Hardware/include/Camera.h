@@ -1576,7 +1576,7 @@ private:
 		if (is_acquiring_at_start)
 		{
 			//messenger.printDebugMessage("is_acquiring_at_start, therefore stopAcquiringAndWait");
-			stopped_acquiring = stopAcquiringAndWait(5000);// yfor gcc this arguement seems to be required!!!
+			stopped_acquiring = stopAcquiringAndWait(5000);// for gcc this arguement seems to be required!!!
 		}
 		if (stopped_acquiring)
 		{

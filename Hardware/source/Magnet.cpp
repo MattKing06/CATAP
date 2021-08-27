@@ -285,6 +285,9 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 	// if at any stage waitForMagnetToSettle returns false, we have failed and exit
 	bool degauss_success = true;
 	bool seti_success;
+	// set last_degauss_success to false at start of routine  
+	ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " last_degauss_success = FALSE");
+	ds.magnet->last_degauss_success = false;
 	ds.magnet->current_degauss_step = GlobalConstants::zero_sizet;
 	for (auto&& next_value : ds.magnet->degaussValues)
 	{
@@ -306,6 +309,14 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 		ds.magnet->current_degauss_step += GlobalConstants::one_sizet;
 	}
 	ds.magnet->SETI(ds.set_value_after_degauss);
+	if (ds.magnet->waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
+	{
+
+	}
+	else
+	{
+		degauss_success = false;
+	}
 	ds.magnet->last_degauss_success = degauss_success;
 	ds.magnet->is_degaussing = false;
 }
