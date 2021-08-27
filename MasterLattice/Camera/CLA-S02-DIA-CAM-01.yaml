@@ -34,7 +34,7 @@ controls_information:
         ANA_CenterX     : CLA-S02-DIA-CAM-01:ANA:CenterX
         ANA_CenterY     : CLA-S02-DIA-CAM-01:ANA:CenterY
         ANA_CenterX_RBV : CLA-S02-DIA-CAM-01:ANA:CenterX_RBV
-        ANA_CenterY_RBV : CLA-VCA-DIA-01:ANA:CenterY_RBV
+        ANA_CenterY_RBV : CLA-S02-DIA-CAM-01:ANA:CenterX_RBV
         # start stop acquiring images 
         CAM_Acquire_RBV   : CLA-S02-DIA-CAM-01:CAM:Acquire_RBV
         CAM_Active_Count  : CLA-C10-IOC-CS-03:cameraCount
@@ -141,7 +141,6 @@ controls_information:
         LED_Sta : CLA-LAS-DIA-LED-01:Sta
         LED_Off : CLA-LAS-DIA-LED-01:Off
         LED_On  : CLA-LAS-DIA-LED-01:On  
-
 properties:
     hardware_type: Camera
     machine_area : S02 # Set by where the camera physically *IS* 
@@ -171,17 +170,11 @@ properties:
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
-
     ARRAY_DATA_NUM_PIX_X : 1080 #; array data passed through EPICS
     ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 2160 #; the binary image is bigger than the array data passed through EPICS
     BINARY_NUM_PIX_Y : 2560 #; the binary image is bigger than the array data passed through EPICS
-
-    # ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    # ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
-    # BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
-    # BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
-    X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
+    Y_PIX_SCALE_FACTOR : 2 #; 
     Y_PIX_SCALE_FACTOR : 2 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.2 #;  emprically determined value for when laser is present
     X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
@@ -195,4 +188,9 @@ properties:
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
-    
+    HAS_LED : TRUE    
+    # empircally determined,  
+    OPERATING_CENTER_X : 1000
+    OPERATING_CENTER_Y : 1000
+    MECHANICAL_CENTER_X : 1000
+    MECHANICAL_CENTER_Y : 1000

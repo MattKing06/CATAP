@@ -1,9 +1,10 @@
 # REMEMBER you need  "key  : value" the __space__ either side of : is required !!! 
-controls_information:
-    PV: true
-    pv_record_map:
+controls_information: 
+    PV: true 
+    pv_record_map: 
         # THESE SET THE MASK AND ROI TOGTHER AND SHOULD BE USED, 
         # (BUT ACTUALLY THER IS A BUG MAYBE IN STEVE KINDER'S CODE, A WORKAROUND REQUIRES THEM TO MOVE INDEPENDENT
+        # NO _RBV versions of these PVs 
         ROIandMask_SetX    : CLA-VCA-DIA-CAM-01:ANA:SetX
         ROIandMask_SetY    : CLA-VCA-DIA-CAM-01:ANA:SetY
         ROIandMask_SetXrad : CLA-VCA-DIA-CAM-01:ANA:SetXRad
@@ -33,7 +34,7 @@ controls_information:
         ANA_CenterX     : CLA-VCA-DIA-CAM-01:ANA:CenterX
         ANA_CenterY     : CLA-VCA-DIA-CAM-01:ANA:CenterY
         ANA_CenterX_RBV : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
-        ANA_CenterY_RBV : CLA-VCA-DIA-01:ANA:CenterY_RBV
+        ANA_CenterY_RBV : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
         # start stop acquiring images 
         CAM_Acquire_RBV   : CLA-VCA-DIA-CAM-01:CAM:Acquire_RBV
         CAM_Active_Count  : CLA-C10-IOC-CS-02:cameraCount
@@ -169,25 +170,12 @@ properties:
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
-    
-    # TODO this could be better named!  
     ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
     ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
     BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
-      
-      
     MAX_NPOINT_STEPSIZE : 10
     MIN_NPOINT_STEPSIZE : 1
-    # COULD  USE THESE! 
-    # CAM1_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    # CAM1_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
-    # CAM2_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    # CAM2_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
-    # CAM3_ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    # CAM3_ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
-
-   
     X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
     Y_PIX_SCALE_FACTOR : 2 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.0 #;  emprically determined value for when laser is present
@@ -203,11 +191,8 @@ properties:
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
     HAS_LED : FALSE # so far only the virtual cathode needs this flag 
-
     # empircally determined, and used to set the center 
     OPERATING_CENTER_X : 1000
     OPERATING_CENTER_Y : 1000
     MECHANICAL_CENTER_X : 1080
-    MECHANICAL_CENTER_Y : 1000
-    
-    
+    MECHANICAL_CENTER_Y : 1000      

@@ -1,7 +1,7 @@
 # REMEMBER you need  "key  : value" the __space__ either side of : is required !!! 
-controls_information:
-    PV: true
-    pv_record_map:
+controls_information: 
+    PV: true 
+    pv_record_map: 
         # THESE SET THE MASK AND ROI TOGTHER AND SHOULD BE USED, 
         # (BUT ACTUALLY THER IS A BUG MAYBE IN STEVE KINDER'S CODE, A WORKAROUND REQUIRES THEM TO MOVE INDEPENDENT
         # NO _RBV versions of these PVs 
@@ -34,7 +34,7 @@ controls_information:
         ANA_CenterX     : CLA-S01-DIA-CAM-01:ANA:CenterX
         ANA_CenterY     : CLA-S01-DIA-CAM-01:ANA:CenterY
         ANA_CenterX_RBV : CLA-S01-DIA-CAM-01:ANA:CenterX_RBV
-        ANA_CenterY_RBV : CLA-VCA-DIA-01:ANA:CenterY_RBV
+        ANA_CenterY_RBV : CLA-S01-DIA-CAM-01:ANA:CenterY_RBV
         # start stop acquiring images 
         CAM_Acquire_RBV   : CLA-S01-DIA-CAM-01:CAM:Acquire_RBV
         CAM_Active_Count  : CLA-C10-IOC-CS-03:cameraCount
@@ -141,8 +141,7 @@ controls_information:
         LED_Sta : CLA-LAS-DIA-LED-01:Sta
         LED_Off : CLA-LAS-DIA-LED-01:Off
         LED_On  : CLA-LAS-DIA-LED-01:On        
-
-properties:
+properties: 
     hardware_type: Camera
     machine_area : S01
     name : CLA-S01-DIA-CAM-01
@@ -189,4 +188,9 @@ properties:
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
-    #HAS_LED: TRUE
+    HAS_LED : TRUE
+    # empircally determined,  
+    OPERATING_CENTER_X : 1000
+    OPERATING_CENTER_Y : 1000
+    MECHANICAL_CENTER_X : 1000
+    MECHANICAL_CENTER_Y : 1000
