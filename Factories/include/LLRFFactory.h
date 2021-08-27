@@ -10,6 +10,7 @@ class LLRFFactory
 public:
 	LLRFFactory();
 	LLRFFactory(STATE mode);
+	LLRFFactory(STATE mode, const std::string& primeLatticeLocation);
 	LLRFFactory(const LLRFFactory& copyFactory);
 	~LLRFFactory();
 	LoggingSystem messenger;

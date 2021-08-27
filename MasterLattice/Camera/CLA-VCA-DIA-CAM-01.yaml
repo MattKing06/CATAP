@@ -10,16 +10,20 @@ controls_information:
         # the "mask" from JW/TP implementation 
         ANA_MaskXCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter
         ANA_MaskXCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXCenter_RBV
-        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
         ANA_CenterX    : CLA-VCA-DIA-CAM-01:ANA:CenterX
-        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
+        ANA_CenterX_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterX_RBV
         ANA_CenterY    : CLA-VCA-DIA-CAM-01:ANA:CenterY
+        ANA_CenterY_RBV    : CLA-VCA-DIA-CAM-01:ANA:CenterY_RBV
         ANA_MaskYCenter    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter
         ANA_MaskYCenter_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYCenter_RBV
-        ANA_MaskXRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad_RBV
         ANA_MaskXRad    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad
-        ANA_MaskYRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad_RBV
+        ANA_MaskXRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskXRad_RBV
         ANA_MaskYRad    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad
+        ANA_MaskYRad_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskYRad_RBV
+        
+        ANA_MaskWidth_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskWidth_RBV
+        ANA_MaskHeight_RBV    : CLA-VCA-DIA-CAM-01:ANA:MaskHeight_RBV
+        
         # ROI SK implementation  
         ROI1_MinX_RBV : CLA-VCA-DIA-CAM-01:ROI1:MinX_RBV
         ROI1_MinX : CLA-VCA-DIA-CAM-01:ROI1:MinX
@@ -37,11 +41,14 @@ controls_information:
         # #  analysis, enable callbacks is start / stop analysis 
         ANA_EnableCallbacks_RBV    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks_RBV
         ANA_EnableCallbacks    : CLA-VCA-DIA-CAM-01:ANA:EnableCallbacks
-        # the analysis can use a back groun dsubtracted image 
+        # the analysis can use a back ground subtracted image 
         ANA_NewBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd
+        ANA_NewBkgrnd_RBV: CLA-VCA-DIA-CAM-01:ANA:NewBkgrnd_RBV
         ANA_UseBkgrnd    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd
+        ANA_UseBkgrnd_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseBkgrnd_RBV
         # the analysis can use "n-point scaling" 
         ANA_UseNPoint    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint       
+        ANA_UseNPoint_RBV    : CLA-VCA-DIA-CAM-01:ANA:UseNPoint_RBV   
         # The analysis can set a noise floor, pixel values below this are set to zero 
         ANA_UseFloor : CLA-VCA-DIA-CAM-01:ANA:UseFloor
         ANA_UseFloor_RBV : CLA-VCA-DIA-CAM-01:ANA:UseFloor_RBV
@@ -54,12 +61,15 @@ controls_information:
         ANA_CPU_CropSubMask_RBV    : CLA-VCA-DIA-CAM-01:ANA:CSM_CPU
         ANA_CPU_Npoint_RBV    : CLA-VCA-DIA-CAM-01:ANA:NP_CPU
         ANA_CPU_Dot_RBV    : CLA-VCA-DIA-CAM-01:ANA:DP_CPU
+
         ANA_PixW_RBV : CLA-VCA-DIA-CAM-01:ANA:PixW_RBV
         ANA_PixH_RBV : CLA-VCA-DIA-CAM-01:ANA:PixH_RBV
         ANA_PixMM    : CLA-VCA-DIA-CAM-01:ANA:PixMM
         ANA_PixMM_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixMM_RBV
-        ANA_StepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
-        ANA_StepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
+
+        ANA_NPointStepSize    : CLA-VCA-DIA-CAM-01:ANA:StepSize
+        ANA_NPointStepSize_RBV    : CLA-VCA-DIA-CAM-01:ANA:StepSize_RBV
+
         ANA_X_RBV    : CLA-VCA-DIA-CAM-01:ANA:X_RBV
         ANA_Y_RBV    : CLA-VCA-DIA-CAM-01:ANA:Y_RBV
         ANA_SigmaX_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaX_RBV
@@ -73,6 +83,7 @@ controls_information:
         ANA_SigmaYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:SigmaYPix_RBV
         ANA_CovXYPix_RBV    : CLA-VCA-DIA-CAM-01:ANA:CovXYPix_RBV
         ANA_PixelResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:PixelResults_RBV 
+        ANA_MMResults_RBV    : CLA-VCA-DIA-CAM-01:ANA:MMResults_RBV 
         # # actuall array data
         CAM2_ArrayData    : CLA-VCA-DIA-CAM-01:CAM2:ArrayData
         # # meh LEDs, should probably go in their own factory?? 
@@ -92,7 +103,9 @@ controls_information:
         CAM_ArrayRate_RBV    : CLA-VCA-DIA-CAM-01:CAM:ArrayRate_RBV
         CAM_Temperature_RBV    : CLA-VCA-DIA-CAM-01:CAM:Temperature_RBV
         HDF_Capture    : CLA-VCA-DIA-CAM-01:HDF:Capture
+        HDF_Capture_RBV    : CLA-VCA-DIA-CAM-01:HDF:Capture_RBV
         HDF_NumCapture    : CLA-VCA-DIA-CAM-01:HDF:NumCapture
+        HDF_NumCapture_RBV    : CLA-VCA-DIA-CAM-01:HDF:NumCapture_RBV
         HDF_FilePath    : CLA-VCA-DIA-CAM-01:HDF:FilePath
         HDF_FileName    : CLA-VCA-DIA-CAM-01:HDF:FileName
         HDF_FileNumber    : CLA-VCA-DIA-CAM-01:HDF:FileNumber
@@ -100,6 +113,9 @@ controls_information:
         HDF_FilePath_RBV    : CLA-VCA-DIA-CAM-01:HDF:FilePath_RBV
         HDF_FileName_RBV    : CLA-VCA-DIA-CAM-01:HDF:FileName_RBV
         HDF_WriteFile    : CLA-VCA-DIA-CAM-01:HDF:WriteFile
+        HDF_WriteFile_RBV: CLA-VCA-DIA-CAM-01:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_WriteStatus: CLA-VCA-DIA-CAM-01:HDF:WriteStatus
+        HDF_WriteMessage: CLA-VCA-DIA-CAM-01:HDF:WriteMessage
         # MAGICK_FileName    : CLA-VCA-DIA-CAM-01:MAGICK:FileName
         # MAGICK_FilePath    : CLA-VCA-DIA-CAM-01:MAGICK:FilePath
         # MAGICK_FileNumber    : CLA-VCA-DIA-CAM-01:MAGICK:FileNumber

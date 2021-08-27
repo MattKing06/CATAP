@@ -3,15 +3,17 @@
 #include "LoggingSystem.h"
 #ifndef HARDWARE_H_
 #include "Hardware.h"
+#include "HardwareSnapshot.h"
 #endif //HARDWARE_H_
 #ifndef EPICS_MAGNET_INTERFACE_H_
 #include "EPICSMagnetInterface.h"
 #endif //EPICS_MAGNET_INTERFACE_H_
-#include <boost/shared_ptr.hpp>
 #include <vector>
+#include <thread>
 #include "MagnetPVRecords.h"
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
+#include <boost/shared_ptr.hpp>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 
@@ -24,39 +26,6 @@ class Magnet;
 typedef boost::shared_ptr<EPICSMagnetInterface> EPICSMagnetInterface_sptr;
 
 
-struct magnetState
-{   // provide a default constructor
-	magnetState() :
-		name(GlobalConstants::DUMMY_NAME),
-		psu_state(STATE::ERR),
-		ilk_state(STATE::ERR),
-		seti(GlobalConstants::double_min),
-		readi(GlobalConstants::double_min),
-		k_dip_p(GlobalConstants::double_min),
-		int_str_mm(GlobalConstants::double_min),
-		k_set_p(GlobalConstants::double_min),
-		int_str(GlobalConstants::double_min),
-		k_ang(GlobalConstants::double_min),
-		k_mrad(GlobalConstants::double_min),
-		k_val(GlobalConstants::double_min)
-	{};
-	std::string name;
-	TYPE type;
-	STATE psu_state, ilk_state;
-	double seti, readi;
-	// physics units (not all types of magnets have all tehse values 
-	double k_dip_p, int_str_mm, k_set_p, int_str, k_ang, k_val, k_mrad,
-		magnetic_length;
-
-	std::vector<double> field_integral_coefficients;
-
-	// preprocessor ifdefine guards for non-python apps??? 
-	boost::python::dict state_dict;
-
-};
-
-#include <thread>
-
 class Degauss
 {   
 	public:
@@ -65,7 +34,8 @@ class Degauss
 		Magnet* magnet;
 		std::vector<double>  degauss_values;
 		size_t				 current_step;
-		bool                resetToZero;
+		//bool                 resetToZero;
+		double               set_value_after_degauss;
 		double degaussTolerance;
 		std::thread* degauss_thread;
 		time_t wait_time;
@@ -91,21 +61,38 @@ class Magnet : public Hardware
 	/*! Copy constructor for Magnet object
 		@param[in] copyMagnet references to magnet to be copied					*/
 		Magnet(const Magnet& copyMagnet);
-	/*! get a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
-		@param[out] magnetState structured data									*/
-		magnetState getMagnetState()const;
-	/*! set a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
-		@param[in] magnetState structured data to set
-		@param[out] bool, for if commands successfully got sent to EPICS		*/
-		bool setMagnetState(const magnetState& ms);
+	
+		/*! Get a magnet object HardwareSnapshot 
+			@param[out] magnetState structured data									*/
+		HardwareSnapshot getSnapshot()override;
+		boost::python::dict getSnapshot_Py()override;
+		
+	//	magnetState getMagnetState()const;
+	///*! set a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
+	//	@param[in] magnetState structured data to set
+	//	@param[out] bool, for if commands successfully got sent to EPICS		*/
+	//	bool setMagnetState(const magnetState& ms);
+
+		
+		
 	/*! check if the current magnet state is the same as the passed in state 
-		@param[in] magnetState structured data to check
+		//@param[in] magnetState structured data to check
 		@param[out] bool, for if in same state or not							*/
-		bool isInState(const magnetState& ms) const;
-	/*! check if the current magnet SETI and PSU state is the same as the passed in magnetState
-		@param[in] magnetState structured data to check
-		@param[out] bool, for if in same state or not							*/
-		bool isInSETIandPSUState(const magnetState& ms)const;
+		bool matchesSnapshot() const;
+	///*! check if the current magnet SETI and PSU state is the same as the passed in magnetState
+	//	@param[in] magnetState structured data to check
+	//	@param[out] bool, for if in same state or not							*/
+		//bool isInSETIandPSUState(const magnetState& ms)const;
+
+	/*! degauss a magnet
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const std::vector<double>& custum_degauss_values, double set_value_after_degauss);
+	/*! degauss a magnet
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss);
+	/*! degauss a magnet
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(double set_value_after_degauss);
 	/*! degauss a magnet 
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const bool reset_to_zero);
@@ -181,6 +168,10 @@ class Magnet : public Hardware
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */
 		double setDegaussTolerance(const double value);
+	/*! Returns the value of the flag "last_degauss_success" 
+		@param[out] degaussTolerance now being used */
+		bool getLastDegaussSuccess()const;
+
 
 	/*! get the magnet TYPE (quadrupole, dipole, correctoer, solenoid, etc.)
 		@param[out] result  */
@@ -251,6 +242,30 @@ class Magnet : public Hardware
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)
 		@param[out] bool, if the command got sent (not if setting that current was successfull!)	*/
 		bool offlineSetPSUState(const STATE value);
+	
+
+	/*! check if the current READI is equal to a value, to within the Master Lattice  defeind tolerance
+		@param[in]  value to compare with READI
+		@param[out] bool, true if value is equal READI, otherwise false 		*/
+	bool isREADIequalValue(const double value) const;
+	/*! check if the current READI is equal to a value, to within a tolerance
+		@param[in]  value to compare with READI
+		@param[in]  tolerance for comparisaon
+		@param[out] bool, true if value is equal READI, otherwise false 		*/
+	bool isREADIequalValue(const double value, const double tolerance) const;
+	
+	/*! wait up to waitTime for the magnet READI to reach a value (to within a tolerance) or the magnet PSU on to STATE value
+		@param[in] value to wait for READI to reach
+		@param[in] tolerance for comparison
+		@param[in] waitTime, maximum time to wait before returning false
+		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
+	bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
+
+
+	/*! Reset the magnet PSU external interlocks 
+		@param[out] bool, true if commands got sent to EPICS */
+	bool resetILK() const;
+
 
 	/*! enable debug-messages for this magnet 	*/
 		void debugMessagesOn();
@@ -363,17 +378,6 @@ class Magnet : public Hardware
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */
 		std::string measurementDataLocation;
-	/*! check if the current READI is equal to a value, to within a tolerance
-		@param[in]  value to compare with READI
-		@param[in]  tolerance for comparisaon
-		@param[out] bool, true if value is equal READI, otherwise false 		*/
-		bool isREADIequalValue(const double value, const double tolerance) const;
-	/*! wait up to waitTime for the magnet READI to reach a value (to within a tolerance) or the magnet PSU on to STATE value
-		@param[in] value to wait for READI to reach 
-		@param[in] tolerance for comparison 
-		@param[in] waitTime, maximum time to wait before returning false
-		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
-		bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
 		
 		/* magnet types are stored as strings the master-lattice */
 		static std::map<std::string, TYPE> create_map()

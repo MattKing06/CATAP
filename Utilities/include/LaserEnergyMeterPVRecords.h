@@ -20,6 +20,8 @@ namespace LaserEnergyMeterRecords
 	extern std::map<int, STATE> laserSPElementMap;
 	extern std::map<std::string, TYPE> laserEnergyMeterList;
 	extern std::map<std::string, TYPE> laserEnergyMeterTypeToEnum;
+	
+	extern std::vector< int > laserEnergyMeterRangeSettings;
 }
 
 namespace LaserEnergyMeterState

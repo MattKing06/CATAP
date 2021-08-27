@@ -2,6 +2,7 @@
 #include <HardwarePythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
+#include <RunningStatsPythonInterface.h>
 
 BOOST_PYTHON_MODULE(_LaserEnergyMeter)
 {
@@ -11,6 +12,7 @@ BOOST_PYTHON_MODULE(_LaserEnergyMeter)
 	BOOST_PYTHON_TYPES_INCLUDE::expose_global_type_enums();
 	BOOST_PYTHON_STATES_INCLUDE::expose_global_state_enums();
 	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
+	BOOST_PYTHON_RUNNING_STATS_INCLUDE::expose_running_stats_object();
 	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_object();
 	BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE::expose_laser_energy_meter_factory_object();
 }

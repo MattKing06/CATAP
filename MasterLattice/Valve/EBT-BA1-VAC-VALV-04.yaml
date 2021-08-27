@@ -1,8 +1,8 @@
 controls_information:
     PV: true
     pv_record_map:
-        On: EBT-BA1-VAC-VALV-04:On
-        Off: EBT-BA1-VAC-VALV-04:Off
+        Open: EBT-BA1-VAC-VALV-04:Open
+        Close: EBT-BA1-VAC-VALV-04:Close
         Sta: EBT-BA1-VAC-VALV-04:Sta
 properties:
     machine_area: BA1

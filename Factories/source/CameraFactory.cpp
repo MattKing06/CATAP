@@ -5,18 +5,23 @@
 #include "GlobalFunctions.h"
 #include "PythonTypeConversions.h"
 #include <algorithm>
+#include <exception>
 
 CameraFactory::CameraFactory()
 {
 }
 
 CameraFactory::CameraFactory(STATE mode) :
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Camera", mode)),
-	messenger(LoggingSystem(true, true)),
-	machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
-	dummy_cam(Camera())
+CameraFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+CameraFactory::CameraFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Camera", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true)),
+machineAreas(std::vector<TYPE>{TYPE::UNKNOWN_AREA}),
+dummy_cam(Camera())
 {
 	messenger.printDebugMessage("CameraFactory constructed");
 }
@@ -62,6 +67,7 @@ bool CameraFactory::setup(const std::string& version, const boost::python::list&
 }
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
+	// TODO thsi fucntion needs to be combined with the other setups, all setup versions should end up in the same setup function!!! 
 	machineAreas = machineAreas_IN;
 
 	if (hasBeenSetup)
@@ -121,9 +127,20 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 		}
 		EPICSInterface::sendToEPICS();
 	}
+	messenger.printDebugMessage("Finished Setting up EPICS channels, caput default values ");
+	try
+	{
+		caputMasterLatticeParametersAfterSetup();
+	}
+	catch(const std::out_of_range& error)
+	{
+		std::cout << "ERROR" << std::endl;
+	}
+		
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
 	//machineAreas = machineAreas_IN;
@@ -206,10 +223,28 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 		messenger.printDebugMessage("Finished Setting up EPICS channels ");
 		EPICSInterface::sendToEPICS();
 	}
-	messenger.printDebugMessage("Finished Setting up EPICS channels ");
+	messenger.printDebugMessage("Finished Setting up EPICS channels, caput default values ");
+	caputMasterLatticeParametersAfterSetup();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+
+
+void CameraFactory::caputMasterLatticeParametersAfterSetup()
+{
+	messenger.printMessage("caputMasterLatticeParametersAfterSetup");
+	for (auto& cam: camera_map)
+	{
+		messenger.printMessage(cam.first, " setCentreXPixel to ", cam.second.master_lattice_centre_x);
+		cam.second.setCentreXPixel(cam.second.master_lattice_centre_x);
+		messenger.printMessage(cam.first, " getCentreYPixel to ", cam.second.master_lattice_centre_y);
+		cam.second.setCentreYPixel(cam.second.master_lattice_centre_y);
+		messenger.printMessage(cam.first, " setPixelToMM to ", cam.second.master_lattice_pixel_to_mm);
+		cam.second.setPixelToMM(cam.second.master_lattice_pixel_to_mm);
+
+	}
+}
+
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
@@ -936,6 +971,24 @@ bool CameraFactory::isNotUsingNPoint(const std::string& name)const
 	}
 	return false;
 }
+STATE CameraFactory::getSetNewBackgroundState(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getSetNewBackgroundState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+bool CameraFactory::setNewBackground(const std::string& name, bool v)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setNewBackground(v);
+	}
+	return false;
+}
 bool CameraFactory::useBackground(const std::string& name,bool v)
 {
 	std::string full_name = getFullName(name);
@@ -1414,6 +1467,28 @@ STATE CameraFactory::getAnalysisState(const std::string& name)const
 	}
 	return STATE::ERR;
 }
+bool CameraFactory::setNumberOfShotsToCapture(const std::string& name, size_t num)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).setNumberOfShotsToCapture(num);
+	}
+	return false;
+}
+size_t CameraFactory::getNumberOfShotsToCapture(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getNumberOfShotsToCapture();
+	}
+	return GlobalConstants::zero_sizet;
+}
+bool CameraFactory::captureAndSave(const std::string& name)
+{
+	return captureAndSave(name, GlobalConstants::zero_sizet);
+}
 bool CameraFactory::captureAndSave(const std::string& name, size_t num_images)
 {
 	std::string full_name = getFullName(name);
@@ -1662,7 +1737,7 @@ void CameraFactory::setBufferSize(const std::string& name, size_t v)
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).setBufferSize(v);
+		return camera_map.at(full_name).setAllRunningStatBufferSizes(v);
 	}
 }
 void CameraFactory::clearBuffers(const std::string& name)
@@ -1670,7 +1745,7 @@ void CameraFactory::clearBuffers(const std::string& name)
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).clearBuffers();
+		return camera_map.at(full_name).clearAllRunningStatBuffers();
 	}
 }
 double CameraFactory::getPix2mm(const std::string& name)const
@@ -1682,12 +1757,12 @@ double CameraFactory::getPix2mm(const std::string& name)const
 	}
 	return GlobalConstants::double_min;
 }
-boost::python::dict CameraFactory::getRunningStats(const std::string& name)const
+boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getRunningStats();
+		return camera_map.at(full_name).getAllRunningStats();
 	}
 	return boost::python::dict();
 }

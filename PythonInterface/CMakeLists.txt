@@ -14,6 +14,7 @@ set( SOURCE_FILES
     source/HardwareFactoryPythonInterface.cpp
     source/IMGPythonInterface.cpp
     source/LaserEnergyMeterPythonInterface.cpp
+    source/PILaserSystemPythonInterface.cpp
     source/LaserHWPPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
     source/LEDPythonInterface.cpp
@@ -23,6 +24,7 @@ set( SOURCE_FILES
     source/RFHeartbeatPythonInterface.cpp
     source/RFModulatorPythonInterface.cpp
     source/RFProtectionPythonInterface.cpp
+    source/RunningStatsPythonInterface.cpp
     source/StagePythonInterface.cpp
     source/ShutterPythonInterface.cpp
 )
@@ -47,6 +49,7 @@ set( INCLUDE_FILES
     include/HardwarePythonInterface.h
 	include/IMGPythonInterface.h
     include/LaserEnergyMeterPythonInterface.h
+	include/PILaserSystemPythonInterface.h
     include/LaserHWPPythonInterface.h
     include/LaserMirrorPythonInterface.h
     include/LEDPythonInterface.h
@@ -56,6 +59,7 @@ set( INCLUDE_FILES
     include/RFHeartbeatPythonInterface.h
     include/RFModulatorPythonInterface.h
     include/RFProtectionPythonInterface.h
+    include/RunningStatsPythonInterface.h
     include/StagePythonInterface.h
     include/ShutterPythonInterface.h
 )
@@ -66,22 +70,11 @@ set( TEST_FILES
 
 
 if(WIN32)
-	set(THIRD_PARTY_DEBUG_LIB_DIRS
-		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-gd-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-gd-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-gd-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_system-vc140-mt-gd-1_63.dll
-		${EPICS_COM_DLL}
-		${EPICS_CA_DLL}
-		)
-	set(THIRD_PARTY_RELEASE_LIB_DIRS
-		${Boost_LIBRARY_DIRS}/boost_filesystem-vc140-mt-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python3-vc140-mt-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_python-vc140-mt-1_63.dll
-		${Boost_LIBRARY_DIRS}/boost_system-vc140-mt-1_63.dll
-		${EPICS_COM_DLL}
-		${EPICS_CA_DLL}
-		)
+	file(GLOB RELEASE_LIBS ${THIRD_PARTY_LIBS}/Windows/x64/Release/*.dll)
+	file(GLOB DEBUG_LIBS ${THIRD_PARTY_LIBS}/Windows/x64/Debug/*.dll)
+	message("THIRD PARTY LOCATION: " ${THIRD_PARTY_LIBS})
+	message("REL LIBS: " ${RELEASE_LIBS})
+	message("DEB LIBS: " ${DEBUG_LIBS})
 endif(WIN32)
 if(UNIX)
 	set(THIRD_PARTY_LIB_DIRS
@@ -94,8 +87,8 @@ if(UNIX)
 		)
 endif(UNIX)
 cmake_policy(SET CMP0022 NEW)
-find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS python3)
+#find_package(PythonLibs ${PY_VERSION})
+#find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 if(MSVC)
 	# This definition is added because _HardwareFactory exposes a lot objects
 	# so MSVC compiler requires that we define the bigobj flag in the compiler definitions.
@@ -120,7 +113,7 @@ foreach(FILE ${SOURCE_FILES})
 	ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 	#set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
 	target_include_directories(${LIBNAME} PUBLIC ${Boost_INCLUDE_DIR})
-	target_include_directories(${LIBNAME} PUBLIC ${PYTHON_INCLUDE_DIR})
+	target_include_directories(${LIBNAME} PUBLIC ${Python3_INCLUDE_DIRS})
 	target_include_directories(${LIBNAME} PRIVATE include)
     target_include_directories(${LIBNAME} PRIVATE GENERAL_INCLUDE_FILES)
 	target_include_directories(${LIBNAME} PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
@@ -128,15 +121,17 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSTools/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/HighLevelSystems/PILaserSystem/include)
 	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
 						 ${Boost_LIBRARIES}
-						 ${PYTHON_LIBRARY}
+						 ${Python3_LIBRARIES}
 						 PRIVATE
 						 Factories
 						 Hardware
 						 EPICSTools
 						 ConfigReader
-						 Utilities)
+						 Utilities
+						 PILaserSystem)
 	if (UNIX)
 	  set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
 	  set_target_properties(${LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/${LIBFOLDERNAME}>)
@@ -182,19 +177,22 @@ foreach(FILE ${SOURCE_FILES})
 		#get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
 		#message("DEBUG OUTPUT DIR: " ${DEBUG_OUTPUT_DIRECTORY})
 		#message("RELEASE OUTPUT DIR: " ${RELEASE_OUTPUT_DIRECTORY})
-        foreach(LIBRARY ${THIRD_PARTY_DEBUG_LIB_DIRS})
-            add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${DEBUG_OUTPUT_DIRECTORY}>)
-            add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP>)
-            message("COPIED ${LIBRARY} TO: ${DEBUG_OUTPUT_DIRECTORY}")
-            message("COPIED ${LIBRARY} TO: ${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP")
-        endforeach(LIBRARY)
-
-        foreach(LIBRARY ${THIRD_PARTY_RELEASE_LIB_DIRS})
-            add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_OUTPUT_DIRECTORY}>)
-            add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP>)
-            message("COPIED ${LIBRARY} TO: ${RELEASE_OUTPUT_DIRECTORY}")
-            message("COPIED ${LIBRARY} TO: ${RELEASE_TOP_LEVEL_CATAP_DIR}")
-        endforeach(LIBRARY)
+		message("RELEASE BUILD")
+		foreach(LIBRARY ${RELEASE_LIBS})
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> )
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP> )
+		endforeach(LIBRARY)
+		###
+		### WE DO NOT BUILD FOR DEBUG YET.
+		#foreach(LIBRARY ${DEBUG_LIBS})
+		#	add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> )
+		#	add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}> )
+		#endforeach(LIBRARY)
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP>)
+	    #message("DEBUG BUILD")
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug/ $<1:${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug/ $<1:${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP>)
 	endif(WIN32)
 	if (UNIX)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/${LIBFOLDERNAME}/__init__.py)

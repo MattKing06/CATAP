@@ -40,7 +40,7 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_object();
 	BOOST_PYTHON_CHARGE_INCLUDE::expose_charge_factory_object();
 	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
-	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_epics_tools_object();
+	BOOST_PYTHON_EPICS_TOOLS_INCLUDE::expose_listener_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_factory_object();
 	BOOST_PYTHON_LASER_MIRROR_INCLUDE::expose_laser_mirror_object();
@@ -65,9 +65,6 @@ BOOST_PYTHON_MODULE(_HardwareFactory)
 
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_object();
 	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_factory_object();
-	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_dburt();
-	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_state();
-	BOOST_PYTHON_MAGNET_INCLUDE::expose_magnet_states();
 
 	BOOST_PYTHON_RF_HEARTBEAT_INCLUDE::expose_rf_heartbeat_object();
 	BOOST_PYTHON_RF_HEARTBEAT_INCLUDE::expose_rf_heartbeat_factory_object();

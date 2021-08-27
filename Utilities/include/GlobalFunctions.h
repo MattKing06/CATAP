@@ -125,6 +125,8 @@ namespace GlobalFunctions {
     }
 
 
+	extern TYPE stringToTYPE(const std::string& type_str);
+
 
 	//template<typename T = double>
 	//double roundToN(const T a, const size_t n)
@@ -158,8 +160,7 @@ namespace GlobalFunctions {
 		return s;
 	}
 
-	extern bool stringIsSubString(const std::string& stringToCheck, 
-		const std::string& stringToLookFor);
+	extern bool stringIsSubString(const std::string& stringToCheck,const std::string& stringToLookFor);
 
 	extern std::string getTimeAndDateString();
 
@@ -229,10 +230,15 @@ namespace GlobalFunctions {
 	void pause_1()   ;
 
 	extern TYPE stringToType(const std::string& string_to_compare);
+	extern STATE stringToState(const std::string& string_to_compare);
 
 	// isInMahineArea
 
 	extern bool isInMachineArea(TYPE testArea, TYPE area);
+	
+	extern std::string trimAllWhiteSpace(std::string strIN);
+	extern std::string trimAllWhiteSpaceExceptBetweenDoubleQuotes(std::string strIN);
+
 
 	extern STATE stringToSTATE(const std::string& state_str);
 }

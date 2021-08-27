@@ -10,6 +10,7 @@ class CameraFactory
 public:
 	CameraFactory();
 	CameraFactory(STATE mode);
+	CameraFactory(STATE mode, const std::string& primeLatticeLocation);
 	CameraFactory(const CameraFactory& copyFactory);
 	~CameraFactory();
 	LoggingSystem messenger;
@@ -411,6 +412,14 @@ public:
 	@param[in] std::string, name
 	@param[out] bool, true if using NPoint scaling*/
 	bool isNotUsingNPoint(const std::string& name)const;
+	/*! Get the state of the Flag to set the next image as background.
+	@param[in] std::string, name of camera
+	@param[out] STATE, value fo flag, YES or NO */
+	STATE getSetNewBackgroundState(const std::string& name);
+	/*! set the netx image to be the background image subtracted during the analysis procedure. 
+	@param[in] std::string, name of camera
+	@param[out] bool, true if value sent to EPICSt, not if it was succesfully applied */
+	bool setNewBackground(const std::string& name, bool v);
 	/*! set use the background image during the analysis  procedure
 	@param[in] std::string, name
 	@param[in] bool, true to use the background, False to not use the background
@@ -641,6 +650,15 @@ public:
 	@param[in] std::string, name
 	@param[out] STATE, value from analysis_state*/
 	STATE getAnalysisState(const std::string& name)const;
+	/* set the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	bool setNumberOfShotsToCapture(const std::string& name, size_t num);
+	/* set the number of shots that will be "collected and written to disk."
+	@param[out] bool, if requested number is less than max_shots, and the value got sent to epics */
+	size_t getNumberOfShotsToCapture(const std::string& name)const;
+	/*! Capture and save images to disc, using the currently set number of shots to capture.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool captureAndSave(const std::string& name);
 	/*! Capture and save images to disc.
 	@param[in] std::string, name
 	@param[in] size_t, num_images, number of images to capture and write to file
@@ -773,7 +791,7 @@ public:
 	/*! Get the running stats buffer,
 	@param[in] std::string, name
 	@param[out] dict, values */
-	boost::python::dict getRunningStats(const std::string& name)const;
+	boost::python::dict getAllRunningStats(const std::string& name)const;
 
 
 
@@ -930,10 +948,12 @@ private:
 	/*! sets the pvStruct monitor flag to true if the record is hardcoded as a record to monitor 
 	@param[in] pvStruct, pvStruct to set monitor status for */
 	void setMonitorStatus(pvStruct& pvStruct);
-		
+	
+	/*! All camera objects are held in here */
 	std::map<std::string, Camera> camera_map;
 	
-
+	/*! After setup has finished connecting channels, some values are set to their Master Lattice values, pixel to mm, centre_x and y row/column (maybe some othhers). */
+	void caputMasterLatticeParametersAfterSetup();
 
 	std::vector<TYPE> machineAreas;
 

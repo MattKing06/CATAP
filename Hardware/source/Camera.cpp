@@ -25,6 +25,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	pix2mmX_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	pix2mmY_ratio(GlobalConstants::double_min),  // MAGIC STRING
 	max_shots_number(GlobalConstants::size_zero),  // MAGIC STRING
+	pix2mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	y_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	sigma_x_pix(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -42,8 +43,28 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_y_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-	x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
-	y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	pixelResults(std::make_pair(epicsTimeStamp(), std::vector<double>{GlobalConstants::double_min, //X_POS
+																	  GlobalConstants::double_min, //Y_POS
+																	  GlobalConstants::double_min, //X_SIGMA
+																	  GlobalConstants::double_min, //Y_SIGMA
+																	  GlobalConstants::double_min  //COV
+																	 })),
+	mmResults(std::make_pair(epicsTimeStamp(), std::vector<double>{GlobalConstants::double_min, //X_POS
+																	  GlobalConstants::double_min, //Y_POS
+																	  GlobalConstants::double_min, //X_SIGMA
+																	  GlobalConstants::double_min, //Y_SIGMA
+																	  GlobalConstants::double_min  //COV
+																	 })),
+
+	master_lattice_pixel_to_mm(GlobalConstants::double_min),
+	master_lattice_centre_x(GlobalConstants::long_min),
+	master_lattice_centre_y(GlobalConstants::long_min),
+
+	lastResultsUpdateTime(epicsTimeStamp()),
+	lastResultsUpdateTime_mm_ana_results(epicsTimeStamp()),
+	isResultUpdated(false),
+	x_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	y_center_pixel(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	step_size(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	acquire_time(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	acquire_period(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
@@ -54,6 +75,7 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	pixel_to_mm(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	mask_and_roi_keywords({ "x_pos", "y_pos", "x_size", "x_size" }),  //MAGIC STRING
 	mask_keywords({ "mask_x", "mask_y", "mask_rad_x", "mask_rad_y" }),//MAGIC STRING 
@@ -143,7 +165,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	}
 	else
 	{
-		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_Y_PIX_2_MM");
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_SHOTS_NUMBER");
 	}
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find name_alias");
@@ -156,6 +178,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			messenger.printDebugMessage(hardwareName, " added aliase " + name);
 		}
 	}
+	else{ messenger.printDebugMessage(hardwareName, " !!WARNING!!");}
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find SCREEN_NAME");
 	if (GlobalFunctions::entryExists(paramMap, "SCREEN_NAME"))
@@ -167,6 +190,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			messenger.printDebugMessage(hardwareName, " added screen_name " + name);
 		}
 	}
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find CAM_TYPE");
 	if (GlobalFunctions::entryExists(paramMap, "CAM_TYPE"))
@@ -176,6 +200,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			cam_type = GlobalConstants::stringToTypeMap.at(paramMap.at("CAM_TYPE"));
 		}
 	}
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find HAS_LED");
 	if (GlobalFunctions::entryExists(paramMap, "HAS_LED"))
@@ -189,6 +214,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			has_led = false;
 		}
 	}
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_X"))
@@ -199,7 +225,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_X");
 	}
-
 
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
@@ -255,7 +280,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find AVG_PIXEL_VALUE_FOR_BEAM");
 	if (GlobalFunctions::entryExists(paramMap, "AVG_PIXEL_VALUE_FOR_BEAM"))
 	{
-		average_pixel_value_for_beam = std::stof(paramMap.find("AVG_PIXEL_VALUE_FOR_BEAM")->second);
+		average_pixel_value_for_beam = std::stod(paramMap.find("AVG_PIXEL_VALUE_FOR_BEAM")->second.data());
 	}
 	else
 	{
@@ -385,7 +410,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find X_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "X_CENTER_DEF"))
 	{
-		x_center_def = (size_t)std::stof(paramMap.find("X_CENTER_DEF")->second);
+		master_lattice_centre_x = (long)std::stoi(paramMap.find("X_CENTER_DEF")->second);
 	}
 	else
 	{
@@ -395,12 +420,27 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
 	if (GlobalFunctions::entryExists(paramMap, "Y_CENTER_DEF"))
 	{
-		y_center_def = (size_t)std::stof(paramMap.find("Y_CENTER_DEF")->second);
+		master_lattice_centre_y = (long)std::stoi(paramMap.find("Y_CENTER_DEF")->second);
 	}
 	else
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
 	}
+	//-------------------------------------------------------------------------------------------------
+	messenger.printDebugMessage(hardwareName, " find PIX_2_MM_RATIO_DEF");
+	if (GlobalFunctions::entryExists(paramMap, "PIX_2_MM_RATIO_DEF"))
+	{
+		master_lattice_pixel_to_mm  = std::stod(paramMap.find("PIX_2_MM_RATIO_DEF")->second);
+		messenger.printDebugMessage(hardwareName, " Found PIX_2_MM_RATIO_DEF, value = ", master_lattice_pixel_to_mm);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find PIX_2_MM_RATIO_DEF");
+	}
+	// 
+	// 
+	// 
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find USE_MASK_RAD_LIMITS");
 	if (GlobalFunctions::entryExists(paramMap, "USE_MASK_RAD_LIMITS"))
@@ -426,7 +466,8 @@ Camera::Camera(const Camera& copyCamera):
 Hardware(copyCamera),
 mask_and_roi_keywords(copyCamera.mask_and_roi_keywords),
 mask_keywords(copyCamera.mask_keywords),
-roi_keywords(copyCamera.roi_keywords)
+roi_keywords(copyCamera.roi_keywords),
+pixelResults(copyCamera.pixelResults)
 //mask_and_roi_keywords_Py(copyCamera.mask_and_roi_keywords_Py),
 //mask_keywords_Py(copyCamera.mask_keywords_Py),
 //roi_keywords_Py(copyCamera.roi_keywords_Py)
@@ -475,6 +516,33 @@ TYPE Camera::getCamType()const
 {
 	return cam_type;
 }
+
+double Camera::getPixelToMM()const
+{
+	return pix_to_mm.second;
+}
+bool Camera::setPixelToMM(double value )const
+{
+	return epicsInterface->putValue2<double>(pvStructs.at(CameraRecords::ANA_PixMM), value);
+}
+
+long Camera::getCentreXPixel()const
+{
+	return x_center_pixel.second;
+}
+bool Camera::getCentreYPixel()const
+{
+	return y_center_pixel.second;
+}
+bool Camera::setCentreXPixel(long value)
+{
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterX), value);
+}
+bool Camera::setCentreYPixel(long value)
+{
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_CenterY), value);
+}
+
 double Camera::pix2mmX(double value)const
 {
 	return value / pix2mmX_ratio;
@@ -531,9 +599,17 @@ double Camera::getXPix()const
 {
 	return x_pix.second;
 }
+size_t Camera::getXPixScaleFactor() const
+{
+	return x_pix_scale_factor;
+}
 double Camera::getYPix()const
 {
 	return y_pix.second;
+}
+size_t Camera::getYPixScaleFactor() const
+{
+	return y_pix_scale_factor;
 }
 double Camera::getSigXPix()const
 {
@@ -547,6 +623,25 @@ double Camera::getSigXYPix()const
 {
 	return sigma_xy_pix.second;
 }
+
+
+size_t Camera::getNumXPixFromArrayData() const
+{
+	return array_data_num_pix_x;
+}
+size_t Camera::getNumYPixFromArrayData() const
+{
+	return array_data_num_pix_y;
+}
+size_t Camera::getFullNumXPix() const
+{
+	return binary_num_pix_x;
+}
+size_t Camera::getFullNumYPix() const
+{
+	return binary_num_pix_y;
+}
+
 double Camera::getSumIntensity()const
 {
 	return sum_intensity.second;
@@ -561,7 +656,7 @@ long Camera::getStepSize()const
 }
 bool Camera::setStepSize(long val)
 {
-	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_StepSize), val);
+	return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val);
 }
 bool Camera::setX(double value)
 {
@@ -779,6 +874,19 @@ bool Camera::setAvgIntensity(double value)
 	avg_intensity = std::make_pair(epicsTimeStamp(), value);
 	return true;
 }
+double Camera::getAveragePixelValueForBeam()
+{
+	return average_pixel_value_for_beam;
+}
+bool Camera::setAveragePixelValueForBeam(const double& value)
+{
+	average_pixel_value_for_beam = value;
+	return true;
+}
+bool Camera::hasBeam()
+{
+	return getAvgIntensity() > getAveragePixelValueForBeam();
+}
 bool Camera::setMaskXCenter(long val)
 {
 	messenger.printMessage("setMaskXCenter ", val);
@@ -954,10 +1062,22 @@ bool Camera::isNotUsingNPoint()const
 {
 	return use_npoint.second == STATE::NOT_USING_NPOINT;
 }
+
+bool Camera::setNewBackground(bool v)
+{
+	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
+	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_NewBkgrnd), comm);
+}
+STATE Camera::getSetNewBackgroundState()
+{
+	return set_new_background.second;
+}
+
+
 bool Camera::useBackground(bool v)
 {
 	unsigned short comm = v ? GlobalConstants::one_ushort : GlobalConstants::zero_ushort;
-	messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
+	//messenger.printDebugMessage(hardwareName, " useBackground, ", comm);
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::ANA_UseBkgrnd), comm);
 }
 bool Camera::isUsingBackground()const
@@ -1024,10 +1144,10 @@ long Camera::getROISizeY()const
 std::map<std::string, long> Camera::getROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX(); // MAGIC STRING
-	r["y_pos"] = getROIMinY(); // MAGIC STRING
-	r["x_size"] = getROISizeX();// MAGIC STRING
-	r["y_size"] = getROISizeY();// MAGIC STRING
+	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
+	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
+	r["roi_x_size"] = getROISizeX();// MAGIC STRING
+	r["roi_y_size"] = getROISizeY();// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getROI_Py()const
@@ -1037,17 +1157,51 @@ boost::python::dict Camera::getROI_Py()const
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
-	r["x_pos"] = getROIMinX(); // MAGIC STRING
-	r["y_pos"] = getROIMinY(); // MAGIC STRING
-	r["x_size"] = getROISizeX();// MAGIC STRING
-	r["y_size"] = getROISizeY();// MAGIC STRING
+	r["roi_min_x"] = getROIMinX(); // MAGIC STRING
+	r["roi_min_y"] = getROIMinY(); // MAGIC STRING
+	r["roi_x_size"] = getROISizeX();// MAGIC STRING
+	r["roi_y_size"] = getROISizeY();// MAGIC STRING
+	r["mask_center_x"] = getMaskXCenter(); // MAGIC STRING
+	r["mask_center_y"] = getMaskYCenter(); // MAGIC STRING
+	r["mask_x_size"] = getMaskXRadius();// MAGIC STRING
+	r["mask_y_size"] = getMaskYRadius();// MAGIC STRING
 	return r;
 }
 boost::python::dict Camera::getMaskandROI_Py()const
 {
 	return  to_py_dict<std::string, long>(getMaskandROI());
 }
-boost::python::dict Camera::getRunningStats()const
+
+
+
+
+
+
+//boost::python::dict Camera::getRunningStats(const std::string& type_str)const
+//{
+//	return getRunningStats(GlobalFunctions::stringToTYPE(type_str));
+//}
+//boost::python::dict Camera::getRunningStats(TYPE type)const
+//{
+//	
+//	switch (type)
+//	{
+//	case TYPE::CAMERA_X_PIX_RS: return x_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_Y_PIX_RS: return y_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_X_PIX_RS: return sigma_x_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_Y_PIX_RS: return sigma_y_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_XY_PIX_RS: return sigma_xy_pix_rs.getRunningStats();
+//	case TYPE::CAMERA_X_MM_RS: return x_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_Y_MM_RS: return y_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_X_MM_RS: return sigma_x_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_Y_MM_RS: return sigma_y_mm_rs.getRunningStats();
+//	case TYPE::CAMERA_SIGMA_XY_MM_RS: return sigma_xy_mm_rs.getRunningStats();
+//	default: return boost::python::dict();
+//	}
+//
+//}
+
+boost::python::dict Camera::getAllRunningStats()const
 {
 	boost::python::dict r;
 	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
@@ -1062,11 +1216,72 @@ boost::python::dict Camera::getRunningStats()const
 	r["sigma_xy_mm"] =  sigma_xy_mm_rs.getRunningStats();   // MAGIC STRING
 	return r;
 }
+
+RunningStats& Camera::getXPixRunningStats()
+{
+	return x_pix_rs;
+}
+
+RunningStats& Camera::getYPixRunningStats()
+{
+	return y_pix_rs;
+}
+
+RunningStats& Camera::getSigmaXPixRunningStats()
+{
+	return sigma_x_pix_rs;
+}
+
+RunningStats& Camera::getSigmaYPixRunningStats()
+{
+	return sigma_y_pix_rs;
+}
+
+RunningStats& Camera::getSigmaXYPixRunningStats()
+{
+	return sigma_xy_pix_rs;
+}
+
+RunningStats& Camera::getXmmRunningStats()
+{
+	return x_mm_rs;
+}
+
+RunningStats& Camera::getYmmRunningStats()
+{
+	return y_mm_rs;
+}
+
+RunningStats& Camera::getSigmaXmmRunningStats()
+{
+	return sigma_x_mm_rs;
+}
+
+RunningStats& Camera::getSigmaYmmRunningStats()
+{
+	return sigma_y_mm_rs;
+}
+
+RunningStats& Camera::getSigmaXYmmRunningStats()
+{
+	return sigma_xy_mm_rs;
+}
+
+RunningStats& Camera::getAvgIntensityRunningStats()
+{
+	return avg_intensity_rs;
+}
+
+RunningStats& Camera::getSumIntensityRunningStats()
+{
+	return sum_intensity_rs;
+}
+
 size_t Camera::getBufferSize()const
 {
 	return running_stats_buffer_size;
 }
-void Camera::setBufferSize(size_t v)
+void Camera::setAllRunningStatBufferSizes(size_t v)
 {
 	x_pix_rs.setBufferSize(v);
 	y_pix_rs.setBufferSize(v);
@@ -1080,7 +1295,7 @@ void Camera::setBufferSize(size_t v)
 	sigma_xy_mm_rs.setBufferSize(v);
 	running_stats_buffer_size = v;
 }
-void Camera::clearBuffers()
+void Camera::clearAllRunningStatBuffers()
 {
 	x_pix_rs.clearBuffer();
 	y_pix_rs.clearBuffer();
@@ -1093,6 +1308,33 @@ void Camera::clearBuffers()
 	sigma_y_mm_rs.clearBuffer();
 	sigma_xy_mm_rs.clearBuffer();
 }
+void Camera::clearAllRunningStats()
+{
+	x_pix_rs.Clear();
+	y_pix_rs.Clear();
+	sigma_x_pix_rs.Clear();
+	sigma_y_pix_rs.Clear();
+	sigma_xy_pix_rs.Clear();
+	x_mm_rs.Clear();
+	y_mm_rs.Clear();
+	sigma_x_mm_rs.Clear();
+	sigma_y_mm_rs.Clear();
+	sigma_xy_mm_rs.Clear();
+}
+void Camera::setAllRunningStatSizes(size_t new_val)
+{
+	x_pix_rs.setMaxCount(new_val);
+	y_pix_rs.setMaxCount(new_val);
+	sigma_x_pix_rs.setMaxCount(new_val);
+	sigma_y_pix_rs.setMaxCount(new_val);
+	sigma_xy_pix_rs.setMaxCount(new_val);
+	x_mm_rs.setMaxCount(new_val);
+	y_mm_rs.setMaxCount(new_val);
+	sigma_x_mm_rs.setMaxCount(new_val);
+	sigma_y_mm_rs.setMaxCount(new_val);
+	sigma_xy_mm_rs.setMaxCount(new_val);
+}
+
 bool Camera::startAcquiring()
 {
 	return  epicsInterface->putValue2<unsigned short >(pvStructs.at(CameraRecords::CAM_Start_Acquire), GlobalConstants::one_ushort);
@@ -1142,6 +1384,10 @@ STATE Camera::getAnalysisState( )const
 //-------------------------------------------------------------------------------------------------------
 //
 //
+bool Camera::captureAndSave()
+{
+	return captureAndSave(GlobalConstants::zero_sizet);
+}
 bool Camera::captureAndSave(size_t num_shots)
 {
 	if (isNotAcquiring())
@@ -1222,7 +1468,13 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 {
 	messenger.printDebugMessage(hardwareName, " imageCaptureAndSave called");
 	bool timed_out = false;
-	if (setNumberOfShotsToCapture(num_shots))
+
+	bool carry_on = true;
+	if (num_shots > GlobalConstants::zero_sizet)
+	{
+		bool carry_on = setNumberOfShotsToCapture(num_shots);
+	}
+	if (carry_on)
 	{
 		messenger.printDebugMessage(hardwareName, " Set number of shots success");
 		if (capture())
@@ -1299,11 +1551,15 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 	}
 }
 //-------------------------------------------------------------------------------------------------------
+size_t Camera::getNumberOfShotsToCapture()const
+{
+	return capture_count.second;
+}
 bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
 	{
-		return epicsInterface->putValue2<int>(pvStructs.at(CameraRecords::HDF_Capture), (int)num);
+		return epicsInterface->putValue2<int>(pvStructs.at(CameraRecords::HDF_NumCapture), (int)num);
 	}
 	return false;
 }
@@ -1325,7 +1581,7 @@ bool Camera::write()
 {
 	bool ans = false;
 	int startNumber(1);// MAGIC_NUMBER should this be a one or a zero?
-	// WHAT IS THIS DOING????
+	// WHAT IS THIS DOING???? OLD stuff to converted to jpg automatically that has not been implmented 
 	//setStartFileNumberJPG(startNumber);
 	if (isNotCapturing())
 	{
@@ -1341,12 +1597,9 @@ bool Camera::write()
 //-------------------------------------------------------------------------------------------------------
 bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look nice)
 {
+	messenger.printDebugMessage("makeANewDirectoryAndName ");
 	bool ans = false;
-
 	messenger.printDebugMessage("char: ", sizeof(char));
-	messenger.printDebugMessage("char: ", sizeof(char));
-	messenger.printDebugMessage("char: ", sizeof(char));
-
 	//std::string time_now = globalfunctions::time_iso_8601();
 	
 	// this sets up the directory structure, based on year, month date
@@ -1358,8 +1611,8 @@ bool Camera::makeANewDirectoryAndName(size_t numbOfShots)///YUCK (make it look n
 	tm local_tm = *localtime(&t);
 	////struct tm local_tm;
 	//localtime_s(&local_tm, &t);  windows version that got added c11 but not accepted by gcc !??!? 
-	char newPath[256] = "/cameraimages/";
-	std::string strpath = "/cameraimages/" +
+	char newPath[256] = "/CameraImages/"; // case sensitive!!! TODO add to master lattice 
+	std::string strpath = "/CameraImages/" +
 		std::to_string(local_tm.tm_year + 1900) +
 		"/" + std::to_string(local_tm.tm_mon + 1) +
 		"/" + std::to_string(local_tm.tm_mday) + "/";
@@ -1541,6 +1794,11 @@ bool Camera::isCapturingOrSaving()const
 	}
 	return false;
 }
+bool Camera::isNotCapturingOrSaving()const
+{
+	return !isCapturingOrSaving();
+}
+
 std::string Camera::getLastDirectoryandFileName() const
 {
 	return getLastDirectory() + "/" + getLastFileName(); // WARNING!! TODO unix / windows conventions :(( 
@@ -1670,6 +1928,30 @@ bool Camera::setFloorLevel(long v)
 		return epicsInterface->putValue2<long>(pvStructs.at(CameraRecords::ANA_FloorLevel), v);
 	}
 	return false;
+}
+std::vector<double> Camera::getPixelResults() const
+{
+	//std::cout << "X_POS: " << std::setprecision(15) << pixelResults.second.at(0)<< std::endl;
+	return pixelResults.second;
+}
+boost::python::list Camera::getPixelResults_Py()
+{
+	//std::cout << "X_POS_PY: " << pixelResults.second.at(0) << std::endl;
+	//std::vector<double> returnList = pixelResults.second;
+	return to_py_list<double>(pixelResults.second);
+}
+std::vector<double> Camera::getMMResults() const
+{
+	return mmResults.second;
+}
+boost::python::list Camera::getMMResults_Py()
+{
+	return to_py_list<double>(pixelResults.second);
+}
+
+bool Camera::isAnalysisUpdating()
+{
+	return isResultUpdated;
 }
 double Camera::getAcquireTime()const
 {
@@ -1803,14 +2085,14 @@ bool Camera::updateImageData()
 	}
 	if (!image_data_has_not_vector_resized)
 	{
-		auto start = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
 		//bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 		//	, image_data.first);
 		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.second.size());
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		//auto stop = std::chrono::high_resolution_clock::now();
+		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -1832,14 +2114,14 @@ bool Camera::updateImageDataWithTimeStamp()
 	}
 	if (!image_data_has_not_vector_resized && !image_data_has_not_malloced)
 	{
-		auto start = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
 		bool got_stamp = getArrayTimeStamp(dbr_image_data, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.first);
 		bool got_value = getArrayValue(image_data.second, pvStructs.at(CameraRecords::CAM2_ArrayData)
 			, image_data.second.size());
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageDataWithTimeStamp Time taken: ", duration.count(), " us");
+		//auto stop = std::chrono::high_resolution_clock::now();
+		//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		//messenger.printDebugMessage("updateImageDataWithTimeStamp Time taken: ", duration.count(), " us");
 		return got_stamp && got_value;
 	}
 	else {
@@ -1917,8 +2199,8 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 		//std::cout << epicsInterface->getEPICSTime(ts_to_update) << std::endl;
 		auto stop  = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
-		std::cout << dbr_struct->value << std::endl;
+		//messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
+		//std::cout << dbr_struct->value << std::endl;
 		return true;
 	}
 	return false;
@@ -1933,7 +2215,7 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 		MY_SEVCHK(status);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
+		//messenger.printDebugMessage("getArrayValue Time taken: ", duration.count(), " us");
 		return true;
 	}
 	return false;

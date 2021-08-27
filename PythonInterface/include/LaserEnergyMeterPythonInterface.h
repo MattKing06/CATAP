@@ -24,6 +24,10 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.add_property("energybuffer", &LaserEnergyMeter::getEnergyBuffer)
 			.add_property("energyvector", &LaserEnergyMeter::getEnergyVector)
 			.add_property("energy", &LaserEnergyMeter::getEnergy)
+			.add_property("status", &LaserEnergyMeter::getStatus)
+			.add_property("statusbuffer", &LaserEnergyMeter::getStatusBuffer)
+			.add_property("statusvector", &LaserEnergyMeter::getStatusVector)
+			.add_property("calibrationfactor", &LaserEnergyMeter::getCalibrationFactor)
 			.def("getOverRange", &LaserEnergyMeter::getOverRange)
 			.def("setStart", &LaserEnergyMeter::setStart)
 			.def("setStop", &LaserEnergyMeter::setStop)
@@ -38,7 +42,13 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("setBufferSize", &LaserEnergyMeter::setBufferSize)
 			.def("isEnergyVectorFull", &LaserEnergyMeter::isEnergyVectorFull)
 			.def("isEnergyBufferFull", &LaserEnergyMeter::isEnergyBufferFull)
-			.def("monitorForNShots", &LaserEnergyMeter::monitorForNShots);
+			.def("monitorForNShots", &LaserEnergyMeter::monitorForNShots)
+			.def("getStatus", &LaserEnergyMeter::getStatus)
+			.def("getCalibrationFactor", &LaserEnergyMeter::getCalibrationFactor)
+			.def("getStatusVector", &LaserEnergyMeter::getStatusVector)
+			.def("getStatusBuffer", &LaserEnergyMeter::getStatusBuffer)
+			.def("getRunningStats", &LaserEnergyMeter::getRunningStats_Py)
+			.def("getEnergyRunningStats", &LaserEnergyMeter::getEnergyRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>());
 	}
 	
 	void expose_laser_energy_meter_factory_object() {
@@ -48,6 +58,7 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<LaserEnergyMeterFactory>("LaserEnergyMeterFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &LaserEnergyMeterFactory::setup)
 			.add_property("laserEnergyMeterMap", &LaserEnergyMeterFactory::laserEnergyMeterMap)
 			.def("getLaserEnergyMeter", &LaserEnergyMeterFactory::getLaserEnergyMeter, boost::python::return_value_policy<boost::python::reference_existing_object>())

@@ -1,0 +1,20 @@
+controls_information:
+    PV : true
+    pv_record_map:
+        H_MREL : CLA-LAS-OPT-PICO-4C-PM-4:H:MREL
+        V_MREL : CLA-LAS-OPT-PICO-4C-PM-4:V:MREL
+        H_POS : CLA-LAS-OPT-PICO-4C-PM-4:H:POS
+        V_POS : CLA-LAS-OPT-PICO-4C-PM-4:V:POS
+        POSBTN : CLA-LAS-OPT-PICO-4C:POSBTN
+    records : H_MREL, V_MREL, H_POS, V_POS
+properties:
+    hardware_type : LaserMirror
+    machine_area : LAS
+    name : CLA-LAS-OPT-PICO-4C-PM-4
+    virtual_name: VM-INJ-DIA-DUMMY-01
+    step_max : 100.1
+    left_sense : 1.0
+    right_sense : -1.0
+    up_sense : 1.0
+    down_sense : -1.0
+        

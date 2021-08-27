@@ -25,6 +25,7 @@ public:
 	VIRTUAL ScreenFactory will perform operations of Virtual Screens.
 	OFFLINE ScreenFactory will perform operations on Offline Screens.*/
 	ScreenFactory(STATE mode);
+	ScreenFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for ScreenFactory (used for = operator)
 	@param[in] copyScreenFactory the ScreenFactory we want to copy over.*/
 	ScreenFactory(const ScreenFactory& copyScreenFactory);

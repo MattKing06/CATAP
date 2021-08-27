@@ -1,6 +1,7 @@
 #include <ValveFactory.h>
 #include <GlobalFunctions.h>
 #include <PythonTypeConversions.h>
+#include <fstream>
 #include <boost/filesystem.hpp>
 ValveFactory::ValveFactory() :
 	ValveFactory(STATE::OFFLINE)
@@ -8,9 +9,14 @@ ValveFactory::ValveFactory() :
 }
 
 ValveFactory::ValveFactory(STATE mode) : 
-	mode(mode), hasBeenSetup(false),
-	reader(ConfigReader("Valve", mode)),
-	messenger(LoggingSystem(true,true))
+ValveFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+}
+
+ValveFactory::ValveFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode), hasBeenSetup(false),
+reader(ConfigReader("Valve", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true))
 {
 }
 
@@ -145,7 +151,7 @@ bool ValveFactory::setup(const std::string& VERSION)
 
 void ValveFactory::retrieveMonitorStatus(pvStruct& pvStruct) const
 {
-	if (pvStruct.pvRecord == ValveRecords::Sta)
+	if (pvStruct.pvRecord == ValveRecords::STA)
 	{
 		pvStruct.monitor = true;
 	}
@@ -365,4 +371,103 @@ bool ValveFactory::isDebugOn()
 bool ValveFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
+}
+
+std::map<std::string, HardwareSnapshot> ValveFactory::getSnapshot()
+{
+	std::map<std::string, HardwareSnapshot> allValveStates;
+	for (auto& item : valveMap)
+	{
+		allValveStates[item.first] = item.second.getSnapshot();
+	}
+	return allValveStates;
+}
+
+bool ValveFactory::exportSnapshotToYAML(const std::string& location, const std::string& filename)
+{
+	YAML::Node outputNode;
+	for (auto& item : valveMap)
+	{
+		HardwareSnapshot currentState = item.second.getSnapshot();
+		
+		for (auto& stateItem : currentState.state)
+		{
+			if (stateItem.first == ValveRecords::STA)
+			{
+				outputNode[ENUM_TO_STRING(item.second.hardware_type)][item.first][stateItem.first] = ENUM_TO_STRING(currentState.get<STATE>(stateItem.first));
+			}
+		}
+	}
+	return SnapshotFileManager::writeSnapshotToYAML(location, filename, outputNode, mode);
+}
+
+bool ValveFactory::loadSnapshot(const std::string& location) // TODO this should be APPLY!!! 
+{
+	std::ifstream inFile(location);
+	if (!inFile) { return false; }
+	messenger.printMessage("FULL PATH: ", location);
+	YAML::Node stateInfo = YAML::LoadFile(location);
+	for (auto&& valve : valveMap)
+	{
+		auto stateEntry = stateInfo[ENUM_TO_STRING(TYPE::VALVE)][valve.first].as < std::map < std::string, std::string> >();
+		for (auto&& item : stateEntry)
+		{
+			if (item.first == ValveRecords::STA)
+			{
+				valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
+			}
+		}
+	}
+	return true;
+}
+
+bool ValveFactory::loadSnapshot(const YAML::Node& settings)
+{
+	for (auto&& valve : valveMap)
+	{
+		auto stateEntry = settings[valve.first].as< std::map < std::string, std::string> >();
+		for (auto&& item : stateEntry)
+		{
+			if (item.first == ValveRecords::STA)
+			{
+				valve.second.setValveState(GlobalConstants::stringToStateMap.at(item.second));
+			}
+		}
+	}
+	return true;
+}
+
+bool ValveFactory::loadSnapshot_Py(const boost::python::dict& settings)
+{
+	messenger.printMessage("IN LOAD_SNAPSHOT PY DICT");
+	std::map<std::string, std::pair<std::string, STATE>> settingsMap = to_nested_std_map<std::string, std::string, STATE>(settings);
+	messenger.printMessage("converted dict to map of pairs");
+	messenger.printMessage("SIZE: ", settingsMap.size());
+	for (auto&& valve : valveMap)
+	{
+		std::pair<std::string, STATE> snapshotEntry = settingsMap.at(valve.first);
+		if (snapshotEntry.first == ValveRecords::STA)
+		{
+			STATE setState = snapshotEntry.second;
+			if (setState == STATE::OPEN || setState == STATE::CLOSED)
+			{
+				valve.second.setValveState(setState);
+			}
+			else
+			{
+				messenger.printMessage("Could not apply snapshot value: ", setState ," for: ", valve.first, ":", ValveRecords::STA);
+			}
+		}
+	}
+	return true;
+}
+
+boost::python::dict ValveFactory::getSnapshot_Py()
+{
+	std::map<std::string, boost::python::dict> allValveStatesDict;
+	for (auto& item : valveMap)
+	{
+		allValveStatesDict[item.first] = item.second.getSnapshot_Py();
+	}
+	return to_py_dict(allValveStatesDict);
 }

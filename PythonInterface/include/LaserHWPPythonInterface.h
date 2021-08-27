@@ -22,7 +22,12 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 			.add_property("hwpread", &LaserHWP::getHWPRead)
 			.def("setHWP", &LaserHWP::setHWP)
 			.def("getHWPSet", &LaserHWP::getHWPSet)
-			.def("getHWPRead", &LaserHWP::getHWPRead);
+			.def("getHWPRead", &LaserHWP::getHWPRead)
+			.def("isHWPEnabled", &LaserHWP::isHWPEnabled)
+			.def("isHWPDisabled", &LaserHWP::isHWPDisabled)
+			.def("enableHWP", &LaserHWP::enableHWP)
+			.def("disableHWP", &LaserHWP::disableHWP)
+			.def("getHWPEnableState", &LaserHWP::getHWPEnableState);
 	}
 	
 	void expose_laser_hwp_factory_object() {
@@ -32,6 +37,7 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<LaserHWPFactory>("LaserHWPFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &LaserHWPFactory::setup)
 			.add_property("laserMap", &LaserHWPFactory::laserHWPMap)
 			.def("getLaserHWP", &LaserHWPFactory::getLaserHWP, boost::python::return_value_policy<boost::python::reference_existing_object>())
