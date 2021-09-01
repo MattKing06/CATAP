@@ -16,7 +16,6 @@ set( SOURCE_FILES
     source/LaserEnergyMeterPythonInterface.cpp
     source/LaserHWPPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
-    source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
     source/LinacPIDPythonInterface.cpp
     source/LLRFPythonInterface.cpp
@@ -51,7 +50,6 @@ set( INCLUDE_FILES
     include/LaserEnergyMeterPythonInterface.h
     include/LaserHWPPythonInterface.h
     include/LaserMirrorPythonInterface.h
-    include/LEDPythonInterface.h
     include/LightingPythonInterface.h
     include/LinacPIDPythonInterface.h
     include/LLRFPythonInterface.h
