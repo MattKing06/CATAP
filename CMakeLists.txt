@@ -89,7 +89,7 @@ if(Boost_FOUND)
     endif(UNIX)
 endif(Boost_FOUND)
 
-set(MASTER_LATTICE_LOCATION ${CMAKE_SOURCE_DIR}/MasterLattice)
+set(MASTER_LATTICE_LOCATION "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/")
 add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
 add_definitions(-DHAVE_SNPRINTF)
 
