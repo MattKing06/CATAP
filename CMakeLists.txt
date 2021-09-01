@@ -89,8 +89,16 @@ if(Boost_FOUND)
     endif(UNIX)
 endif(Boost_FOUND)
 
-set(MASTER_LATTICE_LOCATION "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/MasterLattice")
-add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+set(DEPLOY_CATAP false CACHE STRING "Build for deployment")
+if (${DEPLOY_CATAP} matches false)
+  set(MASTER_LATTICE_LOCATION "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/MasterLattice")
+  add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+endif
+if(${DEPLOY_CATAP} matches true)
+ set(DEPLOY_MASTER_LATTICE_LOCATION "NOT-SET" CACHE STRING "Location for ML to be read from in deployment")
+ add_definitions(-DMASTER_LATTICE_LOCATION="${DEPLOY_MASTER_LATTICE_LOCATION}")
+endif
+
 add_definitions(-DHAVE_SNPRINTF)
 
 
