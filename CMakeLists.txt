@@ -78,7 +78,7 @@ if(UNIX)
   set(EPICS_CA_LIB ${EPICS_LIBRARYDIR}libca.so)
   find_package(Boost 1.63 EXACT REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
   find_package(Python3 3.6 EXACT COMPONENTS Development)
-  set(MASTER_LATTICE_LOCATION "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/MasterLattice")
+  set(MASTER_LATTICE_LOCATION "${CMAKE_SOURCE_DIR}/MasterLattice")
   add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
 endif(UNIX)
 
