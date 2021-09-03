@@ -16,7 +16,6 @@ set( SOURCE_FILES
     source/LaserEnergyMeterPythonInterface.cpp
     source/LaserHWPPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
-    source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
     source/LLRFPythonInterface.cpp
     source/PILaserSystemPythonInterface.cpp
@@ -50,7 +49,6 @@ set( INCLUDE_FILES
     include/LaserEnergyMeterPythonInterface.h
     include/LaserHWPPythonInterface.h
     include/LaserMirrorPythonInterface.h
-    include/LEDPythonInterface.h
     include/LightingPythonInterface.h
     include/LLRFPythonInterface.h
 	include/PILaserSystemPythonInterface.h
@@ -167,6 +165,7 @@ foreach(FILE ${SOURCE_FILES})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
+		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/MasterLattice" ${MASTER_LATTICE_LOCATION})
 		get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
         message("COPYING INIT TEMPLATE TO: " "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME}/__init__.py")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME}/__init__.py")
