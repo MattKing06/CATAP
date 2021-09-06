@@ -16,7 +16,9 @@ set( SOURCE_FILES
     source/LaserEnergyMeterPythonInterface.cpp
     source/LaserHWPPythonInterface.cpp
     source/LaserMirrorPythonInterface.cpp
+    source/LEDPythonInterface.cpp
     source/LightingPythonInterface.cpp
+    source/LinacPIDPythonInterface.cpp
     source/LLRFPythonInterface.cpp
     source/PILaserSystemPythonInterface.cpp
     source/RFHeartbeatPythonInterface.cpp
@@ -49,7 +51,9 @@ set( INCLUDE_FILES
     include/LaserEnergyMeterPythonInterface.h
     include/LaserHWPPythonInterface.h
     include/LaserMirrorPythonInterface.h
+    include/LEDPythonInterface.h
     include/LightingPythonInterface.h
+    include/LinacPIDPythonInterface.h
     include/LLRFPythonInterface.h
 	include/PILaserSystemPythonInterface.h
     include/RFHeartbeatPythonInterface.h
@@ -157,7 +161,7 @@ foreach(FILE ${SOURCE_FILES})
 
         message("RELEASE BUILD")
         set(RELEASE_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/")
-        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP")
+        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP")
         add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/setup.py" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/MANIFEST.in" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/README.md" ${RELEASE_TOP_LEVEL_CATAP_DIR})
@@ -165,7 +169,6 @@ foreach(FILE ${SOURCE_FILES})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/MasterLattice/" ${MASTER_LATTICE_LOCATION})
 		get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
         message("COPYING INIT TEMPLATE TO: " "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME}/__init__.py")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME}/__init__.py")
@@ -175,12 +178,20 @@ foreach(FILE ${SOURCE_FILES})
 		#message("RELEASE OUTPUT DIR: " ${RELEASE_OUTPUT_DIRECTORY})
 		message("RELEASE BUILD")
 		foreach(LIBRARY ${RELEASE_LIBS})
-			message("LIB: ${LIBRARY}")
-			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBRARY} ${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME} )
-			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different ${LIBRARY} ${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP)
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> )
+			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP> )
 		endforeach(LIBRARY)
 		###
 		### WE DO NOT BUILD FOR DEBUG YET.
+		#foreach(LIBRARY ${DEBUG_LIBS})
+		#	add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> )
+		#	add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}> )
+		#endforeach(LIBRARY)
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP>)
+	    #message("DEBUG BUILD")
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug/ $<1:${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
+		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug/ $<1:${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP>)
 	endif(WIN32)
 	if (UNIX)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/${LIBFOLDERNAME}/__init__.py)
@@ -191,6 +202,7 @@ foreach(FILE ${SOURCE_FILES})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/CHANGES.txt" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP")
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP")
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.sh" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP")
+		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/MasterLattice" ${MASTER_LATTICE_LOCATION})
 		foreach(LIBRARY ${THIRD_PARTY_LIB_DIRS})
 			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/${LIBFOLDERNAME}> )
 			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/> )
