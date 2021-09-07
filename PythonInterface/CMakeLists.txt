@@ -161,6 +161,7 @@ foreach(FILE ${SOURCE_FILES})
 
         message("RELEASE BUILD")
         set(RELEASE_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/")
+		file(COPY "${CMAKE_SOURCE_DIR}/MasterLattice/" DESTINATION "${MASTER_LATTICE_LOCATION}")
         add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP"
 											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/setup.py" ${RELEASE_TOP_LEVEL_CATAP_DIR}
 											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/MANIFEST.in" ${RELEASE_TOP_LEVEL_CATAP_DIR}
@@ -172,7 +173,7 @@ foreach(FILE ${SOURCE_FILES})
 											 )
 		message("RELEASE BUILD")
 		foreach(LIBRARY ${RELEASE_LIBS})
-			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}>
+			add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}>
 											     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP> )
 		endforeach(LIBRARY ${RELEASE_LIBS})
 		get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
