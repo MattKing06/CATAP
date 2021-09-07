@@ -17,7 +17,7 @@ if (WIN32)
     IF(NOT ${CATAP_PY_VERSION} MATCHES 3.8)
       message(FATAL_ERROR "Please set the python version you require for CATAP (Ungrouped Entries > CATAP_PY_VERSION).
       Currently we only support versions: 3.6, 3.8 ")
-    ENDIF(NOT c MATCHES 3.8)
+    ENDIF(NOT ${CATAP_PY_VERSION} MATCHES 3.8)
   ENDIF(NOT ${CATAP_PY_VERSION} MATCHES 3.6)
   #########################################
   # Boost 1.76 ONLY BUILT WITH PYTHON 3.8 #
@@ -34,6 +34,26 @@ if (WIN32)
   find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
   message("include: ${Python3_INCLUDE_DIRS}")
   message("libs: ${Python3_LIBRARIES}")
+
+  set(DEPLOY_CATAP "not set"  CACHE STRING "Build for deployment")
+  if (${DEPLOY_CATAP} MATCHES "not set")
+        message(FATAL_ERROR "Please set whether you are building CATAP for deployment. ")
+  endif(${DEPLOY_CATAP} MATCHES "not set")
+
+  if (${DEPLOY_CATAP} MATCHES "false")
+    set(MASTER_LATTICE_LOCATION "${CMAKE_SOURCE_DIR}/MasterLattice")
+    add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+  endif(${DEPLOY_CATAP} MATCHES "false")
+
+  if (${DEPLOY_CATAP} MATCHES "true")
+   set(DEPLOY_MASTER_LATTICE_LOCATION "NOT-SET" CACHE STRING "Location for ML to be read from in deployment")
+   if (${DEPLOY_MASTER_LATTICE_LOCATION} MATCHES "NOT-SET")
+     message(FATAL_ERROR "Please set where you are building CATAP for deployment. The lattice definitions will be moved there.")
+   endif(${DEPLOY_MASTER_LATTICE_LOCATION} MATCHES "NOT-SET")
+   set(MASTER_LATTICE_LOCATION ${DEPLOY_MASTER_LATTICE_LOCATION})
+   message("Setting Deploy Master Lattice Location:" ${MASTER_LATTICE_LOCATION} )
+   add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+  endif(${DEPLOY_CATAP} MATCHES "true")
 
   set(EPICS_DIR "C:/epics/base-3.14.12.5")
   set(YAML_PARSER_LIB_RELEASE_DIR "C:/yaml-cpp-build/Release")
@@ -60,6 +80,8 @@ if(UNIX)
   set(EPICS_CA_LIB ${EPICS_LIBRARYDIR}libca.so)
   find_package(Boost 1.63 EXACT REQUIRED COMPONENTS python3 system filesystem thread chrono atomic date_time unit_test_framework)
   find_package(Python3 3.6 EXACT COMPONENTS Development)
+  set(MASTER_LATTICE_LOCATION "${CMAKE_SOURCE_DIR}/MasterLattice")
+  add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
 endif(UNIX)
 
 set_property(GLOBAL PROPERTY DEBUG_COnFIGURATIOnS "Debug;RelWithDebInfo")
@@ -89,8 +111,8 @@ if(Boost_FOUND)
     endif(UNIX)
 endif(Boost_FOUND)
 
-set(MASTER_LATTICE_LOCATION ${CMAKE_SOURCE_DIR}/MasterLattice)
-add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
+
+
 add_definitions(-DHAVE_SNPRINTF)
 
 

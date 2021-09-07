@@ -41,6 +41,7 @@ ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode, c
 	onlineProperties(std::map<std::string, std::string>())
 {
 	messenger.printDebugMessage("ConfigReader( " + hardwareType + ", " + ENUM_TO_STRING(mode) + ") Constructor called");
+	messenger.printDebugMessage("Lattice Definitions loaded from: ", MASTER_LATTICE_LOCATION);
 	try
 	{
 		if (!doesLocationExist(primeLatticeLocation))
