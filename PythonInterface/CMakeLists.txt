@@ -169,7 +169,6 @@ foreach(FILE ${SOURCE_FILES})
 											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR}
 											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR}
 											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR}
-											 COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/MasterLattice" "${MASTER_LATTICE_LOCATION}"
 											 )
 		message("RELEASE BUILD")
 		foreach(LIBRARY ${RELEASE_LIBS})
