@@ -146,30 +146,36 @@ foreach(FILE ${SOURCE_FILES})
         set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/CATAP/${LIBFOLDERNAME})
         set_target_properties(${LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/CATAP/${LIBFOLDERNAME})
 
-        set(DEBUG_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/")
-        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${DEBUG_TOP_LEVEL_CATAP_DIR}/CATAP")
-        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/setup.py" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/MANIFEST.in" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/README.md" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/CHANGES.txt" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${DEBUG_TOP_LEVEL_CATAP_DIR})
-		get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${DEBUG_TOP_LEVEL_CATAP_DIR}${LIBFOLDERNAME}/__init__.py)
+        # set(DEBUG_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Debug/CATAP/")
+        # add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${DEBUG_TOP_LEVEL_CATAP_DIR}/CATAP")
+        # add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/setup.py" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/MANIFEST.in" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/README.md" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/CHANGES.txt" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${DEBUG_TOP_LEVEL_CATAP_DIR})
+		# get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
+        # configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in ${DEBUG_TOP_LEVEL_CATAP_DIR}${LIBFOLDERNAME}/__init__.py)
 
 
         message("RELEASE BUILD")
         set(RELEASE_TOP_LEVEL_CATAP_DIR "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/")
-        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP")
-        add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/setup.py" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/MANIFEST.in" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/README.md" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/CHANGES.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/MasterLattice" "${MASTER_LATTICE_LOCATION}")
+        add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py" "${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP"
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/setup.py" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/MANIFEST.in" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/README.md" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/CHANGES.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/install_catap.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR}
+											 )
+		message("RELEASE BUILD")
+		foreach(LIBRARY ${RELEASE_LIBS})
+			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}>
+											     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP> )
+		endforeach(LIBRARY ${RELEASE_LIBS})
+		#add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/MasterLattice" "${MASTER_LATTICE_LOCATION}")
 		get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
         message("COPYING INIT TEMPLATE TO: " "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME}/__init__.py")
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/init/__init__.py.in "${RELEASE_TOP_LEVEL_CATAP_DIR}/CATAP/${LIBFOLDERNAME}/__init__.py")
@@ -177,11 +183,6 @@ foreach(FILE ${SOURCE_FILES})
 		#get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
 		#message("DEBUG OUTPUT DIR: " ${DEBUG_OUTPUT_DIRECTORY})
 		#message("RELEASE OUTPUT DIR: " ${RELEASE_OUTPUT_DIRECTORY})
-		message("RELEASE BUILD")
-		foreach(LIBRARY ${RELEASE_LIBS})
-			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> )
-			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP> )
-		endforeach(LIBRARY)
 		###
 		### WE DO NOT BUILD FOR DEBUG YET.
 		#foreach(LIBRARY ${DEBUG_LIBS})
