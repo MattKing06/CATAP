@@ -41,7 +41,7 @@ if (WIN32)
   endif(${DEPLOY_CATAP} MATCHES "not set")
 
   if (${DEPLOY_CATAP} MATCHES "false")
-    set(MASTER_LATTICE_LOCATION "${CMAKE_BINARY_DIR}/PythonInterface/Release/CATAP/MasterLattice")
+    set(MASTER_LATTICE_LOCATION "${CMAKE_SOURCE_DIR}/MasterLattice")
     add_definitions(-DMASTER_LATTICE_LOCATION="${MASTER_LATTICE_LOCATION}")
   endif(${DEPLOY_CATAP} MATCHES "false")
 
