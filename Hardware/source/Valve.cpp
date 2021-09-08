@@ -93,6 +93,7 @@ void Valve::setValveState(const STATE& state)
 	{
 	case STATE::OPEN: valveState.second = STATE::OPEN; break;
 	case STATE::CLOSED: valveState.second = STATE::CLOSED; break;
+	case STATE::MOVING: valveState.second = STATE::MOVING; break;
 	default:
 		valveState.second = STATE::ERR;  break;
 	}
@@ -101,6 +102,11 @@ void Valve::setValveState(const STATE& state)
 STATE Valve::getValveState() const
 {
 	return valveState.second;
+}
+
+bool Valve::isMoving() const
+{
+	return getValveState() == STATE::MOVING;
 }
 
 bool Valve::isOpen() const

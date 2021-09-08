@@ -231,19 +231,43 @@ boost::python::dict ValveFactory::getAllValveStates_Py() const
 void ValveFactory::setValveState(const std::string& name, const STATE& state)
 {
 	std::string fullName = getFullName(name);
-	valveMap.at(fullName).setValveState(state);
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		switch (state)
+		{
+		case STATE::OPEN:
+			valveMap.at(fullName).open();
+			break;
+		case STATE::CLOSED:
+			valveMap.at(fullName).close();
+			break;
+		}
+	}
+	else
+	{
+		messenger.printMessage("Could not set STATE: ", ENUM_TO_STRING(state), " for valve: ", fullName);
+	}
+
 }
 
 void ValveFactory::close(const std::string& name)
 {
-	setValveState(name, STATE::CLOSED);
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		setValveState(name, STATE::CLOSED);
+	}
 }
 
 void ValveFactory::close(const std::vector<std::string>& names)
 {
 	for (auto& name : names)
 	{
-		setValveState(name, STATE::CLOSED);
+		std::string fullName = getFullName(name);
+		if (GlobalFunctions::entryExists(valveMap, fullName))
+		{
+			setValveState(name, STATE::CLOSED);
+		}
 	}
 }
 
@@ -259,14 +283,23 @@ void ValveFactory::closeAllValves()
 
 void ValveFactory::open(const std::string& name)
 {
-	setValveState(name, STATE::OPEN);
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		setValveState(name, STATE::OPEN);
+	}
+	
 }
 
 void ValveFactory::open(const std::vector<std::string>& names)
 {
 	for (auto& name : names)
 	{
-		setValveState(name, STATE::OPEN);
+		std::string fullName = getFullName(name);
+		if (GlobalFunctions::entryExists(valveMap, fullName))
+		{
+			setValveState(name, STATE::OPEN);
+		}
 	}
 }
 
@@ -283,13 +316,28 @@ void ValveFactory::openAllValves()
 bool ValveFactory::isOpen(std::string name) const
 {
 	std::string fullName = getFullName(name);
-	return valveMap.at(fullName).isOpen();
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		return valveMap.at(fullName).isOpen();
+	}
+}
+
+bool ValveFactory::isMoving(std::string name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		return valveMap.at(fullName).isMoving();
+	}
 }
 
 bool ValveFactory::isClosed(std::string name) const
 {
 	std::string fullName = getFullName(name);
-	return valveMap.at(fullName).isClosed();
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		return valveMap.at(fullName).isClosed();
+	}
 }
 
 void ValveFactory::updateAliasNameMap(const Valve& valve)

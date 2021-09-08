@@ -127,6 +127,7 @@ public:
 	* @param[in] name : the name or alias of the valve we want to check
 	* @param[out] bool : true if valveState is OPEN, false otherwise*/
 	bool isOpen(std::string name) const;
+	bool isMoving(std::string name) const;
 	/*! checks if the valve is closed, returns true if valveState is CLOSED, false otherwise
      * @param[in] name : the name or alias of the valve we want to check
      * @param[out] bool : true if valveState is CLOSED, false otherwise*/
