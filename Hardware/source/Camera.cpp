@@ -2066,7 +2066,7 @@ bool Camera::updateImageData()
 			, image_data.second.size());
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
