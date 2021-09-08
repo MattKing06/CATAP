@@ -1448,12 +1448,18 @@ double Camera::getFlooredPtsPercent()const{	return floored_pts_percent.second;}
 //	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
 //	                                                                                                    
 bool Camera::epics_setUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
+
 bool Camera::epics_setDoNotUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val); }
+
+bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val); }
+
 bool Camera::setUseNPointScaling(){	return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseNPointScaling, GlobalConstants::one_ushort); }
+
 bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::zero_ushort); }
+
 bool Camera::setNpointScalingStepSize(long v){return genericStopAcquiringApplySetting<long>(&Camera::epics_setNpointScalingStepSize, v);}
 bool Camera::toggleUseNPointScaling() {	return isUsingNPointScaling() ? setDoNotUseNPointScaling() : setUseNPointScaling(); }
+
 STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
 bool Camera::isUsingNPointScaling()const{ return use_npoint.second == STATE::USING_NPOINT;}
 bool Camera::isNotUsingNPointScaling()const{ return use_npoint.second == STATE::NOT_USING_NPOINT;}
