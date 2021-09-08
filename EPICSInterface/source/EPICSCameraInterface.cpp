@@ -104,7 +104,7 @@ void EPICSCameraInterface::update_CAM_Active_Count(const struct event_handler_ar
 {
 	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	updateTimeStampDoublePair(args, recastCamera->active_camera_limit);
+	updateTimeStampDoublePair(args, recastCamera->active_camera_count);
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_CAM_Active_Count = ",
 	//	recastCamera->active_camera_limit.second);
 }
