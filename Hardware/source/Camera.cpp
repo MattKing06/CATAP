@@ -1449,7 +1449,7 @@ double Camera::getFlooredPtsPercent()const{	return floored_pts_percent.second;}
 //	                                                                                                    
 bool Camera::epics_setUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
 bool Camera::epics_setDoNotUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NPointStepSize), GlobalConstants::one_ushort); }
+bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val); }
 bool Camera::setUseNPointScaling(){	return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseNPointScaling, GlobalConstants::one_ushort); }
 bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::zero_ushort); }
 bool Camera::setNpointScalingStepSize(long v){return genericStopAcquiringApplySetting<long>(&Camera::epics_setNpointScalingStepSize, v);}
