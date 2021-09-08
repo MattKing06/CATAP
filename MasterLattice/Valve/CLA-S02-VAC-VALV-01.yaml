@@ -1,8 +1,8 @@
 controls_information:
     PV: true
     pv_record_map:
-        Open: CLA-S02-VAC-VALV-01:Open
-        Close: CLA-S02-VAC-VALV-01:Close
+        Open: CLA-S02-VAC-VALV-01:On
+        Close: CLA-S02-VAC-VALV-01:Off
         Sta: CLA-S02-VAC-VALV-01:Sta
 properties:
     machine_area: S02
