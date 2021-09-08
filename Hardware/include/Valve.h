@@ -63,6 +63,7 @@ public:
 	/*! retrieves the valveState variable for this Valve object
 	@param [out] valveState the current state of the Valve object (OPEN,CLOSED,ERR) */
 	STATE getValveState() const;
+	bool isMoving() const;
 	/*! checks whether the current valveState is open. 
 	@param[out] bool true if valveState is open, false if valveState is CLOSED or ERR */
 	bool isOpen() const;
