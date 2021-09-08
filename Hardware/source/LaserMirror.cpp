@@ -33,8 +33,7 @@ LaserMirror::LaserMirror(const LaserMirror& copyLaserMirror) :
 	downSense(copyLaserMirror.downSense),
 	hStep(copyLaserMirror.hStep),
 	vStep(copyLaserMirror.vStep)
-{
-}
+{}
 
 LaserMirror::~LaserMirror()
 {
@@ -53,7 +52,6 @@ void LaserMirror::setPVStructs()
 		}
 		else
 		{
-			
 			pvStructs[record].fullPVName = "VM-" + PV;
 		}
 	}
