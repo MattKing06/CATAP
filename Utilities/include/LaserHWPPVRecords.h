@@ -12,6 +12,7 @@ namespace LaserHWPRecords
 	/*Defined at std::string const so that the value of the variable cannot be changed.*/
 	extern std::string const RPOS; // = "RA2";
 	extern std::string const MABS; // = "RD1";
+	extern std::string const ENABLE; // = "RD1";
 
 	extern std::vector<std::string> laserRecordList;
 	extern std::map<std::string, TYPE> laserTypeList;
@@ -20,6 +21,9 @@ namespace LaserHWPRecords
 	extern std::map<std::string, TYPE> laserHWPTypeToEnum;
 }
 
+
+
+// TODO this has been renamed to snapshot and needs updating into teh new get / set yaml, harwdaresnapshot, dict paradigm 
 namespace LaserHWPState
 {
 	struct laserHWPStateStruct

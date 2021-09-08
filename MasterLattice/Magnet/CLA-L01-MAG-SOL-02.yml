@@ -7,6 +7,7 @@ controls_information:
     RPOWER: CLA-L01-MAG-SOL-02:RPOWER
     SETI: CLA-L01-MAG-SOL-02:SETI
     SPOWER: CLA-L01-MAG-SOL-02:SPOWER
+    ILK_RESET: CLA-L01-MAG-SOL-02:Rst
     K_DIP_P:    CLA-L01-MAG-SOL-02:K_DIP_P
     INT_STR_MM: CLA-L01-MAG-SOL-02:INT_STR_MM
     INT_STR:    CLA-L01-MAG-SOL-02:INT_STR
@@ -26,7 +27,7 @@ properties:
   magnetic_length: 726.918205128205
   manufacturer: '"EfremovInstitute"'
   name: CLA-L01-MAG-SOL-02
-  name_alias: L01-SOL02,L01-SOL-02
+  name_alias: L01-SOL02,L01-SOL-02,L01-SOL2
   num_degauss_steps: 11
   position: 2.7
   ri_tolerance: 0.1

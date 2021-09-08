@@ -6,6 +6,7 @@ stages:
 - sphinx
 - wheel
 
+
 before_script:
   - which gcc
   - which g++
@@ -51,7 +52,6 @@ tests:
   - cd build  
   - cd testBin
   - echo 'Running Tests..'
-  - ls ~/MasterLattice
   - ./ConfigReaderTest
   - ./LoggingSystemTest
   - ./HardwareTests

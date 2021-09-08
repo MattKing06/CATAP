@@ -9,7 +9,12 @@
 
 namespace LaserMirrorRecords
 {
-
+	extern std::string const H_MREL;
+	extern std::string const V_MREL;
+	extern std::string const H_POS;
+	extern std::string const V_POS;
+	extern std::string const POSBTN;
+	extern std::vector<std::string> laserMirrorRecordList;
 }
 
 namespace LaserMirrorState

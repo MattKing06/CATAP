@@ -24,9 +24,22 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getQ", &Charge::getQ)
 			.def("getQBuffer", &Charge::getQBuffer_Py)
 			.def("getQVector", &Charge::getQVector_Py)
+			.def("setRunningStatsSize", &Charge::setRunningStatSize)
+			.def("clearRunningStats", &Charge::clearRunningStats)
+			.def("getRunningStatCount", &Charge::getRunningStatCount)
+			.def("getRunningStatSize", &Charge::getRunningStatSize)
+			.def("isRunningStatFull", &Charge::isRunningStatFull)
+			.def("getRunningStatNumDataValues", &Charge::getRunningStatNumDataValues)
+
+
 			.def("monitorForNShots", &Charge::monitorForNShots)
 			.def("ismonitoring", &Charge::ismonitoring)
-			.def("setBufferSize", &Charge::setBufferSize);
+			.def("setBufferSize", &Charge::setBufferSize)
+			.def("getRunningStats", &Charge::getRunningStats_Py)
+			.def("getRunningStatCount", &Charge::getRunningStatCount)
+			.def("getRunningStatSize", &Charge::getRunningStatSize)
+			.def("isRunningStatFull", &Charge::isRunningStatFull)
+			.def("getQRunningStats", &Charge::getQRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>());
 	}
 
 	//typedef std::pair<int, int> IntPair;
@@ -53,6 +66,15 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
 			.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)
 			.def("getAllChargeDiagnosticNames", &ChargeFactory::getAllChargeDiagnosticNames_Py)
+			
+			
+			
+			.def("setRunningStatSize", &ChargeFactory::setRunningStatSize)
+			.def("clearRunningStats", &ChargeFactory::clearRunningStats)
+			.def("areAllRunningStatsFull", &ChargeFactory::areAllRunningStatsFull)
+			.def("getRunningStatNumDataValues", &ChargeFactory::getRunningStatNumDataValues)
+
+
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots)
 			.def("monitorForNShots", &ChargeFactory::monitorForNShots_Py)
 			.def("ismonitoring", &ChargeFactory::ismonitoring)

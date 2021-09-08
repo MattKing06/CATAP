@@ -80,8 +80,11 @@ void EPICSLaserEnergyMeterInterface::updateEnergy(const struct event_handler_arg
 	LaserEnergyMeter* recastLaser = getHardwareFromArgs<LaserEnergyMeter>(args);
 	updateTimeStampDoublePair(args, recastLaser->energy);
 	recastLaser->setEnergy(recastLaser->energy.second);
+	recastLaser->energyStats.Push(recastLaser->energy.second);
 	messenger.printDebugMessage("ENERGY VALUE FOR: " + recastLaser->getHardwareName() + ": "
 		+ std::to_string(recastLaser->energy.second));
+	
+	//std::cout << "ENERGY VALUE MEAN: " << recastLaser->energyStats.Mean() << std::endl;
 }
 
 void EPICSLaserEnergyMeterInterface::setRANGE(const int& value, const pvStruct& pv)

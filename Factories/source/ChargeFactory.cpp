@@ -52,8 +52,11 @@ ChargeFactory::~ChargeFactory()
 		{
 			if (pvStruct.second.monitor)
 			{
-				charge.second.epicsInterface->removeSubscription(pvStruct.second);
-				ca_flush_io();
+				if (pvStruct.second.EVID)
+				{
+					charge.second.epicsInterface->removeSubscription(pvStruct.second);
+					ca_flush_io();
+				}
 			}
 			charge.second.epicsInterface->removeChannel(pvStruct.second);
 			ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -78,8 +81,7 @@ void ChargeFactory::populateChargeMap()
 
 void ChargeFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == ChargeRecords::Q
-		)
+	if (pvStruct.pvRecord == ChargeRecords::Q)
 	{
 		pvStruct.monitor = true;
 	}
@@ -106,19 +108,21 @@ bool ChargeFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)
 	{
+		messenger.printDebugMessage("ChargeFactory hasBeenSetup already");
 		return true;
 	}
 	if (mode == STATE::VIRTUAL)
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
+	messenger.printDebugMessage("ChargeFactory setup populateChargeMap");
 	//// epics magnet interface has been initialized in BPM constructor
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();
 
 	setupChannels();
-	EPICSInterface::sendToEPICS();
+	EPICSInterface::sendToEPICSm("ChargeFactory connect PVs");
 	for (auto& charge : chargeMap)
 	{
 		std::map<std::string, pvStruct>& chargePVStructs = charge.second.getPVStructs();
@@ -140,7 +144,7 @@ bool ChargeFactory::setup(const std::string& VERSION)
 				{
 					charge.second.epicsInterface->createSubscription(charge.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
+				EPICSInterface::sendToEPICSm("ChargeFactory connect PVs");
 			}
 			else
 			{
@@ -184,7 +188,7 @@ boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
 
 Charge& ChargeFactory::getChargeDiagnostic(const std::string& fullChargeName)
 {
-	return chargeMap.find(fullChargeName)->second;
+	return chargeMap.at(fullChargeName);
 }
 
 std::map<std::string, Charge> ChargeFactory::getAllChargeDiagnostics()
@@ -542,6 +546,40 @@ boost::python::dict ChargeFactory::getAllPosition_Py()
 	std::map<std::string, double> positiOnvals = getAllPosition();
 	boost::python::dict newPyDict = to_py_dict(positiOnvals);
 	return newPyDict;
+}
+
+void ChargeFactory::setRunningStatSize(const std::string& name, const size_t& size)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		chargeMap.at(name).setRunningStatSize(size);
+	}
+}
+
+void ChargeFactory::clearRunningStats(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		chargeMap.at(name).clearRunningStats();
+	}
+}
+
+bool ChargeFactory::areAllRunningStatsFull(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		// TODO this is onky for the Qstat atm, and will need updating at a later date 
+		return chargeMap.at(name).isRunningStatFull();
+	}
+	return false;
+}
+size_t ChargeFactory::getRunningStatNumDataValues(const std::string& name)const
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		return chargeMap.at(name).getRunningStatNumDataValues();
+	}
+	return GlobalConstants::size_zero;
 }
 
 void ChargeFactory::debugMessagesOn()

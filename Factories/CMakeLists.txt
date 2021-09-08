@@ -13,6 +13,7 @@ set( SOURCE_FILES
     source/LaserMirrorFactory.cpp
     source/LEDFactory.cpp
     source/LightingFactory.cpp
+    source/LinacPIDFactory.cpp
     source/LLRFFactory.cpp
     source/RFHeartbeatFactory.cpp
     source/RFModulatorFactory.cpp
@@ -36,6 +37,7 @@ set( INCLUDE_FILES
     include/LEDFactory.h
     include/LLRFFactory.h
     include/LightingFactory.h
+    include/LinacPIDFactory.h
     include/RFHeartbeatFactory.h
     include/RFModulatorFactory.h
     include/RFProtectionFactory.h
@@ -58,6 +60,7 @@ set( TEST_FILES
     LaserMirrorFactoryTest.cpp
     LEDFactoryTest.cpp
     LightingFactoryTest.cpp
+    LinacPIDFactoryTest.cpp
     LLRFFactoryTest.cpp
     RFHeartbeatFactoryTest.cpp
     RFModulatorFactoryTest.cpp
@@ -67,7 +70,6 @@ set( TEST_FILES
 )
 
 cmake_policy(SET CMP0022 NEW)
-#find_package(Boost 1.63 REQUIRED COMPONENTS filesystem python3)
 add_library(Factories STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(Factories PROPERTIES COMPILE_FLAGS "-fPIC")

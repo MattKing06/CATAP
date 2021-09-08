@@ -1,8 +1,8 @@
 controls_information:
     PV: true
     pv_record_map:
-        On: EBT-INJ-VAC-VALV-07:On
-        Off: EBT-INJ-VAC-VALV-07:Off
+        Open: EBT-INJ-VAC-VALV-07:On
+        Close: EBT-INJ-VAC-VALV-07:Off
         Sta: EBT-INJ-VAC-VALV-07:Sta
 properties:
     machine_area: INJ

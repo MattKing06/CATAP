@@ -29,6 +29,16 @@
 }								\
 
 
+#define MY_SEVCHK_Mess(status, m)		\
+{								\
+	if (status != ECA_NORMAL)	\
+	{							\
+		printf("CATAP: The requested ca operation didn't complete successfully because \"%s\"\n",ca_message(status)); \
+		SEVCHK(status, m);   \
+	}							\
+}
+
+
 /** @defgroup epicsInterface EPICS Interfaces
 	@brief A collection of classes responsible for EPICS Channel Access calls.
 
@@ -38,7 +48,7 @@
 	*up connections and subscriptions for PVs as well as general functions that are needed by all child EPICS Interfaces, i.e. putValve.
 @{*/
 class PV;
-#define CA_PEND_IO_TIMEOUT 10.0
+#define CA_PEND_IO_TIMEOUT 5.0
 class EPICSInterface
 {
 
@@ -55,7 +65,7 @@ public:
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of
 	* the associated hardware object.*/
 	std::string ownerName;
-	// We also need to create a STATIC messenger in derived epicsinterface claases, 
+	// We also need to create a STATIC messenger in derived epicsinterface classes, 
 	LoggingSystem messenger;
 	/*! turns debug messaging on for this EPICSInterface instance*/
 	void debugMessagesOn();
@@ -104,6 +114,8 @@ public:
 	void detachFromContext();
 	/*! Used to send the buffered requests to EPICS using ca_pend_io function*/
 	static void sendToEPICS();
+	static void sendToEPICSm(const char* m ="");
+	static bool sendToEPICSm2(const char* m ="");
 	/*! Used to send ca_flush_io after creating a channel */
 	static int caFlushIO(const std::string& ca)
 	{
@@ -355,7 +367,46 @@ public:
 		return false;
 	}
 
+	/*! Send a value to an EPICS PV over Channel Access using ca_put, and flush the IO https://epics.anl.gov/base/R3-14/10-docs/CAref.html#ca_flush_io
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
+	* @param[in] value : The value we want to ca_put.
+	* @param[out] status : return true if ca_put request sent successfully, false otherwise.*/
+	template<typename T>
+	static bool putValue_flushio(const pvStruct& pvStruct, const T& value)
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
+			MY_SEVCHK(status);
+			//status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			status = ca_flush_io();
+			MY_SEVCHK(status);
+			return true;
 
+			// we should return true here if the put command got sent correctly 
+		}
+		return false;
+	}
+	/*! Send a value to an EPICS PV over Channel Access using ca_put, and pend the IO https://epics.anl.gov/base/R3-14/10-docs/CAref.html#ca_pend_io
+	* @param[in] pvStruct : Contains the PV we want to put a value to.
+	* @param[in] value : The value we want to ca_put.
+	* @param[out] status : return true if ca_put request sent successfully, false otherwise.*/
+	template<typename T>
+	static bool putValue_pendio(const pvStruct& pvStruct, const T& value)
+	{
+		if (ca_state(pvStruct.CHID) == cs_conn)
+		{
+			int status = ca_put(pvStruct.CHTYPE, pvStruct.CHID, &value);
+			MY_SEVCHK(status);
+			status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+			//status = ca_flush_io();
+			MY_SEVCHK(status);
+			return true;
+
+			// we should return true here if the put command got sent correctly 
+		}
+		return false;
+	}
 
 	template<typename T>
 	static bool putArrayValue(const pvStruct& pvStruct, const T& value)
@@ -378,7 +429,9 @@ public:
 	* @param[in] pointer_to_dbr_type : pointer_to_dbr_type pointer to where got array will be.
 	* @param[out] bool: if command got sent to epics correctls (not if it worked!).*/
 	bool getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const;
+		
 
+	static void coutECASTATUS(const int status);
 
 
 #endif
