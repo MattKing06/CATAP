@@ -9,6 +9,7 @@
 #include <vector>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <boost/python/numpy.hpp>
 #include <SnapshotFileManager.h>
 
 /** @addtogroup factories 
@@ -162,6 +163,8 @@ public:
 	void close_Py(const boost::python::list& names);
 	/*! opens multiple valves using python list of valve names*/
 	void open_Py(const boost::python::list& names);
+
+	boost::python::numpy::ndarray getFakeNumpyArray();
 
 private:
 	/*! function to update map of aliases to full-names of valves
