@@ -25,10 +25,10 @@ if (WIN32)
   # So we are setting PY VERSION EXPLICIT #
   #########################################
   IF(${CATAP_PY_VERSION} MATCHES 3.8)
-  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python38 system filesystem thread chrono atomic date_time unit_test_framework)
+  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python38 system numpy38 filesystem thread chrono atomic date_time unit_test_framework)
   ENDIF(${CATAP_PY_VERSION} MATCHES 3.8)
   IF(${CATAP_PY_VERSION} MATCHES 3.6)
-  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python36 system filesystem thread chrono atomic date_time unit_test_framework)
+  find_package(Boost ${CATAP_BOOST_VERSION} EXACT REQUIRED COMPONENTS python36 system numpy filesystem thread chrono atomic date_time unit_test_framework)
   ENDIF(${CATAP_PY_VERSION} MATCHES 3.6)
   message("PYTHON 3.8 BUILD: ")
   find_package(Python3 ${CATAP_PY_VERSION} EXACT COMPONENTS Development)
