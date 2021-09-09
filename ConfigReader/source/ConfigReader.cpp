@@ -7,8 +7,22 @@
 
 
 ConfigReader::ConfigReader():
-ConfigReader("", STATE::OFFLINE, MASTER_LATTICE_FILE_LOCATION)
-{}
+yamlFileDestination(MASTER_LATTICE_FILE_LOCATION), 
+mode(STATE::OFFLINE), 
+numberOfParsesExpected(0),
+yamlFilename(std::string()),
+hardwareFolder(std::string()),
+yamlFilenamesAndParsedStatusMap(std::map<std::string, bool>()),
+offlineProperties(std::map<std::string, std::string>()),
+onlineProperties(std::map<std::string, std::string>())
+{
+	messenger.printDebugMessage("ConfigReader() Constructor called");
+	// since we have not specified a hardware component
+	// we assume that we want to load all hardware yaml files.
+	// So we set up the directory of the master lattice files, and nothing else.
+	initialiseFilenameAndParsedStatusMap();
+}
+
 
 ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode) :
 ConfigReader(hardwareType, mode, MASTER_LATTICE_FILE_LOCATION)
@@ -17,9 +31,17 @@ ConfigReader(hardwareType, mode, MASTER_LATTICE_FILE_LOCATION)
 ConfigReader::ConfigReader(const std::string& hardwareType, const STATE& mode, const std::string& primeLatticeLocation) :
 	messenger(LoggingSystem(true, true)),
 	mode(mode),
-	hardwareFolder(hardwareType)
+	// TODO hardwareType should be TYPE ENUM not a string 
+	hardwareFolder(hardwareType),
+	numberOfParsesExpected(0),
+	yamlFilename(std::string()),
+	yamlFileDestination(std::string()),
+	yamlFilenamesAndParsedStatusMap(std::map<std::string, bool>()),
+	offlineProperties(std::map<std::string, std::string>()),
+	onlineProperties(std::map<std::string, std::string>())
 {
 	messenger.printDebugMessage("ConfigReader( " + hardwareType + ", " + ENUM_TO_STRING(mode) + ") Constructor called");
+	messenger.printDebugMessage("Lattice Definitions loaded from: ", MASTER_LATTICE_LOCATION);
 	try
 	{
 		if (!doesLocationExist(primeLatticeLocation))
@@ -253,7 +275,6 @@ const std::map<std::string, std::string> ConfigReader::extractHardwareInformatio
 			}
 			hardwarePropertyAndValueVector.insert(std::make_pair(key, value));
 		}
-
 	}
 	// for debugging print data in file 
 	//for (auto&& it : hardwarePropertyAndValueVector)

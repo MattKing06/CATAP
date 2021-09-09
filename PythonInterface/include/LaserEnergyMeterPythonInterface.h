@@ -24,6 +24,10 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.add_property("energybuffer", &LaserEnergyMeter::getEnergyBuffer)
 			.add_property("energyvector", &LaserEnergyMeter::getEnergyVector)
 			.add_property("energy", &LaserEnergyMeter::getEnergy)
+			.add_property("status", &LaserEnergyMeter::getStatus)
+			.add_property("statusbuffer", &LaserEnergyMeter::getStatusBuffer)
+			.add_property("statusvector", &LaserEnergyMeter::getStatusVector)
+			.add_property("calibrationfactor", &LaserEnergyMeter::getCalibrationFactor)
 			.def("getOverRange", &LaserEnergyMeter::getOverRange)
 			.def("setStart", &LaserEnergyMeter::setStart)
 			.def("setStop", &LaserEnergyMeter::setStop)
@@ -38,7 +42,20 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("setBufferSize", &LaserEnergyMeter::setBufferSize)
 			.def("isEnergyVectorFull", &LaserEnergyMeter::isEnergyVectorFull)
 			.def("isEnergyBufferFull", &LaserEnergyMeter::isEnergyBufferFull)
-			.def("monitorForNShots", &LaserEnergyMeter::monitorForNShots);
+			.def("monitorForNShots", &LaserEnergyMeter::monitorForNShots)
+			.def("getStatus", &LaserEnergyMeter::getStatus)
+			.def("getCalibrationFactor", &LaserEnergyMeter::getCalibrationFactor)
+			.def("getStatusVector", &LaserEnergyMeter::getStatusVector)
+			.def("getStatusBuffer", &LaserEnergyMeter::getStatusBuffer)
+			.def("getRunningStats", &LaserEnergyMeter::getRunningStats_Py)
+
+
+			.def("areRunningStatsFull", &LaserEnergyMeter::areRunningStatsFull)
+			.def("clearRunningStats", &LaserEnergyMeter::clearRunningStats)
+			.def("setRunningStatSize", &LaserEnergyMeter::setRunningStatsSize)
+			.def("getRunningStatNumDataValues", &LaserEnergyMeter::getRunningStatNumDataValues)
+
+			.def("getEnergyRunningStats", &LaserEnergyMeter::getEnergyRunningStats, boost::python::return_value_policy<boost::python::reference_existing_object>());
 	}
 	
 	void expose_laser_energy_meter_factory_object() {
@@ -62,6 +79,14 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("getRange", &LaserEnergyMeterFactory::getRange)
 			.def("setRange", &LaserEnergyMeterFactory::setRange)
 			.def("getEnergy", &LaserEnergyMeterFactory::getEnergy)
+			
+			
+			
+			.def("areRunningStatsFull", &LaserEnergyMeterFactory::areRunningStatsFull)
+			.def("clearRunningStats", &LaserEnergyMeterFactory::clearRunningStats)
+			.def("setRunningStatSize", &LaserEnergyMeterFactory::setRunningStatSize)
+			.def("getRunningStatNumDataValues", &LaserEnergyMeterFactory::getRunningStatNumDataValues)
+
 			.def("getEnergyVector", &LaserEnergyMeterFactory::getEnergyVector_Py)
 			.def("getEnergyBuffer", &LaserEnergyMeterFactory::getEnergyBuffer_Py)
 			.def("setVectorSize", &LaserEnergyMeterFactory::setVectorSize)

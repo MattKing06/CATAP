@@ -15,9 +15,10 @@ Charge::Charge()
 
 Charge::Charge(const std::map<std::string, std::string>& paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
-chargeType(paramsMap.find("charge_type")->second),
-name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second))
+chargeType(paramsMap.at("charge_type")),
+name(paramsMap.at("name")),
+position(std::stod(paramsMap.at("position"))),
+qStats(RunningStats())
 {
 	messenger.printDebugMessage("constructor");
 	setPVStructs();
@@ -33,7 +34,8 @@ Hardware(copyCharge),
 chargeType(copyCharge.chargeType),
 name(copyCharge.name),
 position(copyCharge.position),
-epicsInterface(copyCharge.epicsInterface)
+epicsInterface(copyCharge.epicsInterface),
+qStats(copyCharge.qStats)
 {
 }
 
@@ -221,6 +223,46 @@ void Charge::clearBuffers()
 {
 	qshots = 0;
 	qBuffer.clear();
+}
+
+boost::python::dict Charge::getRunningStats_Py()
+{
+	boost::python::dict r;
+	r["q_rs"] = qStats.getRunningStats();
+	return r;
+}
+
+RunningStats& Charge::getQRunningStats()
+{
+	return qStats;
+}
+
+void Charge::clearRunningStats()
+{
+	std::cout << "Charge qStats.Clear " << std::endl;
+	return qStats.Clear();
+}
+void Charge::setRunningStatSize(size_t new_size)
+{
+	std::cout << "Charge qStats.setMaxCount " << new_size << std::endl;
+	return qStats.setMaxCount(new_size);
+}
+size_t Charge::getRunningStatSize()const 
+{
+	return qStats.getMaxCount();
+}
+
+size_t Charge::getRunningStatCount()
+{
+	return qStats.NumDataValues();
+}
+bool Charge::isRunningStatFull()
+{
+	return qStats.Full();
+}
+size_t Charge::getRunningStatNumDataValues()const
+{
+	return qStats.NumDataValues();
 }
 
 void Charge::debugMessagesOff()

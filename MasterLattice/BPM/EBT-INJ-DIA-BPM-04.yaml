@@ -1,7 +1,7 @@
 controls_information: 
     PV: true
     records: SA1,SA2,SD1,SD2,RA1,RA2,RD1,RD2,X,Y,AWAK,RDY,DATA
-    pv_record_map:
+    pv_record_map: 
         SA1: EBT-INJ-DIA-BPM-04:SA1
         SA2: EBT-INJ-DIA-BPM-04:SA2
         SD1: EBT-INJ-DIA-BPM-04:SD1
@@ -15,7 +15,7 @@ controls_information:
         DATA: EBT-INJ-DIA-BPM-04:DATA:B2V.VALA
         RDY: EBT-INJ-DIA-BPM-04:RDY
         AWAK: EBT-INJ-DIA-BPM-04:AWAK
-properties: 
+properties:  
     machine_area: INJ
     hardware_type: BPM
     bpm_type: STRIPLINE

@@ -1,9 +1,9 @@
-controls_information:
+controls_information: 
     PV: true
     pv_record_map:
         Sta: EBT-INJ-VAC-IMG-11:STA
         P: EBT-INJ-VAC-IMG-11:P
-properties:
+properties: 
     machine_area: INJ
     hardware_type: IMG
     img_type: INJ

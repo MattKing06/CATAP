@@ -22,7 +22,12 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 			.add_property("hwpread", &LaserHWP::getHWPRead)
 			.def("setHWP", &LaserHWP::setHWP)
 			.def("getHWPSet", &LaserHWP::getHWPSet)
-			.def("getHWPRead", &LaserHWP::getHWPRead);
+			.def("getHWPRead", &LaserHWP::getHWPRead)
+			.def("isHWPEnabled", &LaserHWP::isHWPEnabled)
+			.def("isHWPDisabled", &LaserHWP::isHWPDisabled)
+			.def("enableHWP", &LaserHWP::enableHWP)
+			.def("disableHWP", &LaserHWP::disableHWP)
+			.def("getHWPEnableState", &LaserHWP::getHWPEnableState);
 	}
 	
 	void expose_laser_hwp_factory_object() {
@@ -43,6 +48,6 @@ namespace BOOST_PYTHON_LASER_HWP_INCLUDE
 			.def("getHWPRead", &LaserHWPFactory::getHWPRead);
 	}
 
-
+	
 }
 #endif

@@ -15,13 +15,21 @@ Valve::Valve(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	messenger = LoggingSystem(true, true);
 }
 
+Valve::Valve(const Valve& copyValve) :
+	Hardware(copyValve),
+	valveState(copyValve.valveState),
+	epicsInterface(copyValve.epicsInterface)
+{
+
+}
+
 void Valve::setPVStructs() 
 {
 	for (auto&& record : ValveRecords::valveRecordList)
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-		std::string PV = specificHardwareParameters.find(record)->second.data();
+		std::string PV = specificHardwareParameters.at(record).data();
 		messenger.printDebugMessage("Constructing PV information for ", PV);
 		switch (mode) {
 		case STATE::VIRTUAL:
@@ -44,10 +52,10 @@ void Valve::open()
 	switch (mode)
 	{
 		case STATE::PHYSICAL:
-			epicsInterface->setNewValveState(STATE::OPEN, pvStructs.at(ValveRecords::On));
+			epicsInterface->setNewValveState(STATE::OPEN, pvStructs.at(ValveRecords::OPEN));
 			break;
 		case STATE::VIRTUAL:
-			epicsInterface->setNewValveState(STATE::OPEN, pvStructs.at(ValveRecords::On));
+			epicsInterface->setNewValveState(STATE::OPEN, pvStructs.at(ValveRecords::OPEN));
 			break;
 		default:
 			offlineSetValveState(STATE::OPEN);
@@ -59,14 +67,24 @@ void Valve::close()
 	switch (mode)
 	{
 	case STATE::PHYSICAL:
-		epicsInterface->setNewValveState(STATE::CLOSED, pvStructs.at(ValveRecords::Off));
+		epicsInterface->setNewValveState(STATE::CLOSED, pvStructs.at(ValveRecords::CLOSE));
 		break;
 	case STATE::VIRTUAL:
-		epicsInterface->setNewValveState(STATE::CLOSED, pvStructs.at(ValveRecords::Off));
+		epicsInterface->setNewValveState(STATE::CLOSED, pvStructs.at(ValveRecords::CLOSE));
 		break;
 	default:
 		offlineSetValveState(STATE::CLOSED);
 	}
+}
+HardwareSnapshot Valve::getSnapshot()
+{
+	currentSnapshot.update(ValveRecords::STA, valveState.second);
+	return currentSnapshot;
+}
+boost::python::dict Valve::getSnapshot_Py()
+{
+	currentSnapshot.update(ValveRecords::STA, valveState.second);
+	return currentSnapshot.getSnapshot_Py();
 }
 
 void Valve::setValveState(const STATE& state)
@@ -75,14 +93,20 @@ void Valve::setValveState(const STATE& state)
 	{
 	case STATE::OPEN: valveState.second = STATE::OPEN; break;
 	case STATE::CLOSED: valveState.second = STATE::CLOSED; break;
+	case STATE::MOVING: valveState.second = STATE::MOVING; break;
 	default:
-		valveState.second = STATE::ERR;
+		valveState.second = STATE::ERR;  break;
 	}
 }
 
 STATE Valve::getValveState() const
 {
 	return valveState.second;
+}
+
+bool Valve::isMoving() const
+{
+	return getValveState() == STATE::MOVING;
 }
 
 bool Valve::isOpen() const

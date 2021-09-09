@@ -56,7 +56,7 @@ case TYPE::VELA_PNEUMATIC:
 epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
 epicsInterface->ownerName = hardwareName;
 std::vector<std::string> screenDeviceStringVector;
-boost::split(screenDeviceStringVector, paramsMap.find("devices")->second, [](char c) {return c == ','; });
+boost::split(screenDeviceStringVector, paramsMap.at("devices"), [](char c) {return c == ','; });
 for (auto value : screenDeviceStringVector) { screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
 screenStateH.second = STATE::UNKNOWN;
 screenStateV.second = STATE::UNKNOWN;

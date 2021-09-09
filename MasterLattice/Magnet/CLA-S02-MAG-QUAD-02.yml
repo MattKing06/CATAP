@@ -7,6 +7,7 @@ controls_information:
     RPOWER: CLA-S02-MAG-QUAD-02:RPOWER
     SETI: CLA-S02-MAG-QUAD-02:SETI
     SPOWER: CLA-S02-MAG-QUAD-02:SPOWER
+    ILK_RESET: CLA-S02-MAG-QUAD-02:Rst
     K_DIP_P:    CLA-S02-MAG-QUAD-02:K_DIP_P
     INT_STR_MM: CLA-S02-MAG-QUAD-02:INT_STR_MM
     INT_STR:    CLA-S02-MAG-QUAD-02:INT_STR
@@ -26,7 +27,7 @@ properties:
   magnetic_length: 126.817287248819
   manufacturer: Danfysik
   name: CLA-S02-MAG-QUAD-02
-  name_alias: S02-QUAD02,S02-QUAD-02
+  name_alias: S02-QUAD02,S02-QUAD-02,S02-QUAD2
   num_degauss_steps: 11
   position: 3.977500313
   ri_tolerance: 0.2
