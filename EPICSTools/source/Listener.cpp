@@ -8,7 +8,7 @@ Listener::Listener()
 Listener::Listener(const std::string& pvStr) 
 	:
 	mode(STATE::VIRTUAL),
-	currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
+	//currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
 	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(DEFAULT_BUFFER_SIZE)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
 	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>(DEFAULT_BUFFER_SIZE)),
@@ -23,7 +23,7 @@ Listener::Listener(const std::string& pvStr)
 
 Listener::Listener(const std::string& pvStr, const STATE& mode)
 	: mode(mode),
-	 currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
+	// currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
 	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> >(DEFAULT_BUFFER_SIZE)),
 	currentArray(std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>()),
 	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>>(DEFAULT_BUFFER_SIZE)),
@@ -60,9 +60,13 @@ void Listener::setupChannels()
 	epicsInterface->retrieveCHID(pv);
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
+	EPICSInterface::sendToEPICS();
+	initialiseCurrentValue(pv);
 	epicsInterface->retrieveCOUNT(pv);
+	EPICSInterface::sendToEPICS();
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
+	initialiseCurrentValue(pv);
 	EPICSInterface::sendToEPICS();
 }
 
@@ -84,6 +88,75 @@ std::string Listener::getEPICSPVName(const std::string& pv)
 	{
 		return pv;
 	}
+}
+
+void Listener::initialiseCurrentValue(const pvStruct& pv)
+{
+
+	switch (ca_field_type(pv.CHID))
+	{
+	case(DBR_TIME_DOUBLE):
+		double epicsDBLTimeValue;
+		ca_get(DBR_TIME_DOUBLE, pv.CHID, &epicsDBLTimeValue);
+		currentValue = static_cast<double>(epicsDBLTimeValue);
+		break;
+	case(DBR_DOUBLE):
+		double epicsDBLValue;
+		ca_get(DBR_DOUBLE, pv.CHID, &epicsDBLValue);
+		currentValue = static_cast<double>(epicsDBLValue);
+		break;
+	case(DBR_TIME_INT):
+		int epicsINTTimeValue;
+		ca_get(DBR_TIME_INT, pv.CHID, &epicsINTTimeValue);
+		currentValue = static_cast<int>(epicsINTTimeValue);
+		break;
+	case(DBR_INT):
+		int epicsINTValue;
+		ca_get(DBR_INT, pv.CHID, &epicsINTValue);
+		currentValue = static_cast<int>(epicsINTValue);
+		break;
+	case(DBR_TIME_ENUM):
+		unsigned short epicsENUMTimeValue;
+		ca_get(DBR_TIME_ENUM, pv.CHID, &epicsENUMTimeValue);
+		currentValue = static_cast<unsigned short>(epicsENUMTimeValue);
+		break;
+	case(DBR_ENUM):
+		unsigned short epicsENUMValue;
+		ca_get(DBR_ENUM, pv.CHID, &epicsENUMValue);
+		currentValue = static_cast<unsigned short>(epicsENUMValue);
+		break;
+	case(DBR_TIME_LONG):
+		long epicsLONGTimeValue;
+		ca_get(DBR_TIME_LONG, pv.CHID, &epicsLONGTimeValue);
+		currentValue = static_cast<long>(epicsLONGTimeValue);
+		break;
+	case(DBR_LONG):
+		long epicsLONGValue;
+		ca_get(DBR_LONG, pv.CHID, &epicsLONGValue);
+		currentValue = static_cast<long>(epicsLONGValue);
+		break;
+	case(DBR_TIME_FLOAT):
+		float epicsFLOATTimeValue;
+		ca_get(DBR_TIME_FLOAT, pv.CHID, &epicsFLOATTimeValue);
+		currentValue = static_cast<float>(epicsFLOATTimeValue);
+		break;
+	case(DBR_FLOAT):
+		float epicsFLOATValue;
+		ca_get(DBR_FLOAT, pv.CHID, &epicsFLOATValue);
+		currentValue = static_cast<float>(epicsFLOATValue);
+		break;
+	case(DBR_TIME_STRING):
+		float epicsSTRINGTimeValue;
+		ca_get(DBR_FLOAT, pv.CHID, &epicsSTRINGTimeValue);
+		currentValue = static_cast<float>(epicsSTRINGTimeValue);
+		break;
+	case(DBR_STRING):
+		float epicsSTRINGValue;
+		ca_get(DBR_FLOAT, pv.CHID, &epicsSTRINGValue);
+		currentValue = static_cast<float>(epicsSTRINGValue);
+		break;
+	}
+
 }
 
 bool Listener::isConnected()
@@ -228,30 +301,13 @@ boost::python::list Listener::getArrayBufferAverageArray_Py()
 
 boost::python::object Listener::getValue_Py()
 {
-	if (isDouble())
+	if (!currentValue.empty())
 	{
-		return static_cast<boost::python::object>(boost::get<double>(currentValue));
+		return boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue);
 	}
-	else if (isLong())
+	else
 	{
-		return static_cast<boost::python::object>(boost::get<long>(currentValue));
-	}
-	else if (isInt())
-	{
-		return static_cast<boost::python::object>(boost::get<int>(currentValue));
-
-	}
-	else if (isEnum())
-	{
-		return static_cast<boost::python::object>(boost::get<unsigned short>(currentValue));
-	}
-	else if (isFloat())
-	{
-		return static_cast<boost::python::object>(boost::get<float>(currentValue));
-	}
-	else if (isString())
-	{
-		return static_cast<boost::python::object>(boost::get<std::string>(currentValue));
+		std::cout << "waiting on connection, please try again.." << std::endl;
 	}
 }
 
