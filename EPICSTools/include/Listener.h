@@ -27,12 +27,14 @@
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 
-struct convert_to_py : public boost::static_visitor<boost::python::object>
+namespace ListenerToPy
 {
-	template<typename T>
-	boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
-};
-
+	struct convert_to_py : public boost::static_visitor<boost::python::object>
+	{
+		template<typename T>
+		boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
+	};
+}
 
 class Listener
 {

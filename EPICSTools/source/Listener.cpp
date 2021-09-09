@@ -303,7 +303,7 @@ boost::python::object Listener::getValue_Py()
 {
 	if (!currentValue.empty())
 	{
-		return boost::apply_visitor(convert_to_py{}, currentValue);
+		return boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue);
 	}
 	else
 	{
