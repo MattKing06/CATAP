@@ -118,8 +118,11 @@ BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
 	ET.monitor(pv);
 	Listener pid_scan = ET.getMonitor(pv);
-	bool isEnum = pid_scan.isEnum();
-	auto val = pid_scan.getValue<unsigned short>();
+	if (pid_scan.isConnected())
+	{
+		bool isEnum = pid_scan.isEnum();
+		auto val = pid_scan.getValue<unsigned short>();
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()
