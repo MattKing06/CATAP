@@ -160,6 +160,10 @@ public:
 	@param[in] name: the name of the screen.
 	@param[out] std::vector<STATE>: returns a vector of all available devices for that screen.*/
 	std::vector< STATE > getAvailableDevices(const std::string& name);
+	/*!returns the available devices for a given screen, Python version 
+	@param[in] name: the name of the screen.
+	@param[out] list: returns a list of all available devices for that screen.*/
+	boost::python::list getAvailableDevices_Py(const std::string& name);
 	/*!returns true if the screen is in the given state.
 	@param[in] name: the name of the screen.
 	@param[in] STATE: the state (i.e. device position).
@@ -265,12 +269,11 @@ public:
 	@param[in] name: the name of the screen.
 	@param[out] STATE: returns the current state of the screen.*/
 	STATE getState(const std::string& name) const;
-
 	/// SETTERS
 	/*!moves the screen to the specified STATE.
 	@param[in] name: the name of the screen.
 	@param[in] STATE: the STATE to move the screen to. Use getAvailableDevices to see what is available for that screen.*/
-	void moveScreenTo(const std::string& name, STATE& state);
+	void moveScreenTo(const std::string& name, STATE state);
 	/*!moves the YAG screen in.
 	@param[in] name: the name of the screen.*/
 	void insertYAG(const std::string& name);

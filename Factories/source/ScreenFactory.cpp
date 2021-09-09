@@ -271,6 +271,16 @@ std::vector<std::string> ScreenFactory::getAllScreenNames()
 	return names;
 }
 
+
+// TODO  get rid of ALL the finds ! 
+// WE HAVE TO ADD IN TEH NAME ALIASES!!!! meh 
+//std::string full_name = getFullName(name);
+//if (GlobalFunctions::entryExists(camera_map, full_name))
+//{
+//	return camera_map.at(full_name).getImageBufferTrigger();
+//}
+//return GlobalConstants::char_min;
+
 std::string ScreenFactory::getScreenName(const std::string& name)
 {
 	if (!hasBeenSetup)
@@ -287,13 +297,15 @@ std::string ScreenFactory::getScreenName(const std::string& name)
 bool ScreenFactory::isHOut(const std::string& name)
 {
 	return screenMap.find(name)->second.isHOut();
-
 }
 
 bool ScreenFactory::isVOut(const std::string& name)
 {
 	return screenMap.find(name)->second.isVOut();
 }
+
+
+
 
 bool ScreenFactory::isHIn(const std::string& name)
 {
@@ -414,6 +426,14 @@ std::vector< STATE > ScreenFactory::getAvailableDevices(const std::string& name)
 	return screenMap.find(name)->second.getAvailableDevices();
 }
 
+
+boost::python::list ScreenFactory::getAvailableDevices_Py(const std::string& name)
+{
+	return to_py_list<STATE>(getAvailableDevices(name));
+}
+
+
+
 bool ScreenFactory::isScreenInState(const std::string& name, STATE sta)
 {
 	return screenMap.find(name)->second.isScreenInState(sta);
@@ -484,7 +504,7 @@ double ScreenFactory::get_V_ACTPOS(const std::string& name)
 	return screenMap.find(name)->second.get_V_ACTPOS();
 }
 
-void ScreenFactory::moveScreenTo(const std::string& name, STATE& state)
+void ScreenFactory::moveScreenTo(const std::string& name, STATE state)
 {
 	screenMap.find(name)->second.moveScreenTo(state);
 }

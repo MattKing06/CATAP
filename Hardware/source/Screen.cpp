@@ -471,6 +471,9 @@ bool Screen::isYAGIn() const
 	}
 }
 
+
+
+
 bool Screen::isHMoving() const
 {
 	return movingH.second;
@@ -494,6 +497,9 @@ bool Screen::isMoving() const
 	}
 	return false;
 }
+
+
+
 
 bool Screen::isClearForBeam() const
 {
