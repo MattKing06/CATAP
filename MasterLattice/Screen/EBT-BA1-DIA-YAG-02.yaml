@@ -11,8 +11,8 @@ controls_information:
         "MAX_POS": EBT-BA1-DIA-YAG-02:MAX_POS
         "DEV_CENT": EBT-BA1-DIA-YAG-02:DEV_CENT
 properties:
-    name: EBT-BA1-DIA-YAG-01
-    name_alias: BA1-YAG-01
+    name: EBT-BA1-DIA-YAG-02
+    name_alias: BA1-YAG-02
     machine_area: INJ
     hardware_type: Screen
     screen_type: VELA_PNEUMATIC

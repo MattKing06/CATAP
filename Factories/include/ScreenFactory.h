@@ -362,6 +362,21 @@ public:
 	@param[out] dict: returns a dict of the specified screen objects, keyed by name.*/
 	boost::python::dict getScreens_Py(boost::python::list names);
 
+	/*!Add name aliases to alias_name_map a Python dict of the specified screen objects.
+	@param[in] list: the names of the screens.
+	@param[out] dict: returns a dict of the specified screen objects, keyed by name.*/
+	void updateAliasNameMap(const Screen& screen);
+	std::map<std::string, std::string> alias_name_map;
+
+	/*!return the full name off the  screen (if the name exists in alias_name_map).
+	@param[in] string: names, or alias name.
+	@param[out] string: full name (or DUMMY if the passed name is not found.*/
+	std::string getFullName(const std::string& name_to_check) const;
+
+	// used when we need to return values from a requested sreen name that does not exist 
+	Screen dummy_screen;
+
+
 	/*! turns debug messages on for screenFactory and calls same function in all screens and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for screenFactory and calls same function in all screens and configReader*/

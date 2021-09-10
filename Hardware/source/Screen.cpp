@@ -9,6 +9,7 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
+#include "GlobalFunctions.h"
 
 Screen::Screen()
 {}
@@ -97,7 +98,24 @@ moving.second = GlobalConstants::zero_int;
 maxposH.second = GlobalConstants::double_min;
 maxposV.second = GlobalConstants::double_min;
 maxpos.second = GlobalConstants::double_min;
+
+
+messenger.printDebugMessage(hardwareName, " find name_alias");
+if (GlobalFunctions::entryExists(paramsMap, "name_alias"))
+{
+	boost::split(aliases, paramsMap.at("name_alias"), [](char c) {return c == ','; });
+	for (auto& name : aliases)
+	{
+		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+		messenger.printDebugMessage(hardwareName, " added aliase " + name);
+	}
 }
+else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
+
+}
+
+
+
 Screen::Screen(const Screen & copyScreen) :
 Hardware(copyScreen),
 screenType(copyScreen.screenType),
@@ -146,6 +164,12 @@ std::vector<std::string> Screen::getAliases() const
 {
 	return this->aliases;
 }
+
+boost::python::list Screen::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+
 
 std::string Screen::getScreenName() const
 {

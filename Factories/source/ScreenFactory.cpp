@@ -166,6 +166,12 @@ bool ScreenFactory::setup(const std::string& VERSION)
 	for (auto& screen : screenMap)
 	{
 		std::map<std::string, pvStruct>& screenPVStructs = screen.second.getPVStructs();
+
+		std::string name(screen.second.getHardwareName());
+		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
+
+		updateAliasNameMap(screen.second);
+
 		for (auto& pv : screenPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
@@ -197,6 +203,49 @@ bool ScreenFactory::setup(const std::string& VERSION)
 	hasBeenSetup = true;
 	return hasBeenSetup;
 	std::cout << "end" << std::endl;
+}
+
+void ScreenFactory::updateAliasNameMap(const Screen& screen)
+{
+	// first add in the magnet full name
+	std::string full_name = screen.getHardwareName();
+	messenger.printMessage("updateAliasNameMap ", full_name);
+	if (GlobalFunctions::entryExists(alias_name_map, full_name))
+	{
+		// Not necessarily an error, screen_name goes in the alias map too 
+		//messenger.printMessage("!!ERROR!! ", full_name, " magnet name already exists! ");
+	}
+	else
+	{
+		messenger.printMessage("full_name ", full_name, " added to alias_name_map");
+		alias_name_map[full_name] = full_name;
+	}
+	// now add in the aliases, for cameras we have name_alias and screen_name to include 
+	std::vector<std::string> name_aliases = screen.getAliases();
+	for (const auto& next_alias : name_aliases)
+	{
+		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
+		{
+			messenger.printMessage("!!ERROR!! ", screen.getHardwareName(), " alias = ", next_alias, " already exists");
+		}
+		else
+		{
+			alias_name_map[next_alias] = full_name;
+			messenger.printMessage("Added alias " + next_alias + " for " + full_name);
+		}
+	}
+}
+
+std::string ScreenFactory::getFullName(const std::string& name_to_check) const
+{
+	//std::cout << "getFullName looking for " << name_to_check << std::endl;
+	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
+	{
+		//std::cout << name_to_check << " found " << std::endl;
+		return alias_name_map.at(name_to_check);
+	}
+	//std::cout << name_to_check << " NOT found " << std::endl;
+	return dummy_screen.getHardwareName();
 }
 
 std::map<std::string, Screen> ScreenFactory::getScreens(std::vector<std::string> screenNames)

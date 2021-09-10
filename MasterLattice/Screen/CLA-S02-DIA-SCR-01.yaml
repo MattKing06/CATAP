@@ -32,7 +32,7 @@ controls_information:
         "V:EN": CLA-S02-DIA-SCR-01:V:EN
 properties:
     name: CLA-S02-DIA-SCR-01
-    name_alias: UNDEFINED
+    name_alias: S02-SCR-01
     machine_area: S02
     hardware_type: Screen
     screen_type: CLARA_HV_MOVER
