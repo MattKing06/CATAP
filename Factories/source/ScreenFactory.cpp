@@ -168,7 +168,7 @@ bool ScreenFactory::setup(const std::string& VERSION)
 		std::map<std::string, pvStruct>& screenPVStructs = screen.second.getPVStructs();
 
 		std::string name(screen.second.getHardwareName());
-		messenger.printDebugMessage("setting up, ", item.first, ", ", name);
+		messenger.printDebugMessage("setting up, ", screen.first, ", ", name);
 
 		updateAliasNameMap(screen.second);
 
