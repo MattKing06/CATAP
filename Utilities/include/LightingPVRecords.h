@@ -14,7 +14,15 @@ namespace LightingRecords
 	extern std::string const CLARA_LED_On; // = "CLARA_LED_On";
 	extern std::string const VELA_LED_Sta; // = "VELA_LED_Sta";
 	extern std::string const VELA_LED_Off; // = "VELA_LED_Off";
-	extern std::string const VELA_LED_Off; // = "VELA_LED_Off";
+	extern std::string const VELA_LED_On; // = "VELA_LED_Off";
+
+	extern std::string const ACCELERATOR_HALL_LIGHT_Sta; // = "VELA_LED_Off";
+	extern std::string const ACCELERATOR_HALL_LIGHT_Off; // = "VELA_LED_Off";
+	extern std::string const ACCELERATOR_HALL_LIGHT_On; // = "VELA_LED_Off";
+
+	extern std::string const BA1_LIGHT_Sta; // = "VELA_LED_Off";
+	extern std::string const BA1_LIGHT_Off; // = "VELA_LED_Off";
+	extern std::string const BA1_LIGHT_On; // = "VELA_LED_Off";
 
 	extern std::vector<std::string> lightRecordList;
 	extern std::vector<std::string> lightMonitorRecordList;

@@ -12,6 +12,7 @@
 #include <Charge.h>
 #include <Screen.h>
 #include <LaserEnergyMeter.h>
+#include <Lighting.h>
 #include <LaserHWP.h>
 #include <IMG.h>
 #include <RFProtection.h>

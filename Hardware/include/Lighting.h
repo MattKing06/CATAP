@@ -87,25 +87,43 @@ public:
 	bool toggleVelaLED();
 
 
-	// TODO !!!
-	///*! Get the state of the Hall 1 Light.
-	//@param[out] STATE, ON, OFF etc	*/
-	//STATE getHall1LightState()const;
-	///*! Turn the Hall 1 Light off.
-	//@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	//bool setHall1LightOn();
-	///*! Turn the Hall 1 Light off.
-	//@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
-	//bool setHall1LightOff();
-	///*! Is the Hall 1 Light on,
-	//@param[out] bool, is state == ON.*/
-	//bool isHall1LightOn()const;
-	///*! Is the Hall 1 Light off,
-	//@param[out] bool, is state == OFF.*/
-	//bool isHall1LightOff()const;
-	///*! Toggle between ON / OFF states for the Hall 1 light,
-	//@param[out] bool,  if command got sent to EPICS (not if it was accepted)	*/
-	//bool toggleHall1Light();
+	/*! Get the state of the BA1 Light.
+	@param[out] STATE, ON, OFF etc	*/
+	STATE getBA1LightState()const;
+	/*! Turn the BA1 Light on.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setBA1LightOn();
+	/*! Turn the BA1 Light off.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setBA1LightOff();
+	/*! Is the BA1 Light on,
+	@param[out] bool, is state == ON.*/
+	bool isBA1LightOn()const;
+	/*! Is the BA1 Light off,
+	@param[out] bool, is state == OFF.*/
+	bool isBA1LightOff()const;
+	/*! Toggle between ON / OFF states for the BA11 light,
+	@param[out] bool,  if command got sent to EPICS (not if it was accepted)	*/
+	bool toggleBA1Light();
+
+	/*! Get the state of the Hall 1 Light.
+	@param[out] STATE, ON, OFF etc	*/
+	STATE getAcceleratorHallLightState()const;
+	/*! Turn the Accelerator Hall  Light on.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setAcceleratorHallLightOn();
+	/*! Turn the Accelerator Hall  Light off.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setAcceleratorHallLightOff();
+	/*! Is the Accelerator Hall Light on,
+	@param[out] bool, is state == ON.*/
+	bool isAcceleratorHallLightOn()const;
+	/*! Is the Accelerator Hall  Light off,
+	@param[out] bool, is state == OFF.*/
+	bool isAcceleratorHallLightOff()const;
+	/*! Toggle between ON / OFF states for the Accelerator Hall light,
+	@param[out] bool,  if command got sent to EPICS (not if it was accepted)	*/
+	bool toggleAcceleratorHallLight();
 
 
 	friend class LightingFactory;
@@ -115,7 +133,8 @@ protected:
 	/*! pdbm_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
 	std::pair<epicsTimeStamp, STATE > vela_led_state;
 	std::pair<epicsTimeStamp, STATE > clara_led_state;
-	std::pair<epicsTimeStamp, STATE > injector_hall_lighting_state; // todo is thsi a good name ?? idk
+	std::pair<epicsTimeStamp, STATE > accelerator_hall_lighting_state; // todo is this a good name ?? idk
+	std::pair<epicsTimeStamp, STATE > ba1_lighting_state; // todo is this a good name ?? idk
 
 
 };

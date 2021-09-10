@@ -31,6 +31,7 @@ laserHWPFactory(LaserHWPFactory(mode, primeLatticeLocation)),
 shutterFactory(ShutterFactory(mode, primeLatticeLocation)),
 rfmodulatorFactory(RFModulatorFactory(mode, primeLatticeLocation)),
 rfHeartbeatFactory(RFHeartbeatFactory(mode, primeLatticeLocation)),
+lightingFactory(LightingFactory(mode, primeLatticeLocation)),
 mode(mode)
 {
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
@@ -330,17 +331,17 @@ LightingFactory& HardwareFactory::getLightingFactory()
 		bool setup = lightingFactory.setup("nominal");
 		if (setup)
 		{
-			messenger.printMessage("getValveFactory Complete");
+			messenger.printMessage("getLightingFactory Complete");
 			return lightingFactory;
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup ValveFactory");
+			messenger.printMessage("Unable to setup LightingFactory");
 		}
 	}
 	else
 	{
-		messenger.printMessage("getValveFactory Complete");
+		messenger.printMessage("getLightingFactory Complete");
 		return lightingFactory;
 	}
 }
