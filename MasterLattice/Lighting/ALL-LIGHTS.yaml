@@ -16,6 +16,6 @@ controls_information:
     records : H_MREL, V_MREL, H_POS, V_POS
 properties:
     hardware_type : Lighting
-    machine_area : 
-    name : ALL_LIGHTS
+    machine_area : UNKNOWN
+    name : UNKNOWN
         
