@@ -96,7 +96,7 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getRFModulatorFactory", getRFModulatorFactory_listOfAreas, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			
 			
-			.def("getRFModulatorFactory", &HardwareFactory::getLightingFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getLightingFactory", &HardwareFactory::getLightingFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 
 
 			
