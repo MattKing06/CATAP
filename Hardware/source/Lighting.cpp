@@ -7,6 +7,7 @@ Lighting::Lighting()
 
 Lighting::Lighting(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	Hardware(paramMap, mode),
+	epicsInterface(boost::make_shared<EPICSLightingInterface>(EPICSLightingInterface())), // calls copy constructor and destroys 
 	vela_led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	clara_led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	ba1_lighting_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
@@ -188,22 +189,26 @@ STATE Lighting::getBA1LightState()const
 }
 bool Lighting::setBA1LightOn()
 {
+	messenger.printDebugMessage("setBA1LightOn BA1_LIGHT_On 1");
 	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::BA1_LIGHT_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+		messenger.printDebugMessage("setBA1LightOn BA1_LIGHT_On 2");
 		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::BA1_LIGHT_On), (epicsUInt8)GlobalConstants::EPICS_SEND);
 	}
-	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
+	messenger.printDebugMessage("Send setBA1LightOn EPICS_ACTIVATE failed ");
 	return false;
 }
 bool Lighting::setBA1LightOff()
 {
+	messenger.printDebugMessage("setBA1LightOff BA1_LIGHT_Off 1");
 	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::BA1_LIGHT_Off), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+		messenger.printDebugMessage("setBA1LightOff BA1_LIGHT_Off 2");
 		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::BA1_LIGHT_Off), (epicsUInt8)GlobalConstants::EPICS_SEND);
 	}
-	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
+	messenger.printDebugMessage("Send setBA1LightOff EPICS_ACTIVATE failed ");
 }
 bool Lighting::isBA1LightOn()const
 {
@@ -215,6 +220,7 @@ bool Lighting::isBA1LightOff()const
 }
 bool Lighting::toggleBA1Light()
 {
+	messenger.printDebugMessage("toggleBA1Light");
 	if (isBA1LightOn())
 		return setBA1LightOff();
 	if (isBA1LightOff())
@@ -228,9 +234,11 @@ STATE Lighting::getAcceleratorHallLightState()const
 }
 bool Lighting::setAcceleratorHallLightOn()
 {
+	messenger.printDebugMessage("setBA1LightOn ACCELERATOR_HALL_LIGHT_On 1");
 	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::ACCELERATOR_HALL_LIGHT_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+		messenger.printDebugMessage("setBA1LightOn ACCELERATOR_HALL_LIGHT_On 2");
 		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::ACCELERATOR_HALL_LIGHT_On), (epicsUInt8)GlobalConstants::EPICS_SEND);
 	}
 	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
@@ -238,9 +246,11 @@ bool Lighting::setAcceleratorHallLightOn()
 }
 bool Lighting::setAcceleratorHallLightOff()
 {
+	messenger.printDebugMessage("setAcceleratorHallLightOff ACCELERATOR_HALL_LIGHT_Off 1");
 	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::ACCELERATOR_HALL_LIGHT_Off), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
+		messenger.printDebugMessage("setAcceleratorHallLightOff ACCELERATOR_HALL_LIGHT_Off 2");
 		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::ACCELERATOR_HALL_LIGHT_Off), (epicsUInt8)GlobalConstants::EPICS_SEND);
 	}
 	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");

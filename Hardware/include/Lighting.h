@@ -22,6 +22,7 @@ public:
 	void setPVStructs();
 	EPICSLightingInterface_sptr epicsInterface;
 	std::map<std::string, std::string> LightingParamMap;
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

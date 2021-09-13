@@ -8,15 +8,16 @@ LightingFactory::LightingFactory() {}
 
 
 LightingFactory::LightingFactory(STATE mode):
-	mode(mode),
-hasBeenSetup(false),
-reader(ConfigReader("Lighting", mode)),
-messenger(LoggingSystem(true, true)),
-dummy_light(Lighting())
+	LightingFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+
 {
 }
 LightingFactory::LightingFactory(STATE mode, const std::string& primeLatticeLocation) :
-reader(ConfigReader("Lighting", mode, primeLatticeLocation))
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("Lighting", mode, primeLatticeLocation)),
+	messenger(LoggingSystem(true, true)),
+	dummy_light(Lighting())
 {
 }
 LightingFactory::LightingFactory(const LightingFactory& copyFactory) :
