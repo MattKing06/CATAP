@@ -15,44 +15,43 @@ Screen::Screen()
 {}
 Screen::Screen(const std::map<std::string, std::string> & paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
-screenType(ScreenRecords::screenTypeToEnum.at(paramsMap.find("screen_type")->second)),
-//has_camera(paramsMap.find("has_camera")->second),
-name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second))
+screenType(ScreenRecords::screenTypeToEnum.at(paramsMap.at("screen_type"))),
+name(paramsMap.at("name")),
+position(std::stod(paramsMap.at("position")))
 {
-messenger.printDebugMessage("constructor");
-switch (screenType)
-{
-case TYPE::CLARA_HV_MOVER:
-{
-	setPVStructs(ScreenRecords::screenHVRecordList);
-	break;
-}
-case TYPE::CLARA_V_MOVER:
-{
-	setPVStructs(ScreenRecords::screenVRecordList);
-	break;
-}
-case TYPE::VELA_HV_MOVER:
-{
-	setPVStructs(ScreenRecords::screenHVRecordList);
-	break;
-}
-case TYPE::VELA_V_MOVER:
-{
-	setPVStructs(ScreenRecords::screenVRecordList);
-	break;
-}
-case TYPE::CLARA_PNEUMATIC:
-{
-	setPVStructs(ScreenRecords::screenPRecordList);
-	break;
-}
-case TYPE::VELA_PNEUMATIC:
-{
-	setPVStructs(ScreenRecords::screenPRecordList);
-	break;
-}
+	messenger.printDebugMessage("constructor");
+	switch (screenType)
+	{
+	case TYPE::CLARA_HV_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenHVRecordList);
+		break;
+	}
+	case TYPE::CLARA_V_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenVRecordList);
+		break;
+	}
+	case TYPE::VELA_HV_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenHVRecordList);
+		break;
+	}
+	case TYPE::VELA_V_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenVRecordList);
+		break;
+	}
+	case TYPE::CLARA_PNEUMATIC:
+	{
+		setPVStructs(ScreenRecords::screenPRecordList);
+		break;
+	}
+	case TYPE::VELA_PNEUMATIC:
+	{
+		setPVStructs(ScreenRecords::screenPRecordList);
+		break;
+	}
 }
 epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
 epicsInterface->ownerName = hardwareName;
@@ -137,7 +136,7 @@ void Screen::setPVStructs(std::vector<std::string> recordList)
 		pvStructs[record].pvRecord = record;
 
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
-		std::string PV = specificHardwareParameters.find(record)->second.data();
+		std::string PV = specificHardwareParameters.at(record).data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		messenger.printDebugMessage("Constructing PV information for ", record);
 		/*TODO
