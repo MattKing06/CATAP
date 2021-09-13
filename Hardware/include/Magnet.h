@@ -328,6 +328,9 @@ class Magnet : public Hardware
 	/*! function run in new thread during degaussing 
 		@param[in] degauss-struct contains data required for degaussing */
 		static void staticEntryDeGauss(const Degauss& ds);
+
+		void Magnet::doTheDegauss(const Degauss& ds);
+
 	/*! current values to set during degauss procedure, defined in the master lattice yaml file	and setable 	*/
 		std::vector<double> degaussValues;
 	/*! tolerance used during degausing to decide if readi == seti,		*/

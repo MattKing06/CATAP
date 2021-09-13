@@ -280,36 +280,46 @@ bool Magnet::degauss(const std::vector<double>& degauss_values, double set_value
 void Magnet::staticEntryDeGauss(const Degauss& ds)
 {
 	ds.magnet->epicsInterface->attachTo_thisCaContext();
+
+	ds.magnet->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
+	ds.magnet->epicsInterface->attachTo_thisCaContext();
+	ds.magnet->doTheDegauss(ds);
+	ds.magnet->epicsInterface->detachFrom_thisCaContext();
+	ds.magnet->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
+}
+
+void Magnet::doTheDegauss(const Degauss& ds)
+{
 	// Degauss procedures:
 	// set zero, wait, set next value,
 	// if at any stage waitForMagnetToSettle returns false, we have failed and exit
 	bool degauss_success = true;
 	bool seti_success;
 	// set last_degauss_success to false at start of routine  
-	ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " last_degauss_success = FALSE");
-	ds.magnet->last_degauss_success = false;
-	ds.magnet->current_degauss_step = GlobalConstants::zero_sizet;
-	for (auto&& next_value : ds.magnet->degaussValues)
+	messenger.printDebugMessage(hardwareName + " last_degauss_success = FALSE");
+	last_degauss_success = false;
+	current_degauss_step = GlobalConstants::zero_sizet;
+	for (auto&& next_value : degaussValues)
 	{
-		seti_success = ds.magnet->SETIZero();
-		if (ds.magnet->waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
+		seti_success = SETIZero();
+		if (waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
 		{
-			seti_success = ds.magnet->SETI(next_value); // expposed to PYTHON
-			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
+			seti_success = SETI(next_value); // expposed to PYTHON
+			if (waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
 			{
-				ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " Degauss Step ", ds.magnet->current_degauss_step, " success");
+				messenger.printDebugMessage(hardwareName + " Degauss Step ", current_degauss_step, " success");
 			}
 			else
 			{
-				ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " ERROR degaussing magnet did not settle");
+				messenger.printDebugMessage(hardwareName + " ERROR degaussing magnet did not settle");
 				degauss_success = false;
 				break;
 			}
 		}
-		ds.magnet->current_degauss_step += GlobalConstants::one_sizet;
+		current_degauss_step += GlobalConstants::one_sizet;
 	}
-	ds.magnet->SETI(ds.set_value_after_degauss);
-	if (ds.magnet->waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
+	SETI(ds.set_value_after_degauss);
+	if (waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
 	{
 
 	}
@@ -317,8 +327,8 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 	{
 		degauss_success = false;
 	}
-	ds.magnet->last_degauss_success = degauss_success;
-	ds.magnet->is_degaussing = false;
+	last_degauss_success = degauss_success;
+	is_degaussing = false;
 }
 bool Magnet::isREADIequalValue(const double value) const
 {
