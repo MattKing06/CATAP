@@ -1,11 +1,11 @@
 #include <boost/test/unit_test.hpp>
-#include "HardwareFactory.h"
-//#include "Magnet.h"
+#include <HardwareFactory.h>
 #include <string>
 #include <vector>
 #include <stdlib.h>
 #include <chrono>
 #include <thread>
+
 /*********************************************************/
 /**** TEST WARNING ** TEST WARNING ** TEST WARNING ** ****/
 /*********************************************************/
@@ -47,6 +47,10 @@ TO THE VALUES DEFINED BELOW. THEN THE TEST SHOULD WORK!*/
 //	double current = magFactory->getCurrent("CLA-C2V-MAG-HCOR-01");
 //	BOOST_CHECK_EQUAL(current, -0.00190269);
 //}
+
+
+BOOST_AUTO_TEST_SUITE(HardwareFactoryTestSuite)
+
 BOOST_AUTO_TEST_CASE(start_test)
 {
 	BOOST_TEST_MESSAGE("------	RUNNING HARDWARE FACTORY TESTS	------");
@@ -95,6 +99,15 @@ BOOST_AUTO_TEST_CASE(load_machine_snapshot_from_hardware_factory_test)
 	//	bool loaded = HF.loadMachineSnapshot(".\\MachineSnapshots\\10-05-2021 13-05-00");
 	//	BOOST_CHECK(loaded);
 	//}
+}
+
+BOOST_AUTO_TEST_CASE(setting_up_screen_factory_test)
+{
+	//  HardwareFactoryTest/setting_up_screen_factory_test
+	HardwareFactory hardwareFactory(STATE::PHYSICAL);
+	hardwareFactory.debugMessagesOff();
+	hardwareFactory.messagesOff();
+	ScreenFactory& fac = hardwareFactory.getScreenFactory();
 }
 
 
