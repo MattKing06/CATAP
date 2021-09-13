@@ -234,11 +234,11 @@ STATE Lighting::getAcceleratorHallLightState()const
 }
 bool Lighting::setAcceleratorHallLightOn()
 {
-	messenger.printDebugMessage("setBA1LightOn ACCELERATOR_HALL_LIGHT_On 1");
+	messenger.printDebugMessage("setAcceleratorHallLightOn ACCELERATOR_HALL_LIGHT_On 1");
 	if (epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::ACCELERATOR_HALL_LIGHT_On), (epicsUInt8)GlobalConstants::EPICS_ACTIVATE))
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(150));//MAGIC_NUMBER!
-		messenger.printDebugMessage("setBA1LightOn ACCELERATOR_HALL_LIGHT_On 2");
+		messenger.printDebugMessage("setAcceleratorHallLightOn ACCELERATOR_HALL_LIGHT_On 2");
 		return epicsInterface->putValue2<epicsUInt8>(pvStructs.at(LightingRecords::ACCELERATOR_HALL_LIGHT_On), (epicsUInt8)GlobalConstants::EPICS_SEND);
 	}
 	messenger.printDebugMessage("Send LED_Off EPICS_ACTIVATE failed ");
