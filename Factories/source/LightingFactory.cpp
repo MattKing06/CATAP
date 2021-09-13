@@ -97,20 +97,27 @@ bool LightingFactory::setup(std::string version)
 			messenger.printMessage("Set up " + pv.first);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				//messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
 				setMonitorStatus(pv.second);
+
 				light.second.epicsInterface->retrieveCHTYPE(pv.second);
+
+
+				messenger.printMessage("CHTYPE = ", pv.second.CHTYPE );
+
+
 				light.second.epicsInterface->retrieveCOUNT(pv.second);
 				light.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-				//// not sure how to set the mask from EPICS yet.
+				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": can_read = ", std::to_string(ca_read_access(pv.second.CHID)),
-					", can_write = ", std::to_string(ca_write_access(pv.second.CHID)),
-					", state = ", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
+					messenger.printMessage("monitorCHTYPE = ", pv.second.monitorCHTYPE);
 					light.second.epicsInterface->createSubscription(light.second, pv.second);
 				}
+				//messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
 			}
 			else
 			{
@@ -141,7 +148,6 @@ void LightingFactory::setupChannels()
 			light.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}
-	EPICSInterface::sendToEPICS();		
 }
 void LightingFactory::setMonitorStatus(pvStruct& pvStruct)
 {

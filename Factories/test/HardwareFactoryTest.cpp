@@ -111,3 +111,4 @@ BOOST_AUTO_TEST_CASE(setting_up_screen_factory_test)
 }
 
 
+BOOST_AUTO_TEST_SUITE_END();

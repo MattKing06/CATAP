@@ -41,7 +41,6 @@ namespace BOOST_PYTHON_LIGHTING_INCLUDE
 			.def("isBA1LightOn", &Lighting::isBA1LightOn)
 			.def("isBA1LightOff", &Lighting::isBA1LightOff)
 			.def("toggleBA1Light", &Lighting::toggleBA1Light)
-
 			.def("getAcceleratorHallLightState", &Lighting::getAcceleratorHallLightState)
 			.def("setAcceleratorHallLightOn", &Lighting::setAcceleratorHallLightOn)
 			.def("setAcceleratorHallLightOff", &Lighting::setAcceleratorHallLightOff)

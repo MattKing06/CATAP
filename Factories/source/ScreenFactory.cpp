@@ -224,6 +224,7 @@ void ScreenFactory::updateAliasNameMap(const Screen& screen)
 	std::vector<std::string> name_aliases = screen.getAliases();
 	for (const auto& next_alias : name_aliases)
 	{
+		messenger.printMessage(full_name, " next_alias =  ", next_alias);
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
 		{
 			messenger.printMessage("!!ERROR!! ", screen.getHardwareName(), " alias = ", next_alias, " already exists");
@@ -260,7 +261,12 @@ std::map<std::string, Screen> ScreenFactory::getScreens(std::vector<std::string>
 
 Screen& ScreenFactory::getScreen(const std::string& fullScreenName)
 {
-	return screenMap.find(fullScreenName)->second;
+	std::string full_name = getFullName(fullScreenName);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name);
+	}
+	return dummy_screen;
 }
 
 std::map<std::string, STATE> ScreenFactory::getScreenStates(std::vector<std::string> names)
@@ -885,6 +891,21 @@ bool ScreenFactory::setTGTPOS(const std::string& name, const double& value, TYPE
 		return screenMap.at(full_name).setTGTPOS(value, direction);
 	}
 	return false;
+}
+
+std::vector<std::string> ScreenFactory::getAliases(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).getAliases();
+	}
+	std::vector<std::string> r{ "UNKNOWN_NAME" };
+	return r;
+}
+boost::python::list ScreenFactory::getAliases_Py(const std::string& name)
+{
+	return to_py_list<std::string>(getAliases(name));
 }
 
 boost::python::list ScreenFactory::getAllScreenNames_Py()

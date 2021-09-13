@@ -143,7 +143,9 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setSDEV", &Screen::setSDEV)
 			.def("setEN", &Screen::setEN)
 			.def("setEX", &Screen::setEX)
-			.def("moveScreenTo", &Screen::moveScreenTo);
+			.def("moveScreenTo", &Screen::moveScreenTo)
+			.def("getAliases", &Screen::getAliases_Py)
+			;
 	}
 	
 	void expose_screen_factory_object() {
@@ -221,7 +223,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setEX", &ScreenFactory::setEX)
 			.def("moveScreenTo", &ScreenFactory::moveScreenTo)
 			.def("insertYAG", &ScreenFactory::insertYAG)
-			
+			.def("getAliases", &ScreenFactory::getAliases_Py)
 			;
 	}
 

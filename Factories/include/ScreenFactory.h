@@ -337,6 +337,11 @@ public:
 	@param[out] bool: returns true if successful.*/
 	bool setScreenSetState(const std::string& name, STATE state);
 
+	std::vector<std::string> getAliases(const std::string& name);
+	boost::python::list getAliases_Py(const std::string& name);
+
+
+
 	/*!gets a python list of the hardware names associated with all of the screens in screenMap
 	@param[out] list :a Python list containing all of the harwdare names for the screens in screenMap*/
 	boost::python::list getAllScreenNames_Py();
