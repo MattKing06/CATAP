@@ -331,7 +331,7 @@ class Magnet : public Hardware
 
 	/*! Actually doe steh degaussing 
 		@param[in] degauss-struct contains data required for degaussing */
-		void Magnet::doTheDegauss(const Degauss& ds);
+		//void doTheDegauss(const Degauss& ds);
 
 	/*! current values to set during degauss procedure, defined in the master lattice yaml file	and setable 	*/
 		std::vector<double> degaussValues;
