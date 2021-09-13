@@ -38,6 +38,10 @@ public:
 	static void update_BA1_LIGHT_Sta(const struct event_handler_args args);
 
 	std::string ownerName;
+
+	// We need to a STATIC messenger so that the static call back functions can use it to print messages 
+	static LoggingSystem messenger;
+
 };
 
 #endif //EPICS_LIGHTING_INTERFACE_H_
