@@ -930,6 +930,7 @@ bool Screen::moveScreenTo(STATE state)
 			}
 			else if (isPElement(state))
 			{
+				std::cout << "isPElement" << std::endl;
 				return setScreenTriggerWDir(1, TYPE::PNEUMATIC);
 			}
 		}

@@ -242,7 +242,7 @@ std::string ScreenFactory::getFullName(const std::string& name_to_check) const
 	//std::cout << "getFullName looking for " << name_to_check << std::endl;
 	if (GlobalFunctions::entryExists(alias_name_map, name_to_check))
 	{
-		//std::cout << name_to_check << " found " << std::endl;
+		//std::cout << name_to_check << " found as " << alias_name_map.at(name_to_check) << std::endl;
 		return alias_name_map.at(name_to_check);
 	}
 	//std::cout << name_to_check << " NOT found " << std::endl;

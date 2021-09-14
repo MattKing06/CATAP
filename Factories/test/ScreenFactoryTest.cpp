@@ -16,6 +16,17 @@ BOOST_AUTO_TEST_CASE(screen_factory_setup_test)
 }
 
 
+
+BOOST_AUTO_TEST_CASE(insertYAG_test)
+{
+	ScreenFactory fac = ScreenFactory(STATE::PHYSICAL);
+	fac.insertYAG("INJ-YAG-04");
+
+}
+
+
+
+
 //BOOST_AUTO_TEST_CASE(lighting_factory_get_states_test)
 //{
 //	LightingFactory fac = LightingFactory(STATE::PHYSICAL);
