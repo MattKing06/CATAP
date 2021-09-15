@@ -2229,6 +2229,14 @@ boost::python::list Camera::getImageData_Py()const
 {
 	return to_py_list<long>(image_data.second);
 }
+
+boost::python::numpy::ndarray Camera::getImageData_NumPy()const
+{
+	return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
+}
+
+
+
 std::vector<long> Camera::getROIData()const
 {
 	return roi_data.second;
