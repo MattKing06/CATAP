@@ -32,7 +32,7 @@ class ImageCapture
 		ImageCapture() :
 			cam(nullptr), thread(nullptr), num_shots(0),
 			is_busy(false),status(STATE::ERR){}
-		/*! pointer to a cam object fro access */
+		/*! pointer to a cam object for access */
 		Camera* cam;
 		/*! Thread image capture occurs in */
 		std::thread*   thread;
