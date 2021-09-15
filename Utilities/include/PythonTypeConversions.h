@@ -5,6 +5,7 @@
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 #include <boost/python/tuple.hpp>
+#include <boost/python/numpy.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/iterator/zip_iterator.hpp>
 #include <vector>
@@ -101,6 +102,21 @@ boost::python::dict to_py_dict(const std::map<mapkey, mapvalue>& map)
 	return newDictiOnary;
 }
 
+// WE ACTUALLY WANT THIS:
+// https://github.com/ndarray/Boost.NumPy/blob/master/boost/numpy/ndarray.hpp#L195-L216
+// BUT CURRENTLY WE JUST EXPLICTLY COPY DATA INTO THE NP ARRAY TO RETURN.
+
+template<class numpyDataType>
+inline
+boost::python::numpy::ndarray to_numpy_array(std::vector<numpyDataType> vector, size_t rows, size_t columns)
+{
+	boost::python::numpy::initialize();
+	boost::python::numpy::dtype arrayType = boost::python::numpy::dtype::get_builtin<numpyDataType>();
+	int sizeOfVector = vector.size();
+	boost::python::numpy::ndarray result = boost::python::numpy::zeros(boost::python::make_tuple(rows, columns), arrayType);
+	std::copy(vector.begin(), vector.end(), reinterpret_cast<numpyDataType*>(result.get_data()));
+	return result;
+}
 template<class mapkey, class pairvalue>
 inline
 boost::python::dict to_py_dict_pair(const std::map<mapkey, std::pair<pairvalue, pairvalue>>& map)
