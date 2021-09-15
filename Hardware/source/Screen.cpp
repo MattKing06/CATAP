@@ -590,7 +590,11 @@ bool Screen::isVMover() const
 
 bool Screen::isHVMover() const
 {
-	if (getScreenType() == TYPE::CLARA_HV_MOVER || TYPE::VELA_HV_MOVER)
+	if (getScreenType() == TYPE::CLARA_HV_MOVER)
+	{
+		return true;
+	}
+	else if (getScreenType() == TYPE::VELA_HV_MOVER)
 	{
 		return true;
 	}
