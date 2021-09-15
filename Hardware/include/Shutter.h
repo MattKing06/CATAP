@@ -147,11 +147,11 @@ class Shutter : public Hardware
 	protected:
 
 		std::pair<epicsTimeStamp, STATE > shutter_state;
-		std::pair<epicsTimeStamp, int > cmi;
+		std::pair<epicsTimeStamp, long > cmi;
 
 
 	private:
-		std::vector<int>  cmiBits;
+		std::vector<long>  cmiBits;
 		std::map<std::string, STATE>  cmi_bit_map;
 
 
