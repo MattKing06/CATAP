@@ -66,9 +66,9 @@ void EPICSShutterInterface::updateShutterState(const struct event_handler_args a
 void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args args)
 {
 	Shutter* recastShutter = getHardwareFromArgs<Shutter>(args);
-	updateTimeStampIntPair(args, recastShutter->cmi);
+	updateTimeStampLongPair(args, recastShutter->cmi);
 
-	std::string binary_raw = std::bitset<8>(recastShutter->cmi.second).to_string(); // MAGIC NUMBER but thi shas to be hardcoded 
+	std::string binary_raw = std::bitset<16>(recastShutter->cmi.second).to_string(); // MAGIC NUMBER but this has to be hardcoded 
 	//GOTCHA WHAT ENDIAN IS THIS NUMBER ???!!!
 	std::string binary(binary_raw.rbegin(), binary_raw.rend()); //GOTCHA WHAT ENDIAN IS THIS NUMBER ???!!!
 	// std::reverse(binary); //GOTCHA WHAT ENDIAN IS THIS NUMBER ???!!!  no only in c++ 17 
@@ -94,7 +94,7 @@ void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args arg
 		{
 			recastShutter->cmi_bit_map.at(bit_name) = STATE::ERR;
 		}
-		counter += 1; // meh 
+		counter += 1; 
 		messenger.printDebugMessage(bit_name, " value = ", recastShutter->cmi_bit_map.at(bit_name));
 	}
 }
