@@ -4,6 +4,7 @@ cmake_policy(SET CMP0074 NEW)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CXX_STANDARD 17)
 
+
 if (WIN32)
   message(STATUS "WIN32 BUILD")
   # These are default versions for CATAP build
