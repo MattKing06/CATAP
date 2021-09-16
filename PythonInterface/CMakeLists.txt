@@ -78,8 +78,8 @@ endif(WIN32)
 if(UNIX)
 	set(THIRD_PARTY_LIB_DIRS
 		${Boost_LIBRARY_DIRS}/libboost_filesystem.so
-		${Boost_LIBRARY_DIRS}/libboost_python3.so
-		${Boost_LIBRARY_DIRS}/libboost_python.so
+		${Boost_LIBRARY_DIRS}/libboost_python36.so
+		${Boost_LIBRARY_DIRS}/libboost_numpy36.so
 		${Boost_LIBRARY_DIRS}/libboost_system.so
 		${EPICS_COM_LIB}
 		${EPICS_CA_LIB}
