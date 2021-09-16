@@ -276,6 +276,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getImageData", &Camera::getImageData_Py)
+		.def("getImageDataNumPy", &Camera::getImageData_NumPy)
 		.def("getROIData", &Camera::getROIData_Py)
 		.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
 		.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
