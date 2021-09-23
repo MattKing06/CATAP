@@ -632,7 +632,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 
 
 
-	.def(" ", &CameraFactory::setNewBackgroundImage)
+	.def("setNewBackgroundImage", &CameraFactory::setNewBackgroundImage)
 	.def("setUseBackgroundImage", &CameraFactory::setUseBackgroundImage)
 	.def("toggleUseBackgroundImage", &CameraFactory::toggleUseBackgroundImage)
 	.def("setDoNotUseBackgroundImage", &CameraFactory::setDoNotUseBackgroundImage)
