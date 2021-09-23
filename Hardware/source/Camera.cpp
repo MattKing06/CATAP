@@ -2232,7 +2232,10 @@ boost::python::list Camera::getImageData_Py()const
 
 boost::python::numpy::ndarray Camera::getImageData_NumPy()const
 {
+	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
+
 	return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
+	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
 }
 
 
