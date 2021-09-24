@@ -1,4 +1,8 @@
 #include "EPICSMagnetInterface.h"
+#include <mutex>
+
+
+std::mutex mag_mutex;
 
 LoggingSystem EPICSMagnetInterface::messenger;
 
@@ -75,6 +79,7 @@ void EPICSMagnetInterface::retrieveupdateFunctionForRecord(pvStruct &pvStruct) c
 //void EPICSMagnetInterface::updateCurrent(const struct event_handler_args args)
 void EPICSMagnetInterface::updateGETSETI(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
 	updateTimeStampDoublePair(args, recastMagnet->GETSETI);
 	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("GETSETI"), args);
@@ -87,6 +92,7 @@ void EPICSMagnetInterface::updateGETSETI(const struct event_handler_args args)
 // TODO rename 
 void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	// TODO: this seems to get called twice on startup, often the first time the number returned is totally incorrect, 
 	// on the second callback the correct number is returned, maybe some weird EPIPCS thing?
 	Magnet* recastMagnet = getHardwareFromArgs<Magnet>(args);
@@ -112,21 +118,16 @@ void EPICSMagnetInterface::updatePSUState(const struct event_handler_args args)
 
 void EPICSMagnetInterface::updateREADI(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->READI);
-	//setPVTimeStampFromArgs(recastMagnet->pvStructs.at("READI"), args);
-	//double value = returnValueFromArgsAsDouble(args);
-	//recastMagnet->READI2 = returnTSVFromArgsDouble(args);
-	//if(recastMagnet ->hardwareName == "CLA-C2V-MAG-VCOR-01")
-	//{ 
 	//	messenger.printDebugMessage("EPICS_UPDATE READI VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 	//		+ std::to_string(recastMagnet->READI.second));
-	//}
-
 }
 
 void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	std::pair<epicsTimeStamp, unsigned short> pairToUpdate = getTimeStampUShortPair(args);
 	recastMagnet->ilk_state.first = pairToUpdate.first;
@@ -143,23 +144,10 @@ void EPICSMagnetInterface::updateRILK(const struct event_handler_args args)
 	messenger.printDebugMessage("EPICS_UPDATE RILK VALUE FOR: " + recastMagnet->getHardwareName() + ": "
 								+ ENUM_TO_STRING(recastMagnet->ilk_state.second));
 }
-// TODO rename 
-bool EPICSMagnetInterface::setNewCurrent(const double &value, const pvStruct &pv) const
-{
-	//we have checked that pvRecord is SETI before reaching here.
-	return putValue2(pv, value);
-}
-
-bool EPICSMagnetInterface::setNewKSetP(const double& value, const pvStruct& pv) const
-{
-	//we have checked that pvRecord is SETI before reaching here.
-	return putValue2(pv, value);
-}
-
-
 
 void EPICSMagnetInterface::updateKDipP(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->K_DIP_P);
 	messenger.printDebugMessage("EPICS_UPDATE K_DIP_P VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -167,6 +155,7 @@ void EPICSMagnetInterface::updateKDipP(const struct event_handler_args args)
 }
 void EPICSMagnetInterface::updateIntStr_mm(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->INT_STR_MM);
 	messenger.printDebugMessage("EPICS_UPDATE INT_STR_MM VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -174,6 +163,7 @@ void EPICSMagnetInterface::updateIntStr_mm(const struct event_handler_args args)
 }
 void EPICSMagnetInterface::updateIntStr(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->INT_STR);
 	messenger.printDebugMessage("EPICS_UPDATE INT_STR VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -181,6 +171,7 @@ void EPICSMagnetInterface::updateIntStr(const struct event_handler_args args)
 }
 void EPICSMagnetInterface::updateKSetP(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->K_SET_P);
 	messenger.printDebugMessage("EPICS_UPDATE K_SET_P VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -188,6 +179,7 @@ void EPICSMagnetInterface::updateKSetP(const struct event_handler_args args)
 }
 void EPICSMagnetInterface::updateKAng(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->K_ANG);
 	messenger.printDebugMessage("EPICS_UPDATE K_ANG VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -195,6 +187,7 @@ void EPICSMagnetInterface::updateKAng(const struct event_handler_args args)
 }
 void EPICSMagnetInterface::updateKVal(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->K_VAL);
 	messenger.printDebugMessage("EPICS_UPDATE K_VAL VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -202,6 +195,7 @@ void EPICSMagnetInterface::updateKVal(const struct event_handler_args args)
 }
 void EPICSMagnetInterface::updateKmrad(const struct event_handler_args args)
 {
+	std::lock_guard<std::mutex> lg(mag_mutex);  // This now locked your mutex mtx.lock();
 	Magnet* recastMagnet = static_cast<Magnet*>(args.usr);
 	updateTimeStampDoublePair(args, recastMagnet->K_MRAD);
 	messenger.printDebugMessage("EPICS_UPDATE K_MRAD VALUE FOR: " + recastMagnet->getHardwareName() + ": "
@@ -223,8 +217,6 @@ bool EPICSMagnetInterface::setNewPSUState(const STATE value, const pvStruct& pv)
 
 	return putValue2<unsigned short>(pv, epics_value);
 }
-
-
 // TODO rename 
 bool EPICSMagnetInterface::resetILK(const pvStruct& pv) const
 {
@@ -235,4 +227,16 @@ bool EPICSMagnetInterface::resetILK(const pvStruct& pv) const
 	}
 	return false;
 
+}
+// TODO rename 
+bool EPICSMagnetInterface::setNewCurrent(const double& value, const pvStruct& pv) const
+{
+	//we have checked that pvRecord is SETI before reaching here.
+	return putValue2(pv, value);
+}
+
+bool EPICSMagnetInterface::setNewKSetP(const double& value, const pvStruct& pv) const
+{
+	//we have checked that pvRecord is SETI before reaching here.
+	return putValue2(pv, value);
 }

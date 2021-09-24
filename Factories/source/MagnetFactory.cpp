@@ -398,7 +398,29 @@ std::string MagnetFactory::getFullName(const std::string& name_to_check) const
 	return dummy_magnet.getHardwareName();
 }
 
-
+TYPE MagnetFactory::getMachineArea(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getMachineArea();
+	}
+	std::cout << "!!ERROR!! MagnetFactory::getSETI cannot find magnet with name = " << name << std::endl;
+	return TYPE::UNKNOWN_AREA;
+}
+std::map<std::string, TYPE> MagnetFactory::getMachineArea(const std::vector<std::string>& name) const
+{
+	std::map<std::string, TYPE> return_map;
+	for (auto&& name : name)
+	{
+		return_map[name] = getMachineArea(name);
+	}
+	return return_map;
+}
+boost::python::dict MagnetFactory::getMachineArea_Py(const boost::python::list& name) const
+{
+	return to_py_dict<std::string, TYPE>(getMachineArea(to_std_vector<std::string>(name)));
+}
 bool MagnetFactory::isAType(const std::string& name, const TYPE type)const
 {
 	std::string fullName = getFullName(name);
@@ -1184,8 +1206,6 @@ boost::python::dict MagnetFactory::getMagnetType_Py(const boost::python::list& n
 {
 	return to_py_dict<std::string, TYPE>(getMagnetType(to_std_vector<std::string>(names)));
 }
-
-
 std::string MagnetFactory::getMagnetRevType(const std::string& name) const
 {
 	std::string fullName = getFullName(name);

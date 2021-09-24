@@ -574,6 +574,20 @@ class MagnetFactory
 		@param[out] python::dict of magnet object TYPEs keyed by the passed names */
 		boost::python::dict getMagnetType_Py(const boost::python::list& name) const;
 
+		/*! Get Machine area 
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] machine area TYPE, (INJ, S02, SO1,)  */
+		TYPE getMachineArea(const std::string& name) const;
+		/*! Get Machine area  for multiple magnets  (c++ version)
+		@param[in] names, std::vector of full-names or name-aliases of magnet objects
+		@param[out] std::map of magnet object TYPEs keyed by the passed names */
+		std::map<std::string, TYPE> getMachineArea(const std::vector<std::string>& name) const;
+		/*! Get Machine area  for multiple magnets  (python version)
+		@param[in] names, python::list of full-names or name-aliases of magnet objects
+		@param[out] TYPE, (INJ, S02, SO1, etc etc.)
+		@param[out] python::dict of machine area TYPEs keyed by the passed names */
+		boost::python::dict getMachineArea_Py(const boost::python::list& name) const;
+
 
 		/*! Get the TYPE of PSU polarity reversing for a magnet 
 		@param[in] name, full-name or name-alias of magnet object
@@ -994,6 +1008,9 @@ class MagnetFactory
 		bool hasBeenSetup;
 		// offline physical or virtual 
 		STATE mode;
+
+
+
 
 
 		/*! turns debug messages on for valveFactory and calls same function in all valves and configReader*/

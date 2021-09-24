@@ -78,6 +78,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("degauss", degauss_to_zero, (boost::python::arg("self"), boost::python::arg("reset_to_zero")))
 
 
+			.def("getRPOWERpv", &Magnet::getRPOWERpv)
+			.def("getSETIpv", &Magnet::getSETIpv)
+			
 
 			.def("isDegaussing", &Magnet::isDegaussing)
 			.def("getDegaussValues", &Magnet::getDegaussValues_Py)
@@ -148,6 +151,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 		STATE(MagnetFactory::*applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &MagnetFactory::applySnaphot;
 
 
+		TYPE(MagnetFactory:: * getMachineArea_single)(const std::string&)const = &MagnetFactory::getMachineArea;
 
 		std::string(MagnetFactory::*getManufacturer_single)(const std::string&)const = &MagnetFactory::getManufacturer;
 		//int(MagnetFactory::*getserial_number_single)(const std::string&)const = &MagnetFactory::getserial_number;
@@ -229,6 +233,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("getKAng", &MagnetFactory::getAllKAng_Py)
 			.def("getAllDipoleKAng", &MagnetFactory::getAllDipoleKAng_Py)
 
+			.def("getMachineArea", getMachineArea_single)
+			.def("getMachineArea", &MagnetFactory::getMachineArea_Py)
 
 
 			.def("getKmrad", &MagnetFactory::getKmrad)

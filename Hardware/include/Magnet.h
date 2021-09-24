@@ -255,6 +255,16 @@ class Magnet : public Hardware
 		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
 	bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
 
+	/*! Get the SETI PV 
+		@param[out] std::string, PV */
+	std::string getSETIpv()const;
+
+	/*! Get the RPOWER PV
+		@param[out] std::string, PV */
+	std::string getRPOWERpv()const;
+
+
+
 
 	/*! Reset the magnet PSU external interlocks 
 		@param[out] bool, true if commands got sent to EPICS */
@@ -275,6 +285,8 @@ class Magnet : public Hardware
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;
 	protected:
+
+
 	// called from EPICS to update the GETSETI variable! 
 	/*! switch the magnet PSU on	*/
 	//	void updateGETSETI(const double& value);
@@ -308,7 +320,7 @@ class Magnet : public Hardware
 		EPICSMagnetInterface_sptr epicsInterface;
 	/*! sets the PV struct for the magnet parameters that are monitored through epics, INFO ABOUT PV STRUCTS?*/
 		void setPVStructs();
-	/*! switch the magnet PSU on to STATE value
+	/*! switch the magnet PSU on to STATE valuesetPVStructs
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
 		void offlineSETI(const double& value);
 	/*! switch the magnet PSU on to STATE value
@@ -328,6 +340,9 @@ class Magnet : public Hardware
 	/*! function run in new thread during degaussing 
 		@param[in] degauss-struct contains data required for degaussing */
 		static void staticEntryDeGauss(const Degauss& ds);
+	/*! Actually do the degaussing, called from  staticEntryDeGauss
+		@param[in] degauss-struct contains data required for degaussing */
+		void DoDeGauss(const Degauss& ds);
 	/*! current values to set during degauss procedure, defined in the master lattice yaml file	and setable 	*/
 		std::vector<double> degaussValues;
 	/*! tolerance used during degausing to decide if readi == seti,		*/

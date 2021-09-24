@@ -75,6 +75,10 @@ public:
 	boost::python::dict getHardwareSnapshot_Py();
 
 
+	//std::map<std::string, std::string> getPVRecords()const;
+	//boost::python::dict getPVRecords_Py()const;
+
+
 
 	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/
 	//virtual void setPVStructs(std::map<std::string, std::string> recordAndPVStructs);
