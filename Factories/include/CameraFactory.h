@@ -149,6 +149,30 @@ public:
 	@param[in] std::string, name
 	@param[in] double, new value */
 	double setpix2mmY(const std::string& name, double value);
+
+
+
+
+	/*! Get the pixel bit depth for a cmaera,
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	size_t getBitDepth(const std::string& name);
+	/*! Get required rotations of raw image array to match installed orentation for image (0, 90, 180 or 270 degrees).
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	size_t getImageRotation(const std::string& name);
+	/*! Get should the image be flipped along the up/down axis (after rotation)  i.e. row order reversed)
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	bool getImageFlipUD(const std::string& name);
+	/*! Get should the image be flipped along the left/right axis (after rotation) i.e. column order reversed)
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	bool getImageFlipLR(const std::string& name);
+
+
+
+
 	//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 	//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 	//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 

@@ -47,6 +47,13 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		//
 		.def("getAliases", &Camera::getAliases_Py)
 		.def("getScreenNames", &Camera::getScreenNames_Py)
+					
+		.def("getBitDepth", &Camera::getBitDepth)
+		.def("getImageRotation", &Camera::getImageRotation)
+		.def("getImageFlipUD", &Camera::getImageFlipUD)
+		.def("getImageFlipLR", &Camera::getImageFlipLR)
+		
+
 		//   __         ___         ___  __                 
 		//  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
 		//  |    | / \ |___ |___     |  \__/     |  |  |  | 
@@ -717,6 +724,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("setROI", &CameraFactory::setROI_Py)
 
 			
+		.def("getBitDepth", &CameraFactory::getBitDepth)
+		.def("getImageRotation", &CameraFactory::getImageRotation)
+		.def("getImageFlipUD", &CameraFactory::getImageFlipUD)
+		.def("getImageFlipLR", &CameraFactory::getImageFlipLR)
+
+
 				
 		.def("getSumIntensity", &CameraFactory::getSumIntensity)
 		.def("getAvgIntensity", &CameraFactory::getAvgIntensity)

@@ -467,6 +467,48 @@ double CameraFactory::setpix2mmY(const std::string& name, double value)
 	}
 	return GlobalConstants::double_min;
 }
+
+size_t CameraFactory::getBitDepth(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBitDepth();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getImageRotation(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getImageRotation();
+	}
+	return GlobalConstants::size_zero;
+}
+
+bool CameraFactory::getImageFlipUD(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getImageFlipUD();
+	}
+	return false;
+}
+
+bool CameraFactory::getImageFlipLR(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getImageFlipLR();
+	}
+	return false;
+}
+
+
+
 //    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 //   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 //   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 

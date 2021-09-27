@@ -132,6 +132,10 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	min_y_pixel_pos(GlobalConstants::double_min),
 	max_y_pixel_pos(GlobalConstants::double_min),
 	busy(false),
+	bit_depth(GlobalConstants::zero_sizet),
+	image_rotation(GlobalConstants::zero_sizet),
+	flip_ud(false),
+	flip_lr(false),
 	has_led(false),
 	last_capture_and_save_success(false),
 	x_pix_rs(RunningStats() ),
@@ -236,6 +240,8 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		}
 	}
 	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
+
+
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_X"))
@@ -246,7 +252,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_X");
 	}
-
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
 	{
@@ -257,7 +262,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_Y");
 	}
 	array_data_pixel_count = array_data_num_pix_y * array_data_num_pix_x;
-
 	messenger.printDebugMessage(hardwareName, " array_data_pixel_count = ", array_data_pixel_count);
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
@@ -529,7 +533,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	}
 	if (GlobalFunctions::entryExists(paramMap, "COV_POS"))
 	{
-		size_t pos = (size_t)std::stoi(paramMap.find("COV_POS")->second);
+		size_t pos = (size_t)std::stoi(paramMap.at("COV_POS"));
 		if (GlobalFunctions::entryExists(paramMap, "COV_NAME"))
 		{
 			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
@@ -540,7 +544,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find OPERATING_CENTER_X");
 	if (GlobalFunctions::entryExists(paramMap, "OPERATING_CENTER_X"))
 	{
-		operating_centre_x = std::stod(paramMap.find("OPERATING_CENTER_X")->second);
+		operating_centre_x = std::stod(paramMap.at("OPERATING_CENTER_X"));
 		messenger.printDebugMessage(hardwareName, " Found OPERATING_CENTER_X, value = ", operating_centre_x);
 	}
 	else
@@ -551,7 +555,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find OPERATING_CENTER_Y");
 	if (GlobalFunctions::entryExists(paramMap, "OPERATING_CENTER_Y"))
 	{
-		operating_centre_y = std::stod(paramMap.find("OPERATING_CENTER_Y")->second);
+		operating_centre_y = std::stod(paramMap.at("OPERATING_CENTER_Y"));
 		messenger.printDebugMessage(hardwareName, " Found OPERATING_CENTER_Y, value = ", operating_centre_y);
 	}
 	else
@@ -562,7 +566,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MECHANICAL_CENTER_X");
 	if (GlobalFunctions::entryExists(paramMap, "MECHANICAL_CENTER_X"))
 	{
-		mechanical_centre_x = std::stod(paramMap.find("MECHANICAL_CENTER_X")->second);
+		mechanical_centre_x = std::stod(paramMap.at("MECHANICAL_CENTER_X"));
 		messenger.printDebugMessage(hardwareName, " Found MECHANICAL_CENTER_X, value = ", mechanical_centre_x);
 
 	}
@@ -574,7 +578,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MECHANICAL_CENTER_Y");
 	if (GlobalFunctions::entryExists(paramMap, "MECHANICAL_CENTER_Y"))
 	{
-		mechanical_centre_y = std::stod(paramMap.find("MECHANICAL_CENTER_Y")->second);
+		mechanical_centre_y = std::stod(paramMap.at("MECHANICAL_CENTER_Y"));
 		messenger.printDebugMessage(hardwareName, " Found MECHANICAL_CENTER_Y, value = ", mechanical_centre_y);
 
 	}
@@ -582,14 +586,64 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_Y");
 	}
-	//if (GlobalFunctions::entryExists(paramMap, "CAM1_ARRAY_DATA_NUM_PIX_X"))
-	//{
-	//	size_t pos = (size_t)std::stoi(paramMap.find("CAM1_ARRAY_DATA_NUM_PIX_X")->second);
-	//}
-	//else
-	//{
-	//	messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find CAM1_ARRAY_DATA_NUM_PIX_X");
-	//}
+	messenger.printDebugMessage(hardwareName, " find MAX_BIT_DEPTH");
+	if (GlobalFunctions::entryExists(paramMap, "MAX_BIT_DEPTH"))
+	{
+		bit_depth = (size_t)std::stoi(paramMap.at("MAX_BIT_DEPTH"));
+		messenger.printDebugMessage(hardwareName, " Found MAX_BIT_DEPTH, value = ", bit_depth);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_BIT_DEPTH");
+	}
+	messenger.printDebugMessage(hardwareName, " find IMAGE_ROTATION");
+	if (GlobalFunctions::entryExists(paramMap, "IMAGE_ROTATION"))
+	{
+		bit_depth = (size_t)std::stoi(paramMap.at("IMAGE_ROTATION"));
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_ROTATION, value = ", bit_depth);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find IMAGE_ROTATION");
+	}
+	messenger.printDebugMessage(hardwareName, " find IMAGE_ROTATION");
+	if (GlobalFunctions::entryExists(paramMap, "IMAGE_FLIP_UD"))
+	{
+		if (GlobalFunctions::stringIsTrue(paramMap.at("IMAGE_FLIP_UD")))
+		{
+			flip_ud = true;
+		}
+		else
+		{
+			flip_ud = false;
+		}
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_FLIP_UD, value = ", flip_ud);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find IMAGE_FLIP_UD");
+	}
+
+	if (GlobalFunctions::entryExists(paramMap, "IMAGE_FLIP_LR"))
+	{
+		if (GlobalFunctions::stringIsTrue(paramMap.at("IMAGE_FLIP_LR")))
+		{
+			flip_lr = true;
+		}
+		else
+		{
+			flip_lr = false;
+		}
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_FLIP_LR, value = ", flip_lr);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find IMAGE_FLIP_LR");
+	}
+
+
+
 }
 
 Camera::Camera(const Camera& copyCamera):
@@ -656,7 +710,8 @@ min_y_pixel_pos(copyCamera.min_y_pixel_pos),
 max_y_pixel_pos(copyCamera.max_y_pixel_pos),
 busy(copyCamera.busy),
 has_led(copyCamera.has_led),
-last_capture_and_save_success(copyCamera.last_capture_and_save_success)
+last_capture_and_save_success(copyCamera.last_capture_and_save_success),
+bit_depth(copyCamera.bit_depth)
 {}
 Camera::~Camera(){}
 void Camera::setPVStructs()
@@ -2206,6 +2261,33 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	}
 	return false;
 }
+
+
+
+
+
+
+
+size_t Camera::getBitDepth()const
+{
+	return bit_depth;
+}
+size_t Camera::getImageRotation()const
+{
+	return image_rotation;
+}
+bool Camera::getImageFlipUD()const
+{
+	return flip_ud;
+}
+bool Camera::getImageFlipLR()const
+{
+	return flip_lr;
+}
+
+
+
+
 //std::vector<double>* Camera::getImagedataByPointer()
 //{
 //	//mValues.clear();

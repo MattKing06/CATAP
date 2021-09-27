@@ -151,6 +151,10 @@ public:
 	/*! Get the pixel to mm conversion factor,
 	@param[out] double, value */
 	double getPix2mm()const;
+	/*! Get the pixel bit depth for this cmaera,
+	@param[out] size_t, value */
+	size_t getBitDepth()const;
+
 protected:
 	/*! conversion factor for pixels to mm. Value and epicstimestamp. From Epics. */
 	std::pair<epicsTimeStamp, double > pixel_to_mm;
@@ -158,6 +162,31 @@ protected:
 	double pix2mmX_ratio;
 	/*! conversion factor for pixels to mm in the y direction. From Main Lattice (not implemented in Physcial EPICS). */
 	double pix2mmY_ratio;
+	/*! How many bits each pixel has*/
+	size_t bit_depth;
+
+
+	// IMAGE ORIENTATION
+
+public:
+	/*! Get required rotations of raw image array to match installed orentation for image (0, 90, 180 or 270 degrees). 
+	* 	@param[out] size_t, value */
+	size_t getImageRotation()const;
+	/*! Get should the image be flipped along the up/down axis (after rotation)  i.e. row order reversed) 
+	* 	@param[out] bool, value */
+	bool getImageFlipUD()const;
+	/*! Get should the image be flipped along the left/right axis (after rotation) i.e. column order reversed) 
+	* 	@param[out] bool, value */
+	bool getImageFlipLR()const;
+
+protected:
+
+	size_t image_rotation;
+	bool flip_ud;
+	bool flip_lr;
+
+
+
 //    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 //   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 //   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 

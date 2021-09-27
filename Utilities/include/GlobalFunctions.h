@@ -269,6 +269,10 @@ namespace GlobalFunctions {
 
 
 	extern STATE stringToSTATE(const std::string& state_str);
+
+
+	extern  bool stringIsTrue(const std::string& str_to_compare);
+	extern  bool stringIsFalse(const std::string& str_to_compare);
 }
 /*! @}*/
 #endif
