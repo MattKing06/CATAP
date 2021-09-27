@@ -3,13 +3,13 @@
 BOOST_AUTO_TEST_SUITE(CameraFactoryTest)
 
 
+//--run_test=CameraFactoryTest/setting_up_camera_factory_print_names
 BOOST_AUTO_TEST_CASE(setting_up_camera_factory_print_names)
 {
 	
 	CameraFactory fac = CameraFactory(STATE::PHYSICAL);
 	fac.setup("nominal");
 }
-
 
 BOOST_AUTO_TEST_CASE(toggle_noise_floor)
 {

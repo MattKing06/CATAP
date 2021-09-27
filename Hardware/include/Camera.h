@@ -1290,7 +1290,11 @@ public:
 	to reduce network load Camera data arrays ARE NOT continuously monitored. 
 	@param[out] list, latest data */
 	boost::python::list getImageData_Py()const;
-	/*! Get a copy of the current image data. Until an updateROI function is called this will be empty,
+	/*! Get a copy of the current image data (Numpy Python Version). Until an updateImage functiton is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored.
+	@param[out] list, latest data */
+	boost::python::numpy::ndarray getImageData_NumPy()const;
+	/*! Get a copy of the current Region Of Interest data. Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
 	std::vector<long> getROIData()const;

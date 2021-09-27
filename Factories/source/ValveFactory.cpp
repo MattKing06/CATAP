@@ -308,6 +308,17 @@ void ValveFactory::open_Py(const boost::python::list& names)
 	open(to_std_vector<std::string>(names));
 }
 
+boost::python::numpy::ndarray ValveFactory::getFakeNumpyArray()
+{
+	std::vector<int> vector(4);
+	
+	for (int i = 0; i < 4; i++)
+	{
+		vector[i] = i;
+	}
+	return to_numpy_array<int>(vector, 2, 2);
+}
+
 void ValveFactory::openAllValves()
 {
 	open(getAllValveNames());

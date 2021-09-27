@@ -179,8 +179,8 @@ properties:
     X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
     Y_PIX_SCALE_FACTOR : 2 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.0 #;  emprically determined value for when laser is present
-    X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
-    Y_CENTER_DEF      : 0 #;
+    X_CENTER_DEF      : 1080 # ;    where is (0,0) CATAP AUTOMATICALLY SETS THIS ON STARTUP - MAYBE IT SHOULD NOT!!! How robust will these numbers be???
+    Y_CENTER_DEF      : 1000 #;     where is (0,0) CATAP AUTOMATICALLY SETS THIS ON STARTUP - MAYBE IT SHOULD NOT!!! How robust will these numbers be??? 
     PIX_2_MM_RATIO_DEF : 0.006 #; !!! from wiki 
     ARRAY_DATA_X_PIX_2_MM : 0.006 #; 
     ARRAY_DATA_Y_PIX_2_MM :  0.006 #;
