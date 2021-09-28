@@ -1,20 +1,25 @@
 controls_information:
     PV : true
     pv_record_map:
-        H_MREL : CLA-LAS-OPT-PICO-4C-PM-4:H:MREL
-        V_MREL : CLA-LAS-OPT-PICO-4C-PM-4:V:MREL
-        H_POS : CLA-LAS-OPT-PICO-4C-PM-4:H:POS
-        V_POS : CLA-LAS-OPT-PICO-4C-PM-4:V:POS
-        POSBTN : CLA-LAS-OPT-PICO-4C-PM-4:POSBTN
+        CLARA_LED_Sta : CLA-LAS-DIA-LED-01:Sta
+        CLARA_LED_Off : CLA-LAS-DIA-LED-01:Off
+        CLARA_LED_On  : CLA-LAS-DIA-LED-01:On
+        VELA_LED_Sta : EBT-INJ-DIA-LED-01:Sta
+        VELA_LED_Off : EBT-INJ-DIA-LED-01:Off
+        VELA_LED_On  : EBT-INJ-DIA-LED-01:On
+        # YES: the Off PV actually switches the lights On, and the Off PV switches the lights On
+        ACCELERATOR_HALL_LIGHT_On : INF-SRV-LIGHT-01:Off
+        ACCELERATOR_HALL_LIGHT_Off  : INF-SRV-LIGHT-01:On
+        # also, for the Sta 0 is On and 1 is Off ...
+        ACCELERATOR_HALL_LIGHT_Sta : INF-SRV-LIGHT-01:Sta
+        # YES: the Off PV actually switches the lights On, and the Off PV switches the lights On
+        BA1_LIGHT_On : INF-SRV-LIGHT-02:Off
+        BA1_LIGHT_Off  : INF-SRV-LIGHT-02:On
+        # also, for the Sta 0 is On and 1 is Off ...
+        BA1_LIGHT_Sta : INF-SRV-LIGHT-02:Sta
+
     records : H_MREL, V_MREL, H_POS, V_POS
 properties:
-    hardware_type : LaserMirror
-    machine_area : LAS
-    name : CLA-LAS-OPT-PICO-4C-PM-4
-    virtual_name: VM-INJ-DIA-DUMMY-01
-    step_max : 100.1
-    left_sense : 1.0
-    right_sense : -1.0
-    up_sense : 1.0
-    down_sense : -1.0
-        
+    hardware_type : Lighting
+    machine_area : ALL_VELA_CLARA
+    name : ALL_LIGHTING        

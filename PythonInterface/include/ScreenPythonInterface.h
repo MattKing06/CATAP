@@ -143,7 +143,9 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setSDEV", &Screen::setSDEV)
 			.def("setEN", &Screen::setEN)
 			.def("setEX", &Screen::setEX)
-			.def("moveScreenTo", &Screen::moveScreenTo);
+			.def("moveScreenTo", &Screen::moveScreenTo)
+			.def("getAliases", &Screen::getAliases_Py)
+			;
 	}
 	
 	void expose_screen_factory_object() {
@@ -184,7 +186,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("getScreenSetState", &ScreenFactory::getScreenSetState)
 			.def("getScreenSetStatePair", &ScreenFactory::getScreenSetStatePair)
 			.def("getScreenType", &ScreenFactory::getScreenType)
-			.def("getAvailableDevices", &ScreenFactory::getAvailableDevices)
+			.def("getAvailableDevices", &ScreenFactory::getAvailableDevices_Py)
 			.def("isScreenInState", &ScreenFactory::isScreenInState)
 			.def("isHElement", &ScreenFactory::isHElement)
 			.def("isVElement", &ScreenFactory::isVElement)
@@ -194,6 +196,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("isRFCageIn", &ScreenFactory::isRFCageIn)
 			.def("getACTPOS", &ScreenFactory::getACTPOS)
 			.def("getJDiff", &ScreenFactory::getJDiff)
+			.def("isYAGIn", &ScreenFactory::isYAGIn)
 			//.def("getDevicePosition", &ScreenFactory::getDevicePosition)
 			.def("getPosition", &ScreenFactory::getPosition)
 			.def("isVELAPneumatic", &ScreenFactory::isVELAPneumatic)
@@ -218,7 +221,10 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setScreenSDEV", &ScreenFactory::setScreenSDEV)
 			.def("setEN", &ScreenFactory::setEN)
 			.def("setEX", &ScreenFactory::setEX)
-			.def("moveScreenTo", &ScreenFactory::moveScreenTo);
+			.def("moveScreenTo", &ScreenFactory::moveScreenTo)
+			.def("insertYAG", &ScreenFactory::insertYAG)
+			.def("getAliases", &ScreenFactory::getAliases_Py)
+			;
 	}
 
 

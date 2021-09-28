@@ -160,6 +160,10 @@ public:
 	@param[in] name: the name of the screen.
 	@param[out] std::vector<STATE>: returns a vector of all available devices for that screen.*/
 	std::vector< STATE > getAvailableDevices(const std::string& name);
+	/*!returns the available devices for a given screen, Python version 
+	@param[in] name: the name of the screen.
+	@param[out] list: returns a list of all available devices for that screen.*/
+	boost::python::list getAvailableDevices_Py(const std::string& name);
 	/*!returns true if the screen is in the given state.
 	@param[in] name: the name of the screen.
 	@param[in] STATE: the state (i.e. device position).
@@ -265,12 +269,11 @@ public:
 	@param[in] name: the name of the screen.
 	@param[out] STATE: returns the current state of the screen.*/
 	STATE getState(const std::string& name) const;
-
 	/// SETTERS
 	/*!moves the screen to the specified STATE.
 	@param[in] name: the name of the screen.
 	@param[in] STATE: the STATE to move the screen to. Use getAvailableDevices to see what is available for that screen.*/
-	void moveScreenTo(const std::string& name, STATE& state);
+	void moveScreenTo(const std::string& name, STATE state);
 	/*!moves the YAG screen in.
 	@param[in] name: the name of the screen.*/
 	void insertYAG(const std::string& name);
@@ -334,6 +337,11 @@ public:
 	@param[out] bool: returns true if successful.*/
 	bool setScreenSetState(const std::string& name, STATE state);
 
+	std::vector<std::string> getAliases(const std::string& name);
+	boost::python::list getAliases_Py(const std::string& name);
+
+
+
 	/*!gets a python list of the hardware names associated with all of the screens in screenMap
 	@param[out] list :a Python list containing all of the harwdare names for the screens in screenMap*/
 	boost::python::list getAllScreenNames_Py();
@@ -358,6 +366,21 @@ public:
 	@param[in] list: the names of the screens.
 	@param[out] dict: returns a dict of the specified screen objects, keyed by name.*/
 	boost::python::dict getScreens_Py(boost::python::list names);
+
+	/*!Add name aliases to alias_name_map a Python dict of the specified screen objects.
+	@param[in] list: the names of the screens.
+	@param[out] dict: returns a dict of the specified screen objects, keyed by name.*/
+	void updateAliasNameMap(const Screen& screen);
+	std::map<std::string, std::string> alias_name_map;
+
+	/*!return the full name off the  screen (if the name exists in alias_name_map).
+	@param[in] string: names, or alias name.
+	@param[out] string: full name (or DUMMY if the passed name is not found.*/
+	std::string getFullName(const std::string& name_to_check) const;
+
+	// used when we need to return values from a requested sreen name that does not exist 
+	Screen dummy_screen;
+
 
 	/*! turns debug messages on for screenFactory and calls same function in all screens and configReader*/
 	void debugMessagesOn();

@@ -7,15 +7,18 @@ controls_information:
         VELA_LED_Sta : EBT-INJ-DIA-LED-01:Sta
         VELA_LED_Off : EBT-INJ-DIA-LED-01:Off
         VELA_LED_On  : EBT-INJ-DIA-LED-01:On
-        HALL_1_LIGHT_Sta : INF-SRV-LIGHT-01:Sta
-        HALL_1_LIGHT_Off : INF-SRV-LIGHT-01:Off
-        HALL_1_LIGHT_On  : INF-SRV-LIGHT-01:On
-        HALL_2_LIGHT_Sta : INF-SRV-LIGHT-02:Sta
-        HALL_2_LIGHT_Off : INF-SRV-LIGHT-02:Off
-        HALL_2_LIGHT_On  : INF-SRV-LIGHT-02:On
+        # YES: the Off PV actually switches the lights On, and the Off PV switches the lights On
+        ACCELERATOR_HALL_LIGHT_On  : INF-SRV-LIGHT-01:Off
+        ACCELERATOR_HALL_LIGHT_Off : INF-SRV-LIGHT-01:On
+        # also, for the Sta 0 is On and 1 is Off ...
+        ACCELERATOR_HALL_LIGHT_Sta : INF-SRV-LIGHT-01:Sta
+        # YES: the Off PV actually switches the lights On, and the Off PV switches the lights On
+        BA1_LIGHT_On  : INF-SRV-LIGHT-02:Off
+        BA1_LIGHT_Off : INF-SRV-LIGHT-02:On
+        # also, for the Sta 0 is On and 1 is Off ...
+        BA1_LIGHT_Sta : INF-SRV-LIGHT-02:Sta
     records : H_MREL, V_MREL, H_POS, V_POS
 properties:
     hardware_type : Lighting
-    machine_area : 
-    name : ALL_LIGHTS
-        
+    machine_area : ALL_VELA_CLARA
+    name : ALL_LIGHTING        
