@@ -600,8 +600,8 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find IMAGE_ROTATION");
 	if (GlobalFunctions::entryExists(paramMap, "IMAGE_ROTATION"))
 	{
-		bit_depth = (size_t)std::stoi(paramMap.at("IMAGE_ROTATION"));
-		messenger.printDebugMessage(hardwareName, " Found IMAGE_ROTATION, value = ", bit_depth);
+		image_rotation = (size_t)std::stoi(paramMap.at("IMAGE_ROTATION"));
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_ROTATION, value = ", image_rotation);
 	}
 	else
 	{
@@ -2121,7 +2121,7 @@ bool Camera::updateImageData()
 			, image_data.second.size());
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -2315,7 +2315,6 @@ boost::python::list Camera::getImageData_Py()const
 boost::python::numpy::ndarray Camera::getImageData_NumPy()const
 {
 	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
-
 	return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
 	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
 }
