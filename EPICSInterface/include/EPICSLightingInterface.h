@@ -29,8 +29,19 @@ public:
 	* @param[in] event_handler_args	*/
 	static void update_VELA_LED_Sta(const struct event_handler_args args);
 
+	/*! callback function for EPICS to update the VELA LED Status
+	* @param[in] event_handler_args	*/
+	static void update_ACCELERATOR_HALL_LIGHT_Sta(const struct event_handler_args args);
+
+	/*! callback function for EPICS to update the VELA LED Status
+	* @param[in] event_handler_args	*/
+	static void update_BA1_LIGHT_Sta(const struct event_handler_args args);
 
 	std::string ownerName;
+
+	// We need to a STATIC messenger so that the static call back functions can use it to print messages 
+	static LoggingSystem messenger;
+
 };
 
 #endif //EPICS_LIGHTING_INTERFACE_H_

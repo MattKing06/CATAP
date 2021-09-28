@@ -12,7 +12,7 @@ controls_information:
         "DEV_CENT": EBT-INJ-DIA-YAG-09:DEV_CENT
 properties:
     name: EBT-INJ-DIA-YAG-09
-    name_alias: UNDEFINED
+    name_alias: INJ-YAG-09
     machine_area: INJ
     hardware_type: Screen
     screen_type: VELA_PNEUMATIC

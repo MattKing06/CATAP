@@ -197,42 +197,43 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 
 void EPICSInterface::retrieveCHTYPE(pvStruct &pvStruct) const
 {
+	pvStruct.CHTYPE = ca_field_type(pvStruct.CHID);
 	if (pvStruct.monitor)
 	{
-		if (ca_field_type(pvStruct.CHID) == DBR_DOUBLE)
+		if (pvStruct.CHTYPE == DBR_DOUBLE)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_DOUBLE;
 		}
-		else if (ca_field_type(pvStruct.CHID) == DBR_ENUM)
+		else if (pvStruct.CHTYPE == DBR_ENUM)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_ENUM;
 		}
-		else if (ca_field_type(pvStruct.CHID) == DBR_LONG)
+		else if (pvStruct.CHTYPE == DBR_LONG)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_LONG;
 		}
-		else if (ca_field_type(pvStruct.CHID) == DBR_SHORT)
+		else if (pvStruct.CHTYPE == DBR_SHORT)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_SHORT;
 		}
-		else if (ca_field_type(pvStruct.CHID) == DBR_INT)
+		else if (pvStruct.CHTYPE == DBR_INT)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_INT;
 		}
-		else if (ca_field_type(pvStruct.CHID) == DBR_CHAR)
+		else if (pvStruct.CHTYPE == DBR_CHAR)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_CHAR;
 		}
-		else if (ca_field_type(pvStruct.CHID) == DBR_STRING)
+		else if (pvStruct.CHTYPE == DBR_STRING)
 		{
 			pvStruct.monitorCHTYPE = DBR_TIME_STRING;
 		}
 		else
 		{
+			messenger.printMessage(pvStruct.fullPVName, " !!WARNING!! unexpected ca_field_type = ", ca_field_type(pvStruct.CHID));
 			pvStruct.monitorCHTYPE = ca_field_type(pvStruct.CHID);
 		}
 	}
-	pvStruct.CHTYPE = ca_field_type(pvStruct.CHID);
 }
 
 void EPICSInterface::retrieveCOUNT(pvStruct &pvStruct) const

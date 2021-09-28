@@ -43,6 +43,10 @@ public:
 	/*! A function to retrieve the aliases for a given Screen object
 		@param[out] vector of aliases that the Screen is also known by*/
 	std::vector<std::string> getAliases() const;
+	/*! Retrieve the aliases for a given Screen object, Python version. 
+		@param[out] list: aliases that the Screen is also known by, set in config yaml */
+	boost::python::list getAliases_Py() const;
+
 	/*! A map for storing the parameters extracted from YAML config files and their values */
 	std::map<std::string, std::string> screenParametersAndValuesMap;
 	LoggingSystem messenger;
@@ -480,6 +484,10 @@ public:
 	@param[in] STATE: state that you wish to find.
 	@param[out] bool: true if yes. */
 	bool isElement(std::map<int, STATE> mapOfElemen, STATE value) const;
+
+
+
+
 	friend class EPICSScreenInterface;
 protected:
 	//what else does a screen need?

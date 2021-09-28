@@ -40,6 +40,44 @@ public:
 
 	std::string getFullName(const std::string& name)const;
 
+	/*! Get the state of the BA1 Light.
+	@param[out] STATE, ON, OFF etc	*/
+	STATE getBA1LightState(const std::string& name)const;
+	/*! Turn the BA1 Light on.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setBA1LightOn(const std::string& name);
+	/*! Turn the BA1 Light off.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setBA1LightOff(const std::string& name);
+	/*! Is the BA1 Light on,
+	@param[out] bool, is state == ON.*/
+	bool isBA1LightOn(const std::string& name)const;
+	/*! Is the BA1 Light off,
+	@param[out] bool, is state == OFF.*/
+	bool isBA1LightOff(const std::string& name)const;
+	/*! Toggle between ON / OFF states for the BA11 light,
+	@param[out] bool,  if command got sent to EPICS (not if it was accepted)	*/
+	bool toggleBA1Light(const std::string& name);
+
+	/*! Get the state of the Hall 1 Light.
+	@param[out] STATE, ON, OFF etc	*/
+	STATE getAcceleratorHallLightState(const std::string& name)const;
+	/*! Turn the Accelerator Hall  Light on.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setAcceleratorHallLightOn(const std::string& name);
+	/*! Turn the Accelerator Hall  Light off.
+	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
+	bool setAcceleratorHallLightOff(const std::string& name);
+	/*! Is the Accelerator Hall Light on,
+	@param[out] bool, is state == ON.*/
+	bool isAcceleratorHallLightOn(const std::string& name)const;
+	/*! Is the Accelerator Hall  Light off,
+	@param[out] bool, is state == OFF.*/
+	bool isAcceleratorHallLightOff(const std::string& name)const;
+	/*! Toggle between ON / OFF states for the Accelerator Hall light,
+	@param[out] bool,  if command got sent to EPICS (not if it was accepted)	*/
+	bool toggleAcceleratorHallLight(const std::string& name);
+
 
 	void debugMessagesOn();
 	void debugMessagesOff();

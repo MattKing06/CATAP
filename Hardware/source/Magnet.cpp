@@ -320,6 +320,61 @@ void Magnet::staticEntryDeGauss(const Degauss& ds)
 	ds.magnet->last_degauss_success = degauss_success;
 	ds.magnet->is_degaussing = false;
 }
+
+
+
+//void Magnet::staticEntryDeGauss(const Degauss& ds)
+//{
+//	ds.magnet->epicsInterface->attachTo_thisCaContext();
+//
+//	ds.magnet->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
+//	ds.magnet->epicsInterface->attachTo_thisCaContext();
+//	ds.magnet->doTheDegauss(ds);
+//	ds.magnet->epicsInterface->detachFrom_thisCaContext();
+//	ds.magnet->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
+//}
+//void Magnet::doTheDegauss(const Degauss& ds)
+//{
+//	// Degauss procedures:
+//	// set zero, wait, set next value,
+//	// if at any stage waitForMagnetToSettle returns false, we have failed and exit
+//	bool degauss_success = true;
+//	bool seti_success;
+//	// set last_degauss_success to false at start of routine  
+//	messenger.printDebugMessage(hardwareName + " last_degauss_success = FALSE");
+//	last_degauss_success = false;
+//	current_degauss_step = GlobalConstants::zero_sizet;
+//	for (auto&& next_value : degaussValues)
+//	{
+//		seti_success = SETIZero();
+//		if (waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
+//		{
+//			seti_success = SETI(next_value); // expposed to PYTHON
+//			if (waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
+//			{
+//				messenger.printDebugMessage(hardwareName + " Degauss Step ", current_degauss_step, " success");
+//			}
+//			else
+//			{
+//				messenger.printDebugMessage(hardwareName + " ERROR degaussing magnet did not settle");
+//				degauss_success = false;
+//				break;
+//			}
+//		}
+//		current_degauss_step += GlobalConstants::one_sizet;
+//	}
+//	SETI(ds.set_value_after_degauss);
+//	if (waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
+//	{
+//
+//	}
+//	else
+//	{
+//		degauss_success = false;
+//	}
+//	last_degauss_success = degauss_success;
+//	is_degaussing = false;
+//}
 bool Magnet::isREADIequalValue(const double value) const
 {
 	return GlobalFunctions::areSame(value, READI_tolerance);

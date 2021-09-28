@@ -331,17 +331,17 @@ LightingFactory& HardwareFactory::getLightingFactory()
 		bool setup = lightingFactory.setup("nominal");
 		if (setup)
 		{
-			messenger.printMessage("tLightingFactory Complete");
+			messenger.printMessage("getLightingFactory Complete");
 			return lightingFactory;
 		}
 		else
 		{
-			messenger.printMessage("Unable to setup tLightingFactory");
+			messenger.printMessage("Unable to setup LightingFactory");
 		}
 	}
 	else
 	{
-		messenger.printMessage("tLightingFactory Complete");
+		messenger.printMessage("getLightingFactory Complete");
 		return lightingFactory;
 	}
 }

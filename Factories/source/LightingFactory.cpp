@@ -8,15 +8,16 @@ LightingFactory::LightingFactory() {}
 
 
 LightingFactory::LightingFactory(STATE mode):
-	mode(mode),
-hasBeenSetup(false),
-reader(ConfigReader("Lighting", mode)),
-messenger(LoggingSystem(true, true)),
-dummy_light(Lighting())
+	LightingFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+
 {
 }
 LightingFactory::LightingFactory(STATE mode, const std::string& primeLatticeLocation) :
-reader(ConfigReader("Lighting", mode, primeLatticeLocation))
+	mode(mode),
+	hasBeenSetup(false),
+	reader(ConfigReader("Lighting", mode, primeLatticeLocation)),
+	messenger(LoggingSystem(true, true)),
+	dummy_light(Lighting())
 {
 }
 LightingFactory::LightingFactory(const LightingFactory& copyFactory) :
@@ -28,7 +29,7 @@ LightingFactory::LightingFactory(const LightingFactory& copyFactory) :
 }
 LightingFactory::~LightingFactory()
 {
-	messenger.printDebugMessage("CameraFactory Destructor Called");
+	messenger.printDebugMessage("LightingFactory Destructor Called");
 	if (hasBeenSetup)
 	{
 		for (auto& camera : lightingMap)
@@ -57,10 +58,9 @@ bool LightingFactory::setup(std::string version)
 	//LightingFactory::machineAreas = machineAreas;
 	if (hasBeenSetup)
 	{
-		messenger.printDebugMessage("setup Magnet Factory : it has been setup");
+		messenger.printDebugMessage("setup LightingFactory: it has been setup");
 		return true;
 	}
-	//std::cout << "populateMagnetMap()" << std::endl;
 	messenger.printDebugMessage("LightingFactory is populating the lightingMap");
 	if (!reader.hasMoreFilesToParse())
 	{
@@ -71,7 +71,7 @@ bool LightingFactory::setup(std::string version)
 		messenger.printDebugMessage("LightingFactory calling parseNextYamlFile");
 		reader.parseNextYamlFile(lightingMap);
 	}
-	messenger.printDebugMessage("LightingFactory has finished populating the magnet map, found ", lightingMap.size(), " Lighting objects");
+	messenger.printDebugMessage("LightingFactory has finished populating the lighting map, found ", lightingMap.size(), " Lighting objects");
 	//std::cout << "populateMagnetMap() fin" << std::endl;;
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
@@ -97,20 +97,27 @@ bool LightingFactory::setup(std::string version)
 			messenger.printMessage("Set up " + pv.first);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
-				//messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
 				setMonitorStatus(pv.second);
+
 				light.second.epicsInterface->retrieveCHTYPE(pv.second);
+
+
+				messenger.printMessage("CHTYPE = ", pv.second.CHTYPE );
+
+
 				light.second.epicsInterface->retrieveCOUNT(pv.second);
 				light.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
-				//// not sure how to set the mask from EPICS yet.
+				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": can_read = ", std::to_string(ca_read_access(pv.second.CHID)),
-					", can_write = ", std::to_string(ca_write_access(pv.second.CHID)),
-					", state = ", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
+					"write", std::to_string(ca_write_access(pv.second.CHID)),
+					"state", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
+					messenger.printMessage("monitorCHTYPE = ", pv.second.monitorCHTYPE);
 					light.second.epicsInterface->createSubscription(light.second, pv.second);
 				}
+				//messenger.printMessage("Connected!, getting some channel data (COUNT, CHTYPE, ... )");
 			}
 			else
 			{
@@ -122,35 +129,6 @@ bool LightingFactory::setup(std::string version)
 	}
 	//int status = EPICSInterface::caFlushIO("ca_create_subscription");
 	int status = EPICSInterface::sendToEPICSReturnStatus();
-	//switch (status)
-	//{
-	//case ECA_NORMAL:
-	//	messenger.printMessage("success");
-	//	break;
-	//case ECA_TIMEOUT:
-	//	messenger.printMessage("timeout");
-	//	break;
-	//case ECA_BADTYPE:
-	//	messenger.printMessage("Invalid DBR_XXXX type");
-	//	break;
-	//case ECA_BADCHID:
-	//	messenger.printMessage("Corrupted CHID");
-	//	break;
-	//case ECA_BADCOUNT:
-	//	messenger.printMessage("Requested count larger than native element count");
-	//	break;
-	//case ECA_GETFAIL:
-	//	messenger.printMessage("A local database get failed");
-	//	break;
-	//case ECA_NORDACCESS:
-	//	messenger.printMessage("Read access denied");
-	//	break;
-	//case ECA_DISCONN:
-	//	messenger.printMessage("Unable to allocate memory");
-	//	break;
-	//default:
-	//	messenger.printMessage("!!! Unexpected error while searching: ", ca_message(status));
-	//}
 
 	hasBeenSetup = true;
 	//std::cout << "hasBeenSetup = true " << std::endl;
@@ -170,7 +148,6 @@ void LightingFactory::setupChannels()
 			light.second.epicsInterface->retrieveCHID(pv.second);
 		}
 	}
-	EPICSInterface::sendToEPICS();		
 }
 void LightingFactory::setMonitorStatus(pvStruct& pvStruct)
 {
@@ -356,6 +333,114 @@ bool LightingFactory::toggleVelaLED(const std::string& name)
 	if (GlobalFunctions::entryExists(lightingMap, full_name))
 	{
 		return lightingMap.at(full_name).toggleVelaLED();
+	}
+	return false;
+}
+STATE LightingFactory::getBA1LightState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).getBA1LightState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+bool LightingFactory::setBA1LightOn(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).setBA1LightOn();
+	}
+	return false;
+}
+bool LightingFactory::setBA1LightOff(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).setBA1LightOff();
+	}
+	return false;
+}
+bool LightingFactory::isBA1LightOn(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).isBA1LightOn();
+	}
+	return false;
+}
+bool LightingFactory::isBA1LightOff(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).isBA1LightOff();
+	}
+	return false;
+}
+bool LightingFactory::toggleBA1Light(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).toggleBA1Light();
+	}
+	return false;
+}
+STATE LightingFactory::getAcceleratorHallLightState(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).getAcceleratorHallLightState();
+	}
+	return STATE::UNKNOWN_NAME;
+}
+bool LightingFactory::setAcceleratorHallLightOn(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).setAcceleratorHallLightOn();
+	}
+	return false;
+}
+bool LightingFactory::setAcceleratorHallLightOff(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).setAcceleratorHallLightOff();
+	}
+	return false;
+}
+bool LightingFactory::isAcceleratorHallLightOn(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).isAcceleratorHallLightOn();
+	}
+	return false;
+}
+bool LightingFactory::isAcceleratorHallLightOff(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).isAcceleratorHallLightOff();
+	}
+	return false;
+}
+bool LightingFactory::toggleAcceleratorHallLight(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(lightingMap, full_name))
+	{
+		return lightingMap.at(full_name).toggleAcceleratorHallLight();
 	}
 	return false;
 }

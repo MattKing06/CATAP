@@ -9,49 +9,49 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
+#include "GlobalFunctions.h"
 
 Screen::Screen()
 {}
 Screen::Screen(const std::map<std::string, std::string> & paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
-screenType(ScreenRecords::screenTypeToEnum.at(paramsMap.find("screen_type")->second)),
-//has_camera(paramsMap.find("has_camera")->second),
-name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second))
+screenType(ScreenRecords::screenTypeToEnum.at(paramsMap.at("screen_type"))),
+name(paramsMap.at("name")),
+position(std::stod(paramsMap.at("position")))
 {
-messenger.printDebugMessage("constructor");
-switch (screenType)
-{
-case TYPE::CLARA_HV_MOVER:
-{
-	setPVStructs(ScreenRecords::screenHVRecordList);
-	break;
-}
-case TYPE::CLARA_V_MOVER:
-{
-	setPVStructs(ScreenRecords::screenVRecordList);
-	break;
-}
-case TYPE::VELA_HV_MOVER:
-{
-	setPVStructs(ScreenRecords::screenHVRecordList);
-	break;
-}
-case TYPE::VELA_V_MOVER:
-{
-	setPVStructs(ScreenRecords::screenVRecordList);
-	break;
-}
-case TYPE::CLARA_PNEUMATIC:
-{
-	setPVStructs(ScreenRecords::screenPRecordList);
-	break;
-}
-case TYPE::VELA_PNEUMATIC:
-{
-	setPVStructs(ScreenRecords::screenPRecordList);
-	break;
-}
+	messenger.printDebugMessage("constructor");
+	switch (screenType)
+	{
+	case TYPE::CLARA_HV_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenHVRecordList);
+		break;
+	}
+	case TYPE::CLARA_V_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenVRecordList);
+		break;
+	}
+	case TYPE::VELA_HV_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenHVRecordList);
+		break;
+	}
+	case TYPE::VELA_V_MOVER:
+	{
+		setPVStructs(ScreenRecords::screenVRecordList);
+		break;
+	}
+	case TYPE::CLARA_PNEUMATIC:
+	{
+		setPVStructs(ScreenRecords::screenPRecordList);
+		break;
+	}
+	case TYPE::VELA_PNEUMATIC:
+	{
+		setPVStructs(ScreenRecords::screenPRecordList);
+		break;
+	}
 }
 epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
 epicsInterface->ownerName = hardwareName;
@@ -97,7 +97,24 @@ moving.second = GlobalConstants::zero_int;
 maxposH.second = GlobalConstants::double_min;
 maxposV.second = GlobalConstants::double_min;
 maxpos.second = GlobalConstants::double_min;
+
+
+messenger.printDebugMessage(hardwareName, " find name_alias");
+if (GlobalFunctions::entryExists(paramsMap, "name_alias"))
+{
+	boost::split(aliases, paramsMap.at("name_alias"), [](char c) {return c == ','; });
+	for (auto& name : aliases)
+	{
+		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+		messenger.printDebugMessage(hardwareName, " added aliase " + name);
+	}
 }
+else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
+
+}
+
+
+
 Screen::Screen(const Screen & copyScreen) :
 Hardware(copyScreen),
 screenType(copyScreen.screenType),
@@ -119,7 +136,7 @@ void Screen::setPVStructs(std::vector<std::string> recordList)
 		pvStructs[record].pvRecord = record;
 
 		// TODO NO ERROR CHECKING! (we assum config file is good??? 
-		std::string PV = specificHardwareParameters.find(record)->second.data();
+		std::string PV = specificHardwareParameters.at(record).data();
 		// iterate through the list of matches and set up a pvStruct to add to pvStructs.
 		messenger.printDebugMessage("Constructing PV information for ", record);
 		/*TODO
@@ -146,6 +163,12 @@ std::vector<std::string> Screen::getAliases() const
 {
 	return this->aliases;
 }
+
+boost::python::list Screen::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+
 
 std::string Screen::getScreenName() const
 {
@@ -471,6 +494,9 @@ bool Screen::isYAGIn() const
 	}
 }
 
+
+
+
 bool Screen::isHMoving() const
 {
 	return movingH.second;
@@ -494,6 +520,9 @@ bool Screen::isMoving() const
 	}
 	return false;
 }
+
+
+
 
 bool Screen::isClearForBeam() const
 {
@@ -561,7 +590,11 @@ bool Screen::isVMover() const
 
 bool Screen::isHVMover() const
 {
-	if (getScreenType() == TYPE::CLARA_HV_MOVER || TYPE::VELA_HV_MOVER)
+	if (getScreenType() == TYPE::CLARA_HV_MOVER)
+	{
+		return true;
+	}
+	else if (getScreenType() == TYPE::VELA_HV_MOVER)
 	{
 		return true;
 	}
@@ -901,6 +934,7 @@ bool Screen::moveScreenTo(STATE state)
 			}
 			else if (isPElement(state))
 			{
+				std::cout << "isPElement" << std::endl;
 				return setScreenTriggerWDir(1, TYPE::PNEUMATIC);
 			}
 		}
