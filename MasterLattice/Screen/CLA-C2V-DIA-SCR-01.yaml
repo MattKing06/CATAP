@@ -18,7 +18,7 @@ controls_information:
         "V:EN": CLA-C2V-DIA-SCR-01:V:EN
 properties:
     name: CLA-C2V-DIA-SCR-01
-    name_alias: UNDEFINED
+    name_alias: C2V-SCR-01
     machine_area: C2V
     hardware_type: Screen
     screen_type: CLARA_V_MOVER
