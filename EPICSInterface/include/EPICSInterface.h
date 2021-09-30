@@ -103,6 +103,7 @@ public:
 			(void*)&returnObject,
 			&pvStruct.EVID);
 		MY_SEVCHK(status);
+		sendToEPICS();
 	}
 	/*! Removes the monitor for a given PV
 	* @param[in] pv : The PV we want to remove the monitor for.*/
