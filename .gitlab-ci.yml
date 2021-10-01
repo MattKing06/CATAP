@@ -66,7 +66,7 @@ doxygen:
       - build/*
   script:
   - cd build
-  - ( cat Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
+  - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
   - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
