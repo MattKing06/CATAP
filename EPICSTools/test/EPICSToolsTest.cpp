@@ -112,4 +112,17 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 
 }
 
+BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
+{
+	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener pid_scan = ET.getMonitor(pv);
+	if (pid_scan.isConnected())
+	{
+		bool isEnum = pid_scan.isEnum();
+		auto val = pid_scan.getValue<unsigned short>();
+	}
+}
+
 BOOST_AUTO_TEST_SUITE_END()
