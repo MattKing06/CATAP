@@ -1,5 +1,6 @@
 #include <StageFactory.h>
-
+#include <boost/range/algorithm/copy.hpp>
+#include <boost/range/adaptors.hpp>
 StageFactory::StageFactory()
 {
 }
@@ -11,7 +12,9 @@ StageFactory(mode, MASTER_LATTICE_LOCATION)
 
 StageFactory::StageFactory(STATE mode, const std::string& primeLatticeLocation) :
 	mode(mode),
-	reader(ConfigReader("Stage", mode, primeLatticeLocation))
+	reader(ConfigReader("Stage", mode, primeLatticeLocation)),
+	hasBeenSetup(false),
+	aliasesAndFullNames(std::map<std::string, std::string>())
 {
 }
 
@@ -54,6 +57,57 @@ void StageFactory::setupChannels()
 	}
 }
 
+std::map<std::string, bool> StageFactory::clearAllForBeam()
+{
+	std::map<std::string, bool> nameAndStatus;
+	for (auto&& stage : stageMap)
+	{
+		nameAndStatus[stage.first] = stage.second.clearForBeam();
+	}
+	return nameAndStatus;
+}
+
+
+
+boost::python::dict StageFactory::clearAllForBeam_Py()
+{
+	return to_py_dict(clearAllForBeam());
+}
+
+bool StageFactory::moveStageToDevice(const std::string& stageName, const std::string& deviceName)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, stageName))
+	{
+		std::string fullName = aliasesAndFullNames.at(stageName);
+		return stageMap.at(fullName).moveToDevice(deviceName);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, stageName))
+	{
+		return stageMap.at(stageName).moveToDevice(deviceName);
+	}
+	else
+	{
+		std::vector<std::string> names;
+		boost::copy(stageMap | boost::adaptors::map_keys, std::back_inserter(names));
+		std::string namesList = GlobalFunctions::toString(names);
+		messenger.printDebugMessage("Stage: ", stageName, " does not exist. Please choose another stage: ",
+									namesList);
+		return false;
+	}
+}
+
+void StageFactory::updateAliases()
+{
+	for (auto&& stage : stageMap)
+	{
+		for (auto&& alias : stage.second.getAliases())
+		{
+			aliasesAndFullNames[alias] = stage.first;
+			messenger.printDebugMessage("STAGE: ", stage.first, " ALIAS: ", alias);
+		}
+	}
+}
+
 void StageFactory::retrieveMonitorStatus(pvStruct& pv)
 {
 	if (pv.pvRecord == StageRecords::MABSS)
@@ -66,15 +120,45 @@ void StageFactory::retrieveMonitorStatus(pvStruct& pv)
 	}
 }
 
+bool StageFactory::isReadPositionEqualToSetPosition(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).isReadPositionEqualToSetPosition();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).isReadPositionEqualToSetPosition();
+	}
+}
+
 Stage& StageFactory::getStage(const std::string& name)
 {
-	if (GlobalFunctions::entryExists(stageMap, name))
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
 	{
 		return stageMap.at(name);
 	}
 	else
 	{
 		messenger.printMessage("Could not find: ", name, " in stages. Please use a valid stage name.");
+	}
+}
+
+std::string StageFactory::getFullName(const std::string& alias)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, alias))
+	{
+		return aliasesAndFullNames.at(alias);
+	}
+	else
+	{
+		messenger.printMessage("Alias: ", alias, " could not be found in configs.");
 	}
 }
 
@@ -119,6 +203,7 @@ bool StageFactory::setup(std::string version)
 			EPICSInterface::sendToEPICS();
 		}
 	}
+	updateAliases();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }

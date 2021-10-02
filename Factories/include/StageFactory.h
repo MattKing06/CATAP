@@ -5,6 +5,7 @@
 #include <Stage.h>
 #include <GlobalStateEnums.h>
 #include <vector>
+#include <boost/python.hpp>
 class StageFactory
 {
 public:
@@ -20,10 +21,15 @@ public:
 	void populateStageMap();
 	void setupChannels();
 	void retrieveMonitorStatus(pvStruct& pv);
+	bool isReadPositionEqualToSetPosition(const std::string& name);
 	Stage& getStage(const std::string& name);
+	std::string getFullName(const std::string& alias);
+	bool moveStageToDevice(const std::string& stageName, const std::string& deviceName);
+	std::map<std::string, bool> clearAllForBeam();
+	boost::python::dict clearAllForBeam_Py();
+	void updateAliases();
 	bool hasBeenSetup;
-	STATE mode;
-	ConfigReader reader;
+	std::map<std::string, std::string> aliasesAndFullNames;
 	std::map<std::string, Stage> stageMap;
 	void debugMessagesOn();
 	void debugMessagesOff();

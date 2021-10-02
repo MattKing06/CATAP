@@ -1,4 +1,5 @@
 #include <Stage.h>
+#include <boost/algorithm/string.hpp>
 Stage::Stage()
 {
 }
@@ -6,8 +7,10 @@ Stage::Stage()
 Stage::Stage(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
 currentPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
-positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min))
+positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
+aliases(std::vector<std::string>())
 {
+	messenger = LoggingSystem(true, true);
 	if (GlobalFunctions::entryExists(paramMap, "min_pos"))
 	{minPosition = std::stod(paramMap.at("min_pos"));}
 	if (GlobalFunctions::entryExists(paramMap, "max_pos"))
@@ -22,17 +25,31 @@ positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConst
 	{inPosition = std::stod(paramMap.at("in_pos"));}
 	if (GlobalFunctions::entryExists(paramMap, "out_pos"))
 	{outPosition = std::stod(paramMap.at("out_pos"));}
-	for (auto&& device : StageDevices::devices)
+	if (GlobalFunctions::entryExists(paramMap, "name_alias"))
+	{updateAliases(paramMap.at("name_alias"));}
+	if (GlobalFunctions::entryExists(paramMap, "devices") && GlobalFunctions::entryExists(paramMap, "positions"))
 	{
-		if (GlobalFunctions::entryExists(paramMap, device))
+		std::vector<std::string> devices;
+		std::vector<std::string> positions;
+		boost::split(devices, paramMap.at("devices"), boost::is_any_of(","), boost::token_compress_on);
+		boost::split(positions, paramMap.at("positions"), boost::is_any_of(","), boost::token_compress_on);
+		if (positions.size() == devices.size())
 		{
-			deviceAndPositionMap[device] = stod(paramMap.at(device));
+			for (size_t i = 0; i < devices.size(); i++)
+			{
+				deviceAndPositionMap[devices[i]] = std::stof(positions[i]);
+			}
 		}
-
+		else 
+		{
+			messenger.printMessage("***", hardwareName, "*** \n", 
+								   "DEVICES AND POSITIONS ITEMS ARE NOT EQUAL. \n",
+								   "PLEASE ADJUST CONFIG FILE BEFORE TRYING AGAIN.",
+								   "\n **************** \n");
+		}
 	}
 	setPVStructs();
 	epicsInterface = boost::make_shared<EPICSStageInterface>(EPICSStageInterface());
-	messenger = LoggingSystem(true, true);
 }
 
 Stage::Stage(const Stage& copyStage) :
@@ -60,6 +77,17 @@ void Stage::setPVStructs()
 			break;
 		}
 	}
+}
+
+void Stage::updateAliases(const std::string& alias)
+{
+	messenger.printDebugMessage("stage: ", hardwareName, " alias: ", alias);
+	aliases.push_back(alias);
+}
+
+std::vector<std::string> Stage::getAliases()
+{
+	return aliases;
 }
 
 void Stage::setCurrentPosition(std::pair<epicsTimeStamp, double> newPosition)
@@ -119,15 +147,47 @@ void Stage::setNewPosition(double newPosition)
 {
 	if (canStageMove(newPosition))
 	{
-		//if (!epicsInterface->setNewPosition(pvStructs.at(StageRecords::MABSS), newPosition))
-		//{
-		//	messenger.printDebugMessage("Unable to send ", newPosition, " to ", pvStructs.at(StageRecords::MABSS).fullPVName);
-		//
+		if (!epicsInterface->setNewPosition(pvStructs.at(StageRecords::MABSS), newPosition))
+		{
+			messenger.printDebugMessage("Unable to send ", newPosition, " to ", pvStructs.at(StageRecords::MABSS).fullPVName);
+		}
 	}
 	else
 	{
 		messenger.printMessage("Tried to move to: ", newPosition, " because it's outside of min/max limits.");
 	}
+}
+
+bool Stage::moveToDevice(const std::string& device)
+{
+	if (GlobalFunctions::entryExists(deviceAndPositionMap, device))
+	{
+		setNewPosition(deviceAndPositionMap.at(device));
+		return true;
+	}
+	return false;
+}
+
+bool Stage::isReadPositionEqualToSetPosition()
+{
+	return currentPosition.second == positionSetpoint.second;
+}
+
+float Stage::getDevicePosition(const std::string& device)
+{
+	if (GlobalFunctions::entryExists(deviceAndPositionMap, device))
+	{
+		return deviceAndPositionMap.at(device);
+	}
+	else
+	{
+		messenger.printMessage("Device:", device, " does not exist in CATAP ConfigFiles. Please try another device.");
+	}
+}
+
+bool Stage::clearForBeam()
+{
+	return moveToDevice("CLEAR_FOR_BEAM");
 }
 
 std::map<std::string, double> Stage::getDevicesAndPositions()
@@ -231,37 +291,37 @@ void Stage::messagesOn()
 
 
 
-std::string const StageDevices::CLEAR_FOR_BEAM = "CLEAR_FOR_BEAM";
-std::string const StageDevices::YAG_UP = "YAG_UP";
-std::string const StageDevices::YAG_DOWN = "YAG_DOWN";
-std::string const StageDevices::YAG_RECTICLE = "YAG_RECTICLE";
-std::string const StageDevices::COLL_D2_5MM = "COLL_D2_5MM";
-std::string const StageDevices::COLL_D2MM = "COLL_D2MM";
-std::string const StageDevices::COLL_D1_5MM = "COLL_D1_5MM";
-std::string const StageDevices::COLL_D1MM = "COLL_D1MM";
-std::string const StageDevices::OTR = "OTR";
-std::string const StageDevices::GAS_JET = "GAS_JET";
-std::string const StageDevices::DCP = "DCP";
-std::string const StageDevices::DTH = "DTH";
-std::string const StageDevices::YAG_DCP_5x5 = "5x5_YAG_DCP";
-std::string const StageDevices::V_SLIT = "V_SLIT";
-std::string const StageDevices::H_SLIT = "H_SLIT";
-std::string const StageDevices::EO_CRYSTAL = "EO_CRYSTAL";
-std::string const StageDevices::EO_YAG = "EO_YAG";
-std::vector<std::string> StageDevices::devices = {StageDevices::CLEAR_FOR_BEAM,
-													StageDevices::YAG_UP,
-													StageDevices::YAG_DOWN,
-													StageDevices::YAG_RECTICLE,
-													StageDevices::COLL_D2_5MM,
-													StageDevices::COLL_D2MM,
-													StageDevices::COLL_D1_5MM,
-													StageDevices::COLL_D1MM,
-													StageDevices::OTR,
-													StageDevices::GAS_JET,
-													StageDevices::DCP,
-													StageDevices::DTH,
-													StageDevices::YAG_DCP_5x5,
-													StageDevices::V_SLIT,
-													StageDevices::H_SLIT,
-													StageDevices::EO_CRYSTAL,
-													StageDevices::EO_YAG };
+//std::string const StageDevices::CLEAR_FOR_BEAM = "CLEAR_FOR_BEAM";
+//std::string const StageDevices::YAG_UP = "YAG_UP";
+//std::string const StageDevices::YAG_DOWN = "YAG_DOWN";
+//std::string const StageDevices::YAG_RECTICLE = "YAG_RECTICLE";
+//std::string const StageDevices::COLL_D2_5MM = "COLL_D2_5MM";
+//std::string const StageDevices::COLL_D2MM = "COLL_D2MM";
+//std::string const StageDevices::COLL_D1_5MM = "COLL_D1_5MM";
+//std::string const StageDevices::COLL_D1MM = "COLL_D1MM";
+//std::string const StageDevices::OTR = "OTR";
+//std::string const StageDevices::GAS_JET = "GAS_JET";
+//std::string const StageDevices::DCP = "DCP";
+//std::string const StageDevices::DTH = "DTH";
+//std::string const StageDevices::YAG_DCP_5x5 = "5x5_YAG_DCP";
+//std::string const StageDevices::V_SLIT = "V_SLIT";
+//std::string const StageDevices::H_SLIT = "H_SLIT";
+//std::string const StageDevices::EO_CRYSTAL = "EO_CRYSTAL";
+//std::string const StageDevices::EO_YAG = "EO_YAG";
+//std::vector<std::string> StageDevices::devices = {StageDevices::CLEAR_FOR_BEAM,
+//													StageDevices::YAG_UP,
+//													StageDevices::YAG_DOWN,
+//													StageDevices::YAG_RECTICLE,
+//													StageDevices::COLL_D2_5MM,
+//													StageDevices::COLL_D2MM,
+//													StageDevices::COLL_D1_5MM,
+//													StageDevices::COLL_D1MM,
+//													StageDevices::OTR,
+//													StageDevices::GAS_JET,
+//													StageDevices::DCP,
+//													StageDevices::DTH,
+//													StageDevices::YAG_DCP_5x5,
+//													StageDevices::V_SLIT,
+//													StageDevices::H_SLIT,
+//													StageDevices::EO_CRYSTAL,
+//													StageDevices::EO_YAG };
