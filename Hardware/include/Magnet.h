@@ -34,6 +34,7 @@ class Degauss
 		Magnet* magnet;
 		std::vector<double>  degauss_values;
 		size_t				 current_step;
+		bool				 do_zero_step;
 		//bool                 resetToZero;
 		double               set_value_after_degauss;
 		double degaussTolerance;
@@ -84,19 +85,34 @@ class Magnet : public Hardware
 	//	@param[out] bool, for if in same state or not							*/
 		//bool isInSETIandPSUState(const magnetState& ms)const;
 
+	/*! degauss a magnet, all degauss functions ultimately call this version of the function 
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const std::vector<double>& degauss_values, double set_value_after_degauss, bool do_zero_step);
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
-		bool degauss(const std::vector<double>& custum_degauss_values, double set_value_after_degauss);
+		bool degauss(const std::vector<double>& degauss_values, double set_value_after_degauss);
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss);
+
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(double set_value_after_degauss);
 	/*! degauss a magnet 
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const bool reset_to_zero);
-	/*! get the name alises for this magnet 
+
+		
+	/*! degauss a magnet
+		@param[in] do_zero_step, whether to set zero current in-between each degauss step,			
+		@param[in] reset_to_zero, whether to set zero current after degaussing */
+		bool degauss(bool reset_to_zero, bool do_zero_step);
+			
+		
+		/*! get the name alises for this magnet 
 		@param[out] names, vector contianing all the alias names */
 		std::vector<std::string> getAliases() const;
 	/*! get the name alises for this magnet (python version
@@ -266,6 +282,8 @@ class Magnet : public Hardware
 
 
 
+
+
 	/*! Reset the magnet PSU external interlocks 
 		@param[out] bool, true if commands got sent to EPICS */
 	bool resetILK() const;
@@ -380,7 +398,6 @@ class Magnet : public Hardware
 		//std::string magRevType;
 		double RI_tolerance;
 	
-
 
 
 	/*! PSU epics PV, defined in the master lattice yaml file */

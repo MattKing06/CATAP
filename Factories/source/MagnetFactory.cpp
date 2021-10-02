@@ -873,7 +873,7 @@ std::vector<std::string> MagnetFactory::getAllQuadNames()const
 	std::vector<std::string> return_names;
 	for (auto&& item : magnetMap)
 	{
-		if (isADip(item.first))
+		if (isAQuad(item.first))
 		{
 		return_names.push_back(item.first);
 		}
@@ -1072,15 +1072,20 @@ boost::python::dict MagnetFactory::switchOnAll_Py()
 	return to_py_dict<std::string, STATE>(switchOnAll());
 }
 
-
-bool MagnetFactory::degauss(const std::string& name, const bool reset_to_zero)
+bool MagnetFactory::degauss(const std::string& name, const bool reset_to_zero, bool do_zero_step)
 {
 	std::string fullName = getFullName(name);
 	if (GlobalFunctions::entryExists(magnetMap, fullName))
 	{
-		return magnetMap.at(fullName).degauss(reset_to_zero);
+		return magnetMap.at(fullName).degauss(reset_to_zero, do_zero_step);
 	}
 	return false;
+
+}
+
+bool MagnetFactory::degauss(const std::string& name, const bool reset_to_zero)
+{
+	return degauss(name, reset_to_zero, true);
 }
 bool MagnetFactory::degauss(const std::string& name, const double set_value_after_degauss)
 {
@@ -1093,15 +1098,21 @@ bool MagnetFactory::degauss(const std::string& name, const double set_value_afte
 }
 
 
-std::map<std::string, bool> MagnetFactory::degauss(const std::vector<std::string>& names, const bool reset_to_zero)
+std::map<std::string, bool> MagnetFactory::degauss(const std::vector<std::string>& names, const bool reset_to_zero, bool do_zero_step)
 {
 	std::map<std::string, bool> return_map;
 	for (auto&& name : names)
 	{
-		return_map[name] = degauss(name, reset_to_zero);
+		return_map[name] = degauss(name, reset_to_zero, do_zero_step);
 	}
 	return return_map;
 }
+std::map<std::string, bool> MagnetFactory::degauss(const std::vector<std::string>& names, const bool reset_to_zero)
+{
+	return degauss(names, reset_to_zero,true);
+}
+
+
 boost::python::dict MagnetFactory::degauss_Py(const boost::python::list& names, const bool reset_to_zero)
 {
 	return to_py_dict<std::string, bool>(degauss(to_std_vector<std::string>(names), reset_to_zero));
@@ -1115,6 +1126,24 @@ boost::python::dict MagnetFactory::degaussAll_Py(const bool reset_to_zero)
 	return degauss_Py(to_py_list<std::string>(getAllMagnetNames()), reset_to_zero);
 }
 
+bool MagnetFactory::isDegaussing(const std::string& name) const 
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).isDegaussing();
+	}
+	return false;
+}
+bool MagnetFactory::getLastDegaussSuccess(const std::string& name) const
+{
+	std::string fullName = getFullName(name);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		return magnetMap.at(fullName).getLastDegaussSuccess();
+	}
+	return false;
+}
 
 std::vector<std::string> MagnetFactory::getAliases(const std::string& name) const
 {

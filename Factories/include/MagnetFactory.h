@@ -425,9 +425,28 @@ class MagnetFactory
 		/*! degauss a magnet, following the degauss settings held by the magnet object, initially defined in the magnet object \
 		config files, (these can be dynamically changed, see setDegaussValues)
 		@param[in] name, full-name or name-alias of magnet object
+		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing 
+		@param[in] do_zero_step, if TRUE sets zero in between each deaguss step (can be more robust with certain magnet PSU)
+		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or another error occurred*/
+		bool degauss(const std::string& name, const bool reset_to_zero, bool do_zero_step);
+
+
+		/*! degauss a magnet, following the degauss settings held by the magnet object, initially defined in the magnet object \
+		config files, (these can be dynamically changed, see setDegaussValues)
+		@param[in] name, full-name or name-alias of magnet object
 		@param[in] set_value_after_degauss, SETI value to set after degaussing
 		@param[out] bool, TRUE the degauss proedure successfully started, FALSE then the magnet may already be degaussing or another error occurred*/
 		bool degauss(const std::string& name, const double set_value_after_degauss);
+
+
+		/*! degauss multiple magnets  (c++ verion)
+		@param[in] names, std::vector full-name or name-alias of magnet objects to be degaussed
+		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing
+		@param[in] do_zero_step, if TRUE sets zero bewtween each degauss setp (can make degaussing more robust for some magnet PSU) 
+		@param[out] std::map of return bool for each magnet, keyed by the passed names */
+		std::map<std::string, bool> degauss(const std::vector<std::string>& names, const bool reset_to_zero, bool do_zero_step);
+
+
 		/*! degauss multiple magnets  (c++ verion)
 		@param[in] names, std::vector full-name or name-alias of magnet objects to be degaussed 
 		@param[in] reset_to_zero, if TRUE sets zero after deguassing, if FALSE sets current before degaussing
@@ -448,6 +467,15 @@ class MagnetFactory
 		boost::python::dict degaussAll_Py(const bool reset_to_zero);
 
 
+		/*! Return is_degaussing value fpror a magnet  degauss all magnets in the magnet factory (python verion)
+		@param[in] name, full-name or name-alias of magnet object
+		@param[out] bool, value */
+		bool isDegaussing(const std::string& name)const;
+
+		/*! Returns the value of the flag "last_degauss_success"
+		* 		@param[in] name, full-name or name-alias of magnet object
+		@param[out] degaussTolerance now being used */
+		bool getLastDegaussSuccess(const std::string& name)const;
 
 		//int setNumberOfDegaussSteps(const int value); 	//TODO: THINK ABOUT THIS ONE!!! 
 		

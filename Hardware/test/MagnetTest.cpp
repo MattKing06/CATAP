@@ -23,4 +23,7 @@ BOOST_AUTO_TEST_CASE(setting_empty_magnet_psu_state_test)
 	BOOST_CHECK_EQUAL(mag.getPSUState(), STATE::OFF);
 }
 
+
+
+
 BOOST_AUTO_TEST_SUITE_END()

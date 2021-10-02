@@ -1,8 +1,8 @@
 #include "EPICSMagnetInterface.h"
-#include <mutex>
-
-
-std::mutex mag_mutex;
+//#include <mutex>
+//
+//
+std::mutex EPICSMagnetInterface::mag_mutex;
 
 LoggingSystem EPICSMagnetInterface::messenger;
 

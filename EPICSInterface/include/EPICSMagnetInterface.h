@@ -8,6 +8,11 @@
 #endif 
 #include <iostream>
 #include <GlobalStateEnums.h>
+
+#include <mutex>
+
+
+
 // forward declaratiOn of Magnet class
 // tells compiler that we will use this class.
 class Magnet;
@@ -19,6 +24,9 @@ public:
 	EPICSMagnetInterface();
 	EPICSMagnetInterface(const EPICSMagnetInterface& copyInterface);
 	~EPICSMagnetInterface();
+
+	static std::mutex mag_mutex;
+
 
 	void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 
