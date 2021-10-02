@@ -205,7 +205,7 @@ properties:
     ARRAY_DATA_NUM_PIX_X : 1920 #; array data passed through EPICS
     ARRAY_DATA_NUM_PIX_Y : 1200 #; array data passed through EPICS
     # THEN we rotate the image and mirror it 
-    IMAGE_ROTATION : 90 # could be 90, 180, 270
-    IMAGE_FLIP_UD : false
+    IMAGE_ROTATION : 0 # could be 90, 180, 270
+    IMAGE_FLIP_UD : true
     IMAGE_FLIP_LR : false
     

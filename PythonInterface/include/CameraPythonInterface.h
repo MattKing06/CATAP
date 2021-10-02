@@ -47,7 +47,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		//
 		.def("getAliases", &Camera::getAliases_Py)
 		.def("getScreenNames", &Camera::getScreenNames_Py)
-					
+
+		// image properties 
 		.def("getBitDepth", &Camera::getBitDepth)
 		.def("getImageRotation", &Camera::getImageRotation)
 		.def("getImageFlipUD", &Camera::getImageFlipUD)
