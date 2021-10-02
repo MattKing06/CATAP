@@ -13,6 +13,7 @@ set( SOURCE_FILES
     source/LaserMirror.cpp
     source/LED.cpp
     source/Lighting.cpp
+    source/LinacPID.cpp
     source/LLRF.cpp
     source/RFHeartbeat.cpp
     source/RFModulator.cpp
@@ -35,6 +36,7 @@ set( INCLUDE_FILES
     include/LaserMirror.h
     include/LED.h
     include/Lighting.h
+    include/LinacPID.h
     include/LLRF.h
     include/RFHeartbeat.h
     include/RFModulator.h
@@ -58,6 +60,7 @@ set( TEST_FILES
     LaserMirrorTest.cpp
     LEDTest.cpp
     LightingTest.cpp
+    LinacPIDTest.cpp
     LLRFTest.cpp
     RFHeartbeatTest.cpp
     RFModulatorTest.cpp
@@ -67,8 +70,6 @@ set( TEST_FILES
 )
 cmake_policy(SET CMP0022 NEW)
 add_library(Hardware STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
-#find_package(PythonLibs ${PY_VERSION})
-#find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(Hardware PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )

@@ -18,6 +18,7 @@ class LaserHWPFactory
 public:
 	LaserHWPFactory();
 	LaserHWPFactory(STATE mode);
+	LaserHWPFactory(STATE mode, const std::string& primeLatticeLocation);
 	LaserHWPFactory(const LaserHWPFactory& copyLaserHWPFactory);
 	~LaserHWPFactory();
 	/*NEED constRUCTOR THAT TAKES VERSION??*/

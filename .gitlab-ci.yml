@@ -6,6 +6,7 @@ stages:
 - sphinx
 - wheel
 
+
 before_script:
   - which gcc
   - which g++
@@ -51,7 +52,6 @@ tests:
   - cd build  
   - cd testBin
   - echo 'Running Tests..'
-  - ls ~/MasterLattice
   - ./ConfigReaderTest
   - ./LoggingSystemTest
   - ./HardwareTests
@@ -66,8 +66,8 @@ doxygen:
       - build/*
   script:
   - cd build
-  - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
-  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
+  - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
+#  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
 
@@ -79,7 +79,7 @@ sphinx:
       - build/*
   script:
   - cd build
-  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
+#  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
   only:
     - master
 

@@ -10,6 +10,7 @@ class StageFactory
 public:
 	StageFactory();
 	StageFactory(STATE mode);
+	StageFactory(STATE mode, const std::string& primeLatticeLocation);
 	StageFactory(const StageFactory& copyFactory);
 	~StageFactory();
 	LoggingSystem messenger;
@@ -21,6 +22,8 @@ public:
 	void retrieveMonitorStatus(pvStruct& pv);
 	Stage& getStage(const std::string& name);
 	bool hasBeenSetup;
+	STATE mode;
+	ConfigReader reader;
 	std::map<std::string, Stage> stageMap;
 	void debugMessagesOn();
 	void debugMessagesOff();

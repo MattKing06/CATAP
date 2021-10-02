@@ -7,7 +7,7 @@ controls_information:
     RPOWER: EBT-INJ-MAG-QUAD-15:RPOWER
     SETI: EBT-INJ-MAG-QUAD-15:SETI
     SPOWER: EBT-INJ-MAG-QUAD-15:SPOWER
-    KVALUE: EBT-INJ-MAG-QUAD-15:K_VAL
+    ILK_RESET: EBT-INJ-MAG-QUAD-15:Rst
     K_DIP_P:    EBT-INJ-MAG-QUAD-15:K_DIP_P
     INT_STR_MM: EBT-INJ-MAG-QUAD-15:INT_STR_MM
     INT_STR:    EBT-INJ-MAG-QUAD-15:INT_STR
@@ -16,7 +16,7 @@ controls_information:
     K_MRAD:     EBT-INJ-MAG-QUAD-15:K_MRAD
     K_VAL:      EBT-INJ-MAG-QUAD-15:K_VAL
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
-properties:
+properties: 
   degauss_tolerance: 0.1
   degauss_values: "9.8,-9.8,5.0,-5.0,3.0,-3.0,2.0,-2.0,0.0,1.0,0.0,-1.0,0.0"
   field_integral_coefficients: "0.111954754,-0.001381788"

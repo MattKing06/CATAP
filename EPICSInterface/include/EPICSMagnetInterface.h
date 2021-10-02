@@ -26,6 +26,7 @@ public:
 	bool setNewCurrent(const double &value, const pvStruct& pv) const;
 	bool setNewKSetP(const double &value, const pvStruct& pv) const;
 	bool setNewPSUState(const STATE value, const pvStruct& pv) const;
+	bool resetILK(const pvStruct& pv) const;
 
 
 	// EPICS calls these functions to update a variable

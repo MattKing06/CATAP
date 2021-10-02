@@ -15,28 +15,55 @@ LaserEnergyMeter::LaserEnergyMeter()
 LaserEnergyMeter::LaserEnergyMeter(const std::map<std::string, std::string> & paramsMap, STATE mode) :
 Hardware(paramsMap, mode),
 //laserEnergyMeterType(LaserEnergyMeterRecords::laserEnergyMeterTypeToEnum.at(paramsMap.find("laser_pv_type")->second)),
-name(paramsMap.find("name")->second),
-position(std::stod(paramsMap.find("position")->second))
+name(paramsMap.at("name")),
+energyStats(RunningStats()),
+calibration_factor(std::stod(paramsMap.at("calibration_factor"))),
+position(std::stod(paramsMap.at("position"))),
+start(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+stop(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+overrange(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+range(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+energy(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
+bufferSize(10),
+vectorSize(10),
+shotsvector(0),
+shotsbuffer(0),
+acquiring(false),
+monitoring(false),
+epicsInterface(boost::make_shared<EPICSLaserEnergyMeterInterface>(EPICSLaserEnergyMeterInterface())),
+laserEnergyMeterType(TYPE::UNKNOWN_TYPE),
+status(STATE::UNKNOWN_STATE),
+statusBuffer(boost::circular_buffer< STATE >()),
+statusVector(std::vector<STATE >()),
+aliases(std::vector<std::string >())
 {
-messenger.printDebugMessage("constructor");
-setPVStructs();
-bufferSize = 10;
-vectorSize = 10;
-shotsvector = 0;
-shotsbuffer = 0;
-energybuffer.resize(bufferSize);
-energyvector.resize(vectorSize);
-acquiring = false;
-monitoring = false;
-epicsInterface = boost::make_shared<EPICSLaserEnergyMeterInterface>(EPICSLaserEnergyMeterInterface());
-epicsInterface->ownerName = hardwareName;
+	messenger.printDebugMessage("constructor");
+	epicsInterface->ownerName = hardwareName;
+	setPVStructs();
 }
 LaserEnergyMeter::LaserEnergyMeter(const LaserEnergyMeter& copyLaser) :
 Hardware(copyLaser),
 laserEnergyMeterType(copyLaser.laserEnergyMeterType),
 name(copyLaser.name),
 position(copyLaser.position),
-epicsInterface(copyLaser.epicsInterface)
+epicsInterface(copyLaser.epicsInterface),
+energybuffer(copyLaser.energybuffer),
+energyvector(copyLaser.energyvector),
+energyStats(copyLaser.energyStats),
+bufferSize(copyLaser.bufferSize),
+vectorSize(copyLaser.vectorSize),
+shotsvector(copyLaser.shotsvector),
+shotsbuffer(copyLaser.shotsbuffer),
+acquiring(copyLaser.acquiring),
+monitoring(copyLaser.monitoring),
+start(copyLaser.start),
+stop(copyLaser.stop),
+overrange(copyLaser.overrange),
+range(copyLaser.range),
+energy(copyLaser.energy),
+statusBuffer(copyLaser.statusBuffer),
+statusVector(copyLaser.statusVector),
+aliases(copyLaser.aliases)
 {
 }
 
@@ -92,6 +119,11 @@ std::string LaserEnergyMeter::getLaserEnergyMeterName() const
 	return this->name;
 }
 
+double LaserEnergyMeter::getCalibrationFactor() const
+{
+	return this->calibration_factor;
+}
+
 bool LaserEnergyMeter::isMonitoring() const
 {
 	return monitoring;
@@ -136,6 +168,33 @@ int LaserEnergyMeter::getOverRange() const
 double LaserEnergyMeter::getEnergy() const
 {
 	return energy.second;
+}
+
+STATE LaserEnergyMeter::getStatus() const
+{
+	return status;
+}
+
+std::vector< STATE > LaserEnergyMeter::getStatusVector() const
+{
+	return statusVector;
+}
+
+boost::python::dict LaserEnergyMeter::getRunningStats_Py()
+{
+	boost::python::dict r;
+	r["energy_rs"] = energyStats.getRunningStats();
+	return r;
+}
+
+RunningStats& LaserEnergyMeter::getEnergyRunningStats()
+{
+	return energyStats;
+}
+
+boost::circular_buffer< STATE > LaserEnergyMeter::getStatusBuffer() const
+{
+	return statusBuffer;
 }
 
 bool LaserEnergyMeter::setEnergy(const double& value)
@@ -218,6 +277,73 @@ void LaserEnergyMeter::clearBuffers()
 {
 	shotsbuffer = 0;
 	energybuffer.clear();
+}
+
+bool LaserEnergyMeter::checkBuffer(boost::circular_buffer< double >& buf)
+{
+	if (buf[buf.size() - 1] == buf[buf.size()])
+	{
+		return true;
+	}
+	return false;
+}
+
+void LaserEnergyMeter::setRunningStatsSize(size_t new_size)
+{
+	//std::cout << "LaserEnergyMeter energyStats.setMaxCount " << new_size << std::endl;
+	energyStats.setMaxCount(new_size);
+}
+void LaserEnergyMeter::clearRunningStats()
+{
+	//std::cout << "LaserEnergyMeter energyStats.Clear " << std::endl;
+	energyStats.Clear();
+}
+bool LaserEnergyMeter::areRunningStatsFull()
+{
+	return energyStats.Full();
+}
+size_t LaserEnergyMeter::getRunningStatNumDataValues()const
+{
+	return energyStats.NumDataValues();
+}
+
+void LaserEnergyMeter::checkStatus()
+{
+	/*if (awak.first - rdy.first > 1.0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}*/
+	if (shotsbuffer == 0)
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (checkBuffer(energybuffer))
+	{
+		status = STATE::BAD;
+		statusBuffer.push_back(status);
+	}
+	else if (shotsbuffer > 0)
+		if (isnan(energybuffer.back()))
+		{
+			status = STATE::BAD;
+			statusBuffer.push_back(status);
+		}
+		else if (energybuffer.back() != energybuffer[bufferSize - 2])
+		{
+			status = STATE::GOOD;
+			statusBuffer.push_back(status);
+		}
+		else
+		{
+			status = STATE::UNKNOWN;
+			statusBuffer.push_back(status);
+		}
+	if (monitoring)
+	{
+		statusVector.push_back(status);
+	}
 }
 
 void LaserEnergyMeter::debugMessagesOff()

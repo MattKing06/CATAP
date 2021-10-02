@@ -21,6 +21,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 			.def("close", &Valve::close, boost::python::arg("self"))
 			.def("isOpen", &Valve::isOpen, boost::python::arg("self"))
 			.def("isClosed", &Valve::isClosed, boost::python::arg("self"))
+			.def("isMoving", &Valve::isMoving, boost::python::arg("self"))
 			.def("debugMessagesOn", &Valve::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &Valve::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &Valve::messagesOn, boost::python::arg("self"))
@@ -34,8 +35,10 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 		if (is_registered) return;
 		void(ValveFactory:: * openSingle)(const std::string&) = &ValveFactory::open;
 		void(ValveFactory:: * closeSingle)(const std::string&) = &ValveFactory::close;
+		bool(ValveFactory:: * loadSnapshotFile)(const std::string&) = &ValveFactory::loadSnapshot;
 		boost::python::class_<ValveFactory, boost::noncopyable>("ValveFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &ValveFactory::setup,(boost::python::arg("self"), boost::python::arg("version")))
 			.def("getValve", &ValveFactory::getValve,(boost::python::arg("self"), boost::python::arg("name")), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllValveNames", &ValveFactory::getAllValveNames_Py,(boost::python::arg("self")))
@@ -50,10 +53,15 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 			.def("close", &ValveFactory::close_Py, (boost::python::arg("self"), boost::python::arg("names")))
 			.def("closeAllValves", &ValveFactory::closeAllValves, (boost::python::arg("self")))
 			.def("isClosed", &ValveFactory::isClosed, (boost::python::arg("self"), boost::python::arg("name")))
+			.def("isMoving", &ValveFactory::isMoving, boost::python::args("self", "name"))
 			.def("debugMessagesOn", &ValveFactory::debugMessagesOn, (boost::python::arg("self")))
 			.def("debugMessagesOff", &ValveFactory::debugMessagesOff, (boost::python::arg("self")))
 			.def("messagesOn", &ValveFactory::messagesOn, (boost::python::arg("self")))
 			.def("messagesOff", &ValveFactory::messagesOff, (boost::python::arg("self")))
+			.def("getSnapshot", &ValveFactory::getSnapshot_Py, (boost::python::args("self")))
+			.def("saveSnapshot", &ValveFactory::exportSnapshotToYAML, (boost::python::args("self"), boost::python::args("location"), boost::python::args("filename")))
+			.def("loadSnapshot", loadSnapshotFile)
+			.def("loadSnapshot", &ValveFactory::loadSnapshot_Py)
 			;
 	}
 

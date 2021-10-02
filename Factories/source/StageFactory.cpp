@@ -5,9 +5,13 @@ StageFactory::StageFactory()
 }
 
 StageFactory::StageFactory(STATE mode) :
-	mode(mode), hasBeenSetup(false),
-	reader(ConfigReader("Stage", mode)),
-	messenger(LoggingSystem(true, true))
+StageFactory(mode, MASTER_LATTICE_LOCATION)
+{
+}
+
+StageFactory::StageFactory(STATE mode, const std::string& primeLatticeLocation) :
+	mode(mode),
+	reader(ConfigReader("Stage", mode, primeLatticeLocation))
 {
 }
 

@@ -57,9 +57,14 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::CLARA_PH1), TYPE::CLARA_PH1},
 		{ENUM_TO_STRING(TYPE::CLARA_2_BA1), TYPE::CLARA_2_BA1},
 		{ENUM_TO_STRING(TYPE::CLARA_2_BA1_BA2), TYPE::CLARA_2_BA1_BA2},
+
+		// TODO 
+		// do we need this many >>> probably get rid of LAS and LASER,
 		{ENUM_TO_STRING(TYPE::LAS), TYPE::LAS},
+		{ENUM_TO_STRING(TYPE::LASER), TYPE::LASER},
 		{ENUM_TO_STRING(TYPE::CLARA_LASER), TYPE::CLARA_LASER},
 		{ENUM_TO_STRING(TYPE::VELA_LASER), TYPE::VELA_LASER},
+
 		{ENUM_TO_STRING(TYPE::VELA_INJ), TYPE::VELA_INJ},
 		{ENUM_TO_STRING(TYPE::VELA_2_BA1), TYPE::VELA_2_BA1},
 		{ENUM_TO_STRING(TYPE::VELA_2_BA1_BA2), TYPE::VELA_2_BA1_BA2},
@@ -103,10 +108,18 @@ namespace GlobalConstants
 		{"Screen", TYPE::SCREEN},
 		{"screen", TYPE::SCREEN},
 
+		{ENUM_TO_STRING(TYPE::LASER_MIRROR), TYPE::LASER_MIRROR},
+		{"LaserMirror", TYPE::LASER_MIRROR},
+		{"laser_mirror", TYPE::LASER_MIRROR},
 				
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
 		{"llrf", TYPE::LLRF_TYPE},
+		
+		{ENUM_TO_STRING(TYPE::LINAC_PID), TYPE::LINAC_PID},
+		{"LinacPID", TYPE::LINAC_PID},
+		{"linacPID", TYPE::LINAC_PID},
+		{"LINAC_PID", TYPE::LINAC_PID},
 
 		// RF PROTECTION
 		{ENUM_TO_STRING(TYPE::RF_PROTECTION), TYPE::RF_PROTECTION},
@@ -125,10 +138,15 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::HWP), TYPE::HWP},
 		{"LaserHWP", TYPE::HWP},
 		{"LHW", TYPE::HWP},
+		
+		
+		{ ENUM_TO_STRING(TYPE::LIGHTING), TYPE::LIGHTING},
+		{ "Lighting", TYPE::LIGHTING},
 
 		// magnet types
 		{ENUM_TO_STRING(TYPE::QUADRUPOLE), TYPE::QUADRUPOLE},
 		{ENUM_TO_STRING(TYPE::DIPOLE), TYPE::DIPOLE},
+		{ENUM_TO_STRING(TYPE::CORRECTOR), TYPE::CORRECTOR},
 		{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
 		{ENUM_TO_STRING(TYPE::HORIZONTAL_CORRECTOR), TYPE::HORIZONTAL_CORRECTOR},
 		{ENUM_TO_STRING(TYPE::SOLENOID), TYPE::SOLENOID},
@@ -178,8 +196,6 @@ namespace GlobalConstants
 		{ "RFModulator", TYPE::RF_MODULATOR },
 		{ ENUM_TO_STRING(TYPE::RF_MODULATOR), TYPE::RF_MODULATOR },
 
-		
-
 				
 		//{ENUM_TO_STRING(TYPE::HVCOR), TYPE::HVCOR},
 		{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
@@ -203,11 +219,11 @@ namespace GlobalConstants
 		{ENUM_TO_STRING(TYPE::RFHEARTBEAT), TYPE::RFHEARTBEAT},
 		{"RFHeartbeat", TYPE::RFHEARTBEAT}
 
-
 	};
 
 	const std::map<std::string, STATE> stringToStateMap =
 	{
+			{ENUM_TO_STRING(STATE::ON), STATE::ON},
 			{ENUM_TO_STRING(STATE::OFF), STATE::OFF},
 			{ENUM_TO_STRING(STATE::UNKNOWN_NAME), STATE::UNKNOWN_NAME},
 			{ENUM_TO_STRING(STATE::SUCCESS), STATE::SUCCESS},
@@ -221,6 +237,7 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::BAD), STATE::BAD},
 			{ENUM_TO_STRING(STATE::OPEN), STATE::OPEN},
 			{ENUM_TO_STRING(STATE::CLOSED), STATE::CLOSED},
+			{ENUM_TO_STRING(STATE::MOVING), STATE::MOVING},
 			{ENUM_TO_STRING(STATE::NONLINEAR), STATE::NONLINEAR},
 			{ENUM_TO_STRING(STATE::UNKNOWN), STATE::UNKNOWN},
 			{ENUM_TO_STRING(STATE::ENABLED), STATE::ENABLED},
@@ -287,6 +304,9 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::ACQM_NOW), STATE::ACQM_NOW},
 			{ENUM_TO_STRING(STATE::ACQM_EVENT), STATE::ACQM_EVENT},
 
+			{ENUM_TO_STRING(STATE::YES), STATE::YES},
+			{ENUM_TO_STRING(STATE::NO), STATE::NO},
+
 
 			// gun mod
 			{ENUM_TO_STRING(STATE::OFF_REQUEST), STATE::OFF_REQUEST},
@@ -308,6 +328,11 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::UNKNOWN_SET_STATE), STATE::UNKNOWN_SET_STATE}
 	};
 
+
+
+
+
+
 	/*! Minimum possible value of a double */
 	const double double_min = std::numeric_limits<double>::min();
 	/*! Maximum possible value of a double */
@@ -323,6 +348,7 @@ namespace GlobalConstants
 	const double zero_double = 0.0;
 	/*! Double-type variable for 1.0 */
 	const double one_double = 1.0;
+	const double ten_double = 10.0;
 	/*! Double-type variable for 0.1 */
 	const double zero_point_one_double = 0.1;
 	
@@ -333,6 +359,32 @@ namespace GlobalConstants
 	const unsigned short zero_ushort = 0;
 	/*! Unsigned short-type variable for 1 */
 	const unsigned short one_ushort = 1;
+	/*! Unsigned short-type variable for 2 */
+	const unsigned short two_ushort = 2;
+	/*! Unsigned short-type variable for 3 */
+	const unsigned short three_ushort = 3;
+	/*! Unsigned short-type variable for 4 */
+	const unsigned short four_ushort = 4;
+	/*! Unsigned short-type variable for 5 */
+	const unsigned short five_ushort = 5;
+	/*! Unsigned short-type variable for 6 */
+	const unsigned short six_ushort = 6;
+	/*! Unsigned short-type variable for 7 */
+	const unsigned short seven_ushort = 7;
+	/*! Unsigned short-type variable for 8 */
+	const unsigned short eight_ushort = 8;
+	/*! Unsigned short-type variable for 9 */
+	const unsigned short nine_ushort = 9;
+	/*! Unsigned short-type variable for 10 */
+	const unsigned short ten_ushort = 10;
+
+
+	//// epics versions 
+	///*! epicsUInt16 variable for 0 */
+	//const epicsUInt16 zero_epicsUInt16 = 0;
+	///*! epicsUInt16 variable for 1 */
+	//const epicsUInt16 one_epicsUInt16 = 1;
+
 
 	/*! Minimum possible value of a unsigned short */
 	const unsigned short ushort_min = std::numeric_limits<unsigned short>::min();
@@ -357,10 +409,6 @@ namespace GlobalConstants
 	/*! Minimum possible value of a double */
 	const char char_min = std::numeric_limits<char>::min();
 
-	//const epicsUInt16 zero_epicsUInt16= 0;
-	//const epicsUInt16 one_epicsUInt16 = 1;
-
-
 
 	/*! Unsigned size_t-type for 0 */
 	const size_t zero_sizet = 0;
@@ -368,14 +416,19 @@ namespace GlobalConstants
 	const size_t one_sizet = 1;
 	/*! Unsigned size_t-type for 2 */
 	const size_t two_sizet = 2;
+	/*! Unsigned size_t-type for 3 */
+	const size_t three_sizet = 3;
 	/*! Unsigned size_t-type for 5 */
 	const size_t five_sizet = 5;
+	/*! Unsigned size_t-type for 12 */
+	const size_t twelve_sizet = 12;
 	/*! Unsigned size_t-type for 80 */
 	const size_t eighty_sizet = 80;
 	/*! Unsigned size_t-type for 100 */
 	const size_t one_hundred_sizet = 100;
 	/*! Unsigned Integer-type for 999999 */
 	const size_t nine99999 = 999999;
+	const size_t sizet_max = std::numeric_limits<size_t>::max();
 
 	const long zero_long = 0;
 	const long one_long = 1;
@@ -413,13 +466,6 @@ namespace GlobalConstants
 	/*! Arithmetic time-type capable of representing time 60 */
 	const time_t TIMET_60 = 60;
 
-	const std::string COMMENT = "COMMENT";
-	const std::string TIMESTAMP = "TIMESTAMP";
-	const std::string HEADER = "HEADER";
-	const std::string FILE_ALIAS = "FILE_ALIAS";
-
-	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
-	const std::string DUMMY_NAME = "DUMMY_NAME";
 
 
 	const std::string UNKNOWN = "UNKNOWN";
@@ -431,16 +477,37 @@ namespace GlobalConstants
 	
 
 
-
-
-
-
-
-
-
-
-
-
+	// legacy magnet dburt stuff 
+	const std::string VELA_CLARA_DBURT_ALIAS_V1 = "VELA-CLARA DBURT ALIAS FILE v1";
+	const std::string DBURT_HEADER_V2 = "VELA DBURT (MAGNET SAVE FILE) v2.0";
+	const std::string VELA_MAGNET_SAVE_FILE_v1 = "VELA MAGNET SAVE FILE v1.0"; 
+	const std::string DBURT_HEADER_V3 = "VELA-CLARA DBURT (MAGNET SAVE FILE) v3";
+	const std::string DBURT_HEADER_V4 = "VELA-CLARA DBURT (MAGNET SAVE FILE) v4";
+	const std::string dotdburt= ".dburt";
+	const std::string dotDBURT = ".DBURT";
+	const std::string DBURT_HEADER_DT = "DATE_TIME:";
+	const std::string DBURT_HEADER_COM = "COMMENTS:";
+	const std::string DBURT_HEADER_AREA = "BEAM_AREA:";
+	const std::string DBURT_HEADER_KEYW = "KEY_WORDS:";
+	const std::string COMMENT = "COMMENT";
+	const std::string TIMESTAMP = "TIMESTAMP";
+	const std::string HEADER = "HEADER";
+	const std::string FILE_ALIAS = "FILE_ALIAS";
+	const std::string DBURT_FILEPATH = "\\\\fed.cclrc.ac.uk\\org\\NLab\\ASTeC\\Projects\\VELA\\Snapshots\\DBURT\\";
+	const std::string DUMMY_NAME = "DUMMY_NAME";
+	const std::string DBURT_EOF_V1 = "END OF FILE";
+	const std::string DBURT_EOF_V3 = "END_OF_DATA"; 
+	const std::string DBURT_EOF_V4 = "END_OF_DATA";
+	const std::string END_OF_LINE = ";";
+	const char EQUALS_SIGN_C = '=';
+	const char COLON_C = ':';
+	const char DOUBLE_QUOTE_C = '"';
+	const char SPACE_C = ' ';
+	const char TAB_C = '\t';
+	const char COMMA_C = ',';
+	const char SLASH_SLASH_C = '\\';
+	const std::string SLASH_SLASH = "\\";
+	// end
 
 
 

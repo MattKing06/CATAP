@@ -33,18 +33,30 @@ public:
 	void messagesOn();
 	void messagesOff();
 	void offlineSet(const long& value);
-	bool monitoringData = false;
+	bool monitoringData;
+
+	STATE getHWPEnableState()const;
+	bool isHWPEnabled()const;
+	bool isHWPDisabled()const;
+	bool enableHWP();
+	bool disableHWP();
+
 	bool setHWP(double value);
 	double getHWPSet() const;
 	double getHWPRead() const;
-	std::pair<epicsTimeStamp, double> hwpset;
-	std::pair<epicsTimeStamp, double> hwpread;
 	double position;
 	std::string name;
 	friend class EPICSLaserHWPInterface;
 protected:
 	//what else does a laser need?
 	std::vector<std::string> aliases;
+
+	std::pair<epicsTimeStamp, double> hwpset;
+	std::pair<epicsTimeStamp, double> hwpread;
+	std::pair<epicsTimeStamp, STATE> hwp_enable;
+
+	
+
 	TYPE laserType;
 };
 

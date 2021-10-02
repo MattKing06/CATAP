@@ -596,6 +596,7 @@ void EPICSLLRFInterface::update_trace_SCAN(const struct event_handler_args& args
 {
 	std::pair<epicsTimeStamp, int> pairToUpdate = getTimeStampUShortPair(args);
 	scan.first = pairToUpdate.first;
+	// TODO this lookup is done lots, so use version from GlobalConstants / Globcal Functions  
 	switch (pairToUpdate.second)
 	{
 	case 0:			scan.second = STATE::PASSIVE; break;

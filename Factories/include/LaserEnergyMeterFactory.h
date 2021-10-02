@@ -25,6 +25,7 @@ public:
 	VIRTUAL LaserEnergyMeterFactory will perform operations of Virtual laser energy meters.
 	OFFLINE LaserEnergyMeterFactory will perform operations on Offline laser energy meters.*/
 	LaserEnergyMeterFactory(STATE mode);
+	LaserEnergyMeterFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for LaserEnergyMeterFactory (used for = operator)
 	@param[in] copyLaserEnergyMeterFactory: the LaserEnergyMeterFactory we want to copy over.*/
 	LaserEnergyMeterFactory(const LaserEnergyMeterFactory& copyLaserEnergyMeterFactory);
@@ -119,6 +120,18 @@ public:
 	@param[in] name: the laser energy meter name.
 	@param[in] value: number of shots to monitor.*/
 	void monitorForNShots(const std::string& name, const size_t& value);
+
+	/*! sets the RS size (m_max) for a given laser energy meter*/
+	void setRunningStatSize(const std::string& name, const size_t& size);
+	/*! clears the RS object for a given laser energy meter */
+	void clearRunningStats(const std::string& name);
+	/*! clears the RS object for a given laser energy meter */
+	bool areRunningStatsFull(const std::string& name);
+	/*! Get the current number of data values being used by the Running Stats.
+	@param[in] name: the laser energy meter name.
+	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues(const std::string& name)const;
+
 	/*! set the size of the laser energy vector.
 	@param[in] name: the laser energy meter name.
 	@param[in] value: vector size.*/

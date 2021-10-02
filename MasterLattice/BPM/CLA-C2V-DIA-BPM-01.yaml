@@ -1,7 +1,7 @@
 controls_information: 
     PV: true
     records: SA1,SA2,SD1,SD2,RA1,RA2,RD1,RD2,X,Y,AWAK,RDY,DATA
-    pv_record_map:
+    pv_record_map: 
         SA1: CLA-C2V-DIA-BPM-01:SA1
         SA2: CLA-C2V-DIA-BPM-01:SA2
         SD1: CLA-C2V-DIA-BPM-01:SD1

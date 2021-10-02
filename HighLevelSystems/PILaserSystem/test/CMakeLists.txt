@@ -1,6 +1,5 @@
 message( "Processing PILaserSystem Unit Tests")
 enable_testing()
-#find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework)
 add_executable(PILaserSystemTests ${TEST_FILES})
 cmake_policy(SET CMP0023 NEW)
 #link to Boost libs AND whatever else
