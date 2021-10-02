@@ -16,15 +16,18 @@ properties:
   name: EBT-BA1-MOT-COFF-H-01
   name_alias: H1
   stage_number: 1
+  camera: BA1-COFF-01
   max_pos: 58.0
   min_pos: -22.0
   has_yag: true
   #devices_and_positions
-  CLEAR_FOR_BEAM: -22.0
-  YAG_UP: 11.0
-  YAG_RECTICLE: 11.0
-  COLL_D2_5MM: 49.5
-  COLL_D2MM: 57.5
-  COLL_D1_5MM: 49.5
-  COLL_D1MM: 57.5
+  devices: CLEAR_FOR_BEAM,YAG_UP,YAG_RECTICLE,COLL_D2_5MM,COLL_D2MM,COLL_D1_5MM,COLL_D1MM
+  positions: -22.0,11.0,11.0,49.5,57.5,9.5,57.5
+  # CLEAR_FOR_BEAM: -22.0
+  # YAG_UP: 11.0
+  # YAG_RECTICLE: 11.0
+  # COLL_D2_5MM: 49.5
+  # COLL_D2MM: 57.5
+  # COLL_D1_5MM: 49.5
+  # COLL_D1MM: 57.5
   precision: 2

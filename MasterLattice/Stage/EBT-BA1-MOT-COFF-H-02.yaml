@@ -16,12 +16,15 @@ properties:
   name: EBT-BA1-MOT-COFF-H-02
   name_alias: H2
   stage_number: 3
+  camera: BA1-COFF-03
   max_pos: 20.9
   min_pos: -55.0
   has_yag: false
   #devices_and_positions
-  IP_YAG: -35.0
-  OTR: -55.0
-  GAS_JET: 20.9
-  CLEAR_FOR_BEAM: 19.0
+  devices: IP_YAG,OTR,GAS_JET,CLEAR_FOR_BEAM
+  positions: -35.0,-55.0,20.9,19.0
+  # IP_YAG: -35.0
+  # OTR: -55.0
+  # GAS_JET: 20.9
+  # CLEAR_FOR_BEAM: 19.0
   precision: 2

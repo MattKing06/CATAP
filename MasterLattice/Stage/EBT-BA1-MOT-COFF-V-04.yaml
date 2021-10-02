@@ -22,9 +22,11 @@ properties:
   in_pos: -20.0
   out_pos: 2.0
   #devices_and_positions:
-  CLEAR_FOR_BEAM: 4.0
-  V_SLIT: 4.0
-  H_SLIT: 4.0
-  EO_CRYSTAL: 7.5
-  EO_YAG: 0.0
+  devices: CLEAR_FOR_BEAM,V_SLIT,H_SLIT,EO_CRYSTAL,EO_YAG
+  positions: 4.0,4.0,4.0,7.5,0.0
+  # CLEAR_FOR_BEAM: 4.0
+  # V_SLIT: 4.0
+  # H_SLIT: 4.0
+  # EO_CRYSTAL: 7.5
+  # EO_YAG: 0.0
   precision: 3

@@ -16,14 +16,17 @@ properties:
   name: EBT-BA1-MOT-COFF-V-02
   name_alias: V2
   stage_number: 5
+  camera: BA1-COFF-03
   max_pos: 3.0
   min_pos: -28.0
   has_yag: true
   #devices_and_positions
-  CLEAR_FOR_BEAM: -15.0
-  IP_YAG: -26.0
-  YAG_RECTICLE: -6.0
-  DCP: -5.0
-  DTH: -3.0
-  5x5_YAG_DCP: 1.5
+  devices: CLEAR_FOR_BEAM,IP_YAG,YAG_RECTICLE,DCP,DTH,5x5_YAG_DCP
+  positions: -15.0,-26.0,-6.0,-5.0,-3.0,1.5
+  # CLEAR_FOR_BEAM: -15.0
+  # IP_YAG: -26.0
+  # YAG_RECTICLE: -6.0
+  # DCP: -5.0
+  # DTH: -3.0
+  # 5x5_YAG_DCP: 1.5
   precision: 3
