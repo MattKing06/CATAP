@@ -12,7 +12,11 @@
 class EPICSStageInterface;
 
 typedef boost::shared_ptr<EPICSStageInterface> EPICSStageInterface_sptr;
-
+/** @addtogroup hardware
+ *@{*/
+ /*! A class to store information and communicate via EPICS to control charge diagnostics on VELA/CLARA.
+	 A collection of these classes will be stored in map in the ChargeFactory class.
+ */
 class Stage : public Hardware
 {
 public:
@@ -86,3 +90,5 @@ private:
 //	extern std::vector<std::string> devices;
 //}
 #endif //STAGE_H_
+/**\copydoc Hardware*/
+/**@}*/
