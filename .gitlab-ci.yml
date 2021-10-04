@@ -6,7 +6,6 @@ stages:
 - sphinx
 - wheel
 
-
 before_script:
   - which gcc
   - which g++
