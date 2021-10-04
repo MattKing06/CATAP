@@ -66,7 +66,7 @@ doxygen:
   script:
   - cd build
   - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
-#  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
+  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
 
@@ -78,7 +78,7 @@ sphinx:
       - build/*
   script:
   - cd build
-#  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
+  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
   only:
     - master
 
@@ -92,5 +92,6 @@ wheel:
   - cd build
   - cd ./PythonInterface/CATAP/
   - ./build_wheel.sh
+  
   only:
     - master
