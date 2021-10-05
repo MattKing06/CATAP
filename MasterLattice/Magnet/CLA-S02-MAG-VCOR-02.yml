@@ -18,7 +18,8 @@ controls_information:
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
   degauss_tolerance: 0.1
-  degauss_values: "10.0,-10.0,7.0,-7.0,5.0,-5.0,2.5,-2.5,1.0,-1.0,0.0"
+  #degauss_values: "2.0,4.0,9.9,4.0,2.0,-2.0,-4.0,-9.9,-4.0,-2.0,2.0,7.0,2.0,-2.0,-7.0,-2.0,2.0,5.0,2.0,-2.0,-5.0,-2.0,2.5,-2.5,1.0,-1.0,0.0"
+  degauss_values: "9.9,-9.9,7.0,-7.0,5.0,-5.0,2.5,-2.5,1.0,-1.0,0.0"
   field_integral_coefficients: "0.299132052459495,0.00869167241506522"
   hardware_type: Magnet
   machine_area: S02
