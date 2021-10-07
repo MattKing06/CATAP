@@ -22,95 +22,96 @@ position(std::stod(paramsMap.at("position")))
 	messenger.printDebugMessage("constructor");
 	switch (screenType)
 	{
-	case TYPE::CLARA_HV_MOVER:
-	{
-		setPVStructs(ScreenRecords::screenHVRecordList);
-		break;
+		case TYPE::CLARA_HV_MOVER:
+		{
+			setPVStructs(ScreenRecords::screenHVRecordList);
+			break;
+		}
+		case TYPE::CLARA_V_MOVER:
+		{
+			setPVStructs(ScreenRecords::screenVRecordList);
+			break;
+		}
+		case TYPE::VELA_HV_MOVER:
+		{
+			setPVStructs(ScreenRecords::screenHVRecordList);
+			break;
+		}
+		case TYPE::VELA_V_MOVER:
+		{
+			setPVStructs(ScreenRecords::screenVRecordList);
+			break;
+		}
+		case TYPE::CLARA_PNEUMATIC:
+		{
+			setPVStructs(ScreenRecords::screenPRecordList);
+			break;
+		}
+		case TYPE::VELA_PNEUMATIC:
+		{
+			setPVStructs(ScreenRecords::screenPRecordList);
+			break;
+		}
 	}
-	case TYPE::CLARA_V_MOVER:
+	epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
+	epicsInterface->ownerName = hardwareName;
+	std::vector<std::string> screenDeviceStringVector;
+	boost::split(screenDeviceStringVector, paramsMap.at("devices"), [](char c) {return c == ','; });
+	for (auto value : screenDeviceStringVector) { screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
+	cameraName = paramsMap.at("camera_name");
+	screenStateH.second = STATE::UNKNOWN;
+	screenStateV.second = STATE::UNKNOWN;
+	screenState.second = STATE::UNKNOWN;
+	screenSetStateH.second = STATE::UNKNOWN;
+	screenSetStateV.second = STATE::UNKNOWN;
+	screenSetState.second = STATE::UNKNOWN;
+	actposH.second = GlobalConstants::double_min;
+	actposV.second = GlobalConstants::double_min;
+	actpos.second = GlobalConstants::double_min;
+	tgtposH.second = GlobalConstants::double_min;
+	tgtposV.second = GlobalConstants::double_min;
+	tgtpos.second = GlobalConstants::double_min;
+	devcentH.second = GlobalConstants::double_min;
+	devcentV.second = GlobalConstants::double_min;
+	devcent.second = GlobalConstants::double_min;
+	jdiffH.second = GlobalConstants::double_min;
+	jdiffV.second = GlobalConstants::double_min;
+	jdiff.second = GlobalConstants::double_min;
+	jogH.second = GlobalConstants::double_min;
+	jogV.second = GlobalConstants::double_min;
+	jog.second = GlobalConstants::double_min;
+	enH.second = STATE::UNKNOWN;
+	enV.second = STATE::UNKNOWN;
+	en.second = STATE::UNKNOWN;
+	exH.second = GlobalConstants::zero_int;
+	exV.second = GlobalConstants::zero_int;
+	ex.second = GlobalConstants::zero_int;
+	triggerH.second = GlobalConstants::zero_int;
+	triggerV.second = GlobalConstants::zero_int;
+	trigger.second = GlobalConstants::zero_int;
+	readyH.second = GlobalConstants::zero_int;
+	readyV.second = GlobalConstants::zero_int;
+	ready.second = GlobalConstants::zero_int;
+	movingH.second = GlobalConstants::zero_int;
+	movingV.second = GlobalConstants::zero_int;
+	moving.second = GlobalConstants::zero_int;
+	maxposH.second = GlobalConstants::double_min;
+	maxposV.second = GlobalConstants::double_min;
+	maxpos.second = GlobalConstants::double_min;
+	
+	
+	messenger.printDebugMessage(hardwareName, " find name_alias");
+	if (GlobalFunctions::entryExists(paramsMap, "name_alias"))
 	{
-		setPVStructs(ScreenRecords::screenVRecordList);
-		break;
+		boost::split(aliases, paramsMap.at("name_alias"), [](char c) {return c == ','; });
+		for (auto& name : aliases)
+		{
+			name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
+			messenger.printDebugMessage(hardwareName, " added aliase " + name);
+		}
 	}
-	case TYPE::VELA_HV_MOVER:
-	{
-		setPVStructs(ScreenRecords::screenHVRecordList);
-		break;
-	}
-	case TYPE::VELA_V_MOVER:
-	{
-		setPVStructs(ScreenRecords::screenVRecordList);
-		break;
-	}
-	case TYPE::CLARA_PNEUMATIC:
-	{
-		setPVStructs(ScreenRecords::screenPRecordList);
-		break;
-	}
-	case TYPE::VELA_PNEUMATIC:
-	{
-		setPVStructs(ScreenRecords::screenPRecordList);
-		break;
-	}
-}
-epicsInterface = boost::make_shared<EPICSScreenInterface>(EPICSScreenInterface());
-epicsInterface->ownerName = hardwareName;
-std::vector<std::string> screenDeviceStringVector;
-boost::split(screenDeviceStringVector, paramsMap.at("devices"), [](char c) {return c == ','; });
-for (auto value : screenDeviceStringVector) { screenDeviceVector.push_back(ScreenRecords::screenDevicesToEnum.at(value)); }
-screenStateH.second = STATE::UNKNOWN;
-screenStateV.second = STATE::UNKNOWN;
-screenState.second = STATE::UNKNOWN;
-screenSetStateH.second = STATE::UNKNOWN;
-screenSetStateV.second = STATE::UNKNOWN;
-screenSetState.second = STATE::UNKNOWN;
-actposH.second = GlobalConstants::double_min;
-actposV.second = GlobalConstants::double_min;
-actpos.second = GlobalConstants::double_min;
-tgtposH.second = GlobalConstants::double_min;
-tgtposV.second = GlobalConstants::double_min;
-tgtpos.second = GlobalConstants::double_min;
-devcentH.second = GlobalConstants::double_min;
-devcentV.second = GlobalConstants::double_min;
-devcent.second = GlobalConstants::double_min;
-jdiffH.second = GlobalConstants::double_min;
-jdiffV.second = GlobalConstants::double_min;
-jdiff.second = GlobalConstants::double_min;
-jogH.second = GlobalConstants::double_min;
-jogV.second = GlobalConstants::double_min;
-jog.second = GlobalConstants::double_min;
-enH.second = STATE::UNKNOWN;
-enV.second = STATE::UNKNOWN;
-en.second = STATE::UNKNOWN;
-exH.second = GlobalConstants::zero_int;
-exV.second = GlobalConstants::zero_int;
-ex.second = GlobalConstants::zero_int;
-triggerH.second = GlobalConstants::zero_int;
-triggerV.second = GlobalConstants::zero_int;
-trigger.second = GlobalConstants::zero_int;
-readyH.second = GlobalConstants::zero_int;
-readyV.second = GlobalConstants::zero_int;
-ready.second = GlobalConstants::zero_int;
-movingH.second = GlobalConstants::zero_int;
-movingV.second = GlobalConstants::zero_int;
-moving.second = GlobalConstants::zero_int;
-maxposH.second = GlobalConstants::double_min;
-maxposV.second = GlobalConstants::double_min;
-maxpos.second = GlobalConstants::double_min;
-
-
-messenger.printDebugMessage(hardwareName, " find name_alias");
-if (GlobalFunctions::entryExists(paramsMap, "name_alias"))
-{
-	boost::split(aliases, paramsMap.at("name_alias"), [](char c) {return c == ','; });
-	for (auto& name : aliases)
-	{
-		name.erase(std::remove_if(name.begin(), name.end(), isspace), name.end());
-		messenger.printDebugMessage(hardwareName, " added aliase " + name);
-	}
-}
-else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
-
+	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
+	
 }
 
 
@@ -1286,6 +1287,11 @@ bool Screen::isElement(std::map<int, STATE> mapOfElemen, STATE value) const
 		it++;
 	}
 	return false;
+}
+
+std::string Screen::getCameraName() const
+{
+	return cameraName;
 }
 
 void Screen::debugMessagesOff()

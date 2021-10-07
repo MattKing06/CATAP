@@ -340,7 +340,11 @@ public:
 	std::vector<std::string> getAliases(const std::string& name);
 	boost::python::list getAliases_Py(const std::string& name);
 
-
+	std::string getCameraName(const std::string& name);
+	std::map<std::string, std::string> getCameraNames(const std::vector<std::string> names);
+	std::map<std::string, std::string> getAllCameraNames();
+	boost::python::dict getCameraNames_Py(const boost::python::list names);
+	boost::python::dict getAllCameraNames_Py();
 
 	/*!gets a python list of the hardware names associated with all of the screens in screenMap
 	@param[out] list :a Python list containing all of the harwdare names for the screens in screenMap*/

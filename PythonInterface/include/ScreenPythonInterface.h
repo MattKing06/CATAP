@@ -145,6 +145,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setEX", &Screen::setEX)
 			.def("moveScreenTo", &Screen::moveScreenTo)
 			.def("getAliases", &Screen::getAliases_Py)
+			.def("getCameraName", &Screen::getCameraName)
 			;
 	}
 	
@@ -160,6 +161,9 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.add_property("screenMap", &ScreenFactory::screenMap)
 			.def("getScreen", &ScreenFactory::getScreen, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			//.def("getAllScreens", &ScreenFactory::getAllScreens_Py)
+			.def("getCameraName", &ScreenFactory::getCameraName)
+			.def("getCameraName", &ScreenFactory::getCameraNames_Py)
+			.def("getAllCameraNames", &ScreenFactory::getAllCameraNames_Py)
 			.def("getAllScreenNames", &ScreenFactory::getAllScreenNames_Py)
 			.def("getAllScreenStates", &ScreenFactory::getAllScreenStates_Py)
 			.def("getAllScreenSetStates", &ScreenFactory::getAllScreenSetStates_Py)

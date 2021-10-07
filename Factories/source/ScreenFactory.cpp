@@ -908,6 +908,48 @@ boost::python::list ScreenFactory::getAliases_Py(const std::string& name)
 	return to_py_list<std::string>(getAliases(name));
 }
 
+std::string ScreenFactory::getCameraName(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).getCameraName();
+	}
+}
+
+std::map<std::string, std::string> ScreenFactory::getCameraNames(const std::vector<std::string> names)
+{
+	std::map<std::string, std::string> screenAndCameraNames;
+	for (auto&& name : names)
+	{
+		screenAndCameraNames[name] = getCameraName(name);
+	}
+	return screenAndCameraNames;
+}
+
+std::map<std::string, std::string> ScreenFactory::getAllCameraNames()
+{
+	std::map<std::string, std::string> screenAndCameraNames;
+	std::vector<std::string> names = getAllScreenNames();
+	for (auto&& name : names)
+	{
+		screenAndCameraNames[name] = getCameraName(name);
+	}
+	return screenAndCameraNames;
+}
+
+
+boost::python::dict ScreenFactory::getCameraNames_Py(const boost::python::list names)
+{
+	std::vector<std::string> py_names = to_std_vector<std::string>(names);
+	return to_py_dict(getCameraNames(py_names));
+}
+
+boost::python::dict ScreenFactory::getAllCameraNames_Py()
+{
+	return to_py_dict(getAllCameraNames());
+}
+
 boost::python::list ScreenFactory::getAllScreenNames_Py()
 {
 	std::vector<std::string> screens;

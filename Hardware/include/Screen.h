@@ -484,7 +484,10 @@ public:
 	@param[in] STATE: state that you wish to find.
 	@param[out] bool: true if yes. */
 	bool isElement(std::map<int, STATE> mapOfElemen, STATE value) const;
-
+	/*! returns the name of the camera associated with the screen
+	@param[out] std::string: camera name
+	*/
+	std::string getCameraName() const;
 
 
 
