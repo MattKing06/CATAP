@@ -51,5 +51,6 @@ properties:
     hardware_type: Screen
     screen_type: CLARA_HV_MOVER,CLARA_V_MOVER,VELA_HV_MOVER,VELA_PNEUMATIC
     has_camera: true, false
+    camera_name: UNDEFINED
     position: UNDEFINED
     devices: "HRETRACTED,HMAX,HSLIT1,HSLIT2,HSLIT3,HAPT1,HAPT2,HAPT3,VRETRACTED,VMAX,VRF,VMIRROR,VYAG,VGRAT,VCOL,VSLIT1,RETRACTED,RF,YAG"

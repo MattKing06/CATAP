@@ -37,5 +37,6 @@ properties:
     hardware_type: Screen
     screen_type: CLARA_HV_MOVER
     has_camera: true
+    camera_name: CLA-S01-DIA-CAM-01
     position: 0.0
     devices: "HRETRACTED,HMAX,HSLIT1,HSLIT2,HSLIT3,HAPT1,HAPT2,HAPT3,VRETRACTED,VMAX,VRF,VMIRROR,VYAG,VGRAT,VCOL,VSLIT1"

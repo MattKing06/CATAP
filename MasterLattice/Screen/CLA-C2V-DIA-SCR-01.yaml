@@ -23,5 +23,6 @@ properties:
     hardware_type: Screen
     screen_type: CLARA_V_MOVER
     has_camera: true
+    camera_name: CLA-C2V-DIA-CAM-01
     position: 0.0
     devices: "VRETRACTED,VMAX,VRF,VYAG,VCOL,VGRAT"

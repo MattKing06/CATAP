@@ -17,5 +17,6 @@ properties:
     hardware_type: Screen
     screen_type: VELA_PNEUMATIC
     has_camera: true
+    camera_name: EBT-BA1-DIA-CAM-05
     position: 0.0
     devices: "RETRACTED,RF,YAG"
