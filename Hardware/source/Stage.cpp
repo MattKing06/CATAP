@@ -168,9 +168,24 @@ bool Stage::moveToDevice(const std::string& device)
 	return false;
 }
 
+std::vector<std::string> Stage::getDevices()
+{
+	std::vector<std::string> deviceNames;
+	for (auto&& item : deviceAndPositionMap)
+	{
+		deviceNames.push_back(item.first);
+	}
+	return deviceNames;
+}
+
+boost::python::list Stage::getDevices_Py()
+{
+	return to_py_list(getDevices());
+}
+
 bool Stage::isReadPositionEqualToSetPosition()
 {
-	return currentPosition.second == positionSetpoint.second;
+	return abs(currentPosition.second - positionSetpoint.second) <= precision;
 }
 
 float Stage::getDevicePosition(const std::string& device)

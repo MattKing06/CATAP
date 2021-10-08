@@ -28,6 +28,12 @@ public:
 	std::map<std::string, bool> clearAllForBeam();
 	boost::python::dict clearAllForBeam_Py();
 	void updateAliases();
+	std::vector<std::string> getAllStageNames();
+	boost::python::list getAllStageNames_Py();
+	std::vector<std::string> getDevices(const std::string& name);
+	boost::python::list getDevices_Py(const std::string& name);
+	std::map<std::string, std::vector<std::string>> getAllDevices();
+	boost::python::dict getAllDevices_Py();
 	bool hasBeenSetup;
 	std::map<std::string, std::string> aliasesAndFullNames;
 	std::map<std::string, Stage> stageMap;

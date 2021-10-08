@@ -40,6 +40,8 @@ public:
 	void setNewPosition(double newPosition);
 	bool canStageMove(double newPosition);
 	bool moveToDevice(const std::string& device);
+	std::vector<std::string> getDevices();
+	boost::python::list getDevices_Py();
 	bool isReadPositionEqualToSetPosition();
 	double getMinPosition();
 	double getMaxPosition();

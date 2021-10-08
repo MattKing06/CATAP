@@ -68,6 +68,53 @@ std::map<std::string, bool> StageFactory::clearAllForBeam()
 }
 
 
+std::vector<std::string> StageFactory::getAllStageNames()
+{
+	std::vector<std::string> names;
+	for (auto&& stage : stageMap)
+	{
+		names.push_back(stage.first);
+	}
+	return names;
+}
+boost::python::list StageFactory::getAllStageNames_Py()
+{
+	return to_py_list(getAllStageNames());
+}
+
+std::vector<std::string> StageFactory::getDevices(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getDevices();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getDevices();
+	}
+}
+
+boost::python::list StageFactory::getDevices_Py(const std::string& name)
+{
+	return to_py_list(getDevices(name));
+}
+
+std::map<std::string, std::vector<std::string> > StageFactory::getAllDevices()
+{
+	std::map<std::string, std::vector<std::string> > nameAndDevices;
+	for (auto&& stage : stageMap)
+	{
+		nameAndDevices[stage.first] = stage.second.getDevices();
+	}
+	return nameAndDevices;
+}
+
+boost::python::dict StageFactory::getAllDevices_Py()
+{
+	return to_py_dict(getAllDevices());
+}
+
 
 boost::python::dict StageFactory::clearAllForBeam_Py()
 {

@@ -31,6 +31,7 @@ laserHWPFactory(LaserHWPFactory(mode, primeLatticeLocation)),
 shutterFactory(ShutterFactory(mode, primeLatticeLocation)),
 rfmodulatorFactory(RFModulatorFactory(mode, primeLatticeLocation)),
 rfHeartbeatFactory(RFHeartbeatFactory(mode, primeLatticeLocation)),
+stageFactory(StageFactory(mode, primeLatticeLocation)),
 mode(mode)
 {
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
@@ -75,6 +76,11 @@ bool HardwareFactory::setup(const std::string& VERSION)
 		setup = laserHWPFactory.setup(VERSION);
 	}
 	messenger.printMessage("LaserHWPFactory has been setup.");
+	if (!stageFactory.hasBeenSetup)
+	{
+		setup = stageFactory.setup(VERSION);
+	}
+	messenger.printMessage("StageFactory has been setup.");
 	return setup;
 }
 
@@ -146,6 +152,14 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		}
 		messenger.printMessage("lightingFactory has been setup.");
 	}
+	else if (hardwareType == "Stage")
+	{
+		if (!stageFactory.hasBeenSetup)
+		{
+			setup = stageFactory.setup(VERSION);
+		}
+		messenger.printMessage("StageFactory has been setup.");
+	}
 	return setup;
 }
 
@@ -189,7 +203,29 @@ RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
 	}
 }
 
-
+StageFactory& HardwareFactory::getStageFactory()
+{
+	messenger.printMessage("getStageFactory Called");
+	if (!stageFactory.hasBeenSetup)
+	{
+		messenger.printMessage("getStageFactory calling setup");
+		bool setup = stageFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getStageFactory Complete");
+			return stageFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup StageFactory, Hopefully you'll never see this");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getStageFactory Complete");
+		return stageFactory;
+	}
+}
 
 RFModulatorFactory& HardwareFactory::getRFModulatorFactory()
 {
