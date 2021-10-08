@@ -9,7 +9,9 @@
 
 namespace StageRecords
 {
-
+	extern std::string const MABSS;
+	extern std::string const RPOSS;
+	extern std::vector<std::string> stageRecordList;
 }
 
 namespace StageState

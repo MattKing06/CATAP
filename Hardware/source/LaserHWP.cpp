@@ -20,15 +20,15 @@ Hardware(paramsMap, mode)
 
 	if (GlobalFunctions::entryExists<std::string>(paramsMap, "laser_pv_type"))
 	{
-		laserType = LaserHWPRecords::laserHWPTypeToEnum.at(paramsMap.find("laser_pv_type")->second);
+		laserType = LaserHWPRecords::laserHWPTypeToEnum.at(paramsMap.at("laser_pv_type"));
 	}
 	if (GlobalFunctions::entryExists<std::string>(paramsMap, "position"))
 	{
-		position = std::stod(paramsMap.find("position")->second);
+		position = std::stod(paramsMap.at("position"));
 	}
 	if (GlobalFunctions::entryExists<std::string>(paramsMap, "name"))
 	{
-		name = paramsMap.find("name")->second;
+		name = paramsMap.at("name");
 	}
 
 setPVStructs();
