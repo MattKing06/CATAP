@@ -781,6 +781,7 @@ void HardwareFactory::debugMessagesOn()
 	rfProtectionFactory.debugMessagesOn();
 	screenFactory.debugMessagesOn();
 	shutterFactory.debugMessagesOn();
+	stageFactory.debugMessagesOn();
 	valveFactory.debugMessagesOn();
 }
 
@@ -801,6 +802,7 @@ void HardwareFactory::debugMessagesOff()
 	rfProtectionFactory.debugMessagesOff();
 	screenFactory.debugMessagesOff();
 	shutterFactory.debugMessagesOff();
+	stageFactory.debugMessagesOff();
 	valveFactory.debugMessagesOff();
 }
 
@@ -821,6 +823,7 @@ void HardwareFactory::messagesOn()
 	rfProtectionFactory.messagesOn();
 	screenFactory.messagesOn();
 	shutterFactory.messagesOn();
+	stageFactory.messagesOn();
 	valveFactory.messagesOn();
 }
 
@@ -842,6 +845,7 @@ void HardwareFactory::messagesOff()
 	rfProtectionFactory.messagesOff();
 	screenFactory.messagesOff();
 	shutterFactory.messagesOff();
+	stageFactory.messagesOff();
 	valveFactory.messagesOff();
 }
 

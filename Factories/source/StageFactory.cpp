@@ -209,6 +209,41 @@ std::string StageFactory::getFullName(const std::string& alias)
 	}
 }
 
+bool StageFactory::isMoving(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).isMoving();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).isMoving();
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", name, " in stages. Please use a valid stage name.");
+	}
+}
+
+bool StageFactory::isAtDevice(const std::string& name, const std::string& device)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).isAtDevice(device);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).isAtDevice(device);
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", name, " in stages. Please use a valid stage name.");
+	}
+}
+
+
 bool StageFactory::setup(std::string version)
 {
 	if (hasBeenSetup)
@@ -259,7 +294,7 @@ void StageFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("Stage Factory - DEBUG On");
-	// reader.debugMessagesOn();
+	reader.debugMessagesOn();
 	for (auto& stage : stageMap)
 	{
 		stage.second.debugMessagesOn();
@@ -269,7 +304,7 @@ void StageFactory::debugMessagesOff()
 {
 	messenger.printDebugMessage("Stage Factory - DEBUG OFF");
 	messenger.debugMessagesOff();
-	// reader.debugMessagesOff();
+	reader.debugMessagesOff();
 	for (auto& stage : stageMap)
 	{
 		stage.second.debugMessagesOff();
@@ -279,7 +314,7 @@ void StageFactory::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage("Stage Factory - MESSAGES ON");
-	// reader.messagesOn();
+	reader.messagesOn();
 	for (auto& stage : stageMap)
 	{
 		stage.second.messagesOn();
@@ -289,7 +324,7 @@ void StageFactory::messagesOff()
 {
 	messenger.printMessage("Stage Factory - MESSAGES OFF");
 	messenger.messagesOff();
-	// reader.messagesOff();
+	reader.messagesOff();
 	for (auto& stage : stageMap)
 	{
 		stage.second.messagesOff();
