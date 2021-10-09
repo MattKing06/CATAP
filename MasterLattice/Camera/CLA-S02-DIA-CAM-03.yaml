@@ -170,8 +170,6 @@ properties:
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; should use mask max values
-    ARRAY_DATA_NUM_PIX_X : 1080 #; array data passed through EPICS
-    ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 2160 #; the binary image is bigger than the array data passed through EPICS
     BINARY_NUM_PIX_Y : 2560 #; the binary image is bigger than the array data passed through EPICS
     Y_PIX_SCALE_FACTOR : 2 #; 
@@ -179,9 +177,9 @@ properties:
     AVG_PIXEL_VALUE_FOR_BEAM : 97.2 #;  emprically determined value for when laser is present
     X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
     Y_CENTER_DEF      : 0 #;
-    PIX_2_MM_RATIO_DEF : 0.006 #; !!! from wiki 
-    ARRAY_DATA_X_PIX_2_MM : 0.006 #; 
-    ARRAY_DATA_Y_PIX_2_MM :  0.006 #;
+    PIX_2_MM_RATIO_DEF : 0.0181		 #; !!! from wiki 
+    ARRAY_DATA_X_PIX_2_MM : 0.0181	 #; 
+    ARRAY_DATA_Y_PIX_2_MM :  0.0181	 #;
     SENSOR_MAX_TEMP : 27.0 #;
     SENSOR_MIN_TEMP : 5.0 #;
     MIN_X_PIXEL_POS : 150.0 #; these are used to decide if the beam is close to the edge    float  as analysis results in pixels returns float  
@@ -194,3 +192,15 @@ properties:
     OPERATING_CENTER_Y : 1000
     MECHANICAL_CENTER_X : 1000
     MECHANICAL_CENTER_Y : 1000
+    
+    
+    
+    MAX_BIT_DEPTH : 16
+    # meh, is this a good way to def orientation? 
+    # ALSWAYS assume image is chuncked in the X direction Y times
+    ARRAY_DATA_NUM_PIX_X : 1080 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_Y : 1280 #; array data passed through EPICS
+    # THEN we rotate the image and mirror it 
+    IMAGE_ROTATION : 0 # could be 0, 90, 180, 270
+    IMAGE_FLIP_UD : true
+    IMAGE_FLIP_LR : false  
