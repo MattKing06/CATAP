@@ -23,7 +23,7 @@ properties:
   out_pos: 2.0
   #devices_and_positions:
   devices: CLEAR_FOR_BEAM,V_SLIT,H_SLIT,EO_CRYSTAL,EO_YAG
-  positions: 4.0,4.0,4.0,7.5,0.0
+  positions: 2.0,4.0,4.0,7.5,0.0
   # CLEAR_FOR_BEAM: 4.0
   # V_SLIT: 4.0
   # H_SLIT: 4.0

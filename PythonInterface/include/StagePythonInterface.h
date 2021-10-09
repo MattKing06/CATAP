@@ -19,6 +19,16 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 			.def("clearForBeam", &Stage::clearForBeam, boost::python::args("self"), "Moves the stage to the \"CLEAR FOR BEAM\" position (found in the config files)")
 			.def("isReadPosEqualToSetPos", &Stage::isReadPositionEqualToSetPosition, boost::python::args("self"), "Checks that the set position is equal to the read position.")
 			.def("getDevices", &Stage::getDevices_Py)
+			.def("getCurrentPosition", &Stage::getCurrentPositionValue)
+			.def("getPositionSetpoint", &Stage::getPositionSetpointValue)
+			.def("getDevicePosition", &Stage::getDevicePosition)
+			.def("setNewPosition", &Stage::setNewPosition)
+			.def("isMoving", &Stage::isMoving)
+			.def("isAtDevice", &Stage::isAtDevice)
+			.def("getStageNumber", &Stage::getStageNumber)
+			.def("getPrecision", &Stage::getPrecision)
+			.def("getMinimumPosition", &Stage::getMinPosition)
+			.def("getMaximumPosition", &Stage::getMaxPosition)
 			.def("debugMessagesOn", &Stage::debugMessagesOn)
 			.def("debugMessagesOff", &Stage::debugMessagesOff)
 			.def("messagesOn", &Stage::messagesOn)
@@ -28,6 +38,14 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 	}
 	void expose_stage_factory_object()
 	{
+
+		boost::python::dict(StageFactory:: * getCurrentPositions_multiple)(boost::python::list) = &StageFactory::getCurrentPositions_Py;
+		boost::python::dict(StageFactory:: * getPositionSetpoints_multiple)(boost::python::list) = &StageFactory::getPositionSetpoints_Py;
+		boost::python::dict(StageFactory:: * getCurrentPositions_all)() = &StageFactory::getCurrentPositions_Py;
+		boost::python::dict(StageFactory:: * getPositionSetpoints_all)() = &StageFactory::getPositionSetpoints_Py;
+		boost::python::dict(StageFactory:: * getDevicePosition_multiple)(const std::string& name, boost::python::list) = &StageFactory::getDevicePositions_Py;
+		boost::python::dict(StageFactory:: * getDevicePosition_all)(const std::string& name) = &StageFactory::getDevicePositions_Py;
+		
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<StageFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<StageFactory, boost::noncopyable>("StageFactory", boost::python::no_init)
@@ -41,6 +59,23 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 			.def("getAllStageNames", &StageFactory::getAllStageNames_Py)
 			.def("getDevices", &StageFactory::getDevices_Py)
 			.def("getAllDevices", &StageFactory::getAllDevices_Py)
+			.def("getStageNumber", &StageFactory::getStageNumber)
+			.def("getPrecision", &StageFactory::getPrecision)
+			.def("isMoving" , &StageFactory::isMoving)
+			.def("getAlias", &StageFactory::getAlias)
+			.def("isAtDevice", &StageFactory::isAtDevice)
+			.def("setNewPosition", &StageFactory::setNewPosition)
+			.def("getCurrentPosition", &StageFactory::getCurrentPosition)
+			.def("getPositionSetpoint", &StageFactory::getPositionSetpoint)
+			.def("getCurrentPosition", getCurrentPositions_multiple)
+			.def("getPositionSetpoint", getPositionSetpoints_multiple)
+			.def("getCurrentPosition", getCurrentPositions_all)
+			.def("getPositionSetpoint", getPositionSetpoints_all)
+			.def("getDevicePosition", &StageFactory::getDevicePosition)
+			.def("getDevicePosition", getDevicePosition_multiple)
+			.def("getDevicePosition", getDevicePosition_all)
+			.def("getMinPosition", &StageFactory::getMinPosition)
+			.def("getMaxPosition", &StageFactory::getMaxPosition)
 			.def("debugMessagesOn", &StageFactory::debugMessagesOn)
 			.def("debugMessagesOff", &StageFactory::debugMessagesOff)
 			.def("messagesOn", &StageFactory::messagesOn)

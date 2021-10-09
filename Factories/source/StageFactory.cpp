@@ -115,6 +115,124 @@ boost::python::dict StageFactory::getAllDevices_Py()
 	return to_py_dict(getAllDevices());
 }
 
+double StageFactory::getDevicePosition(const std::string& name, const std::string& device)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getDevicePosition(device);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getDevicePosition(device);
+	}
+}
+
+std::map<std::string, std::pair<std::string, double>> StageFactory::getDevicePositions(const std::string& name, const std::vector<std::string>& devices)
+{
+	std::map<std::string, std::pair<std::string, double>> stageAndDevicePositions;
+	for (auto&& device : devices)
+	{
+		stageAndDevicePositions[name] = std::pair<std::string, double>(device, getDevicePosition(name, device));
+	}
+	return stageAndDevicePositions;
+}
+
+boost::python::dict StageFactory::getDevicePositions_Py(const std::string& name, boost::python::list devices)
+{
+	std::vector<std::string> devicesVec = to_std_vector<std::string>(devices);
+	return to_py_dict(getDevicePositions(name, devicesVec));
+}
+
+std::map<std::string, std::pair<std::string, double>> StageFactory::getDevicePositions(const std::string& name)
+{
+	std::vector<std::string> devices = getDevices(name);
+	return getDevicePositions(name, devices);
+}
+
+boost::python::dict StageFactory::getDevicePositions_Py(const std::string& name)
+{
+	return to_py_dict(getDevicePositions(name));
+}
+
+int StageFactory::getStageNumber(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getStageNumber();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getStageNumber();
+	}
+}
+
+double StageFactory::getPrecision(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getPrecision();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getPrecision();
+	}
+}
+
+double StageFactory::getMinPosition(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getMinPosition();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getMinPosition();
+	}
+}
+
+double StageFactory::getMaxPosition(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getMaxPosition();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getMaxPosition();
+	}
+}
+
+void StageFactory::setNewPosition(const std::string& name, const double& position)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).setNewPosition(position);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).setNewPosition(position);
+	}
+}
+
+std::string StageFactory::getAlias(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getAliases().at(0);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getAliases().at(0);
+	}
+}
+
 
 boost::python::dict StageFactory::clearAllForBeam_Py()
 {
@@ -180,6 +298,150 @@ bool StageFactory::isReadPositionEqualToSetPosition(const std::string& name)
 	}
 }
 
+double StageFactory::getCurrentPosition(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getCurrentPosition().second;
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getCurrentPosition().second;
+	}
+}
+
+double StageFactory::getPositionSetpoint(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getPositionSetpoint().second;
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getPositionSetpoint().second;
+	}
+}
+
+std::pair<epicsTimeStamp, double> StageFactory::getCurrentPositionTimestamped(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getCurrentPosition();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getCurrentPosition();
+	}
+}
+
+std::pair<epicsTimeStamp, double> StageFactory::getPositionSetpointTimestamped(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getPositionSetpoint();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getPositionSetpoint();
+	}
+}
+
+std::map<std::string, double> StageFactory::getCurrentPositions(const std::vector<std::string>& names)
+{
+	std::map<std::string, double> stagesAndPositions;
+	for (auto&& name : names)
+	{
+		stagesAndPositions[name] = getCurrentPosition(name);
+	}
+	return stagesAndPositions;
+}
+
+std::map<std::string, double> StageFactory::getPositionSetpoints(const std::vector<std::string>& names)
+{
+	std::map<std::string, double> stagesAndSetpoints;
+	for (auto&& name : names)
+	{
+		stagesAndSetpoints[name] = getPositionSetpoint(name);
+	}
+	return stagesAndSetpoints;
+}
+
+boost::python::dict StageFactory::getCurrentPositions_Py(boost::python::list names)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(names);
+	return to_py_dict(getCurrentPositions(namesVec));
+}
+
+boost::python::dict StageFactory::getPositionSetpoints_Py(boost::python::list names)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(names);
+	return to_py_dict(getPositionSetpoints(namesVec));
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurrentPositionsTimestamped(const std::vector<std::string>& names)
+{
+	std::map<std::string, std::pair<epicsTimeStamp, double>> stagesAndPositions;
+	for (auto&& name : names)
+	{
+		stagesAndPositions[name] = getCurrentPositionTimestamped(name);
+	}
+	return stagesAndPositions;
+}
+
+boost::python::dict StageFactory::getCurrentPositionsTimestamped_Py(const std::vector<std::string>& names)
+{
+	return to_py_dict(getCurrentPositionsTimestamped(names));
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getPositionSetpointsTimestamped(const std::vector<std::string>& names)
+{
+	std::map<std::string, std::pair<epicsTimeStamp, double>> stagesAndSetpoints;
+	for (auto&& name : names)
+	{
+		stagesAndSetpoints[name] = getPositionSetpointTimestamped(name);
+	}
+	return stagesAndSetpoints;
+}
+
+boost::python::dict StageFactory::getPositionSetpointsTimestamped_Py(const std::vector<std::string>& names)
+{
+	return to_py_dict(getPositionSetpointsTimestamped(names));
+}
+
+std::map<std::string, double> StageFactory::getCurrentPositions()
+{
+	return getCurrentPositions(getAllStageNames());
+}
+
+boost::python::dict StageFactory::getCurrentPositions_Py()
+{
+	return to_py_dict(getCurrentPositions());
+}
+
+std::map<std::string, double> StageFactory::getPositionSetpoints()
+{
+	return getPositionSetpoints(getAllStageNames());
+}
+
+boost::python::dict StageFactory::getPositionSetpoints_Py()
+{
+	return to_py_dict(getPositionSetpoints());
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurrentPositionsTimestamped()
+{
+	return getCurrentPositionsTimestamped(getAllStageNames());
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getPositionSetpointsTimestamped()
+{
+	return getPositionSetpointsTimestamped(getAllStageNames());
+}
+
 Stage& StageFactory::getStage(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
@@ -208,6 +470,41 @@ std::string StageFactory::getFullName(const std::string& alias)
 		messenger.printMessage("Alias: ", alias, " could not be found in configs.");
 	}
 }
+
+bool StageFactory::isMoving(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).isMoving();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).isMoving();
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", name, " in stages. Please use a valid stage name.");
+	}
+}
+
+bool StageFactory::isAtDevice(const std::string& name, const std::string& device)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).isAtDevice(device);
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).isAtDevice(device);
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", name, " in stages. Please use a valid stage name.");
+	}
+}
+
 
 bool StageFactory::setup(std::string version)
 {
@@ -259,7 +556,7 @@ void StageFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("Stage Factory - DEBUG On");
-	// reader.debugMessagesOn();
+	reader.debugMessagesOn();
 	for (auto& stage : stageMap)
 	{
 		stage.second.debugMessagesOn();
@@ -269,7 +566,7 @@ void StageFactory::debugMessagesOff()
 {
 	messenger.printDebugMessage("Stage Factory - DEBUG OFF");
 	messenger.debugMessagesOff();
-	// reader.debugMessagesOff();
+	reader.debugMessagesOff();
 	for (auto& stage : stageMap)
 	{
 		stage.second.debugMessagesOff();
@@ -279,7 +576,7 @@ void StageFactory::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage("Stage Factory - MESSAGES ON");
-	// reader.messagesOn();
+	reader.messagesOn();
 	for (auto& stage : stageMap)
 	{
 		stage.second.messagesOn();
@@ -289,7 +586,7 @@ void StageFactory::messagesOff()
 {
 	messenger.printMessage("Stage Factory - MESSAGES OFF");
 	messenger.messagesOff();
-	// reader.messagesOff();
+	reader.messagesOff();
 	for (auto& stage : stageMap)
 	{
 		stage.second.messagesOff();

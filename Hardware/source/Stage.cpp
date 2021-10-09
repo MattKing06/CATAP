@@ -8,7 +8,9 @@ Stage::Stage(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
 currentPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
 positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
-aliases(std::vector<std::string>())
+aliases(std::vector<std::string>()),
+moving(false),
+atDevice(false)
 {
 	messenger = LoggingSystem(true, true);
 	if (GlobalFunctions::entryExists(paramMap, "min_pos"))
@@ -100,6 +102,11 @@ std::pair<epicsTimeStamp, double> Stage::getCurrentPosition()
 	return currentPosition;
 }
 
+double Stage::getCurrentPositionValue()
+{
+	return currentPosition.second;
+}
+
 void Stage::setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint)
 {
 	positionSetpoint = newSetpoint;
@@ -108,6 +115,11 @@ void Stage::setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint)
 std::pair<epicsTimeStamp, double> Stage::getPositionSetpoint()
 {
 	return positionSetpoint;
+}
+
+double Stage::getPositionSetpointValue()
+{
+	return positionSetpoint.second;
 }
 
 bool Stage::canStageMove(double newPosition)
@@ -168,6 +180,29 @@ bool Stage::moveToDevice(const std::string& device)
 	return false;
 }
 
+bool Stage::isMoving()
+{
+	return moving;
+}
+
+bool Stage::isAtDevice(const std::string& device)
+{
+	if (GlobalFunctions::entryExists(deviceAndPositionMap, device))
+	{
+		double devicePosition = deviceAndPositionMap.at(device);
+		if (isMoving())
+		{
+			atDevice = false;
+		}
+		else if (GlobalFunctions::areSame(currentPosition.second, devicePosition, double(precision)) )
+		{
+			atDevice = true;
+		}
+		return atDevice;
+	}
+
+}
+
 std::vector<std::string> Stage::getDevices()
 {
 	std::vector<std::string> deviceNames;
@@ -188,7 +223,7 @@ bool Stage::isReadPositionEqualToSetPosition()
 	return abs(currentPosition.second - positionSetpoint.second) <= precision;
 }
 
-float Stage::getDevicePosition(const std::string& device)
+double Stage::getDevicePosition(const std::string& device)
 {
 	if (GlobalFunctions::entryExists(deviceAndPositionMap, device))
 	{

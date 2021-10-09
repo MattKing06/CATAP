@@ -32,14 +32,18 @@ public:
 	void messagesOn();
 	void messagesOff();
 	std::pair<epicsTimeStamp, double> getCurrentPosition();
+	double getCurrentPositionValue();
 	void setCurrentPosition(std::pair<epicsTimeStamp, double> newPosition);
 	std::pair<epicsTimeStamp, double> getPositionSetpoint();
+	double getPositionSetpointValue();
 	void setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint);
 	void moveOverRange(double startPosition, double endPosition, int numberOfSteps);
 	void setNewPositions(std::vector<double> positions);
 	void setNewPosition(double newPosition);
 	bool canStageMove(double newPosition);
 	bool moveToDevice(const std::string& device);
+	bool isMoving();
+	bool isAtDevice(const std::string& device);
 	std::vector<std::string> getDevices();
 	boost::python::list getDevices_Py();
 	bool isReadPositionEqualToSetPosition();
@@ -54,12 +58,17 @@ public:
 	std::vector<std::string> getAliases();
 	std::string getFullNameFromAlias(const std::string& alias);
 	std::map<std::string, double> getDevicesAndPositions();
-	float getDevicePosition(const std::string& device);
+	double getDevicePosition(const std::string& device);
 	bool clearForBeam();
+
+	friend class EPICSStageInterface;
+
 private:
 	std::pair<epicsTimeStamp, double> currentPosition;
 	std::pair<epicsTimeStamp, double> positionSetpoint;
 	std::vector<std::string> aliases;
+	bool moving;
+	bool atDevice;
 	double minPosition;
 	double maxPosition;
 	double inPosition;
