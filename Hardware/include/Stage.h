@@ -40,6 +40,8 @@ public:
 	void setNewPosition(double newPosition);
 	bool canStageMove(double newPosition);
 	bool moveToDevice(const std::string& device);
+	bool isMoving();
+	bool isAtDevice(const std::string& device);
 	std::vector<std::string> getDevices();
 	boost::python::list getDevices_Py();
 	bool isReadPositionEqualToSetPosition();
@@ -56,10 +58,15 @@ public:
 	std::map<std::string, double> getDevicesAndPositions();
 	float getDevicePosition(const std::string& device);
 	bool clearForBeam();
+
+	friend class EPICSStageInterface;
+
 private:
 	std::pair<epicsTimeStamp, double> currentPosition;
 	std::pair<epicsTimeStamp, double> positionSetpoint;
 	std::vector<std::string> aliases;
+	bool moving;
+	bool atDevice;
 	double minPosition;
 	double maxPosition;
 	double inPosition;

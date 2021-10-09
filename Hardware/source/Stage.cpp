@@ -8,7 +8,9 @@ Stage::Stage(const std::map<std::string, std::string>& paramMap, STATE mode) :
 Hardware(paramMap, mode),
 currentPosition(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
 positionSetpoint(std::pair<epicsTimeStamp, double>(epicsTimeStamp(), GlobalConstants::double_min)),
-aliases(std::vector<std::string>())
+aliases(std::vector<std::string>()),
+moving(false),
+atDevice(false)
 {
 	messenger = LoggingSystem(true, true);
 	if (GlobalFunctions::entryExists(paramMap, "min_pos"))
@@ -166,6 +168,29 @@ bool Stage::moveToDevice(const std::string& device)
 		return true;
 	}
 	return false;
+}
+
+bool Stage::isMoving()
+{
+	return moving;
+}
+
+bool Stage::isAtDevice(const std::string& device)
+{
+	if (GlobalFunctions::entryExists(deviceAndPositionMap, device))
+	{
+		double devicePosition = deviceAndPositionMap.at(device);
+		if (isMoving())
+		{
+			atDevice = false;
+		}
+		else if (GlobalFunctions::areSame(currentPosition.second, devicePosition, double(precision)) )
+		{
+			atDevice = true;
+		}
+		return atDevice;
+	}
+
 }
 
 std::vector<std::string> Stage::getDevices()
