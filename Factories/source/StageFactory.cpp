@@ -180,6 +180,150 @@ bool StageFactory::isReadPositionEqualToSetPosition(const std::string& name)
 	}
 }
 
+double StageFactory::getCurrentPosition(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getCurrentPosition().second;
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getCurrentPosition().second;
+	}
+}
+
+double StageFactory::getPositionSetpoint(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getPositionSetpoint().second;
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getPositionSetpoint().second;
+	}
+}
+
+std::pair<epicsTimeStamp, double> StageFactory::getCurrentPositionTimestamped(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getCurrentPosition();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getCurrentPosition();
+	}
+}
+
+std::pair<epicsTimeStamp, double> StageFactory::getPositionSetpointTimestamped(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))
+	{
+		std::string fullName = aliasesAndFullNames.at(name);
+		return stageMap.at(fullName).getPositionSetpoint();
+	}
+	else if (GlobalFunctions::entryExists(stageMap, name))
+	{
+		return stageMap.at(name).getPositionSetpoint();
+	}
+}
+
+std::map<std::string, double> StageFactory::getCurrentPositions(const std::vector<std::string>& names)
+{
+	std::map<std::string, double> stagesAndPositions;
+	for (auto&& name : names)
+	{
+		stagesAndPositions[name] = getCurrentPosition(name);
+	}
+	return stagesAndPositions;
+}
+
+std::map<std::string, double> StageFactory::getPositionSetpoints(const std::vector<std::string>& names)
+{
+	std::map<std::string, double> stagesAndSetpoints;
+	for (auto&& name : names)
+	{
+		stagesAndSetpoints[name] = getPositionSetpoint(name);
+	}
+	return stagesAndSetpoints;
+}
+
+boost::python::dict StageFactory::getCurrentPositions_Py(boost::python::list names)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(names);
+	return to_py_dict(getCurrentPositions(namesVec));
+}
+
+boost::python::dict StageFactory::getPositionSetpoints_Py(boost::python::list names)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(names);
+	return to_py_dict(getPositionSetpoints(namesVec));
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurrentPositionsTimestamped(const std::vector<std::string>& names)
+{
+	std::map<std::string, std::pair<epicsTimeStamp, double>> stagesAndPositions;
+	for (auto&& name : names)
+	{
+		stagesAndPositions[name] = getCurrentPositionTimestamped(name);
+	}
+	return stagesAndPositions;
+}
+
+boost::python::dict StageFactory::getCurrentPositionsTimestamped_Py(const std::vector<std::string>& names)
+{
+	return to_py_dict(getCurrentPositionsTimestamped(names));
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getPositionSetpointsTimestamped(const std::vector<std::string>& names)
+{
+	std::map<std::string, std::pair<epicsTimeStamp, double>> stagesAndSetpoints;
+	for (auto&& name : names)
+	{
+		stagesAndSetpoints[name] = getPositionSetpointTimestamped(name);
+	}
+	return stagesAndSetpoints;
+}
+
+boost::python::dict StageFactory::getPositionSetpointsTimestamped_Py(const std::vector<std::string>& names)
+{
+	return to_py_dict(getPositionSetpointsTimestamped(names));
+}
+
+std::map<std::string, double> StageFactory::getCurrentPositions()
+{
+	return getCurrentPositions(getAllStageNames());
+}
+
+boost::python::dict StageFactory::getCurrentPositions_Py()
+{
+	return to_py_dict(getCurrentPositions());
+}
+
+std::map<std::string, double> StageFactory::getPositionSetpoints()
+{
+	return getPositionSetpoints(getAllStageNames());
+}
+
+boost::python::dict StageFactory::getPositionSetpoints_Py()
+{
+	return to_py_dict(getPositionSetpoints());
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurrentPositionsTimestamped()
+{
+	return getCurrentPositionsTimestamped(getAllStageNames());
+}
+
+std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getPositionSetpointsTimestamped()
+{
+	return getPositionSetpointsTimestamped(getAllStageNames());
+}
+
 Stage& StageFactory::getStage(const std::string& name)
 {
 	if (GlobalFunctions::entryExists(aliasesAndFullNames, name))

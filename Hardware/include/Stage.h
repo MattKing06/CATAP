@@ -32,8 +32,10 @@ public:
 	void messagesOn();
 	void messagesOff();
 	std::pair<epicsTimeStamp, double> getCurrentPosition();
+	double getCurrentPositionValue();
 	void setCurrentPosition(std::pair<epicsTimeStamp, double> newPosition);
 	std::pair<epicsTimeStamp, double> getPositionSetpoint();
+	double getPositionSetpointValue();
 	void setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint);
 	void moveOverRange(double startPosition, double endPosition, int numberOfSteps);
 	void setNewPositions(std::vector<double> positions);
@@ -56,7 +58,7 @@ public:
 	std::vector<std::string> getAliases();
 	std::string getFullNameFromAlias(const std::string& alias);
 	std::map<std::string, double> getDevicesAndPositions();
-	float getDevicePosition(const std::string& device);
+	double getDevicePosition(const std::string& device);
 	bool clearForBeam();
 
 	friend class EPICSStageInterface;

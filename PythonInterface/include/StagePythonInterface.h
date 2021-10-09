@@ -19,6 +19,8 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 			.def("clearForBeam", &Stage::clearForBeam, boost::python::args("self"), "Moves the stage to the \"CLEAR FOR BEAM\" position (found in the config files)")
 			.def("isReadPosEqualToSetPos", &Stage::isReadPositionEqualToSetPosition, boost::python::args("self"), "Checks that the set position is equal to the read position.")
 			.def("getDevices", &Stage::getDevices_Py)
+			.def("getCurrentPosition", &Stage::getCurrentPositionValue)
+			.def("getPositionSetpoint", &Stage::getPositionSetpointValue)
 			.def("isMoving", &Stage::isMoving)
 			.def("isAtDevice", &Stage::isAtDevice)
 			.def("debugMessagesOn", &Stage::debugMessagesOn)
@@ -30,6 +32,12 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 	}
 	void expose_stage_factory_object()
 	{
+
+		boost::python::dict(StageFactory:: * getCurrentPositions_multiple)(boost::python::list) = &StageFactory::getCurrentPositions_Py;
+		boost::python::dict(StageFactory:: * getPositionSetpoints_multiple)(boost::python::list) = &StageFactory::getPositionSetpoints_Py;
+		boost::python::dict(StageFactory:: * getCurrentPositions_all)() = &StageFactory::getCurrentPositions_Py;
+		boost::python::dict(StageFactory:: * getPositionSetpoints_all)() = &StageFactory::getPositionSetpoints_Py;
+		
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<StageFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<StageFactory, boost::noncopyable>("StageFactory", boost::python::no_init)
@@ -45,6 +53,12 @@ namespace BOOST_PYTHON_STAGE_INCLUDE
 			.def("getAllDevices", &StageFactory::getAllDevices_Py)
 			.def("isMoving" , &StageFactory::isMoving)
 			.def("isAtDevice", &StageFactory::isAtDevice)
+			.def("getCurrentPosition", &StageFactory::getCurrentPosition)
+			.def("getPositionSetpoint", &StageFactory::getPositionSetpoint)
+			.def("getCurrentPosition", getCurrentPositions_multiple)
+			.def("getPositionSetpoint", getPositionSetpoints_multiple)
+			.def("getCurrentPosition", getCurrentPositions_all)
+			.def("getPositionSetpoint", getPositionSetpoints_all)
 			.def("debugMessagesOn", &StageFactory::debugMessagesOn)
 			.def("debugMessagesOff", &StageFactory::debugMessagesOff)
 			.def("messagesOn", &StageFactory::messagesOn)

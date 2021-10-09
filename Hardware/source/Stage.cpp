@@ -102,6 +102,11 @@ std::pair<epicsTimeStamp, double> Stage::getCurrentPosition()
 	return currentPosition;
 }
 
+double Stage::getCurrentPositionValue()
+{
+	return currentPosition.second;
+}
+
 void Stage::setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint)
 {
 	positionSetpoint = newSetpoint;
@@ -110,6 +115,11 @@ void Stage::setPositionSetpoint(std::pair<epicsTimeStamp, double> newSetpoint)
 std::pair<epicsTimeStamp, double> Stage::getPositionSetpoint()
 {
 	return positionSetpoint;
+}
+
+double Stage::getPositionSetpointValue()
+{
+	return positionSetpoint.second;
 }
 
 bool Stage::canStageMove(double newPosition)
@@ -213,7 +223,7 @@ bool Stage::isReadPositionEqualToSetPosition()
 	return abs(currentPosition.second - positionSetpoint.second) <= precision;
 }
 
-float Stage::getDevicePosition(const std::string& device)
+double Stage::getDevicePosition(const std::string& device)
 {
 	if (GlobalFunctions::entryExists(deviceAndPositionMap, device))
 	{
