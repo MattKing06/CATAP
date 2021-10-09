@@ -54,6 +54,17 @@ public:
 	bool isMoving(const std::string& name);
 	bool isAtDevice(const std::string& name, const std::string& device);
 	boost::python::dict getAllDevices_Py();
+	double getDevicePosition(const std::string& name, const std::string& device);
+	std::map < std::string, std::pair<std::string, double> > getDevicePositions(const std::string& name, const std::vector<std::string>& devices);
+	boost::python::dict getDevicePositions_Py(const std::string& name, boost::python::list devices);
+	std::map < std::string, std::pair<std::string, double> > getDevicePositions(const std::string& name);
+	boost::python::dict getDevicePositions_Py(const std::string& name);
+	int getStageNumber(const std::string& name);
+	double getPrecision(const std::string& name);
+	double getMinPosition(const std::string& name);
+	double getMaxPosition(const std::string& name);
+	void setNewPosition(const std::string& name, const double& position);
+	std::string getAlias(const std::string& name);
 	bool hasBeenSetup;
 	std::map<std::string, std::string> aliasesAndFullNames;
 	std::map<std::string, Stage> stageMap;
