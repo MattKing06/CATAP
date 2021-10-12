@@ -191,6 +191,21 @@ std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getAllLaserEner
 	return laserEnergyMeterMap;
 }
 
+std::vector<std::string> LaserEnergyMeterFactory::getAllLaserEnergyMeterNames()
+{
+	std::vector<std::string> names;
+	for (auto&& item : laserEnergyMeterMap)
+	{
+		names.push_back(item.first);
+	}
+	return names;
+}
+
+boost::python::list LaserEnergyMeterFactory::getAllLaserEnergyMeterNames_Py()
+{
+	return to_py_list(getAllLaserEnergyMeterNames());
+}
+
 std::string LaserEnergyMeterFactory::getLaserEnergyMeterName(const std::string& name)
 {
 	if (!hasBeenSetup)
