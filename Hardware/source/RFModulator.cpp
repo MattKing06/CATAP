@@ -222,7 +222,7 @@ STATE  RFModulator::getMainState()const
 }
 bool RFModulator::isInRFOn() const
 {
-	if (getMainState() == STATE::ON)
+	if (getMainState() == STATE::RF_ON)
 	{
 		return true;
 	}
