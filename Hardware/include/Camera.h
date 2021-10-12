@@ -1023,6 +1023,9 @@ protected:
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
+private:
+	std::pair<long, long > gain_range;
+	std::pair<long, long > black_range;
 public:
 	/*! Set the black level (for vela camera types only),
 	@param[in] long, values
@@ -1037,6 +1040,19 @@ public:
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
+	/*! Get the gain range (defined in the main lattice file),
+	@param[out] pair<long, long> , max and minimum values*/
+	std::pair<long, long> getGainRange()const;
+	/*! Get the gain range (defined in the main lattice file), Python Version 
+	@param[out] list, max and minimum values*/
+	boost::python::list getGainRange_Py()const;
+	/*! Get the black level range (defined in the main lattice file),
+	@param[out] pair<long, long> , max and minimum values*/
+	std::pair<long, long> getBlackRange()const;
+	/*! Get the black level range (defined in the main lattice file), Python Version
+	@param[out] pair<long, long> , max and minimum values*/
+	boost::python::list getBlacklRange_Py()const;
+
 	//	 __             __   __        __  ___    
 	//	/__` |\ |  /\  |__) /__` |__| /  \  |     
 	//	.__/ | \| /~~\ |    .__/ |  | \__/  |     

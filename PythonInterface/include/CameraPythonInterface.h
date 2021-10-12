@@ -367,6 +367,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("getGain", &Camera::getGain)
 		.def("setBlackLevel", &Camera::setBlackLevel)
 		.def("getBlackLevel", &Camera::getBlackLevel)
+
+
+		.def("getGainRange", &Camera::getGainRange_Py)
+		.def("getBlacklRange", &Camera::getBlacklRange_Py)
 			
 				
 		.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)

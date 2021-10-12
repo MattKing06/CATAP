@@ -88,6 +88,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	gain_range(std::make_pair(GlobalConstants::long_min, GlobalConstants::long_min)),
+	black_range(std::make_pair(GlobalConstants::long_min, GlobalConstants::long_min)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	roi_min_x_str("roi_min_x"),
 	roi_min_y_str("roi_min_y"),
@@ -643,6 +645,51 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	}
 
 
+	if (GlobalFunctions::entryExists(paramMap, "MIN_GAIN_LEVEL"))
+	{
+		
+		gain_range.first = (long)std::stoi(paramMap.at("MIN_GAIN_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MIN_GAIN_LEVEL, value = ", gain_range.first);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MIN_GAIN_LEVEL");
+	}
+	if (GlobalFunctions::entryExists(paramMap, "MAX_GAIN_LEVEL"))
+	{
+
+		gain_range.second = (long)std::stoi(paramMap.at("MAX_GAIN_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MAX_GAIN_LEVEL, value = ", gain_range.second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_GAIN_LEVEL");
+	}
+
+	if (GlobalFunctions::entryExists(paramMap, "MIN_BLACK_LEVEL"))
+	{
+
+		black_range.first = (long)std::stoi(paramMap.at("MIN_BLACK_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MIN_BLACK_LEVEL, value = ", black_range.first);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MIN_GAIN_LEVEL");
+	}
+	if (GlobalFunctions::entryExists(paramMap, "MAX_BLACK_LEVEL"))
+	{
+
+		black_range.second = (long)std::stoi(paramMap.at("MAX_BLACK_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MAX_BLACK_LEVEL, value = ", black_range.second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_BLACK_LEVEL");
+	}
 
 }
 
@@ -1774,6 +1821,24 @@ bool Camera::setGain(long value)
 	return false;
 }
 long Camera::getGain()const{ return gain.second;}
+
+std::pair<long,long> Camera::getGainRange()const { return gain_range; }
+boost::python::list Camera::getGainRange_Py()const { 
+	boost::python::list r;
+	r.append(gain_range.first);
+	r.append(gain_range.second);
+	return r; }
+
+std::pair<long, long> Camera::getBlackRange()const { return black_range; }
+boost::python::list Camera::getBlacklRange_Py()const {
+	boost::python::list r;
+	r.append(black_range.first);
+	r.append(black_range.second);
+	return r;
+}
+
+
+
 //	 __        __      
 //	|__) |  | /__` \ / 
 //	|__) \__/ .__/  |  
