@@ -54,7 +54,7 @@ class TraceData
 		/*! circular buffer of trace_values, latest values are at the end of the buffer  */
 		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
 		/*! number of traces to keep in trace_values_buffer */
-		size_t  trace_data_buffer_size;
+		size_t trace_data_buffer_size;
 		/* Maximum value in latest acquired trace */
 		double trace_max;
 		/*! The start and stop index over which to calculate the trace mean */
@@ -62,7 +62,7 @@ class TraceData
 		/*! The start and stop time over which to calculate the trace mean */
 		std::pair<double, double> mean_start_stop_time;
 		/*! number of steps between start and stop index, used to calculate mean value */
-		size_t  stop_minus_start;    
+		size_t stop_minus_start;    
 		
 		/*! mean of values between  mean_start_index, mean_stop_index */
 		double trace_cut_mean;
@@ -661,17 +661,18 @@ protected:
 	/*! Map of TraceData objects keyed by the trace name (klystron forward power etc).
 	Each physical llrf box has more traces avialable than we typically monitor,
 	Detailed trace data is only kept for the main power and phase traces for this particular LLRF object.
+	TraceData objects know "everything" about the trace
 	More can be added if needed. 	*/
 	std::map<std::string, TraceData> trace_data_map;
-	/*! Map of the ACQM for each trace, keyed by their generic name (channel 1, channel 2 etc)
-	this data is stored for all possible traces in this LLRF box */
-	std::map<std::string, STATE> trace_ACQM_map;
-	/*! Map of the SCAN for each trace, keyed by their generic name (channel 1, channel 2 etc)
-	this data is stored for all possible traces in this LLRF box */
-	std::map<std::string, STATE> trace_SCAN_map;
-	/*! Map of the interlock states for each trace, keyed by their generic name (channel 1, channel 2 etc)
-	this data is stored for all possible traces in this LLRF box */
-	std::map<std::string, LLRFInterlock> all_trace_interlocks;
+	///*! Map of the ACQM for each trace, keyed by their generic name (channel 1, channel 2 etc)
+	//this data is stored for all possible traces in this LLRF box */
+	//std::map<std::string, STATE> trace_ACQM_map;
+	///*! Map of the SCAN for each trace, keyed by their generic name (channel 1, channel 2 etc)
+	//this data is stored for all possible traces in this LLRF box */
+	//std::map<std::string, STATE> trace_SCAN_map;
+	///*! Map of the interlock states for each trace, keyed by their generic name (channel 1, channel 2 etc)
+	//this data is stored for all possible traces in this LLRF box */
+	//std::map<std::string, LLRFInterlock> all_trace_interlocks;
 
 	
 	/*! pointer to dbr_time_stuct, used to get timestamped trace data (for all traces in the LLRF */
@@ -694,8 +695,9 @@ private:
 
 	TraceData dummy_trace_data;
 
-
+	/*! Contains datagiving the start index in the one-record trace for each trace name */
 	std::vector<std::pair<size_t, std::string>> sorted_one_record_trace_start_indices;
+	/*! Contains data giving the jump to the next starting position for for each trace name, here the order is important!!!  */
 	std::vector<std::pair<size_t, std::string>> sorted_one_record_trace_iterator_jumps;
 
 	/*! Set up the trace_data_map for this cavity, called after the cavity TYPE has been set 
@@ -784,8 +786,12 @@ private:
 
 	/*! The number of elements in a regular RF trace (klystron forward power, etc)  */
 	size_t trace_data_size;
+	/*! The number of elements in the concatenated RF trace data between seperate RF trace types */
+	size_t one_trace_data_chunk_size;
 	/*! The number of elements in the concatenated RF trace data  */
 	size_t one_record_trace_data_size;
+	/*! The number of elemnts = zero at the start of each one_record chunk (before the actual trace data) */
+	size_t trace_num_of_start_zeros;
 
 	/*! If kly_fwd_power_max is above this value can_increase_active_pulses is set to true  */
 	double active_pulse_kly_power_limit;

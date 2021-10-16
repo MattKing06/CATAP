@@ -199,9 +199,11 @@ properties:
     CH7 : CALIBRATION
     CH8 : HRRG_CAVITY_PROBE
     trace_data_size : 1017
-    one_trace_data_count  : 24576 # all traces data concatenated into 1 record 
+    one_trace_data_count : 24576 # all traces data concatenated into 1 record 
+    one_trace_data_chunk_size : 1024 # all traces data concatenated into 1 record 
+    trace_num_of_start_zeros  : 7 # all traces data concatenated into 1 record 
     
-    crest_phase : 87.9
+    crest_phase : 87.9 # probably pointelss, but maybe in teh future 
     kfpow_mean_start_time : 0.23
     kfpow_mean_end_time : 0.30
     krpow_mean_start_time : 0.23
@@ -213,7 +215,7 @@ properties:
     cppow_mean_start_time : 1.2
     cppow_mean_end_time : 1.4
 
-    # These numbers are which "part" of the one record concatented trace 
+    # These numbers are which "part" of the one record concatented trace (count from zero!! )
     ONE_RECORD_KLYSTRON_FORWARD_POWER : 1
     ONE_RECORD_KLYSTRON_FORWARD_PHASE : 2
     ONE_RECORD_KLYSTRON_REVERSE_POWER : 4

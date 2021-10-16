@@ -40,36 +40,16 @@ LLRFFactory::~LLRFFactory()
 }
 
 
-bool LLRFFactory::setup()
-{
-	return setup(GlobalConstants::nominal, machineAreas);
-}
-bool LLRFFactory::setup(const std::string& version)
-{
-	return setup(version, machineAreas);
-}
-bool LLRFFactory::setup(TYPE machineArea)
-{
-	return setup(GlobalConstants::nominal, machineAreas);
-}
-bool LLRFFactory::setup(const std::string& version, TYPE machineArea)
-{
-	return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});
-}
-bool LLRFFactory::setup(const std::vector<TYPE>& machineAreas)
-{
-	return setup(GlobalConstants::nominal, machineAreas);
-}
-bool LLRFFactory::setup(const boost::python::list& machineAreas)
-{
-	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));
-}
-bool LLRFFactory::setup(const std::string& version, const boost::python::list& machineAreas)
-{
-	return setup(version, to_std_vector<TYPE>(machineAreas));
-}
+bool LLRFFactory::setup(){	return setup(GlobalConstants::nominal, machineAreas);}
+bool LLRFFactory::setup(const std::string& version){	return setup(version, machineAreas);}
+bool LLRFFactory::setup(TYPE machineArea){	return setup(GlobalConstants::nominal, machineAreas);}
+bool LLRFFactory::setup(const std::string& version, TYPE machineArea){	return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});}
+bool LLRFFactory::setup(const std::vector<TYPE>& machineAreas){	return setup(GlobalConstants::nominal, machineAreas);}
+bool LLRFFactory::setup(const boost::python::list& machineAreas){	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));}
+bool LLRFFactory::setup(const std::string& version, const boost::python::list& machineAreas){	return setup(version, to_std_vector<TYPE>(machineAreas));}
 bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
+	messenger.printDebugMessage("called LLRF Factory  setup ");
 	machineAreas = machineAreas_IN;
 	// we CANNOT HAVE HRRG AND LRRG, default to LRRG
 	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG))
@@ -77,12 +57,11 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
 		{
 			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG), machineAreas.end());
-
 			messenger.printDebugMessage("!!ERROR!! LLRFFactory::setup requested HRRG and LRRG which are "
 										"mutally exclusive, removing HRRG");
 		}
 	}
-	messenger.printDebugMessage("called LLRF Factory  setup ");
+
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup LLRF Factory : it has been setup");

@@ -134,7 +134,7 @@ extern std::string const ONE_TRACE_SCAN;
 extern std::string const ONE_TRACE_ACQM;
 
 
-extern const std::string ONE_RECORD_KLYSTRON_FORWARD_POWER;
+extern const std::string ONE_RECORD_TRACE_PREFIX;
 extern const std::string ONE_RECORD_KLYSTRON_FORWARD_PHASE;
 extern const std::string ONE_RECORD_KLYSTRON_REVERSE_POWER;
 extern const std::string ONE_RECORD_KLYSTRON_REVERSE_PHASE;
@@ -156,6 +156,8 @@ extern const std::string ONE_RECORD_L01_CAVITY_PROBE_POWER;
 extern const std::string ONE_RECORD_L01_CAVITY_PROBE_PHASE;
 extern const std::string ONE_RECORD_CALIBRATION_POWER;
 extern const std::string ONE_RECORD_CALIBRATION_PHASE;
+extern const std::vector<std::string>all_one_record_trace_names;
+
 
 
 extern std::string const CH1_PWR_REM_SCAN		; 
