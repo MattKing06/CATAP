@@ -16,7 +16,7 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<RFModulator, boost::python::bases<Hardware>, boost::noncopyable>("RFModulator", boost::python::no_init)
 
-			.def("getLowLevelNumercialData", &RFModulator::getLowLevelNumercialData_Py)
+			.def("getLowLevelNumericalData", &RFModulator::getLowLevelNumericalData_Py)
 			.def("getLowLevelStringData", &RFModulator::getLowLevelStringData_Py)
 			.def("getLowLevelData", &RFModulator::getLowLevelData)
 
@@ -50,11 +50,15 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 	}
 	void expose_rf_modulator_factory_object() 
 	{
+		bool(RFModulatorFactory:: *setup_all)(const std::string&) = &RFModulatorFactory::setup;
+		bool(RFModulatorFactory:: * setup_by_area)(const std::string&, const std::vector<TYPE>& machine_areas) = &RFModulatorFactory::setup;
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFModulatorFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<RFModulatorFactory, boost::noncopyable>("RFModulatorFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
 			.def(boost::python::init<STATE, const std::string>())
+			.def("setup", setup_all)
+			.def("setup", setup_by_area)
 			.def("getModulator", &RFModulatorFactory::getModulator, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getFullName", &RFModulatorFactory::getFullName)
 			.def("getAllRFModulatorNames", &RFModulatorFactory::getAllRFModulatorNames_Py)
@@ -72,7 +76,7 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 
 			.def("isWarm", &RFModulatorFactory::isWarm)
 			.def("isNotWarm", &RFModulatorFactory::isNotWarm)
-			.def("getLowLevelNumercialData", &RFModulatorFactory::getLowLevelNumercialData_Py)
+			.def("getLowLevelNumericalData", &RFModulatorFactory::getLowLevelNumericalData_Py)
 			.def("getLowLevelStringData", &RFModulatorFactory::getLowLevelStringData_Py)
 			.def("getLowLevelData", &RFModulatorFactory::getLowLevelData)
 

@@ -22,5 +22,11 @@ BOOST_AUTO_TEST_CASE(setting_up_llrf_factory_print_names)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(check_gun_modulator_hex_code_update_test)
+{
+	RFModulatorFactory fac = RFModulatorFactory(STATE::PHYSICAL);
+	fac.setup("nominal");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

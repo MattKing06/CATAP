@@ -168,18 +168,18 @@ bool RFModulatorFactory::isNotWarm(const std::string& name)const
 	}
 	return false;
 }
-std::map<std::string, double> RFModulatorFactory::getLowLevelNumercialData(const std::string& name)const
+std::map<std::string, double> RFModulatorFactory::getLowLevelNumericalData(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
 	{
-		return RFModulatorMap.at(full_name).getLowLevelNumercialData();
+		return RFModulatorMap.at(full_name).getLowLevelNumericalData();
 	}
 	return std::map<std::string, double>();
 }
-boost::python::dict RFModulatorFactory::getLowLevelNumercialData_Py(const std::string& name)const
+boost::python::dict RFModulatorFactory::getLowLevelNumericalData_Py(const std::string& name)const
 {
-	return to_py_dict< std::string, double >(getLowLevelNumercialData(name));
+	return to_py_dict< std::string, double >(getLowLevelNumericalData(name));
 }
 std::map<std::string, std::string> RFModulatorFactory::getLowLevelStringData(const std::string& name)const
 {
@@ -193,7 +193,7 @@ std::map<std::string, std::string> RFModulatorFactory::getLowLevelStringData(con
 }
 boost::python::dict RFModulatorFactory::getLowLevelStringData_Py(const std::string& name)const
 {
-	return to_py_dict< std::string, double >(getLowLevelNumercialData(name));
+	return to_py_dict< std::string, double >(getLowLevelNumericalData(name));
 }
 boost::python::dict RFModulatorFactory::getLowLevelData(const std::string& name)const
 {
@@ -336,11 +336,11 @@ void RFModulatorFactory::eraseFromRFModulatorMap(const std::vector<TYPE>& to_era
 	size_t end_size = RFModulatorMap.size();
 	messenger.printDebugMessage("eraseFromRFModulatorMap RFModulatorMap.size() went from ", start_size, " to ", end_size);
 }
-bool RFModulatorFactory::setup(std::string version)
+bool RFModulatorFactory::setup(const std::string& version)
 {
 	return setup(version, std::vector<TYPE>(TYPE::ALL_VELA_CLARA));
 }
-bool RFModulatorFactory::setup(std::string version, const std::vector<TYPE>& machine_areas_in)
+bool RFModulatorFactory::setup(const std::string& version, const std::vector<TYPE>& machine_areas_in)
 {
 	if (hasBeenSetup)
 	{

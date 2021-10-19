@@ -547,8 +547,9 @@ std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair
 	std::pair < epicsTimeStamp, std::string > r;
 	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
 	r.first = tv->stamp;
-	r.second = std::string((const char*)tv->value, 40); // MAGIC NUMBER ! 
+	r.second = std::string((const char*)tv->value, MAX_STRING_SIZE); // MAGIC NUMBER !
 	GlobalFunctions::rtrim(r.second);
+	r.second.erase(r.second.find('\0'));
 	return r;
 }
 std::pair < epicsTimeStamp, long > EPICSInterface::getTimeStampLongPair(const struct event_handler_args& args)
