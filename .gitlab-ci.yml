@@ -9,6 +9,7 @@ stages:
 
 
 cmake_linux: 
+  image: mattkingastec/catapenv:1.0
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
@@ -38,6 +39,7 @@ cmake_windows:
     - windows
 
 linux_make: 
+  image: mattkingastec/catapenv:1.0
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
@@ -63,6 +65,7 @@ ms_build:
     - windows
 
 linux_tests: 
+  image: mattkingastec/catapenv:1.0
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
@@ -100,7 +103,8 @@ windows_tests:
   tags:
     - windows
 
-doxygen: 
+doxygen:
+  image: mattkingastec/catapenv:1.0 
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
@@ -116,6 +120,7 @@ doxygen:
     - linux
 
 sphinx: 
+  image: mattkingastec/catapenv:1.0
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
@@ -130,6 +135,7 @@ sphinx:
     - linux
 
 wheel: 
+  image: mattkingastec/catapenv:1.0
   cache: 
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
