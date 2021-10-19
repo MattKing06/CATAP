@@ -32,7 +32,7 @@ cmake_windows:
   script: 
     - "mkdir build"
     - "cd build"
-    - "cmake ../. ."
+    - "cmake.exe -G "Visual Studio 16 2019" -DCMAKE_INSTALL_PREFIX="C:\Users\ujo48515\Documents" -DCATAP_PY_VERSION=3.8 -DSPHINX_EXECUTABLE="C:\\Python38\\Scripts\\sphinx-build.exe" -DDEPLOY_CATAP=true -DDEPLOY_MASTER_LATTICE_LOCATION=\\\\claraserv3.dl.ac.uk\\claranet\\packages\\CATAP\\Nightly\\%DATED_FOLDER_NAME%\\MasterLattice ..\ .\"
     - dir
   stage: cmake
   tags: 
@@ -52,6 +52,7 @@ linux_make:
   stage: make
   tags: 
     - linux
+
 ms_build: 
   cache: 
     key: ${CI_COMMIT_SHORT_SHA}
@@ -59,7 +60,7 @@ ms_build:
       - build/*
   script: 
     - cd build
-    - "MSBuild.exe ALL_BUILD.vcxproj /property:Configuration=Release"
+    - "MSBuild.exe ALL_BUILD.vcxproj /m /property:Configuration=Release -t:rebuild"
   stage: make
   tags: 
     - windows
