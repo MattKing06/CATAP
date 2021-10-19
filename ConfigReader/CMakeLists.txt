@@ -14,7 +14,7 @@ set( TEST_FILES
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
-find_package(Boost 1.63 REQUIRED COMPONENTS filesystem system)
+
 add_library(ConfigReader STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(ConfigReader PROPERTIES COMPILE_FLAGS "-fPIC")

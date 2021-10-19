@@ -10,6 +10,7 @@ class RFModulatorFactory
 public:
 	RFModulatorFactory();
 	RFModulatorFactory(STATE mode);
+	RFModulatorFactory(STATE mode, const std::string& primeLatticeLocation);
 	RFModulatorFactory(const RFModulatorFactory& copyFactory);
 	~RFModulatorFactory();
 	/*! messaneger to print messages to std.out THIS SHOULD BE PUBLIC */

@@ -28,7 +28,7 @@ public:
 	VIRTUAL IMGFactory will perform operations of Virtual IMGs.
 	OFFLINE IMGFactory will perform operations on Offline IMGs.*/
 	IMGFactory(STATE mode);
-	
+	IMGFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for IMGFactory (used for = operator)
 	@param[in] copyIMGFactory the IMGFactory we want to copy over.*/
 	IMGFactory(const IMGFactory& copyFactory);

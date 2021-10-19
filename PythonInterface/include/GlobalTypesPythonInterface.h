@@ -20,7 +20,8 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("IMG_TYPE", TYPE::IMG_TYPE)
 			.value("LLRF_TYPE", TYPE::LLRF_TYPE)
 			.value("SCREEN", TYPE::SCREEN)
-			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE)
+			.value("CAMERA_TYPE", TYPE::CAMERA_TYPE) // TODO is this used??? Shuold it just be Camera ???  
+			.value("LIGHTING", TYPE::LIGHTING)
 			// screen stuff 
 			.value("VELA_PNEUMATIC", TYPE::VELA_PNEUMATIC)
 			.value("VELA_HV_MOVER", TYPE::VELA_HV_MOVER)
@@ -36,7 +37,7 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			// magnet stuff
 			.value("QUADRUPOLE", TYPE::QUADRUPOLE)
 			.value("DIPOLE", TYPE::DIPOLE)
-			//.value("HVCOR", TYPE::HVCOR)
+			.value("CORRECTOR", TYPE::CORRECTOR)
 			.value("VERTICAL_CORRECTOR", TYPE::VERTICAL_CORRECTOR)
 			.value("HORIZONTAL_CORRECTOR", TYPE::HORIZONTAL_CORRECTOR)
 			.value("SOLENOID", TYPE::SOLENOID)
@@ -47,8 +48,13 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("POSITIVE_ONLY", TYPE::POSITIVE_ONLY)
 			.value("UNKNOWN_AREA", TYPE::UNKNOWN_AREA)
 			.value("ALL_VELA_CLARA", TYPE::ALL_VELA_CLARA)
+
+			// TODO 
+			.value("LASER", TYPE::LASER)
+			.value("LAS", TYPE::LAS)
 			.value("VELA_LASER", TYPE::VELA_LASER)
 			.value("CLARA_LASER", TYPE::CLARA_LASER)
+
 			.value("BA1", TYPE::BA1)
 			.value("BA2", TYPE::BA2)
 			.value("VELA", TYPE::VELA)
@@ -82,8 +88,20 @@ namespace BOOST_PYTHON_TYPES_INCLUDE
 			.value("CHARGE", TYPE::CHARGE)
 			.value("POWER", TYPE::POWER)
 			.value("PHASE", TYPE::PHASE)
-			.value("RFHEARTBEAT", TYPE::RFHEARTBEAT)
-			;
+
+
+			//.value("CAMERA_X_PIX_RS", TYPE::CAMERA_X_PIX_RS)
+			//.value("CAMERA_Y_PIX_RS", TYPE::CAMERA_Y_PIX_RS)
+			//.value("CAMERA_SIGMA_X_PIX_RS", TYPE::CAMERA_SIGMA_X_PIX_RS)
+			//.value("CAMERA_SIGMA_Y_PIX_RS", TYPE::CAMERA_SIGMA_Y_PIX_RS)
+			//.value("CAMERA_SIGMA_XY_PIX_RS", TYPE::CAMERA_SIGMA_XY_PIX_RS)
+			//.value("CAMERA_X_MM_RS", TYPE::CAMERA_X_MM_RS)
+			//.value("CAMERA_Y_MM_RS", TYPE::CAMERA_Y_MM_RS)
+			//.value("CAMERA_SIGMA_X_MM_RS", TYPE::CAMERA_SIGMA_X_MM_RS)
+			//.value("CAMERA_SIGMA_Y_MM_RS", TYPE::CAMERA_SIGMA_Y_MM_RS)
+			//.value("RFHEARTBEAT", TYPE::RFHEARTBEAT)
+			//.value("CAMERA_SIGMA_XY_MM_RS", TYPE::CAMERA_SIGMA_XY_MM_RS)
+	 		;
 	}
 }
 

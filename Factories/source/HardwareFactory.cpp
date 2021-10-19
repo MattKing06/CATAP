@@ -1,6 +1,8 @@
 #include "HardwareFactory.h"
+#include <boost/filesystem/convenience.hpp>
 #include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
+#include <SnapshotFileManager.h>
 
 HardwareFactory::HardwareFactory() : HardwareFactory(STATE::OFFLINE)
 {
@@ -10,25 +12,70 @@ HardwareFactory::~HardwareFactory()
 	messenger.printDebugMessage("HardwareFactory Destruction Called");
 }
 HardwareFactory::HardwareFactory(STATE mode) :
-	messenger(LoggingSystem(true, true)),
-	magnetFactory(MagnetFactory(mode)),
-	bpmFactory(BPMFactory(mode)),
-	chargeFactory(ChargeFactory(mode)),
-	screenFactory(ScreenFactory(mode)),
-	valveFactory(ValveFactory(mode)),
-	imgFactory(IMGFactory(mode)),
-	rfProtectionFactory(RFProtectionFactory(mode)),
-	llrffactory(LLRFFactory(mode)),
-	cameraFactory(CameraFactory(mode)),
-	laserEnergyMeterFactory(LaserEnergyMeterFactory(mode)),
-	laserHWPFactory(LaserHWPFactory(mode)),
-	shutterFactory(ShutterFactory(mode)),
-	rfmodulatorFactory(RFModulatorFactory(mode)),
-	rfHeartbeatFactory(RFHeartbeatFactory(mode)),
-	mode(mode)
+	HardwareFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{}
+
+HardwareFactory::HardwareFactory(STATE mode, const std::string& primeLatticeLocation) :
+messenger(LoggingSystem(true, true)),
+magnetFactory(MagnetFactory(mode, primeLatticeLocation)),
+bpmFactory(BPMFactory(mode, primeLatticeLocation)),
+chargeFactory(ChargeFactory(mode, primeLatticeLocation)),
+screenFactory(ScreenFactory(mode, primeLatticeLocation)),
+valveFactory(ValveFactory(mode, primeLatticeLocation)),
+imgFactory(IMGFactory(mode, primeLatticeLocation)),
+rfProtectionFactory(RFProtectionFactory(mode, primeLatticeLocation)),
+llrffactory(LLRFFactory(mode, primeLatticeLocation)),
+cameraFactory(CameraFactory(mode, primeLatticeLocation)),
+laserEnergyMeterFactory(LaserEnergyMeterFactory(mode, primeLatticeLocation)),
+laserHWPFactory(LaserHWPFactory(mode, primeLatticeLocation)),
+shutterFactory(ShutterFactory(mode, primeLatticeLocation)),
+rfmodulatorFactory(RFModulatorFactory(mode, primeLatticeLocation)),
+rfHeartbeatFactory(RFHeartbeatFactory(mode, primeLatticeLocation)),
+mode(mode)
 {
-	//messenger = LoggingSystem(true, true);
 	messenger.printDebugMessage("Hardware Factory constructed, mode = ", ENUM_TO_STRING(mode));
+}
+
+bool HardwareFactory::setup(const std::string& VERSION)
+{
+	bool setup = false;
+	// TODO these TYPES should be the type ENUM
+	if (!magnetFactory.hasBeenSetup)
+	{
+		setup = magnetFactory.setup(VERSION);
+	}
+	messenger.printMessage("MagnetFactory has been setup.");
+	if (!bpmFactory.hasBeenSetup)
+	{
+		setup = bpmFactory.setup(VERSION);
+	}
+	messenger.printMessage("BPMFactory has been setup.");
+	if (!chargeFactory.hasBeenSetup)
+	{
+		setup = chargeFactory.setup(VERSION);
+	}
+	messenger.printMessage("ChargeFactory has been setup.");
+	if (!screenFactory.hasBeenSetup)
+	{
+		setup = screenFactory.setup(VERSION);
+	}
+	messenger.printMessage("ScreenFactory has been setup.");
+	if (!valveFactory.hasBeenSetup)
+	{
+		setup = valveFactory.setup(VERSION);
+	}
+	messenger.printMessage("ValveFactory has been setup.");
+	if (!laserEnergyMeterFactory.hasBeenSetup)
+	{
+		setup = laserEnergyMeterFactory.setup(VERSION);
+	}
+	messenger.printMessage("LaserEnergyMeterFactory has been setup.");
+	if (!laserHWPFactory.hasBeenSetup)
+	{
+		setup = laserHWPFactory.setup(VERSION);
+	}
+	messenger.printMessage("LaserHWPFactory has been setup.");
+	return setup;
 }
 
 bool HardwareFactory::setup(const std::string& hardwareType, const std::string& VERSION)
@@ -41,6 +88,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = magnetFactory.setup(VERSION);
 		}
+		messenger.printMessage("MagnetFactory has been setup.");
 	}
 	else if (hardwareType == "BPM")
 	{
@@ -48,6 +96,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = bpmFactory.setup(VERSION);
 		}
+		messenger.printMessage("BPMFactory has been setup.");
 	}
 	else if (hardwareType == "Charge")
 	{
@@ -55,6 +104,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = chargeFactory.setup(VERSION);
 		}
+		messenger.printMessage("ChargeFactory has been setup.");
 	}
 	else if (hardwareType == "Screen")
 	{
@@ -62,6 +112,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = screenFactory.setup(VERSION);
 		}
+		messenger.printMessage("ScreenFactory has been setup.");
 	}
 	else if (hardwareType == "Valve")
 	{
@@ -69,6 +120,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = valveFactory.setup(VERSION);
 		}
+		messenger.printMessage("ValveFactory has been setup.");
 	}
 	else if (hardwareType == "Laser Energy Meter")
 	{
@@ -76,6 +128,7 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = laserEnergyMeterFactory.setup(VERSION);
 		}
+		messenger.printMessage("LaserEnergyMeterFactory has been setup.");
 	}
 	else if (hardwareType == "Laser HWP")
 	{
@@ -83,8 +136,33 @@ bool HardwareFactory::setup(const std::string& hardwareType, const std::string& 
 		{
 			setup = laserHWPFactory.setup(VERSION);
 		}
+		messenger.printMessage("LaserHWPFactory has been setup.");
+	}
+	else if (hardwareType == "Lighting")
+	{
+		if (!lightingFactory.hasBeenSetup)
+		{
+			setup = lightingFactory.setup(VERSION);
+		}
+		messenger.printMessage("lightingFactory has been setup.");
 	}
 	return setup;
+}
+
+bool HardwareFactory::setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION)
+{
+	for (auto&& hardware : hardwareTypes)
+	{
+		bool status = setup(hardware, VERSION);
+	}
+	return false;
+}
+
+bool HardwareFactory::setup(const boost::python::list& hardwareTypes, const std::string& VERSION)
+{
+	std::vector<std::string> hardware = to_std_vector<std::string>(hardwareTypes);
+	setup(hardware, VERSION);
+	return false;
 }
 
 RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
@@ -148,8 +226,6 @@ RFModulatorFactory& HardwareFactory::getRFModulatorFactory(const std::vector<TYP
 		return rfmodulatorFactory;
 	}
 }
-
-
 
 ShutterFactory& HardwareFactory::getShutterFactory()
 {
@@ -247,7 +323,27 @@ MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machin
 	}
 }
 
-
+LightingFactory& HardwareFactory::getLightingFactory()
+{
+	if (!lightingFactory.hasBeenSetup)
+	{
+		bool setup = lightingFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("getValveFactory Complete");
+			return lightingFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup ValveFactory");
+		}
+	}
+	else
+	{
+		messenger.printMessage("getValveFactory Complete");
+		return lightingFactory;
+	}
+}
 
 ValveFactory& HardwareFactory::getValveFactory()
 {
@@ -347,7 +443,27 @@ ScreenFactory& HardwareFactory::getScreenFactory()
 	return screenFactory;
 }
 
-
+LinacPIDFactory& HardwareFactory::getLinacPIDFactory()
+{
+	if (!linacPIDFactory.hasBeenSetup)
+	{
+		bool setup = linacPIDFactory.setup("nominal");
+		if (setup)
+		{
+			messenger.printMessage("linacPIDFactory Complete");
+			return linacPIDFactory;
+		}
+		else
+		{
+			messenger.printMessage("Unable to setup linacPIDFactory");
+		}
+	}
+	else
+	{
+		messenger.printMessage("linacPIDFactory Complete");
+		return linacPIDFactory;
+	}
+}
 
 
 
@@ -490,53 +606,209 @@ RFHeartbeatFactory& HardwareFactory::getRFHeartbeatFactory()
 }
 
 
+bool HardwareFactory::saveMachineSnapshot()// TODO check names
+{
+	// TOD this couldn't this just call bool HardwareFactory::saveMachineSnapshot(const std::string& location) ???
+	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
+	boost::filesystem::path snapshotLocation;
+	boost::system::error_code returnedError;
+	snapshotLocation = boost::filesystem::path(SnapshotFileManager::defaultMachineSnapshotLocation) / now;
+	boost::filesystem::create_directory(snapshotLocation, returnedError);
+	if (returnedError)
+	{
+		messenger.printMessage("Could not fine snapshot location: ", snapshotLocation.string());
+		return false;
+	}
+	else
+	{
+		if (valveFactory.hasBeenSetup)
+		{
+			valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+			return true;
+		}
+		else
+		{
+			bool status = valveFactory.setup("nominal");
+			if (status)
+			{
+				valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+				return true;
+			}
+			else
+			{
+				messenger.printMessage("Failed to setup ValveFactory, cannot save snapshot for Valves.");
+				return true;
+			}
+		}
+		return false;
+	}
+
+	return false;
+}
+
+bool HardwareFactory::saveMachineSnapshot(const std::string& location)// TODO check names
+{
+	boost::filesystem::path now(GlobalFunctions::getTimeAndDateString());
+	boost::filesystem::path snapshotLocation;
+	boost::system::error_code returnedError;
+	if (location.empty())
+	{ 
+		snapshotLocation = boost::filesystem::path(SnapshotFileManager::defaultMachineSnapshotLocation) / now;
+	}
+	else 
+	{
+		snapshotLocation = boost::filesystem::path(location) / now;
+	}
+	boost::filesystem::create_directory(snapshotLocation, returnedError);
+	if (returnedError)
+	{
+		messenger.printMessage("Could not fine snapshot location: ", snapshotLocation.string());
+		return false;
+	}
+	else
+	{
+		if (valveFactory.hasBeenSetup)
+		{
+			valveFactory.exportSnapshotToYAML(snapshotLocation.string(), "Valves.yaml");
+			return true;
+		}
+		return false;
+	}
+
+	return false;
+}
+
+bool HardwareFactory::loadMachineSnapshot(const std::string& directory_location)// TODO check names
+{
+	if (directory_location.empty())
+	{
+		messenger.printMessage("Please provide a snapshot folder for loading.");
+		return false;
+	}
+	std::vector<std::string> fileList = SnapshotFileManager::getAllFilesInDirectory(directory_location);
+	if (fileList.empty())
+	{
+		messenger.printMessage("Could not find machine snapshot files at: ", directory_location, ". Please provide another directory.");
+		return false;
+	}
+	for (auto file : fileList)
+	{
+		messenger.printMessage(file);
+		applySnapshot(file);
+	}
+	return true;
+}
+
+bool HardwareFactory::applySnapshot(const std::string& filename)// TODO check names
+{
+	std::ifstream inFile(filename);
+	if (!inFile) { return false; }
+	messenger.printMessage("FULL PATH: ", filename);
+	YAML::Node snapshotInfo = YAML::LoadFile(filename);
+	for (auto&& item : snapshotInfo)
+	{
+		TYPE hardwareType = GlobalConstants::stringToTypeMap.at(item.first.as<std::string>());
+		switch (hardwareType)
+		{
+			case(TYPE::VALVE):
+			{ valveFactory.loadSnapshot(item.second); break; }
+		}
+	}
+	return false;
+}
+
+bool HardwareFactory::applySnapshot(const std::map<std::string, std::string> settings)// TODO check names
+{
+	return false;
+}
+
+std::string HardwareFactory::getDefaultSnapshotLocation() const
+{
+	return SnapshotFileManager::defaultMachineSnapshotLocation;
+}
+
+
 void HardwareFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();
 	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG ON");
-	magnetFactory.debugMessagesOn();
 	bpmFactory.debugMessagesOn();
-	chargeFactory.debugMessagesOn();
 	cameraFactory.debugMessagesOn();
+	chargeFactory.debugMessagesOn();
+	imgFactory.debugMessagesOn();
 	laserEnergyMeterFactory.debugMessagesOn();
 	laserHWPFactory.debugMessagesOn();
+	llrffactory.debugMessagesOn();
+	magnetFactory.debugMessagesOn();
+	rfHeartbeatFactory.debugMessagesOn();
+	rfmodulatorFactory.debugMessagesOn();
+	rfProtectionFactory.debugMessagesOn();
+	screenFactory.debugMessagesOn();
+	shutterFactory.debugMessagesOn();
+	valveFactory.debugMessagesOn();
 }
 
 void HardwareFactory::debugMessagesOff()
 {
 	messenger.printDebugMessage("HARDWARE-FAC - ", "DEBUG OFF");
 	messenger.debugMessagesOff();
-	magnetFactory.debugMessagesOff();
 	bpmFactory.debugMessagesOff();
+	cameraFactory.debugMessagesOff();
 	chargeFactory.debugMessagesOff();
-	valveFactory.debugMessagesOff();
+	imgFactory.debugMessagesOff();
 	laserEnergyMeterFactory.debugMessagesOff();
 	laserHWPFactory.debugMessagesOff();
+	llrffactory.debugMessagesOff();
+	magnetFactory.debugMessagesOff();
+	rfHeartbeatFactory.debugMessagesOff();
+	rfmodulatorFactory.debugMessagesOff();
+	rfProtectionFactory.debugMessagesOff();
+	screenFactory.debugMessagesOff();
+	shutterFactory.debugMessagesOff();
+	valveFactory.debugMessagesOff();
 }
 
 void HardwareFactory::messagesOn()
 {
 	messenger.messagesOn();
 	messenger.printMessage("HARDWARE-FAC - MESSAGES ON");
-	magnetFactory.messagesOn();
 	bpmFactory.messagesOn();
+	cameraFactory.messagesOn();
 	chargeFactory.messagesOn();
-	valveFactory.messagesOn();
+	imgFactory.messagesOn();
 	laserEnergyMeterFactory.messagesOn();
 	laserHWPFactory.messagesOn();
+	llrffactory.messagesOn();
+	magnetFactory.messagesOn();
+	rfHeartbeatFactory.messagesOn();
+	rfmodulatorFactory.messagesOn();
+	rfProtectionFactory.messagesOn();
+	screenFactory.messagesOn();
+	shutterFactory.messagesOn();
+	valveFactory.messagesOn();
 }
 
 void HardwareFactory::messagesOff()
 {
 	messenger.printMessage("HARDWARE-FAC - MESSAGES OFF");
 	messenger.messagesOff();
-	magnetFactory.messagesOff();
+
 	bpmFactory.messagesOff();
+	cameraFactory.messagesOff();
 	chargeFactory.messagesOff();
-	valveFactory.messagesOff();
+	imgFactory.messagesOff();
 	laserEnergyMeterFactory.messagesOff();
 	laserHWPFactory.messagesOff();
+	llrffactory.messagesOff();
+	magnetFactory.messagesOff();
+	rfHeartbeatFactory.messagesOff();
+	rfmodulatorFactory.messagesOff();
+	rfProtectionFactory.messagesOff();
+	screenFactory.messagesOff();
+	shutterFactory.messagesOff();
+	valveFactory.messagesOff();
 }
+
 
 bool HardwareFactory::isMessagingOn()
 {
@@ -547,6 +819,8 @@ bool HardwareFactory::isDebugOn()
 {
 	return messenger.isDebugOn();
 }
+
+
 
 bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const
 {

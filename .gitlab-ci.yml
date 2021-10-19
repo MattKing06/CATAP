@@ -109,7 +109,11 @@ doxygen:
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
       - build/*
-  only: 
+  script:
+  - cd build
+  - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
+  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
+  only:
     - master
   script: 
     - "cd build"
@@ -140,7 +144,16 @@ wheel:
     key: "${CI_COMMIT_SHORT_SHA}"
     paths: 
       - build/*
+<<<<<<< HEAD
   only: 
+=======
+  script:
+  - cd build
+  - cd ./PythonInterface/CATAP/
+  - ./build_wheel.sh
+  
+  only:
+>>>>>>> master
     - master
   script: 
     - "cd build"

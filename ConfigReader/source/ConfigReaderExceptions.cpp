@@ -33,3 +33,32 @@ void InvalidFileException::printError()
 }
 
 
+LatticeLocationDoesNotExistException::LatticeLocationDoesNotExistException(const std::string& location) :
+	runtime_error(location.c_str()),
+	location(location)
+{
+}
+
+void LatticeLocationDoesNotExistException::printError()
+{
+	std::ostringstream oss;
+	std::string padding = "*******************************\n";
+	std::string errorMessage = "Lattice Location Does Not Exist Exception: " + location + " cannot be found." +
+		" Using default: " + MASTER_LATTICE_LOCATION + " as lattice location.";
+	printf("%s%s%s", padding.c_str(), errorMessage.c_str(), padding.c_str());
+}
+
+EmptyLatticeDirectoryException::EmptyLatticeDirectoryException(const std::string& location) :
+	std::runtime_error(location),
+	location(location)
+{
+}
+
+void EmptyLatticeDirectoryException::printError()
+{
+	std::ostringstream oss;
+	std::string padding = "*******************************\n";
+	std::string errorMessage = "Empty Lattice Directory Exception: " + location + " was empty." +
+		" Using default: " + MASTER_LATTICE_LOCATION + " as lattice location.";
+	printf("%s%s%s", padding.c_str(), errorMessage.c_str(), padding.c_str());
+}

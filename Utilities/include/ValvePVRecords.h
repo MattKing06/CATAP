@@ -17,11 +17,11 @@ namespace ValveRecords
 	/*Defined at std::string const so that the value of the variable cannot be changed.*/
 
 	/*! Used to search for "On" key in pv_record_map */
-	extern std::string const On;
+	extern std::string const OPEN;
 	/*! Used to search for "Off" key in pv_record_map */
-	extern std::string const Off;
+	extern std::string const CLOSE;
 	/*! Used to search for "Sta" key in pv_record_map */
-	extern std::string const Sta;
+	extern std::string const STA;
 
 	extern std::vector<std::string> valveRecordList;
 }

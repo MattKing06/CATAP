@@ -7,15 +7,15 @@ controls_information:
     RPOWER: CLA-C2V-MAG-VCOR-01:RPOWER
     SETI: CLA-C2V-MAG-VCOR-01:SETI
     SPOWER: CLA-C2V-MAG-VCOR-01:SPOWER
+    ILK_RESET: CLA-C2V-MAG-VCOR-01:Rst
     K_DIP_P: CLA-C2V-MAG-VCOR-01:K_DIP_P
     INT_STR_MM: CLA-C2V-MAG-VCOR-01:INT_STR_MM
     INT_STR: CLA-C2V-MAG-VCOR-01:INT_STR
     K_SET_P: CLA-C2V-MAG-VCOR-01:K_SET_P
     K_ANG: CLA-C2V-MAG-VCOR-01:K_ANG
     K_MRAD: CLA-C2V-MAG-VCOR-01:K_MRAD
-    #K_VAL:      CLA-C2V-MAG-VCOR-01:K_VAL
+    K_VAL:      CLA-C2V-MAG-VCOR-01:K_VAL
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD
-  #, K_VAL
 properties:
   degauss_tolerance: 0.1
   degauss_values: "10.0,-10.0,7.0,-7.0,5.0,-5.0,2.5,-2.5,1.0,-1.0,0.0"
@@ -27,7 +27,7 @@ properties:
   magnetic_length: 140.0
   manufacturer: Danfysik
   name: CLA-C2V-MAG-VCOR-01
-  name_alias: C2V-VCOR01,C2V-VCOR-01
+  name_alias: C2V-VCOR01,C2V-VCOR-01,C2V-VCOR1
   num_degauss_steps: 11
   position: 6.536928145
   ri_tolerance: 0.1

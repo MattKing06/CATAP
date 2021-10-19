@@ -85,6 +85,30 @@ void EPICSInterface::sendToEPICS()
 	}
 }
 
+void EPICSInterface::sendToEPICSm(const char* m )
+{
+	try
+	{
+		int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+		MY_SEVCHK_Mess(status,m);
+	}
+	catch (const std::runtime_error& runtimeError)
+	{
+		std::cout << runtimeError.what() << std::endl;
+	}
+}
+bool EPICSInterface::sendToEPICSm2(const char* m)
+{
+	int status = ca_pend_io(CA_PEND_IO_TIMEOUT);
+	MY_SEVCHK_Mess(status, m);
+	if (status == ECA_NORMAL)
+	{
+		return true;
+	}
+	coutECASTATUS(status);
+	return false;
+}
+
 
 int EPICSInterface::sendToEPICSReturnStatus()
 {
@@ -461,13 +485,12 @@ void EPICSInterface::updateTimeStampShortPair(const struct event_handler_args& a
 	pairToUpdate.second = tv->value;
 }
 
-
 std::pair<epicsTimeStamp, unsigned short> EPICSInterface::getTimeStampUShortPair(const struct event_handler_args& args)
 {
 	std::pair<epicsTimeStamp, unsigned short> r;
 	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
 	dbr_enum_t a = tv->value;
-	//std::cout << "tv->value  = " << a << " sizeof(a) " << sizeof(a) << std::endl;
+	//std::cout << "getTimeStampUShortPair, tv->value  = " << a << " sizeof(a) " << sizeof(a) << std::endl;
 	r.first  = tv->stamp;
 	r.second = (unsigned short)a;
 	//std::cout << "r.second   = " << r.second  << " sizeof(r.second ) " << sizeof(r.second ) << std::endl;
@@ -726,4 +749,45 @@ bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count,
 
 	}
 	return false;
+}
+void EPICSInterface::coutECASTATUS(const int status)
+{
+	std::cout << "status = ";
+	switch (status)
+	{
+		case ECA_NORMAL: std::cout << "ECA_NORMAL" << std::endl; break;
+		case ECA_ALLOCMEM: std::cout << "ECA_ALLOCMEM" << std::endl; break;
+		case ECA_TOLARGE: std::cout << "ECA_TOLARGE" << std::endl; break;
+		case ECA_TIMEOUT: std::cout << "ECA_TIMEOUT" << std::endl; break;
+		case ECA_BADTYPE: std::cout << "ECA_BADTYPE" << std::endl; break;
+		case ECA_INTERNAL: std::cout << "ECA_INTERNAL" << std::endl; break;
+		case ECA_GETFAIL: std::cout << "ECA_GETFAIL" << std::endl; break;
+		case ECA_PUTFAIL: std::cout << "ECA_PUTFAIL" << std::endl; break;
+		case ECA_BADCOUNT: std::cout << "ECA_BADCOUNT" << std::endl; break;
+		case ECA_BADSTR: std::cout << "ECA_BADSTR" << std::endl; break;
+		case ECA_DBLCHNL: std::cout << "ECA_DISCONN" << std::endl; break;
+		case ECA_EVDISALLOW: std::cout   <<"ECA_EVDISALLOW" << std::endl; break;
+		case ECA_BADMONID: std::cout << "ECA_BADMONID" << std::endl; break;
+		case ECA_BADMASK: std::cout << "ECA_BADMASK" << std::endl; break;
+		case ECA_IODONE: std::cout << "ECA_IODONE" << std::endl; break;
+		case ECA_IOINPROGRESS: std::cout << "ECA_IOINPROGRESS" << std::endl; break;
+		case ECA_BADSYNCGRP: std::cout << "ECA_BADSYNCGRP" << std::endl; break;
+		case ECA_PUTCBINPROG: std::cout << "ECA_PUTCBINPROG" << std::endl; break;
+		case ECA_NORDACCESS: std::cout << "ECA_NORDACCESS" << std::endl; break;
+		case ECA_NOWTACCESS: std::cout << "ECA_NOWTACCESS" << std::endl; break;
+		case ECA_ANACHRONISM: std::cout << "ECA_ANACHRONISM" << std::endl; break;
+		case ECA_NOSEARCHADDR: std::cout << "ECA_NOSEARCHADDR" << std::endl; break;
+		case ECA_NOCONVERT: std::cout << "ECA_NOCONVERT" << std::endl; break;
+		case ECA_BADCHID: std::cout << "ECA_BADCHID" << std::endl; break;
+		case ECA_BADFUNCPTR: std::cout << "ECA_BADFUNCPTR" << std::endl; break;
+		case ECA_ISATTACHED: std::cout << "ECA_ISATTACHED" << std::endl; break;
+		case ECA_UNAVAILINSERV: std::cout << "ECA_UNAVAILINSERV" << std::endl; break;
+		case ECA_CHANDESTROY: std::cout << "ECA_CHANDESTROY" << std::endl; break;
+		case ECA_BADPRIORITY: std::cout << "ECA_BADPRIORITY" << std::endl; break;
+		case ECA_NOTTHREADED: std::cout << "ECA_NOTTHREADED" << std::endl; break;
+		case ECA_16KARRAYCLIENT: std::cout << "ECA_16KARRAYCLIENT" << std::endl; break;
+		case ECA_CONNSEQTMO: std::cout << "ECA_CONNSEQTMO" << std::endl; break;
+		case ECA_UNRESPTMO: std::cout << "ECA_UNRESPTMO" << std::endl; break;
+		default: std::cout << "!!UNKONWN STATUS!!" << std::endl;
+	}
 }

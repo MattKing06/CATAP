@@ -11,17 +11,19 @@ set( SOURCE_FILES
     source/CameraPVRecords.cpp
     source/ChargePVRecords.cpp
     source/ScreenPVRecords.cpp
-    source/HardwareState.cpp
+    source/HardwareSnapshot.cpp
     source/IMGPVRecords.cpp
     source/LaserEnergyMeterPVRecords.cpp
     source/LaserHWPPVRecords.cpp
     source/LaserMirrorPVRecords.cpp
     source/LEDPVRecords.cpp
     source/LightingPVRecords.cpp
+    source/LinacPIDPVRecords.cpp
     source/LLRFPVRecords.cpp
     source/RFHeartbeatPVRecords.cpp
     source/RFModulatorPVRecords.cpp
     source/RFProtectionPVRecords.cpp
+    source/SnapshotFileManager.cpp
     source/StagePVRecords.cpp
     source/ShutterPVRecords.cpp
     source/RunningStats.cpp
@@ -32,7 +34,7 @@ set( INCLUDE_FILES
      include/GlobalTypeEnums.h
      include/GlobalFunctions.h
      include/GlobalConstants.h
-     include/HardwareState.h
+     include/HardwareSnapshot.h
      include/MagnetPVRecords.h
      include/ValvePVRecords.h
      include/BPMPVRecords.h
@@ -45,25 +47,25 @@ set( INCLUDE_FILES
      include/LaserMirrorPVRecords.h
      include/LEDPVRecords.h
      include/LightingPVRecords.h
+     include/LinacPIDPVRecords.h
      include/LLRFPVRecords.h
      include/RFHeartbeatPVRecords.h
      include/RFModulatorPVRecords.h
      include/RFProtectionPVRecords.h
+     include/SnapshotFileManager.h
      include/StagePVRecords.h
      include/ShutterPVRecords.h
      include/RunningStats.h
 )
 cmake_policy(SET CMP0022 NEW)
 cmake_policy(SET CMP0079 NEW)
-find_package(PythonLibs ${PY_VERSION})
-find_package(Boost 1.63 REQUIRED COMPONENTS python3)
 add_library(Utilities ${SOURCE_FILES} ${INCLUDE_FILES})
 IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   message("COMPILING PYTHON INTERFACE WITH -fPIC")
   SET_TARGET_PROPERTIES(Utilities PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 target_include_directories(Utilities PUBLIC ${Boost_INCLUDE_DIR})
-target_include_directories(Utilities PRIVATE ${PYTHON_INCLUDE_DIR})
+target_include_directories(Utilities PRIVATE ${Python3_INCLUDE_DIRS})
 target_include_directories(Utilities PUBLIC ${YAML_PARSER_DIR}/include)
 target_include_directories(Utilities PUBLIC include)
 if(WIN32)
@@ -76,6 +78,6 @@ endif(UNIX)
 TARGET_LINK_LIBRARIES(Utilities
 					 PRIVATE
 					 ${Boost_LIBRARIES}
-					 ${PYTHON_LIBRARY}
+					 ${Python3_LIBRARIES}
 					 )
 set_property(TARGET Utilities PROPERTY FOLDER "Utilities")

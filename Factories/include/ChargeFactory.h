@@ -5,6 +5,7 @@
 #include "ConfigReader.h"
 #pragma once
 #include "Charge.h"
+#include <GlobalFunctions.h>
 #include <vector>
 #include <map>
 #include <utility>
@@ -29,6 +30,7 @@ public:
 	VIRTUAL ChargeFactory will perform operations of Virtual charge diagnostics.
 	OFFLINE ChargeFactory will perform operations on Offline charge diagnostics.*/
 	ChargeFactory(STATE mode);
+	ChargeFactory(STATE mode, const std::string& primeLatticeLocation);
 	/*! Copy constructor for ChargeFactory (used for = operator)
 	@param[in] copyChargeFactory: the ChargeFactory we want to copy over.*/
 	ChargeFactory(const ChargeFactory& copyChargeFactory);
@@ -198,6 +200,16 @@ public:
 	/*returns a Python dict of beamline positions of charge diagnostic devices
 	@param[out] dict: positions, keyed by name.*/
 	boost::python::dict getAllPosition_Py();
+	/*! sets the RS size (m_max) for a given charge diagnostic*/
+	void setRunningStatSize(const std::string& name, const size_t& size);
+	/*! clears the RS object for a given charge diagnostic */
+	void clearRunningStats(const std::string& name);
+	
+	bool areAllRunningStatsFull(const std::string& name);
+	/*! Get the current number of data values being used by the Running Stats.
+	@param[in] name: the charge factory name.
+	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues(const std::string& name)const;
 
 	/*! turns debug messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
 	void debugMessagesOn();

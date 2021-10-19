@@ -37,6 +37,7 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 			.add_property("position", &BPM::getPosition)
 			.add_property("resolution", &BPM::getResolution)
 			.add_property("status", &BPM::getStatus)
+			.add_property("statusstr", &BPM::getStatusStr)
 			.add_property("statusbuffer", &BPM::getStatusBuffer_Py)
 			.add_property("statusvector", &BPM::getStatusVector_Py)
 			.add_property("ra1", &BPM::getRA1)
@@ -104,6 +105,7 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 		//bpm Factory Exposure
 		boost::python::class_<BPMFactory>("BPMFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &BPMFactory::setup)
 			.add_property("bpmMap", &BPMFactory::bpmMap)
 			.def("getBPM", &BPMFactory::getBPM, boost::python::return_value_policy<boost::python::reference_existing_object>())

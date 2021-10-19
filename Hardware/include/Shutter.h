@@ -85,7 +85,7 @@ class Shutter : public Hardware
 		/*! Try to open the shutter.
 		@param[out] bool, true if command got sent to EPICS, (!!does not indicate whether the shutter opened succesfully!!)*/
 		bool close();
-		/*! Try to close the shutter.
+		/*! Try to open the shutter.
 		@param[out] bool, true if command got sent to EPICS, (!!does not indicate whether the shutter closed succesfully!!)*/
 		bool open();
 

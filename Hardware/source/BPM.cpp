@@ -157,6 +157,11 @@ STATE BPM::getStatus() const
 	return status;
 }
 
+std::string BPM::getStatusStr() const
+{
+	return ENUM_TO_STRING(status);
+}
+
 boost::circular_buffer< STATE > BPM::getStatusBuffer() const
 {
 	return statusBuffer;

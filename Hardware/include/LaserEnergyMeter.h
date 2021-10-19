@@ -1,6 +1,7 @@
 #ifndef LASER_ENERGY_METER_H_
 #define LASER_ENERGY_METER_H_
 #include "LoggingSystem.h"
+#include <RunningStats.h>
 #ifndef HARDWARE_H_
 #include "Hardware.h"
 #endif //HARDWARE_H_
@@ -27,6 +28,8 @@ public:
 	EPICSLaserEnergyMeterInterface_sptr epicsInterface;
 	/*! Returns the EPICS name of this laser energy meter instance */
 	std::string getLaserEnergyMeterName() const;
+	/*! Returns the calibration factor (laser energy meter reading -> actual laser pulse energy) */
+	double getCalibrationFactor() const;
 	/*! Returns the alias name (not currently used) */
 	std::vector<std::string> getAliases() const;
 	/*! Returns the CATAP TYPE of the laser energy meter */
@@ -91,6 +94,40 @@ public:
 	void clearBuffers();
 	/*! remove all data from energy vector.*/
 	void clearVectors();
+	/*! checks if the two most recent values in the given buffer are the same. Used to set laser energy meter status.
+	@param[in] buf: buffer to check.
+	@param[out] bool: true if the values are the same.*/
+	bool checkBuffer(boost::circular_buffer< double >& buf);
+	/*! checks the laser energy meter status based on energy PV.*/
+	void checkStatus();
+	/*! returns the status of the laser energy meter based on energy values.
+	@param[out] state: the status.*/
+	STATE getStatus() const;
+	/*! returns the status buffer of the laser energy meter based on energy values.
+	@param[out] states: the status buffer.*/
+	boost::circular_buffer< STATE > getStatusBuffer() const;
+	/*! returns the status vector of the laser energy meter based on energy values (after using monitorForNShots).
+	@param[out] states: the status vector.*/
+	std::vector< STATE > getStatusVector() const;
+	/*! Get the running stats back as a dict*/
+	boost::python::dict getRunningStats_Py();
+	/*! Get the running stats object back directly*/
+	RunningStats& getEnergyRunningStats();
+	/*! Set running stats max count .*/
+	void setRunningStatsSize(size_t new_size);
+	/*! lear running stats data.*/
+	void clearRunningStats();
+	/*! are running stats data.
+	* 	@param[out] bool: true if the number of counts equals the max count.*/
+	bool areRunningStatsFull(); // TODO const 
+	/*! Get the current number of data values being used by the Running Stats.
+	* 	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues()const;
+
+	friend class EPICSLaserEnergyMeterInterface;
+	friend class LaserEnergyFactory;
+	friend class PILaserSystem;
+protected:
 	/*! start button for acquiring laser energy.*/
 	std::pair<epicsTimeStamp, int> start;
 	/*! stop button for acquiring laser energy.*/
@@ -111,6 +148,8 @@ public:
 	bool monitoring;
 	/*! beamline position (useless).*/
 	double position;
+	/*! calibration factor (actual laser energy -> laser energy on energy meter).*/
+	double calibration_factor;
 	/*! laser energy meter name.*/
 	std::string name;
 	/*! number of shots monitored.*/
@@ -121,8 +160,17 @@ public:
 	size_t bufferSize = 10;
 	/*! Vector size for energy monitoring.*/
 	size_t vectorSize = 10;
-	friend class EPICSLaserEnergyMeterInterface;
-protected:
+	/*! the status of the laser energy meter based on energy values.*/
+	STATE status;
+	/*! a buffer of laser energy meter status values.*/
+	boost::circular_buffer< STATE > statusBuffer;
+	/*! a vector of laser energy meter status values (after using monitorForNShots).*/
+	std::vector< STATE > statusVector;
+
+
+
+	/*! Running stats object for LaserEnergy Meter, access to quick statistics*/
+	RunningStats energyStats;
 	//what else does a laser need?
 	std::vector<std::string> aliases;
 	TYPE laserEnergyMeterType;

@@ -1,6 +1,7 @@
 #ifndef GLOBAL_FUNCTIOnS_H_
 #define GLOBAL_FUNCTIOnS_H_
 
+//#include "epicsTime.h"
 #include <map>
 #include <string>
 #include <cmath>
@@ -26,6 +27,10 @@
 
 namespace GlobalFunctions {
 
+
+	// 	extern bool areEqualEpicsTimeStamps(const epicsTimeStamp& t1, const epicsTimeStamp& t2); TODO add when we can include epicstime.h
+ 
+
     /*
             We often check if entries exist in maps,
             use these functiOns to do it safely
@@ -43,17 +48,27 @@ namespace GlobalFunctions {
 	template<class T>
 	bool entriesExist(const std::map<std::string, T>& m, const std::vector<std::string>& names)
 	{
+		//std::cout << "entriesExist, looking for ";
+		//for (auto&& item : m)
+		//{
+		//	std::cout << item.first << ",";
+		//}
+		//std::cout << std::endl;
+
 		for (auto&& item : names)
 		{
+			//std::cout << "Checking " << item;
 			if (entryExists(m, item))
 			{
-
+				//std::cout << " Exists! " << std::endl;
 			}
 			else
 			{
+				//std::cout << " Does not Exist returning false! " << std::endl;
 				return false;
 			}
 		}
+		//std::cout << "All entries exist, returning true " << std::endl;
 		return true;
 	}
 
@@ -69,6 +84,16 @@ namespace GlobalFunctions {
 			/* v does not contain x */
 			return false;
 		}
+	}
+
+
+	template<typename T>
+	std::vector<T> slice(std::vector<T> const& v, int m, int n)
+	{
+		auto first = v.cbegin() + m;
+		auto last = v.cbegin() + n + 1;
+		std::vector<T> vec(first, last);
+		return vec;
 	}
 
 	template<typename T = int>
@@ -117,13 +142,16 @@ namespace GlobalFunctions {
     template<class T, class U>
     bool entryExists(const std::map<U, T>& m, const U& name)
     {
-        bool ret = false;
-        auto it = m.find(name);
-        if (it != m.end())
-            ret = true;
-        return ret;
+//        bool ret = false;
+        //auto it = m.find(name);
+		return m.find(name) != m.end();
+		//if (it != m.end())
+  //          ret = true;
+  //      return ret;
     }
 
+
+	extern TYPE stringToTYPE(const std::string& type_str);
 
 
 	//template<typename T = double>
@@ -158,10 +186,11 @@ namespace GlobalFunctions {
 		return s;
 	}
 
-	extern bool stringIsSubString(const std::string& stringToCheck, 
-		const std::string& stringToLookFor);
+	extern bool stringIsSubString(const std::string& stringToCheck,const std::string& stringToLookFor);
 
 	extern std::string getTimeAndDateString();
+
+
 
 	//std::string currentDateTime()
 	//{
@@ -214,6 +243,9 @@ namespace GlobalFunctions {
 	extern std::string replaceStrChar(std::string str, const std::string& replace, char ch);
 
 
+	extern unsigned short scanSTATEToNumber(const STATE state);
+	extern unsigned short scanSTATEToNumber(const std::string state);
+	extern STATE numberToLLRFSCAN(const unsigned short scan_num);
 
 	extern void pause_x(std::chrono::milliseconds x);
 	void standard_pause();
@@ -225,16 +257,18 @@ namespace GlobalFunctions {
 	void pause_2()   ;
 	void pause_1()   ;
 
-
-
 	extern TYPE stringToType(const std::string& string_to_compare);
+	extern STATE stringToState(const std::string& string_to_compare);
 
 	// isInMahineArea
 
 	extern bool isInMachineArea(TYPE testArea, TYPE area);
+	
+	extern std::string trimAllWhiteSpace(std::string strIN);
+	extern std::string trimAllWhiteSpaceExceptBetweenDoubleQuotes(std::string strIN);
 
 
-
+	extern STATE stringToSTATE(const std::string& state_str);
 }
 /*! @}*/
 #endif

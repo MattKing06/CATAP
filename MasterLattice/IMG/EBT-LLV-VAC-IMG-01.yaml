@@ -1,9 +1,9 @@
-controls_information:
+controls_information: 
     PV: true
     pv_record_map:
         Sta: EBT-LLV-VAC-IMG-01:EMIS_RB
         P: EBT-LLV-VAC-IMG-01:PRES
-properties:
+properties: 
     machine_area: INJ
     hardware_type: IMG
     img_type: LOAD_LOCK

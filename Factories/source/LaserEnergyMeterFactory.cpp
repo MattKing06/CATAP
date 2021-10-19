@@ -11,14 +11,20 @@
 #endif
 #include "yaml-cpp/emitter.h"
 
-LaserEnergyMeterFactory::LaserEnergyMeterFactory() : LaserEnergyMeterFactory(STATE::OFFLINE)
+LaserEnergyMeterFactory::LaserEnergyMeterFactory():
+	LaserEnergyMeterFactory(STATE::OFFLINE)
 {
 	std::cout << "LaserFactory DEFAULT constRUCTOR called " << std::endl;
 }
-LaserEnergyMeterFactory::LaserEnergyMeterFactory(STATE mode):
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("LaserEnergyMeter", mode))
+LaserEnergyMeterFactory::LaserEnergyMeterFactory(STATE mode) :
+LaserEnergyMeterFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+
+}
+LaserEnergyMeterFactory::LaserEnergyMeterFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("LaserEnergyMeter", mode, primeLatticeLocation))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;
@@ -47,8 +53,11 @@ LaserEnergyMeterFactory::~LaserEnergyMeterFactory()
 			{
 				if (pvStruct.second.monitor)
 				{
-					laser.second.epicsInterface->removeSubscription(pvStruct.second);
-					ca_flush_io();
+					if (pvStruct.second.EVID) 
+					{
+						laser.second.epicsInterface->removeSubscription(pvStruct.second);
+						ca_flush_io();
+					}
 				}
 				laser.second.epicsInterface->removeChannel(pvStruct.second);
 				ca_pend_io(CA_PEND_IO_TIMEOUT);
@@ -117,7 +126,7 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 	populateLaserEnergyMeterMap();
 
 	setupChannels();
-	EPICSInterface::sendToEPICS();
+	EPICSInterface::sendToEPICSm("LaserEnergyMeterFactory");
 	for (auto& laser : laserEnergyMeterMap)
 	{
 		std::map<std::string, pvStruct>& laserPVStructs = laser.second.getPVStructs();
@@ -138,7 +147,8 @@ bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 				{
 					laser.second.epicsInterface->createSubscription(laser.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
+
+				EPICSInterface::sendToEPICSm("LaserEnergyMeterFactory connect PVs");
 			}
 			else
 			{
@@ -165,7 +175,7 @@ std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getLaserEnergyM
 
 LaserEnergyMeter& LaserEnergyMeterFactory::getLaserEnergyMeter(const std::string& fullLaserName)
 {
-	return laserEnergyMeterMap.find(fullLaserName)->second;
+	return laserEnergyMeterMap.at(fullLaserName);
 }
 
 std::map<std::string, LaserEnergyMeter> LaserEnergyMeterFactory::getAllLaserEnergyMeters()
@@ -293,6 +303,38 @@ void LaserEnergyMeterFactory::monitorForNShots(const std::string& name, const si
 	laserEnergyMeterMap.find(name)->second.monitorForNShots(value);
 }
 
+void LaserEnergyMeterFactory::setRunningStatSize(const std::string& name, const size_t& size)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		laserEnergyMeterMap.at(name).setRunningStatsSize(size);
+	}
+}
+
+void LaserEnergyMeterFactory::clearRunningStats(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		laserEnergyMeterMap.at(name).clearRunningStats();
+	}
+}
+
+bool LaserEnergyMeterFactory::areRunningStatsFull(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		return laserEnergyMeterMap.at(name).areRunningStatsFull();
+	}
+	return false;
+}
+size_t LaserEnergyMeterFactory::getRunningStatNumDataValues(const std::string& name)const
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, name))
+	{
+		return laserEnergyMeterMap.at(name).getRunningStatNumDataValues();
+	}
+	return GlobalConstants::size_zero;
+}
 void LaserEnergyMeterFactory::setVectorSize(const std::string& name, const size_t& value)
 {
 	laserEnergyMeterMap.find(name)->second.setVectorSize(value);
