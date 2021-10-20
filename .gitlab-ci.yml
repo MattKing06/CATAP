@@ -32,7 +32,7 @@ cmake_windows:
   script: 
     - "mkdir build"
     - "cd build"
-    - "cmake.exe  -DCMAKE_INSTALL_PREFIX=\"C:\\Users\\ujo48515\\Documents\" -DCATAP_PY_VERSION=\"3.8\" -DSPHINX_EXECUTABLE=\"C:\\Python38\\Scripts\\sphinx-build.exe\" -DDEPLOY_CATAP=\"false\" ..\ .\ "
+    - "cmake.exe  -DCMAKE_INSTALL_PREFIX=\"C:\\Gitlab-runner\\" -DCATAP_PY_VERSION=\"3.8\" -DSPHINX_EXECUTABLE=\"C:\\Python38\\Scripts\\sphinx-build.exe\" -DDEPLOY_CATAP=\"false\" ..\ .\ "
     - dir
   stage: cmake
   tags: 
