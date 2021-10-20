@@ -7,6 +7,10 @@ stages:
   - sphinx
   - wheel
 
+before_script:
+  - "taskkill /F /im caRepeater.exe"
+  tags:
+    - windows
 
 cmake_linux: 
   image: mattkingastec/catapenv:1.0
@@ -32,7 +36,6 @@ cmake_windows:
   script: 
     - "mkdir build"
     - "cd build"
-    - "taskkill /F /im caRepeater.exe"
     - "cmake.exe -DCATAP_PY_VERSION=\"3.8\" -DSPHINX_EXECUTABLE=\"C:\\Python38\\Scripts\\sphinx-build.exe\" -DDEPLOY_CATAP=\"false\" ..\ .\ "
     - dir
   stage: cmake
