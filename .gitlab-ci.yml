@@ -101,6 +101,8 @@ windows_tests:
     - .\HardwareTests.exe
     - .\EPICSInterfaceTests.exe
     - .\EPICSToolsTests.exe
+  after_script:
+    - "taskkill /F /im caRepeater.exe"
   stage: tests
   tags:
     - windows
