@@ -161,7 +161,7 @@ foreach(FILE ${SOURCE_FILES})
 
 
         message("RELEASE BUILD")
-        set(RELEASE_TOP_LEVEL_CATAP_DIR "${windBinDir}\\PythonInterface\\Release\\CATAP\\")
+        set(RELEASE_TOP_LEVEL_CATAP_DIR "${winBinDir}\\PythonInterface\\Release\\CATAP\\")
         add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${winSourceDir}\\init\\__init__.py" "${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP")
         add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${winSourceDir}\\resources\\setup.py" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${winSourceDir}\\resources\\MANIFEST.in" ${RELEASE_TOP_LEVEL_CATAP_DIR})
@@ -170,7 +170,6 @@ foreach(FILE ${SOURCE_FILES})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${winSourceDir}\\resources\\LICENSE.txt" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${winSourceDir}\\resources\\build_wheel.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${winSourceDir}\\resources\\install_catap.bat" ${RELEASE_TOP_LEVEL_CATAP_DIR})
-
 		get_target_property(RELEASE_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_RELEASE)
         message("COPYING INIT TEMPLATE TO: " "${RELEASE_TOP_LEVEL_CATAP_DIR}\\CATAP\\${LIBFOLDERNAME}\\__init__.py")
         configure_file("${winSourceDir}\\init\\__init__.py.in" "${RELEASE_TOP_LEVEL_CATAP_DIR}\\CATAP\\${LIBFOLDERNAME}\\__init__.py")
