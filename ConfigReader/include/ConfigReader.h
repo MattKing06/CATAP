@@ -3,6 +3,7 @@
 
 #include "yaml-cpp/parser.h"
 #include "yaml-cpp/yaml.h"
+#include <boost/filesystem.hpp>
 #include <ConfigReaderExceptions.h>
 #include <LoggingSystem.h>
 #include <Magnet.h>
@@ -20,6 +21,7 @@
 #include <map>
 
 const std::string MASTER_LATTICE_FILE_LOCATION = MASTER_LATTICE_LOCATION;
+
 #if defined(__unix__) ||  defined(_unix)
 const std::string SEPARATOR = "/";
 #endif
@@ -35,6 +37,7 @@ class ConfigReader
 public:
 
 	ConfigReader(const std::string& hardwareType, const STATE& mode);
+	ConfigReader(const std::string& hardwareType, const STATE& mode, const std::string& primeLatticeLocation);
 	ConfigReader();
 
 	std::string yamlFileDestination;
@@ -43,11 +46,10 @@ public:
 	STATE mode;
 	std::map<std::string, bool> yamlFilenamesAndParsedStatusMap;
 	int numberOfParsesExpected;
-	// defining the allowed hardware types and their EPICS abbreviations
-	// these are currently hard-coded, we should get the folder names from
-	// MasterLattice directory to initialize the map
-	const static std::map<std::string, std::string> allowedHardwareTypes;
-
+	std::map<std::string, std::string> offlineProperties;
+	std::map<std::string, std::string> onlineProperties;
+	bool doesLocationExist(const boost::filesystem::path& location);
+	bool isEmptyDirectory(const boost::filesystem::path& location);
 
 	LoggingSystem messenger;
 	void debugMessagesOn();
@@ -59,7 +61,6 @@ public:
 
 	const std::map <std::string, std::string> extractRecordsIntoMap(const YAML::Node& configInformationNode) const;
 
-	std::string getHardwareTypeFromName(const std::string& fullPVName) const;
 	std::vector<std::string> compareFileWithTemplate(const YAML::Node& hardwareTemplate, const YAML::Node& hardwareComponent) const;
 	std::vector<std::string> findYAMLFilesInDirectory(const std::string& version);
 	void initialiseFilenameAndParsedStatusMap();
@@ -120,21 +121,20 @@ public:
 					throw InvalidFileException(ConfigReader::yamlFilename, missingEntriesFromFile);
 				}
 				messenger.printDebugMessage("extractHardwareInformationIntoMap");
-				auto hardwareParameterMap = extractHardwareInformationIntoMap(config);
+				offlineProperties = extractHardwareInformationIntoMap(config);
 				messenger.printDebugMessage("extractRecordsIntoMap");
-				auto recordsMap = extractRecordsIntoMap(config);
-				parameters.insert(recordsMap.begin(), recordsMap.end());
-				parameters.insert(hardwareParameterMap.begin(), hardwareParameterMap.end());
+				onlineProperties = extractRecordsIntoMap(config);
+				parameters.insert(onlineProperties.begin(), onlineProperties.end());
+				parameters.insert(offlineProperties.begin(), offlineProperties.end());
 				messenger.printDebugMessage("Constuct Hardware, mode = ", ENUM_TO_STRING(mode));
-
 				HardwareType freshHardware = HardwareType(parameters, mode);
-
+				freshHardware.setOnlineProperties(onlineProperties);
+				freshHardware.setOfflineProperties(offlineProperties);
 				messenger.printDebugMessage("Add New harwdare to hardwareMapToFill");
 				// fill map via [] operator to construct IN-PLACE
 				// if we use emplace/insert, the default constructor is called for the object
 				// and HardwareType is set up with default constructor, instead of our params.
 				hardwareMapToFill[freshHardware.getHardwareName()] = freshHardware;
-
 				messenger.printDebugMessage("Added " + freshHardware.getHardwareName() + " to hardwareMapToFill"
 				 + " current size = ", hardwareMapToFill.size());
 

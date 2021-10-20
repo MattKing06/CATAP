@@ -23,6 +23,7 @@ public:
 	static void updatePositions(const struct event_handler_args args);
 	static void updateHWPSet(const struct event_handler_args args);
 	static void updateHWPGet(const struct event_handler_args args);
+	static void updateENABLE(const struct event_handler_args args);
 	void setMABS(const double& value, const pvStruct& pv);
 	static LoggingSystem messenger;
 };

@@ -16,9 +16,14 @@ ScreenFactory::ScreenFactory() : ScreenFactory(STATE::OFFLINE)
 	std::cout << "ScreenFactory DEFAULT constRUCTOR called " << std::endl;
 }
 ScreenFactory::ScreenFactory(STATE mode):
-	mode(mode),
-	hasBeenSetup(false),
-	reader(ConfigReader("Screen", mode))
+ScreenFactory(mode, MASTER_LATTICE_FILE_LOCATION)
+{
+
+}
+ScreenFactory::ScreenFactory(STATE mode, const std::string& primeLatticeLocation) :
+mode(mode),
+hasBeenSetup(false),
+reader(ConfigReader("Screen", mode, primeLatticeLocation))
 {
 	messenger = LoggingSystem(true, true);
 	//hasBeenSetup = false;

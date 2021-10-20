@@ -66,8 +66,8 @@ namespace BOOST_PYTHON_SHUTTER_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ShutterFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<ShutterFactory, boost::noncopyable>("ShutterFactory", boost::python::no_init)
-			
-		
+			.def(boost::python::init<STATE>())
+			.def(boost::python::init<STATE, const std::string>())
 			.def("isEnergyInterlockGood", &ShutterFactory::isEnergyInterlockGood, name)
 			.def("isEnergyInterlockBad", &ShutterFactory::isEnergyInterlockBad, name)
 			.def("isChargeInterlockGood", &ShutterFactory::isChargeInterlockGood, name)

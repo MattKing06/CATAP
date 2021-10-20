@@ -27,6 +27,15 @@
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 
+namespace ListenerToPy
+{
+	struct convert_to_py : public boost::static_visitor<boost::python::object>
+	{
+		template<typename T>
+		boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
+	};
+}
+
 class Listener
 {
 public:
@@ -52,6 +61,8 @@ public:
 		@param[in] pv : The name of the PV to virtualize
 		@param[out] virtualPV : pv with VM- prepended to it*/
 	std::string getEPICSPVName(const std::string& pv);
+
+	void initialiseCurrentValue(const pvStruct& pv);
 
 	/*! Returns the bool status of whether a PV is connected or not
 		@param[in] pv : The name of the PV to check
@@ -191,7 +202,7 @@ public:
 template<typename T>
 inline void Listener::setValue(T value)
 {
-	currentValue = value;
+	currentValue = static_cast<T>(value);
 }
 
 template<typename T>

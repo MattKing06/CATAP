@@ -7,6 +7,7 @@ controls_information:
     RPOWER: CLA-C2V-MAG-DIP-01:RPOWER
     SETI: CLA-C2V-MAG-DIP-01:SETI
     SPOWER: CLA-C2V-MAG-DIP-01:SPOWER
+    ILK_RESET: CLA-C2V-MAG-DIP-01:Rst
     K_DIP_P:    CLA-C2V-MAG-DIP-01:K_DIP_P
     INT_STR_MM: CLA-C2V-MAG-DIP-01:INT_STR_MM
     INT_STR:    CLA-C2V-MAG-DIP-01:INT_STR
@@ -16,9 +17,9 @@ controls_information:
     K_VAL:      CLA-C2V-MAG-DIP-01:K_VAL
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL
 properties:
-  degauss_tolerance: 0.5
-  degauss_values: "124.0,-124.0,65.0,-65.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
-  field_integral_coefficients: "0.142064204721245,0.00344016005203196"
+  degauss_tolerance: 1.0
+  degauss_values: "123.0,-123.0,65.0,-65.0,30.0,-30.0,15.0,-15.0,7.0,-7.0,0.0"
+  field_integral_coefficients: "-1.10355E-09, 3.40411E-07, -4.20048E-05, 2.168E-03, 1.357714, 0.696315"
   hardware_type: Magnet
   machine_area: C2V
   mag_set_max_wait_time: 45.0
@@ -26,10 +27,10 @@ properties:
   magnetic_length: 399.216
   manufacturer: Danfysik
   name: CLA-C2V-MAG-DIP-01
-  name_alias: C2V-DIP01,C2V-DIP-01
+  name_alias: C2V-DIP01,C2V-DIP-01,C2V-DIP1,S02-DIP01,S02-DIP-01,S02-DIP1
   num_degauss_steps: 11
   position: 6.226873613
-  ri_tolerance: 0.05
+  ri_tolerance: 0.5
   serial_number: '13256'
   min_i : -130.0
   max_i : 130.0

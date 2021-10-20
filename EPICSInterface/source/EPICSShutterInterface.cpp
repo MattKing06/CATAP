@@ -97,29 +97,4 @@ void EPICSShutterInterface::updateShutterCmi(const struct event_handler_args arg
 		counter += 1; // meh 
 		messenger.printDebugMessage(bit_name, " value = ", recastShutter->cmi_bit_map.at(bit_name));
 	}
-
-	//recastShutter->interlock_bit_names
-
-	//size_t counter = 0;
-	//std::cout << "Printing CMI bit values " << std::endl;
-	//for (auto bit = 0; bit < 8; ++bit)
-	//{
-	//	(obj.cmi & (1 << bit)) >> bit
-	//}
-
-	//for (auto bit = 0; bit < 8; ++bit)//MAGIC_NUMBER
-	//{
-	//	//message(obj.name, " bit ", bit, " value = ",  (obj.cmi &( 1 << bit)) >> bit);
-	//	if (std::find(obj.protKeyBits.begin(),
-	//		obj.protKeyBits.end(), bit) != obj.protKeyBits.end())
-	//	{
-	//		obj.protKeyBitValues[counter] = (obj.cmi & (1 << bit)) >> bit;
-	//		//message("obj.protKeyBitValues part ",
-	//		//        counter, " = ",
-	//		//        obj.protKeyBitValues[counter]);
-	//		++counter;
-	//	}
-	//}
-
-
 }

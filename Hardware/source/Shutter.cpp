@@ -22,8 +22,8 @@ cmi(std::make_pair(epicsTimeStamp(), GlobalConstants::int_min)),
 epicsInterface(boost::make_shared<EPICSShutterInterface>(EPICSShutterInterface())) // calls copy constructor and destroys 
 {
 	epicsInterface->ownerName = hardwareName;
-	boost::split(aliases, paramsMap.find("name_alias")->second, [](char c) {return c == ','; });
-	boost::split(interlock_bit_names, paramsMap.find("shutter_interlock_names")->second, [](char c) {return c == ','; });
+	boost::split(aliases, paramsMap.at("name_alias"), [](char c) {return c == ','; });
+	boost::split(interlock_bit_names, paramsMap.at("shutter_interlock_names"), [](char c) {return c == ','; });
 
 	// set up the default state of each named interlock to false
 	for(auto&& name : interlock_bit_names)
@@ -245,6 +245,8 @@ bool Shutter::close()
 	// TODO move into epicsShutterInterface
 	if(epicsInterface->putValue2(pvStructs.at(ShutterRecords::Close), GlobalConstants::EPICS_ACTIVATE))
 	{
+		// todo  MAYBE WE NEED ONE OF THESE??
+		//GlobalFunctions::pause_500();
 		return epicsInterface->putValue2(pvStructs.at(ShutterRecords::Close), GlobalConstants::EPICS_SEND);
 	}
 	return false;
@@ -254,6 +256,8 @@ bool Shutter::open()
 	// TODO move into epicsShutterInterface
 	if (epicsInterface->putValue2(pvStructs.at(ShutterRecords::Open), GlobalConstants::EPICS_ACTIVATE))
 	{
+		// todo  MAYBE WE NEED ONE OF THESE??
+		//GlobalFunctions::pause_500();
 		return epicsInterface->putValue2(pvStructs.at(ShutterRecords::Open), GlobalConstants::EPICS_SEND);
 	}
 	return false;
@@ -280,7 +284,7 @@ void Shutter::setPVStructs()
 	{
 		pvStructs[record] = pvStruct();
 		pvStructs[record].pvRecord = record;
-		std::string PV = specificHardwareParameters.find(record)->second.data();
+		std::string PV = specificHardwareParameters.at(record).data();
 		messenger.printDebugMessage("Constructing PV information for ", PV);
 		switch (mode) 
 		{

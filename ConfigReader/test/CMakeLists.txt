@@ -1,12 +1,5 @@
 message( "Processing ConfigReader Unit Tests")
 enable_testing()
-find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework filesystem system)
-if(WIN32)
-	file(GLOB RELEASE_LIBS {THIRD_PARTY_LIBS}/Windows/x64/Release/*.dll)
-	file(GLOB DEBUG_LIBS {THIRD_PARTY_LIBS}/Windows/x64/Debug/*.dll)
-	message("REL LIBS: " ${RELEASE_LIBS})
-	message("DEB LIBS: " ${DEBUG_LIBS})
-endif(WIN32)
 
 if ( Boost_FOUND )
 		#Extract filename without extension

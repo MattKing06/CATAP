@@ -2,104 +2,129 @@
 controls_information:
     PV: true
     pv_record_map:
-        CAM_BlackLevel_RBV : EBT-INJ-DIA-CAM-05:CAM:BlackLevelRaw_RBV
-        CAM_BlackLevel :  EBT-INJ-DIA-CAM-05:CAM:BlackLevelRaw
-        CAM_Gain_RBV : EBT-INJ-DIA-CAM-05:CAM:GainRaw_RBV
-        CAM_Gain : EBT-INJ-DIA-CAM-05:CAM:GainRaw
+        # THESE SET THE MASK AND ROI TOGTHER AND SHOULD BE USED, 
+        # (BUT ACTUALLY THER IS A BUG MAYBE IN STEVE KINDER'S CODE, A WORKAROUND REQUIRES THEM TO MOVE INDEPENDENT
         # NO _RBV versions of these PVs 
-        ROIandMask_SetX : EBT-INJ-DIA-CAM-05:ANA:SetX
-        ROIandMask_SetY : EBT-INJ-DIA-CAM-05:ANA:SetY
+        ROIandMask_SetX    : EBT-INJ-DIA-CAM-05:ANA:SetX
+        ROIandMask_SetY    : EBT-INJ-DIA-CAM-05:ANA:SetY
         ROIandMask_SetXrad : EBT-INJ-DIA-CAM-05:ANA:SetXRad
         ROIandMask_SetYrad : EBT-INJ-DIA-CAM-05:ANA:SetYRad 
         # the "mask" from JW/TP implementation 
-        ANA_MaskXCenter    : EBT-INJ-DIA-CAM-05:ANA:MaskXCenter
-        ANA_MaskXCenter_RBV    : EBT-INJ-DIA-CAM-05:ANA:MaskXCenter_RBV
-        ANA_CenterX_RBV    : EBT-INJ-DIA-CAM-05:ANA:CenterX_RBV
-        ANA_CenterX    : EBT-INJ-DIA-CAM-05:ANA:CenterX
-        ANA_CenterY_RBV    : EBT-INJ-DIA-CAM-05:ANA:CenterY_RBV
-        ANA_CenterY    : EBT-INJ-DIA-CAM-05:ANA:CenterY
-        ANA_MaskYCenter    : EBT-INJ-DIA-CAM-05:ANA:MaskYCenter
-        ANA_MaskYCenter_RBV    : EBT-INJ-DIA-CAM-05:ANA:MaskYCenter_RBV
-        ANA_MaskXRad_RBV    : EBT-INJ-DIA-CAM-05:ANA:MaskXRad_RBV
-        ANA_MaskXRad    : EBT-INJ-DIA-CAM-05:ANA:MaskXRad
+        ANA_MaskXCenter     : EBT-INJ-DIA-CAM-05:ANA:MaskXCenter
+        ANA_MaskYCenter     : EBT-INJ-DIA-CAM-05:ANA:MaskYCenter
+        ANA_MaskXRad        : EBT-INJ-DIA-CAM-05:ANA:MaskXRad
+        ANA_MaskYRad        : EBT-INJ-DIA-CAM-05:ANA:MaskYRad
         ANA_MaskYRad_RBV    : EBT-INJ-DIA-CAM-05:ANA:MaskYRad_RBV
-        ANA_MaskYRad    : EBT-INJ-DIA-CAM-05:ANA:MaskYRad
+        ANA_MaskXRad_RBV    : EBT-INJ-DIA-CAM-05:ANA:MaskXRad_RBV
+        ANA_MaskWidth_RBV   : EBT-INJ-DIA-CAM-05:ANA:MaskWidth_RBV
+        ANA_MaskHeight_RBV  : EBT-INJ-DIA-CAM-05:ANA:MaskHeight_RBV
+        ANA_MaskYCenter_RBV : EBT-INJ-DIA-CAM-05:ANA:MaskYCenter_RBV
+        ANA_MaskXCenter_RBV : EBT-INJ-DIA-CAM-05:ANA:MaskXCenter_RBV
         # ROI SK implementation  
-        ROI1_MinX_RBV : EBT-INJ-DIA-CAM-05:ROI1:MinX_RBV
-        ROI1_MinX : EBT-INJ-DIA-CAM-05:ROI1:MinX
-        ROI1_MinY_RBV : EBT-INJ-DIA-CAM-05:ROI1:MinY_RBV
-        ROI1_MinY : EBT-INJ-DIA-CAM-05:ROI1:MinY
-        ROI1_SizeX_RBV : EBT-INJ-DIA-CAM-05:ROI1:SizeX_RBV
-        ROI1_SizeX : EBT-INJ-DIA-CAM-05:ROI1:SizeX
+        ROI1_MinX      : EBT-INJ-DIA-CAM-05:ROI1:MinX
+        ROI1_MinY      : EBT-INJ-DIA-CAM-05:ROI1:MinY
+        ROI1_SizeX     : EBT-INJ-DIA-CAM-05:ROI1:SizeX
+        ROI1_SizeY     : EBT-INJ-DIA-CAM-05:ROI1:SizeY
+        ROI1_MinY_RBV  : EBT-INJ-DIA-CAM-05:ROI1:MinY_RBV
+        ROI1_MinX_RBV  : EBT-INJ-DIA-CAM-05:ROI1:MinX_RBV
         ROI1_SizeY_RBV : EBT-INJ-DIA-CAM-05:ROI1:SizeY_RBV
-        ROI1_SizeY : EBT-INJ-DIA-CAM-05:ROI1:SizeY
+        ROI1_SizeX_RBV : EBT-INJ-DIA-CAM-05:ROI1:SizeX_RBV
         ROI1_ImageData_RBV  : EBT-INJ-DIA-CAM-05:CAM3:ArrayData
+        # central co-ord definition 
+        ANA_CenterX     : EBT-INJ-DIA-CAM-05:ANA:CenterX
+        ANA_CenterY     : EBT-INJ-DIA-CAM-05:ANA:CenterY
+        ANA_CenterX_RBV : EBT-INJ-DIA-CAM-05:ANA:CenterX_RBV
+        ANA_CenterY_RBV : EBT-INJ-DIA-CAM-05:ANA:CenterY_RBV
         # start stop acquiring images 
-        CAM_Start_Acquire    : EBT-INJ-DIA-CAM-05:CAM:Start   # VELA CAM is different to CLARA cam!!! 
-        CAM_Stop_Acquire    : EBT-INJ-DIA-CAM-05:CAM:Stop     # VELA CAM is different to CLARA cam!!! 
-        CAM_Acquire_RBV    : EBT-INJ-DIA-CAM-05:CAM:CameraState # VELA CAM is different to CLARA cam!!! 
+        CAM_Acquire_RBV   : EBT-INJ-DIA-CAM-05:CAM:Acquire_RBV
+        CAM_Active_Count  : EBT-B03-IOC-CS-05:cameraCount
+        CAM_Active_Limit  : EBT-B03-IOC-CS-05:cameraLimit
+        CAM_Stop_Acquire  : EBT-INJ-DIA-CAM-05:CAM:Stop
+        CAM_Start_Acquire : EBT-INJ-DIA-CAM-05:CAM:Start
         # #  analysis, enable callbacks is start / stop analysis 
-        ANA_EnableCallbacks_RBV    : EBT-INJ-DIA-CAM-05:ANA:EnableCallbacks_RBV
-        ANA_EnableCallbacks    : EBT-INJ-DIA-CAM-05:ANA:EnableCallbacks
-        # the analysis can use a back groun dsubtracted image 
-        ANA_NewBkgrnd    : EBT-INJ-DIA-CAM-05:ANA:NewBkgrnd
-        ANA_UseBkgrnd    : EBT-INJ-DIA-CAM-05:ANA:UseBkgrnd
-        # the analysis can use "n-point scaling" 
-        ANA_UseNPoint    : EBT-INJ-DIA-CAM-05:ANA:UseNPoint       
+        ANA_EnableCallbacks     : EBT-INJ-DIA-CAM-05:ANA:EnableCallbacks
+        ANA_EnableCallbacks_RBV : EBT-INJ-DIA-CAM-05:ANA:EnableCallbacks_RBV
+        # analysis overlays  (TO BE BENCHMARKED AND CROSS CHECKED SUSPECT INVERTED Y AXIS) 
+        ANA_OVERLAY_3_MASK       : EBT-INJ-DIA-CAM-05:OVER:3:Use
+        ANA_OVERLAY_1_CROSS      : EBT-INJ-DIA-CAM-05:OVER:1:Use
+        ANA_OVERLAY_2_RESULT     : EBT-INJ-DIA-CAM-05:OVER:2:Use
+        ANA_OVERLAY_3_MASK_RBV   : EBT-INJ-DIA-CAM-05:OVER:3:Use_RBV
+        ANA_OVERLAY_1_CROSS_RBV  : EBT-INJ-DIA-CAM-05:OVER:1:Use_RBV
+        ANA_OVERLAY_2_RESULT_RBV : EBT-INJ-DIA-CAM-05:OVER:2:Use_RBV
+        # the analysis can use a back ground subtracted image 
+        ANA_NewBkgrnd     : EBT-INJ-DIA-CAM-05:ANA:NewBkgrnd
+        ANA_UseBkgrnd     : EBT-INJ-DIA-CAM-05:ANA:UseBkgrnd
+        ANA_UseBkgrnd_RBV : EBT-INJ-DIA-CAM-05:ANA:UseBkgrnd_RBV
+        ANA_NewBkgrnd_RBV : EBT-INJ-DIA-CAM-05:ANA:NewBkgrnd_RBV
         # The analysis can set a noise floor, pixel values below this are set to zero 
-        ANA_UseFloor : EBT-INJ-DIA-CAM-05:ANA:UseFloor
-        ANA_UseFloor_RBV : EBT-INJ-DIA-CAM-05:ANA:UseFloor_RBV
-        ANA_FloorLevel    : EBT-INJ-DIA-CAM-05:ANA:Floor
-        ANA_FloorLevel_RBV    : EBT-INJ-DIA-CAM-05:ANA:Floor_RBV
-        ANA_FlooredPoints_RBV    : EBT-INJ-DIA-CAM-05:ANA:FLOORED_PTS
-        ANA_FlooredPercent_RBV    : EBT-INJ-DIA-CAM-05:ANA:FLOORED_PCENT
+        ANA_UseFloor           : EBT-INJ-DIA-CAM-05:ANA:UseFloor
+        ANA_FloorLevel         : EBT-INJ-DIA-CAM-05:ANA:Floor
+        ANA_UseFloor_RBV       : EBT-INJ-DIA-CAM-05:ANA:UseFloor_RBV
+        ANA_FloorLevel_RBV     : EBT-INJ-DIA-CAM-05:ANA:Floor_RBV
+        ANA_FlooredPoints_RBV  : EBT-INJ-DIA-CAM-05:ANA:FLOORED_PTS
+        ANA_FlooredPercent_RBV : EBT-INJ-DIA-CAM-05:ANA:FLOORED_PCENT
         # Analysis CPU metrics 
-        ANA_CPU_RBV    : EBT-INJ-DIA-CAM-05:ANA:ANA_CPU
-        ANA_CPU_CropSubMask_RBV    : EBT-INJ-DIA-CAM-05:ANA:CSM_CPU
-        ANA_CPU_Npoint_RBV    : EBT-INJ-DIA-CAM-05:ANA:NP_CPU
-        ANA_CPU_Dot_RBV    : EBT-INJ-DIA-CAM-05:ANA:DP_CPU
-        ANA_PixW_RBV : EBT-INJ-DIA-CAM-05:ANA:PixW_RBV
-        ANA_PixH_RBV : EBT-INJ-DIA-CAM-05:ANA:PixH_RBV
-        ANA_PixMM    : EBT-INJ-DIA-CAM-05:ANA:PixMM
-        ANA_PixMM_RBV    : EBT-INJ-DIA-CAM-05:ANA:PixMM_RBV
-        ANA_StepSize    : EBT-INJ-DIA-CAM-05:ANA:StepSize
-        ANA_StepSize_RBV    : EBT-INJ-DIA-CAM-05:ANA:StepSize_RBV
-        ANA_X_RBV    : EBT-INJ-DIA-CAM-05:ANA:X_RBV
-        ANA_Y_RBV    : EBT-INJ-DIA-CAM-05:ANA:Y_RBV
-        ANA_SigmaX_RBV    : EBT-INJ-DIA-CAM-05:ANA:SigmaX_RBV
-        ANA_SigmaY_RBV    : EBT-INJ-DIA-CAM-05:ANA:SigmaY_RBV
-        ANA_CovXY_RBV    : EBT-INJ-DIA-CAM-05:ANA:CovXY_RBV
-        ANA_AvgIntensity_RBV    : EBT-INJ-DIA-CAM-05:ANA:AvgIntensity_RBV
-        ANA_Intensity_RBV    : EBT-INJ-DIA-CAM-05:ANA:Intensity_RBV
-        ANA_XPix_RBV    : EBT-INJ-DIA-CAM-05:ANA:XPix_RBV
-        ANA_YPix_RBV    : EBT-INJ-DIA-CAM-05:ANA:YPix_RBV
-        ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-05:ANA:SigmaXPix_RBV
+        ANA_CPU_RBV             : EBT-INJ-DIA-CAM-05:ANA:ANA_CPU
+        ANA_CPU_Dot_RBV         : EBT-INJ-DIA-CAM-05:ANA:DP_CPU
+        ANA_CPU_Npoint_RBV      : EBT-INJ-DIA-CAM-05:ANA:NP_CPU
+        ANA_CPU_CropSubMask_RBV : EBT-INJ-DIA-CAM-05:ANA:CSM_CPU
+        # pixel conversions 
+        ANA_PixMM     : EBT-INJ-DIA-CAM-05:ANA:PixMM
+        ANA_PixW_RBV  : EBT-INJ-DIA-CAM-05:ANA:PixW_RBV
+        ANA_PixH_RBV  : EBT-INJ-DIA-CAM-05:ANA:PixH_RBV
+        ANA_PixMM_RBV : EBT-INJ-DIA-CAM-05:ANA:PixMM_RBV
+        # the analysis can use "n-point scaling" see image analysis notes written by DJS / Tim Price / Matt Toplis 
+        ANA_UseNPoint          : EBT-INJ-DIA-CAM-05:ANA:UseNPoint   
+        ANA_UseNPoint_RBV      : EBT-INJ-DIA-CAM-05:ANA:UseNPoint_RBV   
+        ANA_NPointStepSize     : EBT-INJ-DIA-CAM-05:ANA:StepSize
+        ANA_NPointStepSize_RBV : EBT-INJ-DIA-CAM-05:ANA:StepSize_RBV
+        # ANALYIS RESULTS
+        ANA_X_RBV            : EBT-INJ-DIA-CAM-05:ANA:X_RBV
+        ANA_Y_RBV            : EBT-INJ-DIA-CAM-05:ANA:Y_RBV
+        ANA_XPix_RBV         : EBT-INJ-DIA-CAM-05:ANA:XPix_RBV
+        ANA_YPix_RBV         : EBT-INJ-DIA-CAM-05:ANA:YPix_RBV
+        ANA_CovXY_RBV        : EBT-INJ-DIA-CAM-05:ANA:CovXY_RBV
+        ANA_SigmaY_RBV       : EBT-INJ-DIA-CAM-05:ANA:SigmaY_RBV
+        ANA_SigmaX_RBV       : EBT-INJ-DIA-CAM-05:ANA:SigmaX_RBV
+        ANA_CovXYPix_RBV     : EBT-INJ-DIA-CAM-05:ANA:CovXYPix_RBV
         ANA_SigmaYPix_RBV    : EBT-INJ-DIA-CAM-05:ANA:SigmaYPix_RBV
-        ANA_CovXYPix_RBV    : EBT-INJ-DIA-CAM-05:ANA:CovXYPix_RBV
-        ANA_PixelResults_RBV    : EBT-INJ-DIA-CAM-05:ANA:PixelResults_RBV 
-        # # actuall array data
-        CAM2_ArrayData    : EBT-INJ-DIA-CAM-05:CAM2:ArrayData
-        HDFB_Buffer_Trigger : EBT-INJ-DIA-CAM-05:CAM:Trigger.PROC
-        HDFB_Buffer_FilePath : EBT-INJ-DIA-CAM-05:HDFB:FilePath
-        HDFB_Buffer_FilePath_RBV : EBT-INJ-DIA-CAM-05:HDFB:FilePath_RBV
-        HDFB_Buffer_FileName : EBT-INJ-DIA-CAM-05:HDFB:FileName
-        HDFB_Buffer_FileName_RBV : EBT-INJ-DIA-CAM-05:HDFB:FileName_RBV
-        HDFB_Buffer_FileNumber : EBT-INJ-DIA-CAM-05:HDFB:FileNumber
-        HDFB_Buffer_FileNumber_RBV : EBT-INJ-DIA-CAM-05:HDFB:FileNumber_RBV
-        # HDF_NumCapture_RBV    : CLA-VCAWws-DIA-CAM-01:HDF:NumCapture_RBV
-        CAM_AcquireTime_RBV    : EBT-INJ-DIA-CAM-05:CAM:AcquireTime_RBV
-        CAM_AcquirePeriod_RBV    : EBT-INJ-DIA-CAM-05:CAM:AcquirePeriod_RBV
-        CAM_ArrayRate_RBV    : EBT-INJ-DIA-CAM-05:CAM:ArrayRate_RBV
-        CAM_Temperature_RBV    : EBT-INJ-DIA-CAM-05:CAM:Temperature_RBV
-        HDF_Capture    : EBT-INJ-DIA-CAM-05:HDF:Capture
-        HDF_NumCapture    : EBT-INJ-DIA-CAM-05:HDF:NumCapture
-        HDF_FilePath    : EBT-INJ-DIA-CAM-05:HDF:FilePath
-        HDF_FileName    : EBT-INJ-DIA-CAM-05:HDF:FileName
-        HDF_FileNumber    : EBT-INJ-DIA-CAM-05:HDF:FileNumber
-        HDF_FileNumber_RBV    : EBT-INJ-DIA-CAM-05:HDF:FileNumber_RBV
-        HDF_FilePath_RBV    : EBT-INJ-DIA-CAM-05:HDF:FilePath_RBV
-        HDF_FileName_RBV    : EBT-INJ-DIA-CAM-05:HDF:FileName_RBV
-        HDF_WriteFile    : EBT-INJ-DIA-CAM-05:HDF:WriteFile
+        ANA_SigmaXPix_RBV    : EBT-INJ-DIA-CAM-05:ANA:SigmaXPix_RBV
+        ANA_Intensity_RBV    : EBT-INJ-DIA-CAM-05:ANA:Intensity_RBV
+        ANA_MMResults_RBV    : EBT-INJ-DIA-CAM-05:ANA:MMResults_RBV 
+        ANA_PixelResults_RBV : EBT-INJ-DIA-CAM-05:ANA:PixelResults_RBV 
+        ANA_AvgIntensity_RBV : EBT-INJ-DIA-CAM-05:ANA:AvgIntensity_RBV
+        # # actual array data
+        CAM1_ArrayData : EBT-INJ-DIA-CAM-05:CAM1:ArrayData
+        CAM2_ArrayData : EBT-INJ-DIA-CAM-05:CAM2:ArrayData
+        # CAM3_ArrayData    : EBT-INJ-DIA-CAM-05:CAM3:ArrayData
+        # image buffer dumping
+        HDFB_Buffer_FileNumber         : EBT-INJ-DIA-CAM-05:HDFB:FileNumber
+        HDFB_image_buffer_trigger      : EBT-INJ-DIA-CAM-05:CAM:Trigger.PROC
+        HDFB_Buffer_FileNumber_RBV     : EBT-INJ-DIA-CAM-05:HDFB:FileNumber_RBV
+        HDFB_image_buffer_filePath     : EBT-INJ-DIA-CAM-05:HDFB:FilePath
+        HDFB_image_buffer_fileName     : EBT-INJ-DIA-CAM-05:HDFB:FileName
+        HDFB_image_buffer_fileName_RBV : EBT-INJ-DIA-CAM-05:HDFB:FileName_RBV
+        HDFB_image_buffer_filePath_RBV : EBT-INJ-DIA-CAM-05:HDFB:FilePath_RBV
+        # cam array rate and temperature 
+        CAM_ArrayRate_RBV     : EBT-INJ-DIA-CAM-05:CAM:ArrayRate_RBV
+        CAM_Temperature_RBV   : EBT-INJ-DIA-CAM-05:CAM:Temperature_RBV
+        CAM_AcquireTime_RBV   : EBT-INJ-DIA-CAM-05:CAM:AcquireTime_RBV
+        CAM_AcquirePeriod_RBV : EBT-INJ-DIA-CAM-05:CAM:AcquirePeriod_RBV
+        # image capture
+        HDF_Capture        : EBT-INJ-DIA-CAM-05:HDF:Capture
+        HDF_FilePath       : EBT-INJ-DIA-CAM-05:HDF:FilePath
+        HDF_FileName       : EBT-INJ-DIA-CAM-05:HDF:FileName
+        HDF_WriteFile      : EBT-INJ-DIA-CAM-05:HDF:WriteFile
+        HDF_FileNumber     : EBT-INJ-DIA-CAM-05:HDF:FileNumber
+        HDF_NumCapture     : EBT-INJ-DIA-CAM-05:HDF:NumCapture
+        HDF_WriteStatus    : EBT-INJ-DIA-CAM-05:HDF:WriteStatus
+        HDF_Capture_RBV    : EBT-INJ-DIA-CAM-05:HDF:Capture_RBV
+        HDF_WriteMessage   : EBT-INJ-DIA-CAM-05:HDF:WriteMessage
+        HDF_FilePath_RBV   : EBT-INJ-DIA-CAM-05:HDF:FilePath_RBV
+        HDF_FileName_RBV   : EBT-INJ-DIA-CAM-05:HDF:FileName_RBV
+        HDF_WriteFile_RBV  : EBT-INJ-DIA-CAM-05:HDF:WriteFile_RBV # TODO add to all cams
+        HDF_FileNumber_RBV : EBT-INJ-DIA-CAM-05:HDF:FileNumber_RBV
+        HDF_NumCapture_RBV : EBT-INJ-DIA-CAM-05:HDF:NumCapture_RBV
         # MAGICK_FileName    : EBT-INJ-DIA-CAM-05:MAGICK:FileName
         # MAGICK_FilePath    : EBT-INJ-DIA-CAM-05:MAGICK:FilePath
         # MAGICK_FileNumber    : EBT-INJ-DIA-CAM-05:MAGICK:FileNumber
@@ -112,11 +137,14 @@ controls_information:
         # MAGICK_WriteMessage    : EBT-INJ-DIA-CAM-05:MAGICK:WriteMessage
         # MAGICK_Capture_RBV    : EBT-INJ-DIA-CAM-05:MAGICK:Capture_RBV
         # MAGICK_NumCapture_RBV    : EBT-INJ-DIA-CAM-05:MAGICK:NumCapture_RBV
-        ANA_PixMM    : EBT-INJ-DIA-CAM-05:ANA:PixMM
-        LED_Sta    : EBT-INJ-DIA-LED-01:Sta
-        LED_Off    : EBT-INJ-DIA-LED-01:Off
-        LED_On    : EBT-INJ-DIA-LED-01:Sta
-
+        # LEDs, also go in their own factory 
+        LED_Sta : EBT-INJ-DIA-LED-01:Sta
+        LED_Off : EBT-INJ-DIA-LED-01:Off
+        LED_On  : EBT-INJ-DIA-LED-01:On
+        CAM_Gain :           EBT-INJ-DIA-CAM-05:CAM:GainRaw
+        CAM_Gain_RBV :       EBT-INJ-DIA-CAM-05:CAM:GainRaw_RBV
+        CAM_BlackLevel :     EBT-INJ-DIA-CAM-05:CAM:BlackLevelRaw
+        CAM_BlackLevel_RBV : EBT-INJ-DIA-CAM-05:CAM:BlackLevelRaw_RBV
 properties:
     hardware_type: Camera
     machine_area : INJ # Set by where the camera physically *IS* 
@@ -139,19 +167,19 @@ properties:
     X_SIGMA_NAME : X_SIGMA
     Y_SIGMA_NAME : Y_SIGMA
     COV_NAME : COV
-    X_MASK_DEF				: 1280 #; some default values, better values  are to be determined
-    Y_MASK_DEF				: 1080 #; some default values, better values  are to be determined
+    X_MASK_DEF				: 1392 #; some default values, better values  are to be determined
+    Y_MASK_DEF				: 1040 #; some default values, better values  are to be determined
     X_MASK_RAD_DEF			: 1240 #some default values, better values  are to be determined
     Y_MASK_RAD_DEF			: 1040 #some default values, better values  are to be determined
     X_MASK_RAD_MAX			: 300 ##max value of mask radius 
     Y_MASK_RAD_MAX			: 300 #max value of mask radius
     USE_MASK_RAD_LIMITS : TRUE #; shoudl use mask max values
-    ARRAY_DATA_NUM_PIX_X : 1280 #; array data passed through EPICS
-    ARRAY_DATA_NUM_PIX_Y : 1080 #; array data passed through EPICS
-    BINARY_NUM_PIX_X : 2560 #; the binary image is bigger than the array data passed through EPICS
-    BINARY_NUM_PIX_Y : 2160 #; the binary image is bigger than the array data passed through EPICS
-    X_PIX_SCALE_FACTOR : 2 #; scaling from array_data num pixels to binary image data num pixels
-    Y_PIX_SCALE_FACTOR : 2 #; 
+    ARRAY_DATA_NUM_PIX_X : 1392 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_Y : 1040 #; array data passed through EPICS
+    BINARY_NUM_PIX_X : 1392 #; the binary image is bigger than the array data passed through EPICS
+    BINARY_NUM_PIX_Y : 1040 #; the binary image is bigger than the array data passed through EPICS
+    X_PIX_SCALE_FACTOR : 1 #; scaling from array_data num pixels to binary image data num pixels
+    Y_PIX_SCALE_FACTOR : 1 #; 
     AVG_PIXEL_VALUE_FOR_BEAM : 97.2 #;  emprically determined value for when laser is present
     X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
     Y_CENTER_DEF      : 0 #;
@@ -164,475 +192,9 @@ properties:
     MAX_X_PIXEL_POS : 2400.0 #; these are used to decide if the beam is close to the edge
     MIN_Y_PIXEL_POS : 150.0 #;  these are used to decide if the beam is close to the edge
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
-
-
-
-# PV_IA_SUFFIX_X_RBV		= ANA:X_RBV;
-# PV_IA_SUFFIX_Y_RBV		= ANA:Y_RBV;
-# PV_IA_SUFFIX_SIGMA_X_RBV= ANA:SigmaX_RBV;
-# PV_IA_SUFFIX_SIGMA_Y_RBV= ANA:SigmaY_RBV;
-# PV_IA_SUFFIX_COV_XY_RBV = ANA:CovXY_RBV;
-# PV_IA_SUFFIX_X_PIX_RBV	= ANA:XPix_RBV;
-# PV_IA_SUFFIX_Y_PIX_RBV	= ANA:YPix_RBV;
-# PV_IA_SUFFIX_SIGMA_X_PIX_RBV= ANA:SigmaXPix_RBV;
-# PV_IA_SUFFIX_SIGMA_Y_PIX_RBV= ANA:SigmaYPix_RBV;
-# PV_IA_SUFFIX_COV_XY_PIX_RBV	= ANA:CovXYPix_RBV;
-# PV_IA_SUFFIX_SUM_PIX_INTENSITY_RBV = ANA:Intensity_RBV;
-# PV_IA_SUFFIX_AV_PIX_INTENSITY_RBV = ANA:AvgIntensity_RBV;
-# PV_IA_SUFFIX_PIXEL_RESULTS_RBV = ANA:PixelResults_RBV;
-# PV_IA_SUFFIX_MASK_X_RAD_RBV = ANA:MaskXRad_RBV;
-# PV_IA_SUFFIX_MASK_Y_RAD_RBV = ANA:MaskYRad_RBV;
-# PV_IA_SUFFIX_MASK_X_RBV = ANA:MaskXCenter_RBV;
-# PV_IA_SUFFIX_MASK_Y_RBV = ANA:MaskYCenter_RBV;
-# PV_IA_SUFFIX_PIX_MM_RBV = ANA:PixMM_RBV;
-# PV_IA_SUFFIX_CENTER_X_RBV = ANA:CenterX_RBV;
-# PV_IA_SUFFIX_CENTER_Y_RBV = ANA:CenterY_RBV;
-# PV_IA_SUFFIX_STEP_SIZE_RBV 	= ANA:StepSize_RBV;
-# PV_IA_SUFFIX_START_IA_RBV= ANA:EnableCallbacks_RBV;
-# PV_IA_SUFFIX_USE_B_RBV	= ANA:UseBkgrnd;
-# PV_IA_SUFFIX_USE_NPOINT_RBV	= ANA:UseNPoint;
-# PV_DAQ_SUFFIX_ACQUIRE_RBV= CAM:Acquire_RBV;
-# PV_DAQ_SUFFIX_CAPTURE_RBV	= HDF:Capture_RBV;
-# PV_DAQ_SUFFIX_NUM_CAPTURED_RBV	= HDF:NumCaptured_RBV;
-# PV_DAQ_SUFFIX_NUM_CAPTURE_RBV = HDF:NumCapture_RBV;
-# PV_DAQ_SUFFIX_WRITE_STATUS 	= HDF:WriteStatus;
-# PV_DAQ_SUFFIX_WRITE_FILE_RBV 	= HDF:WriteFile_RBV;
-# PV_DAQ_SUFFIX_WRITE_MESSAGE = HDF:WriteMessage;
-# PV_DAQ_SUFFIX_CAPTURE_RBV_J	= MAGICK:Capture_RBV;
-# PV_DAQ_SUFFIX_NUM_CAPTURED_J	= MAGICK:NumCaptured_RBV;
-# PV_DAQ_SUFFIX_NUM_CAPTURE_RBV_J = MAGICK:NumCapture_RBV;
-# PV_DAQ_SUFFIX_WRITE_CHECK_J 	= MAGICK:WriteStatus;
-# PV_DAQ_SUFFIX_WRITE_RBV_J 	= MAGICK:WriteFile_RBV;
-# PV_DAQ_SUFFIX_WRITE_MESSAGE_J = MAGICK:WriteMessage;
-# PV_DAQ_SUFFIX_EXPOSURE_RBV 	= CAM:AcquireTime_RBV;
-# PV_DAQ_SUFFIX_ACQ_PERIOD_RBV = CAM:AcquirePeriod_RBV;
-# PV_DAQ_SUFFIX_FREQ_RBV 		= CAM:ArrayRate_RBV;
-# PV_DAQ_SUFFIX_SENSOR_TEMP_RBV = CAM:Temperature_RBV;
-# PV_SUFFIX_LED_STA = CLA-LAS-DIA-LED-01:Sta;
-# ;PV_IA_SUFFIX_START_ACQUIRE = CAM:Acquire;
-# ;PV_IA_SUFFIX_STOP_ACQUIRE = CAM:Acquire;
-# PV_SUFFIX_DATA 	= CAM2:ArrayData;
-# PV_IA_SUFFIX_START_IA   = ANA:EnableCallbacks;
-# PV_IA_SUFFIX_SET_B      = ANA:NewBkgrnd;
-# PV_IA_SUFFIX_USE_B      = ANA:UseBkgrnd;
-# PV_IA_SUFFIX_USE_NPOINT = ANA:UseNPoint;
-# PV_IA_SUFFIX_CENTER_X 	= ANA:CenterX;#pixel offset centre 
-# PV_IA_SUFFIX_CENTER_Y 	= ANA:CenterY;
-# PV_IA_SUFFIX_PIX_MM 	= ANA:PixMM;
-# PV_IA_SUFFIX_STEP_SIZE 	= ANA:StepSize;
-# PV_IA_SUFFIX_MASK_X = ANA:MaskXCenter;
-# PV_IA_SUFFIX_MASK_Y = ANA:MaskYCenter;
-# PV_IA_SUFFIX_MASK_X_RAD = ANA:MaskXRad;
-# PV_IA_SUFFIX_MASK_Y_RAD = ANA:MaskYRad;
-# PV_DAQ_SUFFIX_START_ACQUIRE= CAM:Acquire;
-# PV_DAQ_SUFFIX_STOP_ACQUIRE   = CAM:Acquire;
-# PV_DAQ_SUFFIX_FILE_PATH 	= HDF:FilePath;
-# PV_DAQ_SUFFIX_FILE_NAME 	= HDF:FileName;
-# PV_DAQ_SUFFIX_CAPTURE 		= HDF:Capture;
-# PV_DAQ_SUFFIX_FILE_NUMBER 	= HDF:FileNumber;
-# PV_DAQ_SUFFIX_WRITE 		= HDF:WriteFile;
-# PV_DAQ_SUFFIX_NUM_CAPTURE 	= HDF:NumCapture;
-# PV_DAQ_SUFFIX_FILE_PATH_J 	= MAGICK:FilePath;
-# PV_DAQ_SUFFIX_FILE_NAME_J 	= MAGICK:FileName;
-# PV_DAQ_SUFFIX_CAPTURE_J 	= MAGICK:Capture;
-# PV_DAQ_SUFFIX_FILE_NUMBER_J 	= MAGICK:FileNumber;
-# PV_DAQ_SUFFIX_WRITE_J 	= MAGICK:WriteFile;
-# PV_DAQ_SUFFIX_NUM_CAPTURE_J = MAGICK:NumCapture;
-# PV_SUFFIX_LED_ON = CLA-LAS-DIA-LED-01:On;
-# PV_SUFFIX_LED_OFF = CLA-LAS-DIA-LED-01:Off;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# PV_IA_SUFFIX_X_RBV		= ANA:X_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;2
-# PV_IA_SUFFIX_Y_RBV		= ANA:Y_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;3
-# PV_IA_SUFFIX_SIGMA_X_RBV= ANA:SigmaX_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;4
-# PV_IA_SUFFIX_SIGMA_Y_RBV= ANA:SigmaY_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;5
-# PV_IA_SUFFIX_COV_XY_RBV = ANA:CovXY_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;6
-# PV_IA_SUFFIX_X_PIX_RBV	= ANA:XPix_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;7
-# PV_IA_SUFFIX_Y_PIX_RBV	= ANA:YPix_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;8
-# PV_IA_SUFFIX_SIGMA_X_PIX_RBV= ANA:SigmaXPix_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;9
-# PV_IA_SUFFIX_SIGMA_Y_PIX_RBV= ANA:SigmaYPix_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;10
-# PV_IA_SUFFIX_COV_XY_PIX_RBV	= ANA:CovXYPix_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;11
-# PV_IA_SUFFIX_SUM_PIX_INTENSITY_RBV = ANA:Intensity_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;12
-# PV_IA_SUFFIX_AV_PIX_INTENSITY_RBV = ANA:AvgIntensity_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;13
-# PV_IA_SUFFIX_PIXEL_RESULTS_RBV = ANA:PixelResults_RBV;
-# PV_CHTYPE      			= DBR_TIME_DOUBLE;
-# PV_COUNT            	= 5;should be 7 when controls add in all analysis results !!!
-# PV_MASK             	= DBE_VALUE;
-# ; mask read backs
-# ;14
-# PV_IA_SUFFIX_MASK_X_RAD_RBV = ANA:MaskXRad_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;15
-# PV_IA_SUFFIX_MASK_Y_RAD_RBV = ANA:MaskYRad_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;16
-# PV_IA_SUFFIX_MASK_X_RBV = ANA:MaskXCenter_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;17
-# PV_IA_SUFFIX_MASK_Y_RBV = ANA:MaskYCenter_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;18
-# PV_IA_SUFFIX_PIX_MM_RBV = ANA:PixMM_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;19
-# PV_IA_SUFFIX_CENTER_X_RBV = ANA:CenterX_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;20
-# PV_IA_SUFFIX_CENTER_Y_RBV = ANA:CenterY_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;21
-# PV_IA_SUFFIX_STEP_SIZE_RBV 	= ANA:StepSize_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE
-# ; analysis states
-# ;22
-# PV_IA_SUFFIX_START_IA_RBV= ANA:EnableCallbacks_RBV;
-# PV_CHTYPE   			= DBR_ENUM;
-# PV_COUNT    			= 1;
-# PV_MASK					= DBE_VALUE;
-# ;23
-# PV_IA_SUFFIX_USE_B_RBV	= ANA:UseBkgrnd;
-# PV_CHTYPE   			= DBR_ENUM;
-# PV_COUNT    			= 1;
-# PV_MASK					= DBE_VALUE;
-# ;24
-# PV_IA_SUFFIX_USE_NPOINT_RBV	= ANA:UseNPoint;
-# PV_CHTYPE   			= DBR_ENUM;
-# PV_COUNT    			= 1;
-# PV_MASK					= DBE_VALUE;
-# ;acquire readbacks
-# ;25
-# PV_DAQ_SUFFIX_ACQUIRE_RBV= CAM:Acquire_RBV;
-# PV_CHTYPE   			= DBR_ENUM;
-# PV_COUNT    			= 1;
-# PV_MASK					= DBE_VALUE;
-# ;26
-# PV_DAQ_SUFFIX_CAPTURE_RBV	= HDF:Capture_RBV;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;27
-# PV_DAQ_SUFFIX_NUM_CAPTURED_RBV	= HDF:NumCaptured_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;28
-# PV_DAQ_SUFFIX_NUM_CAPTURE_RBV = HDF:NumCapture_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;29
-# PV_DAQ_SUFFIX_WRITE_STATUS 	= HDF:WriteStatus;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;30
-# PV_DAQ_SUFFIX_WRITE_FILE_RBV 	= HDF:WriteFile_RBV;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;31
-# PV_DAQ_SUFFIX_WRITE_MESSAGE = HDF:WriteMessage;
-# PV_CHTYPE      			= DBR_CHAR;
-# PV_COUNT            	= 256;
-# PV_MASK             	= DBE_VALUE;
-# ;32
-# #################################JPEG MONITORS###################################
-# PV_DAQ_SUFFIX_CAPTURE_RBV_J	= MAGICK:Capture_RBV;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;33
-# PV_DAQ_SUFFIX_NUM_CAPTURED_J	= MAGICK:NumCaptured_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;34
-# PV_DAQ_SUFFIX_NUM_CAPTURE_RBV_J = MAGICK:NumCapture_RBV;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;35
-# PV_DAQ_SUFFIX_WRITE_CHECK_J 	= MAGICK:WriteStatus;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;36
-# PV_DAQ_SUFFIX_WRITE_RBV_J 	= MAGICK:WriteFile_RBV;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;37
-# PV_DAQ_SUFFIX_WRITE_MESSAGE_J = MAGICK:WriteMessage;
-# PV_CHTYPE      			= DBR_CHAR;
-# PV_COUNT            	= 256;
-# PV_MASK             	= DBE_VALUE;
-# ;##################################DAQ 
-# ;38
-# PV_DAQ_SUFFIX_EXPOSURE_RBV 	= CAM:AcquireTime_RBV;
-# PV_CHTYPE      			= DBR_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;39
-# PV_DAQ_SUFFIX_ACQ_PERIOD_RBV = CAM:AcquirePeriod_RBV;
-# PV_CHTYPE      			= DBR_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;40
-# PV_DAQ_SUFFIX_FREQ_RBV 		= CAM:ArrayRate_RBV;
-# PV_CHTYPE      			= DBR_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;41
-# PV_DAQ_SUFFIX_SENSOR_TEMP_RBV = CAM:Temperature_RBV;
-# PV_CHTYPE      			= DBR_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-
-# PV_SUFFIX_LED_STA = CLA-LAS-DIA-LED-01:Sta;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-
-
-# PV_COMMANDS_START;
-
-# ;1  ????
-# ;PV_IA_SUFFIX_START_ACQUIRE = CAM:Acquire;
-# ;PV_CHTYPE      			= DBR_ENUM;
-# ;PV_COUNT            	= 1;
-# ;PV_MASK             	= DBE_VALUE;
-# ;2  ????
-# ;PV_IA_SUFFIX_STOP_ACQUIRE = CAM:Acquire;
-# ;PV_CHTYPE      			= DBR_ENUM;
-# ;PV_COUNT            	= 1;
-# ;PV_MASK             	= DBE_VALUE;
-
-
-
-# PV_SUFFIX_DATA 	= CAM2:ArrayData;
-# PV_CHTYPE      			= DBR_TIME_LONG;
-# PV_COUNT            	= 1382400;
-# PV_MASK             	= DBE_VALUE;
-
-# ;1
-# PV_IA_SUFFIX_START_IA   = ANA:EnableCallbacks;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;2
-# PV_IA_SUFFIX_SET_B      = ANA:NewBkgrnd;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;3
-# PV_IA_SUFFIX_USE_B      = ANA:UseBkgrnd;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;4
-# PV_IA_SUFFIX_USE_NPOINT = ANA:UseNPoint;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;5
-# PV_IA_SUFFIX_CENTER_X 	= ANA:CenterX;#pixel offset centre 
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;6
-# PV_IA_SUFFIX_CENTER_Y 	= ANA:CenterY;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;7
-# PV_IA_SUFFIX_PIX_MM 	= ANA:PixMM;
-# PV_CHTYPE      			= DBR_DOUBLE;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;8
-# PV_IA_SUFFIX_STEP_SIZE 	= ANA:StepSize;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;9
-
-# ;10
-# PV_IA_SUFFIX_MASK_X = ANA:MaskXCenter;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;11
-# PV_IA_SUFFIX_MASK_Y = ANA:MaskYCenter;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;12
-# PV_IA_SUFFIX_MASK_X_RAD = ANA:MaskXRad;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;13
-# PV_IA_SUFFIX_MASK_Y_RAD = ANA:MaskYRad;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;14
-# PV_DAQ_SUFFIX_START_ACQUIRE= CAM:Acquire;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;15
-# PV_DAQ_SUFFIX_STOP_ACQUIRE   = CAM:Acquire;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;16
-# PV_DAQ_SUFFIX_FILE_PATH 	= HDF:FilePath;
-# PV_CHTYPE      			= DBR_CHAR;
-# PV_COUNT            	= 256;
-# PV_MASK             	= DBE_VALUE;
-# ;17
-# PV_DAQ_SUFFIX_FILE_NAME 	= HDF:FileName;
-# PV_CHTYPE      			= DBR_CHAR;
-# PV_COUNT            	= 256;
-# PV_MASK             	= DBE_VALUE;
-# ;18
-# PV_DAQ_SUFFIX_CAPTURE 		= HDF:Capture;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;19
-# PV_DAQ_SUFFIX_FILE_NUMBER 	= HDF:FileNumber;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;20
-# PV_DAQ_SUFFIX_WRITE 		= HDF:WriteFile;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;21
-# PV_DAQ_SUFFIX_NUM_CAPTURE 	= HDF:NumCapture;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;22
-# PV_DAQ_SUFFIX_FILE_PATH_J 	= MAGICK:FilePath;
-# PV_CHTYPE      			= DBR_CHAR;
-# PV_COUNT            	= 256;
-# PV_MASK             	= DBE_VALUE;
-# ;23
-# PV_DAQ_SUFFIX_FILE_NAME_J 	= MAGICK:FileName;
-# PV_CHTYPE      			= DBR_CHAR;
-# PV_COUNT            	= 256;
-# PV_MASK             	= DBE_VALUE;
-# ;24
-# PV_DAQ_SUFFIX_CAPTURE_J 	= MAGICK:Capture;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;25
-# PV_DAQ_SUFFIX_FILE_NUMBER_J 	= MAGICK:FileNumber;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;26
-# PV_DAQ_SUFFIX_WRITE_J 	= MAGICK:WriteFile;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-# ;27
-# PV_DAQ_SUFFIX_NUM_CAPTURE_J = MAGICK:NumCapture;
-# PV_CHTYPE      			= DBR_LONG;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-
-# PV_SUFFIX_LED_ON = CLA-LAS-DIA-LED-01:On;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-
-# PV_SUFFIX_LED_OFF = CLA-LAS-DIA-LED-01:Off;
-# PV_CHTYPE      			= DBR_ENUM;
-# PV_COUNT            	= 1;
-# PV_MASK             	= DBE_VALUE;
-
+    HAS_LED : TRUE
+    # empircally determined,  
+    OPERATING_CENTER_X : 1000
+    OPERATING_CENTER_Y : 1000
+    MECHANICAL_CENTER_X : 1000
+    MECHANICAL_CENTER_Y : 1000 

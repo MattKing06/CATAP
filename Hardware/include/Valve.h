@@ -27,6 +27,8 @@ public:
 		@param[in] mode Defines the STATE of Valve we create: PHYSICAL (connected to CLARA EPICS), VIRTUAL (connected to Virtual EPICS), Offline (no EPICS)
 	*/
 	Valve(const std::map<std::string, std::string>& valveParameterMap, STATE mode);
+
+	Valve(const Valve& copyValve);
 	/*! EPICSValveInterface for valve-specifc calls to EPICS, includes setting open/closed state and monitoring current states*/
 	EPICSValveInterface_sptr epicsInterface;
 	/*! A map for storing the parameters extracted from YAML config files and their values */
@@ -47,6 +49,12 @@ public:
 	If we have a Virtual valve then the request is sent to EPICSValveInterface to close the valve.
 	If we have an Offline valve then the valve state variable is simply set to CLOSED. */
 	void close();
+
+
+	// THESE CAN'T BE const as theere is the call an "update" of the map which is necessarily non const 
+	HardwareSnapshot getSnapshot()  override;
+	boost::python::dict getSnapshot_Py() override;
+
 	/*! directly sets the valveState variable.
 	This is mainly called by the EPICSValveInterface when updating the valveState from EPICS callback function
 	@param[in] state the state which we wish to set the valve to (OPEN,CLOSED,ERR)
@@ -55,6 +63,7 @@ public:
 	/*! retrieves the valveState variable for this Valve object
 	@param [out] valveState the current state of the Valve object (OPEN,CLOSED,ERR) */
 	STATE getValveState() const;
+	bool isMoving() const;
 	/*! checks whether the current valveState is open. 
 	@param[out] bool true if valveState is open, false if valveState is CLOSED or ERR */
 	bool isOpen() const;
@@ -72,6 +81,7 @@ public:
 	void messagesOn();
 	/*! turns messaging off for this Valve instance*/
 	void messagesOff();
+
 	friend class EPICSValveInterface;
 protected:
 	/*! vector containing aliases of this Valve instance*/

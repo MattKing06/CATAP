@@ -2,14 +2,17 @@
 #define HARDWARE_H_
 #include <map>
 #include <iostream>
+#include <boost/variant.hpp>
 #include <LoggingSystem.h>
 #ifndef PV_H_
 #include <PV.h>
 #endif
 #include <GlobalStateEnums.h>
 #include <GlobalTypeEnums.h>
+#include <GlobalFunctions.h>
 #include "GlobalConstants.h"
-#include "HardwareState.h"
+#include <boost/python/dict.hpp>
+#include <HardwareSnapshot.h>
 
 /** @defgroup hardware Hardware
  *  @brief A collection of classes that represent hardware components of VELA/CLARA with parameters defined by configuration files.
@@ -47,18 +50,36 @@ public:
 	bool isPhysical()const;
 	bool isOffline()const;
 
+	std::map<std::string, std::string> getSpecificHardwareParameters() const;
+	std::map<std::string, std::string> getOfflineProperties()const;
+	boost::python::dict getOfflineProperties_Py();
+	void setOfflineProperties(const std::map<std::string, std::string>& properties);
+	std::map<std::string, std::string> getOnlineProperties()const;
+	boost::python::dict getOnlineProperties_Py();
+	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
+	virtual HardwareSnapshot getSnapshot();
+	virtual boost::python::dict getSnapshot_Py();
+	std::map<std::string, std::string> offlineProperties;
+	std::map<std::string, std::string> onlineProperties;
 	// TODO: do we need this? can't an child of these class just access pvStructs,
 	// and no other class should be able ot get this map??? 
 	std::map<std::string, pvStruct>& getPVStructs();
 	// TODO  for some reaons i think these should be keyed by an enum giving their type 
 	//std::map<int, pvStruct>& getPVStructs2();
 
+	// should be updated when you getSnapoht in the specific hardware class
+	HardwareSnapshot currentSnapshot;
+
+	HardwareSnapshot getHardwareSnapshot();
+	boost::python::dict getHardwareSnapshot_Py();
+
+
 
 	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/
 	//virtual void setPVStructs(std::map<std::string, std::string> recordAndPVStructs);
 
-	std::map<std::string, std::string> getSpecificHardwareParameters() const;
+
 	bool operator==(Hardware rhs);
 	virtual void debugMessagesOn();
 	virtual void debugMessagesOff();
@@ -84,18 +105,8 @@ public:
 	std::map<std::string, std::string> specificHardwareParameters;
 	LoggingSystem messenger;
 
-	STATE mode; // PHYSICAL VIRTUAL OFFLINE
+	STATE mode; // PHYSICAL, VIRTUAL, OFFLINE
 
-
-	static std::map<std::string, TYPE> create_map()
-	{
-		std::map<std::string, TYPE> m;
-		m["Magnet"] = TYPE::MAGNET;
-		return m;
-	}
-	static const std::map<std::string, TYPE> string_to_hardware_type_map;
-
-	HardwareState state_IO;
 };
 /** @}*/
 #endif //HARDWARE_H_
