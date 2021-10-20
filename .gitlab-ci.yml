@@ -75,7 +75,6 @@ linux_tests:
     - cd build
     - cd testBin
     - echo 'Running Tests..'
-    - ls ~/MasterLattice
     - ./ConfigReaderTest
     - ./LoggingSystemTest
     - ./HardwareTests
