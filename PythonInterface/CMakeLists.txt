@@ -69,8 +69,10 @@ set( TEST_FILES
 
 
 if(WIN32)
-	file(GLOB RELEASE_LIBS ${THIRD_PARTY_LIBS}\\Windows\\x64\\Release\\*.dll)
-	file(GLOB DEBUG_LIBS ${THIRD_PARTY_LIBS}\\Windows\\x64\\Debug\\*.dll)
+	#file(GLOB RELEASE_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Release\\*.dll")
+	#file(GLOB DEBUG_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Debug\\*.dll")
+	set(RELEASE_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Release\\")
+	set(DEBUG_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Debug\\")
 	message("THIRD PARTY LOCATION: " ${THIRD_PARTY_LIBS})
 	message("REL LIBS: " ${RELEASE_LIBS})
 	message("DEB LIBS: " ${DEBUG_LIBS})
@@ -179,11 +181,9 @@ foreach(FILE ${SOURCE_FILES})
 		#message("RELEASE OUTPUT DIR: " ${RELEASE_OUTPUT_DIRECTORY})
 		###
 		### WE DO NOT BUILD FOR DEBUG YET.
-		#foreach(LIBRARY ${DEBUG_LIBS})
-		#	add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> )
-		#	add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}> )
-		#endforeach(LIBRARY)
-		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
+		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${RELEASE_LIBS}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> COMMENT "Moving ${LIBRARY} to $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}>")
+		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${RELEASE_LIBS}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}> COMMENT "Moving ${LIBRARY} to $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}>")
+		#add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
 		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP>)
 	    #message("DEBUG BUILD")
 		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug/ $<1:${DEBUG_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
