@@ -38,8 +38,6 @@ cmake_windows:
   tags: 
     - windows
 
-#-DCMAKE_INSTALL_PREFIX=\"C:\\Users\\ujo48515\\Documents\\\"
-
 linux_make: 
   image: mattkingastec/catapenv:1.0
   cache: 
