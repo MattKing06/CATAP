@@ -168,6 +168,79 @@ bool RFModulatorFactory::isNotWarm(const std::string& name)const
 	}
 	return false;
 }
+bool RFModulatorFactory::isInHoldRFOn(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		return RFModulatorMap.at(full_name).isInHoldRFOn();
+	}
+	return false;
+}
+bool RFModulatorFactory::isInManualOperation(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		return RFModulatorMap.at(full_name).isInManualOperation();
+	}
+	return false;
+}
+bool RFModulatorFactory::isInHoldRFOnCon(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		return RFModulatorMap.at(full_name).isInHoldRFOnCon();
+	}
+	return false;
+}
+STATE RFModulatorFactory::getHoldRFOnState(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		return RFModulatorMap.at(full_name).getHoldRFOnState();
+	}
+	return STATE::UNKNOWN;
+}
+
+void RFModulatorFactory::setHoldRFOnState(const std::string& name, STATE holdRFOnState)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		RFModulatorMap.at(full_name).setHoldRFOnState(holdRFOnState);
+	}
+}
+
+void RFModulatorFactory::setHoldRFOnToManualOperation(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		RFModulatorMap.at(full_name).setHoldRFOnToManualOperation();
+	}
+}
+
+void RFModulatorFactory::setHoldRFOnToHoldRFOnCon(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		RFModulatorMap.at(full_name).setHoldRFOnToHoldRFOnCon();
+	}
+}
+
+void RFModulatorFactory::setHoldRFOnToHoldRFOn(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
+	{
+		RFModulatorMap.at(full_name).setHoldRFOnToHoldRFOn();
+	}
+}
+
 std::map<std::string, double> RFModulatorFactory::getLowLevelNumericalData(const std::string& name)const
 {
 	std::string full_name = getFullName(name);

@@ -28,10 +28,48 @@ void EPICSRFModulatorInterface::retrieveUpdateFunctionForRecord(const pvStruct& 
 }
 
 
-void EPICSRFModulatorInterface::update_HOLD_RF_ON()
+void EPICSRFModulatorInterface::update_HOLD_RF_ON(const struct event_handler_args args)
 {
+	RFModulator* recastMod = getHardwareFromArgs<RFModulator>(args);
+	std::pair<epicsTimeStamp, unsigned short> r = getTimeStampEnumPair(args);
+	recastMod->holdRFOn.first = r.first;
+	switch (r.second)
+	{
+	case 0:
+		recastMod->holdRFOn.second = STATE::MANUAL_OPERATION;
+		break;
+	case 1:
+		recastMod->holdRFOn.second = STATE::HOLD_RF_ON;
+		break;
+	case 2:
+		recastMod->holdRFOn.second = STATE::HOLD_RF_ON_CON;
+		break;
+	default:
+		recastMod->holdRFOn.second = STATE::UNKNOWN;
+		break;
+	}
+}
+
+void EPICSRFModulatorInterface::setHoldRFOnState(pvStruct pv, STATE newState) const
+{
+	switch (newState)
+	{
+	case STATE::MANUAL_OPERATION:
+		putValue<unsigned short>(pv, 0);
+		break;
+	case STATE::HOLD_RF_ON:
+		putValue<unsigned short>(pv, 1);
+		break;
+	case STATE::HOLD_RF_ON_CON:
+		putValue<unsigned short>(pv, 2);
+		break;
+	default:
+		messenger.printMessage("Unidentified state: ", ENUM_TO_STRING(newState), " for HOLD_RF_ON. Not Setting.");
+		break;
+	}
 
 }
+
 // GUN void
 //void EPICSRFModulatorInterface::update_GUN_MOD_RESET(const struct event_handler_args args)
 //void EPICSRFModulatorInterface::update_GUN_MOD_STATE_SET(const struct event_handler_args args)

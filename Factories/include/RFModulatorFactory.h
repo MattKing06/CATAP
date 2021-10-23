@@ -84,6 +84,23 @@ public:
 		@param[in] string, name of modulator
 		@param[out] bool,  */
 	bool isNotWarm(const std::string& name)const;
+
+	bool isInHoldRFOn(const std::string& name) const;
+
+	bool isInManualOperation(const std::string& name) const;
+	
+	bool isInHoldRFOnCon(const std::string& name) const;
+	
+	STATE getHoldRFOnState(const std::string& name) const;
+
+	void setHoldRFOnState(const std::string& name, STATE holdRFOnState);
+
+	void setHoldRFOnToManualOperation(const std::string& name);
+
+	void setHoldRFOnToHoldRFOnCon(const std::string& name);
+
+	void setHoldRFOnToHoldRFOn(const std::string& name);
+
 	/*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) 
 	@param[in] string, name of modulator
 	@param[out] map<strign,double>, all low level numerical data in map   */

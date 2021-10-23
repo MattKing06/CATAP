@@ -293,7 +293,7 @@ std::vector<std::string> const rf_mod_records_list =
 
 	std::vector<std::string> const rf_mod_monitor_records_list =
 	{
-		//HOLD_RF_ON,
+		HOLD_RF_ON,
 		GUN_MOD_RESET,
 		//GUN_MOD_STATE_SET,
 		GUN_MOD_STATE_SET_READ,

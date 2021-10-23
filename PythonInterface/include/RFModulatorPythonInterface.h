@@ -26,6 +26,16 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 			.def("isInStandby", &RFModulator::isInStandby)
 			.def("isInOff", &RFModulator::isInOff)
 
+			.def("getHoldRFOnState", &RFModulator::getHoldRFOnState)
+			.def("isInHoldRFOn", &RFModulator::isInHoldRFOn)
+			.def("isInHoldRFOnCon", &RFModulator::isInHoldRFOnCon)
+			.def("isInManualOperation", &RFModulator::isInManualOperation)
+
+			.def("setHoldRFOnState", &RFModulator::setHoldRFOnState)
+			.def("setHoldRFOnToManualOperation", &RFModulator::setHoldRFOnToManualOperation)
+			.def("setHoldRFOnToHoldRFOnCon", &RFModulator::setHoldRFOnToHoldRFOnCon)
+			.def("setHoldRFOnToHoldRFOn", &RFModulator::setHoldRFOnToHoldRFOn)
+
 			.def("getErrorState", &RFModulator::getErrorState)
 			.def("isErrorStateGood", &RFModulator::isErrorStateGood)
 			.def("getStateSetRead", &RFModulator::getStateSetRead)
@@ -69,6 +79,16 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 			.def("isInHVOn", &RFModulatorFactory::isInHVOn)
 			.def("isInStandby", &RFModulatorFactory::isInStandby)
 			.def("isInOff", &RFModulatorFactory::isInOff)
+
+			.def("getHoldRFOnState", &RFModulatorFactory::getHoldRFOnState)
+			.def("isInHoldRFOn", &RFModulatorFactory::isInHoldRFOn)
+			.def("isInHoldRFOnCon", &RFModulatorFactory::isInHoldRFOnCon)
+			.def("isInManualOperation", &RFModulatorFactory::isInManualOperation)
+
+			.def("setHoldRFOnState", &RFModulatorFactory::setHoldRFOnState)
+			.def("setHoldRFOnToManualOperation", &RFModulatorFactory::setHoldRFOnToManualOperation)
+			.def("setHoldRFOnToHoldRFOnCon", &RFModulatorFactory::setHoldRFOnToHoldRFOnCon)
+			.def("setHoldRFOnToHoldRFOn", &RFModulatorFactory::setHoldRFOnToHoldRFOn)
 
 			.def("getErrorState", &RFModulatorFactory::getErrorState)
 			.def("isErrorStateGood", &RFModulatorFactory::isErrorStateGood)

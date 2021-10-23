@@ -17,7 +17,8 @@ public:
 
     void retrieveUpdateFunctionForRecord(const pvStruct& pv) const;
 
-    static void update_HOLD_RF_ON();
+    static void update_HOLD_RF_ON(const struct event_handler_args args);
+    void setHoldRFOnState(pvStruct pv, STATE newState) const;
     // GUN void
     //static void update_GUN_MOD_RESET(const struct event_handler_args args);
     //static void update_GUN_MOD_STATE_SET(const struct event_handler_args args);
@@ -240,6 +241,7 @@ public:
     {RFModulatorRecords::ERROR_DESC_19 , this->update_ERROR_DESC_19},
     {RFModulatorRecords::ERROR_DESC_20 , this->update_ERROR_DESC_20},
     //{RFModulatorRecords::GUN_MOD_RESET , this->update_GUN_MOD_RESET},
+    {RFModulatorRecords::HOLD_RF_ON, this->update_HOLD_RF_ON},
     {RFModulatorRecords::SYSTEM_STATE_READ,         this->update_SYSTEM_STATE_READ },
     {RFModulatorRecords::HVPS_VOLTAGE_SET_READ,		this->update_HVPS_VOLTAGE_SET_READ },
     //{RFModulatorRecords::HVPS_VOLTAGE_LOW_ALARM_SET,this->update_HVPS_VOLTAGE_LOW_ALARM_SET },

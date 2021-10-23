@@ -77,6 +77,16 @@ public:
     @param[out] dict, all low level string and numerical data */
     boost::python::dict getLowLevelData()const;
 
+    /*! Check if Hold RF On is on*/
+    bool isInHoldRFOn() const;
+    bool isInManualOperation() const;
+    bool isInHoldRFOnCon() const;
+    STATE getHoldRFOnState() const;
+    void setHoldRFOnState(STATE holdRFOnState);
+    void setHoldRFOnToManualOperation();
+    void setHoldRFOnToHoldRFOnCon();
+    void setHoldRFOnToHoldRFOn();
+
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();
@@ -141,6 +151,8 @@ private:
     void updateErrorState();
     /*! current erro_state */
     STATE error_state;
+    /*! Current Hold RF On state */
+    std::pair<epicsTimeStamp, STATE> holdRFOn;
     /*! Modulator is warm if the Standby countdown has completed  */
     bool is_warm;
     /*! Setup the master lattice data for this modulator  */

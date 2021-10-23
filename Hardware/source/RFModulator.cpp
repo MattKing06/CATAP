@@ -199,6 +199,46 @@ boost::python::dict RFModulator::getLowLevelData()const
 	return newDictiOnary;
 }
 
+bool RFModulator::isInHoldRFOn() const
+{
+    return holdRFOn.second == STATE::HOLD_RF_ON;
+}
+
+bool RFModulator::isInManualOperation() const
+{
+    return holdRFOn.second == STATE::MANUAL_OPERATION;
+}
+
+bool RFModulator::isInHoldRFOnCon() const
+{
+    return holdRFOn.second == STATE::HOLD_RF_ON_CON;
+}
+
+STATE RFModulator::getHoldRFOnState() const
+{
+    return holdRFOn.second;
+}
+
+void RFModulator::setHoldRFOnState(STATE holdRFOnState)
+{
+    epicsInterface->setHoldRFOnState(pvStructs.at(RFModulatorRecords::HOLD_RF_ON), holdRFOnState);
+}
+
+void RFModulator::setHoldRFOnToManualOperation()
+{
+    setHoldRFOnState(STATE::MANUAL_OPERATION);
+}
+
+void RFModulator::setHoldRFOnToHoldRFOnCon()
+{
+    setHoldRFOnState(STATE::HOLD_RF_ON_CON);
+}
+
+void RFModulator::setHoldRFOnToHoldRFOn()
+{
+    setHoldRFOnState(STATE::HOLD_RF_ON);
+}
+
 STATE RFModulator::getErrorState() const
 {
 	return error_state;
