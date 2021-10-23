@@ -2,6 +2,7 @@
 #define LLRF_PV_RECORDS_
 #include <string>
 #include <vector>
+#include <map>
 
 #include "GlobalStateEnums.h"
 #include "GlobalConstants.h"
@@ -9,6 +10,13 @@
 
 namespace LLRFRecords
 {
+
+	
+//// llrf have multiple names / areas, so we have a map to help look up values 	
+//extern std::map<TYPE,TYPE> const llrf_type_to_machine_area;
+
+
+
 extern std::string const HEART_BEAT;
 extern std::string const AMP_FF;
 extern std::string const TRIG_SOURCE;
@@ -367,14 +375,9 @@ extern std::string const CH8_PWR_LOC_ACQM;
 
 
 
+extern const std::map<STATE, unsigned short> state_to_llrf_SCAN_map;
 
-
-
-
-
-
-
-
+	extern const std::vector<std::string> all_scan_pvs;
 
 	extern const std::vector<std::string> llrfRecordList;
 	extern const std::vector<std::string> llrfMonitorRecordsList;

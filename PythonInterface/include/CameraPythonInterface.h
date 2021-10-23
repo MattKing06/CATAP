@@ -385,10 +385,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		bool(CameraFactory::*captureAndSave_without_shotcount)(const std::string & ) = &CameraFactory::captureAndSave;
 
 
-		STATE(CameraFactory:: * saveSnapshot_nofile)(const std::string&) = &CameraFactory::saveSnapshot;
-		STATE(CameraFactory:: * saveSnapshot_withfile)(const std::string&, const std::string&, const std::string&) = &CameraFactory::saveSnapshot;
-		STATE(CameraFactory:: * applySnaphot_withDict)(const boost::python::dict&, TYPE) = &CameraFactory::applySnaphot;
-		STATE(CameraFactory:: * applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &CameraFactory::applySnaphot;
+		STATE(CameraFactory::*saveSnapshot_nofile)(const std::string&) = &CameraFactory::saveSnapshot;
+		STATE(CameraFactory::*saveSnapshot_withfile)(const std::string&, const std::string&, const std::string&) = &CameraFactory::saveSnapshot;
+		STATE(CameraFactory::*applySnaphot_withDict)(const boost::python::dict&, TYPE) = &CameraFactory::applySnaphot;
+		STATE(CameraFactory::*applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &CameraFactory::applySnaphot;
 
 		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
@@ -543,9 +543,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("getNpointScalingStepSize", &CameraFactory::getNpointScalingStepSize)
 
 
-//                         __     __      __        __        __   __   __             __     
-// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
-///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+//  ,                       __     __      __        __        __   __   __             __     
+//  /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+// /~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
 //                                                                                            
 //	                         __     __                 __       
 //	 /\  |\ |  /\  |    \ / /__` | /__`     |\/|  /\  /__` |__/ 

@@ -3,7 +3,8 @@
 #include "GlobalFunctions.h"
 #include "GlobalConstants.h"
 #include "GlobalStateEnums.h"
-
+#include <mutex>          // std::mutex
+std::mutex llrf_mtx_1;           // mutex for critical section
 
 LoggingSystem EPICSLLRFInterface::messenger;
 
@@ -549,15 +550,17 @@ void EPICSLLRFInterface::updateInterLockENABLE(const std::string& ch, const std:
 
 void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	//messenger.printDebugMessage("updateInterLockStatus");
+	std::lock_guard<std::mutex> lg(llrf_mtx_1);  // This now locked your mutex mtx.lock();
+	// messenger.printDebugMessage("updateChannnelSCAN");
 	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
 	// but ... THIS works, so only change when eveyrthing else is working 
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	/*First update all_trace_scan, this conatins all the trace SCAN */
 	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(ch));
 	messenger.printDebugMessage("updateChannnelSCAN FOR: " + recastLLRF->getHardwareName(),
-		" ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
+		" ", ch,", to ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
 
-	// NOW WE FIND OUT I FTHE PASSED SCAN IN IN ALL TRACE DATA 
+	// NOW WE FIND OUT IF THE PASSED SCAN IS IN ALL TRACE DATA 
 	std::string trace;
 	if (recastLLRF->getTraceFromChannelData(CH, trace))
 	{
@@ -573,19 +576,22 @@ void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::st
 		{
 			messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
 			trace.append("_PHASE");
-			//recastLLRF->trace_data_map.at(trace.append("_PHASE")).scan = recastLLRF->all_trace_scan.at(ch);
-		}
-
-		if (GlobalFunctions::entryExists(recastLLRF->all_trace_scan, trace))
-		{
-			recastLLRF->trace_data_map.at(trace.append("_PHASE")).scan = recastLLRF->all_trace_scan.at(ch);
-			messenger.printDebugMessage(trace, " all_trace_scan = ", recastLLRF->trace_data_map.at(trace).scan.second);
 		}
 		else
 		{
-			messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			messenger.printDebugMessage(ch, " is for a trace not in trace_data_map (", trace,")");
 		}
 
+		if(GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+		{
+			recastLLRF->trace_data_map.at(trace).scan = recastLLRF->all_trace_scan.at(ch);
+			messenger.printDebugMessage(trace, " data added to trace_data_map, ", 
+				ENUM_TO_STRING(recastLLRF->trace_data_map.at(trace).scan.second));
+		}
+		else
+		{
+			messenger.printDebugMessage(trace, " NOT FOUND in trace_data_map");
+		}
 	}
 	else
 	{
@@ -612,6 +618,7 @@ void EPICSLLRFInterface::update_trace_SCAN(const struct event_handler_args& args
 	case 10:		scan.second = STATE::ZERO_POINT_ZERO_FIVE; break;
 	default:		scan.second = STATE::UNKNOWN;
 	}
+	//messenger.printDebugMessage("update_trace_SCAN to ", ENUM_TO_STRING(scan.second));
 }
 void EPICSLLRFInterface::update_CH1_PHASE_REM_SCAN(const struct event_handler_args args)
 {
@@ -834,6 +841,7 @@ void EPICSLLRFInterface::update_trace_ACQM(const struct event_handler_args& args
 }
 void EPICSLLRFInterface::updateChannnelACQM(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
+	std::lock_guard<std::mutex> lg(llrf_mtx_1);  // This now locked your mutex mtx.lock();
 	//messenger.printDebugMessage("updateInterLockStatus");
 	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
 	// and improved in other ways 

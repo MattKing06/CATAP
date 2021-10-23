@@ -77,7 +77,8 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	LLRFRecords::CH3_PWR_REM,LLRFRecords::CH4_PWR_REM,	LLRFRecords::CH5_PWR_REM,LLRFRecords::CH6_PWR_REM,
 	LLRFRecords::CH7_PWR_REM,LLRFRecords::CH8_PWR_REM,	LLRFRecords::CH1_PHASE_REM,LLRFRecords::CH2_PHASE_REM,
 	LLRFRecords::CH3_PHASE_REM,LLRFRecords::CH4_PHASE_REM,	LLRFRecords::CH5_PHASE_REM,LLRFRecords::CH6_PHASE_REM,
-	LLRFRecords::CH7_PHASE_REM,LLRFRecords::CH8_PHASE_REM },	allChannelTraceNames{ LLRFRecords::CH1_AMP_DER,LLRFRecords::CH2_AMP_DER,
+	LLRFRecords::CH7_PHASE_REM,LLRFRecords::CH8_PHASE_REM },	
+	allChannelTraceNames{ LLRFRecords::CH1_AMP_DER,LLRFRecords::CH2_AMP_DER,
 	LLRFRecords::CH3_AMP_DER,LLRFRecords::CH4_AMP_DER,	LLRFRecords::CH5_AMP_DER,LLRFRecords::CH6_AMP_DER,
 	LLRFRecords::CH7_AMP_DER,LLRFRecords::CH8_AMP_DER,	LLRFRecords::CH1_PHASE_DER,LLRFRecords::CH2_PHASE_DER,
 	LLRFRecords::CH3_PHASE_DER,LLRFRecords::CH4_PHASE_DER,	LLRFRecords::CH5_PHASE_DER,LLRFRecords::CH6_PHASE_DER,
@@ -113,6 +114,24 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	duplicate_pulse_count(GlobalConstants::zero_sizet),
 	active_pulse_count(GlobalConstants::zero_sizet),
 	inactive_pulse_count(GlobalConstants::zero_sizet),
+	total_pulse_count(GlobalConstants::zero_sizet),
+	all_trace_scan(std::map<std::string, std::pair<epicsTimeStamp, STATE>>()),
+	all_trace_acqm(std::map<std::string, std::pair<epicsTimeStamp, STATE>>()),
+	temp_TraceData_trace_data_buffer(std::pair<epicsTimeStamp, std::vector<double>>()),
+	channel_to_tracesource_map(std::map<std::string, std::string>()),
+	time_vector(std::vector<double>()),
+	kfpow_dummy_trace(std::vector<double>()),
+	krpow_dummy_trace(std::vector<double>()),
+	cfpow_dummy_trace(std::vector<double>()),
+	crpow_dummy_trace(std::vector<double>()),
+	kfpha_dummy_trace(std::vector<double>()),
+	krpha_dummy_trace(std::vector<double>()),
+	cfpha_dummy_trace(std::vector<double>()),
+	crpha_dummy_trace(std::vector<double>()),
+	power_trace_names(std::vector<std::string>()),
+	trace_num_of_start_zeros(GlobalConstants::zero_sizet),
+	last_kly_fwd_power_max(GlobalConstants::double_min),
+	can_increase_active_pulses(false),
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.printDebugMessage("LLRF Constructor");
@@ -159,9 +178,48 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 	//trace_SCAN_map(copyLLRF.trace_SCAN_map),
 	//all_trace_interlocks(copyLLRF.all_trace_interlocks),
 	dbr_all_trace_data(copyLLRF.dbr_all_trace_data),
-	epicsInterface(copyLLRF.epicsInterface)
+	epicsInterface(copyLLRF.epicsInterface),
+	LLRFParamMap(copyLLRF.LLRFParamMap),
+	keep_kly_fwd_pow_running_stat(copyLLRF.keep_kly_fwd_pow_running_stat),
+	amp_set_kly_fwd_rs(copyLLRF.amp_set_kly_fwd_rs),
+	amp_set_kly_fwd_rs_state(copyLLRF.amp_set_kly_fwd_rs_state),
+	dummy_amp_set_kly_fwd_rs_state(copyLLRF.dummy_amp_set_kly_fwd_rs_state),
+	crest_phase(copyLLRF.crest_phase),
+	operating_phase(copyLLRF.operating_phase),
+	aliases(copyLLRF.aliases),
+	dummy_trace_data(copyLLRF.dummy_trace_data),
+	sorted_one_record_trace_start_indices(copyLLRF.sorted_one_record_trace_start_indices),
+	sorted_one_record_trace_iterator_jumps(copyLLRF.sorted_one_record_trace_iterator_jumps),
+	num_traces_to_estimate_rep_rate(copyLLRF.num_traces_to_estimate_rep_rate),
+	trace_rep_rate(copyLLRF.trace_rep_rate),
+	trace_times_for_rep_rate(copyLLRF.trace_times_for_rep_rate),
+	time_vector(copyLLRF.time_vector),
+	kfpow_dummy_trace(copyLLRF.kfpow_dummy_trace),
+	krpow_dummy_trace(copyLLRF.krpow_dummy_trace),
+	cfpow_dummy_trace(copyLLRF.cfpow_dummy_trace),
+	crpow_dummy_trace(copyLLRF.crpow_dummy_trace),
+	kfpha_dummy_trace(copyLLRF.kfpha_dummy_trace),
+	krpha_dummy_trace(copyLLRF.krpha_dummy_trace),
+	cfpha_dummy_trace(copyLLRF.cfpha_dummy_trace),
+	power_trace_names(copyLLRF.power_trace_names),
+	new_outside_mask_event(copyLLRF.new_outside_mask_event),
+	one_trace_data_chunk_size(copyLLRF.one_trace_data_chunk_size),
+	one_record_trace_data_size(copyLLRF.one_record_trace_data_size),
+	trace_num_of_start_zeros(copyLLRF.trace_num_of_start_zeros),
+	active_pulse_kly_power_limit(copyLLRF.active_pulse_kly_power_limit),
+	can_increase_active_pulses(copyLLRF.can_increase_active_pulses),
+	last_kly_fwd_power_max(copyLLRF.last_kly_fwd_power_max),
+	inactive_pulse_count(copyLLRF.last_kly_fwd_power_max),
+	duplicate_pulse_count(copyLLRF.duplicate_pulse_count),
+	total_pulse_count(copyLLRF.total_pulse_count),
+	is_trace_monitoring(copyLLRF.is_trace_monitoring),
+	temp_TraceData_trace_data_buffer(copyLLRF.temp_TraceData_trace_data_buffer),
+	all_trace_acqm(copyLLRF.all_trace_acqm),
+	all_trace_scan(copyLLRF.all_trace_scan),
+	channel_to_tracesource_map(copyLLRF.channel_to_tracesource_map),
+	allMainChannelTraceNames(copyLLRF.allMainChannelTraceNames),
+	allChannelTraceNames(copyLLRF.allChannelTraceNames)
 {}
-
 LLRF::~LLRF(){}
 
 
@@ -200,7 +258,7 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 	messenger.printDebugMessage(hardwareName, " find crest_phase");
 	if (GlobalFunctions::entryExists(paramMap, "crest_phase"))
 	{
-		crest_phase = std::stof(paramMap.find("crest_phase")->second);
+		crest_phase = std::stof(paramMap.at("crest_phase"));
 	}
 	else
 	{
@@ -379,8 +437,6 @@ void LLRF::setupAfterMachineAreaSet()
 	initAllTraceSCANandACQM();
 	setDefaultPowerTraceMeanTimes();
 }
-
-
 
 void LLRF::setTraceDataMap()
 {
@@ -687,20 +743,23 @@ double LLRF::getPhiDEG()const
 {
 	return phi_degrees.second;
 }
+
+
+
 /*
 	ok, htf is this going to work ??
 
 	we want to be able to get a single shot of trace values - to reduce network lag
 
-	but, always update all trace vlaues + meta- values (mean, max power etc) 
+	but, always update all trace vlaues + meta- values (mean, max power etc)
 
-	on every update update all TraceData obejcts 
+	on every update update all TraceData obejcts
 
 	so, functions that retunr just teh valeus, and functions that return the tracedata objects
 
-	TraceData will include meta data, TraceValues will just be lists of numbers (keyed by trace name) 
+	TraceData will include meta data, TraceValues will just be lists of numbers (keyed by trace name)
 
-	they have bespoke funcitons that return what the user wants. 
+	they have bespoke funcitons that return what the user wants.
 */
 void LLRF::updateTraceValues()
 {
@@ -799,9 +858,6 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double* dbr)
 		std::cout << std::endl;
 	}
 }
-
-
-
 void LLRF::updateTraceMetaData()
 {
 	messenger.printDebugMessage("updateTraceMetaData ");
@@ -818,7 +874,6 @@ void LLRF::updateTraceMetaData()
 	/* by the time we get to here this MUST be false! */
 	new_outside_mask_event = false;
 }
-
 
 
 
@@ -1611,7 +1666,6 @@ boost::python::list LLRF::getTraceValues_Py(const std::string& name)const
 	return to_py_list<double>(getTraceValues(name));
 }
 
-
 std::pair<std::string, std::vector<double>> LLRF::getTraceNameValuesPair(const std::string& name)const
 {
 	std::pair<std::string, std::vector<double>> r;
@@ -1635,7 +1689,6 @@ TraceData& LLRF::getTraceData(const std::string & trace_name )
 	}
 	return dummy_trace_data;
 }
-
 
 boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const
 {
@@ -1737,7 +1790,6 @@ std::vector<double> LLRF::getProbePha()const
 {
 	return getTraceValues(LLRFRecords::CAVITY_PROBE_PHASE);
 }
-
 boost::python::list LLRF::getCavRevPwr_Py()const
 {
 	return to_py_list(getCavRevPwr());
@@ -1792,7 +1844,6 @@ boost::python::list LLRF::getAliases_Py() const
 {
 	return to_py_list<std::string>(getAliases());
 }
-
 /*
   _____                   ___     _     __  __
  |_   _| _ __ _ __ ___   / __|  _| |_  |  \/  |___ __ _ _ _  ___
@@ -1992,8 +2043,6 @@ boost::python::dict LLRF::getAllCutMean_Py()const
 }
 
 
-
-
 std::map<std::string, double> LLRF::getPowerCutMean()const
 {
 	std::map<std::string, double> r;
@@ -2090,8 +2139,6 @@ double LLRF::getTime(const size_t index) const
 }
 
 
-
-// TODO create a generic init function for the below maps 
 void LLRF::setupInterlocks()
 {
 	//messenger.printDebugMessage("setupInterlocks");
@@ -2273,6 +2320,9 @@ void LLRF::initAllTraceSCANandACQM()
 	//	messenger.printDebugMessage(trace.first);
 	//}
 }
+
+
+
 std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
 {
 	messenger.printDebugMessage("getAllTraceSCAN");
@@ -2280,10 +2330,7 @@ std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
 	for (auto&& it : all_trace_scan)
 	{
 		r[it.first] = it.second.second;
-	}
-	for (auto&& it : r)
-	{
-		messenger.printDebugMessage(it.first, " = ", ENUM_TO_STRING(it.second));
+		messenger.printDebugMessage(it.first, " = ", ENUM_TO_STRING(it.second.second));
 	}
 	return r;
 }
@@ -2291,6 +2338,32 @@ boost::python::dict LLRF::getAllTraceSCAN_Py()const
 {
 	return to_py_dict<std::string, STATE>(getAllTraceSCAN());
 }
+
+
+void LLRF::setAllSCANToPassive()
+{
+	for (const auto& pv : LLRFRecords::all_scan_pvs)
+	{
+		if (GlobalFunctions::entryExists(pvStructs, pv))
+		{
+			epicsInterface ->putValue2(pvStructs.at(pv), LLRFRecords::state_to_llrf_SCAN_map.at(STATE::PASSIVE) );
+		}
+
+	}
+}
+
+void LLRF::setAllSCANToIoIntr()
+{
+
+}
+
+
+void LLRF::setAllSCANTo(STATE new_state)
+{
+
+}
+
+
 std::map<std::string, STATE> LLRF::getAllTraceACQM()const
 {
 	messenger.printDebugMessage("getAllTraceACQM");
@@ -2310,26 +2383,24 @@ boost::python::dict LLRF::getAllTraceACQM_Py()const
 	return to_py_dict<std::string, STATE>(getAllTraceACQM());
 }
 
-
-
-
 bool LLRF::getTraceFromChannelData(const std::string& channel, std::string& string_to_put_trace_name_in )
 {
 	if (GlobalFunctions::entryExists(channel_to_tracesource_map, channel))
 	{
 		string_to_put_trace_name_in = channel_to_tracesource_map.at(channel);
-		return true;
+		// if the channel has no convenient name thne it is NONE 
+		if (string_to_put_trace_name_in != "NONE")
+		{
+			return true;
+		}
 	}
 	return false;
 }
 
-
 std::string LLRF::getTraceFromChannelData(const std::string& channel_data) const
 {
 	// first we check if we have a PWR_REM or a PHASE_REM in the string 
-
 	std::string pwr_rem_or_phase_rem = "";
-
 	if (GlobalFunctions::stringIsSubString(channel_data, "PWR_REM"))
 	{
 		pwr_rem_or_phase_rem = "POWER";
@@ -2337,9 +2408,7 @@ std::string LLRF::getTraceFromChannelData(const std::string& channel_data) const
 	else if (GlobalFunctions::stringIsSubString(channel_data, "PHASE_REM"))
 	{
 		pwr_rem_or_phase_rem = "PHASE";
-
 	}
-
 	if (!pwr_rem_or_phase_rem.empty())
 	{
 		// WE KNOW THE TYPE, NOW GET THE SOURCE 
@@ -2352,7 +2421,6 @@ std::string LLRF::getTraceFromChannelData(const std::string& channel_data) const
 			return channel_to_tracesource_map.at(channel) + "_" + pwr_rem_or_phase_rem;
 		}
 	}
-	
 	return "";
 }
 
@@ -2360,16 +2428,12 @@ std::map<std::string, std::string> LLRF::getLLRFStateMap()const
 {
 	std::map<std::string, std::string> r;
 	std::map<std::string, std::string> temp;
-
-
 	//for (auto&& trace : trace_data_map)
 	//{
 	//	getMeanStartIndex(trace);
 		//}
-		return r;
+	return r;
 }
-
-
 
 
 //--------------------------------------------------------------------------------------------------
@@ -2399,27 +2463,21 @@ bool LLRF::setAndApplyPulseShape(const boost::python::list& values)
 	return setAndApplyPulseShape(to_std_vector<double>(values));
 }
 
-
-
-
-
-
 //---------------------------------------------------------------------------------------------------------
 bool LLRF::trigOff()
 {
 	return setTrig(STATE::OFF);
 }
-//____________________________________________________________________________________________
+//---------------------------------------------------------------------------------------------------------
 bool LLRF::trigInt()
 {
 	return setTrig(STATE::INTERNAL);
 }
-//____________________________________________________________________________________________
+//---------------------------------------------------------------------------------------------------------
 bool LLRF::trigExt()
 {
 	return setTrig(STATE::EXTERNAL);
 }
-
 bool LLRF::setTrig(const STATE new_state)
 {
 	unsigned short v;
@@ -2437,8 +2495,6 @@ STATE LLRF::getTrigSource()const
 {
 	return trig_source.second;
 }
-
-
 
 
 //
@@ -2599,6 +2655,21 @@ STATE LLRF::getTrigSource()const
 //
 
 
+std::vector<std::string> LLRF::getAllLLRFTraceNames()const
+{
+	std::vector<std::string> r;
+	for (const auto& td : trace_data_map)
+	{
+		r.push_back(td.first);
+	}
+	return r;
+}
+
+
+boost::python::list LLRF::getAllLLRFTraceNames_Py()const
+{
+	return to_py_list<std::string>(getAllLLRFTraceNames());
+}
 
 //____________________________________________________________________________________________
 std::string LLRF::fullLLRFTraceName(const std::string& name_in)const

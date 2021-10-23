@@ -1,139 +1,4 @@
-#ifndef LLRF_H_
-#define LLRF_H_
-#include <Hardware.h>
-#include <RunningStats.h>
-#include <EPICSLLRFInterface.h>
-#include <GlobalConstants.h>
-#include <GlobalStateEnums.h>
-#include "PythonTypeConversions.h"
-#include <boost/make_shared.hpp>
-#include <boost/python/dict.hpp>
-#include <boost/python/list.hpp>
-#include <boost/circular_buffer.hpp>
-#include <utility> 
-#include <boost/shared_ptr.hpp>
-#include <chrono> // for the high resolution clock DAQ freq estimate 
 
-class EPICSLLRFInterface;
-typedef boost::shared_ptr<EPICSLLRFInterface> EPICSLLRFInterface_sptr;
-
-
-class LLRFInterlock
-{
-public:
-	LLRFInterlock();
-	LLRFInterlock(const LLRFInterlock& copy_trace_data);
-	~LLRFInterlock();
-	
-	std::string name;
-
-	std::pair<epicsTimeStamp, double > u_level;
-	std::pair<epicsTimeStamp, double > p_level;
-	std::pair<epicsTimeStamp, double > pdbm_level;
-
-	/*! is this interlock for a phase or a power trace */
-	TYPE interlock_type;
-
-	std::pair<epicsTimeStamp, bool > status;
-
-	bool enable;
-};
-
-class TraceData
-{
-	public:
-		TraceData();
-		TraceData(const TraceData& copy_trace_data);
-		~TraceData();
-		/*! name of trace, e.g. LRRG_KLYSTRON_FORWARD_POWER */
-		std::string name;
-		/*! trace_values latest trace values  */
-		std::vector<double> trace_values;
-		/*! how mamny elements in trace_values */
-		size_t trace_data_size;
-		/*! circular buffer of trace_values, latest values are at the end of the buffer  */
-		boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
-		/*! number of traces to keep in trace_values_buffer */
-		size_t trace_data_buffer_size;
-		/* Maximum value in latest acquired trace */
-		double trace_max;
-		/*! The start and stop index over which to calculate the trace mean */
-		std::pair<size_t, size_t> mean_start_stop;
-		/*! The start and stop time over which to calculate the trace mean */
-		std::pair<double, double> mean_start_stop_time;
-		/*! number of steps between start and stop index, used to calculate mean value */
-		size_t stop_minus_start;    
-		
-		/*! mean of values between  mean_start_index, mean_stop_index */
-		double trace_cut_mean;
-		/*   __   __                    __                ___  __        __   ___  __
-		    |__) /  \ |    |    | |\ | / _`     /\  \  / |__  |__)  /\  / _` |__  /__`
-			|  \ \__/ |___ |___ | | \| \__>    /~~\  \/  |___ |  \ /~~\ \__> |___ .__/
-			
-		// rolling sum is the sum of the traces to be averaged,
-		// when a new trace arrives it adds it to rolling_sum and subtracts traces[sub_trace]
-		// rolling_average is then calculated by dividing rolling_sum by average_size
-		*/
-		/*! Flag to set if rolling averages should be calcaulted for this trace */
-		bool keep_rolling_average;
-		/*! True if enough rolling_average_count ==  rolling_average_size and a rolling_average has been calculated */
-		bool has_average;
-		/*! The number of traces to use for the rolling average  */
-		size_t rolling_average_size;
-		/*! The number of traces acquired for the rolling average  */
-		size_t rolling_average_count;
-		/*! Rolling average of the last rolling_average_count trace_values */
-		std::vector<double> rolling_average;
-		/*! Rolling sum of the last rolling_average_count trace_values */
-		std::vector<double> rolling_sum;
-		/*! rolling_average_trace_buffer */
-		std::vector<std::vector<double>> rolling_average_trace_buffer;
-		//std::vector<double> rolling_max;
-		//std::vector<double> rolling_min;
-		//std::vector<double> rolling_sd;
-		//std::vector<std::vector<double>> average_trace_values;
-		// 
-		/*! the state of the SCAN parameter for this trace */
-		std::pair<epicsTimeStamp, STATE> scan;
-		/*! the state of the ACQM parameter for this trace */
-		std::pair<epicsTimeStamp, STATE> acqm;
-		/*! which part of the one-record trace data is this trace (defined in master lattice yaml file) */
-		size_t one_record_part;
-		/*! the starting index for this trace in the one-record trace data  */
-		size_t one_record_start_index;
-		/*! the stopping index for this trace in the one-record trace data */
-		size_t one_record_stop_index;
-
-
-		bool check_mask;
-
-
-		// INTERLOCK STUFF (inl;y power traces
-
-		/*! state of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
-		std::pair<epicsTimeStamp, bool> interlock_state;
-		/*! u_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
-		std::pair<epicsTimeStamp, double > u_level;
-		/*! p_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
-		std::pair<epicsTimeStamp, double > p_level;
-		/*! pdbm_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
-		std::pair<epicsTimeStamp, double > pdbm_level;
-		/*! is this a PHASE or a POWER trace */
-		TYPE trace_type;
-};
-
-
-
-
-class LLRF : public Hardware
-{
-public:
-	LLRF();
-	LLRF(const std::map<std::string, std::string>& paramMap, const  STATE mode);
-	LLRF(const LLRF& copyLLRF);
-	LLRF& operator=(const LLRF&) = default;
-	~LLRF();
-	
 	/*! Both the HRRG and LRRG use the same LLRF box, the main difference is which channels are used for traces 
 		therefore this needs to be set by the LLRFFactory based on passed in user settings. 
 		A similar scheme may be required if other LLRF boxes support mulitple RF structures 
@@ -142,12 +7,6 @@ public:
 	void setGunType(const TYPE area); // called from factory
 	/*! When the machine area has been correctly set we can setup the rest of this LLRF object (called from factory) */
 	void setupAfterMachineAreaSet();
-
-
-
-	void setAllSCANTo(STATE new_state);
-	void setAllSCANToPassive();
-	void setAllSCANToIoIntr();
 
 									  
 	void setPVStructs();
@@ -343,7 +202,7 @@ public:
 		//bool setKeepRollingAverageNoReset(const std::string& name, const bool value);
 		
 		/*! 
-		@param[in] name, trace name to get data fo
+		@param[in] name, trace name to get data for
 		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 		void setShouldKeepRollingAverage();
 		/*!
@@ -873,13 +732,6 @@ private:
 
 	/*! All the "main" channel names, main refers to the power and phase traces  */
 	std::vector<std::string> allMainChannelTraceNames;
-	/*! All the "main" channel names, main refers to the power and phase traces  */
 	std::vector<std::string> allChannelTraceNames;
 
 
-
-
-};
-
-
-#endif //LLRF_H_

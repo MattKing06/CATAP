@@ -15,6 +15,9 @@ public:
 	~LLRFFactory();
 	LoggingSystem messenger;
 
+
+
+
 	// There are a variety of 'setup' functions to give operational flexibily
 	/*! default setup function, uses default values to read files and connect to EPICS etc.
 	@param[out] bool, for success or failure	*/
@@ -24,38 +27,73 @@ public:
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version);
 	/*! setup function using machineArea parameter
-	@param[in] machineArea, only setup magnets that match machineArea
+	@param[in] machineArea, only setup LLRF objects that match machineArea
 	@param[out] bool, for success or failure	*/
 	bool setup(TYPE machineArea);
 	/*! setup function using version and machineArea parameters
 	@param[in] version (a placeholder for future extensions)
-	@param[in] machineArea, only setup magnets that match machineArea
+	@param[in] machineArea, only setup LLRF objects that match machineArea
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, TYPE machineArea);
 	/*! setup function using std::vector of machineAreas
-	@param[in] machineAreas, only setup magnets that match an area in machineAreas
+	@param[in] machineAreas, only setup LLRF objects that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::vector<TYPE>& machineAreas);
 	/*! setup function using python::list of machineAreas
-	@param[in] machineAreas, only setup magnets that match an area in machineAreas
+	@param[in] machineAreas, only setup LLRF objects that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const boost::python::list& machineAreas);
 	/*! setup function using python::list of machineAreas
 	@param[in] version, (a placeholder for future extensions)
-	@param[in] machineAreas, only setup magnets that match an area in machineAreas
+	@param[in] machineAreas, only setup magLLRF objectsnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const boost::python::list& machineAreas);
 	/*! setup function using std::vector of machineAreas
 	@param[in] version, (a placeholder for future extensions)
-	@param[in] machineAreas, only setup magnets that match an area in machineAreas
+	@param[in] machineAreas, only setup LLRF objects that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const std::vector<TYPE>& machineAreas);
 
+private:
+	/*! Some machine areas for LLRF objects are mutually exclusive. In particular, the LRRG and HRRG. This funcitno is always callled  
+	as part of the setup procedure and will remove requested LLRF objects that can't be created together.  
+	@param[in] vector<TYPE>&, requested machine areas 
+	@param[out] vector<TYPE>, sanitized machine areas */
+	std::vector <TYPE> sanityCheckMachineAreas(const std::vector<TYPE>& machineAreas_IN) const;
+
+	void populateLLRFMap();
+	/*! The kind of LLRFFactory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
+	LLRF hardware objects when they are created by ConfigReader*/
+	STATE mode;
+	/*! the machine areas (i.e. exactly which cavities) to create LLRF objects for */
+	std::vector<TYPE> machineAreas;
+	/*! cut the LLRFMap to only those in allowed machineAreas. Also calls setGunType for any GUN LLRF objects requested  */
+	void cutLLRFMapByMachineAreas();
+	/*! After the LLRFMap is checked for potential mutually exclusive objects, and setGunType called if needed the full setup of each LLRF object can happen. */
+	void setupLLRFAfterMachineAreaSet();
+	/*! Update alias_name_map, each object can have name aliases defined in the lattice config.*/
+	void updateAliasNameMap(const LLRF& llrf);
+	/*! Setup the EPICS channels .*/
+	void setupChannels();
+	/*! Setup the EPICS channels .*/
+	void retrieveMonitorStatus(pvStruct& pvStruct);
+	/*! Map of the name alias to fullname for all objects.*/
+	std::map<std::string, std::string> alias_name_map;
+	/*! Map of the llrf objects, keyed by their fullname.*/
+	std::map<std::string, LLRF> LLRFMap;
+	/*! A dummy LLRF object to substitute in when functions are pased the name of a LLRF object that does not exist.*/
+	LLRF dummy_llrf;
+	/*! A dummy trace to use.*/
+	std::vector<double> dummy_trace_data;
+
+public:
+	/*! A pre-defined list of TYPEs that are the GUN LLRF.*/
+	const std::vector<TYPE> llrf_gun_types;
 
 	std::vector<std::string> getLLRFNames();
 	boost::python::list getLLRFNames_Py();
 
-	// get a LLRF object (GUN, L01, etc... ) 
+	/*! A pre-defined list of TYPEs that are the GUN LLRF.*/
 	LLRF& getLLRF(const std::string& llrf_name);
 
 
@@ -144,36 +182,23 @@ public:
 	bool hasBeenSetup; // PUBLIC as it is used by hardwarefactory, could make it a friend
 private:
 
-	void populateLLRFMap();
-
-	/*! The kind of LLRFFactory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
-	LLRF hardware objects when they are created by ConfigReader*/
-	STATE mode;
 	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
 	ConfigReader reader;
 
+	///*! the machine areas (i.e. exactly which cavities) to create LLRF objects for */
+	//std::vector<TYPE> machineAreas;
+	///*! cut the LLRFMap to only those in machineAreas  */
+	//void cutLLRFMapByMachineAreas();
+	///*! after the LLRFMap is cut the full setup of each LLRF object can be started */
+	//void setupLLRFAfterMachineAreaSet();
 
-	/*! the machine areas (i.e. exactly which cavities) to create LLRF objects for */
-	std::vector<TYPE> machineAreas;
-	/*! cut the LLRFMap to only those in machineAreas  */
-	void cutLLRFMapByMachineAreas();
-	/*! after the LLRFMap is cut the full setup of each LLRF object can be started */
-	void setupLLRFAfterMachineAreaSet();
-
-	void updateAliasNameMap(const LLRF& llrf);
-
-	void setupChannels();
-
-	std::map<std::string, std::string> alias_name_map;
-
-	std::map<std::string, LLRF> LLRFMap;
-
-
-	LLRF dummy_llrf;
-
-	std::vector<double> dummy_trace_data;
-
-	void retrieveMonitorStatus(pvStruct& pvStruct);
+	//void updateAliasNameMap(const LLRF& llrf);
+	//void setupChannels();
+	//std::map<std::string, std::string> alias_name_map;
+	//std::map<std::string, LLRF> LLRFMap;
+	//LLRF dummy_llrf;
+	//std::vector<double> dummy_trace_data;
+	//void retrieveMonitorStatus(pvStruct& pvStruct);
 
 	// keep the PVs to monitor in a vector, for LLRF *everything* is monitored ( i think) 
 	// TODOD moe strings into better namespace 

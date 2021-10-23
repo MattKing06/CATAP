@@ -21,7 +21,11 @@ reader(ConfigReader("LLRF", mode, primeLatticeLocation)),
 messenger(LoggingSystem(true, true)),
 machineAreas(std::vector<TYPE>{TYPE::ALL_VELA_CLARA}),
 dummy_llrf(LLRF()),
-dummy_trace_data(std::vector<double>(1017, GlobalConstants::double_min))
+dummy_trace_data(std::vector<double>(1017, GlobalConstants::double_min)),
+llrf_gun_types({TYPE::VELA_GUN, TYPE::CLARA_GUN, TYPE::HRRG, 	   TYPE::LRRG, 	   TYPE::CLARA_HRRG,	   TYPE::CLARA_LRRG,
+	   TYPE::VELA_HRRG,	   TYPE::VELA_LRRG, 	   TYPE::LRRG_GUN, 
+	   TYPE::INJ,	   TYPE::INJ,	   TYPE::VELA_INJ}
+	   )
 {
 	messenger.printDebugMessage("LLRFFactory constructed");
 }
@@ -34,34 +38,25 @@ reader(copyFactory.reader),
 machineAreas(machineAreas)
 {
 }
-
 LLRFFactory::~LLRFFactory()
 {
 }
 
-
-bool LLRFFactory::setup(){	return setup(GlobalConstants::nominal, machineAreas);}
-bool LLRFFactory::setup(const std::string& version){	return setup(version, machineAreas);}
-bool LLRFFactory::setup(TYPE machineArea){	return setup(GlobalConstants::nominal, machineAreas);}
-bool LLRFFactory::setup(const std::string& version, TYPE machineArea){	return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});}
+/*        _
+  ___ ___| |_ _  _ _ __ 
+ (_-</ -_)  _| || | '_ \
+ /__/\___|\__|\_,_| .__/
+                  |_|  */
+bool LLRFFactory::setup(){ return setup(GlobalConstants::nominal, machineAreas);}
+bool LLRFFactory::setup(const std::string& version){ return setup(version, machineAreas);}
+bool LLRFFactory::setup(TYPE machineArea){ return setup(GlobalConstants::nominal, machineAreas);}
+bool LLRFFactory::setup(const std::string& version, TYPE machineArea){ return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});}
 bool LLRFFactory::setup(const std::vector<TYPE>& machineAreas){	return setup(GlobalConstants::nominal, machineAreas);}
-bool LLRFFactory::setup(const boost::python::list& machineAreas){	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));}
-bool LLRFFactory::setup(const std::string& version, const boost::python::list& machineAreas){	return setup(version, to_std_vector<TYPE>(machineAreas));}
+bool LLRFFactory::setup(const boost::python::list& machineAreas){ return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));}
+bool LLRFFactory::setup(const std::string& version, const boost::python::list& machineAreas){ return setup(version, to_std_vector<TYPE>(machineAreas));}
 bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
-	messenger.printDebugMessage("called LLRF Factory  setup ");
-	machineAreas = machineAreas_IN;
-	// we CANNOT HAVE HRRG AND LRRG, default to LRRG
-	if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG))
-	{
-		if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG))
-		{
-			machineAreas.erase(std::remove(machineAreas.begin(), machineAreas.end(), TYPE::HRRG), machineAreas.end());
-			messenger.printDebugMessage("!!ERROR!! LLRFFactory::setup requested HRRG and LRRG which are "
-										"mutally exclusive, removing HRRG");
-		}
-	}
-
+	messenger.printDebugMessage("called LLRF Factory setup ");
 	if (hasBeenSetup)
 	{
 		messenger.printDebugMessage("setup LLRF Factory : it has been setup");
@@ -71,9 +66,10 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	{
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
-	// epics valve interface has been initialized in valve constructor
-	// but we have a lot of PV information to retrieve from EPICS first
-	// so we will cycle through the PV structs, and set up their values.
+
+	machineAreas = sanityCheckMachineAreas(machineAreas_IN);
+
+	// cycle through the PV structs, and set up their values.
 	populateLLRFMap();
 	if (reader.yamlFilenamesAndParsedStatusMap.empty())
 	{
@@ -88,9 +84,10 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 	EPICSInterface::sendToEPICS();
 	for (auto& llrf : LLRFMap)
 	{
+		messenger.printDebugMessage("Setup ", llrf.first);
 		// update aliases for valve in map
 		updateAliasNameMap(llrf.second);
-		// update deafult tarce mean indecies 
+		// update default trace mean indecies 
 		llrf.second.setDefaultPowerTraceMeanTimes();
 		std::map<std::string, pvStruct>& pvstruct = llrf.second.getPVStructs();
 		for (auto& pv : pvstruct)
@@ -115,12 +112,70 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 			}
 			else
 			{
-				messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS");
+				switch (ca_state(pv.second.CHID))
+				{
+				case cs_never_conn:
+					messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS, CHID is cs_never_conn");
+					break;
+				case cs_prev_conn:
+					messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS, CHID is cs_prev_conn");
+					break;
+				case cs_conn: 
+					messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS, CHID is cs_conn");
+					break;
+				case cs_closed:
+					messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS, CHID is cs_closed");
+					break;
+				default:
+					messenger.printMessage(pv.second.fullPVName, " CANNOT CONNECT TO EPICS, CHID is UNKNOWN");
+				}
 			}
 		}
 	}
 	hasBeenSetup = true;
 	return hasBeenSetup;
+}
+std::vector <TYPE> LLRFFactory::sanityCheckMachineAreas(const std::vector<TYPE>& machineAreas_IN)const
+{
+	messenger.printDebugMessage("sanityCheckMacheinAreas");
+	std::vector <TYPE> pass1, r;
+	for (auto&& item : machineAreas_IN)
+	{
+		if(item == TYPE::ALL_VELA_CLARA)
+		{
+			pass1.push_back(TYPE::LRRG);
+			pass1.push_back(TYPE::L01);
+		}
+		else
+		{
+			pass1.push_back(item);
+		}
+	}
+	bool has_gun_type = false;
+	for (auto&& item : pass1)
+	{
+		if (GlobalFunctions::entryExists(r, item))
+		{
+
+		}
+		else if(GlobalFunctions::entryExists(llrf_gun_types, item))
+		{
+			if (has_gun_type)
+			{
+				messenger.printDebugMessage("!!WARNING!! sanityCheckMacheinAreas found two GUN types requested, removing ", ENUM_TO_STRING(item));
+			}
+			else
+			{
+				r.push_back(item);
+				has_gun_type = true;
+			}
+		}
+		else
+		{
+			r.push_back(item);
+		}
+	}
+	return r;
 }
 void LLRFFactory::populateLLRFMap()
 {
@@ -259,6 +314,11 @@ void LLRFFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = false ");
 	}
 }
+
+
+
+
+
 std::vector<std::string> LLRFFactory::getLLRFNames()
 {
 	std::vector<std::string> r;
@@ -279,9 +339,9 @@ LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
 	{
 		return LLRFMap.at(full_name);
 	}
+	messenger.printDebugMessage("!!WARNING!! getLLRF did not recognize name ", llrf_name, " dyummy object returned.");
 	return dummy_llrf;
 }
-
 std::string LLRFFactory::getFullName(const std::string& name_to_check) const
 {
 	std::cout << "getFullName looking for " << name_to_check << std::endl;
@@ -293,6 +353,13 @@ std::string LLRFFactory::getFullName(const std::string& name_to_check) const
 	std::cout << name_to_check << " NOT found " << std::endl;
 	return dummy_llrf.getHardwareName();
 }
+
+
+
+
+
+
+
 
 
 bool LLRFFactory::setPhi(const std::string& llrf_name, double value)

@@ -189,6 +189,18 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("setNumTracesToEstimateRepRate",  &LLRF::setNumTracesToEstimateRepRate)
 			.def("getNumTracesToEstimateRepRate",  &LLRF::getNumTracesToEstimateRepRate)
 			.def("getTraceRepRate",  &LLRF::getTraceRepRate)
+
+
+
+			.def("fullLLRFTraceName",  &LLRF::fullLLRFTraceName)
+			.def("getAllLLRFTraceNames",  &LLRF::getAllLLRFTraceNames_Py)
+
+				
+				
+			.def("setAllSCANTo",  &LLRF::setAllSCANTo)
+
+			.def("setAllSCANToPassive",  &LLRF::setAllSCANToPassive)
+			.def("setAllSCANToIoIntr",  &LLRF::setAllSCANToIoIntr)
 			
 
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)
@@ -236,6 +248,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 		bool (LLRFFactory::* setup_VersionTypeArg)(const std::string&, TYPE) = &LLRFFactory::setup;
 		bool (LLRFFactory::* setup_ListArg)(const boost::python::list&) = &LLRFFactory::setup;
 		bool (LLRFFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &LLRFFactory::setup;
+
 
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRFFactory>())->to_python_target_type());
