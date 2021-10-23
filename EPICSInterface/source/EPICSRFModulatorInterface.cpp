@@ -99,6 +99,34 @@ void EPICSRFModulatorInterface::update_GUN_MOD_STATE_SET_READ(const struct event
 	}
 	mod->main_state_set_read_string.second = ENUM_TO_STRING(mod->main_state_set_read.second);
 }
+
+void EPICSRFModulatorInterface::update_L01_MOD_STATE_SET_READ(const struct event_handler_args args)
+{
+	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
+	std::pair<epicsTimeStamp, unsigned short > r = getTimeStampEnumPair(args);
+	mod->main_state_set_read_string.first = r.first;
+	mod->main_state_set_read.first = r.first;
+	switch (r.second)
+	{
+	case 0:
+		mod->main_state_set_read.second = STATE::OFF;
+		break;
+	case 1:
+		mod->main_state_set_read.second = STATE::STANDBY;
+		break;
+	case 2:
+		mod->main_state_set_read.second = STATE::HV_ON;
+		break;
+	case 3:
+		mod->main_state_set_read.second = STATE::RF_ON;
+		break;
+	default:
+		mod->main_state_set_read.second = STATE::UNKNOWN;
+		break;
+	}
+	mod->main_state_set_read_string.second = ENUM_TO_STRING(mod->main_state_set_read.second);
+}
+
 void EPICSRFModulatorInterface::update_GUN_MOD_MAIN_STATE_READ(const struct event_handler_args args)
 {
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);

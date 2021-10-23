@@ -22,7 +22,9 @@ public:
     // GUN void
     //static void update_GUN_MOD_RESET(const struct event_handler_args args);
     //static void update_GUN_MOD_STATE_SET(const struct event_handler_args args);
-    static void update_GUN_MOD_STATE_SET_READ(const struct event_handler_args args); 
+    static void update_GUN_MOD_STATE_SET_READ(const struct event_handler_args args);
+    static void update_L01_MOD_STATE_SET_READ(const event_handler_args args);
+
     static void update_GUN_MOD_MAIN_STATE_READ(const struct event_handler_args args);
     static void update_GUN_MOD_ERR_SVAL(const struct event_handler_args args);
     static void update_GUN_MOD_ILOCK1(const struct event_handler_args args);
@@ -243,6 +245,7 @@ public:
     //{RFModulatorRecords::GUN_MOD_RESET , this->update_GUN_MOD_RESET},
     {RFModulatorRecords::HOLD_RF_ON, this->update_HOLD_RF_ON},
     {RFModulatorRecords::SYSTEM_STATE_READ,         this->update_SYSTEM_STATE_READ },
+    {RFModulatorRecords::SYSTEM_STATE_PUT,          this->update_L01_MOD_STATE_SET_READ},
     {RFModulatorRecords::HVPS_VOLTAGE_SET_READ,		this->update_HVPS_VOLTAGE_SET_READ },
     //{RFModulatorRecords::HVPS_VOLTAGE_LOW_ALARM_SET,this->update_HVPS_VOLTAGE_LOW_ALARM_SET },
     //{RFModulatorRecords::HVPS_VOLTAGE_HI_ALARM_SET, this->update_HVPS_VOLTAGE_HI_ALARM_SET },

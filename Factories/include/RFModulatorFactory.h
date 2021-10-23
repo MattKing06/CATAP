@@ -140,8 +140,6 @@ private:
 	STATE mode;
 	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
 	ConfigReader reader;
-	/*! sets PV struct fucntion pointer */
-	void retrieveUpdateFunctionForRecord();
 	/*! update the alias_name_map after reading the master lattice 
 		@param[in] RFModulator, modulator to get alias names from */
 	void updateAliasNameMap(const RFModulator& mod);
