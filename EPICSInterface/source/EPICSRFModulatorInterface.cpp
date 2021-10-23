@@ -339,6 +339,14 @@ void EPICSRFModulatorInterface::update_SYSTEM_STATE_READ(const struct event_hand
 	}
 	//messenger.printMessage(mod->getHardwareName(), " state changed to ", ENUM_TO_STRING(mod->main_state.second));
 }
+void EPICSRFModulatorInterface::update_L01_MOD_WARMUPT(const event_handler_args args)
+{
+	RFModulator* recastMod = getHardwareFromArgs<RFModulator>(args);
+	auto updatePair = getTimeStampDoublePair(args);
+	std::cout << updatePair.first.nsec << " --- " << updatePair.second << std::endl;
+	recastMod->updateRemainingWarmUpTime(updatePair);
+	recastMod->updateLowLevelDouble(RFModulatorRecords::L01_MOD_WARMUPT, updatePair);
+}
 void EPICSRFModulatorInterface::update_L01_FAULT(const struct event_handler_args args) 
 {
 	//messenger.printMessage("update_SYSTEM_STATE_READ");

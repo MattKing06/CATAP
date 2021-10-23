@@ -155,7 +155,7 @@ bool RFModulatorFactory::isWarm(const std::string& name)const
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
 	{
-		return RFModulatorMap.at(full_name).isErrorStateGood();
+		return RFModulatorMap.at(full_name).isWarm();
 	}
 	return false;
 }
@@ -164,7 +164,7 @@ bool RFModulatorFactory::isNotWarm(const std::string& name)const
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(RFModulatorMap, full_name))
 	{
-		return RFModulatorMap.at(full_name).isErrorStateGood();
+		return RFModulatorMap.at(full_name).isNotWarm();
 	}
 	return false;
 }
@@ -193,7 +193,7 @@ std::map<std::string, std::string> RFModulatorFactory::getLowLevelStringData(con
 }
 boost::python::dict RFModulatorFactory::getLowLevelStringData_Py(const std::string& name)const
 {
-	return to_py_dict< std::string, double >(getLowLevelNumericalData(name));
+	return to_py_dict< std::string, std::string >(getLowLevelStringData(name));
 }
 boost::python::dict RFModulatorFactory::getLowLevelData(const std::string& name)const
 {
@@ -227,81 +227,81 @@ void RFModulatorFactory::setMachineAreaAndCutRFModulatorMap(const std::vector<TY
 	for (auto&& item : machine_areas_in)
 	{
 		messenger.printMessage("setMachineAreaAndCutRFModulatorMap passed ", ENUM_TO_STRING(item));
+		machine_areas = machine_areas_in;
+		// hardcode logical possiblities, in te efuture when we have many more modualtors this will need a refactor
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::ALL_VELA_CLARA))
+		{
+			return;
+		}
+		bool should_use_gun = false;
+		bool should_use_l01 = false;
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::GUN))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::VELA_GUN))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::CLARA_GUN))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::HRRG))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::LRRG))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::CLARA_HRRG))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::CLARA_LRRG))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::VELA_HRRG))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::VELA_LRRG))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::HRRG_GUN))
+		{
+			should_use_gun = true;
+		}
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::LRRG_GUN))
+		{
+			should_use_gun = true;
+		}
+		//linac
+		if (GlobalFunctions::entryExists(machine_areas, TYPE::L01))
+		{
+			should_use_l01 = true;
+		}
+		if (should_use_l01 && should_use_gun)
+		{
+			return;
+		}
+		if (should_use_l01)
+		{
+			messenger.printMessage("eraseFromRFModulatorMap passed GUN");
+			eraseFromRFModulatorMap(std::vector<TYPE>{TYPE::GUN});
+			return;
+		}
+		if (should_use_gun)
+		{
+			messenger.printMessage("eraseFromRFModulatorMap passed L01");
+			eraseFromRFModulatorMap(std::vector<TYPE>{TYPE::L01});
+			return;
+		}
+		messenger.printMessage("!!ERROR!! never show this from the RF Modulator Factory setup");
 	}
-	machine_areas = machine_areas_in;
-	// hardcode logical possiblities, in te efuture when we have many more modualtors this will need a refactor
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::ALL_VELA_CLARA))
-	{
-		return;
-	}
-	bool should_use_gun = false;
-	bool should_use_l01 = false;
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::GUN))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::VELA_GUN))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::CLARA_GUN))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::HRRG))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::LRRG))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::CLARA_HRRG))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::CLARA_LRRG))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::VELA_HRRG))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::VELA_LRRG))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::HRRG_GUN))
-	{
-		should_use_gun = true;
-	}
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::LRRG_GUN))
-	{
-		should_use_gun = true;
-	}
-	//linac
-	if (GlobalFunctions::entryExists(machine_areas, TYPE::L01))
-	{
-		should_use_l01 = true;
-	}
-	if (should_use_l01 && should_use_gun)
-	{
-		return;
-	}
-	if (should_use_l01)
-	{
-		messenger.printMessage("eraseFromRFModulatorMap passed GUN");
-		eraseFromRFModulatorMap(std::vector<TYPE>{TYPE::GUN});
-		return;
-	}
-	if (should_use_gun)
-	{
-		messenger.printMessage("eraseFromRFModulatorMap passed L01");
-		eraseFromRFModulatorMap(std::vector<TYPE>{TYPE::L01});
-		return;
-	}
-	messenger.printMessage("!!ERROR!! never show this from the RF Modulator Factory setup");
 }
 
 void RFModulatorFactory::eraseFromRFModulatorMap(const std::vector<TYPE>& to_erase)

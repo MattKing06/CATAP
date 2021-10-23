@@ -57,6 +57,7 @@ public:
     //static void update_HVPS_VOLTAGE_HI_ALARM_SET(const struct event_handler_args args);
     //static void update_L01_RESET(const struct event_handler_args args);
     static void update_SYSTEM_STATE_READ(const struct event_handler_args args);
+    static void update_L01_MOD_WARMUPT(const struct event_handler_args args);
     static void update_HVPS_VOLTAGE_SET_READ(const struct event_handler_args args);
     static void update_HVPS_VOLTAGE_LOW_ALARM_SET_READ(const struct event_handler_args args);
     static void update_HVPS_VOLTAGE_HI_ALARM_SET_READ(const struct event_handler_args args);
@@ -166,6 +167,7 @@ public:
     {RFModulatorRecords::GUN_MOD_IONP_PRESSURE_READ    			 ,this->update_GUN_MOD_IONP_PRESSURE_READ	},
     //{RFModulatorRecords::SYSTEM_STATE_PUT,                 this->update_SYSTEM_STATE_PUT},
    // {RFModulatorRecords::HVPS_VOLTAGE_SET,  			   this->update_HVPS_VOLTAGE_SET},
+    {RFModulatorRecords::L01_MOD_WARMUPT, this->update_L01_MOD_WARMUPT},
     {RFModulatorRecords::HVPS_VOLTAGE_LOW_ALARM_SET_READ,  this->update_HVPS_VOLTAGE_LOW_ALARM_SET_READ},
     {RFModulatorRecords::HVPS_VOLTAGE_HI_ALARM_SET_READ,   this->update_HVPS_VOLTAGE_HI_ALARM_SET_READ},
     {RFModulatorRecords::SYSTEM_STATE_READ,				   this->update_SYSTEM_STATE_READ},

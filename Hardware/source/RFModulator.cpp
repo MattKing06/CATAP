@@ -58,6 +58,7 @@ void RFModulator::setMasterLatticeData()
 
 		}
 	}
+
 	if (GlobalFunctions::entryExists(specificHardwareParameters, "name_alias"))
 	{
 		// TODOD white space trimiming probably required here for robustness 
@@ -151,6 +152,7 @@ void RFModulator::updateRemainingWarmUpTime(const std::pair < epicsTimeStamp, lo
 	}
 	else
 	{
+        messenger.printDebugMessage("MOD WARMUP TIME: ", wam_up_time_remaining.second);
 		is_warm = false;
 	}
 }
@@ -264,7 +266,7 @@ void RFModulator::updateGunErrorString(const std::string& time_stamp_str, const 
 	if (GlobalFunctions::entryExists(gun_mod_hex_map, value))
 	{
 
-		std::pair<std::string, std::string> new_error{ time_stamp_str, gun_mod_hex_map.at(value) };
+		std::pair<std::string, std::string> new_error{ time_stamp_str, value };
 		gun_error_string_buffer.push_back(new_error);
 		messenger.printDebugMessage("Gun ERROR MESSAGE = ", new_error.first, " ", new_error.second);
 		updateErrorState();

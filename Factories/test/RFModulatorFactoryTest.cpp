@@ -28,5 +28,12 @@ BOOST_AUTO_TEST_CASE(check_gun_modulator_hex_code_update_test)
 	fac.setup("nominal");
 }
 
+BOOST_AUTO_TEST_CASE(check_l01_warmup_time_update_test)
+{
+	RFModulatorFactory fac = RFModulatorFactory(STATE::PHYSICAL);
+	fac.setup("nominal");
+	fac.isWarm("L01");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
