@@ -359,7 +359,7 @@ std::vector<std::string> const rf_mod_records_list =
 		SOLENOID_2_CURRENT,
 		SOLENOID_3_CURRENT,
 		L01_MOD_WARMUPT,
-		//L01_FAULT,
+		L01_FAULT,
 		ERROR_WORD_1,
 		ERROR_WORD_2,
 		ERROR_WORD_3,

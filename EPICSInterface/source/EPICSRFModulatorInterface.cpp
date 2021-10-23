@@ -175,7 +175,6 @@ void EPICSRFModulatorInterface::update_GUN_MOD_ILOCK5(const struct event_handler
 }
 void EPICSRFModulatorInterface::update_GUN_MOD_WARMUPT(const struct event_handler_args args)
 {
-	//messenger.printMessage("update_GUN_MOD_WARMUPT");
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
 	// COMES BACK FROM EPICS AS A LONG, BUT L01 COMES BACK AS DOUBLE...
 	auto updatePair = getTimeStampLongPair(args);
@@ -360,12 +359,12 @@ void EPICSRFModulatorInterface::update_L01_FAULT(const struct event_handler_args
 	{
 	case 0:
 		mod ->error_state = STATE::GOOD;
-		//message("l01_fault = 0 = NO_FAULT");
+		messenger.printDebugMessage("l01_fault = 0 = NO_FAULT:::", mod->error_state);
 		break;
 	case 1:
 		//message("l01_fault = 1 = FAULT ");
 		mod->error_state = STATE::BAD;
-		//l01Mod.l01_fault = rfModStructs::L01_MOD_STATE::NO_FAULT;
+		messenger.printDebugMessage("l01_fault = 1 = FAULT:::", mod->error_state);
 		break;
 	case 2:
 		messenger.printMessage(mod->getHardwareName(), " l01_fault  = 2");

@@ -168,6 +168,7 @@ public:
     //{RFModulatorRecords::SYSTEM_STATE_PUT,                 this->update_SYSTEM_STATE_PUT},
    // {RFModulatorRecords::HVPS_VOLTAGE_SET,  			   this->update_HVPS_VOLTAGE_SET},
     {RFModulatorRecords::L01_MOD_WARMUPT, this->update_L01_MOD_WARMUPT},
+    {RFModulatorRecords::L01_FAULT, this->update_L01_FAULT},
     {RFModulatorRecords::HVPS_VOLTAGE_LOW_ALARM_SET_READ,  this->update_HVPS_VOLTAGE_LOW_ALARM_SET_READ},
     {RFModulatorRecords::HVPS_VOLTAGE_HI_ALARM_SET_READ,   this->update_HVPS_VOLTAGE_HI_ALARM_SET_READ},
     {RFModulatorRecords::SYSTEM_STATE_READ,				   this->update_SYSTEM_STATE_READ},
