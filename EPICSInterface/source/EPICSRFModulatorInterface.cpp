@@ -177,7 +177,10 @@ void EPICSRFModulatorInterface::update_GUN_MOD_WARMUPT(const struct event_handle
 {
 	//messenger.printMessage("update_GUN_MOD_WARMUPT");
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
-	mod->updateRemainingWarmUpTime(getTimeStampLongPair(args));
+	// COMES BACK FROM EPICS AS A LONG, BUT L01 COMES BACK AS DOUBLE...
+	auto updatePair = getTimeStampLongPair(args);
+	mod->updateLowLevelDouble(RFModulatorRecords::GUN_MOD_WARMUPT, updatePair);
+	mod->updateRemainingWarmUpTime(updatePair);
 }
 void EPICSRFModulatorInterface::update_GUN_MOD_MAGPS1_CURR_READ(const struct event_handler_args args)
 {
@@ -343,7 +346,6 @@ void EPICSRFModulatorInterface::update_L01_MOD_WARMUPT(const event_handler_args 
 {
 	RFModulator* recastMod = getHardwareFromArgs<RFModulator>(args);
 	auto updatePair = getTimeStampDoublePair(args);
-	std::cout << updatePair.first.nsec << " --- " << updatePair.second << std::endl;
 	recastMod->updateRemainingWarmUpTime(updatePair);
 	recastMod->updateLowLevelDouble(RFModulatorRecords::L01_MOD_WARMUPT, updatePair);
 }
