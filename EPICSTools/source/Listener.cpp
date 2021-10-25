@@ -1,5 +1,5 @@
 #include <Listener.h>
-
+#include <boost/foreach.hpp>
 
 Listener::Listener()
 {
@@ -61,12 +61,12 @@ void Listener::setupChannels()
 	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
 	EPICSInterface::sendToEPICS();
-	initialiseCurrentValue(pv);
 	epicsInterface->retrieveCOUNT(pv);
 	EPICSInterface::sendToEPICS();
+	pv.COUNT > 1 ? initialiseCurrentArray(pv) : initialiseCurrentValue(pv);
+	//initialiseCurrentValue(pv);
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
-	initialiseCurrentValue(pv);
 	EPICSInterface::sendToEPICS();
 }
 
@@ -88,6 +88,109 @@ std::string Listener::getEPICSPVName(const std::string& pv)
 	{
 		return pv;
 	}
+}
+
+void Listener::initialiseCurrentArray(const pvStruct& pv)
+{
+	switch (ca_field_type(pv.CHID))
+	{
+	case(DBR_TIME_DOUBLE):
+	{
+		std::vector<double> epicsDBLTimeArray;
+		ca_array_get(DBR_TIME_DOUBLE, pv.COUNT, pv.CHID, &epicsDBLTimeArray[0]);
+		for (auto& val : epicsDBLTimeArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_DOUBLE):
+	{
+		std::vector<double> epicsDBLArray;
+		ca_array_get(DBR_DOUBLE, pv.COUNT, pv.CHID, &epicsDBLArray[0]);
+		for (auto& val : epicsDBLArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_TIME_INT):
+	{
+		std::vector<int> epicsINTTimeArray;
+		ca_array_get(DBR_TIME_INT, pv.COUNT, pv.CHID, &epicsINTTimeArray[0]);
+		for (auto& val : epicsINTTimeArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_INT):
+	{
+		std::vector<int> epicsINTArray;
+		ca_array_get(DBR_INT, pv.COUNT, pv.CHID, &epicsINTArray[0]);
+		for (auto& val : epicsINTArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_TIME_ENUM):
+	{
+		std::vector<unsigned short> epicsENUMTimeArray;
+		ca_array_get(DBR_TIME_ENUM, pv.COUNT, pv.CHID, &epicsENUMTimeArray[0]);
+		for (auto& val : epicsENUMTimeArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_ENUM):
+	{
+		std::vector<unsigned short> epicsENUMArray;
+		ca_array_get(DBR_ENUM, pv.COUNT, pv.CHID, &epicsENUMArray[0]);
+		for (auto& val : epicsENUMArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_TIME_LONG):
+	{
+		std::vector<long> epicsLONGTimeArray;
+		ca_array_get(DBR_TIME_LONG, pv.COUNT, pv.CHID, &epicsLONGTimeArray[0]);
+		for (auto& val : epicsLONGTimeArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_LONG):
+	{
+		std::vector<long> epicsLONGArray(pv.COUNT);
+		ca_array_get(DBR_TIME_LONG, pv.COUNT, pv.CHID, &epicsLONGArray[0]);
+		for (auto& val : epicsLONGArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_TIME_FLOAT):
+	{
+		std::vector<float> epicsFLOATTimeArray;
+		ca_array_get(DBR_TIME_FLOAT, pv.COUNT, pv.CHID, &epicsFLOATTimeArray[0]);
+		for (auto& val : epicsFLOATTimeArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_FLOAT):
+	{
+		std::vector<float> epicsFLOATArray;
+		ca_array_get(DBR_FLOAT, pv.COUNT, pv.CHID, &epicsFLOATArray[0]);
+		for (auto& val : epicsFLOATArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_TIME_STRING):
+	{
+		std::vector<std::string> epicsSTRINGTimeArray;
+		ca_array_get(DBR_TIME_STRING, pv.COUNT, pv.CHID, &epicsSTRINGTimeArray[0]);
+		for (auto& val : epicsSTRINGTimeArray)
+			currentArray.push_back(val);
+		break;
+	}
+	case(DBR_STRING):
+	{
+		std::vector<std::string> epicsSTRINGArray;
+		ca_array_get(DBR_STRING, pv.COUNT, pv.CHID, &epicsSTRINGArray[0]);
+		for (auto& val : epicsSTRINGArray)
+			currentArray.push_back(val);
+		break;
+	}
+}
 }
 
 void Listener::initialiseCurrentValue(const pvStruct& pv)

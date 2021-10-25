@@ -63,7 +63,7 @@ public:
 	std::string getEPICSPVName(const std::string& pv);
 
 	void initialiseCurrentValue(const pvStruct& pv);
-
+	void initialiseCurrentArray(const pvStruct& pv);
 	/*! Returns the bool status of whether a PV is connected or not
 		@param[in] pv : The name of the PV to check
 		@param[out] status : whether or not the PV is connected */
@@ -228,9 +228,10 @@ inline T Listener::getValue()
 template<typename T>
 inline std::vector<T> Listener::getArray()
 {
-	std::vector<T> returnArray;
-	for (auto& item : currentArray)
+	std::vector<T> returnArray(currentArray.size());
+	for (auto item : currentArray)
 	{
+		T val = boost::get<T>(item);
 		returnArray.push_back(boost::get<T>(item));
 	}
 	return returnArray;

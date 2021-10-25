@@ -125,4 +125,20 @@ BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 	}
 }
 
+
+BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
+{
+	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener mon = ET.getMonitor(pv);
+	int i = 0;
+	while (i < 50000)
+	{
+		i++;
+	}
+	auto arrayVal = mon.getArray<long>();
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
