@@ -247,7 +247,18 @@ inline boost::circular_buffer<T> Listener::getBuffer()
 template<typename T>
 inline boost::circular_buffer<std::vector<T>> Listener::getArrayBuffer()
 {
-	return boost::circular_buffer<std::vector<T>>(currentArrayBuffer);
+	boost::circular_buffer<std::vector<T>> floatBuff(currentArrayBuffer.capacity());
+	for (auto& vector : currentArrayBuffer)
+	{
+		std::vector<T> bufferVec(currentArray.size());
+		for (auto& item : vector)
+		{
+			bufferVec.push_back(boost::get<T>(item));
+		}
+		floatBuff.push_back(bufferVec);
+	}
+	return floatBuff;
+//	return boost::circular_buffer<std::vector<T>>(currentArrayBuffer);
 }
 
 #endif //LISTENER_H

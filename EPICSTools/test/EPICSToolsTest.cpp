@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
 	{
 		i++;
 	}
-	auto arrayVal = mon.getArray<long>();
+	auto arrayVal = mon.getArrayBuffer<long>();
 }
 
 

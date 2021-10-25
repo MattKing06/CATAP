@@ -473,7 +473,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		boost::circular_buffer<std::vector<double>> dblBuff(currentArrayBuffer.capacity());
 		for (auto& vector : currentArrayBuffer)
 		{
-			std::vector<double> bufferVec;
+			std::vector<double> bufferVec(currentArray.size());
 			for (auto& item : vector)
 			{
 				bufferVec.push_back(boost::get<double>(item));
@@ -488,7 +488,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		boost::circular_buffer<std::vector<int>> intBuff(currentArrayBuffer.capacity());
 		for (auto& vector : currentArrayBuffer)
 		{
-			std::vector<int> bufferVec;
+			std::vector<int> bufferVec(currentArray.size());
 			for (auto& item : vector)
 			{
 				bufferVec.push_back(boost::get<int>(item));
@@ -497,13 +497,28 @@ boost::python::list Listener::getArrayBuffer_Py()
 		}
 		return to_py_list(intBuff);
 	}
+	else if (isLongArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<long>> longBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<long> bufferVec;
+			for (auto& item : vector)
+			{
+				bufferVec.push_back(boost::get<long>(item));
+			}
+			longBuff.push_back(bufferVec);
+		}
+		return to_py_list(longBuff);
+	}
 	else if (isEnumArrayBuffer())
 	{
 		std::cout << "constructing py list" << std::endl;
 		boost::circular_buffer<std::vector<unsigned short>> usBuff(currentArrayBuffer.capacity());
 		for (auto& vector : currentArrayBuffer)
 		{
-			std::vector<unsigned short> bufferVec;
+			std::vector<unsigned short> bufferVec(currentArray.size());
 			for (auto& item : vector)
 			{
 				bufferVec.push_back(boost::get<unsigned short>(item));
@@ -518,7 +533,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		boost::circular_buffer<std::vector<std::string>> strBuff(currentArrayBuffer.capacity());
 		for (auto& vector : currentArrayBuffer)
 		{
-			std::vector<std::string> bufferVec;
+			std::vector<std::string> bufferVec(currentArray.size());
 			for (auto& item : vector)
 			{
 				bufferVec.push_back(boost::get<std::string>(item));
@@ -533,7 +548,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		boost::circular_buffer<std::vector<float>> floatBuff(currentArrayBuffer.capacity());
 		for (auto& vector : currentArrayBuffer)
 		{
-			std::vector<float> bufferVec;
+			std::vector<float> bufferVec(currentArray.size());
 			for (auto& item : vector)
 			{
 				bufferVec.push_back(boost::get<float>(item));
