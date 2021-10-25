@@ -508,6 +508,16 @@ boost::python::list Listener::getBuffer_Py()
 	}
 }
 
+void Listener::clearBuffer()
+{
+	currentBuffer.clear();
+}
+
+void Listener::clearArrayBuffer()
+{
+	currentArrayBuffer.clear();
+}
+
 boost::python::list Listener::getArrayBuffer_Py()
 {
 	if (isDoubleArrayBuffer())

@@ -123,6 +123,11 @@ public:
 	/*! Get the buffer of single-values (default size is 10 elements) as python list
 		@param[out] buffer : python list of buffered values from EPICS. */
 	boost::python::list getBuffer_Py();
+
+	void clearBuffer();
+
+	void clearArrayBuffer();
+
 	/*! Get the buffer of array-values (default size is 10 arrays)
 		@param[out] buffer : circular_buffer of arrays from EPICS. */
 	template<typename T>
