@@ -50,16 +50,19 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 	std::string monPV = "CLA-C2V-MAG-HCOR-01:READI";
 	std::string powerPV = "CLA-C2V-MAG-HCOR-01:SPOWER";
 	std::string setPV = "CLA-C2V-MAG-HCOR-01:SETI";
-	EPICSTools epicsTools = EPICSTools();
+	EPICSTools epicsTools = EPICSTools(STATE::VIRTUAL);
 	epicsTools.monitor(monPV);
 	epicsTools.put(setPV, 10.0);
 	epicsTools.put(powerPV, 1);
-	boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
 	Listener& monitor = epicsTools.getMonitor(monPV);
-	for (auto& item : monitor.currentBuffer)
+	if (monitor.isConnected())
 	{
-		BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+		for (auto& item : monitor.currentBuffer)
+		{
+			BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+		}
 	}
+
 }
 
 BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
