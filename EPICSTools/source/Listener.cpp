@@ -64,7 +64,6 @@ void Listener::setupChannels()
 	epicsInterface->retrieveCOUNT(pv);
 	EPICSInterface::sendToEPICS();
 	pv.COUNT > 1 ? initialiseCurrentArray(pv) : initialiseCurrentValue(pv);
-	//initialiseCurrentValue(pv);
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
 	EPICSInterface::sendToEPICS();
@@ -96,7 +95,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	{
 	case(DBR_TIME_DOUBLE):
 	{
-		std::vector<double> epicsDBLTimeArray;
+		std::vector<double> epicsDBLTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_DOUBLE, pv.COUNT, pv.CHID, &epicsDBLTimeArray[0]);
 		for (auto& val : epicsDBLTimeArray)
 			currentArray.push_back(val);
@@ -104,7 +103,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_DOUBLE):
 	{
-		std::vector<double> epicsDBLArray;
+		std::vector<double> epicsDBLArray(pv.COUNT);
 		ca_array_get(DBR_DOUBLE, pv.COUNT, pv.CHID, &epicsDBLArray[0]);
 		for (auto& val : epicsDBLArray)
 			currentArray.push_back(val);
@@ -112,7 +111,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_TIME_INT):
 	{
-		std::vector<int> epicsINTTimeArray;
+		std::vector<int> epicsINTTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_INT, pv.COUNT, pv.CHID, &epicsINTTimeArray[0]);
 		for (auto& val : epicsINTTimeArray)
 			currentArray.push_back(val);
@@ -120,7 +119,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_INT):
 	{
-		std::vector<int> epicsINTArray;
+		std::vector<int> epicsINTArray(pv.COUNT);
 		ca_array_get(DBR_INT, pv.COUNT, pv.CHID, &epicsINTArray[0]);
 		for (auto& val : epicsINTArray)
 			currentArray.push_back(val);
@@ -128,7 +127,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_TIME_ENUM):
 	{
-		std::vector<unsigned short> epicsENUMTimeArray;
+		std::vector<unsigned short> epicsENUMTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_ENUM, pv.COUNT, pv.CHID, &epicsENUMTimeArray[0]);
 		for (auto& val : epicsENUMTimeArray)
 			currentArray.push_back(val);
@@ -136,7 +135,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_ENUM):
 	{
-		std::vector<unsigned short> epicsENUMArray;
+		std::vector<unsigned short> epicsENUMArray(pv.COUNT);
 		ca_array_get(DBR_ENUM, pv.COUNT, pv.CHID, &epicsENUMArray[0]);
 		for (auto& val : epicsENUMArray)
 			currentArray.push_back(val);
@@ -144,7 +143,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_TIME_LONG):
 	{
-		std::vector<long> epicsLONGTimeArray;
+		std::vector<long> epicsLONGTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_LONG, pv.COUNT, pv.CHID, &epicsLONGTimeArray[0]);
 		for (auto& val : epicsLONGTimeArray)
 			currentArray.push_back(val);
@@ -160,7 +159,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_TIME_FLOAT):
 	{
-		std::vector<float> epicsFLOATTimeArray;
+		std::vector<float> epicsFLOATTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_FLOAT, pv.COUNT, pv.CHID, &epicsFLOATTimeArray[0]);
 		for (auto& val : epicsFLOATTimeArray)
 			currentArray.push_back(val);
@@ -168,7 +167,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_FLOAT):
 	{
-		std::vector<float> epicsFLOATArray;
+		std::vector<float> epicsFLOATArray(pv.COUNT);
 		ca_array_get(DBR_FLOAT, pv.COUNT, pv.CHID, &epicsFLOATArray[0]);
 		for (auto& val : epicsFLOATArray)
 			currentArray.push_back(val);
@@ -176,7 +175,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_TIME_STRING):
 	{
-		std::vector<std::string> epicsSTRINGTimeArray;
+		std::vector<std::string> epicsSTRINGTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_STRING, pv.COUNT, pv.CHID, &epicsSTRINGTimeArray[0]);
 		for (auto& val : epicsSTRINGTimeArray)
 			currentArray.push_back(val);
@@ -184,7 +183,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	}
 	case(DBR_STRING):
 	{
-		std::vector<std::string> epicsSTRINGArray;
+		std::vector<std::string> epicsSTRINGArray(pv.COUNT);
 		ca_array_get(DBR_STRING, pv.COUNT, pv.CHID, &epicsSTRINGArray[0]);
 		for (auto& val : epicsSTRINGArray)
 			currentArray.push_back(val);

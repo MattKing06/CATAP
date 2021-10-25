@@ -118,7 +118,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 {
 	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
-	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
 	ET.monitor(pv);
 	Listener pid_scan = ET.getMonitor(pv);
 	if (pid_scan.isConnected())
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
 {
 	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
-	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
 	ET.monitor(pv);
 	Listener mon = ET.getMonitor(pv);
 	if (mon.isConnected())
