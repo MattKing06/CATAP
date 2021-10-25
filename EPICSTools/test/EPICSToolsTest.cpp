@@ -132,12 +132,12 @@ BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
 	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
 	ET.monitor(pv);
 	Listener mon = ET.getMonitor(pv);
-	int i = 0;
-	while (i < 50000)
+	if (mon.isConnected())
 	{
-		i++;
+		auto arrayVal = mon.getArrayBuffer<long>();
+		BOOST_CHECK_NE(arrayVal.size(), 0);
 	}
-	auto arrayVal = mon.getArrayBuffer<long>();
+
 }
 
 
