@@ -25,6 +25,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getBufferAverage", &Listener::getBufferAverage, boost::python::arg("self"), "get the mean of the values in buffer")
 			.def("getBufferStdDev", &Listener::getBufferStdDeviation, boost::python::args("self"), "get the standard deviation of the values in buffer")
 			.def("getArrayBuffer", &Listener::getArrayBuffer_Py, boost::python::arg("self"), "get the buffer of past arrays from EPICS")
+			.def("getArrayAverage", &Listener::getArrayAverage_Py, boost::python::arg("self"), " get the mean average of the values in current array")
 			.def("getArrayBufferAverage", &Listener::getArrayBufferAverageArray_Py, boost::python::arg("self"), "get the mean array of arrays in buffer");
 
 	}

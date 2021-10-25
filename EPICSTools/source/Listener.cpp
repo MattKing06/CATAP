@@ -364,6 +364,31 @@ boost::python::list Listener::getArray_Py()
 	}
 }
 
+boost::python::object Listener::getArrayAverage_Py()
+{
+	double mean = 0.0f;
+	if (isDoubleArray())
+	{
+		mean = getArrayAverage<double>();
+		return boost::python::object(mean);
+	}
+	else if (isIntArray())
+	{
+		mean = getArrayAverage<int>();
+		return boost::python::object(mean);
+	}
+	else if (isFloatArray())
+	{
+		mean = getArrayAverage<float>();
+		return boost::python::object(mean);
+	}
+	else if (isLongArray())
+	{
+		mean = getArrayAverage<long>();
+		return boost::python::object(mean);
+	}
+}
+
 void Listener::setBufferSize(int size)
 {
 	currentBuffer.clear();

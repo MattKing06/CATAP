@@ -94,6 +94,15 @@ public:
 	/*! Get the most recent array of PV array record from EPICS as a python list
 		@param[out] array : Most recent array in EPICS as a python list*/
 	boost::python::list getArray_Py();
+	/*! Get the average over the current array 
+		@param[out] average: Mean average of the current array values*/
+	template<typename T>
+	double getArrayAverage();
+
+	/*! Get the mean average over the current array as python object
+	@param [out] average: Return the mean average of the current array as a boost::python::object*/
+	boost::python::object getArrayAverage_Py();
+
 	/*! Resizes the single-value buffer from the default (10 entries) to supplied size
 		@param[in] size : new size of single-value buffer */
 	void setBufferSize(int size);
@@ -229,13 +238,27 @@ inline T Listener::getValue()
 template<typename T>
 inline std::vector<T> Listener::getArray()
 {
-	std::vector<T> returnArray(currentArray.size());
+	std::vector<T> returnArray;
 	for (auto item : currentArray)
 	{
 		T val = boost::get<T>(item);
 		returnArray.push_back(boost::get<T>(item));
 	}
 	return returnArray;
+}
+
+template<typename T>
+inline double Listener::getArrayAverage()
+{
+	if (!isStringArray() && !isEnumArray())
+	{
+		std::vector<T> currentArrayTyped = getArray<T>();
+		std::cout << "ARRAY SIZE " << currentArrayTyped.size() << std::endl;
+		double average = 0.0f;
+		for (auto&& item : currentArrayTyped)
+			average += static_cast<double>(item);
+		return average / currentArrayTyped.size();
+	}
 }
 
 template<typename T>
