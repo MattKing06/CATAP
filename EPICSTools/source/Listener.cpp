@@ -263,13 +263,15 @@ boost::python::list Listener::getArray_Py()
 
 void Listener::setBufferSize(int size)
 {
-	currentBuffer.resize(size);
+	currentBuffer.clear();
+	currentBuffer.set_capacity(size);
 	messenger.printMessage("size of buffer is now: ", currentBuffer.capacity());
 }
 
 void Listener::setArrayBufferSize(int size)
 {
-	currentArrayBuffer.resize(size);
+	currentArrayBuffer.clear();
+	currentArrayBuffer.set_capacity(size);
 	messenger.printMessage("size of array buffer is now: ", currentArrayBuffer.capacity());
 }
 
