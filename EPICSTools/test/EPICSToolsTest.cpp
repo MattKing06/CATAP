@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
 	if (mon.isConnected())
 	{
 		auto arrayVal = mon.getArrayBuffer<long>();
-		BOOST_CHECK_NE(arrayVal.size(), 0);
+		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
 	}
 
 }
