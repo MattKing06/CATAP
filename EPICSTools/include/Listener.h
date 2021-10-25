@@ -102,6 +102,7 @@ public:
 	void setArrayBufferSize(int size);
 	/*! Get an array of the mean averages of all arrays in the buffer 
 		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer*/
+	template <typename T>
 	std::vector<double> getArrayBufferAverageArray();
 	/*! Get an array of the mean averages of all arrays in the buffer as a python list
 		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer as a python list*/

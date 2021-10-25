@@ -378,6 +378,7 @@ void Listener::setArrayBufferSize(int size)
 	messenger.printMessage("size of array buffer is now: ", currentArrayBuffer.capacity());
 }
 
+template <typename T>
 std::vector<double> Listener::getArrayBufferAverageArray()
 {
 	if (!isStringArrayBuffer() && !isEnumArrayBuffer())
@@ -387,7 +388,7 @@ std::vector<double> Listener::getArrayBufferAverageArray()
 		{
 			for (auto& vector : currentArrayBuffer)
 			{
-				bufferAverageVector.at(i) += boost::get<double>(vector.at(i));
+				bufferAverageVector.at(i) += boost::get<T>(vector.at(i));
 			}
 			bufferAverageVector.at(i) /= currentArrayBuffer.size();
 		}
@@ -397,7 +398,24 @@ std::vector<double> Listener::getArrayBufferAverageArray()
 
 boost::python::list Listener::getArrayBufferAverageArray_Py()
 {
-	std::vector<double> bufferAverageVector = getArrayBufferAverageArray();
+	std::vector<double> bufferAverageVector;
+	if (isDoubleArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<double>();
+	}
+	else if (isLongArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<long>();
+	}
+	else if (isIntArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<int>();
+	}
+	else if (isFloatArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<float>();
+	}
+
 	boost::python::list bufferAverageList = to_py_list(bufferAverageVector);
 	return bufferAverageList;
 }
