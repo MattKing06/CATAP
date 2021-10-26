@@ -50,16 +50,19 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 	std::string monPV = "CLA-C2V-MAG-HCOR-01:READI";
 	std::string powerPV = "CLA-C2V-MAG-HCOR-01:SPOWER";
 	std::string setPV = "CLA-C2V-MAG-HCOR-01:SETI";
-	EPICSTools epicsTools = EPICSTools();
+	EPICSTools epicsTools = EPICSTools(STATE::VIRTUAL);
 	epicsTools.monitor(monPV);
 	epicsTools.put(setPV, 10.0);
 	epicsTools.put(powerPV, 1);
-	boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
 	Listener& monitor = epicsTools.getMonitor(monPV);
-	for (auto& item : monitor.currentBuffer)
+	if (monitor.isConnected())
 	{
-		BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+		for (auto& item : monitor.currentBuffer)
+		{
+			BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+		}
 	}
+
 }
 
 BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
@@ -112,17 +115,33 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 
 }
 
-BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
-{
-	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
-	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
-	ET.monitor(pv);
-	Listener pid_scan = ET.getMonitor(pv);
-	if (pid_scan.isConnected())
-	{
-		bool isEnum = pid_scan.isEnum();
-		auto val = pid_scan.getValue<unsigned short>();
-	}
-}
+//BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
+//{
+//	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
+//	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
+//	ET.monitor(pv);
+//	Listener pid_scan = ET.getMonitor(pv);
+//	if (pid_scan.isConnected())
+//	{
+//		bool isEnum = pid_scan.isEnum();
+//		auto val = pid_scan.getValue<unsigned short>();
+//	}
+//}
+//
+//
+//BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
+//{
+//	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
+//	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
+//	ET.monitor(pv);
+//	Listener mon = ET.getMonitor(pv);
+//	if (mon.isConnected())
+//	{
+//		auto arrayVal = mon.getArrayBuffer<long>();
+//		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
+//	}
+//
+//}
+
 
 BOOST_AUTO_TEST_SUITE_END()

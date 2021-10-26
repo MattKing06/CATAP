@@ -63,7 +63,7 @@ public:
 	std::string getEPICSPVName(const std::string& pv);
 
 	void initialiseCurrentValue(const pvStruct& pv);
-
+	void initialiseCurrentArray(const pvStruct& pv);
 	/*! Returns the bool status of whether a PV is connected or not
 		@param[in] pv : The name of the PV to check
 		@param[out] status : whether or not the PV is connected */
@@ -94,6 +94,15 @@ public:
 	/*! Get the most recent array of PV array record from EPICS as a python list
 		@param[out] array : Most recent array in EPICS as a python list*/
 	boost::python::list getArray_Py();
+	/*! Get the average over the current array 
+		@param[out] average: Mean average of the current array values*/
+	template<typename T>
+	double getArrayAverage();
+
+	/*! Get the mean average over the current array as python object
+	@param [out] average: Return the mean average of the current array as a boost::python::object*/
+	boost::python::object getArrayAverage_Py();
+
 	/*! Resizes the single-value buffer from the default (10 entries) to supplied size
 		@param[in] size : new size of single-value buffer */
 	void setBufferSize(int size);
@@ -102,6 +111,7 @@ public:
 	void setArrayBufferSize(int size);
 	/*! Get an array of the mean averages of all arrays in the buffer 
 		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer*/
+	template <typename T>
 	std::vector<double> getArrayBufferAverageArray();
 	/*! Get an array of the mean averages of all arrays in the buffer as a python list
 		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer as a python list*/
@@ -113,6 +123,11 @@ public:
 	/*! Get the buffer of single-values (default size is 10 elements) as python list
 		@param[out] buffer : python list of buffered values from EPICS. */
 	boost::python::list getBuffer_Py();
+
+	void clearBuffer();
+
+	void clearArrayBuffer();
+
 	/*! Get the buffer of array-values (default size is 10 arrays)
 		@param[out] buffer : circular_buffer of arrays from EPICS. */
 	template<typename T>
@@ -229,11 +244,26 @@ template<typename T>
 inline std::vector<T> Listener::getArray()
 {
 	std::vector<T> returnArray;
-	for (auto& item : currentArray)
+	for (auto item : currentArray)
 	{
+		T val = boost::get<T>(item);
 		returnArray.push_back(boost::get<T>(item));
 	}
 	return returnArray;
+}
+
+template<typename T>
+inline double Listener::getArrayAverage()
+{
+	if (!isStringArray() && !isEnumArray())
+	{
+		std::vector<T> currentArrayTyped = getArray<T>();
+		std::cout << "ARRAY SIZE " << currentArrayTyped.size() << std::endl;
+		double average = 0.0f;
+		for (auto&& item : currentArrayTyped)
+			average += static_cast<double>(item);
+		return average / currentArrayTyped.size();
+	}
 }
 
 template<typename T>
@@ -246,7 +276,18 @@ inline boost::circular_buffer<T> Listener::getBuffer()
 template<typename T>
 inline boost::circular_buffer<std::vector<T>> Listener::getArrayBuffer()
 {
-	return boost::circular_buffer<std::vector<T>>(currentArrayBuffer);
+	boost::circular_buffer<std::vector<T>> floatBuff(currentArrayBuffer.capacity());
+	for (auto& vector : currentArrayBuffer)
+	{
+		std::vector<T> bufferVec(currentArray.size());
+		for (auto& item : vector)
+		{
+			bufferVec.push_back(boost::get<T>(item));
+		}
+		floatBuff.push_back(bufferVec);
+	}
+	return floatBuff;
+//	return boost::circular_buffer<std::vector<T>>(currentArrayBuffer);
 }
 
 #endif //LISTENER_H
