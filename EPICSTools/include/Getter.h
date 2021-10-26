@@ -66,6 +66,8 @@ public:
 	bool isString();
 	/*! Returns true if currentValue is of type float */
 	bool isFloat();
+	/*! Returns true if currentValue is of type short */
+	bool isShort();
 	/*! Returns true if currentArray is of type long */
 	bool isLongArray();
 	/*! Returns true if currentArray is of type double */
@@ -74,6 +76,8 @@ public:
 	bool isIntArray();
 	/*! Returns true if currentArray is of type unsigned short */
 	bool isEnumArray();
+	/*! Returns true if currentArray is of type short */
+	bool isShortArray();
 	/*! Returns true if currentArray is of type std::string */
 	bool isStringArray();
 	/*! Returns true if currentArray is of type float */
@@ -83,9 +87,9 @@ public:
 	/*! returns the array stored in currentArray as a python list */
 	boost::python::list getArray_Py();
 	/*! stores the current value in the single-valued EPICS record associated with getter */
-	boost::variant<double,int,long,float,unsigned short,std::string> currentValue;
+	boost::variant<double,long,float,unsigned short,short,std::string> currentValue;
 	/*! stores the current array in the EPICS record associated with getter */
-	std::vector<boost::variant<double, int, long, float, unsigned short, std::string> > currentArray;
+	std::vector<boost::variant<double, long, float, unsigned short, short, std::string> > currentArray;
 	/*! For Accessing common EPICS-related functionality*/
 	EPICSInterface_sptr epicsInterface;
 	/*! Tells us whether to use the CLARA control system (PHYSICAL),

@@ -237,6 +237,9 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<double> and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<double> and sets the Hardware parameter to that pair.
+ * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampShortVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<short>>& pairToUpdate, long size);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<int> and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampIntegerVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size);
