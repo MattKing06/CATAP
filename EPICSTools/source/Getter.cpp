@@ -9,11 +9,11 @@ Getter::Getter()
 Getter::Getter(const std::string& pvStr) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	mode(STATE::VIRTUAL),
-	currentValue(boost::variant<double, int, float, long, unsigned short, std::string>())
+	currentValue(boost::variant<double, float, long, unsigned short, short, std::string>())
 {
 	pvToGet = getEPICSPVName(pvStr);
 	//fill in constructor to setup epicsInterface
-	currentArray = std::vector<boost::variant<double, int, long, float, unsigned short, std::string>>();
+	currentArray = std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>();
 	setupChannels();
 	setValueFromEPICS();
 }
@@ -21,10 +21,10 @@ Getter::Getter(const std::string& pvStr) :
 Getter::Getter(const std::string& pvStr, const STATE& mode) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	mode(mode),
-	currentValue(boost::variant<double, int, float, long, unsigned short, std::string>())
+	currentValue(boost::variant<double, float, long, unsigned short, short, std::string>())
 {
 	pvToGet = getEPICSPVName(pvStr);
-	currentArray = std::vector<boost::variant<double, int, long, float, unsigned short, std::string>>();
+	currentArray = std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>();
 	setupChannels();
 	setValueFromEPICS();
 }
@@ -84,6 +84,26 @@ void Getter::setValueFromEPICS()
 			}
 			break;
 		}
+		case(DBR_SHORT):
+		{
+			if (pv.COUNT == 1)
+			{
+				short s_value;
+				ca_get(pv.CHTYPE, pv.CHID, &s_value);
+				EPICSInterface::sendToEPICS();
+				currentValue = s_value;
+			}
+			else
+			{
+				std::vector<short> s_array(pv.COUNT);
+				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &s_array[0]);
+				EPICSInterface::sendToEPICS();
+				std::cout << "ARRAY SIZE: " << s_array.size() << std::endl;
+				for (auto& item : s_array)
+					currentArray.push_back(item);
+			}
+			break;
+		}
 		case(DBR_FLOAT):
 		{
 			if (pv.COUNT == 1)
@@ -106,28 +126,28 @@ void Getter::setValueFromEPICS()
 			}
 			break;
 		}
-		case(DBR_INT):
-		{
-			if (pv.COUNT == 1)
-			{
-				int i_value;
-				ca_get(pv.CHTYPE, pv.CHID, &i_value);
-				EPICSInterface::sendToEPICS();
-				currentValue = i_value;
-			}
-			else
-			{
-				std::vector<int> i_array(pv.COUNT);
-				ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &i_array[0]);
-				EPICSInterface::sendToEPICS();
-				std::cout << "ARRAY SIZE: " << i_array.size() << std::endl;
-				for (auto& item : i_array)
-				{
-					currentArray.push_back(item);
-				}
-			}
-			break;
-		}
+		//case(DBR_INT):
+		//{
+		//	if (pv.COUNT == 1)
+		//	{
+		//		int i_value;
+		//		ca_get(pv.CHTYPE, pv.CHID, &i_value);
+		//		EPICSInterface::sendToEPICS();
+		//		currentValue = i_value;
+		//	}
+		//	else
+		//	{
+		//		std::vector<int> i_array(pv.COUNT);
+		//		ca_array_get(pv.CHTYPE, pv.COUNT, pv.CHID, &i_array[0]);
+		//		EPICSInterface::sendToEPICS();
+		//		std::cout << "ARRAY SIZE: " << i_array.size() << std::endl;
+		//		for (auto& item : i_array)
+		//		{
+		//			currentArray.push_back(item);
+		//		}
+		//	}
+		//	break;
+		//}
 		case(DBR_STRING):
 		{
 			if (pv.COUNT == 1)
@@ -239,6 +259,11 @@ bool Getter::isEnum()
 	return (currentValue.type() == typeid(unsigned short));
 }
 
+bool Getter::isShort()
+{
+	return (currentValue.type() == typeid(unsigned short));
+}
+
 bool Getter::isString()
 {
 	return (currentValue.type() == typeid(std::string));
@@ -257,6 +282,11 @@ bool Getter::isLongArray()
 bool Getter::isDoubleArray()
 {
 	return (currentArray.at(0).type() == typeid(double));
+}
+
+bool Getter::isShortArray()
+{
+	return (currentArray.at(0).type() == typeid(short));
 }
 
 bool Getter::isIntArray()
@@ -302,9 +332,13 @@ boost::python::object Getter::getValue_Py()
 	{
 		return static_cast<boost::python::object>(boost::get<double>(currentValue));
 	}
-	else if (isInt())
+	//else if (isInt())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<int>(currentValue));
+	//}
+	else if (isShort())
 	{
-		return static_cast<boost::python::object>(boost::get<int>(currentValue));
+		return static_cast<boost::python::object>(boost::get<short>(currentValue));
 	}
 	else if (isEnum())
 	{
@@ -343,15 +377,25 @@ boost::python::list Getter::getArray_Py()
 		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
 		return to_py_list(d_vec);
 	}
-	else if (isIntArray())
+	//else if (isIntArray())
+	//{
+	//	std::vector<int> i_vec;
+	//	for (auto& item : currentArray)
+	//	{
+	//		i_vec.push_back(boost::get<int>(item));
+	//	}
+	//	epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
+	//	return to_py_list(i_vec);
+	//}
+	else if (isShortArray())
 	{
-		std::vector<int> i_vec;
+		std::vector<short> s_vec;
 		for (auto& item : currentArray)
 		{
-			i_vec.push_back(boost::get<int>(item));
+			s_vec.push_back(boost::get<short>(item));
 		}
 		epicsInterface->retrieveCOUNT(pv); // reset count due to DJS hack for camera ROI dynamic COUNT requirements 
-		return to_py_list(i_vec);
+		return to_py_list(s_vec);
 	}
 	else if (isEnumArray())
 	{

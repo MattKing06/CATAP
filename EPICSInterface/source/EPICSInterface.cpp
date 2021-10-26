@@ -367,6 +367,20 @@ void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_
 	pairToUpdate.second = vec;
 }
 
+void EPICSInterface::updateTimeStampShortVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<short>>& pairToUpdate, long size)
+{
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<short> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
 void EPICSInterface::updateTimeStampIntegerVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size)
 {
 	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
