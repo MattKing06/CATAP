@@ -32,26 +32,26 @@ UpdateFunctionPtr UpdateFunctionHolder::findUpdateFunction(pvStruct& pv)
 			return updateDoubleValue;
 		}
 		break;
-	case(DBR_TIME_INT):
-		if (pv.COUNT > 1)
-		{
-			return updateIntegerArray;
-		}
-		else
-		{
-			return updateIntegerValue;
-		}
-		break;
-	case(DBR_INT):
-		if (pv.COUNT > 1)
-		{
-			return updateIntegerArray;
-		}
-		else
-		{
-			return updateIntegerValue;
-		}
-		break;
+	//case(DBR_TIME_INT):
+	//	if (pv.COUNT > 1)
+	//	{
+	//		return updateIntegerArray;
+	//	}
+	//	else
+	//	{
+	//		return updateIntegerValue;
+	//	}
+	//	break;
+	//case(DBR_INT):
+	//	if (pv.COUNT > 1)
+	//	{
+	//		return updateIntegerArray;
+	//	}
+	//	else
+	//	{
+	//		return updateIntegerValue;
+	//	}
+	//	break;
 	case(DBR_TIME_ENUM):
 		if (pv.COUNT > 1)
 		{
@@ -90,6 +90,26 @@ UpdateFunctionPtr UpdateFunctionHolder::findUpdateFunction(pvStruct& pv)
 		else
 		{
 			return updateLongValue;
+		}
+		break;
+	case(DBR_TIME_SHORT):
+		if (pv.COUNT > 1)
+		{
+			return updateShortArray;
+		}
+		else
+		{
+			return updateShortValue;
+		}
+		break;
+	case(DBR_SHORT):
+		if (pv.COUNT > 1)
+		{
+			return updateShortArray;
+		}
+		else
+		{
+			return updateShortValue;
 		}
 		break;
 	case(DBR_TIME_FLOAT):
@@ -147,14 +167,24 @@ void UpdateFunctionHolder::updateDoubleValue(const struct event_handler_args arg
 	recastListener->messenger.printMessage("LISTENER DBL VALUE: ", recastListener->getValue<double>());
 }
 
-void UpdateFunctionHolder::updateIntegerValue(const struct event_handler_args args)
+//void UpdateFunctionHolder::updateIntegerValue(const struct event_handler_args args)
+//{
+//	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+//	recastListener->callCount++;
+//	std::pair<epicsTimeStamp, int> pairToUpdate = recastListener->epicsInterface->getTimeStampIntegerPair(args);
+//	recastListener->setValue<int>(pairToUpdate.second);
+//	recastListener->currentBuffer.push_back(pairToUpdate.second);
+//	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<int>());
+//}
+
+void UpdateFunctionHolder::updateShortValue(const event_handler_args args)
 {
 	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
 	recastListener->callCount++;
-	std::pair<epicsTimeStamp, int> pairToUpdate = recastListener->epicsInterface->getTimeStampEnumPair(args);
-	recastListener->setValue<int>(pairToUpdate.second);
+	std::pair<epicsTimeStamp, short> pairToUpdate = recastListener->epicsInterface->getTimeStampShortPair(args);
+	recastListener->setValue<short>(pairToUpdate.second);
 	recastListener->currentBuffer.push_back(pairToUpdate.second);
-	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<int>());
+	recastListener->messenger.printMessage("LISTENER VALUE: ", recastListener->getValue<short>());
 }
 
 void UpdateFunctionHolder::updateEnumValue(const event_handler_args args)
@@ -207,7 +237,7 @@ void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<double>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampDoubleVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
-	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	std::vector<boost::variant<double, float, long, unsigned short, short, std::string>> bufferVec;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.push_back(item);
@@ -216,14 +246,30 @@ void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
 	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
 }
 
-void UpdateFunctionHolder::updateIntegerArray(const event_handler_args args)
+//void UpdateFunctionHolder::updateIntegerArray(const event_handler_args args)
+//{
+//	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
+//	recastListener->callCount++;
+//	std::pair<epicsTimeStamp, std::vector<int>> pairToUpdate;
+//	recastListener->epicsInterface->updateTimeStampIntegerVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+//	recastListener->setArray(pairToUpdate.second);
+//	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+//	for (auto& item : pairToUpdate.second)
+//	{
+//		bufferVec.push_back(item);
+//	}
+//	recastListener->currentArrayBuffer.push_back(bufferVec);
+//	recastListener->messenger.printMessage("LISTENER ARRAY UPDATED SIZE: ", recastListener->currentArray.size());
+//}
+
+void UpdateFunctionHolder::updateShortArray(const event_handler_args args)
 {
 	Listener* recastListener = EPICSInterface::getHardwareFromArgs<Listener>(args);
 	recastListener->callCount++;
-	std::pair<epicsTimeStamp, std::vector<int>> pairToUpdate;
-	recastListener->epicsInterface->updateTimeStampIntegerVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
+	std::pair<epicsTimeStamp, std::vector<short>> pairToUpdate;
+	recastListener->epicsInterface->updateTimeStampShortVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
-	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	std::vector<boost::variant<double, float, long, unsigned short, short, std::string>> bufferVec;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.push_back(item);
@@ -250,7 +296,7 @@ void UpdateFunctionHolder::updateFloatArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<float>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampFloatVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
-	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	std::vector<boost::variant<double, float, long, unsigned short, short, std::string>> bufferVec;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.push_back(item);
@@ -267,7 +313,7 @@ void UpdateFunctionHolder::updateLongArray(const event_handler_args args)
 	std::pair<epicsTimeStamp, std::vector<long>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampLongVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate.second);
-	std::vector<boost::variant<double, float, long, int, unsigned short, std::string>> bufferVec;
+	std::vector<boost::variant<double, float, long, unsigned short, short, std::string>> bufferVec;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.push_back(item);

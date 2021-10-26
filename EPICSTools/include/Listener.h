@@ -151,6 +151,8 @@ public:
 	bool isEnum();
 	/*! Returns true if currentValue is of type std::string */
 	bool isString();
+	/*! Returns true if currentValue is of type short*/
+	bool isShort();
 	/*! Returns true if currentValue is of type float */
 	bool isFloat();
 	/*! Returns true if currentArray is of type long */
@@ -165,6 +167,8 @@ public:
 	bool isStringArray();
 	/*! Returns true if currentArray is of type float */
 	bool isFloatArray();
+	/*! Returns true if currentArray is of type short */
+	bool isShortArray();
 	/*! Returns true if currentBuffer is of type double */
 	bool isDoubleBuffer();
 	/*! Returns true if currentBuffer is of type int */
@@ -175,6 +179,8 @@ public:
 	bool isEnumBuffer();
 	/*! Returns true if currentBuffer is of type std::string */
 	bool isStringBuffer();
+	/*! Returns true if currentBuffer is of type short */
+	bool isShortBuffer();
 	/*! Returns true if currentBuffer is of type float */
 	bool isFloatBuffer();
 	/*! Returns true if currentArrayBuffer is of type double */
@@ -185,6 +191,8 @@ public:
 	bool isLongArrayBuffer();
 	/*! Returns true if currentArrayBuffer is of type unsigned short */
 	bool isEnumArrayBuffer();
+	/*! Returns true if currentArrayBuffer is of type short */
+	bool isShortArrayBuffer();
 	/*! Returns true if currentArrayBuffer is of type std::string */
 	bool isStringArrayBuffer();
 	/*! Returns true if currentArrayBuffer is of type float */
@@ -203,13 +211,13 @@ public:
 	/*! The PV associated to this instance of Listener */
 	std::string pvToMonitor;
 	/*! stores the current value in the single-valued EPICS record associated with Listener */
-	boost::variant<double, float, long, int, unsigned short, std::string> currentValue;
+	boost::variant<double, float, long, unsigned short, short, std::string> currentValue;
 	/*! stores the current array in the EPICS record associated with Listener */
-	std::vector<boost::variant<double, float, long, int, unsigned short, std::string> > currentArray;
+	std::vector<boost::variant<double, float, long, unsigned short, short, std::string> > currentArray;
 	/*! buffer for single-values updated from EPICS*/
-	boost::circular_buffer<boost::variant<double, float, long, int, unsigned short, std::string> > currentBuffer;
+	boost::circular_buffer<boost::variant<double, float, long, unsigned short, short, std::string> > currentBuffer;
 	/*! buffer for array-values updated from EPICS*/
-	boost::circular_buffer<std::vector<boost::variant<double, float, long, int, unsigned short, std::string>>> currentArrayBuffer;
+	boost::circular_buffer<std::vector<boost::variant<double, float, long, unsigned short, short, std::string>>> currentArrayBuffer;
 };
 
 
