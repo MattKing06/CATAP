@@ -18,6 +18,8 @@ Listener::Listener(const std::string& pvStr)
 	messenger(LoggingSystem(false,true))
 {
 	pvToMonitor = getEPICSPVName(pvStr);
+	currentArrayBuffer.set_capacity(DEFAULT_BUFFER_SIZE);
+	currentBuffer.set_capacity(DEFAULT_BUFFER_SIZE);
 	setupChannels();
 }
 
@@ -32,6 +34,8 @@ Listener::Listener(const std::string& pvStr, const STATE& mode)
 	callCount(0)
 {
 	pvToMonitor = getEPICSPVName(pvStr);
+	currentArrayBuffer.set_capacity(DEFAULT_BUFFER_SIZE);
+	currentBuffer.set_capacity(DEFAULT_BUFFER_SIZE);
 	setupChannels();
 }
 
@@ -40,13 +44,18 @@ Listener::Listener(const Listener& copyListener)
 	mode(copyListener.mode),
 	pv(copyListener.pv),
 	currentValue(copyListener.currentValue),
-	currentArray(copyListener.currentArray),
-	currentBuffer(copyListener.currentBuffer),
-	currentArrayBuffer(copyListener.currentArrayBuffer),
 	messenger(copyListener.messenger),
 	epicsInterface(copyListener.epicsInterface),
 	updateFunctions(copyListener.updateFunctions),
 	callCount(copyListener.callCount)
+{
+	std::cout << " COPYING LISTENER FOR " << pvToMonitor << std::endl;
+	currentArray.assign(copyListener.currentArray.begin(), copyListener.currentArray.end());
+	currentBuffer.assign(copyListener.currentBuffer.begin(), copyListener.currentBuffer.end());
+	currentArrayBuffer.assign(copyListener.currentArrayBuffer.begin(), copyListener.currentArrayBuffer.end());
+}
+
+Listener::~Listener()
 {
 }
 
@@ -58,15 +67,12 @@ void Listener::setupChannels()
 	pv.fullPVName = pvToMonitor;
 	pv.monitor = true;
 	epicsInterface->retrieveCHID(pv);
-	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCHTYPE(pv);
-	EPICSInterface::sendToEPICS();
 	epicsInterface->retrieveCOUNT(pv);
-	EPICSInterface::sendToEPICS();
-	pv.COUNT > 1 ? initialiseCurrentArray(pv) : initialiseCurrentValue(pv);
+	if (pv.COUNT == 1) { initialiseCurrentValue(pv); }
 	pv.MASK = DBE_VALUE;
 	pv.updateFunction = updateFunctions.findUpdateFunction(pv);
-	EPICSInterface::sendToEPICS();
+	EPICSInterface::sendToEPICSm2("setting up complete.");
 }
 
 std::string Listener::getEPICSPVName(const std::string& pv)
@@ -87,6 +93,26 @@ std::string Listener::getEPICSPVName(const std::string& pv)
 	{
 		return pv;
 	}
+}
+
+int Listener::getBufferCapacity()
+{
+	return currentBuffer.capacity();
+}
+
+int Listener::getBufferSize()
+{
+	return currentBuffer.size();
+}
+
+int Listener::getArrayBufferCapacity()
+{
+	return currentArrayBuffer.capacity();
+}
+
+int Listener::getArrayBufferSize()
+{
+	return currentArrayBuffer.size();
 }
 
 void Listener::initialiseCurrentArray(const pvStruct& pv)

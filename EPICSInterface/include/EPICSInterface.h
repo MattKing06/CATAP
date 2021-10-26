@@ -48,7 +48,7 @@
 	*up connections and subscriptions for PVs as well as general functions that are needed by all child EPICS Interfaces, i.e. putValve.
 @{*/
 class PV;
-#define CA_PEND_IO_TIMEOUT 5.0
+#define CA_PEND_IO_TIMEOUT 15.0
 class EPICSInterface
 {
 
@@ -60,7 +60,7 @@ public:
 	/*! Default Destructor for EPICSInterface.*/
 	~EPICSInterface();
 	/*! Retrieves the macro for the time EPICS should wait until it timesout on a request.
-	* @param[out] CA_PEND_IO_TIMEOUT : 5.0*/
+	* @param[out] CA_PEND_IO_TIMEOUT : 15.0*/
 	double get_CA_PEND_IO_TIMEOUT() const;
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of
 	* the associated hardware object.*/

@@ -143,5 +143,19 @@ BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
 
 }
 
+BOOST_AUTO_TEST_CASE(get_bam_array_with_buffer_test)
+{
+	const std::string pv = "BAM-TEST-DAQ:DATA2";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener mon = ET.getMonitor(pv);
+	if (mon.isConnected())
+	{
+		auto arrayVal = mon.getArrayBuffer<short>();
+		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
+	}
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

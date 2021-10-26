@@ -268,7 +268,7 @@ void UpdateFunctionHolder::updateShortArray(const event_handler_args args)
 	recastListener->callCount++;
 	std::pair<epicsTimeStamp, std::vector<short>> pairToUpdate;
 	recastListener->epicsInterface->updateTimeStampShortVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
-	recastListener->setArray(pairToUpdate.second);
+	recastListener->setArray<short>(pairToUpdate.second);
 	std::vector<boost::variant<double, float, long, unsigned short, short, std::string>> bufferVec;
 	for (auto& item : pairToUpdate.second)
 	{
