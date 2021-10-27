@@ -461,9 +461,7 @@ boost::python::list EPICSTools::getArray_Py(const std::string& pv)
 	}
 	else
 	{
-		std::cout << "creating getter for: " << pv << std::endl;
 		getterMap[pv] = Getter(pv, mode);
-		std::cout << "created getter" << std::endl;
 		return getterMap[pv].getArray_Py();
 	}
 }

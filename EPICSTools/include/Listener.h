@@ -51,6 +51,8 @@ public:
 	/*! Copy constructor : copies content of provided listener object to current instance
 		@param[in] copyGetter : the listener object to copy from*/
 	Listener(const Listener& listener);
+	
+	~Listener();
 	/*! Used to set the appropriate callback function that updates the current value held by Listener*/
 	UpdateFunctionHolder updateFunctions;
 	/*! Creates a CHID for the PV associated with the Listener. 
@@ -61,7 +63,10 @@ public:
 		@param[in] pv : The name of the PV to virtualize
 		@param[out] virtualPV : pv with VM- prepended to it*/
 	std::string getEPICSPVName(const std::string& pv);
-
+	int getBufferCapacity();
+	int getBufferSize();
+	int getArrayBufferCapacity();
+	int getArrayBufferSize();
 	void initialiseCurrentValue(const pvStruct& pv);
 	void initialiseCurrentArray(const pvStruct& pv);
 	/*! Returns the bool status of whether a PV is connected or not
@@ -231,15 +236,8 @@ inline void Listener::setValue(T value)
 template<typename T>
 inline void Listener::setArray(const std::vector<T>& valueArray)
 {
-	if (!currentArray.empty())
-	{
-		currentArray.clear();
-	}
-
-	for (auto& item : valueArray)
-	{
-		currentArray.push_back(item);
-	}
+	currentArray.clear();
+	currentArray.assign(valueArray.begin(), valueArray.end());
 }
 
 template<typename T>
@@ -254,7 +252,6 @@ inline std::vector<T> Listener::getArray()
 	std::vector<T> returnArray;
 	for (auto item : currentArray)
 	{
-		T val = boost::get<T>(item);
 		returnArray.push_back(boost::get<T>(item));
 	}
 	return returnArray;
@@ -266,7 +263,6 @@ inline double Listener::getArrayAverage()
 	if (!isStringArray() && !isEnumArray())
 	{
 		std::vector<T> currentArrayTyped = getArray<T>();
-		std::cout << "ARRAY SIZE " << currentArrayTyped.size() << std::endl;
 		double average = 0.0f;
 		for (auto&& item : currentArrayTyped)
 			average += static_cast<double>(item);

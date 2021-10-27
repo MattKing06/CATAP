@@ -168,7 +168,6 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 		messenger.printDebugMessage("ca_create_channel to  ", pv);
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
-		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		
 		//SEVCHK(status, "ca_create_channel");
