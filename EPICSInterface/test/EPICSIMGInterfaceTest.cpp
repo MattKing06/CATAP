@@ -44,6 +44,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	getPPV.pvRecord = "P";
 	getPPV.monitor = true;
 	epicsInterface.retrieveCHID(getPPV);
+	EPICSInterface::sendToEPICS();
 	epicsInterface.retrieveCHTYPE(getPPV);
 	epicsInterface.retrieveCOUNT(getPPV);
 
@@ -52,6 +53,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	getStaPV.pvRecord = "STA";
 	getStaPV.monitor = true;
 	epicsInterface.retrieveCHID(getStaPV);
+	EPICSInterface::sendToEPICS();
 	epicsInterface.retrieveCHTYPE(getStaPV);
 	epicsInterface.retrieveCOUNT(getStaPV);
 
