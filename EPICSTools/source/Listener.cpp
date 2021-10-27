@@ -67,6 +67,7 @@ void Listener::setupChannels()
 	pv.fullPVName = pvToMonitor;
 	pv.monitor = true;
 	epicsInterface->retrieveCHID(pv);
+	epicsInterface->sendToEPICSm2("creating channel");
 	epicsInterface->retrieveCHTYPE(pv);
 	epicsInterface->retrieveCOUNT(pv);
 	if (pv.COUNT == 1) { initialiseCurrentValue(pv); }
@@ -381,7 +382,7 @@ void Listener::startListening()
 	}
 	else
 	{
-		std::cout << "already monitoring " << pv << std::endl;
+		std::cout << "already monitoring " << pv.fullPVName << std::endl;
 	}
 }
 

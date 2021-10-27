@@ -132,9 +132,9 @@ BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
 {
 	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
-	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
 	ET.monitor(pv);
-	Listener mon = ET.getMonitor(pv);
+	Listener& mon = ET.getMonitor(pv);
 	if (mon.isConnected())
 	{
 		auto arrayVal = mon.getArrayBuffer<long>();
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE(get_bam_array_with_buffer_test)
 	const std::string pv = "BAM-TEST-DAQ:DATA2";
 	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
 	ET.monitor(pv);
-	Listener mon = ET.getMonitor(pv);
+	Listener& mon = ET.getMonitor(pv);
 	if (mon.isConnected())
 	{
 		auto arrayVal = mon.getArrayBuffer<short>();
