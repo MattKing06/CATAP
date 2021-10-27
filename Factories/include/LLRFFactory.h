@@ -37,7 +37,7 @@ public:
 	bool setup(const std::string& version, TYPE machineArea);
 	/*! setup function using std::vector of machineAreas
 	@param[in] machineAreas, only setup LLRF objects that match an area in machineAreas
-	@param[out] bool, for success or failure	*/
+	@param[out] bool,  success or failure	*/
 	bool setup(const std::vector<TYPE>& machineAreas);
 	/*! setup function using python::list of machineAreas
 	@param[in] machineAreas, only setup LLRF objects that match an area in machineAreas

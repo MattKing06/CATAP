@@ -223,7 +223,12 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 LLRF::~LLRF(){}
 
 
-// Functions for settigng up this LLRF (probably overly complex, good luck with the refactoring :^) 
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+///  __   ___ ___       __
+/// /__` |__   |  |  | |__)
+/// .__/ |___  |  \__/ |
+/// 
 void LLRF::setPVStructs()
 {
 	for (auto&& record : LLRFRecords::llrfRecordList)
@@ -327,7 +332,6 @@ void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramM
 		messenger.printDebugMessage(hardwareName, " !!ERROR!! could not find trace_num_of_start_zeros");
 	}
 }
-
 void LLRF::setGunType(const TYPE area) // called from factory
 {
 	machine_area = area;
@@ -340,11 +344,9 @@ void LLRF::setupAfterMachineAreaSet()
 	setTraceDataMap();
 	// Set up the trace data indexes in the "one-record" concatenated trace-data
 	// the below is not pretty, i'm going to try and get it to "work" and then worry about making it rihgt. 
-	// if me or anyone else comes back to look at this in the far-flung-future its probably going to look crazy af during the height of lockdown 
-	// part of the reason for this is that the gun LLRF actually is for two seperate cavities that are mutlaly exclusive, (but contained one file!)
-	// this was probably a bad design chocie ... 
+	// if me or anyone else comes back to look at this in the far-flung-future its probably going to look crazy af work done during the height of lockdown 
+	// part of the reason for this is that the gun LLRF actually is for two seperate cavities that are mutlaly exclusive, (but contained in one file!)
 	// we loop over all possible ONE_TRACE settings and see if they are in the main-lattice file AND in all_trace_data, if they are get relevant data 
-	// 
 	auto one_record_prefix_len = LLRFRecords::ONE_RECORD_TRACE_PREFIX.length();
 	for (auto&& or_tn : LLRFRecords::all_one_record_trace_names)
 	{
@@ -389,7 +391,7 @@ void LLRF::setupAfterMachineAreaSet()
 	{
 		messenger.printDebugMessage("sorted_one_record_trace_start_indices ", it.first, "  ", it.second);
 	}
-	// now creat ea list of the "jumps" to the next part 
+	// now create a list of the "jumps" to the next part 
 	size_t current_index = 0;
 	size_t last_index = 0;
 	size_t last_pos;
@@ -437,7 +439,6 @@ void LLRF::setupAfterMachineAreaSet()
 	initAllTraceSCANandACQM();
 	setDefaultPowerTraceMeanTimes();
 }
-
 void LLRF::setTraceDataMap()
 {
 	// generates 
@@ -553,41 +554,162 @@ bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size
 	}
 	return false;
 }
+void LLRF::setupInterlocks()
+{
+	//messenger.printDebugMessage("setupInterlocks");
+	//using namespace LLRFRecords;
+	//all_trace_interlocks[LLRF_CH1_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH2_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH3_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH4_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH5_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH6_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH7_INTERLOCK] = LLRFInterlock();
+	//all_trace_interlocks[LLRF_CH8_INTERLOCK] = LLRFInterlock();
+
+	// now we set the TYPE (phase or POWER) 
+	//messenger.printDebugMessage("Setting interlock Trace TYPE");
+	//const std::vector<std::string> channels{ "CH1","CH2","CH3","CH4","CH5","CH6","CH7","CH8" };
+	//// loop over every channel
+	//for (auto&& it : channels)
+	//{
+	//	if (GlobalFunctions::entryExists(channel_to_tracesource_map, it))
+	//	{
+	//		// if a channe exists in all_trace_interlocks keys
+	//		for (auto& it2 : all_trace_interlocks)
+	//		{
+	//			// if string CHX exist sin 
+	//			if (GlobalFunctions::stringIsSubString(it2.first, it))
+	//			{
+	//				if (GlobalFunctions::stringIsSubString(it2.first, "POWER"))
+	//				{
+	//					it2.second.interlock_type = TYPE::POWER;
+	//				}
+	//				else if (GlobalFunctions::stringIsSubString(it2.first, "PHASE"))
+	//				{
+	//					it2.second.interlock_type = TYPE::PHASE;
+	//				}
+	//				else
+	//				{
+
+	//				}
+	//				messenger.printDebugMessage(it2.first, " ", channel_to_tracesource_map[it], " ", ENUM_TO_STRING(it2.second.interlock_type));
+	//			}
+
+	//		}
+	//	}
+	//	else
+	//	{
+	//		messenger.printDebugMessage("Can't find ", it, " inchannel_to_tracesource_map");
+	//	}
+	//}
+	//
+	//for (auto&& channel : channels)
+	//{
+	//	if (GlobalFunctions::entryExists(specificHardwareParameters, channel))
+	//	{
+	//		channel_to_tracesource_map[channel] = specificHardwareParameters.find(channel)->second;
+	//		messenger.printDebugMessage("Found " + channel + ", connected to " + channel_to_tracesource_map[channel]);
+	//	}
+	//	else
+	//	{
+	//		messenger.printDebugMessage(channel + " is NOT in the config");
+	//		channel_to_tracesource_map[channel] = "NONE";
+	//	}
+	//}
+	//messenger.printDebugMessage("setupInterlocks added these interlocks:");
+	//for (auto&& trace : all_trace_interlocks)
+	//{
+	//	messenger.printDebugMessage(trace.first);
+	//}
+}
+void LLRF::initAllTraceSCANandACQM()
+{
+	messenger.printDebugMessage("setupAllTraceSCAN");
+	using namespace LLRFRecords;
+	std::pair < epicsTimeStamp, STATE> init_pair = std::make_pair(epicsTimeStamp(), STATE::UNKNOWN);
+	// scan
+	all_trace_scan[ONE_TRACE_SCAN] = init_pair;
+	all_trace_scan[CH1_PWR_REM] = init_pair;	all_trace_scan[CH1_PWR_LOC] = init_pair;
+	all_trace_scan[CH2_PWR_REM] = init_pair;	all_trace_scan[CH2_PWR_LOC] = init_pair;
+	all_trace_scan[CH3_PWR_REM] = init_pair;	all_trace_scan[CH3_PWR_LOC] = init_pair;
+	all_trace_scan[CH4_PWR_REM] = init_pair;	all_trace_scan[CH4_PWR_LOC] = init_pair;
+	all_trace_scan[CH5_PWR_REM] = init_pair;	all_trace_scan[CH5_PWR_LOC] = init_pair;
+	all_trace_scan[CH6_PWR_REM] = init_pair;	all_trace_scan[CH6_PWR_LOC] = init_pair;
+	all_trace_scan[CH7_PWR_REM] = init_pair;	all_trace_scan[CH7_PWR_LOC] = init_pair;
+	all_trace_scan[CH8_PWR_REM] = init_pair;	all_trace_scan[CH8_PWR_LOC] = init_pair;
+
+	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PWR_LOC] = init_pair;
+	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PWR_LOC] = init_pair;
+	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PWR_LOC] = init_pair;
+	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PWR_LOC] = init_pair;
+	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PWR_LOC] = init_pair;
+	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PWR_LOC] = init_pair;
+	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PWR_LOC] = init_pair;
+	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PWR_LOC] = init_pair;
+
+	all_trace_scan[CH1_PHASE_DER] = init_pair;	all_trace_scan[CH2_PHASE_DER] = init_pair;
+	all_trace_scan[CH3_PHASE_DER] = init_pair;	all_trace_scan[CH4_PHASE_DER] = init_pair;
+	all_trace_scan[CH5_PHASE_DER] = init_pair;	all_trace_scan[CH6_PHASE_DER] = init_pair;
+	all_trace_scan[CH7_PHASE_DER] = init_pair;	all_trace_scan[CH8_PHASE_DER] = init_pair;
+
+	// acqm
+	all_trace_acqm[ONE_TRACE_ACQM] = init_pair;
+	all_trace_acqm[CH1_PWR_REM] = init_pair;	all_trace_acqm[CH1_PWR_LOC] = init_pair;
+	all_trace_acqm[CH2_PWR_REM] = init_pair;	all_trace_acqm[CH2_PWR_LOC] = init_pair;
+	all_trace_acqm[CH3_PWR_REM] = init_pair;	all_trace_acqm[CH3_PWR_LOC] = init_pair;
+	all_trace_acqm[CH4_PWR_REM] = init_pair;	all_trace_acqm[CH4_PWR_LOC] = init_pair;
+	all_trace_acqm[CH5_PWR_REM] = init_pair;	all_trace_acqm[CH5_PWR_LOC] = init_pair;
+	all_trace_acqm[CH6_PWR_REM] = init_pair;	all_trace_acqm[CH6_PWR_LOC] = init_pair;
+	all_trace_acqm[CH7_PWR_REM] = init_pair;	all_trace_acqm[CH7_PWR_LOC] = init_pair;
+	all_trace_acqm[CH8_PWR_REM] = init_pair;	all_trace_acqm[CH8_PWR_LOC] = init_pair;
+
+	all_trace_acqm[CH1_AMP_DER] = init_pair;	all_trace_acqm[CH1_PHASE_REM] = init_pair;
+	all_trace_acqm[CH2_AMP_DER] = init_pair;	all_trace_acqm[CH2_PHASE_REM] = init_pair;
+	all_trace_acqm[CH3_AMP_DER] = init_pair;	all_trace_acqm[CH3_PHASE_REM] = init_pair;
+	all_trace_acqm[CH4_AMP_DER] = init_pair;	all_trace_acqm[CH4_PHASE_REM] = init_pair;
+	all_trace_acqm[CH5_AMP_DER] = init_pair;	all_trace_acqm[CH5_PHASE_REM] = init_pair;
+	all_trace_acqm[CH6_AMP_DER] = init_pair;	all_trace_acqm[CH6_PHASE_REM] = init_pair;
+	all_trace_acqm[CH7_AMP_DER] = init_pair;	all_trace_acqm[CH7_PHASE_REM] = init_pair;
+	all_trace_acqm[CH8_AMP_DER] = init_pair;	all_trace_acqm[CH8_PHASE_REM] = init_pair;
+
+	all_trace_acqm[CH1_PHASE_DER] = init_pair;	all_trace_acqm[CH2_PHASE_DER] = init_pair;
+	all_trace_acqm[CH3_PHASE_DER] = init_pair;	all_trace_acqm[CH4_PHASE_DER] = init_pair;
+	all_trace_acqm[CH5_PHASE_DER] = init_pair;	all_trace_acqm[CH6_PHASE_DER] = init_pair;
+	all_trace_acqm[CH7_PHASE_DER] = init_pair;	all_trace_acqm[CH8_PHASE_DER] = init_pair;
+}
 void LLRF::setDefaultPowerTraceMeanTimes()
 // called from factory as traces need to be set up first ! 
 {
 	setMeanStartEndTime(
-		std::stof(specificHardwareParameters.find("kfpow_mean_start_time")->second),
-		std::stof(specificHardwareParameters.find("kfpow_mean_end_time")->second),
+		std::stof(specificHardwareParameters.at("kfpow_mean_start_time")),
+		std::stof(specificHardwareParameters.at("kfpow_mean_end_time")),
 		LLRFRecords::KLYSTRON_FORWARD_POWER);
 	setMeanStartEndTime(
-		std::stof(specificHardwareParameters.find("krpow_mean_start_time")->second),
-		std::stof(specificHardwareParameters.find("krpow_mean_end_time")->second),
+		std::stof(specificHardwareParameters.at("krpow_mean_start_time")),
+		std::stof(specificHardwareParameters.at("krpow_mean_end_time")),
 		LLRFRecords::KLYSTRON_REVERSE_POWER);
 	setMeanStartEndTime(
-		std::stof(specificHardwareParameters.find("cfpow_mean_start_time")->second),
-		std::stof(specificHardwareParameters.find("cfpow_mean_end_time")->second),
+		std::stof(specificHardwareParameters.at("cfpow_mean_start_time")),
+		std::stof(specificHardwareParameters.at("cfpow_mean_end_time")),
 		LLRFRecords::CAVITY_FORWARD_POWER);
 	setMeanStartEndTime(
-		std::stof(specificHardwareParameters.find("crpow_mean_start_time")->second),
-		std::stof(specificHardwareParameters.find("crpow_mean_end_time")->second),
+		std::stof(specificHardwareParameters.at("crpow_mean_start_time")),
+		std::stof(specificHardwareParameters.at("crpow_mean_end_time")),
 		LLRFRecords::CAVITY_REVERSE_POWER);
 	if (GlobalFunctions::entryExists(specificHardwareParameters, "cppow_mean_start_time"))
 	{
 		if (GlobalFunctions::entryExists(specificHardwareParameters, "cppow_mean_end_time"))
 		{
 			setMeanStartEndTime(
-				std::stof(specificHardwareParameters.find("cppow_mean_start_time")->second),
-				std::stof(specificHardwareParameters.find("cppow_mean_end_time")->second),
+				std::stof(specificHardwareParameters.at("cppow_mean_start_time")),
+				std::stof(specificHardwareParameters.at("cppow_mean_end_time")),
 				LLRFRecords::CAVITY_PROBE_POWER);
 		}
 	}
 }
 void LLRF::addDummyTraces(const std::map<std::string, std::string>& paramMap)
-{
-	// for each cavity there are dummy traces,
-	// they have been given specific names in the config for each cavity 
-
+{	// for each cavity there are dummy traces, they have been given specific names in the config for each cavity 
 	if (machine_area == TYPE::LRRG)
 	{
 		messenger.printDebugMessage("Adding dummy traces for LRRG");
@@ -659,7 +781,7 @@ void LLRF::addDummyTrace(const std::map<std::string, std::string>& paramMap, con
 	std::vector<std::string> dummy_trace_string;
 	if (GlobalFunctions::entryExists(paramMap, trace_name))
 	{
-		boost::split(dummy_trace_string, paramMap.find(trace_name)->second, [](char c) {return c == ','; });
+		boost::split(dummy_trace_string, paramMap.at(trace_name), [](char c) {return c == ','; });
 		for (auto&& value : dummy_trace_string)
 		{	//messenger.printDebugMessage(value);
 			//if(trace_name == "l01_kfpow_dummy_trace")
@@ -674,78 +796,70 @@ void LLRF::addDummyTrace(const std::map<std::string, std::string>& paramMap, con
 		messenger.printDebugMessage("!!ERROR!! can't find " + trace_name);
 	}
 }
-
-// functions to actually get adn set paramters in teh LLRF 
-bool LLRF::setAmpMW(double value)
+//--------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------
+/// ___  __        __   ___                         ___  __
+///  |  |__)  /\  /  ` |__     \  /  /\  |    |  | |__  /__`
+///  |  |  \ /~~\ \__, |___     \/  /~~\ |___ \__/ |___ .__/
+/// 
+/// Trace values (for power and phase) are typically acquired on demand only - this is to reduce network load, as continuous 
+/// monitoring is not  required for most applications. Trace Monitoring can be enabled if needed. The data  is acquired 
+/// from the demodulated vector internal to the LLRF box, ensuring each trace-data is synchronized.  
+//-----------------------------------------------------------------------------------------------------------------------
+bool LLRF::startTraceMonitoring()
 {
-	// atm we are going to fake power traces
-	amp_MW.second = value;
-	//scaleAllDummyTraces();
-	return true;
-}
-bool LLRF::setAmp(double value)
-{
-	if (mode == STATE::PHYSICAL)
+	if (is_trace_monitoring)
 	{
-		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::AMP_SP), value);
+		return true;
 	}
-	amp_sp.second = value;
-	return true;
-}
-double LLRF::getAmp()const
-{
-	return amp_sp.second;
-}
-double LLRF::getAmpMW()const
-{
-	return amp_MW.second;
-}
-bool LLRF::setPhi(double value)
-{
-	if (mode == STATE::PHYSICAL)
+	else
 	{
-		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::PHI_SP), value);
+		if (GlobalFunctions::entryExists(pvStructs, LLRFRecords::LLRF_TRACES))
+		{
+			pvStruct& pv = pvStructs.at(LLRFRecords::LLRF_TRACES);
+			if (ca_state(pv.CHID) == cs_conn)
+			{
+				epicsInterface->retrieveCHTYPE(pv);
+				epicsInterface->retrieveCOUNT(pv);
+				pv.updateFunction = epicsInterface->update_LLRF_TRACES;
+				//// not sure how to set the mask from EPICS yet.
+				pv.MASK = DBE_VALUE;
+				//dbr_all_trace_data
+				int status = ca_create_subscription(DBR_TIME_DOUBLE, pv.COUNT, pv.CHID, pv.MASK,
+					pv.updateFunction, (void*)this, &pv.EVID);
+				MY_SEVCHK(status);
+				EPICSInterface::sendToEPICS();
+				if (status == ECA_NORMAL)
+				{
+					is_trace_monitoring = true;
+					return true;
+				}
+			}
+			else
+			{
+				messenger.printMessage(pv.fullPVName, " CANNOT CONNECT TO EPICS");
+			}
+		}
+		else
+		{
+			messenger.printMessage("!!ERROR!! ", hardwareName, " can't find pvstruct for ", LLRFRecords::LLRF_TRACES);
+		}
 	}
-	phi_sp.second = value;
-	return true;
+	return false;
 }
-bool LLRF::setPhiDEG(double value)
+bool LLRF::stopTraceMonitoring()
 {
-	phi_degrees.second = value;
-	operating_phase = phi_degrees.second - crest_phase;
-	return true;
+	if (is_trace_monitoring)
+	{
+		int status = ca_clear_subscription(pvStructs.at(LLRFRecords::LLRF_TRACES).EVID);
+		if (status == ECA_NORMAL)
+		{
+			is_trace_monitoring = false;
+			return true;
+		}
+	}
+	return false;
 }
-bool LLRF::setCrestPhase(double value)
-{
-	crest_phase = value;
-	return true;
-}
-bool LLRF::setOperatingPhase(double value)
-{
-	operating_phase = value;
-	phi_sp.second = crest_phase + operating_phase;
-	phi_sp.first = epicsTimeStamp();
-	return true;
-}
-double LLRF::getPhi()const
-{
-	return phi_sp.second;
-}
-double LLRF::getCrestPhase()const
-{
-	return crest_phase;
-}
-double LLRF::getOperatingPhase()const
-{
-	return operating_phase;
-}
-double LLRF::getPhiDEG()const
-{
-	return phi_degrees.second;
-}
-
-
-
 /*
 	ok, htf is this going to work ??
 
@@ -804,7 +918,7 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double* dbr)
 	// loop over eahc iterator jump, jump to next chunk required, copy data, rescale, add to Trace_data map 
 	for (const auto& it_jump : sorted_one_record_trace_iterator_jumps)
 	{
-		messenger.printDebugMessage("Get data for  = ", it_jump.second, " Jump to start of data = = ", it_jump.first );
+		messenger.printDebugMessage("Get data for  = ", it_jump.second, " Jump to start of data = = ", it_jump.first);
 		// (for ease of reading)create a ref to the TraceData we are going to update 
 		TraceData& td = trace_data_map.at(it_jump.second);
 		// add new elment to end of cricualr buffer 
@@ -812,7 +926,7 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double* dbr)
 		// copy raw data into new buffer vector element 
 		std::advance(pValue, it_jump.first);
 		std::copy(pValue, pValue + trace_data_size, td.trace_values_buffer.back().second.begin());
-		
+
 		td.trace_values_buffer.back().first = *pStamp;
 		td.trace_values = td.trace_values_buffer.back().second;
 		if (td.trace_type == TYPE::POWER)
@@ -874,6 +988,168 @@ void LLRF::updateTraceMetaData()
 	/* by the time we get to here this MUST be false! */
 	new_outside_mask_event = false;
 }
+std::vector<double> LLRF::getTraceValues(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		return trace_data_map.at(n).trace_values;
+	}
+	messenger.printDebugMessage("LLRF::getTraceValues ERROR, trace ", n, " does not exist");
+	std::vector<double> r(trace_data_size, GlobalConstants::double_min);//MAGIC_NUMBER
+	return r;
+}
+boost::python::list LLRF::getTraceValues_Py(const std::string& name)const{	return to_py_list<double>(getTraceValues(name));}
+std::pair<std::string, std::vector<double>> LLRF::getTraceNameValuesPair(const std::string& name)const
+{
+	std::pair<std::string, std::vector<double>> r;
+	r.first = fullLLRFTraceName(name);
+	r.second = getTraceValues(r.first);
+	return r;
+}
+boost::python::dict LLRF::getTraceNameValuesPair_Py(const std::string& name)
+{
+	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(name);
+	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
+	return to_py_dict<std::string, std::vector<double>>(r2);
+}
+TraceData& LLRF::getTraceData(const std::string& trace_name)
+{
+	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
+	{
+		return trace_data_map.at(trace_name);
+	}
+	return dummy_trace_data;
+}
+boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const
+{
+	boost::python::dict r;
+	const TraceData& td = dummy_trace_data;
+	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
+	{
+		const TraceData td = trace_data_map.at(trace_name);
+	}
+	r["name"] = td.name;
+	r["trace_values"] = to_py_list<double>(td.trace_values);  //MAGIC_STRINGS
+	r["trace_data_size"] = td.trace_data_size;
+	r["trace_data_buffer_size"] = td.trace_data_buffer_size;
+	r["trace_max"] = td.trace_max;
+	r["mean_start"] = td.mean_start_stop.first;
+	r["mean_stop"] = td.mean_start_stop.second;
+	r["mean_stop_minus_start"] = td.stop_minus_start;
+	r["trace_cut_mean"] = td.trace_cut_mean;
+	r["keep_rolling_average"] = td.keep_rolling_average;
+	r["keep_rolling_average"] = td.keep_rolling_average;
+	r["scan"] = td.scan.second;
+	r["acqm"] = td.acqm.second;
+	r["u_level"] = td.u_level.second;
+	r["p_level"] = td.p_level.second;
+	r["pdbm_level"] = td.pdbm_level.second;
+	r["trace_type"] = td.trace_type;
+	r["one_record_part"] = td.one_record_part;
+	r["one_record_start_index"] = td.one_record_start_index;
+	r["one_record_stop_index"] = td.one_record_stop_index;
+	// TODO add buffer, rollign mean etc 
+	//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
+	return r;
+}
+boost::python::dict LLRF::getAllTraceDataDict() const
+{
+	boost::python::dict r;
+	for (auto&& it : trace_data_map)
+	{
+		r[it.first] = getTraceDataDict(it.first);
+	}
+	return r;
+}
+std::vector<double> LLRF::getCavRevPwr()const { return getTraceValues(LLRFRecords::CAVITY_REVERSE_POWER); }
+std::vector<double> LLRF::getCavFwdPwr()const { return getTraceValues(LLRFRecords::CAVITY_FORWARD_POWER); }
+std::vector<double> LLRF::getKlyRevPwr()const { return getTraceValues(LLRFRecords::KLYSTRON_REVERSE_POWER); }
+std::vector<double> LLRF::getKlyFwdPwr()const { return getTraceValues(LLRFRecords::KLYSTRON_FORWARD_POWER); }
+std::vector<double> LLRF::getCavRevPha()const { return getTraceValues(LLRFRecords::CAVITY_REVERSE_PHASE); }
+std::vector<double> LLRF::getCavFwdPha()const { return getTraceValues(LLRFRecords::CAVITY_FORWARD_PHASE); }
+std::vector<double> LLRF::getKlyRevPha()const { return getTraceValues(LLRFRecords::KLYSTRON_REVERSE_PHASE); }
+std::vector<double> LLRF::getKlyFwdPha()const { return getTraceValues(LLRFRecords::KLYSTRON_FORWARD_PHASE); }
+std::vector<double> LLRF::getProbePwr()const { return getTraceValues(LLRFRecords::CAVITY_PROBE_POWER); }
+std::vector<double> LLRF::getProbePha()const { return getTraceValues(LLRFRecords::CAVITY_PROBE_PHASE); }
+boost::python::list LLRF::getCavRevPwr_Py()const { return to_py_list(getCavRevPwr()); }
+boost::python::list LLRF::getCavFwdPwr_Py()const { return to_py_list(getCavFwdPwr()); }
+boost::python::list LLRF::getKlyRevPwr_Py()const { return to_py_list(getKlyRevPwr()); }
+boost::python::list LLRF::getKlyFwdPwr_Py()const { return to_py_list(getKlyFwdPwr()); }
+boost::python::list LLRF::getCavRevPha_Py()const { return to_py_list(getCavRevPha()); }
+boost::python::list LLRF::getCavFwdPha_Py()const { return to_py_list(getCavFwdPha()); }
+boost::python::list LLRF::getKlyRevPha_Py()const { return to_py_list(getKlyRevPha()); }
+boost::python::list LLRF::getKlyFwdPha_Py()const { return to_py_list(getKlyFwdPha()); }
+boost::python::list LLRF::getProbePha_Py()const { return to_py_list(getProbePha()); }
+boost::python::list LLRF::getProbePwr_Py()const { return to_py_list(getProbePwr()); }
+
+
+// functions to actually get adn set paramters in teh LLRF 
+bool LLRF::setAmpMW(double value)
+{
+	// atm we are going to fake power traces
+	amp_MW.second = value;
+	//scaleAllDummyTraces();
+	return true;
+}
+bool LLRF::setAmp(double value)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::AMP_SP), value);
+	}
+	amp_sp.second = value;
+	return true;
+}
+double LLRF::getAmp()const{ return amp_sp.second; }
+double LLRF::getAmpMW()const
+{
+	return amp_MW.second;
+}
+bool LLRF::setPhi(double value)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::PHI_SP), value);
+	}
+	phi_sp.second = value;
+	return true;
+}
+bool LLRF::setPhiDEG(double value)
+{
+	phi_degrees.second = value;
+	operating_phase = phi_degrees.second - crest_phase;
+	return true;
+}
+bool LLRF::setCrestPhase(double value)
+{
+	crest_phase = value;
+	return true;
+}
+bool LLRF::setOperatingPhase(double value)
+{
+	operating_phase = value;
+	phi_sp.second = crest_phase + operating_phase;
+	phi_sp.first = epicsTimeStamp();
+	return true;
+}
+double LLRF::getPhi()const
+{
+	return phi_sp.second;
+}
+double LLRF::getCrestPhase()const
+{
+	return crest_phase;
+}
+double LLRF::getOperatingPhase()const
+{
+	return operating_phase;
+}
+double LLRF::getPhiDEG()const
+{
+	return phi_degrees.second;
+}
+
 
 
 
@@ -1127,12 +1403,11 @@ double LLRF::getTraceRepRate() const
 	return trace_rep_rate;
 }
 //--------------------------------------------------------------------------------------------------
-/*       __   __                    __                ___  __        __   ___  __
-		|__) /  \ |    |    | |\ | / _`     /\  \  / |__  |__)  /\  / _` |__  /__`
-		|  \ \__/ |___ |___ | | \| \__>    /~~\  \/  |___ |  \ /~~\ \__> |___ .__/
-
-// Set the parameters for the rolling avergaes
-*/
+/// ___  __        __   ___     __   __                    __                ___  __        __   ___  __
+///  |  |__)  /\  /  ` |__     |__) /  \ |    |    | |\ | / _`     /\  \  / |__  |__)  /\  / _` |__  /__`
+///  |  |  \ /~~\ \__, |___    |  \ \__/ |___ |___ | | \| \__>    /~~\  \/  |___ |  \ /~~\ \__> |___ .__/
+/// 
+///	Rolling averages can be calcuated for each trace  
 void LLRF::updateRollingAverage(TraceData& data)
 {
 	////std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
@@ -1236,10 +1511,7 @@ void LLRF::setShouldKeepRollingAverage()
 		setKeepRollingAverage(it.first, true);
 	}
 }
-bool LLRF::setShouldKeepRollingAverage(const std::string& name)
-{
-	return setKeepRollingAverage(name, true);
-}
+bool LLRF::setShouldKeepRollingAverage(const std::string& name){	return setKeepRollingAverage(name, true); }
 void LLRF::setShouldNotKeepRollingAverage()
 {
 	for (auto&& it : trace_data_map)
@@ -1292,8 +1564,7 @@ std::vector<double> LLRF::getRollingAverage(const std::string& name)const
 	{
 		return trace_data_map.at(n).rolling_average;
 	}
-	std::vector<double> d(trace_data_size, GlobalConstants::double_min);
-	return d;
+	return dummy_trace_data.rolling_average;
 }
 boost::python::list LLRF::getRollingAverage_Py(const std::string& name)const
 {
@@ -1356,8 +1627,7 @@ std::vector<std::vector<double>> LLRF::getRollingAverageTraceBuffer(const std::s
 	{
 		return trace_data_map.at(n).rolling_average_trace_buffer;
 	}
-	std::vector<std::vector<double>> r{};
-	return r;
+	return dummy_trace_data.rolling_average_trace_buffer;
 }
 boost::python::list LLRF::getRollingAverageTraceBuffer_Py(const std::string& name)const
 {
@@ -1588,250 +1858,6 @@ void LLRF::addTotalPulseCountOffset(const size_t value)
 {
 	total_pulse_count += value;
 }
-
-
-
-bool LLRF::startTraceMonitoring()
-{
-	if (is_trace_monitoring)
-	{
-		return true;
-	}
-	else
-	{
-		if (GlobalFunctions::entryExists(pvStructs, LLRFRecords::LLRF_TRACES))
-		{
-			pvStruct& pv = pvStructs.at(LLRFRecords::LLRF_TRACES);
-			if (ca_state(pv.CHID) == cs_conn)
-			{
-				epicsInterface->retrieveCHTYPE(pv);
-				epicsInterface->retrieveCOUNT(pv);
-				pv.updateFunction = epicsInterface->update_LLRF_TRACES;
-				//// not sure how to set the mask from EPICS yet.
-				pv.MASK = DBE_VALUE;
-
-				//dbr_all_trace_data
-
-				int status = ca_create_subscription(DBR_TIME_DOUBLE, pv.COUNT, pv.CHID, pv.MASK,
-					pv.updateFunction,(void*)this, &pv.EVID);
-				MY_SEVCHK(status);
-				EPICSInterface::sendToEPICS();
-				if (status == ECA_NORMAL)
-				{
-					is_trace_monitoring = true;
-					return true;
-				}
-			}
-			else
-			{
-				messenger.printMessage(pv.fullPVName, " CANNOT CONNECT TO EPICS");
-			}
-		}
-		else
-		{
-			messenger.printMessage("!!ERROR!! ", hardwareName , " can't find pvstruct for ", LLRFRecords::LLRF_TRACES);
-		}
-	}
-	return false;
-}
-bool LLRF::stopTraceMonitoring()
-{
-	if (is_trace_monitoring)
-	{
-		int status = ca_clear_subscription(pvStructs.at(LLRFRecords::LLRF_TRACES).EVID);
-		if (status == ECA_NORMAL)
-		{
-			return true;
-		}
-
-	}
-	return false;
-}
-
-
-
-std::vector<double> LLRF::getTraceValues(const std::string& name)const
-{
-	const std::string n = fullLLRFTraceName(name);
-	if (GlobalFunctions::entryExists(trace_data_map, n))
-	{
-		return trace_data_map.at(n).trace_values;
-	}
-	messenger.printDebugMessage("LLRF::getTraceValues ERROR, trace ", n, " does not exist");
-	std::vector<double> r(trace_data_size, GlobalConstants::double_min);//MAGIC_NUMBER
-	return r;
-}
-boost::python::list LLRF::getTraceValues_Py(const std::string& name)const
-{
-	return to_py_list<double>(getTraceValues(name));
-}
-
-std::pair<std::string, std::vector<double>> LLRF::getTraceNameValuesPair(const std::string& name)const
-{
-	std::pair<std::string, std::vector<double>> r;
-	r.first = fullLLRFTraceName(name);
-	r.second = getTraceValues(r.first);
-	return r;
-}
-boost::python::dict LLRF::getTraceNameValuesPair_Py(const std::string& name)
-{
-	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(name);
-	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
-	return to_py_dict<std::string, std::vector<double>>(r2);
-}
-
-
-TraceData& LLRF::getTraceData(const std::string & trace_name ) 
-{
-	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
-	{
-		return trace_data_map.at(trace_name);
-	}
-	return dummy_trace_data;
-}
-
-boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const
-{
-	boost::python::dict r;
-	const TraceData& td = dummy_trace_data;
-	if (GlobalFunctions::entryExists(trace_data_map, trace_name))
-	{
-		const TraceData td = trace_data_map.at(trace_name);
-	}
-	r["name"] = td.name;
-	r["trace_values"] = to_py_list<double>(td.trace_values);
-	r["trace_data_size"] = td.trace_data_size;
-	r["trace_data_buffer_size"] = td.trace_data_buffer_size;
-	r["trace_max"] = td.trace_max;
-	r["mean_start"] = td.mean_start_stop.first;
-	r["mean_stop"] = td.mean_start_stop.second;
-	r["mean_stop_minus_start"] = td.stop_minus_start;
-	r["trace_cut_mean"] = td.trace_cut_mean;
-	r["keep_rolling_average"] = td.keep_rolling_average;
-	r["keep_rolling_average"] = td.keep_rolling_average;
-	r["scan"] = td.scan.second;
-	r["acqm"] = td.acqm.second;
-	r["u_level"] = td.u_level.second;
-	r["p_level"] = td.p_level.second;
-	r["pdbm_level"] = td.pdbm_level.second;
-	r["trace_type"] = td.trace_type;
-	r["one_record_part"] = td.one_record_part;
-	r["one_record_start_index"] = td.one_record_start_index;
-	r["one_record_stop_index"] = td.one_record_stop_index;
-	// TODO add buffer, rollign mean etc 
-	//boost::circular_buffer<std::pair<epicsTimeStamp, std::vector<double>>> trace_values_buffer;
-	return r;
-}
-
-boost::python::dict LLRF::getAllTraceDataDict() const
-{
-	boost::python::dict r;
-	for (auto&& it : trace_data_map)
-	{
-		r[it.first] =  getTraceDataDict(it.first);
-	}
-	return r;
-}
-
-
-
-
-std::vector<double> LLRF::getCavRevPwr()const
-{
-	return getTraceValues(LLRFRecords::CAVITY_REVERSE_POWER);
-}
-std::vector<double> LLRF::getCavFwdPwr()const
-{
-	return getTraceValues(LLRFRecords::CAVITY_FORWARD_POWER);
-}
-std::vector<double> LLRF::getKlyRevPwr()const
-{
-	return getTraceValues(LLRFRecords::KLYSTRON_REVERSE_POWER);
-}
-std::vector<double> LLRF::getKlyFwdPwr()const
-{
-	//for (auto&& tb : trace_data_map.at(GlobalConstants::KLYSTRON_FORWARD_POWER).trace_values_buffer)
-	//{
-	//	messenger.printDebugMessage("getKlyFwdPwr NEW TB");
-	//	int jj = 0;
-	//	for (auto&& it : tb.second)
-	//	{
-	//		messenger.printDebugMessage(it);
-	//		jj += 1;
-	//		if (jj == 10)
-	//		{
-	//			break;
-	//		}
-	//	}
-	//}
-	return getTraceValues(LLRFRecords::KLYSTRON_FORWARD_POWER);
-}
-std::vector<double> LLRF::getCavRevPha()const
-{
-	return getTraceValues(LLRFRecords::CAVITY_REVERSE_PHASE);
-}
-std::vector<double> LLRF::getCavFwdPha()const
-{
-	return getTraceValues(LLRFRecords::CAVITY_FORWARD_PHASE);
-}
-std::vector<double> LLRF::getKlyRevPha()const
-{
-	return getTraceValues(LLRFRecords::KLYSTRON_REVERSE_PHASE);
-}
-std::vector<double> LLRF::getKlyFwdPha()const
-{
-	return getTraceValues(LLRFRecords::KLYSTRON_FORWARD_PHASE);
-}
-std::vector<double> LLRF::getProbePwr()const
-{
-	return getTraceValues(LLRFRecords::CAVITY_PROBE_POWER);
-}
-std::vector<double> LLRF::getProbePha()const
-{
-	return getTraceValues(LLRFRecords::CAVITY_PROBE_PHASE);
-}
-boost::python::list LLRF::getCavRevPwr_Py()const
-{
-	return to_py_list(getCavRevPwr());
-}
-boost::python::list LLRF::getCavFwdPwr_Py()const
-{
-	return to_py_list(getCavFwdPwr());
-}
-boost::python::list LLRF::getKlyRevPwr_Py()const
-{
-	return to_py_list(getKlyRevPwr());
-}
-boost::python::list LLRF::getKlyFwdPwr_Py()const
-{
-	return to_py_list(getKlyFwdPwr());
-}
-boost::python::list LLRF::getCavRevPha_Py()const
-{
-	return to_py_list(getCavRevPha());
-}
-boost::python::list LLRF::getCavFwdPha_Py()const
-{
-	return to_py_list(getCavFwdPha());
-}
-boost::python::list LLRF::getKlyRevPha_Py()const
-{
-	return to_py_list(getKlyRevPha());
-}
-boost::python::list LLRF::getKlyFwdPha_Py()const
-{
-	return to_py_list(getKlyFwdPha());
-}
-boost::python::list LLRF::getProbePha_Py()const
-{
-	return to_py_list(getProbePha());
-}
-boost::python::list LLRF::getProbePwr_Py()const
-{
-	return to_py_list(getProbePwr());
-}
-
-
 
 
 
@@ -2139,189 +2165,6 @@ double LLRF::getTime(const size_t index) const
 }
 
 
-void LLRF::setupInterlocks()
-{
-	//messenger.printDebugMessage("setupInterlocks");
-	//using namespace LLRFRecords;
-	//all_trace_interlocks[LLRF_CH1_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH2_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH3_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH4_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH5_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH6_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH7_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH8_INTERLOCK] = LLRFInterlock();
-
-	// now we set the TYPE (phase or POWER) 
-	//messenger.printDebugMessage("Setting interlock Trace TYPE");
-	//const std::vector<std::string> channels{ "CH1","CH2","CH3","CH4","CH5","CH6","CH7","CH8" };
-	//// loop over every channel
-	//for (auto&& it : channels)
-	//{
-	//	if (GlobalFunctions::entryExists(channel_to_tracesource_map, it))
-	//	{
-	//		// if a channe exists in all_trace_interlocks keys
-	//		for (auto& it2 : all_trace_interlocks)
-	//		{
-	//			// if string CHX exist sin 
-	//			if (GlobalFunctions::stringIsSubString(it2.first, it))
-	//			{
-	//				if (GlobalFunctions::stringIsSubString(it2.first, "POWER"))
-	//				{
-	//					it2.second.interlock_type = TYPE::POWER;
-	//				}
-	//				else if (GlobalFunctions::stringIsSubString(it2.first, "PHASE"))
-	//				{
-	//					it2.second.interlock_type = TYPE::PHASE;
-	//				}
-	//				else
-	//				{
-
-	//				}
-	//				messenger.printDebugMessage(it2.first, " ", channel_to_tracesource_map[it], " ", ENUM_TO_STRING(it2.second.interlock_type));
-	//			}
-
-	//		}
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage("Can't find ", it, " inchannel_to_tracesource_map");
-	//	}
-	//}
-	//
-	//for (auto&& channel : channels)
-	//{
-	//	if (GlobalFunctions::entryExists(specificHardwareParameters, channel))
-	//	{
-	//		channel_to_tracesource_map[channel] = specificHardwareParameters.find(channel)->second;
-	//		messenger.printDebugMessage("Found " + channel + ", connected to " + channel_to_tracesource_map[channel]);
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage(channel + " is NOT in the config");
-	//		channel_to_tracesource_map[channel] = "NONE";
-	//	}
-	//}
-	//messenger.printDebugMessage("setupInterlocks added these interlocks:");
-	//for (auto&& trace : all_trace_interlocks)
-	//{
-	//	messenger.printDebugMessage(trace.first);
-	//}
-}
-void LLRF::initAllTraceSCANandACQM()
-{
-	messenger.printDebugMessage("setupAllTraceSCAN");
-	using namespace LLRFRecords;
-
-	std::pair < epicsTimeStamp, STATE> init_pair = std::make_pair(epicsTimeStamp(), STATE::UNKNOWN);
-
-	all_trace_scan[ONE_TRACE_SCAN] = init_pair;
-	
-
-	all_trace_scan[CH1_PWR_REM] = init_pair;
-	all_trace_scan[CH2_PWR_REM] = init_pair;
-	all_trace_scan[CH3_PWR_REM] = init_pair;
-	all_trace_scan[CH4_PWR_REM] = init_pair;
-	all_trace_scan[CH5_PWR_REM] = init_pair;
-	all_trace_scan[CH6_PWR_REM] = init_pair;
-	all_trace_scan[CH7_PWR_REM] = init_pair;
-	all_trace_scan[CH8_PWR_REM] = init_pair;
-
-	all_trace_scan[CH1_PWR_LOC] = init_pair;
-	all_trace_scan[CH2_PWR_LOC] = init_pair;
-	all_trace_scan[CH3_PWR_LOC] = init_pair;
-	all_trace_scan[CH4_PWR_LOC] = init_pair;
-	all_trace_scan[CH5_PWR_LOC] = init_pair;
-	all_trace_scan[CH6_PWR_LOC] = init_pair;
-	all_trace_scan[CH7_PWR_LOC] = init_pair;
-	all_trace_scan[CH8_PWR_LOC] = init_pair;
-
-
-	all_trace_scan[CH1_AMP_DER] = init_pair;
-	all_trace_scan[CH2_AMP_DER] = init_pair;
-	all_trace_scan[CH3_AMP_DER] = init_pair;
-	all_trace_scan[CH4_AMP_DER] = init_pair;
-	all_trace_scan[CH5_AMP_DER] = init_pair;
-	all_trace_scan[CH6_AMP_DER] = init_pair;
-	all_trace_scan[CH7_AMP_DER] = init_pair;
-	all_trace_scan[CH8_AMP_DER] = init_pair;
-
-	all_trace_scan[CH1_PHASE_REM] = init_pair;
-	all_trace_scan[CH2_PHASE_REM] = init_pair;
-	all_trace_scan[CH3_PHASE_REM] = init_pair;
-	all_trace_scan[CH4_PHASE_REM] = init_pair;
-	all_trace_scan[CH5_PHASE_REM] = init_pair;
-	all_trace_scan[CH6_PHASE_REM] = init_pair;
-	all_trace_scan[CH7_PHASE_REM] = init_pair;
-	all_trace_scan[CH8_PHASE_REM] = init_pair;
-
-
-	all_trace_scan[CH1_PHASE_DER] = init_pair;
-	all_trace_scan[CH2_PHASE_DER] = init_pair;
-	all_trace_scan[CH3_PHASE_DER] = init_pair;
-	all_trace_scan[CH4_PHASE_DER] = init_pair;
-	all_trace_scan[CH5_PHASE_DER] = init_pair;
-	all_trace_scan[CH6_PHASE_DER] = init_pair;
-	all_trace_scan[CH7_PHASE_DER] = init_pair;
-	all_trace_scan[CH8_PHASE_DER] = init_pair;
-
-
-
-	all_trace_acqm[ONE_TRACE_ACQM] = init_pair;
-
-	all_trace_acqm[CH1_PWR_REM] = init_pair;
-	all_trace_acqm[CH2_PWR_REM] = init_pair;
-	all_trace_acqm[CH3_PWR_REM] = init_pair;
-	all_trace_acqm[CH4_PWR_REM] = init_pair;
-	all_trace_acqm[CH5_PWR_REM] = init_pair;
-	all_trace_acqm[CH6_PWR_REM] = init_pair;
-	all_trace_acqm[CH7_PWR_REM] = init_pair;
-	all_trace_acqm[CH8_PWR_REM] = init_pair;
-
-	all_trace_acqm[CH1_PWR_LOC] = init_pair;
-	all_trace_acqm[CH2_PWR_LOC] = init_pair;
-	all_trace_acqm[CH3_PWR_LOC] = init_pair;
-	all_trace_acqm[CH4_PWR_LOC] = init_pair;
-	all_trace_acqm[CH5_PWR_LOC] = init_pair;
-	all_trace_acqm[CH6_PWR_LOC] = init_pair;
-	all_trace_acqm[CH7_PWR_LOC] = init_pair;
-	all_trace_acqm[CH8_PWR_LOC] = init_pair;
-
-	all_trace_acqm[CH1_AMP_DER] = init_pair;
-	all_trace_acqm[CH2_AMP_DER] = init_pair;
-	all_trace_acqm[CH3_AMP_DER] = init_pair;
-	all_trace_acqm[CH4_AMP_DER] = init_pair;
-	all_trace_acqm[CH5_AMP_DER] = init_pair;
-	all_trace_acqm[CH6_AMP_DER] = init_pair;
-	all_trace_acqm[CH7_AMP_DER] = init_pair;
-	all_trace_acqm[CH8_AMP_DER] = init_pair;
-
-	all_trace_acqm[CH1_PHASE_REM] = init_pair;
-	all_trace_acqm[CH2_PHASE_REM] = init_pair;
-	all_trace_acqm[CH3_PHASE_REM] = init_pair;
-	all_trace_acqm[CH4_PHASE_REM] = init_pair;
-	all_trace_acqm[CH5_PHASE_REM] = init_pair;
-	all_trace_acqm[CH6_PHASE_REM] = init_pair;
-	all_trace_acqm[CH7_PHASE_REM] = init_pair;
-	all_trace_acqm[CH8_PHASE_REM] = init_pair;
-
-	all_trace_acqm[CH1_PHASE_DER] = init_pair;
-	all_trace_acqm[CH2_PHASE_DER] = init_pair;
-	all_trace_acqm[CH3_PHASE_DER] = init_pair;
-	all_trace_acqm[CH4_PHASE_DER] = init_pair;
-	all_trace_acqm[CH5_PHASE_DER] = init_pair;
-	all_trace_acqm[CH6_PHASE_DER] = init_pair;
-	all_trace_acqm[CH7_PHASE_DER] = init_pair;
-	all_trace_acqm[CH8_PHASE_DER] = init_pair;
-
-	//messenger.printDebugMessage("setupAllTraceSCAN added these traces:");
-	//for (auto&& trace : all_trace_scan)
-	//{
-	//	messenger.printDebugMessage(trace.first);
-	//}
-}
-
-
 
 std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
 {
@@ -2348,7 +2191,6 @@ void LLRF::setAllSCANToPassive()
 		{
 			epicsInterface ->putValue2(pvStructs.at(pv), LLRFRecords::state_to_llrf_SCAN_map.at(STATE::PASSIVE) );
 		}
-
 	}
 }
 
