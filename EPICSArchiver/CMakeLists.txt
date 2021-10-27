@@ -8,7 +8,8 @@ set(INCLUDE_FILES
 )
 
 set(TEST_FILES
-   test/EPICSArchiverHandlerTest.cpp
+	EPICSArchiverHandlerTest.cpp
+	EPICSArchiverTestHelper.cpp
 )
 
 cmake_policy(SET CMP0022 NEW)
@@ -26,4 +27,4 @@ TARGET_LINK_LIBRARIES(EPICSArchiver PUBLIC ${Boost_LIBRARIES}
 					   LoggingSystem)
 
 SET_PROPERTY(TARGET EPICSArchiver PROPERTY FOLDER "EPICSArchiver")
-#add_subdirectory(test)
+add_subdirectory(test)

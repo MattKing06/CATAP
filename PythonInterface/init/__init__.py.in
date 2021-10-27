@@ -2,3 +2,7 @@
 # for individual modules of CATAP.
 
 from ${LIBNAME} import *
+try:
+	from ${EXTENSION_NAME} import *
+except ImportError:
+	print("No extension module for ${LIBNAME}")

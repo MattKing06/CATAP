@@ -9,6 +9,7 @@ set( SOURCE_FILES
     source/ChargePythonInterface.cpp
     source/ScreenPythonInterface.cpp
     source/EPICSToolsPythonInterface.cpp
+	source/EPICSArchiverPythonInterface.cpp
 	source/GlobalStatesPythonInterface.cpp
 	source/GlobalTypesPythonInterface.cpp
     source/HardwareFactoryPythonInterface.cpp
@@ -42,6 +43,7 @@ set( INCLUDE_FILES
     include/ChargePythonInterface.h
     include/ScreenPythonInterface.h
     include/EPICSToolsPythonInterface.h
+	include/EPICSArchiverPythonInterface.h
 	include/GlobalStatesPythonInterface.h
 	include/GlobalTypesPythonInterface.h
     include/HardwareFactoryPythonInterface.h
@@ -73,6 +75,7 @@ if(WIN32)
 	#file(GLOB DEBUG_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Debug\\*.dll")
 	set(RELEASE_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Release\\")
 	set(DEBUG_LIBS "${THIRD_PARTY_LIBS}\\Windows\\x64\\Debug\\")
+	set(PY_EXTENSION_DIR "${CMAKE_SOURCE_DIR}\\PythonInterface\\extensions\\")
 	message("THIRD PARTY LOCATION: " ${THIRD_PARTY_LIBS})
 	message("REL LIBS: " ${RELEASE_LIBS})
 	message("DEB LIBS: " ${DEBUG_LIBS})
@@ -86,6 +89,7 @@ if(UNIX)
 		${EPICS_COM_LIB}
 		${EPICS_CA_LIB}
 		)
+	set(PY_EXTENSION_DIR "${CMAKE_SOURCE_DIR}\\PythonInterface\\extensions\\")
 endif(UNIX)
 cmake_policy(SET CMP0022 NEW)
 #find_package(PythonLibs ${PY_VERSION})
@@ -104,6 +108,8 @@ foreach(FILE ${SOURCE_FILES})
     string(REPLACE "PythonInterface.cpp" "" LIBFILENAME "${FILE}")
     string(REGEX REPLACE "source/" "_" LIBNAME "${LIBFILENAME}")
 	string(REGEX REPLACE "_" "" LIBFOLDERNAME "${LIBNAME}")
+	string(CONCAT EXTENSION_NAME ${LIBFOLDERNAME} "Extension" )
+	string(CONCAT EXTENSION_FILE ${EXTENSION_NAME} ".py")
 	# Let's cache the library names as we go so that we can add them as dependencies
 	# to the Python documentation (CATAPPyDocs package) without doing this string manipulation.
 	set(LIBNAMES "${LIBNAMES};${LIBNAME}" CACHE INTERNAL "CATAP LIB NAMES")
@@ -122,6 +128,7 @@ foreach(FILE ${SOURCE_FILES})
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Hardware/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/HighLevelSystems/PILaserSystem/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSTools/include)
+	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/EPICSArchiver/include)
 	target_include_directories(${LIBNAME} PRIVATE ${PROJECT_SOURCE_DIR}/Factories/include)
 	TARGET_LINK_LIBRARIES(${LIBNAME} PUBLIC
 						 ${Boost_LIBRARIES}
@@ -131,6 +138,7 @@ foreach(FILE ${SOURCE_FILES})
 						 Hardware
 						 PILaserSystem
 						 EPICSTools
+						 EPICSArchiver
 						 ConfigReader
 						 Utilities)
 	if (UNIX)
@@ -179,10 +187,14 @@ foreach(FILE ${SOURCE_FILES})
 		#get_target_property(DEBUG_OUTPUT_DIRECTORY ${LIBNAME} RUNTIME_OUTPUT_DIRECTORY_DEBUG)
 		#message("DEBUG OUTPUT DIR: " ${DEBUG_OUTPUT_DIRECTORY})
 		#message("RELEASE OUTPUT DIR: " ${RELEASE_OUTPUT_DIRECTORY})
-		###
+
+
 		### WE DO NOT BUILD FOR DEBUG YET.
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${RELEASE_LIBS}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> COMMENT "Moving ${RELEASE_LIBS} to ${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}")
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory "${RELEASE_LIBS}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}>CATAP COMMENT "Moving ${RELEASE_LIBS} to ${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP")
+		if (EXISTS "${PY_EXTENSION_DIR}${EXTENSION_FILE}")
+			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${PY_EXTENSION_DIR}${EXTENSION_FILE}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> COMMENT "Moving ${EXTENSION_FILE} to  ${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}")
+		endif (EXISTS "${PY_EXTENSION_DIR}${EXTENSION_FILE}")
 		#add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}>)
 		#add_custom_command(TARGET ${LIBNAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release/ $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP>)
 	    #message("DEBUG BUILD")
@@ -198,6 +210,9 @@ foreach(FILE ${SOURCE_FILES})
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/CHANGES.txt" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP")
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/LICENSE.txt" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP")
 		add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/resources/build_wheel.sh" "${CMAKE_BINARY_DIR}/PythonInterface/CATAP")
+		if (EXISTS "${PY_EXTENSION_DIR}${EXTENSION_FILE}")
+			add_custom_command(TARGET ${LIBNAME} COMMAND ${CMAKE_COMMAND} -E copy_if_different "${PY_EXTENSION_DIR}${EXTENSION_FILE}" $<1:${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP/${LIBFOLDERNAME}> COMMENT "Moving ${EXTENSION_FILE} to  ${RELEASE_TOP_LEVEL_CATAP_DIR}CATAP\\${LIBFOLDERNAME}")
+		endif (EXISTS "${PY_EXTENSION_DIR}${EXTENSION_FILE}")
 		foreach(LIBRARY ${THIRD_PARTY_LIB_DIRS})
 			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/${LIBFOLDERNAME}> )
 			add_custom_command(TARGET ${LIBNAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different "${LIBRARY}" $<1:${CMAKE_BINARY_DIR}/PythonInterface/CATAP/CATAP/> )
