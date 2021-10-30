@@ -549,42 +549,42 @@ void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::st
 		" ", ch,", to ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
 
 	// NOW WE FIND OUT IF THE PASSED SCAN IS IN ALL TRACE DATA 
-	//std::string trace;
-	//if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//{
-	//	messenger.printDebugMessage(CH, " has a useful name of ", trace);
+	std::string trace;
+	if (recastLLRF->getTraceFromChannelData(CH, trace))
+	{
+		messenger.printDebugMessage(CH, " has a useful name of ", trace);
 
-	//	if (GlobalFunctions::stringIsSubString(ch, "PWR_REM") )
-	//	{
-	//		messenger.printDebugMessage(ch, " is a power remote trace for ", trace);
-	//		trace.append("_POWER");
-	//		recastLLRF->trace_data_map.at(trace.append("_POWER")).scan = recastLLRF->all_trace_scan.at(ch);
-	//	}
-	//	else if (GlobalFunctions::stringIsSubString(ch, "PHASE_REM"))
-	//	{
-	//		messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
-	//		trace.append("_PHASE");
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage(ch, " is for a trace not in trace_data_map (", trace,")");
-	//	}
+		if (GlobalFunctions::stringIsSubString(ch, "PWR_REM") )
+		{
+			messenger.printDebugMessage(ch, " is a power remote trace for ", trace);
+			trace.append("_POWER");
+			recastLLRF->trace_data_map.at(trace.append("_POWER")).scan = recastLLRF->all_trace_scan.at(ch);
+		}
+		else if (GlobalFunctions::stringIsSubString(ch, "PHASE_REM"))
+		{
+			messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
+			trace.append("_PHASE");
+		}
+		else
+		{
+			messenger.printDebugMessage(ch, " is for a trace not in trace_data_map (", trace,")");
+		}
 
-	//	if(GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
-	//	{
-	//		recastLLRF->trace_data_map.at(trace).scan = recastLLRF->all_trace_scan.at(ch);
-	//		messenger.printDebugMessage(trace, " data added to trace_data_map, ", 
-	//			ENUM_TO_STRING(recastLLRF->trace_data_map.at(trace).scan.second));
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage(trace, " NOT FOUND in trace_data_map");
-	//	}
-	//}
-	//else
-	//{
-	//	messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//}
+		if(GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+		{
+			recastLLRF->trace_data_map.at(trace).scan = recastLLRF->all_trace_scan.at(ch);
+			messenger.printDebugMessage(trace, " data added to trace_data_map, ", 
+				ENUM_TO_STRING(recastLLRF->trace_data_map.at(trace).scan.second));
+		}
+		else
+		{
+			messenger.printDebugMessage(trace, " NOT FOUND in trace_data_map");
+		}
+	}
+	else
+	{
+		messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+	}
 }
 void EPICSLLRFInterface::update_trace_SCAN(const struct event_handler_args& args, std::pair<epicsTimeStamp, STATE >& scan)
 {

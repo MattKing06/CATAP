@@ -651,14 +651,14 @@ void LLRF::initAllTraceSCANandACQM()
 	all_trace_scan[CH7_PWR_REM] = init_pair;	all_trace_scan[CH7_PWR_LOC] = init_pair;
 	all_trace_scan[CH8_PWR_REM] = init_pair;	all_trace_scan[CH8_PWR_LOC] = init_pair;
 
-	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PWR_LOC] = init_pair;
-	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PWR_LOC] = init_pair;
-	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PWR_LOC] = init_pair;
-	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PWR_LOC] = init_pair;
-	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PWR_LOC] = init_pair;
-	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PWR_LOC] = init_pair;
-	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PWR_LOC] = init_pair;
-	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PWR_LOC] = init_pair;
+	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PHASE_REM_SCAN] = init_pair;
 
 	all_trace_scan[CH1_PHASE_DER] = init_pair;	all_trace_scan[CH2_PHASE_DER] = init_pair;
 	all_trace_scan[CH3_PHASE_DER] = init_pair;	all_trace_scan[CH4_PHASE_DER] = init_pair;
@@ -1626,7 +1626,6 @@ void LLRF::checkForOutsideMaskTrace()
 	//        message("Timing ",std::chrono::duration_cast<std::chrono::nanoseconds>(end1 - start2).count() );
 	//    }
 }
-
 int LLRF::updateIsTraceInMask(TraceData& trace)
 {
 	//outside_mask_trace_message.str("");
@@ -1704,7 +1703,6 @@ int LLRF::updateIsTraceInMask(TraceData& trace)
 	///* return code 1 = PASS */
 	return GlobalConstants::one_int;
 }
-
 void LLRF::handleTraceInMaskResult(TraceData& trace, int result)
 {
 	////message(trace.name, "TraceInMaskResult = ", result );
