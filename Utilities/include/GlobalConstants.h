@@ -436,13 +436,15 @@ namespace GlobalConstants
 
 	const unsigned short zero_us = 0;
 	const unsigned short one_us = 1;
+	const unsigned short two_us = 2;
+	const unsigned short three_us = 3;
 
 	/*! Unsigned Short-type to represent ACTIVATE to EPICS */
 	const unsigned short EPICS_ACTIVATE = one_us;
 	/*! Unsigned Short-type to represent SEND to EPICS */
 	const unsigned short EPICS_SEND = zero_us;
 	/*! Unsigned Short-type to represent RESET to EPICS after ACTIVATE and SEND have been sent */
-	const unsigned short EPICS_RESET = 1;
+	const unsigned short EPICS_RESET = one_us;
 
 	/*! 2 second pause */
 	const std::chrono::milliseconds STANDARD_PAUSE(2000);

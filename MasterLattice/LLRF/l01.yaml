@@ -1,7 +1,6 @@
 controls_information:
     PV: true
     pv_record_map:
-        HEART_BEAT : CLA-L01-RF-SCR-01:HB
         AMP_FF : CLA-L01-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
         TRIG_SOURCE : CLA-L01-LRF-CTRL-01:tcm:trig:source
         AMP_SP : CLA-L01-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
@@ -168,6 +167,7 @@ properties:
     one_trace_data_chunk_size : 1024 # all traces data concatenated into 1 record 
     trace_num_of_start_zeros  : 7 # all traces data concatenated into 1 record 
     
+    MAX_AMPLITUDE : 70000.0
     
     # for this box these are the "named" channels, 
     CH1 :  KLYSTRON_FORWARD

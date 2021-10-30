@@ -128,6 +128,51 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getAllRollingAverageTraceBuffer", &LLRF::getAllRollingAverageTraceBuffer_Py)
 
 			
+			// TRIGGERS AND TRIGGER SOURCE
+			.def("trigOff", &LLRF::trigOff)
+			.def("trigInt", &LLRF::trigInt)
+			.def("trigExt", &LLRF::trigExt)
+			.def("getTrigSource", &LLRF::getTrigSource)
+			.def("isTrigExternal", &LLRF::isTrigExternal)
+			.def("isTrigInternal", &LLRF::isTrigInternal)
+
+
+
+			.def("setInterlockActive", &LLRF::setInterlockActive)
+			.def("setInterlockNonActive", &LLRF::setInterlockNonActive)
+			.def("getInterlock", &LLRF::getInterlock)
+			.def("isInterlockActive", &LLRF::isInterlockActive)
+			.def("isInterlockNotActive", &LLRF::isInterlockNotActive)
+
+
+			.def("isRFOutput", &LLRF::isRFOutput)
+			.def("isNotRFOutput", &LLRF::isNotRFOutput)
+			.def("RFOutput", &LLRF::RFOutput)
+			.def("enableRFOutput", &LLRF::enableRFOutput)
+			.def("disableRFOutput", &LLRF::disableRFOutput)
+
+
+
+			.def("isAmpFFconnected", &LLRF::isAmpFFconnected)
+			.def("lockAmpFF", &LLRF::lockAmpFF)
+			.def("RFOutput", &LLRF::RFOutput)
+			.def("lockPhaseFF", &LLRF::lockPhaseFF)
+			.def("unlockAmpFF", &LLRF::unlockAmpFF)
+			.def("unlockPhaseFF", &LLRF::unlockPhaseFF)
+			.def("isFFLocked", &LLRF::isFFLocked)
+			.def("isFFNotLocked", &LLRF::isFFNotLocked)
+			.def("isAmpFFLocked", &LLRF::isAmpFFLocked)
+			.def("isAmpFFNotLocked", &LLRF::isAmpFFNotLocked)
+			.def("isPhaseFFLocked", &LLRF::isPhaseFFLocked)
+			.def("isPhaseFFNotLocked", &LLRF::isPhaseFFNotLocked)
+
+
+
+			.def("enableRFandLock", &LLRF::enableRFandLock)
+
+
+
+
 
 
 			

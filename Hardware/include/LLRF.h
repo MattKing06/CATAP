@@ -447,13 +447,114 @@ public:
 
 
 	//---------------------------------------------------------------------------------------------------------
+	//	TRIGGERS AND TRIGGER SOURCE
 	public:
+		bool isTrigOff()const;
+		bool isTrigExternal()const;
+		bool isTrigInternal()const;
+		/* Disable the trigger 
+		@param[out] success: bool, if command got sent to EPICS, (not if it was recieved or acted on!).*/
 		bool trigOff();
+		/* Set the trigger to Internal 
+		@param[out] success: bool, if command got sent to EPICS, (not if it was recieved or acted on!).*/
 		bool trigInt();
+		/* Set the trigger to External
+		@param[out] success: bool, if command got sent to EPICS, (not if it was recieved or acted on!).*/
 		bool trigExt();
+		/* Get the current trigger source (internal or external) 
+		@param[out] trig source: STATE of current trigger .*/
 		STATE getTrigSource()const;
 	private:
+		/* Set the trigger source 
+		@param[in] new_state: STATE, shoud be one of STATE::INTERNAL or STATE::EXTERNAL 
+		@param[out] success: STATE of current trigger .*/
 		bool setTrig(const STATE new_state);
+		/*! source of LLRF trigger one of: OFF, INTERNAL, EXTERNAL */
+		std::pair<epicsTimeStamp, STATE > trig_source;
+
+
+
+	//---------------------------------------------------------------------------------------------------------
+	//	Interlocks
+	public:
+		bool setInterlockActive();
+		bool setInterlockNonActive();
+		STATE getInterlock()const;
+		bool isInterlockActive()const;
+		bool isInterlockNotActive()const;
+	private:
+		bool setInterlock(const STATE new_state);
+		/*! State of the top level LLRF interlock, value and epicstimestamp */
+		std::pair<epicsTimeStamp, STATE> interlock_state;
+
+	//---------------------------------------------------------------------------------------------------------
+	//	RF output
+	public:
+		bool isRFOutput() const;
+		bool isNotRFOutput() const;
+		bool RFOutput()const;
+		bool enableRFOutput();
+		bool disableRFOutput();
+	private:
+		bool setRFOutput(const bool new_state);
+		/*! State of the top level LLRF RF output, value and epicstimestamp */
+		std::pair<epicsTimeStamp, bool> rf_output;
+
+	//---------------------------------------------------------------------------------------------------------
+	//	amp phase locking 
+	public:
+		bool isAmpFFconnected();
+		bool lockAmpFF();
+		bool lockPhaseFF();
+		bool unlockAmpFF();
+		bool unlockPhaseFF();
+		bool isFFLocked()const;
+		bool isFFNotLocked()const;
+		bool isAmpFFLocked()const;
+		bool isAmpFFNotLocked()const;
+		bool isPhaseFFLocked()const;
+		bool isPhaseFFNotLocked()const;
+	private:
+		/*! Flag for state of ff_phase_lock checkbox, value and epicstimestamp */
+		std::pair<epicsTimeStamp, bool> ff_phase_lock;
+		/*! Flag for state of ff_amp_lock checkbox, value and epicstimestamp */
+		std::pair<epicsTimeStamp, bool> ff_amp_lock;
+
+
+	//---------------------------------------------------------------------------------------------------------
+	//	combo RF and locking 
+	public:
+		bool enableRFandLock();
+	private:
+
+
+
+		/*! Size of circular buffer used to store trace data */
+		size_t trace_data_buffer_size;
+
+
+
+		
+		
+		
+		
+		
+		
+		/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
+		std::pair<epicsTimeStamp, double > llrf_pulse_duration;
+
+		/*! pulse offset */
+		std::pair<epicsTimeStamp, double > pulse_offset;
+
+		/*! RF PSS Heartbeat, when in RF mode this signal must keep changing to keep the RF system alive */
+		std::pair<epicsTimeStamp, double > heartbeat;
+
+		
+		
+		
+		
+		
+		
 //-----------------------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------
 /// ___  __        __   ___     __   __                    __                ___  __        __   ___  __
@@ -596,30 +697,28 @@ public:
 /// '  /\  /  `  |  | \  / |__  '    |__) |  | |    /__` |__  /__` 
 ///   /~~\ \__,  |  |  \/  |___      |    \__/ |___ .__/ |___ .__/ 
 ///                                                                
-// Counts of active, inactive, duplicate and total number of pulses are kept, (defiend based on the Klysytron 
+// Counts of active, inactive, duplicate and total number of pulses are kept, (defined based on the Klysytron 
 // Forward Power trace data). These can also be affset by passed values to enable totals to be transferred to 
 // new instances of the interface. 
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 	public:
 		/*! retun active_pulse_kly_power_limit (default 500 W)
-			@param[out] size_t, */
+			@param[out] size_t: value */
 		size_t getActivePulsePowerLimit() const;
 		/*! Set active_pulse_kly_power_limit (default 500 W)
 		@param[in] value: size_t */
 		void setActivePulsePowerLimit(const size_t value);
 		/*! retun active_pulse_count
-		@param[in] value: size_t */
+		@param[out] value: size_t */
 		size_t getActivePulseCount()const;
 		/*! Set active_pulse_count to value
-		@param[in] value: size_t 
-		@param[out] size_t, */
+		@param[in] value: size_t */
 		void setActivePulseCount(const size_t value);
 		/*! increment active_pulse_count by value
 		@param[in] value: size_t */
 		void addActivePulseCountOffset(const size_t value);
 		/*! retun inactive_pulse_count
-		@param[in] value: size_t 
 		@param[out] size_t, */
 		size_t getInactivePulseCount()const;
 		/*! Set inactive_pulse_count to value
@@ -664,52 +763,113 @@ public:
 		size_t total_pulse_count;
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
-	/*  ___  __        __   ___           ___            __
-		 |  |__)  /\  /  ` |__      |\/| |__   /\  |\ | /__`
-		 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
-	*/
-// Trace means between user-defined times /indexes are can be calcaulted for each TraceData object 
+///	/*  ___  __        __   ___           ___            __
+///		 |  |__)  /\  /  ` |__      |\/| |__   /\  |\ | /__`
+///		 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
+///	*/
+// Trace means between user-defined times/indexes are can be calculated for each TraceData object 
 public:
-	
-	
+	/*! Set the start/end cursor position for the trace mean calculation, in micro-seconds from the start of the pulse  
+	@param[in] start: double, start time in usec 
+	@param[in] end: double, end time in usec
+	@param[in] name: string trace name 
+	@param[out] success: bool indicating if settings got applied */
 	bool setMeanStartEndTime(const double start, const double end, const std::string& name);
+	/*! Set the start/end cursor position for the trace mean calculation, in from the start of the pulse
+	@param[in] start: double, start index
+	@param[in] end: double, end index
+	@param[in] name: string trace name
+	@param[out] success: bool indicating if settings got applied */
 	bool setMeanStartEndIndex(const size_t start, const size_t end, const std::string& name);
-	
+	/*! Get the start/end cursor position for the trace mean calculation
+	@param[in] name: string trace name 
+	@param[out] values: pair<size_t, size_t, > start and end indices*/
 	std::pair<size_t, size_t> getMeanStartEndIndex(const std::string& name) const;
+	/*! Set the start/end cursor position for the trace mean calculation
+	@param[in] name: string trace name 
+	@param[out] values: pair<double, double> start and end times */
 	std::pair<double, double> getMeanStartEndTime(const std::string& name) const;
+	/*! Get the start/end cursor position indices for the trace mean calculation, Python Version
+	@param[in] name: string trace name 
+	@param[out] values: list start and end indices */
 	boost::python::list getMeanStartEndIndex_Py(const std::string& name) const;
+	/*! Get the start/end cursor position times for the trace mean calculation, Python Version
+	@param[out] values: list start and end times (micro-sec) */
 	boost::python::list  getMeanStartEndTime_Py(const std::string& name) const;
-		
+	/*! Get the start/end cursor position indices for the trace mean calculation fro every trace
+	@param[out] values: map<string, <pair, size_t, size_t>> start and end indices, keyed by trace name  */
 	std::map<std::string, std::pair<size_t, size_t>> getTraceMeanIndices()const;
+	/*! Get the start/end cursor position times for the trace mean calculation for every trace
+	@param[out] values: map<string, <pair, size_t, size_t>> start and end times (micro-sec), keyed by trace name  */
 	std::map<std::string, std::pair<double, double>> getTraceMeanTimes()const;
+	/*! Get the start/end cursor position times for the trace mean calculation for every trace
+	@param[out] values: dict start and end indices, keyed by trace name  */
 	boost::python::dict getTraceMeanIndices_Py()const;
+	/*! Get the start/end cursor position times for the trace mean calculation for every trace
+	@param[out] values: dict start and end times (micro-sec), keyed by trace name  */
 	boost::python::dict getTraceMeanTimes_Py()const;
-	
+	/*! Set the start/end cursor position indices for the trace mean calculations for multiple traces
+	@param[in] settings: map<string, <pair, size_t, size_t>> start and end indices, keyed by trace name  */
 	void setTraceMeanIndices(const std::map<std::string, std::pair<size_t, size_t>>& settings);
+	/*! Set the start/end cursor position times for the trace mean calculations for multiple traces
+	@param[in] settings: map<string, <pair, double, double>> start and end times, keyed by trace name  */
 	void setTraceMeanTimes(const std::map<std::string, std::pair<double, double>>& settings);
+	/*! Set the start/end cursor position indices for the trace mean calculations for multiple traces, Python version 
+	@param[in] settings: dict start and end indices, keyed by trace name  */
 	void setTraceMeanIndices_Py(const boost::python::dict& settings);
+	/*! Set the start/end cursor position indices for the trace mean calculations for multiple traces, Python version
+	@param[in] settings: dict start and end times (micro-sec), keyed by trace name  */
 	void setTraceMeanTimes_Py(const boost::python::dict& settings);
 	
-	
+	/*! Set the start cursor position index for the trace mean calculation 
+	@param[in] name: string trace name to set values for  
+	@param[in] value: size_t start index 
+	@param[out] success: bool if requested trace's value was set */
 	bool setMeanStartIndex(const std::string& name, size_t  value);
+	/*! Set the stop cursor position index for the trace mean calculation
+	@param[in] name: string trace name to set values for
+	@param[in] value: size_t start index
+	@param[out] success: bool if requested trace's value was set */
 	bool setMeanStopIndex(const std::string& name, size_t  value);
+	/*! Get the start cursor position index for the trace mean calculation
+	@param[in] name: string trace name to set values for
+	@param[out] value: size_t start index */
 	size_t getMeanStartIndex(const std::string& name)const;
+	/*! Get the stop cursor position index for the trace mean calculation
+	@param[in] name: string trace name to get values for
+	@param[out] value: size_t start index */
 	size_t getMeanStopIndex(const std::string& name)const;
-	//double getMean(const std::string& name)const;
+	/*! Get the start time for the trace mean calculation
+	@param[in] name: string trace name to get values for
+	@param[out] value: double, start time (micro-sec) */
+	double getMeanStartTime(const std::string& name)const;
+	/*! Get the stop time for the trace mean calculation
+	@param[in] name: string trace name to get values for
+	@param[out] value: double, stop time (micro-sec) */
+	double getMeanStopTime(const std::string& name)const;
+	/*! Get the mean value of the a trace between the start and stop positions 
+	@param[in] name: string trace name to get values for
+	@param[out] value: size_t start index */
 	double getCutMean(const std::string& name)const;
+	/*! Get the mean value of the all power traces between the start and stop positions
+	@param[out] values: mpa<string, double> values keyed by the trace name */
 	std::map<std::string, double> getPowerCutMean()const;
+	/*! Get the mean value of the all power traces between the start and stop positions, Python version 
+	@param[out] values: dict values keyed by the trace name */
 	boost::python::dict getPowerCutMean_Py()const;
-
+	/*! Get the mean value of the all traces between the start and stop positions
+	@param[out] values: map<string, double> values keyed by the trace name */
 	std::map<std::string, double> getAllCutMean()const;
+	/*! Get the mean value of the all traces between the start and stop positions
+	@param[out] values: dict values keyed by the trace name */
 	boost::python::dict getAllCutMean_Py()const;
 
 
-	// don;t use anymore ... 
-	double getMeanStartTime(const std::string& name)const;
-	double getMeanStopTime(const std::string& name)const;
+
+
+
 
 	std::map<std::string, std::string> getLLRFStateMap()const;
-
 
 
 
@@ -717,9 +877,6 @@ public:
 	void setNumTracesToEstimateRepRate(size_t value);
 	size_t getNumTracesToEstimateRepRate() const;
 	double getTraceRepRate() const;
-
-	
-
 
 
 	/*! Set the current waveform as the pulse shape to be used 
@@ -757,6 +914,11 @@ protected:
 	std::pair<epicsTimeStamp, double > amp_sp;
 	/*! latest amp_ff value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > amp_ff;
+	/*! Maximum amplitude that can be set by CATAP (set in prime-alltice files) */
+	double catap_max_amplitude;
+	/*! Maximum amplitude that can be set by control system (set in control ssyetm IOC */
+	double ioc_max_amplitude;
+
 	/*! latest phi_sp value and epicstimestamp 	*/
 	std::pair<epicsTimeStamp, double > phi_sp;
 	/*! latest phi_ff value and epicstimestamp 	*/
@@ -775,34 +937,12 @@ protected:
 
 
 
-	/*! source of LLRF trigger one of: OFF, INTERNAL, EXTERNAL */
-	std::pair<epicsTimeStamp, STATE > trig_source;
-		
-	/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
-	std::pair<epicsTimeStamp, double > llrf_pulse_duration;
-
-	/*! pulse offset */
-	std::pair<epicsTimeStamp, double > pulse_offset;
-
-	/*! RF PSS Heartbeat, when in RF mode this signal must keep changing to keep the RF system alive */
-	std::pair<epicsTimeStamp, double > heartbeat;
-
-
-	/*! Size of circular buffer used to store trace data */
-	size_t trace_data_buffer_size;
 	
-	
-	/*! State of the top level LLRF interlock, value and epicstimestamp */
-	std::pair<epicsTimeStamp, STATE> interlock_state;
 
-	/*! State of the top level LLRF RF output, value and epicstimestamp */
-	std::pair<epicsTimeStamp, bool> rf_output;
-	
-	/*! Flag for state of ff_phase_lock checkbox, value and epicstimestamp */
-	std::pair<epicsTimeStamp, bool> ff_phase_lock;
 
-	/*! Flag for state of ff_amp_lock checkbox, value and epicstimestamp */
-	std::pair<epicsTimeStamp, bool> ff_amp_lock;
+
+	
+
 	
 	///*! Map of TraceData objects keyed by the trace name (klystron forward power etc).
 	//Each physical llrf box has more traces avialable than we typically monitor,

@@ -94,7 +94,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 		{
 			messenger.printDebugMessage("Setup ", pv.first);
 			// sets the monitor state in the pvstruict to true or false
-			if (ca_state(pv.second.CHID) == cs_conn)
+			if(ca_state(pv.second.CHID) == cs_conn)
 			{
 				retrieveMonitorStatus(pv.second);
 				llrf.second.epicsInterface->retrieveCHTYPE(pv.second);
@@ -102,12 +102,15 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 				llrf.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				//// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.first, " ", pv.second.pvRecord, " r, w, s = ", std::to_string(ca_read_access(pv.second.CHID)),
-					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(
+					pv.first, " ", 
+					pv.second.pvRecord, " r, w, s = ", 
+					std::to_string(ca_read_access(pv.second.CHID)),
+					std::to_string(ca_write_access(pv.second.CHID)), 
+					std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
-					llrf.second.epicsInterface->createSubscription(llrf.second, pv.second);
-					//EPICSInterface::sendToEPICS();
+					llrf.second.epicsInterface->createSubscription2(llrf.second, pv.second);
 				}
 			}
 			else
@@ -132,6 +135,7 @@ bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& mac
 			}
 		}
 	}
+	EPICSInterface::sendToEPICS();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
@@ -139,11 +143,13 @@ std::vector <TYPE> LLRFFactory::sanityCheckMachineAreas(const std::vector<TYPE>&
 {
 	messenger.printDebugMessage("sanityCheckMacheinAreas");
 	std::vector <TYPE> pass1, r;
-	for (auto&& item : machineAreas_IN)
+	// For the first pass we convert combined machine_areas into specific RF sections 
+	for (const auto& item : machineAreas_IN)
 	{
+		messenger.printDebugMessage("passed ", ENUM_TO_STRING(item) );
 		if(item == TYPE::ALL_VELA_CLARA)
 		{
-			pass1.push_back(TYPE::LRRG);
+			pass1.push_back(TYPE::LRRG); // TODO complex if we were ever "easily" switching guns 
 			pass1.push_back(TYPE::L01);
 		}
 		else
@@ -152,7 +158,7 @@ std::vector <TYPE> LLRFFactory::sanityCheckMachineAreas(const std::vector<TYPE>&
 		}
 	}
 	bool has_gun_type = false;
-	for (auto&& item : pass1)
+	for (const auto& item : pass1)
 	{
 		if (GlobalFunctions::entryExists(r, item))
 		{
@@ -166,14 +172,21 @@ std::vector <TYPE> LLRFFactory::sanityCheckMachineAreas(const std::vector<TYPE>&
 			}
 			else
 			{
+				messenger.printDebugMessage("Adding a gun type", ENUM_TO_STRING(item));
 				r.push_back(item);
 				has_gun_type = true;
 			}
 		}
 		else
 		{
+			messenger.printDebugMessage("Adding a LLRF type", ENUM_TO_STRING(item));
 			r.push_back(item);
 		}
+	}
+	messenger.printDebugMessage("Print out FINAL LLRF objects to connect to:");
+	for (const auto& item : r)
+	{
+		messenger.printDebugMessage(ENUM_TO_STRING(item));
 	}
 	return r;
 }
@@ -203,7 +216,7 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 		bool should_erase = true;
 		// now we loop over every area in machineAreas and checl against isInMachineArea
 		messenger.printDebugMessage(it->first, " is in area = ", ENUM_TO_STRING(it->second.getMachineArea()));
-		for (auto&& machineArea : machineAreas)
+		for (const auto&  machineArea : machineAreas)
 		{
 			// if this returns true then we should keep the LLRF and can break out the for loop 
 			if (GlobalFunctions::isInMachineArea(machineArea, it->second.getMachineArea()))
@@ -226,16 +239,63 @@ void LLRFFactory::cutLLRFMapByMachineAreas()
 					should_erase = false;
 					break;
 				}
-				else
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::CLARA_HRRG))
 				{
-					//messenger.printDebugMessage("ERROR NEVER SHOW THIS ");
+					it->second.setGunType(TYPE::CLARA_HRRG);
+					should_erase = false;
+					break;
 				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::CLARA_LRRG))
+				{
+					it->second.setGunType(TYPE::CLARA_LRRG);
+					should_erase = false;
+					break;
+				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::VELA_HRRG))
+				{
+					it->second.setGunType(TYPE::VELA_HRRG);
+					should_erase = false;
+					break;
+				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::VELA_LRRG))
+				{
+					it->second.setGunType(TYPE::VELA_LRRG);
+						should_erase = false;
+						break;
+				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::VELA_GUN))
+				{
+					it->second.setGunType(TYPE::VELA_GUN);
+						should_erase = false;
+						break;
+				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::CLARA_GUN))
+				{
+					it->second.setGunType(TYPE::CLARA_GUN);
+						should_erase = false;
+						break;
+				}
+				else if(GlobalFunctions::entryExists(machineAreas, TYPE::HRRG_GUN))
+				{
+					it->second.setGunType(TYPE::HRRG_GUN);
+						should_erase = false;
+						break;
+				}
+				else if (GlobalFunctions::entryExists(machineAreas, TYPE::LRRG_GUN))
+				{
+					it->second.setGunType(TYPE::LRRG_GUN);
+						should_erase = false;
+						break;
+				}
+//s				else
+//				{
+//					//messenger.printDebugMessage("ERROR NEVER SHOW THIS ");
+//				}
 			}
 			else
 			{ 
-			
+				should_erase = true;
 			}
-			//it->second.setMachineArea(it->second.getMachineArea());
 		}
 		// if should_erase is still true, erase object from  magnetMap
 		if (should_erase)
@@ -274,7 +334,7 @@ void LLRFFactory::updateAliasNameMap(const LLRF& llrf)
 	}
 	// now add in the aliases
 	std::vector<std::string> aliases = llrf.getAliases();
-	for (auto&& next_alias : aliases)
+	for (const auto&  next_alias : aliases)
 	{
 		if (GlobalFunctions::entryExists(alias_name_map, next_alias))
 		{
@@ -314,15 +374,10 @@ void LLRFFactory::retrieveMonitorStatus(pvStruct& pvStruct)
 		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = false ");
 	}
 }
-
-
-
-
-
 std::vector<std::string> LLRFFactory::getLLRFNames()
 {
 	std::vector<std::string> r;
-	for (auto&& it : LLRFMap)
+	for (const auto&  it : LLRFMap)
 	{
 		r.push_back(it.first);
 	}
@@ -353,13 +408,6 @@ std::string LLRFFactory::getFullName(const std::string& name_to_check) const
 	std::cout << name_to_check << " NOT found " << std::endl;
 	return dummy_llrf.getHardwareName();
 }
-
-
-
-
-
-
-
 
 
 bool LLRFFactory::setPhi(const std::string& llrf_name, double value)

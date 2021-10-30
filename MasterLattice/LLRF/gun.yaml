@@ -2,7 +2,6 @@
 controls_information:
     PV: true
     pv_record_map:
-        HEART_BEAT : CLA-GUN-RF-SCR-01:HB
         AMP_FF : CLA-GUN-LRF-CTRL-01:vm:dsp:ff_amp:amplitude
         TRIG_SOURCE : CLA-GUN-LRF-CTRL-01:tcm:trig:source
         AMP_SP : CLA-GUN-LRF-CTRL-01:vm:dsp:sp_amp:amplitude
@@ -202,6 +201,9 @@ properties:
     one_trace_data_count : 24576 # all traces data concatenated into 1 record 
     one_trace_data_chunk_size : 1024 # all traces data concatenated into 1 record 
     trace_num_of_start_zeros  : 7 # all traces data concatenated into 1 record 
+    
+    
+    MAX_AMPLITUDE : 67800.0
     
     crest_phase : 87.9 # probably pointelss, but maybe in teh future 
     kfpow_mean_start_time : 0.23

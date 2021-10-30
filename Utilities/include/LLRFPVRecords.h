@@ -15,8 +15,6 @@ namespace LLRFRecords
 //// llrf have multiple names / areas, so we have a map to help look up values 	
 //extern std::map<TYPE,TYPE> const llrf_type_to_machine_area;
 
-
-
 extern std::string const HEART_BEAT;
 extern std::string const AMP_FF;
 extern std::string const TRIG_SOURCE;

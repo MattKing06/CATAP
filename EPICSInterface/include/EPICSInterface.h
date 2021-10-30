@@ -105,6 +105,17 @@ public:
 		MY_SEVCHK(status);
 		sendToEPICS();
 	}
+
+	template<typename SubscriptionType>
+	void createSubscription2(SubscriptionType& returnObject, pvStruct& pvStruct) const
+	{
+		int status = ca_create_subscription(pvStruct.monitorCHTYPE, pvStruct.COUNT,
+			pvStruct.CHID, pvStruct.MASK,
+			pvStruct.updateFunction,
+			(void*)&returnObject,
+			&pvStruct.EVID);
+		MY_SEVCHK(status);
+	}
 	/*! Removes the monitor for a given PV
 	* @param[in] pv : The PV we want to remove the monitor for.*/
 	void removeSubscription(pvStruct& pv);

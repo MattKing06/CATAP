@@ -200,7 +200,6 @@ bool Stage::isAtDevice(const std::string& device)
 		}
 		return atDevice;
 	}
-
 }
 
 std::vector<std::string> Stage::getDevices()
