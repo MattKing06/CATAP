@@ -19,28 +19,58 @@
 //	{ECA_DISCONN, "ECA_DISCONN"}
 //};
 
+//CURRENT_CA_CONTEXT = nullptr;
 
-EPICSInterface::EPICSInterface() : 
-thisCaContext(nullptr),
-messenger(LoggingSystem(true, true))
+
+void EPICSInterface::initialiseContext()
 {
 	int status;
-	/* 
+	/*
 		This 'enables' callbacks, monitoring, etc
 		thisCaContext is the current (AND ONLY) context,
 		use it to join from new threads with ca_attach_context
 		you NEED to attach to this context if multi-threading
 	*/
-	if (!ca_current_context())
+	if (!CURRENT_CA_CONTEXT)
 	{
 		status = ca_context_create(ca_enable_preemptive_callback);
-		MY_SEVCHK(status);
+		CURRENT_CA_CONTEXT = ca_current_context();
+		switch (status)
+		{
+		case(ECA_NORMAL):
+			std::cout << "Success, created ca_context" << std::endl;
+			break;
+		case(ECA_ALLOCMEM):
+			std::cout << "Failed to create ca_context, unable to allocate space in pool." << std::endl;
+			break;
+		case(ECA_NOTTHREADED):
+			std::cout << "Someone has disabled pre-emptive callbacks..." << std::endl;
+			break;
+		}
 	}
+	else
+	{
+		status = ca_attach_context(CURRENT_CA_CONTEXT);
+		switch (status)
+		{
+		case(ECA_NORMAL):
+			std::cout << "Success, attached to ca_context" << std::endl;
+			break;
+		case(ECA_ISATTACHED):
+			std::cout << "Already joined to this ca context." << std::endl;
+			break;
+		case(ECA_NOTTHREADED):
+			std::cout << "Someone has disabled pre-emptive callbacks..." <<	std::endl;
+			break;
+		}
+	}
+}
 
-	thisCaContext = ca_current_context();
-
+EPICSInterface::EPICSInterface() : 
+messenger(LoggingSystem(true, true))
+{
+	initialiseContext();
 	messenger.printDebugMessage("EPICSInterface constuctor ");
-
 }
 
 EPICSInterface::EPICSInterface(const bool& startEpics, const bool& startVirtualMachine):
@@ -48,11 +78,14 @@ messenger(LoggingSystem(true, true))
 {
 	EPICSInterface::shouldStartEpics = startEpics;
 	EPICSInterface::shouldStartVirtualMachine = startVirtualMachine;
+	initialiseContext();
 }
 
 EPICSInterface::~EPICSInterface()
 {
 	messenger.printDebugMessage("EPICSInterface Destructor Called");
+	//messenger.printMessage("ca_context_status: ", ca_context_status(thisCaContext, 2));
+	//ca_context_destroy();
 }
 
 void EPICSInterface::removeSubscription(pvStruct& pvStruct)
@@ -120,10 +153,23 @@ int EPICSInterface::sendToEPICSReturnStatus()
 
 void EPICSInterface::attachTo_thisCaContext()
 {
-	if (thisCaContext)
+	if (CURRENT_CA_CONTEXT)
 	{
-		ca_attach_context(thisCaContext);
+		int status = ca_attach_context(CURRENT_CA_CONTEXT);
+		switch (status)
+		{
+		case(ECA_NORMAL):
+			messenger.printMessage("Success, created ca_context");
+			break;
+		case(ECA_ISATTACHED):
+			messenger.printMessage("Already joined to this ca context.");
+			break;
+		case(ECA_NOTTHREADED):
+			messenger.printMessage("Someone has disabled pre-emptive callbacks...");
+			break;
+		}
 	}
+
 }
 
 void EPICSInterface::detachFrom_thisCaContext()
