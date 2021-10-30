@@ -15,6 +15,10 @@
 #include <GlobalStateEnums.h>
 //#include <pyconfig.h>
 #endif
+
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
 #ifndef PV_H_
 #include "PV.h"
 #endif
@@ -38,6 +42,7 @@
 	}							\
 }
 
+static ca_client_context* CURRENT_CA_CONTEXT = nullptr;
 
 /** @defgroup epicsInterface EPICS Interfaces
 	@brief A collection of classes responsible for EPICS Channel Access calls.
@@ -59,6 +64,9 @@ public:
 	EPICSInterface(const bool& shouldStartEpics, const bool& shouldStartVirtualMachine);
 	/*! Default Destructor for EPICSInterface.*/
 	~EPICSInterface();
+
+	static void initialiseContext();
+
 	/*! Retrieves the macro for the time EPICS should wait until it timesout on a request.
 	* @param[out] CA_PEND_IO_TIMEOUT : 5.0*/
 	double get_CA_PEND_IO_TIMEOUT() const;
@@ -102,6 +110,24 @@ public:
 			pvStruct.updateFunction,
 			(void*)&returnObject,
 			&pvStruct.EVID);
+		switch (status)
+		{
+		case(ECA_NORMAL):
+			messenger.printMessage("Success, created subscription");
+			break;
+		case(ECA_ALLOCMEM):
+			messenger.printMessage("Failed to create subscription, unable to allocate space in pool.");
+			break;
+		case(ECA_BADCHID):
+			messenger.printMessage("Corrupted chid.");
+			break;
+		case(ECA_ADDFAIL):
+			messenger.printMessage("A local database event add failed. ");
+			break;
+		case(ECA_BADTYPE):
+			messenger.printMessage("Received bad type for subscription.");
+			break;
+		}
 		MY_SEVCHK(status);
 		sendToEPICS();
 	}
@@ -199,7 +225,6 @@ public:
 
 
 #ifndef __CINT__
-	ca_client_context* thisCaContext;
 	void attachTo_thisCaContext();
 	void detachFrom_thisCaContext();
 	void addILockChannels(const int numILocks,
