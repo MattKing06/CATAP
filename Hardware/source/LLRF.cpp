@@ -175,7 +175,7 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 	rf_output(copyLLRF.rf_output),
 	ff_phase_lock(copyLLRF.ff_phase_lock),
 	ff_amp_lock(copyLLRF.ff_amp_lock),
-	trace_data_map(copyLLRF.trace_data_map),
+	trace_data_map(copyLLRF.trace_data_map.begin(), copyLLRF.trace_data_map.end()),
 	//trace_ACQM_map(copyLLRF.trace_ACQM_map),
 	//trace_SCAN_map(copyLLRF.trace_SCAN_map),
 	//all_trace_interlocks(copyLLRF.all_trace_interlocks),
@@ -463,7 +463,7 @@ void LLRF::setTraceDataMap()
 	trace_data_map.at(LLRFRecords::KLYSTRON_FORWARD_PHASE).trace_type = TYPE::PHASE;
 	trace_data_map.at(LLRFRecords::KLYSTRON_REVERSE_POWER).trace_type = TYPE::POWER;
 	trace_data_map.at(LLRFRecords::KLYSTRON_REVERSE_PHASE).trace_type = TYPE::PHASE;
-	if (machine_area == TYPE::LRRG)
+	if (machine_area == TYPE::LRRG || machine_area == TYPE::LRRG_GUN)
 	{
 		addToTraceDataMap(LLRFRecords::LRRG_CAVITY_FORWARD_POWER);// = TraceData();
 		addToTraceDataMap(LLRFRecords::LRRG_CAVITY_FORWARD_PHASE);// = TraceData();
@@ -476,7 +476,7 @@ void LLRF::setTraceDataMap()
 
 
 	}
-	else if (machine_area == TYPE::HRRG)
+	else if (machine_area == TYPE::HRRG || machine_area == TYPE::HRRG_GUN)
 	{
 		addToTraceDataMap(LLRFRecords::HRRG_CAVITY_FORWARD_POWER);// = TraceData();
 		addToTraceDataMap(LLRFRecords::HRRG_CAVITY_FORWARD_PHASE);// = TraceData();
@@ -651,14 +651,15 @@ void LLRF::initAllTraceSCANandACQM()
 	all_trace_scan[CH7_PWR_REM] = init_pair;	all_trace_scan[CH7_PWR_LOC] = init_pair;
 	all_trace_scan[CH8_PWR_REM] = init_pair;	all_trace_scan[CH8_PWR_LOC] = init_pair;
 
-	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PHASE_REM_SCAN] = init_pair;
-	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PHASE_REM_SCAN] = init_pair;
+	
+	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PHASE_REM] = init_pair;
+	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PHASE_REM] = init_pair;
+	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PHASE_REM] = init_pair;
+	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PHASE_REM] = init_pair;
+	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PHASE_REM] = init_pair;
+	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PHASE_REM] = init_pair;
+	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PHASE_REM] = init_pair;
+	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PHASE_REM] = init_pair;
 
 	all_trace_scan[CH1_PHASE_DER] = init_pair;	all_trace_scan[CH2_PHASE_DER] = init_pair;
 	all_trace_scan[CH3_PHASE_DER] = init_pair;	all_trace_scan[CH4_PHASE_DER] = init_pair;

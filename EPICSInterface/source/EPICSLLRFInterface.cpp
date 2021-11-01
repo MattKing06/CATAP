@@ -538,16 +538,24 @@ void EPICSLLRFInterface::updateInterLockENABLE(const std::string& ch, const std:
 
 void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	//std::lock_guard<std::mutex> lg(llrf_mtx_1);  // This now locked your mutex mtx.lock();
-	// messenger.printDebugMessage("updateChannnelSCAN");
-	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
-	// but ... THIS works, so only change when eveyrthing else is working 
+	std::lock_guard<std::mutex> lg(llrf_mtx_1);  // This now locked your mutex mtx.lock();
+	 messenger.printDebugMessage("updateChannnelSCAN");
+	 //TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
+	 //but ... THIS works, so only change when eveyrthing else is working 
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	/*First update all_trace_scan, this conatins all the trace SCAN */
-	std::pair<epicsTimeStamp, STATE> t = recastLLRF->all_trace_scan.at(ch);
-	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(ch));
-	messenger.printDebugMessage("updateChannnelSCAN FOR: " + recastLLRF->getHardwareName(),
-		" ", ch,", to ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_scan, ch))
+	{
+		std::pair<epicsTimeStamp, STATE> t = recastLLRF->all_trace_scan.at(ch);
+		update_trace_SCAN(args, recastLLRF->all_trace_scan.at(ch));
+		messenger.printDebugMessage("updateChannnelSCAN FOR: " + recastLLRF->getHardwareName(),
+			" ", ch, ", to ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
+	}
+	else
+	{
+		messenger.printMessage(ch, " NOT FOUND IN ALL_TRACE_SCAN FOR: ", recastLLRF->getHardwareName());
+	}
+
 
 	// NOW WE FIND OUT IF THE PASSED SCAN IS IN ALL TRACE DATA 
 	std::string trace;
@@ -558,13 +566,24 @@ void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::st
 		if (GlobalFunctions::stringIsSubString(ch, "PWR_REM") )
 		{
 			messenger.printDebugMessage(ch, " is a power remote trace for ", trace);
-			trace.append("_POWER");
-			recastLLRF->trace_data_map.at(trace.append("_POWER")).scan = recastLLRF->all_trace_scan.at(ch);
+			std::string powerTraceName = trace+"_POWER";
+			//trace.append("_POWER");
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, powerTraceName))
+			{
+				recastLLRF->trace_data_map.at(powerTraceName).scan = recastLLRF->all_trace_scan.at(ch);
+			}
+
 		}
 		else if (GlobalFunctions::stringIsSubString(ch, "PHASE_REM"))
 		{
+			std::string phaseTraceName = trace+"_PHASE";
 			messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
-			trace.append("_PHASE");
+			//trace.append("_PHASE");
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, phaseTraceName))
+			{
+				recastLLRF->trace_data_map.at(phaseTraceName).scan = recastLLRF->all_trace_scan.at(ch);
+			}
+
 		}
 		else
 		{
@@ -740,12 +759,12 @@ void EPICSLLRFInterface::update_CH5_PWR_LOC_SCAN(const struct event_handler_args
 void EPICSLLRFInterface::update_CH6_PWR_REM_SCAN(const struct event_handler_args args)
 {
 	messenger.printDebugMessage("update_CH6_PWR_REM_SCAN");
-	updateChannnelSCAN(LLRFRecords::CH6_PWR_REM, LLRFRecords::CH5, args);
+	updateChannnelSCAN(LLRFRecords::CH6_PWR_REM, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH6_PHASE_REM_SCAN(const struct event_handler_args args)
 {
 	messenger.printDebugMessage("update_CH6_PHASE_REM_SCAN");
-	updateChannnelSCAN(LLRFRecords::CH6_PHASE_REM, LLRFRecords::CH5, args);
+	updateChannnelSCAN(LLRFRecords::CH6_PHASE_REM, LLRFRecords::CH6, args);
 }
 void EPICSLLRFInterface::update_CH6_AMP_DER_SCAN(const struct event_handler_args args)
 {
@@ -827,8 +846,8 @@ void EPICSLLRFInterface::update_trace_ACQM(const struct event_handler_args& args
 }
 void EPICSLLRFInterface::updateChannnelACQM(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	//std::lock_guard<std::mutex> lg(llrf_mtx_1);  // This now locked your mutex mtx.lock();
-	//messenger.printDebugMessage("updateInterLockStatus");
+	std::lock_guard<std::mutex> lg(llrf_mtx_1);  // This now locked your mutex mtx.lock();
+	messenger.printDebugMessage("updateInterLockStatus");
 	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
 	// and improved in other ways 
 	// but ... THIS works, so only change when eveyrthing else is working 
@@ -837,38 +856,61 @@ void EPICSLLRFInterface::updateChannnelACQM(const std::string& ch, const std::st
 	messenger.printDebugMessage("updateChannnelACQM FOR: " + recastLLRF->getHardwareName(),
 		" ", ENUM_TO_STRING(recastLLRF->all_trace_acqm.at(ch).second));
 
-	//// NOW WE FIND OUT I FTHE PASSED SCAN IN IN ALL TRACE DATA 
-	//std::string trace;
-	//if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//{
-	//	messenger.printDebugMessage(CH, " has a useful name of ", trace);
-	//	if (GlobalFunctions::stringIsSubString(ch, "PWR_REM"))
-	//	{
-	//		messenger.printDebugMessage(ch, " is a power remote trace for ", trace);
-	//		trace.append("_POWER");
-	//		recastLLRF->trace_data_map.at(trace.append("_POWER")).scan = recastLLRF->all_trace_scan.at(ch);
-	//	}
-	//	else if (GlobalFunctions::stringIsSubString(ch, "PHASE_REM"))
-	//	{
-	//		messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
-	//		trace.append("_PHASE");
-	//		recastLLRF->trace_data_map.at(trace.append("_PHASE")).scan = recastLLRF->all_trace_scan.at(ch);
-	//	}
-	//	if (GlobalFunctions::entryExists(recastLLRF->all_trace_acqm, trace))
-	//	{
-	//		recastLLRF->trace_data_map.at(trace.append("_PHASE")).scan = recastLLRF->all_trace_acqm.at(ch);
-	//		messenger.printDebugMessage(trace, " all_trace_acqm = ", recastLLRF->trace_data_map.at(trace).acqm.second);
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage(trace, " NOT in trace_data_map");
-	//	}
+	// NOW WE FIND OUT I FTHE PASSED SCAN IN IN ALL TRACE DATA 
+	std::string trace;
+	if (recastLLRF->getTraceFromChannelData(CH, trace))
+	{
+		messenger.printDebugMessage(CH, " has a useful name of ", trace);
+		if (GlobalFunctions::stringIsSubString(ch, "PWR_REM"))
+		{
+			messenger.printDebugMessage(ch, " is a power remote trace for ", trace);
+			std::string powerTraceName = trace+"_POWER";
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, powerTraceName))
+			{
+				
+				recastLLRF->trace_data_map.at(powerTraceName).scan = recastLLRF->all_trace_scan.at(ch);
+			}
+			else
+			{
+				messenger.printMessage(trace.append(powerTraceName), " does not exist in trace_data_map.");
+			}
 
-	//}
-	//else
-	//{
-	//	messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//}
+		}
+		else if (GlobalFunctions::stringIsSubString(ch, "PHASE_REM"))
+		{
+			messenger.printDebugMessage(ch, " is a phase remote trace for ", trace);
+			std::string phaseTraceName = trace+"_PHASE";
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, phaseTraceName))
+			{
+				recastLLRF->trace_data_map.at(phaseTraceName).scan = recastLLRF->all_trace_scan.at(ch);
+			}
+			else
+			{
+				messenger.printMessage(phaseTraceName, " does not exist in trace_data_map.");
+			}
+		}
+		if (GlobalFunctions::entryExists(recastLLRF->all_trace_acqm, trace))
+		{
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->trace_data_map.at(trace).scan = recastLLRF->all_trace_acqm.at(ch);
+				messenger.printDebugMessage(trace, " all_trace_acqm = ", recastLLRF->trace_data_map.at(trace).acqm.second);
+			}
+			else
+			{
+				messenger.printMessage(trace.append("_PHASE"), " does not exist in trace_data_map.");
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage(trace, " NOT in trace_data_map");
+		}
+
+	}
+	else
+	{
+		messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+	}
 }
 
 void EPICSLLRFInterface::update_CH1_PHASE_REM_ACQM(const struct event_handler_args args)
