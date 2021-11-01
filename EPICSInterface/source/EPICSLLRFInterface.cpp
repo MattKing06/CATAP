@@ -556,6 +556,7 @@ void EPICSLLRFInterface::updateChannnelSCAN(const std::string& ch, const std::st
 	// but ... THIS works, so only change when eveyrthing else is working 
 	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
 	/*First update all_trace_scan, this conatins all the trace SCAN */
+	std::pair<epicsTimeStamp, STATE> t = recastLLRF->all_trace_scan.at(ch);
 	update_trace_SCAN(args, recastLLRF->all_trace_scan.at(ch));
 	messenger.printDebugMessage("updateChannnelSCAN FOR: " + recastLLRF->getHardwareName(),
 		" ", ch,", to ", ENUM_TO_STRING(recastLLRF->all_trace_scan.at(ch).second));
