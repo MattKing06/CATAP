@@ -17,7 +17,6 @@ public:
     void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
 
 
-    static void update_HEART_BEAT(const struct event_handler_args args);
     static void update_AMP_FF(const struct event_handler_args args);
     static void update_TRIG_SOURCE(const struct event_handler_args args);
     static void update_AMP_SP(const struct event_handler_args args);
@@ -195,7 +194,6 @@ public:
     // it seesm in VS you can only have 127 if-else statements 
     // https://stackoverflow.com/questions/11508013/blocks-nested-too-deeply
     const std::map<std::string, updateFunctionPtr> updateFunctionMap  =  {
-    {LLRFRecords::HEART_BEAT , this->update_HEART_BEAT                  },
     {LLRFRecords::AMP_FF, this->update_AMP_FF							},
     {LLRFRecords::TRIG_SOURCE, this->update_TRIG_SOURCE					},
     {LLRFRecords::AMP_SP, this->update_AMP_SP							},
@@ -213,6 +211,10 @@ public:
     //{LLRFRecords::LLRF_TRACES, this->update_LLRF_TRACES },
     {LLRFRecords::LLRF_TRACES_SCAN, this->update_LLRF_TRACES_SCAN	    },
     {LLRFRecords::LLRF_TRACES_ACQM, this->update_LLRF_TRACES_ACQM		},
+
+        
+        
+        
     {LLRFRecords::CH1_INTERLOCK_STATUS,  this->update_CH1_INTERLOCK_STATUS},
     {LLRFRecords::CH2_INTERLOCK_STATUS,  this->update_CH2_INTERLOCK_STATUS},
     {LLRFRecords::CH3_INTERLOCK_STATUS,  this->update_CH3_INTERLOCK_STATUS},

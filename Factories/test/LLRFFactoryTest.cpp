@@ -1,6 +1,7 @@
 #include <boost/test/unit_test.hpp>
 #include <ValveFactory.h>
 #include <LLRFFactory.h>
+#include <thread>
 BOOST_AUTO_TEST_SUITE(LLRFFactoryTest)
 
 BOOST_AUTO_TEST_CASE(setting_up_llrf_factory_print_names)
@@ -19,26 +20,31 @@ BOOST_AUTO_TEST_CASE(setting_up_llrf_factory_print_names)
 
 BOOST_AUTO_TEST_CASE(get_all_trace_SCAN)
 {
+	int num_threads = std::thread::hardware_concurrency();
+
+	std::cout << num_threads << std::endl;
+
 	LLRFFactory fac = LLRFFactory(STATE::PHYSICAL);
 	//fac.messagesOff();
 	//fac.debugMessagesOff();
 
-	std::vector<TYPE> llrf_types{ TYPE::LRRG_GUN, TYPE::L01};
+	std::vector<TYPE> llrf_types{ TYPE::LRRG_GUN };//, TYPE::L01};
 
-	fac.setup("nominal");
+	fac.setup("nominal", llrf_types);
 	LLRF gun = fac.getLLRF("CLA-GUN-LRF-CTRL-01");
-	LLRF l01 = fac.getLLRF("CLA-L01-LRF-CTRL-01");
+	int a = 1;
+	//LLRF l01 = fac.getLLRF("CLA-L01-LRF-CTRL-01");
 
 	std::map<std::string, STATE> data = gun.getAllTraceSCAN();
 	for (auto&& item : data)
 	{
 		fac.messenger.printDebugMessage("GUN data ", item.first, " = ", item.second, " is ", ENUM_TO_STRING(item.second));
 	}
-	std::map<std::string, STATE> data2 = l01.getAllTraceSCAN();
-	for (auto&& item : data2)
-	{
-		fac.messenger.printDebugMessage("L01 data2 ", item.first, " = ", item.second, " is ", ENUM_TO_STRING(item.second));
-	}
+	//std::map<std::string, STATE> data2 = l01.getAllTraceSCAN();
+	//for (auto&& item : data2)
+	//{
+	//	fac.messenger.printDebugMessage("L01 data2 ", item.first, " = ", item.second, " is ", ENUM_TO_STRING(item.second));
+	//}
 	std::cout << "finished" << std::endl;
 }
 

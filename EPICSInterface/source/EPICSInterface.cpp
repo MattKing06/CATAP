@@ -230,14 +230,11 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 		//std::cout << "CHID = " << pvStruct.CHID << std::endl;
 	//pvStruct.CHID = CHID;
 	}
-
 	catch (std::exception &e)
 	{
 		std::cout << "ERR " << std::endl;
 		std::cout << e.what() << std::endl;
 	}
-
-
 }
 
 
@@ -399,7 +396,7 @@ void EPICSInterface::updateTimeStampBoolPair(const struct event_handler_args& ar
 }
 
 void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_args& args,
-	std::pair<epicsTimeStamp, std::vector< double > >& pairToUpdate, long size)
+	std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size)
 {
 	const struct dbr_time_double* tv = (const struct dbr_time_double*)(args.dbr);
 	pairToUpdate.first = tv->stamp;

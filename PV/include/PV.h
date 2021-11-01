@@ -48,6 +48,9 @@ struct pvStruct
 	/*! Flag to say whether this PV should be used for command or for monitoring. Assigned by CATAP. */
 	bool monitor;
 
+	//void* user_param;
+	
+
 	// pv_enum, pv_enum_str
 	// map of all pv_enum_str
 

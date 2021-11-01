@@ -132,6 +132,8 @@ LLRF::LLRF(const std::map<std::string, std::string>& paramMap,const STATE mode) 
 	trace_num_of_start_zeros(GlobalConstants::zero_sizet),
 	last_kly_fwd_power_max(GlobalConstants::double_min),
 	can_increase_active_pulses(false),
+	catap_max_amplitude(GlobalConstants::double_min),
+	ioc_max_amplitude(GlobalConstants::double_min),
 	epicsInterface(boost::make_shared<EPICSLLRFInterface>(EPICSLLRFInterface()))// calls copy constructor and destroys 
 {
 	messenger.printDebugMessage("LLRF Constructor");
@@ -218,7 +220,9 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 	all_trace_scan(copyLLRF.all_trace_scan),
 	channel_to_tracesource_map(copyLLRF.channel_to_tracesource_map),
 	allMainChannelTraceNames(copyLLRF.allMainChannelTraceNames),
-	allChannelTraceNames(copyLLRF.allChannelTraceNames)
+	allChannelTraceNames(copyLLRF.allChannelTraceNames),
+	catap_max_amplitude(copyLLRF.catap_max_amplitude),
+	ioc_max_amplitude(copyLLRF.ioc_max_amplitude)
 {}
 LLRF::~LLRF(){}
 
@@ -238,7 +242,7 @@ void LLRF::setPVStructs()
 			messenger.printDebugMessage("LLRF PV record = " + record);
 			pvStructs[record] = pvStruct();
 			pvStructs[record].pvRecord = record;
-			std::string PV = specificHardwareParameters.find(record)->second.data();
+			std::string PV = specificHardwareParameters.at(record).data();
 			/*TODO
 			  This should be put into some general function: generateVirtualPV(PV) or something...
 			  Unless virtual PVs are to be included in the YAML files, they can be dealt with on
@@ -259,7 +263,15 @@ void LLRF::setPVStructs()
 }
 void LLRF::setMasterLatticeData(const std::map<std::string, std::string>& paramMap)
 {
-	// "master_hardware" file should check for these too
+	messenger.printDebugMessage(hardwareName, " find MAX_AMPLITUDE");
+	if (GlobalFunctions::entryExists(paramMap, "MAX_AMPLITUDE"))
+	{
+		catap_max_amplitude = std::stof(paramMap.at("MAX_AMPLITUDE"));
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_AMPLITUDE");
+	}
 	messenger.printDebugMessage(hardwareName, " find crest_phase");
 	if (GlobalFunctions::entryExists(paramMap, "crest_phase"))
 	{
@@ -639,14 +651,14 @@ void LLRF::initAllTraceSCANandACQM()
 	all_trace_scan[CH7_PWR_REM] = init_pair;	all_trace_scan[CH7_PWR_LOC] = init_pair;
 	all_trace_scan[CH8_PWR_REM] = init_pair;	all_trace_scan[CH8_PWR_LOC] = init_pair;
 
-	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PWR_LOC] = init_pair;
-	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PWR_LOC] = init_pair;
-	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PWR_LOC] = init_pair;
-	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PWR_LOC] = init_pair;
-	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PWR_LOC] = init_pair;
-	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PWR_LOC] = init_pair;
-	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PWR_LOC] = init_pair;
-	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PWR_LOC] = init_pair;
+	all_trace_scan[CH1_AMP_DER] = init_pair;   	all_trace_scan[CH1_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH2_AMP_DER] = init_pair;   	all_trace_scan[CH2_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH3_AMP_DER] = init_pair;   	all_trace_scan[CH3_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH4_AMP_DER] = init_pair;   	all_trace_scan[CH4_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH5_AMP_DER] = init_pair;   	all_trace_scan[CH5_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH6_AMP_DER] = init_pair;   	all_trace_scan[CH6_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH7_AMP_DER] = init_pair;   	all_trace_scan[CH7_PHASE_REM_SCAN] = init_pair;
+	all_trace_scan[CH8_AMP_DER] = init_pair;   	all_trace_scan[CH8_PHASE_REM_SCAN] = init_pair;
 
 	all_trace_scan[CH1_PHASE_DER] = init_pair;	all_trace_scan[CH2_PHASE_DER] = init_pair;
 	all_trace_scan[CH3_PHASE_DER] = init_pair;	all_trace_scan[CH4_PHASE_DER] = init_pair;
@@ -1084,71 +1096,7 @@ boost::python::list LLRF::getProbePha_Py()const { return to_py_list(getProbePha(
 boost::python::list LLRF::getProbePwr_Py()const { return to_py_list(getProbePwr()); }
 
 
-// functions to actually get adn set paramters in teh LLRF 
-bool LLRF::setAmpMW(double value)
-{
-	// atm we are going to fake power traces
-	amp_MW.second = value;
-	//scaleAllDummyTraces();
-	return true;
-}
-bool LLRF::setAmp(double value)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::AMP_SP), value);
-	}
-	amp_sp.second = value;
-	return true;
-}
-double LLRF::getAmp()const{ return amp_sp.second; }
-double LLRF::getAmpMW()const
-{
-	return amp_MW.second;
-}
-bool LLRF::setPhi(double value)
-{
-	if (mode == STATE::PHYSICAL)
-	{
-		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::PHI_SP), value);
-	}
-	phi_sp.second = value;
-	return true;
-}
-bool LLRF::setPhiDEG(double value)
-{
-	phi_degrees.second = value;
-	operating_phase = phi_degrees.second - crest_phase;
-	return true;
-}
-bool LLRF::setCrestPhase(double value)
-{
-	crest_phase = value;
-	return true;
-}
-bool LLRF::setOperatingPhase(double value)
-{
-	operating_phase = value;
-	phi_sp.second = crest_phase + operating_phase;
-	phi_sp.first = epicsTimeStamp();
-	return true;
-}
-double LLRF::getPhi()const
-{
-	return phi_sp.second;
-}
-double LLRF::getCrestPhase()const
-{
-	return crest_phase;
-}
-double LLRF::getOperatingPhase()const
-{
-	return operating_phase;
-}
-double LLRF::getPhiDEG()const
-{
-	return phi_degrees.second;
-}
+
 
 
 
@@ -1678,7 +1626,6 @@ void LLRF::checkForOutsideMaskTrace()
 	//        message("Timing ",std::chrono::duration_cast<std::chrono::nanoseconds>(end1 - start2).count() );
 	//    }
 }
-
 int LLRF::updateIsTraceInMask(TraceData& trace)
 {
 	//outside_mask_trace_message.str("");
@@ -1756,7 +1703,6 @@ int LLRF::updateIsTraceInMask(TraceData& trace)
 	///* return code 1 = PASS */
 	return GlobalConstants::one_int;
 }
-
 void LLRF::handleTraceInMaskResult(TraceData& trace, int result)
 {
 	////message(trace.name, "TraceInMaskResult = ", result );
@@ -1799,101 +1745,40 @@ void LLRF::handleFailedMask(TraceData& trace)
 {
 }
 //--------------------------------------------------------------------------------------------------
-
-
-// PULSE COUNTING
-size_t LLRF::getActivePulsePowerLimit() const 
-{
-	return active_pulse_kly_power_limit;
-}
-void LLRF::setActivePulsePowerLimit(const size_t value)
-{
-	active_pulse_kly_power_limit = value;
-}
-size_t LLRF::getActivePulseCount()const
-{
-	return active_pulse_count;
-}
-void LLRF::setActivePulseCount(const size_t value)
-{
-	active_pulse_count = value;
-}
-void LLRF::addActivePulseCountOffset(const size_t value)
-{
-	active_pulse_count += value;
-}
-size_t LLRF::getInactivePulseCount()const
-{
-	return inactive_pulse_count;
-}
-void LLRF::setInactivePulseCount(const size_t value)
-{
-	inactive_pulse_count = value;
-}
-void LLRF::addInactivePulseCountOffset(const size_t value)
-{
-	inactive_pulse_count += value;
-}
-size_t LLRF::getDuplicatePulseCount()const
-{
-	return duplicate_pulse_count;
-}
-void LLRF::setDuplicatePulseCount(const size_t value)
-{
-	duplicate_pulse_count = value;
-}
-void LLRF::addDuplicatePulseCountOffset(const size_t value)
-{
-	duplicate_pulse_count += value;
-}
-size_t LLRF::getTotalPulseCount()const
-{
-	return total_pulse_count;
-}
-void LLRF::setTotalPulseCount(const size_t value)
-{
-	total_pulse_count = value;
-}
-void LLRF::addTotalPulseCountOffset(const size_t value)
-{
-	total_pulse_count += value;
-}
-
-
-
-// Name alies 
-std::vector<std::string> LLRF::getAliases() const
-{
-	return aliases;
-}
-boost::python::list LLRF::getAliases_Py() const
-{
-	return to_py_list<std::string>(getAliases());
-}
-/*
-  _____                   ___     _     __  __
- |_   _| _ __ _ __ ___   / __|  _| |_  |  \/  |___ __ _ _ _  ___
-   | || '_/ _` / _/ -_) | (_| || |  _| | |\/| / -_) _` | ' \(_-<
-   |_||_| \__,_\__\___|  \___\_,_|\__| |_|  |_\___\__,_|_||_/__/
-*/
+/// .       __  ___         ___ .     __             __   ___  __  
+/// '  /\  /  `  |  | \  / |__  '    |__) |  | |    /__` |__  /__` 
+///   /~~\ \__,  |  |  \/  |___      |    \__/ |___ .__/ |___ .__/ 
+///  
+//--------------------------------------------------------------------------------------------------
+size_t LLRF::getActivePulsePowerLimit() const {	return active_pulse_kly_power_limit;}
+void LLRF::setActivePulsePowerLimit(const size_t value){	active_pulse_kly_power_limit = value;}
+size_t LLRF::getActivePulseCount()const{	return active_pulse_count;}
+void LLRF::setActivePulseCount(const size_t value){	active_pulse_count = value;}
+void LLRF::addActivePulseCountOffset(const size_t value){	active_pulse_count += value;}
+size_t LLRF::getInactivePulseCount()const{	return inactive_pulse_count;}
+void LLRF::setInactivePulseCount(const size_t value){	inactive_pulse_count = value;}
+void LLRF::addInactivePulseCountOffset(const size_t value){	inactive_pulse_count += value;}
+size_t LLRF::getDuplicatePulseCount()const{	return duplicate_pulse_count;}
+void LLRF::setDuplicatePulseCount(const size_t value){	duplicate_pulse_count = value;}
+void LLRF::addDuplicatePulseCountOffset(const size_t value){	duplicate_pulse_count += value;}
+size_t LLRF::getTotalPulseCount()const{	return total_pulse_count;}
+void LLRF::setTotalPulseCount(const size_t value){	total_pulse_count = value;}
+void LLRF::addTotalPulseCountOffset(const size_t value){	total_pulse_count += value;}
+//--------------------------------------------------------------------------------------------------
+///	/*  ___  __        __   ___           ___            __
+///		 |  |__)  /\  /  ` |__      |\/| |__   /\  |\ | /__`
+///		 |  |  \ /~~\ \__, |___     |  | |___ /~~\ | \| .__/
+///	*/
+// Trace means between user-defined times/indexes are can be calculated for each TraceData object 
 //-------------------------------------------------------------------------------------------------------------------
 bool LLRF::setMeanStartEndTime(const double start, const double end, const std::string& name)
 {
-	bool a = setMeanStartIndex(name, getIndex(start));
-	if (a)
-	{
-		a = setMeanStopIndex(name, getIndex(end));
-	}
+	bool a = setMeanStartIndex(name, getIndex(start)) ? setMeanStopIndex(name, getIndex(end)) : false;
 	return a;
 }
-//-------------------------------------------------------------------------------------------------------------------
 bool LLRF::setMeanStartEndIndex(const size_t start, const size_t end, const std::string& name)
 {
-	bool a = setMeanStartIndex(name, start);
-	if (a)
-	{
-		a = setMeanStopIndex(name, end);
-	}
+	bool a = setMeanStartIndex(name, start) ? setMeanStopIndex(name, end) : false;
 	return a;
 }
 std::pair<size_t, size_t> LLRF::getMeanStartEndIndex(const std::string& name) const
@@ -1914,14 +1799,8 @@ std::pair<double, double> LLRF::getMeanStartEndTime(const std::string& name) con
 	}
 	return std::pair<double, double>(GlobalConstants::double_min, GlobalConstants::double_min);
 }
-boost::python::list LLRF::getMeanStartEndIndex_Py(const std::string& name) const
-{
-	return to_py_list<size_t, size_t>(getMeanStartEndIndex(name));
-}
-boost::python::list  LLRF::getMeanStartEndTime_Py(const std::string& name) const
-{
-	return to_py_list<double, double>(getMeanStartEndTime(name));
-}
+boost::python::list LLRF::getMeanStartEndIndex_Py(const std::string& name) const{	return to_py_list<size_t, size_t>(getMeanStartEndIndex(name));}
+boost::python::list  LLRF::getMeanStartEndTime_Py(const std::string& name) const{	return to_py_list<double, double>(getMeanStartEndTime(name));}
 std::map<std::string, std::pair<size_t, size_t>> LLRF::getTraceMeanIndices()const
 {
 	std::map<std::string, std::pair<size_t, size_t>> r;
@@ -1940,10 +1819,7 @@ std::map<std::string, std::pair<double, double>> LLRF::getTraceMeanTimes()const
 	}
 	return r;
 }
-boost::python::dict LLRF::getTraceMeanIndices_Py()const
-{
-	return to_py_dict<std::string, size_t, size_t>(getTraceMeanIndices());
-}
+boost::python::dict LLRF::getTraceMeanIndices_Py()const{	return to_py_dict<std::string, size_t, size_t>(getTraceMeanIndices());}
 boost::python::dict LLRF::getTraceMeanTimes_Py()const
 {
 	return to_py_dict<std::string, double, double>(getTraceMeanTimes());
@@ -1962,15 +1838,8 @@ void LLRF::setTraceMeanTimes(const std::map<std::string, std::pair<double, doubl
 		setMeanStartEndTime(it.second.first, it.second.second, it.first);
 	}
 }
-void LLRF::setTraceMeanIndices_Py(const boost::python::dict& settings)
-{
-	setTraceMeanIndices(to_std_map_pair<std::string,size_t>(settings));
-}
-void LLRF::setTraceMeanTimes_Py(const boost::python::dict& settings)
-{
-	setTraceMeanTimes(to_std_map_pair<std::string, double>(settings));
-}
-//-------------------------------------------------------------------------------------------------------------------
+void LLRF::setTraceMeanIndices_Py(const boost::python::dict& settings){	setTraceMeanIndices(to_std_map_pair<std::string, size_t>(settings));}
+void LLRF::setTraceMeanTimes_Py(const boost::python::dict& settings){	setTraceMeanTimes(to_std_map_pair<std::string, double>(settings));}
 bool LLRF::setMeanStartIndex(const std::string& name, size_t  value)
 {
 	const std::string n = fullLLRFTraceName(name);
@@ -1991,7 +1860,6 @@ bool LLRF::setMeanStartIndex(const std::string& name, size_t  value)
 	}
 	return false;
 }
-//-------------------------------------------------------------------------------------------------------------------
 size_t LLRF::getMeanStopIndex(const std::string& name)const
 {
 	const std::string n = fullLLRFTraceName(name);
@@ -2002,18 +1870,15 @@ size_t LLRF::getMeanStopIndex(const std::string& name)const
 	}
 	return GlobalConstants::double_min;
 }
-//-------------------------------------------------------------------------------------------------------------------
 size_t LLRF::getMeanStartIndex(const std::string& name)const
 {
 	const std::string n = fullLLRFTraceName(name);
 	if (GlobalFunctions::entryExists(trace_data_map, n))
 	{
 		return trace_data_map.at(n).mean_start_stop.first;
-		//return trace_data_map.at(n).mean_start_index;
 	}
 	return GlobalConstants::double_min;
 }
-//-------------------------------------------------------------------------------------------------------------------
 bool LLRF::setMeanStopIndex(const std::string& name, size_t  value)
 {
 	const std::string n = fullLLRFTraceName(name);
@@ -2031,20 +1896,10 @@ bool LLRF::setMeanStopIndex(const std::string& name, size_t  value)
 			return true;
 		}
 	}
-	//message(name," NOT FOUND!");
 	return false;
 }
-//-------------------------------------------------------------------------------------------------------------------
-double LLRF::getMeanStartTime(const std::string& name)const
-{
-	return getTime(getMeanStartIndex(name));
-}
-//-------------------------------------------------------------------------------------------------------------------
-double LLRF::getMeanStopTime(const std::string& name)const
-{
-	return getTime(getMeanStopIndex(name));
-}
-//-------------------------------------------------------------------------------------------------------------------
+double LLRF::getMeanStartTime(const std::string& name)const{ return getTime(getMeanStartIndex(name));}
+double LLRF::getMeanStopTime(const std::string& name)const{	return getTime(getMeanStopIndex(name));}
 double LLRF::getCutMean(const std::string& name)const
 {
 	const std::string n = fullLLRFTraceName(name);
@@ -2057,7 +1912,7 @@ double LLRF::getCutMean(const std::string& name)const
 std::map<std::string, double> LLRF::getAllCutMean()const
 {
 	std::map<std::string, double> r;
-	for(auto&& trace : trace_data_map)
+	for (auto&& trace : trace_data_map)
 	{
 		r[trace.first] = trace.second.trace_cut_mean;
 	}
@@ -2067,8 +1922,6 @@ boost::python::dict LLRF::getAllCutMean_Py()const
 {
 	return to_py_dict<std::string, double>(getAllCutMean());
 }
-
-
 std::map<std::string, double> LLRF::getPowerCutMean()const
 {
 	std::map<std::string, double> r;
@@ -2078,12 +1931,18 @@ std::map<std::string, double> LLRF::getPowerCutMean()const
 	}
 	return r;
 }
-boost::python::dict LLRF::getPowerCutMean_Py()const
+boost::python::dict LLRF::getPowerCutMean_Py()const{	return to_py_dict<std::string, double>(getPowerCutMean());}
+
+
+// Name alies 
+std::vector<std::string> LLRF::getAliases() const
 {
-	return to_py_dict<std::string, double>(getPowerCutMean());
+	return aliases;
 }
-
-
+boost::python::list LLRF::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
 
 
 void  LLRF::scaleAllDummyTraces()
@@ -2305,38 +2164,323 @@ bool LLRF::setAndApplyPulseShape(const boost::python::list& values)
 	return setAndApplyPulseShape(to_std_vector<double>(values));
 }
 
+
+
 //---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+// amp phase FF locking 
+bool LLRF::isFFLocked()const
+{
+	return isAmpFFLocked() && isPhaseFFLocked();
+}
+bool LLRF::isFFNotLocked()const
+{
+	return isAmpFFNotLocked() && isPhaseFFNotLocked();
+}
+bool LLRF::isAmpFFLocked()const
+{
+	return ff_amp_lock.second == true;
+}
+bool LLRF::isAmpFFNotLocked()const
+{
+	return !isFFLocked();
+}
+bool LLRF::isPhaseFFLocked()const
+{
+	return ff_phase_lock.second == true;
+}
+bool LLRF::isPhaseFFNotLocked()const
+{
+	return !isPhaseFFLocked();
+}
+bool LLRF::isAmpFFconnected()
+{
+	if( ca_state(pvStructs.at(LLRFRecords::AMP_FF).CHID) == cs_conn)
+	{
+		return true;
+	}
+	//switch (chidState)	{	//case cs_never_conn:		return false;	//case cs_prev_conn:		return false;	//case cs_conn:		return true;	//case cs_closed:		return false;	}
+	return false;
+}
+bool LLRF::lockAmpFF()
+{
+	if (isAmpFFNotLocked())
+	{
+		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_AMP_LOCK_STATE), GlobalConstants::one_us);
+	}
+	return true;
+}
+bool LLRF::lockPhaseFF()
+{
+	if (isPhaseFFNotLocked())
+	{
+		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_PHASE_LOCK_STATE), GlobalConstants::one_us);
+	}
+	return true;
+}
+bool LLRF::unlockAmpFF()
+{
+	if (isAmpFFLocked())
+	{
+		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_AMP_LOCK_STATE), GlobalConstants::zero_us);
+	}
+	return true;
+}
+bool LLRF::unlockPhaseFF()
+{
+	if (isPhaseFFLocked())
+	{
+		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_PHASE_LOCK_STATE), GlobalConstants::zero_us);
+	}
+	return true;
+}
+
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+// RF Output
+bool LLRF::isRFOutput() const
+{
+	return rf_output.second == true;
+}
+bool LLRF::isNotRFOutput() const
+{
+	return !isRFOutput();
+}
+bool LLRF::RFOutput()const
+{
+	return rf_output.second;
+}
+bool LLRF::enableRFOutput()
+{
+	return setRFOutput(true);
+}
+bool LLRF::disableRFOutput()
+{
+	return setRFOutput(false);
+}
+bool LLRF::setRFOutput(const bool new_state)
+{
+	if (RFOutput() == new_state)
+	{
+		return true;
+	}
+	unsigned short v = new_state ? GlobalConstants::one_us : GlobalConstants::zero_us;
+	const pvStruct& pvs = pvStructs.at(LLRFRecords::RF_OUTPUT);
+	return epicsInterface->putValue2(pvs, v);
+}
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+// Interlocks
+bool LLRF::setInterlockActive()
+{
+	return setInterlock(STATE::ACTIVE);
+}
+bool LLRF::setInterlockNonActive()
+{
+	return setInterlock(STATE::NOT_ACTIVE);
+}
+STATE LLRF::getInterlock()const
+{
+	return interlock_state.second;
+}
+bool LLRF::setInterlock(const STATE new_state)
+{
+	if (getInterlock() == new_state)
+	{
+		return true;
+	}
+	unsigned short v;
+	const pvStruct& pvs = pvStructs.at(LLRFRecords::INTERLOCK);
+	switch (new_state)
+	{
+		case STATE::ACTIVE:		v = GlobalConstants::zero_us; break;
+		case STATE::NOT_ACTIVE: v = GlobalConstants::one_us; break;
+		default: return false;
+	}
+	return epicsInterface->putValue2(pvs, v);
+}
+bool LLRF::isInterlockActive()const
+{
+	return interlock_state.second == STATE::ACTIVE;
+}
+bool LLRF::isInterlockNotActive()const
+{
+	return interlock_state.second == STATE::NOT_ACTIVE;
+}
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+// TRIGGERS
+bool LLRF::isTrigOff()const
+{
+	return trig_source.second == STATE::OFF;
+}
+bool LLRF::isTrigExternal()const
+{
+	return trig_source.second == STATE::EXTERNAL;
+}
+bool LLRF::isTrigInternal()const
+{
+	return trig_source.second == STATE::INTERNAL;
+}
 bool LLRF::trigOff()
 {
 	return setTrig(STATE::OFF);
 }
-//---------------------------------------------------------------------------------------------------------
 bool LLRF::trigInt()
 {
 	return setTrig(STATE::INTERNAL);
 }
-//---------------------------------------------------------------------------------------------------------
 bool LLRF::trigExt()
 {
 	return setTrig(STATE::EXTERNAL);
 }
 bool LLRF::setTrig(const STATE new_state)
 {
+	if(getTrigSource() == new_state)
+	{
+		return true;
+	}
 	unsigned short v;
 	const pvStruct& pvs = pvStructs.at(LLRFRecords::TRIG_SOURCE);
 	switch (new_state)
 	{
-		case STATE::OFF:	  v = 0; break;
-		case STATE::EXTERNAL: v = 1; break;
-		case STATE::INTERNAL: v = 2; break;
+		case STATE::OFF:	  v = GlobalConstants::zero_us; break;
+		case STATE::EXTERNAL: v = GlobalConstants::one_us; break;
+		case STATE::INTERNAL: v = GlobalConstants::two_us; break;
 		default: return false;
 	}
-	return epicsInterface->putValue2(pvStructs.at(LLRFRecords::TRIG_SOURCE), v);
+	return epicsInterface->putValue2(pvs, v);
 }
 STATE LLRF::getTrigSource()const
 {
 	return trig_source.second;
 }
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+// functions to actually get and set paramters in the LLRF 
+bool LLRF::setAmpMW(double value)
+{
+	// atm we are going to fake power traces
+	amp_MW.second = value;
+	//scaleAllDummyTraces();
+	return true;
+}
+bool LLRF::setAmp(double value)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		if (value > catap_max_amplitude)
+		{
+			messenger.printDebugMessage("!!ERROR!! Requested set amplitude, ", value, "  too high: ", catap_max_amplitude, 
+				" is the maximum allowed, please contact support if you think this is an error.");
+			return false;
+		}
+		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::AMP_SP), value);
+	}
+	amp_sp.second = value;
+	return true;
+}
+double LLRF::getAmp()const { return amp_sp.second; }
+double LLRF::getAmpMW()const
+{
+	return amp_MW.second;
+}
+bool LLRF::setPhi(double value)
+{
+	if (mode == STATE::PHYSICAL)
+	{
+		return epicsInterface->putValue2<double>(pvStructs.at(LLRFRecords::PHI_SP), value);
+	}
+	phi_sp.second = value;
+	return true;
+}
+bool LLRF::setPhiDEG(double value)
+{
+	phi_degrees.second = value;
+	operating_phase = phi_degrees.second - crest_phase;
+	return true;
+}
+bool LLRF::setCrestPhase(double value)
+{
+	crest_phase = value;
+	return true;
+}
+bool LLRF::setOperatingPhase(double value)
+{
+	operating_phase = value;
+	phi_sp.second = crest_phase + operating_phase;
+	phi_sp.first = epicsTimeStamp();
+	return true;
+}
+double LLRF::getPhi()const
+{
+	return phi_sp.second;
+}
+double LLRF::getCrestPhase()const
+{
+	return crest_phase;
+}
+double LLRF::getOperatingPhase()const
+{
+	return operating_phase;
+}
+double LLRF::getPhiDEG()const
+{
+	return phi_degrees.second;
+}
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+bool LLRF::enableRFandLock()
+{
+	bool  r = enableRFOutput();
+	if (r == false)
+	{
+		messenger.printDebugMessage("enableRFandLock failed to enableRFOutput");
+		return false;
+	}
+	// give the LLRF box a breather 
+	GlobalFunctions::pause_2();
+	GlobalFunctions::pause_2();
+	//message("resetToValue lockPhaseFF");
+	r = lockPhaseFF();
+	if (r == false)
+	{
+		messenger.printDebugMessage("enableRFandLock failed to lockPhaseFF");
+		return false;
+	}
+	// give the LLRF box a breather 
+	GlobalFunctions::pause_2();
+	GlobalFunctions::pause_2();
+	//message("resetToValue lockAmpFF");
+	r = lockAmpFF();
+	if (r == false)
+	{
+		messenger.printDebugMessage("enableRFandLock failed to lockAmpFF");
+		return false;
+	}
+	// give the LLRF box a breather 
+	GlobalFunctions::pause_2();
+	GlobalFunctions::pause_2();
+	GlobalFunctions::pause_2();
+	if (isRFOutput())
+	{
+		if (isPhaseFFLocked())
+		{
+			if (isAmpFFLocked())
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+
+
+
+
+
 
 
 //
