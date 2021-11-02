@@ -147,6 +147,38 @@ boost::python::dict EPICSTools::getBufferAverage_Py(boost::python::list pvList)
 	return to_py_dict(pvBufferAverageMap);
 }
 
+boost::python::dict EPICSTools::getTimestampedValues_Py(const boost::python::list pvList)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
+	std::map<std::string, boost::python::dict> pvTimestampValueMap;
+	for (auto& pv : namesVec)
+	{
+		if (GlobalFunctions::entryExists(getterMap, pv))
+		{
+			pvTimestampValueMap[pv] = getTimestampedValue_Py(pv);
+		}
+		else
+		{
+			pvTimestampValueMap[pv] = getTimestampedValue_Py(pv);
+		}
+	}
+	return to_py_dict(pvTimestampValueMap);
+}
+
+boost::python::dict EPICSTools::getTimestampedValue_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getTimestampedValue_Py();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv, mode);
+		EPICSInterface::sendToEPICS();
+		return getterMap[pv].getTimestampedValue_Py();
+	}
+}
+
 bool EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv, mode);

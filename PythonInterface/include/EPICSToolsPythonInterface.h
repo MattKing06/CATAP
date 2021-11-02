@@ -40,6 +40,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		bool(EPICSTools:: * monitor_single)(const std::string&) = &EPICSTools::monitor;
 		boost::python::object(EPICSTools:: * get_single)(const std::string&) = &EPICSTools::get_Py;
 		boost::python::dict(EPICSTools:: * get_multiple)(boost::python::list) = &EPICSTools::get_Py;
+		boost::python::dict(EPICSTools:: * get_timestamp_multiple)(boost::python::list) = &EPICSTools::getTimestampedValues_Py;
+		boost::python::dict(EPICSTools:: * get_timestamp_single)(const std::string&) = &EPICSTools::getTimestampedValue_Py;
 		void(EPICSTools:: * put_single)(const std::string&, boost::python::object) = &EPICSTools::put_Py;
 		void(EPICSTools:: * put_multiple)(boost::python::dict) = &EPICSTools::put_Py;
 		boost::python::list(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
@@ -61,6 +63,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getAllMonitorNames", &EPICSTools::getAllMonitorNames_Py)
 			.def("get", get_single)
 			.def("get", get_multiple)
+			.def("getTimestamped", get_timestamp_single)
+			.def("getTimestamped", get_timestamp_multiple)
 			.def("getArray", &EPICSTools::getArray_Py)
 			.def("getArray", &EPICSTools::getArray_Py2)
 			.def("put", put_single)

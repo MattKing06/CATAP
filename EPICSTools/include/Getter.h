@@ -21,6 +21,8 @@
 
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
+typedef std::pair<epicsTimeStamp, std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>> timeStampVector;
+typedef std::pair<epicsTimeStamp, boost::variant<double, long, float, unsigned short, short, std::string>> timeStampValue;
 
 class Getter
 {
@@ -46,6 +48,10 @@ public:
 	/*! Gets the current value stored in EPICS for the associated PV. currentValue is then set to the value retrieved 
 		from EPICS using ca_get.*/
 	void setValueFromEPICS();
+
+	template<typename T>
+	std::pair<std::string, T> getTimestampedValue();
+
 	/*! Calls setValueFromEPICS and then returns the value stored in currentValue
 		@param[out] value : The value stored in the EPICS record*/
 	template <typename T>
@@ -84,12 +90,15 @@ public:
 	bool isFloatArray();
 	/*! returns the value stored in currentValue as a python object */
 	boost::python::object getValue_Py();
+
+	boost::python::dict getTimestampedValue_Py();
+
 	/*! returns the array stored in currentArray as a python list */
 	boost::python::list getArray_Py();
 	/*! stores the current value in the single-valued EPICS record associated with getter */
-	boost::variant<double,long,float,unsigned short,short,std::string> currentValue;
+	timeStampValue currentValue;
 	/*! stores the current array in the EPICS record associated with getter */
-	std::vector<boost::variant<double, long, float, unsigned short, short, std::string> > currentArray;
+	timeStampVector currentArray;
 	/*! For Accessing common EPICS-related functionality*/
 	EPICSInterface_sptr epicsInterface;
 	/*! Tells us whether to use the CLARA control system (PHYSICAL),
@@ -111,7 +120,7 @@ inline T Getter::getValue()
 	setValueFromEPICS();
 	if (pv.COUNT == 1)
 	{
-		return boost::get<T>(currentValue);
+		return boost::get<T>(currentValue.second);
 	}
 	else
 	{
@@ -121,6 +130,21 @@ inline T Getter::getValue()
 
 }
 
+template <typename T>
+inline std::pair<std::string, T> Getter::getTimestampedValue()
+{
+	setValueFromEPICS();
+	if (pv.COUNT == 1)
+	{
+		return std::pair<std::string, T>(epicsInterface->getEPICSTime(currentValue.first), boost::get<T>(currentValue.second));
+	}
+	else
+	{
+		messenger.printMessage(pvToGet, " count is more than one. Try calling getTimestampedArray.");
+		return T();
+	}
+}
+
 template<typename T>
 inline std::vector<T> Getter::getArray()
 {
@@ -128,13 +152,15 @@ inline std::vector<T> Getter::getArray()
 	if (pv.COUNT > 1)
 	{
 		std::vector<T> returnVector;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			returnVector.push_back(boost::get<T>(item));
 		}
 		return returnVector;
 	}
 }
+
+
 
 #endif // GETTER_H
 

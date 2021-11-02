@@ -95,12 +95,16 @@ public:
 		@param[in] pvList : list of Listener names
 		@param[out] averages dict : key = PV, value = mean averages for buffer */
 	boost::python::dict getBufferAverage_Py(boost::python::list pvList);
+	boost::python::dict getTimestampedValues_Py(const boost::python::list);
 	/*! Calls ca_get from Getter object in getterMap, if there is no entry for the pv in getterMap;
 		a Getter object is created and get is called from that object.
 		@param[in] pv : The name of the PV to ca_get
 		@param[out] value : The value returned from EPICS using ca_get*/
 	template <typename T>
 	T get(const std::string& pv);
+
+	boost::python::dict getTimestampedValue_Py(const std::string& pv);
+
 	/*! Calls ca_put from Putter object in putterMap, if there is no entry for the pv in putterMap;
 		a Putter object is created and put is called from that object.
 		@param[in] pv : The name of the PV to ca_put

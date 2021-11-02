@@ -9,11 +9,11 @@ Getter::Getter()
 Getter::Getter(const std::string& pvStr) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	mode(STATE::VIRTUAL),
-	currentValue(boost::variant<double, float, long, unsigned short, short, std::string>())
+	currentValue(timeStampValue())
 {
 	pvToGet = getEPICSPVName(pvStr);
 	//fill in constructor to setup epicsInterface
-	currentArray = std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>();
+	currentArray = timeStampVector();
 	setupChannels();
 	setValueFromEPICS();
 }
@@ -21,10 +21,10 @@ Getter::Getter(const std::string& pvStr) :
 Getter::Getter(const std::string& pvStr, const STATE& mode) :
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	mode(mode),
-	currentValue(boost::variant<double, float, long, unsigned short, short, std::string>())
+	currentValue(timeStampValue())
 {
 	pvToGet = getEPICSPVName(pvStr);
-	currentArray = std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>();
+	currentArray = timeStampVector();
 	setupChannels();
 	setValueFromEPICS();
 }
@@ -61,15 +61,16 @@ void Getter::setValueFromEPICS()
 {
 	switch (pv.CHTYPE)
 	{
-		currentArray.clear();
+		currentArray.second.clear();
 		case(DBR_DOUBLE):
 		{
 			if (pv.COUNT == 1)
 			{
-				double d_value;
-				ca_get(pv.CHTYPE, pv.CHID, &d_value);
+				dbr_time_double d_value;
+				ca_get(DBR_TIME_DOUBLE, pv.CHID, &d_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = d_value;
+				currentValue.first = d_value.stamp;
+				currentValue.second = d_value.value;
 			}
 			else
 			{
@@ -79,7 +80,7 @@ void Getter::setValueFromEPICS()
 				std::cout << "ARRAY SIZE: " << d_array.size() << std::endl;
 				for (auto& item : d_array)
 				{
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 				}
 			}
 			break;
@@ -91,7 +92,7 @@ void Getter::setValueFromEPICS()
 				short s_value;
 				ca_get(pv.CHTYPE, pv.CHID, &s_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = s_value;
+				currentValue.second = s_value;
 			}
 			else
 			{
@@ -100,7 +101,7 @@ void Getter::setValueFromEPICS()
 				EPICSInterface::sendToEPICS();
 				std::cout << "ARRAY SIZE: " << s_array.size() << std::endl;
 				for (auto& item : s_array)
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 			}
 			break;
 		}
@@ -111,7 +112,7 @@ void Getter::setValueFromEPICS()
 				float f_value;
 				ca_get(pv.CHTYPE, pv.CHID, &f_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = f_value;
+				currentValue.second = f_value;
 			}
 			else
 			{
@@ -121,7 +122,7 @@ void Getter::setValueFromEPICS()
 				std::cout << "ARRAY SIZE: " << f_array.size() << std::endl;
 				for (auto& item : f_array)
 				{
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 				}
 			}
 			break;
@@ -155,7 +156,7 @@ void Getter::setValueFromEPICS()
 				std::string s_value;
 				ca_get(pv.CHTYPE, pv.CHID, &s_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = s_value;
+				currentValue.second = s_value;
 			}
 			else
 			{
@@ -165,7 +166,7 @@ void Getter::setValueFromEPICS()
 				std::cout << "ARRAY SIZE: " << s_array.size() << std::endl;
 				for (auto& item : s_array)
 				{
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 				}
 			}
 			break;
@@ -177,7 +178,7 @@ void Getter::setValueFromEPICS()
 				unsigned short us_value;
 				ca_get(pv.CHTYPE, pv.CHID, &us_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = us_value;
+				currentValue.second = us_value;
 			}
 			else
 			{
@@ -187,7 +188,7 @@ void Getter::setValueFromEPICS()
 				EPICSInterface::sendToEPICS();
 				for (auto& item : us_array)
 				{
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 				}
 			}
 			break;
@@ -199,7 +200,7 @@ void Getter::setValueFromEPICS()
 				long l_value;
 				ca_get(pv.CHTYPE, pv.CHID, &l_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = l_value;
+				currentValue.second = l_value;
 			}
 			else
 			{
@@ -209,7 +210,7 @@ void Getter::setValueFromEPICS()
 				std::cout << "ARRAY SIZE: " << l_array.size() << std::endl;
 				for (auto& item : l_array)
 				{
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 				}
 			}
 			break;
@@ -221,7 +222,7 @@ void Getter::setValueFromEPICS()
 				double d_value;
 				ca_get(pv.CHTYPE, pv.CHID, &d_value);
 				EPICSInterface::sendToEPICS();
-				currentValue = d_value;
+				currentValue.second = d_value;
 			}
 			else
 			{
@@ -231,7 +232,7 @@ void Getter::setValueFromEPICS()
 				std::cout << "ARRAY SIZE: " << d_array.size() << std::endl;
 				for (auto& item : d_array)
 				{
-					currentArray.push_back(item);
+					currentArray.second.push_back(item);
 				}
 			}
 			break;
@@ -241,72 +242,72 @@ void Getter::setValueFromEPICS()
 
 bool Getter::isLong()
 {
-	return (currentValue.type() == typeid(long));
+	return (currentValue.second.type() == typeid(long));
 }
 
 bool Getter::isDouble()
 {
-	return (currentValue.type() == typeid(double));
+	return (currentValue.second.type() == typeid(double));
 }
 
 bool Getter::isInt()
 {
-	return (currentValue.type() == typeid(int));
+	return (currentValue.second.type() == typeid(int));
 }
 
 bool Getter::isEnum()
 {
-	return (currentValue.type() == typeid(unsigned short));
+	return (currentValue.second.type() == typeid(unsigned short));
 }
 
 bool Getter::isShort()
 {
-	return (currentValue.type() == typeid(unsigned short));
+	return (currentValue.second.type() == typeid(unsigned short));
 }
 
 bool Getter::isString()
 {
-	return (currentValue.type() == typeid(std::string));
+	return (currentValue.second.type() == typeid(std::string));
 }
 
 bool Getter::isFloat()
 {
-	return (currentValue.type() == typeid(float));
-}
-
-bool Getter::isLongArray()
-{
-	return (currentArray.at(0).type() == typeid(long));
-}
-
-bool Getter::isDoubleArray()
-{
-	return (currentArray.at(0).type() == typeid(double));
+	return (currentValue.second.type() == typeid(float));
 }
 
 bool Getter::isShortArray()
 {
-	return (currentArray.at(0).type() == typeid(short));
+	return (currentArray.second.at(0).type() == typeid(short));
+}
+
+bool Getter::isLongArray()
+{
+	return (currentArray.second.at(0).type() == typeid(long));
+}
+
+bool Getter::isDoubleArray()
+{
+	return (currentArray.second.at(0).type() == typeid(double));
 }
 
 bool Getter::isIntArray()
 {
-	return (currentArray.at(0).type() == typeid(int));
+	return (currentArray.second.at(0).type() == typeid(int));
 }
 
 bool Getter::isFloatArray()
 {
-	return (currentArray.at(0).type() == typeid(float));
+	return (currentArray.second.at(0).type() == typeid(float));
 }
 
 bool Getter::isEnumArray()
 {
-	return (currentArray.at(0).type() == typeid(unsigned short));
+	return (currentArray.second.at(0).type() == typeid(unsigned short));
 }
 
 bool Getter::isStringArray()
 {
-	return (currentArray.at(0).type() == typeid(std::string));
+	return (currentArray.second.at(0).type() == typeid(std::string));
 }
 
 void Getter::setupChannels()
@@ -330,7 +331,7 @@ boost::python::object Getter::getValue_Py()
 	setValueFromEPICS();
 	if (isDouble())
 	{
-		return static_cast<boost::python::object>(boost::get<double>(currentValue));
+		return static_cast<boost::python::object>(boost::get<double>(currentValue.second));
 	}
 	//else if (isInt())
 	//{
@@ -338,23 +339,23 @@ boost::python::object Getter::getValue_Py()
 	//}
 	else if (isShort())
 	{
-		return static_cast<boost::python::object>(boost::get<short>(currentValue));
+		return static_cast<boost::python::object>(boost::get<short>(currentValue.second));
 	}
 	else if (isEnum())
 	{
-		return static_cast<boost::python::object>(boost::get<unsigned short>(currentValue));
+		return static_cast<boost::python::object>(boost::get<unsigned short>(currentValue.second));
 	}
 	else if (isString())
 	{
-		return static_cast<boost::python::object>(boost::get<std::string>(currentValue));
+		return static_cast<boost::python::object>(boost::get<std::string>(currentValue.second));
 	}
 	else if (isFloat())
 	{
-		return static_cast<boost::python::object>(boost::get<float>(currentValue));
+		return static_cast<boost::python::object>(boost::get<float>(currentValue.second));
 	}
 	else if (isLong())
 	{
-		return static_cast<boost::python::object>(boost::get<long>(currentValue));
+		return static_cast<boost::python::object>(boost::get<long>(currentValue.second));
 	}
 	else
 	{
@@ -363,14 +364,65 @@ boost::python::object Getter::getValue_Py()
 	}
 }
 
+boost::python::dict Getter::getTimestampedValue_Py()
+{
+	setValueFromEPICS();
+	boost::python::dict r;
+	if (isDouble())
+	{
+		r["value"] = static_cast<boost::python::object>(boost::get<double>(currentValue.second));
+		r["time"] = epicsInterface->getEPICSTime(currentValue.first);
+		return r;
+	}
+	//else if (isInt())
+	//{
+	//	return static_cast<boost::python::object>(boost::get<int>(currentValue));
+	//}
+	else if (isShort())
+	{
+		r["value"] = static_cast<boost::python::object>(boost::get<short>(currentValue.second));
+		r["time"] = epicsInterface->getEPICSTime(currentValue.first);
+		return r;
+	}
+	else if (isEnum())
+	{
+		r["value"] = static_cast<boost::python::object>(boost::get<unsigned short>(currentValue.second));
+		r["time"] = epicsInterface->getEPICSTime(currentValue.first);
+		return r;
+	}
+	else if (isString())
+	{
+		r["value"] = static_cast<boost::python::object>(boost::get<std::string>(currentValue.second));
+		r["time"] = epicsInterface->getEPICSTime(currentValue.first);
+		return r;
+	}
+	else if (isFloat())
+	{
+		r["value"] = static_cast<boost::python::object>(boost::get<float>(currentValue.second));
+		r["time"] = epicsInterface->getEPICSTime(currentValue.first);
+		return r;
+	}
+	else if (isLong())
+	{
+		r["value"] = static_cast<boost::python::object>(boost::get<long>(currentValue.second));
+		r["time"] = epicsInterface->getEPICSTime(currentValue.first);
+		return r;
+	}
+	else
+	{
+		messenger.printMessage("Could not convert EPICS PV type into PyObject. Please contact support.");
+		return boost::python::dict();
+	}
+}
+
 boost::python::list Getter::getArray_Py()
 {
-	currentArray.clear();
+	currentArray.second.clear();
 	setValueFromEPICS();
 	if (isDoubleArray())
 	{
 		std::vector<double> d_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			d_vec.push_back(boost::get<double>(item));
 		}
@@ -390,7 +442,7 @@ boost::python::list Getter::getArray_Py()
 	else if (isShortArray())
 	{
 		std::vector<short> s_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			s_vec.push_back(boost::get<short>(item));
 		}
@@ -400,7 +452,7 @@ boost::python::list Getter::getArray_Py()
 	else if (isEnumArray())
 	{
 		std::vector<unsigned short> us_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			us_vec.push_back(boost::get<unsigned short>(item));
 		}
@@ -410,7 +462,7 @@ boost::python::list Getter::getArray_Py()
 	else if (isStringArray())
 	{
 		std::vector<std::string> str_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			str_vec.push_back(boost::get<std::string>(item));
 		}
@@ -420,7 +472,7 @@ boost::python::list Getter::getArray_Py()
 	else if (isFloatArray())
 	{
 		std::vector<float> f_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			f_vec.push_back(boost::get<float>(item));
 		}
@@ -430,7 +482,7 @@ boost::python::list Getter::getArray_Py()
 	else if (isLongArray())
 	{
 		std::vector<long> l_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			l_vec.push_back(boost::get<long>(item));
 		}

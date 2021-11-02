@@ -157,5 +157,13 @@ BOOST_AUTO_TEST_CASE(get_bam_array_with_buffer_test)
 
 }
 
+BOOST_AUTO_TEST_CASE(get_timestamped_double_value_test)
+{
+	const std::string pv = "CLA-C2V-MAG-HCOR-01:READI";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	double val = ET.get<double>(pv);
+	
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
