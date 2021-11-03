@@ -26,6 +26,8 @@
 
 class EPICSInterface;
 typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
+typedef std::pair<epicsTimeStamp, std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>> timeStampVector;
+typedef std::pair<epicsTimeStamp, boost::variant<double, long, float, unsigned short, short, std::string>> timeStampValue;
 
 namespace ListenerToPy
 {
@@ -80,11 +82,11 @@ public:
 	/*! Used by updateFunction to set currentValue from EPICS
 		@param[in] value : value to set currentValue to.*/
 	template<typename T>
-	void setValue(T value);
+	void setValue(const std::pair<epicsTimeStamp, T>& value);
 	/*! Used by updateFunction to set currentArray from EPICS
 		@param[in] valueArray : valueArray to set currentArray to.*/
 	template<typename T>
-	void setArray(const std::vector<T>& valueArray);
+	void setArray(const std::pair<epicsTimeStamp, std::vector<T>>& valueArray);
 	/*! Get the most recent value of PV record from EPICS
 		@param[out] value : Most recent value in EPICS*/
 	template<typename T>
@@ -216,41 +218,43 @@ public:
 	/*! The PV associated to this instance of Listener */
 	std::string pvToMonitor;
 	/*! stores the current value in the single-valued EPICS record associated with Listener */
-	boost::variant<double, float, long, unsigned short, short, std::string> currentValue;
+	timeStampValue currentValue;
 	/*! stores the current array in the EPICS record associated with Listener */
-	std::vector<boost::variant<double, float, long, unsigned short, short, std::string> > currentArray;
+	timeStampVector currentArray;
 	/*! buffer for single-values updated from EPICS*/
-	boost::circular_buffer<boost::variant<double, float, long, unsigned short, short, std::string> > currentBuffer;
+	boost::circular_buffer<timeStampValue> currentBuffer;
 	/*! buffer for array-values updated from EPICS*/
-	boost::circular_buffer<std::vector<boost::variant<double, float, long, unsigned short, short, std::string>>> currentArrayBuffer;
+	boost::circular_buffer<timeStampVector> currentArrayBuffer;
 };
 
 
 
 template<typename T>
-inline void Listener::setValue(T value)
+inline void Listener::setValue(const std::pair<epicsTimeStamp, T>& value)
 {
-	currentValue = static_cast<T>(value);
+	currentValue.first = value.first;
+	currentValue.second = static_cast<T>(value.second);
 }
 
 template<typename T>
-inline void Listener::setArray(const std::vector<T>& valueArray)
+inline void Listener::setArray(const std::pair<epicsTimeStamp, std::vector<T>>& valueArray)
 {
-	currentArray.clear();
-	currentArray.assign(valueArray.begin(), valueArray.end());
+	currentArray.first = valueArray.first;
+	currentArray.second.clear();
+	currentArray.second.assign(valueArray.second.begin(), valueArray.second.end());
 }
 
 template<typename T>
 inline T Listener::getValue()
 {
-	return boost::get<T>(currentValue);
+	return boost::get<T>(currentValue.second);
 }
 
 template<typename T>
 inline std::vector<T> Listener::getArray()
 {
 	std::vector<T> returnArray;
-	for (auto item : currentArray)
+	for (auto item : currentArray.second)
 	{
 		returnArray.push_back(boost::get<T>(item));
 	}
@@ -273,7 +277,11 @@ inline double Listener::getArrayAverage()
 template<typename T>
 inline boost::circular_buffer<T> Listener::getBuffer()
 {
-	auto returnBuffer = boost::get<boost::circular_buffer<T>>(currentBuffer);
+	boost::circular_buffer<T> returnBuffer;
+	for (auto& item : currentBuffer)
+	{
+		returnBuffer.push_back(boost::get<T>(item.second));
+	}
 	return returnBuffer;
 }
 
@@ -281,10 +289,10 @@ template<typename T>
 inline boost::circular_buffer<std::vector<T>> Listener::getArrayBuffer()
 {
 	boost::circular_buffer<std::vector<T>> floatBuff(currentArrayBuffer.capacity());
-	for (auto& vector : currentArrayBuffer)
+	for (auto& timeVectorPair : currentArrayBuffer)
 	{
-		std::vector<T> bufferVec(currentArray.size());
-		for (auto& item : vector)
+		std::vector<T> bufferVec(currentArray.second.size());
+		for (auto& item : timeVectorPair.second)
 		{
 			bufferVec.push_back(boost::get<T>(item));
 		}

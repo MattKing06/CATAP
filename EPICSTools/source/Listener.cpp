@@ -8,10 +8,10 @@ Listener::Listener()
 Listener::Listener(const std::string& pvStr) 
 	:
 	mode(STATE::VIRTUAL),
-	currentValue(boost::variant<double, float, long, unsigned short, short, std::string>()),
-	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, unsigned short, short, std::string> >(DEFAULT_BUFFER_SIZE)),
-	currentArray(std::vector<boost::variant<double, float, long, unsigned short, short, std::string>>()),
-	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, unsigned short, short, std::string>>>(DEFAULT_BUFFER_SIZE)),
+	currentValue(timeStampValue()),
+	currentBuffer(boost::circular_buffer<timeStampValue>(DEFAULT_BUFFER_SIZE)),
+	currentArray(timeStampVector()),
+	currentArrayBuffer(boost::circular_buffer<timeStampVector>(DEFAULT_BUFFER_SIZE)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0),
@@ -26,9 +26,9 @@ Listener::Listener(const std::string& pvStr)
 Listener::Listener(const std::string& pvStr, const STATE& mode)
 	: mode(mode),
 	// currentValue(boost::variant<double, float, long, int, unsigned short, std::string>()),
-	currentBuffer(boost::circular_buffer<boost::variant<double, float, long, unsigned short, short, std::string> >(DEFAULT_BUFFER_SIZE)),
-	currentArray(std::vector<boost::variant<double, float, long, unsigned short, short, std::string>>()),
-	currentArrayBuffer(boost::circular_buffer<std::vector<boost::variant<double, float, long, unsigned short, short, std::string>>>(DEFAULT_BUFFER_SIZE)),
+	currentBuffer(boost::circular_buffer<timeStampValue>(DEFAULT_BUFFER_SIZE)),
+	currentArray(timeStampVector()),
+	currentArrayBuffer(boost::circular_buffer<timeStampVector>(DEFAULT_BUFFER_SIZE)),
 	epicsInterface(boost::make_shared<EPICSInterface>()),
 	updateFunctions(UpdateFunctionHolder()),
 	callCount(0)
@@ -50,7 +50,7 @@ Listener::Listener(const Listener& copyListener)
 	callCount(copyListener.callCount)
 {
 	std::cout << " COPYING LISTENER FOR " << pvToMonitor << std::endl;
-	currentArray.assign(copyListener.currentArray.begin(), copyListener.currentArray.end());
+	currentArray.second.assign(copyListener.currentArray.second.begin(), copyListener.currentArray.second.end());
 	currentBuffer.assign(copyListener.currentBuffer.begin(), copyListener.currentBuffer.end());
 	currentArrayBuffer.assign(copyListener.currentArrayBuffer.begin(), copyListener.currentArrayBuffer.end());
 }
@@ -125,7 +125,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<double> epicsDBLTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_DOUBLE, pv.COUNT, pv.CHID, &epicsDBLTimeArray[0]);
 		for (auto& val : epicsDBLTimeArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_DOUBLE):
@@ -133,7 +133,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<double> epicsDBLArray(pv.COUNT);
 		ca_array_get(DBR_DOUBLE, pv.COUNT, pv.CHID, &epicsDBLArray[0]);
 		for (auto& val : epicsDBLArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_TIME_SHORT):
@@ -141,7 +141,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<short> epicsSHORTTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_SHORT, pv.COUNT, pv.CHID, &epicsSHORTTimeArray[0]);
 		for (auto& val : epicsSHORTTimeArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_SHORT):
@@ -149,7 +149,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<short> epicsSHORTArray(pv.COUNT);
 		ca_array_get(DBR_SHORT, pv.COUNT, pv.CHID, &epicsSHORTArray[0]);
 		for (auto& val : epicsSHORTArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	//case(DBR_TIME_INT):
@@ -173,7 +173,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<unsigned short> epicsENUMTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_ENUM, pv.COUNT, pv.CHID, &epicsENUMTimeArray[0]);
 		for (auto& val : epicsENUMTimeArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_ENUM):
@@ -181,7 +181,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<unsigned short> epicsENUMArray(pv.COUNT);
 		ca_array_get(DBR_ENUM, pv.COUNT, pv.CHID, &epicsENUMArray[0]);
 		for (auto& val : epicsENUMArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_TIME_LONG):
@@ -189,7 +189,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<long> epicsLONGTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_LONG, pv.COUNT, pv.CHID, &epicsLONGTimeArray[0]);
 		for (auto& val : epicsLONGTimeArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_LONG):
@@ -197,7 +197,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<long> epicsLONGArray(pv.COUNT);
 		ca_array_get(DBR_TIME_LONG, pv.COUNT, pv.CHID, &epicsLONGArray[0]);
 		for (auto& val : epicsLONGArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_TIME_FLOAT):
@@ -205,7 +205,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<float> epicsFLOATTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_FLOAT, pv.COUNT, pv.CHID, &epicsFLOATTimeArray[0]);
 		for (auto& val : epicsFLOATTimeArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_FLOAT):
@@ -213,7 +213,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<float> epicsFLOATArray(pv.COUNT);
 		ca_array_get(DBR_FLOAT, pv.COUNT, pv.CHID, &epicsFLOATArray[0]);
 		for (auto& val : epicsFLOATArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_TIME_STRING):
@@ -221,7 +221,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<std::string> epicsSTRINGTimeArray(pv.COUNT);
 		ca_array_get(DBR_TIME_STRING, pv.COUNT, pv.CHID, &epicsSTRINGTimeArray[0]);
 		for (auto& val : epicsSTRINGTimeArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 	case(DBR_STRING):
@@ -229,7 +229,7 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 		std::vector<std::string> epicsSTRINGArray(pv.COUNT);
 		ca_array_get(DBR_STRING, pv.COUNT, pv.CHID, &epicsSTRINGArray[0]);
 		for (auto& val : epicsSTRINGArray)
-			currentArray.push_back(val);
+			currentArray.second.push_back(val);
 		break;
 	}
 }
@@ -244,28 +244,28 @@ void Listener::initialiseCurrentValue(const pvStruct& pv)
 	{
 		double epicsDBLTimeValue;
 		ca_get(DBR_TIME_DOUBLE, pv.CHID, &epicsDBLTimeValue);
-		currentValue = static_cast<double>(epicsDBLTimeValue);
+		currentValue.second = static_cast<double>(epicsDBLTimeValue);
 		break;
 	}
 	case(DBR_DOUBLE):
 	{
 		double epicsDBLValue;
 		ca_get(DBR_DOUBLE, pv.CHID, &epicsDBLValue);
-		currentValue = static_cast<double>(epicsDBLValue);
+		currentValue.second = static_cast<double>(epicsDBLValue);
 		break;
 	}
 	case(DBR_TIME_SHORT):
 	{
 		short epicsSHORTValue;
 		ca_get(DBR_TIME_SHORT, pv.CHID, &epicsSHORTValue);
-		currentValue = static_cast<short>(epicsSHORTValue);
+		currentValue.second = static_cast<short>(epicsSHORTValue);
 		break;
 	}
 	case(DBR_SHORT):
 	{
 		short epicsSHORTValue;
 		ca_get(DBR_SHORT, pv.CHID, &epicsSHORTValue);
-		currentValue = static_cast<short>(epicsSHORTValue);
+		currentValue.second = static_cast<short>(epicsSHORTValue);
 		break;
 	}
 	//case(DBR_TIME_INT):
@@ -286,56 +286,56 @@ void Listener::initialiseCurrentValue(const pvStruct& pv)
 	{
 		unsigned short epicsENUMTimeValue;
 		ca_get(DBR_TIME_ENUM, pv.CHID, &epicsENUMTimeValue);
-		currentValue = static_cast<unsigned short>(epicsENUMTimeValue);
+		currentValue.second = static_cast<unsigned short>(epicsENUMTimeValue);
 		break;
 	}
 	case(DBR_ENUM):
 	{
 		unsigned short epicsENUMValue;
 		ca_get(DBR_ENUM, pv.CHID, &epicsENUMValue);
-		currentValue = static_cast<unsigned short>(epicsENUMValue);
+		currentValue.second = static_cast<unsigned short>(epicsENUMValue);
 		break;
 	}
 	case(DBR_TIME_LONG):
 	{
 		long epicsLONGTimeValue;
 		ca_get(DBR_TIME_LONG, pv.CHID, &epicsLONGTimeValue);
-		currentValue = static_cast<long>(epicsLONGTimeValue);
+		currentValue.second = static_cast<long>(epicsLONGTimeValue);
 		break;
 	}
 	case(DBR_LONG):
 	{
 		long epicsLONGValue;
 		ca_get(DBR_LONG, pv.CHID, &epicsLONGValue);
-		currentValue = static_cast<long>(epicsLONGValue);
+		currentValue.second = static_cast<long>(epicsLONGValue);
 		break;
 	}
 	case(DBR_TIME_FLOAT):
 	{
 		float epicsFLOATTimeValue;
 		ca_get(DBR_TIME_FLOAT, pv.CHID, &epicsFLOATTimeValue);
-		currentValue = static_cast<float>(epicsFLOATTimeValue);
+		currentValue.second = static_cast<float>(epicsFLOATTimeValue);
 		break;
 	}
 	case(DBR_FLOAT):
 	{
 		float epicsFLOATValue;
 		ca_get(DBR_FLOAT, pv.CHID, &epicsFLOATValue);
-		currentValue = static_cast<float>(epicsFLOATValue);
+		currentValue.second = static_cast<float>(epicsFLOATValue);
 		break;
 	}
 	case(DBR_TIME_STRING):
 	{
 		float epicsSTRINGTimeValue;
 		ca_get(DBR_FLOAT, pv.CHID, &epicsSTRINGTimeValue);
-		currentValue = static_cast<float>(epicsSTRINGTimeValue);
+		currentValue.second = static_cast<float>(epicsSTRINGTimeValue);
 		break;
 	}
 	case(DBR_STRING):
 	{
 		float epicsSTRINGValue;
 		ca_get(DBR_FLOAT, pv.CHID, &epicsSTRINGValue);
-		currentValue = static_cast<float>(epicsSTRINGValue);
+		currentValue.second = static_cast<float>(epicsSTRINGValue);
 		break;
 	}
 	}
@@ -391,7 +391,7 @@ boost::python::list Listener::getArray_Py()
 	if (isDoubleArray())
 	{
 		std::vector<double> d_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			d_vec.push_back(boost::get<double>(item));
 		}
@@ -400,7 +400,7 @@ boost::python::list Listener::getArray_Py()
 	else if (isShortArray())
 	{
 		std::vector<short> i_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			i_vec.push_back(boost::get<short>(item));
 		}
@@ -409,7 +409,7 @@ boost::python::list Listener::getArray_Py()
 	else if (isEnumArray())
 	{
 		std::vector<unsigned short> us_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			us_vec.push_back(boost::get<unsigned short>(item));
 		}
@@ -418,7 +418,7 @@ boost::python::list Listener::getArray_Py()
 	else if (isStringArray())
 	{
 		std::vector<std::string> str_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			str_vec.push_back(boost::get<std::string>(item));
 		}
@@ -427,7 +427,7 @@ boost::python::list Listener::getArray_Py()
 	else if (isFloatArray())
 	{
 		std::vector<float> f_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			f_vec.push_back(boost::get<float>(item));
 		}
@@ -436,7 +436,7 @@ boost::python::list Listener::getArray_Py()
 	else if (isLongArray())
 	{
 		std::vector<long> l_vec;
-		for (auto& item : currentArray)
+		for (auto& item : currentArray.second)
 		{
 			l_vec.push_back(boost::get<long>(item));
 		}
@@ -493,7 +493,7 @@ std::vector<double> Listener::getArrayBufferAverageArray()
 		{
 			for (auto& vector : currentArrayBuffer)
 			{
-				bufferAverageVector.at(i) += boost::get<T>(vector.at(i));
+				bufferAverageVector.at(i) += boost::get<T>(vector.second.at(i));
 			}
 			bufferAverageVector.at(i) /= currentArrayBuffer.size();
 		}
@@ -529,9 +529,9 @@ boost::python::list Listener::getArrayBufferAverageArray_Py()
 
 boost::python::object Listener::getValue_Py()
 {
-	if (!currentValue.empty())
+	if (!currentValue.second.empty())
 	{
-		return boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue);
+		return boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue.second);
 	}
 	else
 	{
@@ -546,7 +546,7 @@ boost::python::list Listener::getBuffer_Py()
 		boost::circular_buffer<double> dblBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			dblBuff.push_back(boost::get<double>(item));
+			dblBuff.push_back(boost::get<double>(item.second));
 		}
 		return to_py_list(dblBuff);
 	}
@@ -555,7 +555,7 @@ boost::python::list Listener::getBuffer_Py()
 		boost::circular_buffer<short> shortBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			shortBuff.push_back(boost::get<short>(item));
+			shortBuff.push_back(boost::get<short>(item.second));
 		}
 		return to_py_list(shortBuff);
 	}
@@ -564,7 +564,7 @@ boost::python::list Listener::getBuffer_Py()
 		boost::circular_buffer<long> longBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			longBuff.push_back(boost::get<long>(item));
+			longBuff.push_back(boost::get<long>(item.second));
 		}
 		return to_py_list(longBuff);
 	}
@@ -573,7 +573,7 @@ boost::python::list Listener::getBuffer_Py()
 		boost::circular_buffer<unsigned short> usBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			usBuff.push_back(boost::get<unsigned short>(item));
+			usBuff.push_back(boost::get<unsigned short>(item.second));
 		}
 		return to_py_list(usBuff);
 	}
@@ -582,7 +582,7 @@ boost::python::list Listener::getBuffer_Py()
 		boost::circular_buffer<std::string> strBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			strBuff.push_back(boost::get<std::string>(item));
+			strBuff.push_back(boost::get<std::string>(item.second));
 		}
 		return to_py_list(strBuff);
 	}
@@ -591,7 +591,7 @@ boost::python::list Listener::getBuffer_Py()
 		boost::circular_buffer<float> fltBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			fltBuff.push_back(boost::get<float>(item));
+			fltBuff.push_back(boost::get<float>(item.second));
 		}
 		return to_py_list(fltBuff);
 	}
@@ -616,7 +616,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		for (auto& vector : currentArrayBuffer)
 		{
 			std::vector<double> bufferVec;
-			for (auto& item : vector)
+			for (auto& item : vector.second)
 			{
 				bufferVec.push_back(boost::get<double>(item));
 			}
@@ -631,7 +631,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		for (auto& vector : currentArrayBuffer)
 		{
 			std::vector<short> bufferVec;
-			for (auto& item : vector)
+			for (auto& item : vector.second)
 			{
 				bufferVec.push_back(boost::get<short>(item));
 			}
@@ -646,7 +646,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		for (auto& vector : currentArrayBuffer)
 		{
 			std::vector<long> bufferVec;
-			for (auto& item : vector)
+			for (auto& item : vector.second)
 			{
 				bufferVec.push_back(boost::get<long>(item));
 			}
@@ -661,7 +661,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		for (auto& vector : currentArrayBuffer)
 		{
 			std::vector<unsigned short> bufferVec;
-			for (auto& item : vector)
+			for (auto& item : vector.second)
 			{
 				bufferVec.push_back(boost::get<unsigned short>(item));
 			}
@@ -676,7 +676,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		for (auto& vector : currentArrayBuffer)
 		{
 			std::vector<std::string> bufferVec;
-			for (auto& item : vector)
+			for (auto& item : vector.second)
 			{
 				bufferVec.push_back(boost::get<std::string>(item));
 			}
@@ -691,7 +691,7 @@ boost::python::list Listener::getArrayBuffer_Py()
 		for (auto& vector : currentArrayBuffer)
 		{
 			std::vector<float> bufferVec;
-			for (auto& item : vector)
+			for (auto& item : vector.second)
 			{
 				bufferVec.push_back(boost::get<float>(item));
 			}
@@ -710,7 +710,7 @@ double Listener::getBufferAverage()
 		double total = 0.0;
 		for (auto& item : currentBuffer)
 		{
-			total += boost::get<double>(item);
+			total += boost::get<double>(item.second);
 		}
 		return (total / currentBuffer.size());
 	}
@@ -729,7 +729,7 @@ double Listener::getBufferStdDeviation()
 		double sum = 0.0;
 		for (auto& item : currentBuffer)
 		{
-			sum += std::pow((boost::get<double>(item) - mean),2);
+			sum += std::pow((boost::get<double>(item.second) - mean),2);
 		}
 		return std::sqrt((sum / currentBuffer.size()));
 	}
@@ -742,72 +742,72 @@ double Listener::getBufferStdDeviation()
 
 bool Listener::isLong()
 {
-	return (currentValue.type() == typeid(long));
+	return (currentValue.second.type() == typeid(long));
 }
 
 bool Listener::isDouble()
 {
-	return (currentValue.type() == typeid(double));
+	return (currentValue.second.type() == typeid(double));
 }
 
 bool Listener::isShort()
 {
-	return (currentValue.type() == typeid(short));
+	return (currentValue.second.type() == typeid(short));
 }
 
 bool Listener::isInt()
 {
-	return (currentValue.type() == typeid(int));
+	return (currentValue.second.type() == typeid(int));
 }
 
 bool Listener::isEnum()
 {
-	return (currentValue.type() == typeid(unsigned short));
+	return (currentValue.second.type() == typeid(unsigned short));
 }
 
 bool Listener::isString()
 {
-	return (currentValue.type() == typeid(std::string));
+	return (currentValue.second.type() == typeid(std::string));
 }
 
 bool Listener::isFloat()
 {
-	return (currentValue.type() == typeid(float));
+	return (currentValue.second.type() == typeid(float));
 }
 
 bool Listener::isLongArray()
 {
-	return (currentArray.at(0).type() == typeid(long));
+	return (currentArray.second.at(0).type() == typeid(long));
 }
 
 bool Listener::isShortArray()
 {
-	return (currentArray.at(0).type() == typeid(short));
+	return (currentArray.second.at(0).type() == typeid(short));
 }
 
 bool Listener::isDoubleArray()
 {
-	return (currentArray.at(0).type() == typeid(double));
+	return (currentArray.second.at(0).type() == typeid(double));
 }
 
 bool Listener::isIntArray()
 {
-	return (currentArray.at(0).type() == typeid(int));
+	return (currentArray.second.at(0).type() == typeid(int));
 }
 
 bool Listener::isFloatArray()
 {
-	return (currentArray.at(0).type() == typeid(float));
+	return (currentArray.second.at(0).type() == typeid(float));
 }
 
 bool Listener::isEnumArray()
 {
-	return (currentArray.at(0).type() == typeid(unsigned short));
+	return (currentArray.second.at(0).type() == typeid(unsigned short));
 }
 
 bool Listener::isStringArray()
 {
-	return (currentArray.at(0).type() == typeid(std::string));
+	return (currentArray.second.at(0).type() == typeid(std::string));
 }
 
 
@@ -815,7 +815,7 @@ bool Listener::isDoubleBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(double));
+		return(currentBuffer.at(0).second.type() == typeid(double));
 	}
 }
 
@@ -823,7 +823,7 @@ bool Listener::isIntBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(int));
+		return(currentBuffer.at(0).second.type() == typeid(int));
 	}
 }
 
@@ -831,7 +831,7 @@ bool Listener::isShortBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(short));
+		return(currentBuffer.at(0).second.type() == typeid(short));
 	}
 }
 
@@ -839,7 +839,7 @@ bool Listener::isEnumBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(unsigned short));
+		return(currentBuffer.at(0).second.type() == typeid(unsigned short));
 	}
 }
 
@@ -847,7 +847,7 @@ bool Listener::isStringBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(std::string));
+		return(currentBuffer.at(0).second.type() == typeid(std::string));
 	}
 }
 
@@ -855,7 +855,7 @@ bool Listener::isFloatBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(float));
+		return(currentBuffer.at(0).second.type() == typeid(float));
 	}
 }
 
@@ -863,7 +863,7 @@ bool Listener::isLongBuffer()
 {
 	if (currentBuffer.size() != 0)
 	{
-		return(currentBuffer.at(0).type() == typeid(long));
+		return(currentBuffer.at(0).second.type() == typeid(long));
 	}
 }
 
@@ -871,7 +871,7 @@ bool Listener::isDoubleArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return(currentArrayBuffer.at(0).at(0).type() == typeid(double));
+		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(double));
 	}
 }
 
@@ -879,7 +879,7 @@ bool Listener::isShortArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return (currentArrayBuffer.at(0).at(0).type() == typeid(short));
+		return (currentArrayBuffer.at(0).second.at(0).type() == typeid(short));
 	}
 }
 
@@ -887,7 +887,7 @@ bool Listener::isLongArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return(currentArrayBuffer.at(0).at(0).type() == typeid(long));
+		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(long));
 	}
 }
 
@@ -895,7 +895,7 @@ bool Listener::isFloatArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return(currentArrayBuffer.at(0).at(0).type() == typeid(float));
+		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(float));
 	}
 }
 
@@ -903,7 +903,7 @@ bool Listener::isIntArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return(currentArrayBuffer.at(0).at(0).type() == typeid(int));
+		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(int));
 	}
 }
 
@@ -911,7 +911,7 @@ bool Listener::isEnumArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return(currentArrayBuffer.at(0).at(0).type() == typeid(unsigned short));
+		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(unsigned short));
 	}
 }
 
@@ -919,6 +919,6 @@ bool Listener::isStringArrayBuffer()
 {
 	if (currentArrayBuffer.size() != 0)
 	{
-		return(currentArrayBuffer.at(0).at(0).type() == typeid(std::string));
+		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(std::string));
 	}
 }
