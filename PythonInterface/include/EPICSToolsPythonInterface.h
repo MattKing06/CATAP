@@ -44,7 +44,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		boost::python::dict(EPICSTools:: * get_timestamp_single)(const std::string&) = &EPICSTools::getTimestampedValue_Py;
 		void(EPICSTools:: * put_single)(const std::string&, boost::python::object) = &EPICSTools::put_Py;
 		void(EPICSTools:: * put_multiple)(boost::python::dict) = &EPICSTools::put_Py;
-		boost::python::list(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
+		boost::python::dict(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
 		boost::python::dict(EPICSTools:: * getBuffer_multiple)(boost::python::list) = &EPICSTools::getBuffer_Py;
 		double(EPICSTools:: * getBufferAverage_single)(const std::string&) = &EPICSTools::getBufferAverage_Py;
 		boost::python::dict(EPICSTools:: * getBufferAverage_multiple)(boost::python::list) = &EPICSTools::getBufferAverage_Py;

@@ -70,11 +70,11 @@ public:
 	/*! Get the current buffer of single values from Listener as a python list 
 		@param[in] pv : The name of the Listener object
 		@param[out] buffer : The current value buffer from Listener*/
-	boost::python::list getBuffer_Py(const std::string& pv);
+	boost::python::dict getBuffer_Py(const std::string& pv);
 	/*! Get the current buffer of array values from Listener as a python list
 		@param[in] pv : The name of the Listener object
 		@param[out] buffer : The current array buffer from Listener*/
-	boost::python::list getArrayBuffer_Py(const std::string& pv);
+	boost::python::dict getArrayBuffer_Py(const std::string& pv);
 	/*! Get multiple value buffers from Listener objects as a python dict
 		@param[in] pvList : The names of the Listener objects
 		@param[out] buffer dict : key = PV name, value = buffer*/

@@ -118,7 +118,7 @@ int Listener::getArrayBufferSize()
 
 void Listener::initialiseCurrentArray(const pvStruct& pv)
 {
-	switch (ca_field_type(pv.CHID))
+	switch (pv.CHTYPE)
 	{
 	case(DBR_TIME_DOUBLE):
 	{
@@ -139,7 +139,10 @@ void Listener::initialiseCurrentArray(const pvStruct& pv)
 	case(DBR_TIME_SHORT):
 	{
 		std::vector<short> epicsSHORTTimeArray(pv.COUNT);
+		dbr_time_short s_val;
 		ca_array_get(DBR_TIME_SHORT, pv.COUNT, pv.CHID, &epicsSHORTTimeArray[0]);
+		ca_get(DBR_TIME_SHORT, pv.CHID, &s_val);
+		currentArray.first = s_val.stamp;
 		for (auto& val : epicsSHORTTimeArray)
 			currentArray.second.push_back(val);
 		break;
@@ -386,8 +389,9 @@ void Listener::startListening()
 	}
 }
 
-boost::python::list Listener::getArray_Py()
+boost::python::dict Listener::getArray_Py()
 {
+	boost::python::dict r;
 	if (isDoubleArray())
 	{
 		std::vector<double> d_vec;
@@ -395,16 +399,20 @@ boost::python::list Listener::getArray_Py()
 		{
 			d_vec.push_back(boost::get<double>(item));
 		}
-		return to_py_list(d_vec);
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(d_vec);
+		return r;
 	}
 	else if (isShortArray())
 	{
-		std::vector<short> i_vec;
+		std::vector<short> s_vec;
 		for (auto& item : currentArray.second)
 		{
-			i_vec.push_back(boost::get<short>(item));
+			s_vec.push_back(boost::get<short>(item));
 		}
-		return to_py_list(i_vec);
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(s_vec);
+		return r;
 	}
 	else if (isEnumArray())
 	{
@@ -413,7 +421,9 @@ boost::python::list Listener::getArray_Py()
 		{
 			us_vec.push_back(boost::get<unsigned short>(item));
 		}
-		return to_py_list(us_vec);
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(us_vec);
+		return r;
 	}
 	else if (isStringArray())
 	{
@@ -422,7 +432,9 @@ boost::python::list Listener::getArray_Py()
 		{
 			str_vec.push_back(boost::get<std::string>(item));
 		}
-		return to_py_list(str_vec);
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(str_vec);
+		return r;
 	}
 	else if (isFloatArray())
 	{
@@ -431,7 +443,9 @@ boost::python::list Listener::getArray_Py()
 		{
 			f_vec.push_back(boost::get<float>(item));
 		}
-		return to_py_list(f_vec);
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(f_vec);
+		return r;
 	}
 	else if (isLongArray())
 	{
@@ -440,7 +454,9 @@ boost::python::list Listener::getArray_Py()
 		{
 			l_vec.push_back(boost::get<long>(item));
 		}
-		return to_py_list(l_vec);
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(l_vec);
+		return r;
 	}
 }
 
@@ -527,11 +543,14 @@ boost::python::list Listener::getArrayBufferAverageArray_Py()
 
 
 
-boost::python::object Listener::getValue_Py()
+boost::python::dict Listener::getValue_Py()
 {
 	if (!currentValue.second.empty())
 	{
-		return boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue.second);
+		boost::python::dict r;
+		r["timestamp"] = epicsInterface->getEPICSTime(currentValue.first);
+		r["value"] = boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue.second);
+		return r;
 	}
 	else
 	{
@@ -539,61 +558,62 @@ boost::python::object Listener::getValue_Py()
 	}
 }
 
-boost::python::list Listener::getBuffer_Py()
+boost::python::dict Listener::getBuffer_Py()
 {
+	boost::python::dict r;
 	if (isDoubleBuffer())
 	{
-		boost::circular_buffer<double> dblBuff(currentBuffer.capacity());
+		//boost::circular_buffer<double> dblBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			dblBuff.push_back(boost::get<double>(item.second));
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<double>(item.second));
 		}
-		return to_py_list(dblBuff);
+		return r;
 	}
 	else if (isShortBuffer())
 	{
 		boost::circular_buffer<short> shortBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			shortBuff.push_back(boost::get<short>(item.second));
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<short>(item.second));
 		}
-		return to_py_list(shortBuff);
+		return r;
 	}
 	else if (isLongBuffer())
 	{
 		boost::circular_buffer<long> longBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			longBuff.push_back(boost::get<long>(item.second));
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<long>(item.second));
 		}
-		return to_py_list(longBuff);
+		return r;
 	}
 	else if (isEnumBuffer())
 	{
 		boost::circular_buffer<unsigned short> usBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			usBuff.push_back(boost::get<unsigned short>(item.second));
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<unsigned short>(item.second));
 		}
-		return to_py_list(usBuff);
+		return r;
 	}
 	else if (isStringBuffer())
 	{
 		boost::circular_buffer<std::string> strBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			strBuff.push_back(boost::get<std::string>(item.second));
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<std::string>(item.second));
 		}
-		return to_py_list(strBuff);
+		return r;
 	}
 	else if (isFloatBuffer())
 	{
 		boost::circular_buffer<float> fltBuff(currentBuffer.capacity());
 		for (auto& item : currentBuffer)
 		{
-			fltBuff.push_back(boost::get<float>(item.second));
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<float>(item.second));
 		}
-		return to_py_list(fltBuff);
+		return r;
 	}
 }
 
@@ -607,8 +627,9 @@ void Listener::clearArrayBuffer()
 	currentArrayBuffer.clear();
 }
 
-boost::python::list Listener::getArrayBuffer_Py()
+boost::python::dict Listener::getArrayBuffer_Py()
 {
+	boost::python::dict r;
 	if (isDoubleArrayBuffer())
 	{
 		std::cout << "constructing py list" << std::endl;
@@ -620,9 +641,10 @@ boost::python::list Listener::getArrayBuffer_Py()
 			{
 				bufferVec.push_back(boost::get<double>(item));
 			}
-			dblBuff.push_back(bufferVec);
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
+			//dblBuff.push_back(bufferVec);
 		}
-		return to_py_list(dblBuff);
+		return r; //to_py_list(dblBuff);
 	}
 	else if (isShortArrayBuffer())
 	{
@@ -635,9 +657,10 @@ boost::python::list Listener::getArrayBuffer_Py()
 			{
 				bufferVec.push_back(boost::get<short>(item));
 			}
-			shortBuff.push_back(bufferVec);
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
+			//shortBuff.push_back(bufferVec);
 		}
-		return to_py_list(shortBuff);
+		return r;
 	}
 	else if (isLongArrayBuffer())
 	{
@@ -650,9 +673,9 @@ boost::python::list Listener::getArrayBuffer_Py()
 			{
 				bufferVec.push_back(boost::get<long>(item));
 			}
-			longBuff.push_back(bufferVec);
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//longBuff.push_back(bufferVec);
 		}
-		return to_py_list(longBuff);
+		return r;// to_py_list(longBuff);
 	}
 	else if (isEnumArrayBuffer())
 	{
@@ -665,9 +688,10 @@ boost::python::list Listener::getArrayBuffer_Py()
 			{
 				bufferVec.push_back(boost::get<unsigned short>(item));
 			}
-			usBuff.push_back(bufferVec);
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
+			//usBuff.push_back(bufferVec);
 		}
-		return to_py_list(usBuff);
+		return r;// to_py_list(usBuff);
 	}
 	else if (isStringArrayBuffer())
 	{
@@ -680,9 +704,9 @@ boost::python::list Listener::getArrayBuffer_Py()
 			{
 				bufferVec.push_back(boost::get<std::string>(item));
 			}
-			strBuff.push_back(bufferVec);
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//strBuff.push_back(bufferVec);
 		}
-		return to_py_list(strBuff);
+		return r;// to_py_list(strBuff);
 	}
 	else if (isFloatArrayBuffer())
 	{
@@ -695,9 +719,9 @@ boost::python::list Listener::getArrayBuffer_Py()
 			{
 				bufferVec.push_back(boost::get<float>(item));
 			}
-			floatBuff.push_back(bufferVec);
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//floatBuff.push_back(bufferVec);
 		}
-		return to_py_list(floatBuff);
+		return r;//to_py_list(floatBuff);
 	}
 }
 

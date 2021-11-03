@@ -60,7 +60,7 @@ boost::python::list EPICSTools::getAllMonitorNames_Py()
 	return listenerNames;
 }
 
-boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
+boost::python::dict EPICSTools::getBuffer_Py(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(listenerMap, pv))
 	{
@@ -73,7 +73,7 @@ boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
 	}
 }
 
-boost::python::list EPICSTools::getArrayBuffer_Py(const std::string& pv)
+boost::python::dict EPICSTools::getArrayBuffer_Py(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(listenerMap, pv))
 	{
@@ -84,7 +84,7 @@ boost::python::list EPICSTools::getArrayBuffer_Py(const std::string& pv)
 boost::python::dict EPICSTools::getBuffer_Py(boost::python::list pvList)
 {
 	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
-	std::map<std::string, boost::python::list> pvBufferMap;
+	std::map<std::string, boost::python::dict> pvBufferMap;
 	for (auto& pv : namesVec)
 	{
 		pvBufferMap[pv] = getBuffer_Py(pv);

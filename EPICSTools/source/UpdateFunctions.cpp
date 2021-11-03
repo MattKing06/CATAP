@@ -235,6 +235,8 @@ void UpdateFunctionHolder::updateDoubleArray(const event_handler_args args)
 	recastListener->epicsInterface->updateTimeStampDoubleVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate);
 	timeStampVector bufferVec;
+	//update time stamp
+	bufferVec.first = pairToUpdate.first;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.second.push_back(item);
@@ -267,6 +269,8 @@ void UpdateFunctionHolder::updateShortArray(const event_handler_args args)
 	recastListener->epicsInterface->updateTimeStampShortVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate);
 	timeStampVector bufferVec;
+	//update time stamp
+	bufferVec.first = pairToUpdate.first;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.second.push_back(item);
@@ -283,6 +287,8 @@ void UpdateFunctionHolder::updateEnumArray(const event_handler_args args)
 	recastListener->epicsInterface->updateTimeStampEnumVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate);
 	timeStampVector bufferVec;
+	//update time stamp
+	bufferVec.first = pairToUpdate.first;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.second.push_back(item);
@@ -300,6 +306,8 @@ void UpdateFunctionHolder::updateFloatArray(const event_handler_args args)
 	recastListener->epicsInterface->updateTimeStampFloatVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate);
 	timeStampVector bufferVec;
+	//update time stamp
+	bufferVec.first = pairToUpdate.first;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.second.push_back(item);
@@ -317,6 +325,8 @@ void UpdateFunctionHolder::updateLongArray(const event_handler_args args)
 	recastListener->epicsInterface->updateTimeStampLongVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate);
 	timeStampVector bufferVec;
+	//update time stamp
+	bufferVec.first = pairToUpdate.first;
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.second.push_back(item);
@@ -333,6 +343,9 @@ void UpdateFunctionHolder::updateStringArray(const event_handler_args args)
 	recastListener->epicsInterface->updateTimeStampStringVectorPair(args, pairToUpdate, recastListener->pv.COUNT);
 	recastListener->setArray(pairToUpdate);
 	timeStampVector bufferVec;
+	//update time stamp
+	bufferVec.first = pairToUpdate.first;
+	// fill up buffer from epics updated
 	for (auto& item : pairToUpdate.second)
 	{
 		bufferVec.second.push_back(item);

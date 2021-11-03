@@ -97,10 +97,10 @@ public:
 	std::vector<T> getArray();
 	/*! Get the most recent value of PV record from EPICS as a python object
 		@param[out] value : Most recent value in EPICS as a python object*/
-	boost::python::object getValue_Py();
+	boost::python::dict getValue_Py();
 	/*! Get the most recent array of PV array record from EPICS as a python list
 		@param[out] array : Most recent array in EPICS as a python list*/
-	boost::python::list getArray_Py();
+	boost::python::dict getArray_Py();
 	/*! Get the average over the current array 
 		@param[out] average: Mean average of the current array values*/
 	template<typename T>
@@ -129,7 +129,7 @@ public:
 	boost::circular_buffer<T> getBuffer();
 	/*! Get the buffer of single-values (default size is 10 elements) as python list
 		@param[out] buffer : python list of buffered values from EPICS. */
-	boost::python::list getBuffer_Py();
+	boost::python::dict getBuffer_Py();
 
 	void clearBuffer();
 
@@ -141,7 +141,7 @@ public:
 	boost::circular_buffer<std::vector<T>> getArrayBuffer();
 	/*! Get the buffer of array-values (default size is 10 arrays) as a python list
 		@param[out] buffer : python list of buffered arrays from EPICS. */
-	boost::python::list getArrayBuffer_Py();
+	boost::python::dict getArrayBuffer_Py();
 	/*! Get the mean average of single-values stored in the single-value buffer 
 		@param[out] bufferAverage : mean average of values in buffer. */
 	double getBufferAverage();
@@ -239,6 +239,7 @@ inline void Listener::setValue(const std::pair<epicsTimeStamp, T>& value)
 template<typename T>
 inline void Listener::setArray(const std::pair<epicsTimeStamp, std::vector<T>>& valueArray)
 {
+
 	currentArray.first = valueArray.first;
 	currentArray.second.clear();
 	currentArray.second.assign(valueArray.second.begin(), valueArray.second.end());
