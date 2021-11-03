@@ -157,12 +157,18 @@ BOOST_AUTO_TEST_CASE(get_bam_array_with_buffer_test)
 
 }
 
-BOOST_AUTO_TEST_CASE(get_timestamped_double_value_test)
+BOOST_AUTO_TEST_CASE(get_timestamped_enum_value_test)
 {
-	const std::string pv = "CLA-C2V-MAG-HCOR-01:READI";
+	const std::string pv = "CLA-C2V-MAG-HCOR-01:RPOWER";
 	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
-	double val = ET.get<double>(pv);
-	
+	boost::python::dict vl = ET.getTimestampedValue_Py(pv);
+}
+
+BOOST_AUTO_TEST_CASE(get_timestamped_double_vector_test)
+{
+	const std::string pv = "CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	std::pair<epicsTimeStamp, std::vector<double>> vl = ET.getTimestampedArray<double>(pv);
 }
 
 

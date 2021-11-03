@@ -179,6 +179,20 @@ boost::python::dict EPICSTools::getTimestampedValue_Py(const std::string& pv)
 	}
 }
 
+boost::python::dict EPICSTools::getTimestampedArray_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getTimestampedArray_Py();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv, mode);
+		EPICSInterface::sendToEPICS();
+		return getterMap[pv].getTimestampedArray_Py();
+	}
+}
+
 bool EPICSTools::monitor(const std::string& pv)
 {
 	listenerMap[pv] = Listener(pv, mode);

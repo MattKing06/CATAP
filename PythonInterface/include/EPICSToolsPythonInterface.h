@@ -65,6 +65,7 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("get", get_multiple)
 			.def("getTimestamped", get_timestamp_single)
 			.def("getTimestamped", get_timestamp_multiple)
+			.def("getArrayTimestamped", &EPICSTools::getTimestampedArray_Py)
 			.def("getArray", &EPICSTools::getArray_Py)
 			.def("getArray", &EPICSTools::getArray_Py2)
 			.def("put", put_single)
