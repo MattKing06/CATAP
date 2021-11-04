@@ -141,8 +141,6 @@ inline std::pair<std::string, T> Getter::getTimestampedValue()
 	setValueFromEPICS();
 	if (pv.COUNT == 1)
 	{
-		std::cout << "VAL: " << pvToGet;
-		std::cout << " boost::get == " << boost::get<T>(currentValue.second) << std::endl;
 		return std::pair<std::string, T>(epicsInterface->getEPICSTime(currentValue.first), boost::get<T>(currentValue.second));
 	}
 	else

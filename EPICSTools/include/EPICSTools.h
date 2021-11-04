@@ -182,7 +182,7 @@ inline T EPICSTools::get(const std::string& pv)
 	}
 	else
 	{
-		getterMap[pv] = Getter(pv);
+		getterMap[pv] = Getter(pv, mode);
 		return getterMap[pv].getValue<T>();
 	}
 }
@@ -196,7 +196,7 @@ inline std::pair<std::string, T> EPICSTools::getTimestampedValue(const std::stri
 	}
 	else
 	{
-		getterMap[pv] = Getter(pv);
+		getterMap[pv] = Getter(pv, mode);
 		return getterMap[pv].getTimestampedValue<T>();
 	}
 }
@@ -210,7 +210,7 @@ inline std::pair<epicsTimeStamp, std::vector<T>> EPICSTools::getTimestampedArray
 	}
 	else
 	{
-		getterMap[pv] = Getter(pv);
+		getterMap[pv] = Getter(pv, mode);
 		return getterMap[pv].getTimestampedArray<T>();
 	}
 }
@@ -224,7 +224,7 @@ inline void EPICSTools::put(const std::string& pv, T value)
 	}
 	else
 	{
-		putterMap[pv] = Putter(pv);
+		putterMap[pv] = Putter(pv, mode);
 		putterMap[pv].put<T>(value);
 	}
 }
