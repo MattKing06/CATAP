@@ -148,7 +148,7 @@ inline std::pair<std::string, T> Getter::getTimestampedValue()
 	else
 	{
 		messenger.printMessage(pvToGet, " count is more than one. Try calling getTimestampedArray.");
-		return T();
+		return std::pair<std::string, T>();
 	}
 }
 

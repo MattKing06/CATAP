@@ -105,7 +105,7 @@ public:
 
 	boost::python::dict getTimestampedValue_Py(const std::string& pv);
 	template<typename T>
-	std::pair<epicsTimeStamp, T> getTimestampedValue(const std::string& pv);
+	std::pair<std::string, T> getTimestampedValue(const std::string& pv);
 	template<typename T>
 	std::pair<epicsTimeStamp, std::vector<T> > getTimestampedArray(const std::string& pv);
 	boost::python::dict getTimestampedArray_Py(const std::string& pv);
@@ -188,7 +188,7 @@ inline T EPICSTools::get(const std::string& pv)
 }
 
 template<typename T>
-inline std::pair<epicsTimeStamp, T> EPICSTools::getTimestampedValue(const std::string& pv)
+inline std::pair<std::string, T> EPICSTools::getTimestampedValue(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(getterMap, pv))
 	{

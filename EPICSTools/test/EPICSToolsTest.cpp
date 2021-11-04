@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(get_timestamped_enum_value_test)
 {
 	const std::string pv = "CLA-C2V-MAG-HCOR-01:RPOWER";
 	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
-	std::pair<epicsTimeStamp, unsigned short> vl = ET.getTimestampedValue<unsigned short>(pv);
+	std::pair<std::string, unsigned short> vl = ET.getTimestampedValue<unsigned short>(pv);
 }
 
 BOOST_AUTO_TEST_CASE(get_timestamped_double_vector_test)
