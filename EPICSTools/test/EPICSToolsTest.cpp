@@ -59,7 +59,8 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 	{
 		for (auto& item : monitor.currentBuffer)
 		{
-			BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+			double val = boost::get<double>(item.second);
+			BOOST_CHECK_NE(val, GlobalConstants::double_min);
 		}
 	}
 
