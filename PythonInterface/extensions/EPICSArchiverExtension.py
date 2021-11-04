@@ -49,7 +49,7 @@ class EPICSArchiver(object):
                     formattedData[pv_key][timeStr] = raw_data["val"]
         return formattedData
     
-    def getEpochFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
+    def getEpochSecsFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
         data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo)
         formattedData = {}
         for pv_key, archiver_data in data.items():
@@ -58,6 +58,18 @@ class EPICSArchiver(object):
             for values in archiver_data:
                 for raw_data in values["data"]:
                     timeStr = raw_data["secs"]
+                    formattedData[pv_key][timeStr] = raw_data["val"]
+        return formattedData
+
+    def getEpochNanosFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
+        data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo)
+        formattedData = {}
+        for pv_key, archiver_data in data.items():
+            ## item contains 'meta' and 'data' keys
+            formattedData[pv_key] = {}
+            for values in archiver_data:
+                for raw_data in values["data"]:
+                    timeStr = raw_data["nanos"]
                     formattedData[pv_key][timeStr] = raw_data["val"]
         return formattedData
     
