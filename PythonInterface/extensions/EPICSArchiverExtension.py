@@ -33,23 +33,50 @@ class EPICSArchiver(object):
     def _makeDateTimeFromStr(self, date_str, time_str):
         return datetime.combine(self._makeDateFromStr(date_str), self._makeTimeFromStr(time_str))
         
-    def getDateTimeFromTimestamp(self, timestamp):
+    def _getDateTimeFromTimestamp(self, timestamp):
         epochStamp = datetime.fromtimestamp(timestamp)
         return epochStamp.strftime('%d-%m-%Y %H:%M:%S')
     
     def getTimeFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
         data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo)
         formattedData = {}
-        formattedData[pv] = {}
-        for item in data:
-            for values in item["data"]:
-                timeStr = self.getDateTimeFromTimestamp(values["secs"])
-                formattedData[pv][timeStr] = values["val"]
+        for pv_key, archiver_data in data.items():
+            ## item contains 'meta' and 'data' keys
+            formattedData[pv_key] = {}
+            for values in archiver_data:
+                for raw_data in values["data"]:
+                    timeStr = self._getDateTimeFromTimestamp(raw_data["secs"])
+                    formattedData[pv_key][timeStr] = raw_data["val"]
+        return formattedData
+    
+    def getEpochFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
+        data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo)
+        formattedData = {}
+        for pv_key, archiver_data in data.items():
+            ## item contains 'meta' and 'data' keys
+            formattedData[pv_key] = {}
+            for values in archiver_data:
+                for raw_data in values["data"]:
+                    timeStr = raw_data["secs"]
+                    formattedData[pv_key][timeStr] = raw_data["val"]
         return formattedData
     
     def getData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
-        archiver_link = self.archiver_root + self._formURLStr(pv, dateFrom, timeFrom, dateTo, timeTo)
-        print("REQUESTING DATA FROM: ", archiver_link)
-        req = urllib2.urlopen(archiver_link)
-        data = json.load(req)
-        return data
+        dataDict = {}
+        if type(pv) is list:
+            for item in pv:
+                dataDict[item] = {}
+                archiver_link = self.archiver_root + self._formURLStr(item, dateFrom, timeFrom, dateTo, timeTo)
+                print("REQUESTING DATA FROM: ", archiver_link)
+                req = urllib2.urlopen(archiver_link)
+                dataDict[item] = json.load(req)
+            return dataDict
+        elif type(pv) is str:
+            archiver_link = self.archiver_root + self._formURLStr(pv, dateFrom, timeFrom, dateTo, timeTo)
+            print("REQUESTING DATA FROM: ", archiver_link)
+            req = urllib2.urlopen(archiver_link)
+            dataDict[pv] = json.load(req)
+            return dataDict
+        else:
+            print("Argument \"PV\" is " + str(type(pv)) + " please try list or str type")
+            return {}
