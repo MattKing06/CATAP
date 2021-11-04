@@ -263,7 +263,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			//.def("getProbePha",  &LLRF::getProbePha_Py)
 			//.def("getProbePwr",  &LLRF::getProbePwr_Py)
 
-			//.def("getTraceValues", &LLRF::getTraceValues_Py)
+			.def("getTraceValues", &LLRF::getTraceValues_Py)
 
 			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)

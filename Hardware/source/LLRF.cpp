@@ -1347,6 +1347,8 @@ size_t LLRF::getNumTracesToEstimateRepRate() const
 {
 	return num_traces_to_estimate_rep_rate;
 }
+
+// This is estimated value and only works when MONITORING traces.
 double LLRF::getTraceRepRate() const
 {
 	return trace_rep_rate;
