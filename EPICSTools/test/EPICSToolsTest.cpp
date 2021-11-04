@@ -115,33 +115,47 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 
 }
 
-//BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
-//{
-//	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
-//	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
-//	ET.monitor(pv);
-//	Listener pid_scan = ET.getMonitor(pv);
-//	if (pid_scan.isConnected())
-//	{
-//		bool isEnum = pid_scan.isEnum();
-//		auto val = pid_scan.getValue<unsigned short>();
-//	}
-//}
-//
-//
-//BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
-//{
-//	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
-//	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
-//	ET.monitor(pv);
-//	Listener mon = ET.getMonitor(pv);
-//	if (mon.isConnected())
-//	{
-//		auto arrayVal = mon.getArrayBuffer<long>();
-//		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
-//	}
-//
-//}
+BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
+{
+	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
+	ET.monitor(pv);
+	Listener pid_scan = ET.getMonitor(pv);
+	if (pid_scan.isConnected())
+	{
+		bool isEnum = pid_scan.isEnum();
+		auto val = pid_scan.getValue<unsigned short>();
+	}
+}
+
+
+BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
+{
+	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener& mon = ET.getMonitor(pv);
+	if (mon.isConnected())
+	{
+		auto arrayVal = mon.getArrayBuffer<long>();
+		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
+	}
+
+}
+
+BOOST_AUTO_TEST_CASE(get_bam_array_with_buffer_test)
+{
+	const std::string pv = "BAM-TEST-DAQ:DATA2";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener& mon = ET.getMonitor(pv);
+	if (mon.isConnected())
+	{
+		auto arrayVal = mon.getArrayBuffer<short>();
+		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
+	}
+
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()
