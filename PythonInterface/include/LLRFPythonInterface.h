@@ -206,8 +206,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 
 
-			//.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
-			//.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
+			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
+			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
 
 
 
@@ -252,16 +252,16 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 
 			//.def("getTraceData", &LLRF::getTraceData_Py)
-			//.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
-			//.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
-			//.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
-			//.def("getKlyFwdPwr", &LLRF::getKlyFwdPwr_Py)
-			//.def("getCavRevPha", &LLRF::getCavRevPha_Py)
-			//.def("getCavFwdPha", &LLRF::getCavFwdPha_Py)
-			//.def("getKlyRevPha", &LLRF::getKlyRevPha_Py)
-			//.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
-			//.def("getProbePha",  &LLRF::getProbePha_Py)
-			//.def("getProbePwr",  &LLRF::getProbePwr_Py)
+			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
+			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
+			.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
+			.def("getKlyFwdPwr", &LLRF::getKlyFwdPwr_Py)
+			.def("getCavRevPha", &LLRF::getCavRevPha_Py)
+			.def("getCavFwdPha", &LLRF::getCavFwdPha_Py)
+			.def("getKlyRevPha", &LLRF::getKlyRevPha_Py)
+			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
+			.def("getProbePha",  &LLRF::getProbePha_Py)
+			.def("getProbePwr",  &LLRF::getProbePwr_Py)
 
 			.def("getTraceValues", &LLRF::getTraceValues_Py)
 
