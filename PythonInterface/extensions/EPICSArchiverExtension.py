@@ -32,6 +32,20 @@ class EPICSArchiver(object):
     
     def _makeDateTimeFromStr(self, date_str, time_str):
         return datetime.combine(self._makeDateFromStr(date_str), self._makeTimeFromStr(time_str))
+        
+    def getDateTimeFromTimestamp(self, timestamp):
+        epochStamp = datetime.fromtimestamp(timestamp)
+        return epochStamp.strftime('%d-%m-%Y %H:%M:%S')
+    
+    def getTimeFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
+        data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo)
+        formattedData = {}
+        formattedData[pv] = {}
+        for item in data:
+            for values in item["data"]:
+                timeStr = self.getDateTimeFromTimestamp(values["secs"])
+                formattedData[pv][timeStr] = values["val"]
+        return formattedData
     
     def getData(self, pv, dateFrom, timeFrom, dateTo, timeTo):
         archiver_link = self.archiver_root + self._formURLStr(pv, dateFrom, timeFrom, dateTo, timeTo)
