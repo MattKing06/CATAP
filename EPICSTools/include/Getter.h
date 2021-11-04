@@ -179,6 +179,10 @@ inline std::pair<epicsTimeStamp, std::vector<T>> Getter::getTimestampedArray()
 		}
 		return returnVector;
 	}
+	else
+	{
+		return std::pair<epicsTimeStamp, std::vector<T>>();
+	}
 }
 
 

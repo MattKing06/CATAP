@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(get_timestamped_enum_value_test)
 BOOST_AUTO_TEST_CASE(get_timestamped_double_vector_test)
 {
 	const std::string pv = "CLA-L01-LRF-CTRL-01:ad1:dod_demod_vec";
-	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
 	std::pair<epicsTimeStamp, std::vector<double>> vl = ET.getTimestampedArray<double>(pv);
 }
 
