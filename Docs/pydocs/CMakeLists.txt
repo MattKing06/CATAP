@@ -12,6 +12,8 @@ endif(WIN32)
 
 find_package(Sphinx)
 
+message("FOUUND SPHINX: " ${SPHINX_EXECUTABLE})
+
 if(NOT DEFINED SPHINX_THEME)
   set(SPHINX_THEME default)
 endif()
