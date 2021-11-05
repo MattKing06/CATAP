@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath('@CATAP_LOCATION@'))
 print(sys.path)
 #sys.path.append(os.path.join(os.path.dirname(__file__), #'C:\\Users\\ujo48515\\Documents\\VELA-CLARA-Mock-Controller-build\\PythonInterface#\\Release'))
 
+from CATAP.HardwareFactory import *
 from CATAP.GlobalStates import *
 from CATAP.GlobalTypes import *
 from CATAP.EPICSTools import *
@@ -42,7 +43,7 @@ from CATAP.Shutter import *
 from CATAP.Stage import *
 from CATAP.Valve import *
 
-from CATAP.HardwareFactory import *
+#from CATAP.HardwareFactory import *
 
 
 
@@ -181,7 +182,7 @@ man_pages = [
     (master_doc, 'sphinxtest', u'SphinxTest Documentation',
      [author], 1)
 ]
-autoclass_content="class"
+autoclass_content="both"
 # -- Options for Texinfo output ----------------------------------------------
 
 # Grouping the document tree into Texinfo files. List of tuples
