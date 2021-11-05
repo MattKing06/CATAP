@@ -199,7 +199,6 @@ void Getter::setValueFromEPICS()
 				ca_get(DBR_TIME_ENUM, pv.CHID, &us_value);
 				EPICSInterface::sendToEPICS();
 				currentValue.second = static_cast<unsigned short>(us_value.value);
-				std::cout << "USHORT: " << boost::get<unsigned short>(currentValue.second) << std::endl;
 				currentValue.first = us_value.stamp;
 			}
 			else
