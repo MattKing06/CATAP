@@ -188,7 +188,7 @@ namespace GlobalFunctions {
 	}
 
 	/* THIS CAUSES Virtual Circuit Disconnect due to not being static...*/
-	inline std::string& cStringToStdString(const char* c_string)
+	inline std::string cStringToStdString(const char* c_string)
 	{
 		std::string newStr = c_string;
 		//remove null-termination char from c-string
