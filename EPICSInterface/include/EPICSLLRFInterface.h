@@ -242,6 +242,15 @@ public:
     {LLRFRecords::CH7_INTERLOCK_U,  this->update_CH7_INTERLOCK_U},
     {LLRFRecords::CH8_INTERLOCK_U,  this->update_CH8_INTERLOCK_U},
 
+    {LLRFRecords::CH1_INTERLOCK_PDBM, this->update_CH1_INTERLOCK_PDBM},
+    {LLRFRecords::CH2_INTERLOCK_PDBM,  this->update_CH2_INTERLOCK_PDBM},
+    {LLRFRecords::CH3_INTERLOCK_PDBM,  this->update_CH3_INTERLOCK_PDBM},
+    {LLRFRecords::CH4_INTERLOCK_PDBM,  this->update_CH4_INTERLOCK_PDBM},
+    {LLRFRecords::CH5_INTERLOCK_PDBM,  this->update_CH5_INTERLOCK_PDBM},
+    {LLRFRecords::CH6_INTERLOCK_PDBM,  this->update_CH6_INTERLOCK_PDBM},
+    {LLRFRecords::CH7_INTERLOCK_PDBM,  this->update_CH7_INTERLOCK_PDBM},
+    {LLRFRecords::CH8_INTERLOCK_PDBM,  this->update_CH8_INTERLOCK_PDBM},
+
 
     {LLRFRecords::CH1_INTERLOCK_ENABLE,  this->update_CH1_INTERLOCK_ENABLE},
     {LLRFRecords::CH2_INTERLOCK_ENABLE,  this->update_CH2_INTERLOCK_ENABLE},

@@ -30,13 +30,12 @@ public:
 	std::pair<epicsTimeStamp, double > u_level;
 	std::pair<epicsTimeStamp, double > p_level;
 	std::pair<epicsTimeStamp, double > pdbm_level;
-
 	/*! is this interlock for a phase or a power trace */
 	TYPE interlock_type;
 
 	std::pair<epicsTimeStamp, bool > status;
 
-	bool enable;
+	std::pair<epicsTimeStamp, bool> enable;
 };
 
 class TraceData
@@ -118,6 +117,9 @@ class TraceData
 		std::pair<epicsTimeStamp, double > p_level;
 		/*! pdbm_level of the LLRF trace interlock (interlocks are only applicable to POWER traces) */
 		std::pair<epicsTimeStamp, double > pdbm_level;
+
+		std::pair<epicsTimeStamp, bool> enable;
+
 		/*! is this a PHASE or a POWER trace */
 		TYPE trace_type;
 };
@@ -482,6 +484,8 @@ public:
 		STATE getInterlock()const;
 		bool isInterlockActive()const;
 		bool isInterlockNotActive()const;
+		std::map<std::string, std::pair<std::string, std::string>> getAllInterlocks() const;
+		boost::python::dict getAllInterlocks_Py() const;
 	private:
 		bool setInterlock(const STATE new_state);
 		/*! State of the top level LLRF interlock, value and epicstimestamp */

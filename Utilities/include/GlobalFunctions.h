@@ -72,6 +72,7 @@ namespace GlobalFunctions {
 		return true;
 	}
 
+	inline const std::string const boolToString(const bool& b) { return b ? "true" : "false"; }
 
 	template<class T>
 	bool entryExists(const std::vector<T>& v, const T& item)

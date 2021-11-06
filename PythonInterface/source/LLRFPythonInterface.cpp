@@ -12,6 +12,7 @@ BOOST_PYTHON_MODULE(_LLRF)
 	BOOST_PYTHON_STATES_INCLUDE::expose_global_state_enums();
 	BOOST_PYTHON_HARDWARE_INCLUDE::expose_hardware_object();
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_trace_data_object();
+	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_interlock_object();
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_object();
 	BOOST_PYTHON_LLRF_INCLUDE::expose_llrf_factory_object();
 }

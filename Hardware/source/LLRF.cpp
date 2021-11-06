@@ -56,7 +56,7 @@ LLRFInterlock::LLRFInterlock() :
 	pdbm_level(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	status(std::make_pair(epicsTimeStamp(), false)),
 	interlock_type(TYPE::UNKNOWN_TYPE),
-	enable(false)
+	enable(std::make_pair(epicsTimeStamp(), false))
 {}
 LLRFInterlock::LLRFInterlock(const LLRFInterlock& copy_obj):
 name(copy_obj.name),
@@ -178,7 +178,7 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 	trace_data_map(copyLLRF.trace_data_map.begin(), copyLLRF.trace_data_map.end()),
 	//trace_ACQM_map(copyLLRF.trace_ACQM_map),
 	//trace_SCAN_map(copyLLRF.trace_SCAN_map),
-	//all_trace_interlocks(copyLLRF.all_trace_interlocks),
+	all_trace_interlocks(copyLLRF.all_trace_interlocks),
 	dbr_all_trace_data(copyLLRF.dbr_all_trace_data),
 	epicsInterface(copyLLRF.epicsInterface),
 	LLRFParamMap(copyLLRF.LLRFParamMap),
@@ -568,72 +568,72 @@ bool LLRF::setTraceDataBufferSize(const std::string& name, const size_t new_size
 }
 void LLRF::setupInterlocks()
 {
-	//messenger.printDebugMessage("setupInterlocks");
-	//using namespace LLRFRecords;
-	//all_trace_interlocks[LLRF_CH1_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH2_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH3_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH4_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH5_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH6_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH7_INTERLOCK] = LLRFInterlock();
-	//all_trace_interlocks[LLRF_CH8_INTERLOCK] = LLRFInterlock();
+	messenger.printDebugMessage("setupInterlocks");
+	using namespace LLRFRecords;
+	all_trace_interlocks[LLRF_CH1_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH2_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH3_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH4_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH5_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH6_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH7_INTERLOCK] = LLRFInterlock();
+	all_trace_interlocks[LLRF_CH8_INTERLOCK] = LLRFInterlock();
 
 	// now we set the TYPE (phase or POWER) 
-	//messenger.printDebugMessage("Setting interlock Trace TYPE");
-	//const std::vector<std::string> channels{ "CH1","CH2","CH3","CH4","CH5","CH6","CH7","CH8" };
-	//// loop over every channel
-	//for (auto&& it : channels)
-	//{
-	//	if (GlobalFunctions::entryExists(channel_to_tracesource_map, it))
-	//	{
-	//		// if a channe exists in all_trace_interlocks keys
-	//		for (auto& it2 : all_trace_interlocks)
-	//		{
-	//			// if string CHX exist sin 
-	//			if (GlobalFunctions::stringIsSubString(it2.first, it))
-	//			{
-	//				if (GlobalFunctions::stringIsSubString(it2.first, "POWER"))
-	//				{
-	//					it2.second.interlock_type = TYPE::POWER;
-	//				}
-	//				else if (GlobalFunctions::stringIsSubString(it2.first, "PHASE"))
-	//				{
-	//					it2.second.interlock_type = TYPE::PHASE;
-	//				}
-	//				else
-	//				{
+	messenger.printDebugMessage("Setting interlock Trace TYPE");
+	const std::vector<std::string> channels{ "CH1","CH2","CH3","CH4","CH5","CH6","CH7","CH8" };
+	// loop over every channel
+	for (auto&& it : channels)
+	{
+		if (GlobalFunctions::entryExists(channel_to_tracesource_map, it))
+		{
+			// if a channe exists in all_trace_interlocks keys
+			for (auto& it2 : all_trace_interlocks)
+			{
+				// if string CHX exist sin 
+				if (GlobalFunctions::stringIsSubString(it2.first, it))
+				{
+					if (GlobalFunctions::stringIsSubString(it2.first, "POWER"))
+					{
+						it2.second.interlock_type = TYPE::POWER;
+					}
+					else if (GlobalFunctions::stringIsSubString(it2.first, "PHASE"))
+					{
+						it2.second.interlock_type = TYPE::PHASE;
+					}
+					else
+					{
 
-	//				}
-	//				messenger.printDebugMessage(it2.first, " ", channel_to_tracesource_map[it], " ", ENUM_TO_STRING(it2.second.interlock_type));
-	//			}
+					}
+					messenger.printDebugMessage(it2.first, " ", channel_to_tracesource_map[it], " ", ENUM_TO_STRING(it2.second.interlock_type));
+				}
 
-	//		}
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage("Can't find ", it, " inchannel_to_tracesource_map");
-	//	}
-	//}
-	//
-	//for (auto&& channel : channels)
-	//{
-	//	if (GlobalFunctions::entryExists(specificHardwareParameters, channel))
-	//	{
-	//		channel_to_tracesource_map[channel] = specificHardwareParameters.find(channel)->second;
-	//		messenger.printDebugMessage("Found " + channel + ", connected to " + channel_to_tracesource_map[channel]);
-	//	}
-	//	else
-	//	{
-	//		messenger.printDebugMessage(channel + " is NOT in the config");
-	//		channel_to_tracesource_map[channel] = "NONE";
-	//	}
-	//}
-	//messenger.printDebugMessage("setupInterlocks added these interlocks:");
-	//for (auto&& trace : all_trace_interlocks)
-	//{
-	//	messenger.printDebugMessage(trace.first);
-	//}
+			}
+		}
+		else
+		{
+			messenger.printDebugMessage("Can't find ", it, " inchannel_to_tracesource_map");
+		}
+	}
+	
+	for (auto&& channel : channels)
+	{
+		if (GlobalFunctions::entryExists(specificHardwareParameters, channel))
+		{
+			channel_to_tracesource_map[channel] = specificHardwareParameters.find(channel)->second;
+			messenger.printDebugMessage("Found " + channel + ", connected to " + channel_to_tracesource_map[channel]);
+		}
+		else
+		{
+			messenger.printDebugMessage(channel + " is NOT in the config");
+			channel_to_tracesource_map[channel] = "NONE";
+		}
+	}
+	messenger.printDebugMessage("setupInterlocks added these interlocks:");
+	for (auto&& trace : all_trace_interlocks)
+	{
+		messenger.printDebugMessage(trace.first);
+	}
 }
 void LLRF::initAllTraceSCANandACQM()
 {
@@ -2286,6 +2286,36 @@ STATE LLRF::getInterlock()const
 {
 	return interlock_state.second;
 }
+
+std::map<std::string, std::pair<std::string, std::string> > LLRF::getAllInterlocks() const
+{
+	std::map < std::string, std::pair<std::string, std::string>> ilockMap;
+	for (auto& item : trace_data_map)
+	{
+		ilockMap[item.first] = std::make_pair("enable", GlobalFunctions::boolToString(item.second.enable.second));
+		ilockMap[item.first] = std::make_pair("status", GlobalFunctions::boolToString(item.second.interlock_state.second));
+		ilockMap[item.first] = std::make_pair("u_level", std::to_string(item.second.u_level.second));
+		ilockMap[item.first] = std::make_pair("p_level", std::to_string(item.second.p_level.second));
+		ilockMap[item.first] = std::make_pair("pdbm_level", std::to_string(item.second.pdbm_level.second));
+	}
+	return ilockMap;
+}
+
+boost::python::dict LLRF::getAllInterlocks_Py() const
+{
+	boost::python::dict r;
+	for (auto& item : trace_data_map)
+	{
+		r[item.second.name] = boost::python::dict();
+		r[item.second.name]["enable"] = item.second.enable.second;
+		r[item.second.name]["status"] = item.second.interlock_state.second;
+		r[item.second.name]["u_level"] = item.second.u_level.second;
+		r[item.second.name]["p_level"] = item.second.p_level.second;
+		r[item.second.name]["pdbm_level"] = item.second.pdbm_level.second;
+	}
+	return r;
+}
+
 bool LLRF::setInterlock(const STATE new_state)
 {
 	if (getInterlock() == new_state)

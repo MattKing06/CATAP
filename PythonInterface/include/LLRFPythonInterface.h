@@ -137,7 +137,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("isTrigInternal", &LLRF::isTrigInternal)
 
 
-
+			.def("getAllInterlocks", &LLRF::getAllInterlocks_Py)
 			.def("setInterlockActive", &LLRF::setInterlockActive)
 			.def("setInterlockNonActive", &LLRF::setInterlockNonActive)
 			.def("getInterlock", &LLRF::getInterlock)

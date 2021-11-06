@@ -213,40 +213,43 @@ void EPICSLLRFInterface::update_CH8_INTERLOCK_STATUS(const struct event_handler_
 
 void EPICSLLRFInterface::updateInterLockStatus(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	////messenger.printDebugMessage("updateInterLockStatus");
-	//// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
-	//// but ... THIS works, so only change when eveyrthing else is working 
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
-	//{
-	//	updateTimeStampBoolPair(args,recastLLRF->all_trace_interlocks.at(ch).status);
-	//	//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
-	//	std::string trace;
-	//	if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//	{
-	//		//messenger.printDebugMessage(CH, " has a useful name of ", trace);
-	//		trace.append("_POWER");
-	//		//messenger.printDebugMessage("NOW Looking for ", trace);
-	//		if(GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
-	//		{
-	//			recastLLRF->trace_data_map.at(trace).interlock_state = recastLLRF->all_trace_interlocks.at(ch).status;
-	//			//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
-	//		}
-	//		else
-	//		{
-	//			//messenger.printDebugMessage(trace, " NOT in trace_data_map");
-	//		}
-	//	}
-	//	else
-	//	{
-	//		//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//	}
-	//}
-	//else
-	//{
-	//	//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
-	//}
+
+	//messenger.printDebugMessage("updateInterLockStatus");
+	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
+	// but ... THIS works, so only change when eveyrthing else is working 
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
+	{
+		updateTimeStampBoolPair(args,recastLLRF->all_trace_interlocks.at(ch).status);
+		messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
+		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+		std::string trace;
+		if (recastLLRF->getTraceFromChannelData(CH, trace))
+		{
+			//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+			trace.append("_POWER");
+			//messenger.printDebugMessage("NOW Looking for ", trace);
+			if(GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->all_trace_interlocks.at(ch).name = trace;
+				recastLLRF->trace_data_map.at(trace).interlock_state = recastLLRF->all_trace_interlocks.at(ch).status;
+				//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+			}
+			else
+			{
+				//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	}
 }
 
 void EPICSLLRFInterface::update_CH1_INTERLOCK_PDBM(const struct event_handler_args args)
@@ -283,40 +286,42 @@ void EPICSLLRFInterface::update_CH8_INTERLOCK_PDBM(const struct event_handler_ar
 }
 void EPICSLLRFInterface::updateInterLockPDBM(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	////messenger.printDebugMessage("updateInterLockStatus");
+
 	//// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
 	//// but ... THIS works, so only change when eveyrthing else is working 
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
-	//{
-	//	updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).pdbm_level);
-	//	//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
-	//	std::string trace;
-	//	if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//	{
-	//		//messenger.printDebugMessage(CH, " has a useful name of ", trace);
-	//		trace.append("_POWER");
-	//		//messenger.printDebugMessage("NOW Looking for ", trace);
-	//		if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
-	//		{
-	//			recastLLRF->trace_data_map.at(trace).pdbm_level = recastLLRF->all_trace_interlocks.at(ch).pdbm_level;
-	//			//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
-	//		}
-	//		else
-	//		{
-	//			//messenger.printDebugMessage(trace, " NOT in trace_data_map");
-	//		}
-	//	}
-	//	else
-	//	{
-	//		//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//	}
-	//}
-	//else
-	//{
-	//	//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
-	//}
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
+	{
+		updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).pdbm_level);
+		messenger.printDebugMessage("updateInterLock PDBM: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).pdbm_level.second);
+		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+		std::string trace;
+		if (recastLLRF->getTraceFromChannelData(CH, trace))
+		{
+			//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+			trace.append("_POWER");
+			//messenger.printDebugMessage("NOW Looking for ", trace);
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->all_trace_interlocks.at(ch).name = trace;
+				recastLLRF->trace_data_map.at(trace).pdbm_level = recastLLRF->all_trace_interlocks.at(ch).pdbm_level;
+				//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+			}
+			else
+			{
+				//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	}
 }
 
 
@@ -355,39 +360,42 @@ void EPICSLLRFInterface::update_CH8_INTERLOCK_P(const struct event_handler_args 
 void EPICSLLRFInterface::updateInterLockP(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
 	////messenger.printDebugMessage("updateInterLockStatus");
+
 	//// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
 	//// but ... THIS works, so only change when eveyrthing else is working 
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
-	//{
-	//	updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).p_level);
-	//	//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
-	//	std::string trace;
-	//	if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//	{
-	//		//messenger.printDebugMessage(CH, " has a useful name of ", trace);
-	//		trace.append("_POWER");
-	//		//messenger.printDebugMessage("NOW Looking for ", trace);
-	//		if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
-	//		{
-	//			recastLLRF->trace_data_map.at(trace).p_level = recastLLRF->all_trace_interlocks.at(ch).p_level;
-	//			//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
-	//		}
-	//		else
-	//		{
-	//			//messenger.printDebugMessage(trace, " NOT in trace_data_map");
-	//		}
-	//	}
-	//	else
-	//	{
-	//		//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//	}
-	//}
-	//else
-	//{
-	//	//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
-	//}
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
+	{
+		updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).p_level);
+		messenger.printDebugMessage("updateInterLock P: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).p_level.second);
+		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+		std::string trace;
+		if (recastLLRF->getTraceFromChannelData(CH, trace))
+		{
+			//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+			trace.append("_POWER");
+			//messenger.printDebugMessage("NOW Looking for ", trace);
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->all_trace_interlocks.at(ch).name = trace;
+				recastLLRF->trace_data_map.at(trace).p_level = recastLLRF->all_trace_interlocks.at(ch).p_level;
+				//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+			}
+			else
+			{
+				//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	}
 }
 
 
@@ -425,40 +433,42 @@ void EPICSLLRFInterface::update_CH8_INTERLOCK_U(const struct event_handler_args 
 }
 void EPICSLLRFInterface::updateInterLockU(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	////messenger.printDebugMessage("updateInterLockStatus");
-	//// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
-	//// but ... THIS works, so only change when eveyrthing else is working 
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
-	//{
-	//	updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).u_level);
-	//	//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
-	//	std::string trace;
-	//	if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//	{
-	//		//messenger.printDebugMessage(CH, " has a useful name of ", trace);
-	//		trace.append("_POWER");
-	//		//messenger.printDebugMessage("NOW Looking for ", trace);
-	//		if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
-	//		{
-	//			recastLLRF->trace_data_map.at(trace).u_level = recastLLRF->all_trace_interlocks.at(ch).u_level;
-	//			//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
-	//		}
-	//		else
-	//		{
-	//			//messenger.printDebugMessage(trace, " NOT in trace_data_map");
-	//		}
-	//	}
-	//	else
-	//	{
-	//		//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//	}
-	//}
-	//else
-	//{
-	//	//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
-	//}
+	//messenger.printDebugMessage("updateInterLockStatus");
+	// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
+	// but ... THIS works, so only change when eveyrthing else is working 
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
+	{
+		updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).u_level);
+		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+		messenger.printDebugMessage("updateInterLock U: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).u_level.second);
+		std::string trace;
+		if (recastLLRF->getTraceFromChannelData(CH, trace))
+		{
+			//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+			trace.append("_POWER");
+			//messenger.printDebugMessage("NOW Looking for ", trace);
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->all_trace_interlocks.at(ch).name = trace;
+				recastLLRF->trace_data_map.at(trace).u_level = recastLLRF->all_trace_interlocks.at(ch).u_level;
+				//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+			}
+			else
+			{
+				//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	}
 }
 
 
@@ -499,40 +509,41 @@ void EPICSLLRFInterface::update_CH8_INTERLOCK_ENABLE(const struct event_handler_
 }
 void EPICSLLRFInterface::updateInterLockENABLE(const std::string& ch, const std::string& CH, const struct event_handler_args& args)
 {
-	////messenger.printDebugMessage("updateInterLockStatus");
 	//// TODO maybe all the sorting out the names could be put into 1 function to make it a bit clearner, 
 	//// but ... THIS works, so only change when eveyrthing else is working 
-	//LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
-	//const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
-	//if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
-	//{
-	//	updateTimeStampDoublePair(args, recastLLRF->all_trace_interlocks.at(ch).u_level);
-	//	//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
-	//	std::string trace;
-	//	if (recastLLRF->getTraceFromChannelData(CH, trace))
-	//	{
-	//		//messenger.printDebugMessage(CH, " has a useful name of ", trace);
-	//		trace.append("_POWER");
-	//		//messenger.printDebugMessage("NOW Looking for ", trace);
-	//		if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
-	//		{
-	//			recastLLRF->trace_data_map.at(trace).u_level = recastLLRF->all_trace_interlocks.at(ch).u_level;
-	//			//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
-	//		}
-	//		else
-	//		{
-	//			//messenger.printDebugMessage(trace, " NOT in trace_data_map");
-	//		}
-	//	}
-	//	else
-	//	{
-	//		//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
-	//	}
-	//}
-	//else
-	//{
-	//	//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
-	//}
+	LLRF* recastLLRF = static_cast<LLRF*>(args.usr);
+	const struct dbr_time_enum* tv = (const struct dbr_time_enum*)(args.dbr);
+	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
+	{
+		updateTimeStampBoolPair(args, recastLLRF->all_trace_interlocks.at(ch).enable);
+		messenger.printDebugMessage("updateInterLock ENABLE: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).enable.second);
+		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
+		std::string trace;
+		if (recastLLRF->getTraceFromChannelData(CH, trace))
+		{
+			//messenger.printDebugMessage(CH, " has a useful name of ", trace);
+			trace.append("_POWER");
+			//messenger.printDebugMessage("NOW Looking for ", trace);
+			if (GlobalFunctions::entryExists(recastLLRF->trace_data_map, trace))
+			{
+				recastLLRF->all_trace_interlocks.at(ch).name = trace;
+				recastLLRF->trace_data_map.at(trace).enable = recastLLRF->all_trace_interlocks.at(ch).enable;
+				//messenger.printDebugMessage(trace, " interlock_state = ", recastLLRF->trace_data_map.at(trace).interlock_state.second);
+			}
+			else
+			{
+				//messenger.printDebugMessage(trace, " NOT in trace_data_map");
+			}
+		}
+		else
+		{
+			//messenger.printDebugMessage(CH, " getTraceFromChannelData returned false ");
+		}
+	}
+	else
+	{
+		//messenger.printDebugMessage(ch, " NOT in all_trace_interlocks");
+	}
 }
 
 
