@@ -31,6 +31,10 @@ public:
 		@param[in] args : Passed to the function by EPICS, contains the Listener object to update.
 	*/
 	static void updateIntegerValue(const struct event_handler_args args);
+	/*! Update function for DBR_SHORT and DBR_TIME_SHORT pv types with COUNT = 1
+	@param[in] args : Passed to the function by EPICS, contains the Listener object to update.
+*/	
+	static void updateShortValue(const struct event_handler_args args);
 	/*! Update function for DBR_ENUM and DBR_TIME_ENUM pv types with COUNT = 1
 		@param[in] args : Passed to the function by EPICS, contains the Listener object to update.
 	*/
@@ -55,6 +59,10 @@ public:
 		@param[in] args : Passed to the function by EPICS, contains the Listener object to update.
 	*/
 	static void updateIntegerArray(const struct event_handler_args args);
+	/*! Update function for DBR_SHORT and DBR_TIME_SHORT pv types with COUNT > 1
+	@param[in] args : Passed to the function by EPICS, contains the Listener object to update.
+*/
+	static void updateShortArray(const struct event_handler_args args);
 	/*! Update function for DBR_ENUM and DBR_TIME_ENUM pv types with COUNT > 1
 		@param[in] args : Passed to the function by EPICS, contains the Listener object to update.
 	*/

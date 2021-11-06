@@ -186,6 +186,15 @@ namespace GlobalFunctions {
 		return s;
 	}
 
+	/* THIS CAUSES Virtual Circuit Disconnect due to not being static...*/
+	inline std::string& cStringToStdString(const char* c_string)
+	{
+		std::string newStr(c_string);
+		//remove null-termination char from c-string
+		newStr.erase(newStr.find('\0'));
+		return newStr;
+	}
+
 	extern bool stringIsSubString(const std::string& stringToCheck,const std::string& stringToLookFor);
 
 	extern std::string getTimeAndDateString();

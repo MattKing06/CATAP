@@ -214,7 +214,6 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 		messenger.printDebugMessage("ca_create_channel to  ", pv);
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
-		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		
 		//SEVCHK(status, "ca_create_channel");
@@ -410,6 +409,20 @@ void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_
 	pairToUpdate.second = vec;
 }
 
+void EPICSInterface::updateTimeStampShortVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<short>>& pairToUpdate, long size)
+{
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<short> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
 void EPICSInterface::updateTimeStampIntegerVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size)
 {
 	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
@@ -590,8 +603,9 @@ std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair
 	std::pair < epicsTimeStamp, std::string > r;
 	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
 	r.first = tv->stamp;
-	r.second = std::string((const char*)tv->value, 40); // MAGIC NUMBER ! 
+	r.second = std::string((const char*)tv->value, MAX_STRING_SIZE); // MAGIC NUMBER !
 	GlobalFunctions::rtrim(r.second);
+	r.second.erase(r.second.find('\0'));
 	return r;
 }
 std::pair < epicsTimeStamp, long > EPICSInterface::getTimeStampLongPair(const struct event_handler_args& args)

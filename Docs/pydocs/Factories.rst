@@ -36,7 +36,7 @@ CameraFactory
 .. automodule:: Camera
    :members: CameraFactory
    :undoc-members:
-   
+   :exclude-members: getImageData
 
 
 ===========================
@@ -52,7 +52,7 @@ IMGFactory
 ===========================
 .. automodule:: IMG
    :members: IMGFactory
-   :undoc-members:
+   :no-undoc-members:
 
 
 ===========================

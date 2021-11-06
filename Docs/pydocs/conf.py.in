@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath('@CATAP_LOCATION@'))
 print(sys.path)
 #sys.path.append(os.path.join(os.path.dirname(__file__), #'C:\\Users\\ujo48515\\Documents\\VELA-CLARA-Mock-Controller-build\\PythonInterface#\\Release'))
 
+
 from CATAP.GlobalStates import *
 from CATAP.GlobalTypes import *
 from CATAP.EPICSTools import *
@@ -73,6 +74,8 @@ extensions = [
 ]
 
 autodoc_docstring_signature = True
+
+autodoc_mock_imports = ["numpy"]
 
 keep_warning=True
 add_module_names = False
@@ -181,6 +184,9 @@ man_pages = [
     (master_doc, 'sphinxtest', u'SphinxTest Documentation',
      [author], 1)
 ]
+
+autodoc_class_signature="separated"
+
 autoclass_content="class"
 # -- Options for Texinfo output ----------------------------------------------
 
