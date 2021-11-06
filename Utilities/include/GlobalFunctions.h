@@ -269,6 +269,10 @@ namespace GlobalFunctions {
 
 
 	extern STATE stringToSTATE(const std::string& state_str);
+
+
+	extern bool stringToBool(const std::string& string_in);
+
 }
 /*! @}*/
 #endif

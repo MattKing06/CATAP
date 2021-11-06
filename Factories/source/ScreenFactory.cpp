@@ -23,15 +23,12 @@ ScreenFactory(mode, MASTER_LATTICE_FILE_LOCATION)
 ScreenFactory::ScreenFactory(STATE mode, const std::string& primeLatticeLocation) :
 mode(mode),
 hasBeenSetup(false),
-reader(ConfigReader("Screen", mode, primeLatticeLocation))
+reader(ConfigReader("Screen", mode, primeLatticeLocation)),
+messenger(LoggingSystem(true, true))
 {
-	messenger = LoggingSystem(true, true);
-	//hasBeenSetup = false;
-//	messenger = LoggingSystem(false, false);
 	messenger.printDebugMessage("Screen Factory constructed");
-	//mode = mode;
-	//reader = ConfigReader("Screen", mode);
 }
+
 ScreenFactory::ScreenFactory(const ScreenFactory& copyScreenFactory)
 	: hasBeenSetup(copyScreenFactory.hasBeenSetup),
 	mode(copyScreenFactory.mode),
@@ -81,34 +78,34 @@ void ScreenFactory::populateScreenMap()
 
 void ScreenFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
-	if (pvStruct.pvRecord == ScreenRecords::HSDEV ||
-		pvStruct.pvRecord == ScreenRecords::HTRIGGER ||
-		pvStruct.pvRecord == ScreenRecords::HEX ||
-		pvStruct.pvRecord == ScreenRecords::HTGTPOS ||
-		pvStruct.pvRecord == ScreenRecords::HJOG ||
-		pvStruct.pvRecord == ScreenRecords::HJDIFF ||
-		pvStruct.pvRecord == ScreenRecords::HMOVING ||
-		pvStruct.pvRecord == ScreenRecords::HREADY ||
-		pvStruct.pvRecord == ScreenRecords::HGETDEV ||
-		pvStruct.pvRecord == ScreenRecords::HDEVSTATE ||
-		pvStruct.pvRecord == ScreenRecords::HMAXPOS ||
-		pvStruct.pvRecord == ScreenRecords::HDEVCENT ||
-		pvStruct.pvRecord == ScreenRecords::HACTPOS ||
-		pvStruct.pvRecord == ScreenRecords::HEN ||
-		pvStruct.pvRecord == ScreenRecords::VSDEV ||
-		pvStruct.pvRecord == ScreenRecords::VTRIGGER ||
-		pvStruct.pvRecord == ScreenRecords::VEX ||
-		pvStruct.pvRecord == ScreenRecords::VTGTPOS ||
-		pvStruct.pvRecord == ScreenRecords::VJOG ||
-		pvStruct.pvRecord == ScreenRecords::VJDIFF ||
-		pvStruct.pvRecord == ScreenRecords::VMOVING ||
-		pvStruct.pvRecord == ScreenRecords::VREADY ||
-		pvStruct.pvRecord == ScreenRecords::VGETDEV ||
-		pvStruct.pvRecord == ScreenRecords::VDEVSTATE ||
-		pvStruct.pvRecord == ScreenRecords::VMAXPOS ||
-		pvStruct.pvRecord == ScreenRecords::VDEVCENT ||
-		pvStruct.pvRecord == ScreenRecords::VACTPOS ||
-		pvStruct.pvRecord == ScreenRecords::VEN ||
+	if (pvStruct.pvRecord == ScreenRecords::H_SDEV ||
+		pvStruct.pvRecord == ScreenRecords::H_TRIGGER ||
+		pvStruct.pvRecord == ScreenRecords::H_EX ||
+		pvStruct.pvRecord == ScreenRecords::H_TGTPOS ||
+		pvStruct.pvRecord == ScreenRecords::H_JOG ||
+		pvStruct.pvRecord == ScreenRecords::H_JDIFF ||
+		pvStruct.pvRecord == ScreenRecords::H_MOVING ||
+		pvStruct.pvRecord == ScreenRecords::H_READY ||
+		pvStruct.pvRecord == ScreenRecords::H_GETDEV ||
+		pvStruct.pvRecord == ScreenRecords::H_DEVSTATE ||
+		pvStruct.pvRecord == ScreenRecords::H_MAXPOS ||
+		pvStruct.pvRecord == ScreenRecords::H_DEVCENT ||
+		pvStruct.pvRecord == ScreenRecords::H_ACTPOS ||
+		pvStruct.pvRecord == ScreenRecords::H_EN ||
+		pvStruct.pvRecord == ScreenRecords::V_SDEV ||
+		pvStruct.pvRecord == ScreenRecords::V_TRIGGER ||
+		pvStruct.pvRecord == ScreenRecords::V_EX ||
+		pvStruct.pvRecord == ScreenRecords::V_TGTPOS ||
+		pvStruct.pvRecord == ScreenRecords::V_JOG ||
+		pvStruct.pvRecord == ScreenRecords::V_JDIFF ||
+		pvStruct.pvRecord == ScreenRecords::V_MOVING ||
+		pvStruct.pvRecord == ScreenRecords::V_READY ||
+		pvStruct.pvRecord == ScreenRecords::V_GETDEV ||
+		pvStruct.pvRecord == ScreenRecords::V_DEVSTATE ||
+		pvStruct.pvRecord == ScreenRecords::V_MAXPOS ||
+		pvStruct.pvRecord == ScreenRecords::V_DEVCENT ||
+		pvStruct.pvRecord == ScreenRecords::V_ACTPOS ||
+		pvStruct.pvRecord == ScreenRecords::V_EN ||
 		pvStruct.pvRecord == ScreenRecords::SDEV ||
 		pvStruct.pvRecord == ScreenRecords::TRIGGER ||
 		pvStruct.pvRecord == ScreenRecords::EX ||
@@ -126,11 +123,16 @@ void ScreenFactory::retrievemonitorStatus(pvStruct& pvStruct)
 		)
 	{
 		pvStruct.monitor = true;
+		std::cout << "retrievemonitorStatus get TRUE" << std::endl;
+		messenger.printDebugMessage("retrievemonitorStatus get TRUE");
 	}
 	else
 	{
 		pvStruct.monitor = false;
+		messenger.printDebugMessage("retrievemonitorStatus get FALSE");
+		std::cout << "retrievemonitorStatus get FALSE" << std::endl;
 	}
+
 }
 
 void ScreenFactory::setupChannels()
@@ -175,6 +177,7 @@ bool ScreenFactory::setup(const std::string& VERSION)
 		for (auto& pv : screenPVStructs)
 		{
 			std::string pvAndRecordName = pv.second.fullPVName + ":" + pv.first;
+			messenger.printDebugMessage("next PV  =", pvAndRecordName);
 			if (ca_state(pv.second.CHID) == cs_conn)
 			{
 				retrievemonitorStatus(pv.second);
@@ -183,14 +186,17 @@ bool ScreenFactory::setup(const std::string& VERSION)
 				screen.second.epicsInterface->retrieveupdateFunctionForRecord(pv.second);
 				// not sure how to set the mask from EPICS yet.
 				pv.second.MASK = DBE_VALUE;
-				messenger.printDebugMessage(pv.second.pvRecord, ": read", std::to_string(ca_read_access(pv.second.CHID)),
-					"write", std::to_string(ca_write_access(pv.second.CHID)),
-					"state", std::to_string(ca_state(pv.second.CHID)));
+				messenger.printDebugMessage(pv.second.pvRecord, ": read=", std::to_string(ca_read_access(pv.second.CHID)),
+					", write=", std::to_string(ca_write_access(pv.second.CHID)),
+					", state=", std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
 					screen.second.epicsInterface->createSubscription(screen.second, pv.second);
 				}
-				EPICSInterface::sendToEPICS();
+				else
+				{
+					messenger.printDebugMessage("NO createSubscription");
+				}
 			}
 			else
 			{
@@ -200,6 +206,7 @@ bool ScreenFactory::setup(const std::string& VERSION)
 			}
 		}
 	}
+	EPICSInterface::sendToEPICS();
 	hasBeenSetup = true;
 	return hasBeenSetup;
 	std::cout << "end" << std::endl;

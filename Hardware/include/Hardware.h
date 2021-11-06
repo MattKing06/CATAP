@@ -50,6 +50,10 @@ public:
 	bool isPhysical()const;
 	bool isOffline()const;
 
+	bool isNotPhysical()const;
+
+
+
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	std::map<std::string, std::string> getOfflineProperties()const;
 	boost::python::dict getOfflineProperties_Py();

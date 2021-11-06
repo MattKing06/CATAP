@@ -8,7 +8,8 @@
 #endif 
 #include <iostream>
 #include <string>
-#include <boost/circular_buffer.hpp>
+#include <mutex>          
+//#include <boost/circular_buffer.hpp>
 #include <GlobalStateEnums.h>
 
 /**@addtogroup epicsInterface
@@ -238,35 +239,60 @@ public:
 	*/
 	static void updateEN(const struct event_handler_args args);
 
+	/*! callback function for EPICS to update the pneumatic stage Sta. (This is part of the Low level interface, NOT Rory's high level interface!) 
+	* @param[in] event_handler_args : an EPICS object that holds the value of the PV and the Hardware object passed to it
+									  when the subscription was set up in the EPICSInterface createSubscription function.
+	*/
+	static void updateSTA(const struct event_handler_args args);
+
 	/*! sends a pulse (an integer associated with the screen device enum) to the PV associated with the state provided
 	* @param[in] value : The state we want to set the screen to to (see GlobalStateEnums / ScreenPVRecords)
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setSDEV(const int value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setSDEV(const int value, const pvStruct& pv);
 	/*! sends a pulse (1,0) to execute a move of actuator
 	* @param[in] value : 1 to fire
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setEX(const int& value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setEX(const int& value, const pvStruct& pv);
 	/*! sends a pulse (1,0) enable the axis
 	* @param[in] value : The axis to enable
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setEN(const int& value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setEN(const int& value, const pvStruct& pv);
 	/*! sends a pulse (1,0) to the PV associated with the screen trigger
 	* @param[in] value : 1 to fire
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setTRIGGER(const int& value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setTRIGGER(const int& value, const pvStruct& pv);
 	/*! sends a pulse (a double) to the PV associated with the target position
 	* @param[in] value : The desired target actuator position
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setTGTPOS(const double& value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setTGTPOS(const double& value, const pvStruct& pv);
 	/*! sends a pulse (a double) to the PV associated with the position deviation
 	* @param[in] value : The current position deviation
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setJDIFF(const double& value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setJDIFF(const double& value, const pvStruct& pv);
 	/*! sends a pulse (a double) to the PV associated with the requested position deviation
 	* @param[in] value : The requested position deviation
-	* @param[in] pv : The pvStruct associated with the screen state PV*/
-	void setJOG(const double& value, const pvStruct& pv);
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setJOG(const double& value, const pvStruct& pv);
+	/*! sends a pulse to the 'low-level' IN parameter for a pnuematic screen 
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setIN(const pvStruct& pv);
+	/*! Sends a pulse to the 'low-level' OUT parameter for a pnuematic screen
+	* @param[in] pv : The pvStruct associated with the screen state PV
+	* @param[out] successs: bool, if value got sent to EPICS, not if it was actioned */
+	bool setOUT(const pvStruct& pv);
+
     static LoggingSystem static_messenger;
+
+	static std::mutex screen_is_moving_mtx;
+
 };
 /** \copydoc EPICSInterface*/
 /** @}*/

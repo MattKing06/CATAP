@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
+
 
 namespace GlobalFunctions {
 
@@ -33,6 +35,15 @@ namespace GlobalFunctions {
 	//	return r;
 	//}
 
+	bool stringToBool(const std::string& string_in)
+	{
+		std::string upper_string_in = trimAllWhiteSpace(boost::to_upper_copy<std::string>(string_in));
+		if (upper_string_in == GlobalConstants::TRUE_STR)
+			return true;
+		return false;
+	}
+
+
 	STATE stringToSTATE(const std::string& state_str)
 	{
 		if (entryExists<STATE>(GlobalConstants::stringToStateMap, state_str))
@@ -42,7 +53,7 @@ namespace GlobalFunctions {
 		return STATE::UNKNOWN;
 	}
 
-	// /THESE LLRF SCAN are used in multiple places (LLRF, PID), TODO name is not so great 
+	// /THESE LLRF SCAN are used in multiple places (LLRF, PID), TODO name is not so great MOVE TO A DIFFERNT PLACE!!! 
 	unsigned short scanSTATEToNumber(const STATE state)
 	{
 		switch(state){

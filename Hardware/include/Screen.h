@@ -19,6 +19,29 @@ typedef boost::shared_ptr<EPICSScreenInterface> EPICSScreenInterface_sptr;
  */
 class Screen : public Hardware
 {
+	/*
+		More correctly, we should call the screens "Diagnostic Stations." The diagnostic stations have multiple devices, screens, 
+		slits, apertures, rf-cages, etc. These are all considered part of the "Screens." 
+
+		They are, in general complex. For example, they can have horizontal and vertical drives, just vertical, or are pnuematic.
+		This means they can have multiple STATEs (which device is "in") and can have mulitple parts that are moving. 
+
+
+		To move a device into the bema path, (the most typical operation) is simple. Select the device, caput it to SDEV, then send 1.0 to TRIGGER.  
+
+		The stations also have other functionality, such as JOG, and set and absolute positions. 
+
+		You can also monitor the position of the motor, and other info, but in general that is not used for controlling at this level.
+
+		There can be some time lag between commands being sent, and the station responding, tehrefore  there is a a high level "is_busy"   
+		paramter that is used to indicate that, as far as this object is concerned, the screen is doing some work.
+
+		This was first written by Alex Byrnes during lockdown, and never tested, subsequently DJS has had to do a re-write after bugs were found. 
+	
+	*/
+
+
+
 public:
 	/*! Default constructor call for Screen object*/
 	Screen();
@@ -58,97 +81,7 @@ public:
 	void messagesOn();
 	/*! turns messaging off for this Screen instance*/
 	void messagesOff();
-	// SCREEN STATES 
-	/*! storage variable for current state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, STATE > screenStateH;
-	/*! storage variable for current set state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, STATE > screenSetStateH;
-	/*! storage variable for current state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, STATE > screenStateV;
-	/*! storage variable for currentset  state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, STATE > screenSetStateV;
-	/*! storage variable for current state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, STATE > screenState;
-	/*! storage variable for current set state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, STATE > screenSetState;
-	/*! storage variable for current actuator position of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > actposH;
-	/*! storage variable for current actuator position of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > actposV;
-	/*! storage variable for current actuator position of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > actpos;
-	/*! storage variable for the target actuator position of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > tgtposH;
-	/*! storage variable for the target actuator position of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > tgtposV;
-	/*! storage variable for the target actuator position of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > tgtpos;
-	/*! storage variable for the device position of Screen (in mm) in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > devcentH;
-	/*! storage variable for the device position of Screen (in mm) in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > devcentV;
-	/*! storage variable for the device position of Screen (in mm) in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > devcent;
-	/*! storage variable for the position deviation from the last set state of Screen (in mm) in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > jdiffH;
-	/*! storage variable for the position deviation from the last set state of Screen (in mm) in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > jdiffV;
-	/*! storage variable for the position deviation from the last set state of Screen (in mm) in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > jdiff;
-	/*! storage variable for the set position deviation from the last set state of Screen (in mm) in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > jogH;
-	/*! storage variable for the set position deviation from the last set state of Screen (in mm) in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > jogV;
-	/*! storage variable for the set position deviation from the last set state of Screen (in mm) in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > jog;
-	/*! storage variable for the enable state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > enH;
-	/*! storage variable for the enable state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > enV;
-	/*! storage variable for the enable state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > en;
-	/*! storage variable for the fire state of Screen in the horizontal direction and the last timestamp retrieved from EPICS. (advanced use)*/
-	std::pair< epicsTimeStamp, int > exH;
-	/*! storage variable for the fire state of Screen in the vertical direction and the last timestamp retrieved from EPICS. (advanced use)*/
-	std::pair< epicsTimeStamp, int > exV;
-	/*! storage variable for the fire state of Screen in the last active direction and the last timestamp retrieved from EPICS. (advanced use)*/
-	std::pair< epicsTimeStamp, int > ex;
-	/*! storage variable for the trigger state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > triggerH;
-	/*! storage variable for the trigger state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > triggerV;
-	/*! storage variable for the trigger state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > trigger;
-	/*! storage variable for the ready state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > readyH;
-	/*! storage variable for the ready state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > readyV;
-	/*! storage variable for the ready state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > ready;
-	/*! storage variable for the moving state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > movingH;
-	/*! storage variable for the moving state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > movingV;
-	/*! storage variable for the moving state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, int > moving;
-	/*! storage variable giving 0 if the screen is not on the horizontal direction or 1 if it is, and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > maxposH;
-	/*! storage variable giving 0 if the screen is not on the vertical direction or 1 if it is, and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > maxposV;
-	/*! storage variable giving 0 if the screen is not on the last active direction or 1 if it is, and the last timestamp retrieved from EPICS.*/
-	std::pair< epicsTimeStamp, double > maxpos;
-	/*! the name of the screen.*/
-	std::string name;
-	/*! the name of the camera associated with the screen.*/
-	std::string cameraName;
-	/*! the type of the screen.*/
-	TYPE screenType;
-	/*! the available devices for the screen.*/
-	std::vector< STATE > screenDeviceVector;
-	/*! true if the screen has a camera associated with it in the YAML file.*/
-	bool has_camera;
-	/*! the position along the beamline of the screen.*/
-	double position;
+
 	// GETTERS
 	/*! the horizontal set state of the screen.
 	@param[out] STATE: the horizontal screen set state.*/
@@ -270,18 +203,30 @@ public:
 	/*! is the YAG screen inserted?
 	@param[out] bool: true if the screen is in.*/
 	bool isScreenIn() const;
+
+
 	/*! is the horizontal stage moving?
-	@param[out] bool: true if the horizontal stage is moving.*/
+	@param[out] bool: true if the value of the H:MOVING PV is 1.*/
 	bool isHMoving() const;
 	/*! is the vertical stage moving?
-	@param[out] bool: true if the vertical stage is moving.*/
+	@param[out] bool: true if the value of the V:MOVING PV is 1.*/
 	bool isVMoving() const;
 	/*! is the pneumatic screen moving?
-	@param[out] bool: true if the screen is moving.*/
+	@param[out] bool: true if the value of the MOVING PV is 1.*/
 	bool isPMoving() const;
-	/*! is the screen moving?
-	@param[out] bool: true if the screen is moving.*/
+	
+protected:
+	/*! The is_moving flag is updated when a MOVING PV is updated, called form the epicsInterface */
+	void updateIsmoving();
+public:
+
+	/*! Is the screen moving, (according to the control system) ?
+	@param[out] bool: true if the screen is_moving == true.*/
 	bool isMoving() const;
+	/*! Is the screen not moving, (according to the control system) ?
+	@param[out] bool: true if the screen is_moving != true.*/
+	bool isNotMoving()const;
+
 	/*! is there any obstacle at the screen location?
 	@param[out] bool: true if the screen is either retracted or the RF cage is in.*/
 	bool isClearForBeam() const;
@@ -289,26 +234,30 @@ public:
 	@param[out] STATE: the current state of the screen.*/
 	STATE getScreenState() const;
 	/*! get the current screen state in the specified direction.
-	@param[in] dir: the direction that you are interested in.
+	@param[in] direction: the direction that you are interested in.
 	@param[out] std::pair<STATE,TYPE>: the current state of the screen in the given direction.*/
-	std::pair< STATE, TYPE > getScreenStatePair(TYPE dir) const;
+	std::pair< STATE, TYPE > getScreenStatePair(TYPE direction) const;
+
+	/*! Check if the current screen state matches a passed STATE.
+	@param[in] state: STATE, to compare current screen state .
+	@param[out] result: bool, value of getScreenState() == state*/
+	bool isScreenInState(STATE state)const;
+
+
 	/*! get the current screen set state.
 	@param[out] STATE: the current set state of the screen.*/
 	STATE getScreenSetState() const;
 	/*! get the current screen set state in the specified direction.
-	@param[in] dir: the direction that you are interested in.
+	@param[in] direction: the direction that you are interested in.
 	@param[out] std::pair<STATE,TYPE>: the current set state of the screen in the given direction.*/
-	std::pair< STATE, TYPE > getScreenSetStatePair(TYPE dir) const;
+	std::pair< STATE, TYPE > getScreenSetStatePair(TYPE direction) const;
 	/*! get the screen type.
 	@param[out] TYPE: the type of the screen.*/
 	TYPE getScreenType() const;
 	/*! get the available devices for that screen.
 	@param[out] std::vector<STATE>: the available devices, specified in the YAML config file.*/
 	std::vector< STATE > getAvailableDevices() const;
-	/*! query the current screen state.
-	@param[in] state: the state that you are interested in.
-	@param[out] STATE: the current state of the screen.*/
-	bool isScreenInState(STATE sta) const;
+
 	/*! is the YAG screen in?
 	@param[out] bool: true if yes.*/
 	bool isYAGIn() const;
@@ -396,12 +345,12 @@ public:
 	/*! set the trigger on the active axis, activating the move to screenSetState.
 	@param[in] value: 1 to trigger.
 	@param[out] bool: true if successful. */
-	bool setScreenTrigger(const int& value);
+	bool setScreenTrigger(const double value);
 	/*! set the trigger on the specified axis, activating the move to screenSetState.
 	@param[in] value: 1 to trigger.
 	@param[in] TYPE: direction to fire.
 	@param[out] bool: true if successful. */
-	bool setScreenTriggerWDir(const int& value, TYPE type);
+	bool setScreenTriggerWDir(const double value, TYPE type);
 	/*! move the screen to the specified STATE.
 	@param[in] state: desired screenSetState.
 	@param[out] bool: true if successful. */
@@ -433,7 +382,7 @@ public:
 	@param[in] value: desired value.
 	@param[in] TYPE: desired direction.
 	@param[out] bool: true if successful. */
-	bool setTRIGGER(const int& value, TYPE type);
+	bool setTRIGGER(const double value, TYPE type);
 	/*! EPICS call to set the moving variable.
 	@param[in] value: desired value.
 	@param[in] TYPE: desired direction.
@@ -469,32 +418,146 @@ public:
 	@param[in] TYPE: desired direction.
 	@param[out] bool: true if successful. */
 	bool setGETDEV(int& state, TYPE type);
-	/*! EPICS call to set the screenSetState in the given direction.
-	@param[in] value: desired state.
-	@param[in] TYPE: desired direction.
-	@param[out] bool: true if successful. */
-	bool setSDEV(int state, TYPE type);
+	///*! EPICS call to set the screenSetState in the given direction.
+	//@param[in] value: desired state.
+	//@param[in] TYPE: desired direction.
+	//@param[out] bool: true if successful. */
+	//bool setSDEV(int state, TYPE type);
 	/*! find the value to send to EPICS corresponding to the STATE enum (from ScreenPVRecords).
 	@param[in] map: map of elements from ScreenPVRecords.
 	@param[in] STATE: state that you wish to find.
 	@param[out] int: the integer corresponding to that enum in EPICS. */
-	int findByValue(std::map<int, STATE> mapOfElemen, STATE value);
+	int findByValue(std::map<int, STATE>& mapOfElemen, STATE value);
 	/*! check if a STATE belongs to a certain map from ScreenPVRecords.
 	@param[in] map: map of elements from ScreenPVRecords.
 	@param[in] STATE: state that you wish to find.
 	@param[out] bool: true if yes. */
-	bool isElement(std::map<int, STATE> mapOfElemen, STATE value) const;
+	bool isElement(std::map<int, STATE>& mapOfElemen, STATE value) const;
 	/*! returns the name of the camera associated with the screen
 	@param[out] std::string: camera name
 	*/
 	std::string getCameraName() const;
 
+	/*! returns the state of the is_busy flag.
+	@param[out] is_busy: boolean flag 	*/
+	bool getIsBusy()const;
+	/*! returns true if the state of is_busy is true. 
+	@param[out] is_busy == true: bool	*/
+	bool isBusy()const;
+	/*! returns true if the state of the is_busy flag is false 
+	@param[out] is_busy == false: bool 	*/
+	bool isNotBusy()const;
 
 
 	friend class EPICSScreenInterface;
 protected:
+
+
 	//what else does a screen need?
 	std::vector<std::string> aliases;
+
+	// SCREEN STATES 
+	/*! storage variable for current state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenStateH;
+	/*! storage variable for current set state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenSetStateH;
+	/*! storage variable for current state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenStateV;
+	/*! storage variable for currentset  state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenSetStateV;
+	/*! storage variable for current state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenState;
+	/*! storage variable for current set state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenSetState;
+	/*! The Sta parameter for a pnuematic screen and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, STATE > screenSta;
+	/*! storage variable for current actuator position of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > actposH;
+	/*! storage variable for current actuator position of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > actposV;
+	/*! storage variable for current actuator position of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > actpos;
+	/*! storage variable for the target actuator position of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > tgtposH;
+	/*! storage variable for the target actuator position of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > tgtposV;
+	/*! storage variable for the target actuator position of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > tgtpos;
+	/*! storage variable for the device position of Screen (in mm) in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > devcentH;
+	/*! storage variable for the device position of Screen (in mm) in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > devcentV;
+	/*! storage variable for the device position of Screen (in mm) in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > devcent;
+	/*! storage variable for the position deviation from the last set state of Screen (in mm) in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > jdiffH;
+	/*! storage variable for the position deviation from the last set state of Screen (in mm) in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > jdiffV;
+	/*! storage variable for the position deviation from the last set state of Screen (in mm) in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > jdiff;
+	/*! storage variable for the set position deviation from the last set state of Screen (in mm) in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > jogH;
+	/*! storage variable for the set position deviation from the last set state of Screen (in mm) in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > jogV;
+	/*! storage variable for the set position deviation from the last set state of Screen (in mm) in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > jog;
+	/*! storage variable for the enable state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > enH;
+	/*! storage variable for the enable state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > enV;
+	/*! storage variable for the enable state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > en;
+	/*! storage variable for the fire state of Screen in the horizontal direction and the last timestamp retrieved from EPICS. (advanced use)*/
+	std::pair< epicsTimeStamp, unsigned short > exH;
+	/*! storage variable for the fire state of Screen in the vertical direction and the last timestamp retrieved from EPICS. (advanced use)*/
+	std::pair< epicsTimeStamp, unsigned short > exV;
+	/*! storage variable for the fire state of Screen in the last active direction and the last timestamp retrieved from EPICS. (advanced use)*/
+	std::pair< epicsTimeStamp, unsigned short > ex;
+	/*! storage variable for the trigger state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, int > triggerH;
+	/*! storage variable for the trigger state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, int > triggerV;
+	/*! storage variable for the trigger state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, int > trigger;
+	/*! storage variable for the ready state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > readyH;
+	/*! storage variable for the ready state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > readyV;
+	/*! storage variable for the ready state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > ready;
+	/*! storage variable for the moving state of Screen in the horizontal direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > movingH;
+	/*! storage variable for the moving state of Screen in the vertical direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > movingV;
+	/*! storage variable for the moving state of Screen in the last active direction and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, unsigned short > moving;
+	/*! storage variable giving 0 if the screen is not on the horizontal direction or 1 if it is, and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > maxposH;
+	/*! storage variable giving 0 if the screen is not on the vertical direction or 1 if it is, and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > maxposV;
+	/*! storage variable giving 0 if the screen is not on the last active direction or 1 if it is, and the last timestamp retrieved from EPICS.*/
+	std::pair< epicsTimeStamp, double > maxpos;
+	/*! the name of the screen.*/
+	std::string name;
+	/*! the name of the camera associated with the screen.*/
+	std::string camera_name;
+	/*! the type of the screen.*/
+	TYPE screenType;
+	/*! the available devices for the screen.*/
+	std::vector< STATE > screenDeviceVector;
+	/*! true if the screen has a camera associated with it in the YAML file.*/
+	bool has_camera;
+	/*! the position along the beamline of the screen.*/
+	double position;
+
+	/*! This flag is used to detemine if the screen is currently "busy" doing something. For exmaple, it may be moving. It may also have just had a command sent to the control system and be waiting for that command to be actioned. */
+	bool is_busy;
+
+	/*! This flag is used to detemine if the screen is currently "moving" as defined by the varius MOVING PVs in the control system.*/
+	bool is_moving;
+
+
+
 };
 /**\copydoc Hardware*/
 /**@}*/

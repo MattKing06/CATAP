@@ -166,7 +166,10 @@ bool Hardware::isOffline()const
 {
 	return getMode() == STATE::OFFLINE;
 }
-
+bool Hardware::isNotPhysical()const
+{
+	return !isPhysical();
+}
 
 
 bool Hardware::operator==(Hardware rhs)

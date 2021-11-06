@@ -140,7 +140,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.def("setTGTPOS", &Screen::setTGTPOS)
 			.def("setTRIGGER", &Screen::setTRIGGER)
 			.def("setJOG", &Screen::setJOG)
-			.def("setSDEV", &Screen::setSDEV)
+			//.def("setSDEV", &Screen::setSDEV)
 			.def("setEN", &Screen::setEN)
 			.def("setEX", &Screen::setEX)
 			.def("moveScreenTo", &Screen::moveScreenTo)
