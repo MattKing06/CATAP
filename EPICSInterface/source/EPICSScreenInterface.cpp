@@ -396,7 +396,7 @@ void EPICSScreenInterface::updateVTRIGGER(const struct event_handler_args args)
 void EPICSScreenInterface::updateTRIGGER(const struct event_handler_args args)
 {
 	Screen* recastScreen = getHardwareFromArgs<Screen>(args);
-	std::pair<epicsTimeStamp, unsigned short> pairToUpdate = getTimeStampUShortPair(args);
+	std::pair<epicsTimeStamp, double> pairToUpdate = getTimeStampDoublePair(args);
 	recastScreen->trigger.first = pairToUpdate.first;
 	recastScreen->trigger.second = pairToUpdate.second;
 	static_messenger.printDebugMessage("updateTRIGGER TRIGGER FOR: " + recastScreen->getHardwareName() + ": "

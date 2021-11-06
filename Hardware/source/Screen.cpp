@@ -231,562 +231,57 @@ void Screen::setPVStructs(std::vector<std::string> recordList)
 	}
 }
 
-std::vector<std::string> Screen::getAliases() const
-{
-	return this->aliases;
-}
-
-boost::python::list Screen::getAliases_Py() const
-{
-	return to_py_list<std::string>(getAliases());
-}
-
-
-std::string Screen::getScreenName() const
-{
-	return this->name;
-}
-
-double Screen::getPosition() const
-{
-	return this->position;
-}
-
-
-
-
-
-STATE Screen::getScreenState() const
-{
-	if (isHIn() || isHEnabled())
-	{
-		return this->screenStateH.second;
-	}
-	else if (isVIn() || isVEnabled())
-	{
-		return this->screenStateV.second;
-	}
-	else
-		return this->screenState.second;
-}
-
-
-bool Screen::isScreenInState(STATE sta) const
-{
-	if (isHElement(ScreenRecords::screenHElementMap.at(sta)))
-	{
-		return screenStateH.second == sta;
-	}
-	else if (isVElement(ScreenRecords::screenVElementMap.at(sta)))
-	{
-		return screenStateV.second == sta;
-	}
-	else if (isPElement(ScreenRecords::screenPElementMap.at(sta)))
-	{
-		return screenState.second == sta;
-	}
-}
-
-
-std::pair< STATE, TYPE > Screen::getScreenStatePair(TYPE direction) const
-{
-	if (direction == TYPE::HORIZONTAL)
-	{
-		if (isHVMover())
-		{
-			return std::make_pair( this->screenStateH.second, direction);
-		}
-		else
-		{
-			messenger.printMessage("SCREEN IS NOT AN HV MOVER!!!!!!!");
-			//return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-		}
-	}
-	else if (direction == TYPE::VERTICAL)
-	{
-		if (isVMover())
-		{
-			return std::make_pair( this->screenStateV.second, direction);
-		}
-		else
-		{
-			messenger.printMessage("SCREEN IS NOT A V MOVER!!!!!!!");
-			//return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-		}
-	}
-	else if (direction == TYPE::PNEUMATIC)
-	{
-		if (isPneumatic())
-		{
-			return std::make_pair( this->screenState.second, direction);
-		}
-		else
-		{
-			messenger.printMessage("SCREEN IS NOT PNEUMATIC!!!!!!!");
-			//return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-		}
-	}
-	return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-}
-
-STATE Screen::getScreenSetState() const
-{
-	if (isHIn() || isHEnabled())
-	{
-		return this->screenSetStateH.second;
-	}
-	else if (isVIn() || isVEnabled())
-	{
-		return this->screenSetStateV.second;
-	}
-	else
-		return this->screenSetState.second;
-}
-
-std::pair< STATE, TYPE > Screen::getScreenSetStatePair(TYPE direction) const
-{
-	if (direction == TYPE::HORIZONTAL)
-	{
-		if (isHVMover())
-		{
-			return std::make_pair( this->screenSetStateH.second, direction);
-		}
-		else
-		{
-			messenger.printMessage("SCREEN IS NOT AN HV MOVER!!!!!!!");
-			return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-		}
-	}
-	else if (direction == TYPE::VERTICAL)
-	{
-		if (isVMover())
-		{
-			return std::make_pair( this->screenSetStateV.second, direction);
-		}
-		else
-		{
-			messenger.printMessage("SCREEN IS NOT A V MOVER!!!!!!!");
-			return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-		}
-	}
-	else if (direction == TYPE::PNEUMATIC)
-	{
-		if (isPneumatic())
-		{
-			return std::make_pair( this->screenSetState.second, direction);
-		}
-		else
-		{
-			messenger.printMessage("SCREEN IS NOT PNEUMATIC!!!!!!!");
-			return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-		}
-	}
-	else
-		return std::make_pair( STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
-}
-
-STATE Screen::getSetStateH() const
-{
-	return screenSetStateH.second;
-}
-
-STATE Screen::getSetStateV() const
-{
-	return screenSetStateV.second;
-}
-
-STATE Screen::getSetState() const
-{
-	return screenSetState.second;
-}
-
-STATE Screen::getStateH() const
-{
-	return screenStateH.second;
-}
-
-STATE Screen::getStateV() const
-{
-	return screenStateV.second;
-}
-
-STATE Screen::getState() const
-{
-	return screenState.second;
-}
-
-double Screen::getDEVCENTH() const
-{
-	return devcentH.second;
-}
-
-double Screen::getDEVCENTV() const
-{
-	return devcentV.second;
-}
-
-double Screen::getDEVCENT() const
-{
-	return devcent.second;
-}
-
-double Screen::getACTPOSH() const
-{
-	return actposH.second;
-}
-
-double Screen::getACTPOSV() const
-{
-	return actposV.second;
-}
-
-double Screen::getTGTPOSH() const
-{
-	return tgtposH.second;
-}
-
-double Screen::getTGTPOSV() const
-{
-	return tgtposV.second;
-}
-
-double Screen::getTGTPOS() const
-{
-	return tgtpos.second;
-}
-
-double Screen::getJDiffH() const
-{
-	return jdiffH.second;
-}
-
-double Screen::getJDiffV() const
-{
-	return jdiffV.second;
-}
-
-double Screen::getJOGH() const
-{
-	return jogH.second;
-}
-
-double Screen::getJOGV() const
-{
-	return jogV.second;
-}
-
-int Screen::getENH() const
-{
-	return enH.second;
-}
-
-int Screen::getENV() const
-{
-	return enV.second;
-}
-
-int Screen::getEXH() const
-{
-	return exH.second;
-}
-
-int Screen::getEXV() const
-{
-	return exV.second;
-}
-
-int Screen::getTriggerH() const
-{
-	return triggerH.second;
-}
-
-int Screen::getTriggerV() const
-{
-	return triggerV.second;
-}
-
-int Screen::getTrigger() const
-{
-	return trigger.second;
-}
-
-int Screen::getReadyH() const
-{
-	return readyH.second;
-}
-
-int Screen::getReadyV() const
-{
-	return readyV.second;
-}
-
-int Screen::getReady() const
-{
-	return ready.second;
-}
-
-int Screen::getMovingH() const
-{
-	return movingH.second;
-}
-
-int Screen::getMovingV() const
-{
-	return movingV.second;
-}
-
-int Screen::getMoving() const
-{
-	return moving.second;
-}
-
-double Screen::getMaxPosH() const
-{
-	return maxposH.second;
-}
-
-double Screen::getMaxPosV() const
-{
-	return maxposV.second;
-}
-
-double Screen::getMaxPos() const
-{
-	return maxpos.second;
-}
-
-TYPE Screen::getScreenType() const
-{
-	return screenType;
-}
-
-std::vector< STATE > Screen::getAvailableDevices() const
-{
-	return screenDeviceVector;
-}
-
-bool Screen::is_HandV_OUT() const
-{
-	return isHOut() && isVOut();
-}
-
-bool Screen::isScreenIn() const
-{
-	return isYAGIn();
-}
-
-bool Screen::isYAGIn() const
-{
-	if (isMover())
-	{
-		return screenStateV.second == STATE::VYAG;
-	}
-	else if (isPneumatic())
-	{
-		return screenState.second == STATE::YAG;
-	}
-	return false;
-}
-
-
-
-
-bool Screen::isHMoving() const
-{
-	return movingH.second == GlobalConstants::one_us;
-}
-
-bool Screen::isVMoving() const
-{
-	return movingV.second == GlobalConstants::one_us;
-}
-
-bool Screen::isPMoving() const
-{
-	return moving.second == GlobalConstants::one_us;
-}
-
-bool Screen::isMoving() const
-{
-	std::lock_guard<std::mutex> lg(epicsInterface->screen_is_moving_mtx);  // This now locked your mutex mtx.lock();
-	return is_moving == true;
-}
-bool Screen::isNotMoving()const{	return !isMoving(); }
-void Screen::updateIsmoving()
-{
-	std::lock_guard<std::mutex> lg(epicsInterface->screen_is_moving_mtx);  // This now locked your mutex mtx.lock();
-	if ( isHMoving() || isVMoving() || isPMoving())
-	{
-		is_moving == true;
-	}
-	else
-	{
-		is_moving == false;
-	}
-}
-
-
-bool Screen::isClearForBeam() const
-{
-	if (!isHIn() || !isVIn() || isRFCageIn())
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isHOut() const
-{
-	return !isHIn();
-}
-
-bool Screen::isVOut() const
-{
-	return !isVIn();
-}
-
-bool Screen::isHIn() const
-{
-	if (screenStateH.second != STATE::HRETRACTED)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isVIn() const
-{
-	if (screenStateV.second != STATE::VRETRACTED || screenStateV.second != STATE::VRF)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isRFCageIn() const
-{
-	if (screenStateV.second == STATE::VRF || screenState.second == STATE::RF)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isMover() const
-{
-	if (isVMover() || isHVMover())
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isVMover() const
-{
-	if (getScreenType() == TYPE::CLARA_V_MOVER)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isHVMover() const
-{
-	if (getScreenType() == TYPE::CLARA_HV_MOVER)
-	{
-		return true;
-	}
-	else if (getScreenType() == TYPE::VELA_HV_MOVER)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isPneumatic() const
-{
-	if (getScreenType() == TYPE::VELA_PNEUMATIC)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isVELAPneumatic() const
-{
-	if (getScreenType() == TYPE::VELA_PNEUMATIC)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isVELAHVMover() const
-{
-	if (getScreenType() == TYPE::VELA_HV_MOVER)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isVELAVMover() const
-{
-	if (getScreenType() == TYPE::VELA_V_MOVER)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isCLARAHVMover() const
-{
-	if (getScreenType() == TYPE::CLARA_HV_MOVER)
-	{
-		return true;
-	}
-	return false;
-}
-
-bool Screen::isCLARAVMover() const
-{
-	if (getScreenType() == TYPE::CLARA_V_MOVER)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-
-bool Screen::isHElement(STATE state) const
-{
-	return GlobalFunctions::entryExists<STATE>(ScreenRecords::screenHElements, state);
-	//return isElement(ScreenRecords::screenHElementMap, state);
-}
-
-bool Screen::isVElement(STATE state) const
-{
-	return GlobalFunctions::entryExists<STATE>(ScreenRecords::screenVElements, state);
-//	return isElement(ScreenRecords::screenVElementMap, state);
-}
-
-bool Screen::isPElement(STATE state) const
-{
-	return GlobalFunctions::entryExists<STATE>(ScreenRecords::screenPElements, state);
-	//return isElement(ScreenRecords::screenPElementMap, state);
-}
-
-bool Screen::isHEnabled() const
-{
-	return enH.second == 1;
-}
-
-bool Screen::isVEnabled() const
-{
-	return enV.second == 1;
-}
-
+/*
+///  
+///   __           __        ___     __   ___ ___ ___  ___  __   __
+///  /__` |  |\/| |__) |    |__     / _` |__   |   |  |__  |__) /__`
+///  .__/ |  |  | |    |___ |___    \__> |___  |   |  |___ |  \ .__/
+///  
+///  simple getters for the main parameters 
+*/
+std::vector<std::string> Screen::getAliases() const { return aliases; }
+boost::python::list Screen::getAliases_Py() const { return to_py_list<std::string>(getAliases()); }
+std::string Screen::getScreenName() const { return name; }
+double Screen::getPosition() const { return position; }
+STATE Screen::getSetStateH() const{	return screenSetStateH.second;}
+STATE Screen::getSetStateV() const{	return screenSetStateV.second;}
+STATE Screen::getSetState()  const{	return screenSetState.second;}
+STATE Screen::getStateH() const{	return screenStateH.second;}
+STATE Screen::getStateV() const{	return screenStateV.second;}
+STATE Screen::getState() const{	return screenState.second;}
+double Screen::getDEVCENTH() const{	return devcentH.second;}
+double Screen::getDEVCENTV() const{	return devcentV.second;}
+double Screen::getDEVCENT() const{	return devcent.second;}
+double Screen::getACTPOSH() const{	return actposH.second;}
+double Screen::getACTPOSV() const{	return actposV.second;}
+double Screen::getTGTPOSH() const{	return tgtposH.second;}
+double Screen::getTGTPOSV() const{	return tgtposV.second;}
+double Screen::getTGTPOS() const{	return tgtpos.second;}
+double Screen::getJDiffH() const{	return jdiffH.second;}
+double Screen::getJDiffV() const{	return jdiffV.second;}
+double Screen::getJOGH() const{	return jogH.second;}
+double Screen::getJOGV() const{	return jogV.second;}
+int Screen::getENH() const{	return enH.second;}
+int Screen::getENV() const{	return enV.second;}
+int Screen::getEXH() const{	return exH.second;}
+int Screen::getEXV() const{	return exV.second;}
+double Screen::getTriggerH() const{	return triggerH.second;}
+double Screen::getTriggerV() const{	return triggerV.second;}
+double Screen::getTrigger() const{	return trigger.second;}
+int Screen::getReadyH() const{	return readyH.second;}
+int Screen::getReadyV() const{	return readyV.second;}
+int Screen::getReady() const{	return ready.second;}
+int Screen::getMovingH() const{	return movingH.second;}
+int Screen::getMovingV() const{	return movingV.second;}
+int Screen::getMoving() const{	return moving.second;}
+double Screen::getMaxPosH() const{	return maxposH.second;}
+double Screen::getMaxPosV() const{	return maxposV.second;}
+double Screen::getMaxPos() const{	return maxpos.second;}
+TYPE Screen::getScreenType() const{	return screenType;}
+std::vector< STATE > Screen::getAvailableDevices() const{	return screenDeviceVector;}
+boost::python::list Screen::getAvailableDevices_Py() const { return to_py_list<STATE>(getAvailableDevices()); }
+double Screen::get_H_ACTPOS() const { if (isHEnabled()) { return actposH.second; } }
+double Screen::get_V_ACTPOS() const { if (isVEnabled()) { return actposV.second; } }
 double Screen::getACTPOS() const
 {
 	if (isMover())
@@ -809,7 +304,6 @@ double Screen::getACTPOS() const
 		return actpos.second;
 	}
 }
-
 double Screen::getJDiff() const
 {
 	if (isMover())
@@ -832,34 +326,223 @@ double Screen::getJDiff() const
 		return jdiff.second;
 	}
 }
-
-double Screen::get_H_ACTPOS() const
+STATE Screen::getScreenState() const
 {
-	if (isHEnabled())
+	if (isHIn() || isHEnabled())
 	{
-		return actposH.second;
+		return this->screenStateH.second;
 	}
-}
-
-double Screen::get_V_ACTPOS() const
-{
-	if (isVEnabled())
+	else if (isVIn() || isVEnabled())
 	{
-		return actposV.second;
-	}
-}
-
-void Screen::insertYAG()
-{
-	if(isMover())
-	{
-		moveScreenTo(STATE::VYAG);
+		return this->screenStateV.second;
 	}
 	else
+		return this->screenState.second;
+}
+std::pair< STATE, TYPE > Screen::getScreenStatePair(TYPE direction) const
+{
+	if (direction == TYPE::HORIZONTAL)
 	{
-		moveScreenTo(STATE::YAG);
+		if (isHVMover())
+		{
+			return std::make_pair(this->screenStateH.second, direction);
+		}
+		else
+		{
+			messenger.printMessage("SCREEN IS NOT AN HV MOVER!!!!!!!");
+			//return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
+		}
+	}
+	else if (direction == TYPE::VERTICAL)
+	{
+		if (isVMover())
+		{
+			return std::make_pair(this->screenStateV.second, direction);
+		}
+		else
+		{
+			messenger.printMessage("SCREEN IS NOT A V MOVER!!!!!!!");
+			//return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
+		}
+	}
+	else if (direction == TYPE::PNEUMATIC)
+	{
+		if (isPneumatic())
+		{
+			return std::make_pair(this->screenState.second, direction);
+		}
+		else
+		{
+			messenger.printMessage("SCREEN IS NOT PNEUMATIC!!!!!!!");
+			//return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE );
+		}
+	}
+	return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE);
+}
+boost::python::list Screen::getScreenStatePair_Py(TYPE direction) const
+{
+	return to_py_list<STATE, TYPE>(getScreenStatePair(direction));
+}
+STATE Screen::getScreenSetState() const
+{
+	if (isHIn() || isHEnabled())
+	{
+		return this->screenSetStateH.second;
+	}
+	else if (isVIn() || isVEnabled())
+	{
+		return this->screenSetStateV.second;
+	}
+	else
+		return this->screenSetState.second;
+}
+std::pair< STATE, TYPE > Screen::getScreenSetStatePair(TYPE direction) const
+{
+	if (direction == TYPE::HORIZONTAL)
+	{
+		if (isHVMover())
+		{
+			return std::make_pair(this->screenSetStateH.second, direction);
+		}
+		else
+		{
+			messenger.printMessage("SCREEN IS NOT AN HV MOVER!!!!!!!");
+			return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE);
+		}
+	}
+	else if (direction == TYPE::VERTICAL)
+	{
+		if (isVMover())
+		{
+			return std::make_pair(this->screenSetStateV.second, direction);
+		}
+		else
+		{
+			messenger.printMessage("SCREEN IS NOT A V MOVER!!!!!!!");
+			return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE);
+		}
+	}
+	else if (direction == TYPE::PNEUMATIC)
+	{
+		if (isPneumatic())
+		{
+			return std::make_pair(this->screenSetState.second, direction);
+		}
+		else
+		{
+			messenger.printMessage("SCREEN IS NOT PNEUMATIC!!!!!!!");
+			return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE);
+		}
+	}
+	else
+		return std::make_pair(STATE::ERR, TYPE::UNKNOWN_SCREEN_TYPE);
+}
+/*
+///  __   __        __    ___    __                     __        ___  __        __
+/// /  ` /  \ |\ | |  \ |  |  | /  \ |\ |  /\  |       /  ` |__| |__  /  ` |__/ /__`
+/// \__, \__/ | \| |__/ |  |  | \__/ | \| /~~\ |___    \__, |  | |___ \__, |  \ .__/
+///
+*/
+bool Screen::is_HandV_OUT() const{	return isHOut() && isVOut();}
+bool Screen::isScreenIn() const{	return isYAGIn();}
+bool Screen::isYAGIn() const{
+	if (isMover())
+	{
+		return screenStateV.second == STATE::VYAG;
+	}
+	else if (isPneumatic())
+	{
+		return screenState.second == STATE::YAG;
+	}
+	return false;
+}
+bool Screen::isYAGNotIn()const { return !isYAGIn(); }
+bool Screen::isHMoving() const{	return movingH.second == GlobalConstants::one_us;}
+bool Screen::isVMoving() const{	return movingV.second == GlobalConstants::one_us;}
+bool Screen::isPMoving() const{	return moving.second == GlobalConstants::one_us;}
+bool Screen::isMoving() const
+{
+	std::lock_guard<std::mutex> lg(epicsInterface->screen_is_moving_mtx);  // This now locked your mutex mtx.lock();
+	return is_moving == true;
+}
+bool Screen::isNotMoving()const{	return !isMoving(); }
+bool Screen::isClearForBeam() const
+{
+	if (!isHIn() || !isVIn() || isRFCageIn())
+	{
+		return true;
+	}
+	return false;
+}
+bool Screen::isHOut() const{ return !isHIn();}
+bool Screen::isVOut() const{ return !isVIn();}
+bool Screen::isHIn() const{	return screenStateH.second != STATE::HRETRACTED;}
+bool Screen::isVIn() const
+{
+	if (screenStateV.second != STATE::VRETRACTED || screenStateV.second != STATE::VRF)
+	{
+		return true;
+	}
+	return false;
+}
+bool Screen::isRFCageIn() const
+{
+	if (screenStateV.second == STATE::VRF || screenState.second == STATE::RF)
+	{
+		return true;
+	}
+	return false;
+}
+bool Screen::isMover() const
+{
+	if (isVMover() || isHVMover())
+	{
+		return true;
+	}
+	return false;
+}
+bool Screen::isVMover() const{	return getScreenType() == TYPE::CLARA_V_MOVER;}
+bool Screen::isHVMover() const
+{
+	if (getScreenType() == TYPE::CLARA_HV_MOVER)
+	{
+		return true;
+	}
+	else if (getScreenType() == TYPE::VELA_HV_MOVER)
+	{
+		return true;
+	}
+	return false;
+}
+bool Screen::isPneumatic() const{ return getScreenType() == TYPE::VELA_PNEUMATIC;}
+bool Screen::isVELAPneumatic() const { return getScreenType() == TYPE::VELA_PNEUMATIC; }
+bool Screen::isVELAHVMover() const{ return getScreenType() == TYPE::VELA_HV_MOVER;}
+bool Screen::isVELAVMover() const{ return getScreenType() == TYPE::VELA_V_MOVER;}
+bool Screen::isCLARAHVMover() const{ return getScreenType() == TYPE::CLARA_HV_MOVER;}
+bool Screen::isCLARAVMover() const{ return getScreenType() == TYPE::CLARA_V_MOVER ;}
+bool Screen::isHElement(STATE state) const{	return GlobalFunctions::entryExists<STATE>(ScreenRecords::screenHElements, state);}
+bool Screen::isVElement(STATE state) const{	return GlobalFunctions::entryExists<STATE>(ScreenRecords::screenVElements, state);}
+bool Screen::isPElement(STATE state) const{	return GlobalFunctions::entryExists<STATE>(ScreenRecords::screenPElements, state);}
+bool Screen::isHEnabled() const{ return enH.second == GlobalConstants::one_us;}
+bool Screen::isVEnabled() const{ return enV.second == GlobalConstants::one_us;}
+bool Screen::isScreenInState(STATE sta) const
+{
+	if (isHElement(ScreenRecords::screenHElementMap.at(sta)))
+	{
+		return screenStateH.second == sta;
+	}
+	else if (isVElement(ScreenRecords::screenVElementMap.at(sta)))
+	{
+		return screenStateV.second == sta;
+	}
+	else if (isPElement(ScreenRecords::screenPElementMap.at(sta)))
+	{
+		return screenState.second == sta;
 	}
 }
+
+
+
 
 void Screen::makeReadEqualSet()
 {
@@ -882,7 +565,6 @@ void Screen::makeReadEqualSet()
 		}
 	}
 }
-
 void Screen::makeSetEqualRead()
 {
 	if (isMover())
@@ -904,19 +586,6 @@ void Screen::makeSetEqualRead()
 		}
 	}
 }
-
-void Screen::moveScreenOut()
-{
-	if (isMover())
-	{
-		moveScreenTo(STATE::VRF);
-	}
-	else if (isPneumatic())
-	{
-		moveScreenTo(STATE::RF);
-	}
-}
-
 void Screen::resetPosition()
 {
 	if (isMover())
@@ -925,7 +594,7 @@ void Screen::resetPosition()
 		{
 			setScreenTriggerWDir(1, TYPE::HORIZONTAL);
 		}
-		else if(isVIn() || isVEnabled())
+		else if (isVIn() || isVEnabled())
 		{
 			setScreenTriggerWDir(1, TYPE::VERTICAL);
 		}
@@ -935,23 +604,45 @@ void Screen::resetPosition()
 		setScreenTriggerWDir(1, TYPE::PNEUMATIC);
 	}
 }
-
-
-
-bool Screen::setScreenTriggerWDir(const double value, TYPE type)
+void Screen::updateIsmoving()
 {
-	return setTRIGGER(value, type);
+	std::lock_guard<std::mutex> lg(epicsInterface->screen_is_moving_mtx);  // This now locked your mutex mtx.lock();
+	if (isHMoving() || isVMoving() || isPMoving())
+	{
+		is_moving == true;
+	}
+	else
+	{
+		is_moving == false;
+	}
 }
 
 
 
-
-
-
-
-
-
-
+bool  Screen::insertYAG()
+{
+	if(isMover())
+	{
+		return moveScreenTo(STATE::VYAG);
+	}
+	else
+	{
+		return moveScreenTo(STATE::YAG);
+	}
+}
+bool Screen::moveScreenOut()
+{
+	if (isMover())
+	{
+		return moveScreenTo(STATE::VRF);
+	}
+	else if (isPneumatic())
+	{
+		return moveScreenTo(STATE::RF);
+	}
+}
+bool Screen::removeYAG() { return moveScreenOut(); }
+bool Screen::moveScreenIn() {	return insertYAG();}
 bool Screen::jogScreen(const double& value)
 {
 	if (isHEnabled() || isHIn())
@@ -989,12 +680,8 @@ bool Screen::jogScreen(const double& value)
 		return false;
 	}
 }
-
-bool Screen::setScreenSDEV(STATE& state)
-{
-	return setScreenSetState(state);
-}
-
+bool Screen::setScreenTriggerWDir(const double value, TYPE type){	return setTRIGGER(value, type);}
+bool Screen::setScreenSDEV(STATE& state){	return setScreenSetState(state);}
 bool Screen::setScreenTrigger(const double value)
 {
 	if (isMover())
@@ -1053,8 +740,6 @@ bool Screen::moveScreenTo(STATE state)
 				{
 					epicsInterface->setOUT(pvStructs.at(ScreenRecords::PNEUMATIC_OFF));
 				}
-				
-				
 				return setScreenTriggerWDir(GlobalConstants::one_double, TYPE::PNEUMATIC);
 			}
 		}
@@ -1406,22 +1091,22 @@ bool Screen::setGETDEV(int& state, TYPE type)
 }
 
 
-bool Screen::isElement(std::map<int, STATE>& mapOfElemen, STATE value) const
-{
-	auto it = mapOfElemen.begin();
-	// Iterate through the map
-	while (it != mapOfElemen.end())
-	{
-		// Check if value of this entry matches with given value
-		if (it->second == value)
-		{
-			return true;
-		}
-		// Go to next entry in map
-		it++;
-	}
-	return false;
-}
+//bool Screen::isElement(std::map<int, STATE>& mapOfElemen, STATE value) const
+//{
+//	auto it = mapOfElemen.begin();
+//	// Iterate through the map
+//	while (it != mapOfElemen.end())
+//	{
+//		// Check if value of this entry matches with given value
+//		if (it->second == value)
+//		{
+//			return true;
+//		}
+//		// Go to next entry in map
+//		it++;
+//	}
+//	return false;
+//}
 
 
 bool Screen::getIsBusy()const

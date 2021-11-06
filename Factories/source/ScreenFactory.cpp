@@ -38,7 +38,6 @@ ScreenFactory::ScreenFactory(const ScreenFactory& copyScreenFactory)
 	messenger.printDebugMessage("ScreenFactory Copy cOntructor");
 	screenMap.insert(copyScreenFactory.screenMap.begin(), copyScreenFactory.screenMap.end());
 }
-
 ScreenFactory::~ScreenFactory()
 {
 	messenger.printDebugMessage("ScreenFactory Destructor Called");
@@ -60,7 +59,6 @@ ScreenFactory::~ScreenFactory()
 		}
 	}
 }
-
 void ScreenFactory::populateScreenMap()
 {
 	messenger.printDebugMessage("ScreenFactory is populating the screen map");
@@ -75,7 +73,6 @@ void ScreenFactory::populateScreenMap()
 	}
 	messenger.printDebugMessage("ScreenFactory has finished populating the screen map");
 }
-
 void ScreenFactory::retrievemonitorStatus(pvStruct& pvStruct)
 {
 	if (pvStruct.pvRecord == ScreenRecords::H_SDEV ||
@@ -134,7 +131,6 @@ void ScreenFactory::retrievemonitorStatus(pvStruct& pvStruct)
 	}
 
 }
-
 void ScreenFactory::setupChannels()
 {
 	for (auto& screen : screenMap)
@@ -147,7 +143,6 @@ void ScreenFactory::setupChannels()
 		}
 	}
 }
-
 bool ScreenFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)
@@ -211,7 +206,6 @@ bool ScreenFactory::setup(const std::string& VERSION)
 	return hasBeenSetup;
 	std::cout << "end" << std::endl;
 }
-
 void ScreenFactory::updateAliasNameMap(const Screen& screen)
 {
 	// first add in the magnet full name
@@ -244,6 +238,16 @@ void ScreenFactory::updateAliasNameMap(const Screen& screen)
 	}
 }
 
+
+/*
+///
+///   __           __        ___     __   ___ ___ ___  ___  __   __
+///  /__` |  |\/| |__) |    |__     / _` |__   |   |  |__  |__) /__`
+///  .__/ |  |  | |    |___ |___    \__> |___  |   |  |___ |  \ .__/
+///
+///  simple getters for the main parameters
+*/
+
 std::string ScreenFactory::getFullName(const std::string& name_to_check) const
 {
 	//std::cout << "getFullName looking for " << name_to_check << std::endl;
@@ -256,15 +260,15 @@ std::string ScreenFactory::getFullName(const std::string& name_to_check) const
 	return dummy_screen.getHardwareName();
 }
 
-std::map<std::string, Screen> ScreenFactory::getScreens(std::vector<std::string> screenNames)
-{
-	std::map<std::string, Screen> selectedScreens;
-	for (auto& screenName : screenNames)
-	{
-		selectedScreens[screenName] = screenMap.find(screenName)->second;
-	}
-	return selectedScreens;
-}
+//std::map<std::string, Screen> ScreenFactory::getScreens(std::vector<std::string> screenNames)
+//{
+//	std::map<std::string, Screen> selectedScreens;
+//	for (auto& screenName : screenNames)
+//	{
+//		selectedScreens[screenName] = screenMap.find(screenName)->second;
+//	}
+//	return selectedScreens;
+//}
 
 Screen& ScreenFactory::getScreen(const std::string& fullScreenName)
 {
@@ -276,7 +280,7 @@ Screen& ScreenFactory::getScreen(const std::string& fullScreenName)
 	return dummy_screen;
 }
 
-std::map<std::string, STATE> ScreenFactory::getScreenStates(std::vector<std::string> names)
+std::map<std::string, STATE> ScreenFactory::getScreenStates(std::vector<std::string> names)const
 {
 	std::map<std::string, STATE> states;
 	for (auto it : names)
@@ -286,7 +290,7 @@ std::map<std::string, STATE> ScreenFactory::getScreenStates(std::vector<std::str
 	return states;
 }
 
-std::map<std::string, STATE> ScreenFactory::getScreenSetStates(std::vector<std::string> names)
+std::map<std::string, STATE> ScreenFactory::getScreenSetStates(std::vector<std::string> names)const
 {
 	std::map<std::string, STATE> states;
 	for (auto it : names)
@@ -296,34 +300,34 @@ std::map<std::string, STATE> ScreenFactory::getScreenSetStates(std::vector<std::
 	return states;
 }
 
-std::map<std::string, Screen> ScreenFactory::getAllScreens()
-{
-	if (!hasBeenSetup)
-	{
-		this->setup("nominal");
-	}
-	else
-	{
-		messenger.printDebugMessage("ScreenS HAVE ALREADY BEEN constRUCTED.");
-	}
-	return screenMap;
-}
+//std::map<std::string, Screen> ScreenFactory::getAllScreens()
+//{
+//	if (!hasBeenSetup)
+//	{
+//		this->setup("nominal");
+//	}
+//	else
+//	{
+//		messenger.printDebugMessage("ScreenS HAVE ALREADY BEEN constRUCTED.");
+//	}
+//	return screenMap;
+//}
 
-std::map<std::string, STATE> ScreenFactory::getAllScreenStates()
+std::map<std::string, STATE> ScreenFactory::getAllScreenStates()const
 {
 	std::vector<std::string> names = getAllScreenNames();
 	std::map<std::string, STATE> states = getScreenStates(names);
 	return states;
 }
 
-std::map<std::string, STATE> ScreenFactory::getAllScreenSetStates()
+std::map<std::string, STATE> ScreenFactory::getAllScreenSetStates()const
 {
 	std::vector<std::string> names = getAllScreenNames();
 	std::map<std::string, STATE> states = getScreenSetStates(names);
 	return states;
 }
 
-std::vector<std::string> ScreenFactory::getAllScreenNames()
+std::vector<std::string> ScreenFactory::getAllScreenNames()const
 {
 	std::vector<std::string> names;
 	for (auto it : screenMap)
@@ -333,17 +337,92 @@ std::vector<std::string> ScreenFactory::getAllScreenNames()
 	return names;
 }
 
-
-// TODO  get rid of ALL the finds ! 
-// WE HAVE TO ADD IN TEH NAME ALIASES!!!! meh 
-//std::string full_name = getFullName(name);
-//if (GlobalFunctions::entryExists(camera_map, full_name))
-//{
-//	return camera_map.at(full_name).getImageBufferTrigger();
-//}
-//return GlobalConstants::char_min;
-
-std::string ScreenFactory::getScreenName(const std::string& name)
+std::vector<std::string> ScreenFactory::getAliases(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).getAliases();
+	}
+	std::vector<std::string> r{ "UNKNOWN_NAME" };
+	return r;
+}
+boost::python::list ScreenFactory::getAliases_Py(const std::string& name)const
+{
+	return to_py_list<std::string>(getAliases(name));
+}
+std::string ScreenFactory::getCameraName(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).getCameraName();
+	}
+}
+std::map<std::string, std::string> ScreenFactory::getCameraNames(const std::vector<std::string> names)const
+{
+	std::map<std::string, std::string> screenAndCameraNames;
+	for (auto&& name : names)
+	{
+		screenAndCameraNames[name] = getCameraName(name);
+	}
+	return screenAndCameraNames;
+}
+std::map<std::string, std::string> ScreenFactory::getAllCameraNames()const
+{
+	std::map<std::string, std::string> screenAndCameraNames;
+	std::vector<std::string> names = getAllScreenNames();
+	for (auto&& name : names)
+	{
+		screenAndCameraNames[name] = getCameraName(name);
+	}
+	return screenAndCameraNames;
+}
+boost::python::dict ScreenFactory::getCameraNames_Py(const boost::python::list names)const
+{
+	std::vector<std::string> py_names = to_std_vector<std::string>(names);
+	return to_py_dict(getCameraNames(py_names));
+}
+boost::python::dict ScreenFactory::getAllCameraNames_Py()const
+{
+	return to_py_dict(getAllCameraNames());
+}
+boost::python::list ScreenFactory::getAllScreenNames_Py()const
+{
+	std::vector<std::string> screens;
+	screens = getAllScreenNames();
+	boost::python::list newPyList = to_py_list(screens);
+	return newPyList;
+}
+boost::python::dict ScreenFactory::getAllScreenStates_Py()const
+{
+	std::map<std::string, STATE> screens;
+	screens = getAllScreenStates();
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+boost::python::dict ScreenFactory::getAllScreenSetStates_Py()const
+{
+	std::map<std::string, STATE> screens;
+	screens = getAllScreenSetStates();
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+boost::python::dict ScreenFactory::getScreenStates_Py(boost::python::list names)const
+{
+	std::map<std::string, STATE> screens;
+	screens = getScreenStates(to_std_vector<std::string>(names));
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+boost::python::dict ScreenFactory::getScreenSetStates_Py(boost::python::list names)const
+{
+	std::map<std::string, STATE> screens;
+	screens = getScreenSetStates(to_std_vector<std::string>(names));
+	boost::python::dict newPyDict = to_py_dict(screens);
+	return newPyDict;
+}
+std::string ScreenFactory::getScreenName(const std::string& name)const
 {
 	if (!hasBeenSetup)
 	{
@@ -356,7 +435,11 @@ std::string ScreenFactory::getScreenName(const std::string& name)
 	return "0";
 }
 
-bool ScreenFactory::isHOut(const std::string& name)
+
+
+
+
+bool ScreenFactory::isHOut(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -365,8 +448,7 @@ bool ScreenFactory::isHOut(const std::string& name)
 	}
 	return false;
 }
-
-bool ScreenFactory::isVOut(const std::string& name)
+bool ScreenFactory::isVOut(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -375,11 +457,7 @@ bool ScreenFactory::isVOut(const std::string& name)
 	}
 	return false;
 }
-
-
-
-
-bool ScreenFactory::isHIn(const std::string& name)
+bool ScreenFactory::isHIn(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -389,7 +467,7 @@ bool ScreenFactory::isHIn(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isVIn(const std::string& name)
+bool ScreenFactory::isVIn(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -399,7 +477,7 @@ bool ScreenFactory::isVIn(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::is_HandV_OUT(const std::string& name)
+bool ScreenFactory::is_HandV_OUT(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -409,7 +487,7 @@ bool ScreenFactory::is_HandV_OUT(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isScreenIn(const std::string& name)
+bool ScreenFactory::isScreenIn(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -419,7 +497,7 @@ bool ScreenFactory::isScreenIn(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isHMoving(const std::string& name)
+bool ScreenFactory::isHMoving(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -429,7 +507,7 @@ bool ScreenFactory::isHMoving(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isVMoving(const std::string& name)
+bool ScreenFactory::isVMoving(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -439,7 +517,7 @@ bool ScreenFactory::isVMoving(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isPMoving(const std::string& name)
+bool ScreenFactory::isPMoving(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -449,7 +527,7 @@ bool ScreenFactory::isPMoving(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isMoving(const std::string& name)
+bool ScreenFactory::isMoving(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -459,7 +537,7 @@ bool ScreenFactory::isMoving(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isClearForBeam(const std::string& name)
+bool ScreenFactory::isClearForBeam(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -469,7 +547,7 @@ bool ScreenFactory::isClearForBeam(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isMover(const std::string& name)
+bool ScreenFactory::isMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -479,7 +557,7 @@ bool ScreenFactory::isMover(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isVMover(const std::string& name)
+bool ScreenFactory::isVMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -489,7 +567,7 @@ bool ScreenFactory::isVMover(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isHVMover(const std::string& name)
+bool ScreenFactory::isHVMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -499,7 +577,7 @@ bool ScreenFactory::isHVMover(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isPneumatic(const std::string& name)
+bool ScreenFactory::isPneumatic(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -508,8 +586,7 @@ bool ScreenFactory::isPneumatic(const std::string& name)
 	}
 	return false;
 }
-
-bool ScreenFactory::isVELAPneumatic(const std::string& name)
+bool ScreenFactory::isVELAPneumatic(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -519,7 +596,7 @@ bool ScreenFactory::isVELAPneumatic(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isVELAHVMover(const std::string& name)
+bool ScreenFactory::isVELAHVMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -529,7 +606,7 @@ bool ScreenFactory::isVELAHVMover(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isVELAVMover(const std::string& name)
+bool ScreenFactory::isVELAVMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -539,7 +616,7 @@ bool ScreenFactory::isVELAVMover(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isCLARAHVMover(const std::string& name)
+bool ScreenFactory::isCLARAHVMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -548,7 +625,7 @@ bool ScreenFactory::isCLARAHVMover(const std::string& name)
 	}
 	return false;
 }
-bool ScreenFactory::isCLARAVMover(const std::string& name)
+bool ScreenFactory::isCLARAVMover(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -558,7 +635,7 @@ bool ScreenFactory::isCLARAVMover(const std::string& name)
 	return false;
 }
 
-STATE ScreenFactory::getScreenState(const std::string& name)
+STATE ScreenFactory::getScreenState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -568,7 +645,7 @@ STATE ScreenFactory::getScreenState(const std::string& name)
 	return STATE::UNKNOWN_NAME;
 }
 
-STATE ScreenFactory::getScreenSetState(const std::string& name)
+STATE ScreenFactory::getScreenSetState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -578,7 +655,7 @@ STATE ScreenFactory::getScreenSetState(const std::string& name)
 	return STATE::UNKNOWN_NAME;
 }
 
-std::pair< STATE, TYPE > ScreenFactory::getScreenStatePair(const std::string& name, TYPE type)
+std::pair< STATE, TYPE > ScreenFactory::getScreenStatePair(const std::string& name, TYPE type)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -588,7 +665,7 @@ std::pair< STATE, TYPE > ScreenFactory::getScreenStatePair(const std::string& na
 	return std::make_pair(STATE::UNKNOWN_NAME, TYPE::UNKNOWN_SCREEN_TYPE);
 }
 
-std::pair< STATE, TYPE > ScreenFactory::getScreenSetStatePair(const std::string& name, TYPE type)
+std::pair< STATE, TYPE > ScreenFactory::getScreenSetStatePair(const std::string& name, TYPE type)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -598,7 +675,7 @@ std::pair< STATE, TYPE > ScreenFactory::getScreenSetStatePair(const std::string&
 	return std::make_pair(STATE::UNKNOWN_NAME, TYPE::UNKNOWN_SCREEN_TYPE);
 }
 
-TYPE ScreenFactory::getScreenType(const std::string& name)
+TYPE ScreenFactory::getScreenType(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -607,8 +684,23 @@ TYPE ScreenFactory::getScreenType(const std::string& name)
 	}
 	return TYPE::UNKNOWN_SCREEN_TYPE;
 }
+bool ScreenFactory::isBusy(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).isBusy();
+	}
+	return false;
+}
 
-std::vector< STATE > ScreenFactory::getAvailableDevices(const std::string& name)
+
+
+
+
+
+
+std::vector< STATE > ScreenFactory::getAvailableDevices(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -619,14 +711,14 @@ std::vector< STATE > ScreenFactory::getAvailableDevices(const std::string& name)
 }
 
 
-boost::python::list ScreenFactory::getAvailableDevices_Py(const std::string& name)
+boost::python::list ScreenFactory::getAvailableDevices_Py(const std::string& name)const
 {
 	return to_py_list<STATE>(getAvailableDevices(name));
 }
 
 
 
-bool ScreenFactory::isScreenInState(const std::string& name, STATE sta)
+bool ScreenFactory::isScreenInState(const std::string& name, STATE sta)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -636,7 +728,17 @@ bool ScreenFactory::isScreenInState(const std::string& name, STATE sta)
 	return false;
 }
 
-bool ScreenFactory::isYAGIn(const std::string& name)
+bool ScreenFactory::isYAGNotIn(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).isYAGNotIn();
+	}
+	return false;
+}
+
+bool ScreenFactory::isYAGIn(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -646,7 +748,7 @@ bool ScreenFactory::isYAGIn(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isRFCageIn(const std::string& name)
+bool ScreenFactory::isRFCageIn(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -656,7 +758,7 @@ bool ScreenFactory::isRFCageIn(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isHElement(const std::string& name, STATE e)
+bool ScreenFactory::isHElement(const std::string& name, STATE e)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -666,7 +768,7 @@ bool ScreenFactory::isHElement(const std::string& name, STATE e)
 	return false;
 }
 
-bool ScreenFactory::isVElement(const std::string& name, STATE e)
+bool ScreenFactory::isVElement(const std::string& name, STATE e)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -676,7 +778,7 @@ bool ScreenFactory::isVElement(const std::string& name, STATE e)
 	return false;
 }
 
-bool ScreenFactory::isPElement(const std::string& name, STATE e)
+bool ScreenFactory::isPElement(const std::string& name, STATE e)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -686,7 +788,7 @@ bool ScreenFactory::isPElement(const std::string& name, STATE e)
 	return false;
 }
 
-bool ScreenFactory::isHEnabled(const std::string& name)
+bool ScreenFactory::isHEnabled(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -696,7 +798,7 @@ bool ScreenFactory::isHEnabled(const std::string& name)
 	return false;
 }
 
-bool ScreenFactory::isVEnabled(const std::string& name)
+bool ScreenFactory::isVEnabled(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -706,7 +808,7 @@ bool ScreenFactory::isVEnabled(const std::string& name)
 	return false;
 }
 
-double ScreenFactory::getACTPOS(const std::string& name)
+double ScreenFactory::getACTPOS(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -716,7 +818,7 @@ double ScreenFactory::getACTPOS(const std::string& name)
 	return GlobalConstants::double_min;
 }
 
-double ScreenFactory::getJDiff(const std::string& name)
+double ScreenFactory::getJDiff(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -727,7 +829,7 @@ double ScreenFactory::getJDiff(const std::string& name)
 }
 
 
-double ScreenFactory::getPosition(const std::string& name)
+double ScreenFactory::getPosition(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -737,7 +839,7 @@ double ScreenFactory::getPosition(const std::string& name)
 	return GlobalConstants::double_min;
 }
 
-double ScreenFactory::get_H_ACTPOS(const std::string& name)
+double ScreenFactory::get_H_ACTPOS(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -747,7 +849,7 @@ double ScreenFactory::get_H_ACTPOS(const std::string& name)
 	return GlobalConstants::double_min;
 }
 
-double ScreenFactory::get_V_ACTPOS(const std::string& name)
+double ScreenFactory::get_V_ACTPOS(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
@@ -757,23 +859,61 @@ double ScreenFactory::get_V_ACTPOS(const std::string& name)
 	return GlobalConstants::double_min;
 }
 
-void ScreenFactory::moveScreenTo(const std::string& name, STATE state)
+
+bool ScreenFactory::moveAllScreensOut()
 {
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
+	bool r = true;
+	for (const auto& screen : getAllScreenNames())
 	{
-		screenMap.at(full_name).moveScreenTo(state);
+		std::cout << "MOVE SCREEN OUT " << screen << std::endl;
+		bool f = moveScreenOut(screen);
+		if (f)
+		{
+
+		}
+		else
+		{
+			r = false;
+		}
 	}
+	return r;
+
+}
+bool ScreenFactory::removeAllYAG()
+{
+	return moveAllScreensOut();
 }
 
-void ScreenFactory::insertYAG(const std::string& name)
+bool ScreenFactory::moveScreenTo(const std::string& name, STATE state)
 {
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(screenMap, full_name))
 	{
-		screenMap.at(full_name).insertYAG();
+		return screenMap.at(full_name).moveScreenTo(state);
 	}
+	return false;
 }
+bool ScreenFactory::insertYAG(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).insertYAG();
+	}
+	return false;
+}
+bool ScreenFactory::removeYAG(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).removeYAG();
+	}
+	return false;
+}
+bool ScreenFactory::moveScreenOut(const std::string& name){	return removeYAG(name);}
+bool ScreenFactory::moveScreenIn(const std::string& name){	return insertYAG(name);}
+
 
 void ScreenFactory::makeReadEqualSet(const std::string& name)
 {
@@ -783,7 +923,6 @@ void ScreenFactory::makeReadEqualSet(const std::string& name)
 		screenMap.at(full_name).makeReadEqualSet();
 	}
 }
-
 void ScreenFactory::makeSetEqualRead(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -792,16 +931,6 @@ void ScreenFactory::makeSetEqualRead(const std::string& name)
 		screenMap.at(full_name).makeSetEqualRead();
 	}
 }
-
-void ScreenFactory::moveScreenOut(const std::string& name)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		screenMap.at(full_name).moveScreenOut();
-	}
-}
-
 void ScreenFactory::resetPosition(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -810,7 +939,6 @@ void ScreenFactory::resetPosition(const std::string& name)
 		screenMap.at(full_name).resetPosition();
 	}
 }
-
 void ScreenFactory::jogScreen(const std::string& name, const double jog)
 {
 	std::string full_name = getFullName(name);
@@ -819,7 +947,6 @@ void ScreenFactory::jogScreen(const std::string& name, const double jog)
 		screenMap.at(full_name).jogScreen(jog);
 	}
 }
-
 void ScreenFactory::setPosition(const std::string& name, const double setPos, TYPE type)
 {
 	std::string full_name = getFullName(name);
@@ -827,190 +954,6 @@ void ScreenFactory::setPosition(const std::string& name, const double setPos, TY
 	{
 		screenMap.at(full_name).setPosition(setPos, type);
 	}
-}
-
-bool ScreenFactory::setScreenSetState(const std::string& name, STATE state)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setScreenSetState(state);
-	}
-	return false;
-}
-
-bool ScreenFactory::setScreenSDEV(const std::string& name, STATE& state)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setScreenSDEV(state);
-	}
-	return false;
-}
-
-bool ScreenFactory::setScreenTrigger(const std::string& name, const int& value)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setScreenTrigger(value);
-	}
-	return false;
-
-}
-
-bool ScreenFactory::setScreenTriggerWDir(const std::string& name, const int& value, TYPE& type)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setScreenTriggerWDir(value, type);
-	}
-	return false;
-}
-
-bool ScreenFactory::setEX(const std::string& name, const int& value, TYPE type)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setEX(value, type);
-	}
-	return false;
-}
-
-bool ScreenFactory::setEN(const std::string& name, const int& value, TYPE direction)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setEN(value, direction);
-	}
-	return false;
-}
-
-bool ScreenFactory::setTGTPOS(const std::string& name, const double& value, TYPE direction)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).setTGTPOS(value, direction);
-	}
-	return false;
-}
-
-std::vector<std::string> ScreenFactory::getAliases(const std::string& name)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).getAliases();
-	}
-	std::vector<std::string> r{ "UNKNOWN_NAME" };
-	return r;
-}
-boost::python::list ScreenFactory::getAliases_Py(const std::string& name)
-{
-	return to_py_list<std::string>(getAliases(name));
-}
-
-std::string ScreenFactory::getCameraName(const std::string& name)
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(screenMap, full_name))
-	{
-		return screenMap.at(full_name).getCameraName();
-	}
-}
-
-std::map<std::string, std::string> ScreenFactory::getCameraNames(const std::vector<std::string> names)
-{
-	std::map<std::string, std::string> screenAndCameraNames;
-	for (auto&& name : names)
-	{
-		screenAndCameraNames[name] = getCameraName(name);
-	}
-	return screenAndCameraNames;
-}
-
-std::map<std::string, std::string> ScreenFactory::getAllCameraNames()
-{
-	std::map<std::string, std::string> screenAndCameraNames;
-	std::vector<std::string> names = getAllScreenNames();
-	for (auto&& name : names)
-	{
-		screenAndCameraNames[name] = getCameraName(name);
-	}
-	return screenAndCameraNames;
-}
-
-
-boost::python::dict ScreenFactory::getCameraNames_Py(const boost::python::list names)
-{
-	std::vector<std::string> py_names = to_std_vector<std::string>(names);
-	return to_py_dict(getCameraNames(py_names));
-}
-
-boost::python::dict ScreenFactory::getAllCameraNames_Py()
-{
-	return to_py_dict(getAllCameraNames());
-}
-
-boost::python::list ScreenFactory::getAllScreenNames_Py()
-{
-	std::vector<std::string> screens;
-	screens = getAllScreenNames();
-	boost::python::list newPyList = to_py_list(screens);
-	return newPyList;
-}
-
-boost::python::dict ScreenFactory::getAllScreenStates_Py()
-{
-	std::map<std::string, STATE> screens;
-	screens = getAllScreenStates();
-	boost::python::dict newPyDict = to_py_dict(screens);
-	return newPyDict;
-}
-
-boost::python::dict ScreenFactory::getAllScreenSetStates_Py()
-{
-	std::map<std::string, STATE> screens;
-	screens = getAllScreenSetStates();
-	boost::python::dict newPyDict = to_py_dict(screens);
-	return newPyDict;
-}
-
-boost::python::dict ScreenFactory::getAllScreens_Py()
-{
-	std::map<std::string, Screen> screens;
-	screens = getAllScreens();
-	boost::python::dict newPyDict = to_py_dict(screens);
-	return newPyDict;
-}
-
-boost::python::dict ScreenFactory::getScreenStates_Py(boost::python::list names)
-{
-	std::map<std::string, STATE> screens;
-	screens = getScreenStates(to_std_vector<std::string>(names));
-	boost::python::dict newPyDict = to_py_dict(screens);
-	return newPyDict;
-}
-
-boost::python::dict ScreenFactory::getScreenSetStates_Py(boost::python::list names)
-{
-	std::map<std::string, STATE> screens;
-	screens = getScreenSetStates(to_std_vector<std::string>(names));
-	boost::python::dict newPyDict = to_py_dict(screens);
-	return newPyDict;
-}
-
-boost::python::dict ScreenFactory::getScreens_Py(boost::python::list names)
-{
-	std::map<std::string, Screen> screens;
-	screens = getScreens(to_std_vector<std::string>(names));
-	boost::python::dict newPyDict = to_py_dict(screens);
-	return newPyDict;
 }
 
 
@@ -1401,11 +1344,83 @@ void ScreenFactory::messagesOff()
 		screen.second.messagesOff();
 	}
 }
-bool ScreenFactory::isDebugOn()
+bool ScreenFactory::isDebugOn()const
 {
 	return messenger.isDebugOn();
 }
-bool ScreenFactory::isMessagingOn()
+bool ScreenFactory::isMessagingOn()const
 {
 	return messenger.isMessagingOn();
 }
+
+
+
+
+
+// DONT USE!!!!!!!!!!!!!!!!!!!
+bool ScreenFactory::setScreenSetState(const std::string& name, STATE state)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setScreenSetState(state);
+	}
+	return false;
+}
+bool ScreenFactory::setScreenSDEV(const std::string& name, STATE& state)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setScreenSDEV(state);
+	}
+	return false;
+}
+bool ScreenFactory::setScreenTrigger(const std::string& name, const int& value)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setScreenTrigger(value);
+	}
+	return false;
+
+}
+bool ScreenFactory::setScreenTriggerWDir(const std::string& name, const int& value, TYPE& type)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setScreenTriggerWDir(value, type);
+	}
+	return false;
+}
+bool ScreenFactory::setEX(const std::string& name, const int& value, TYPE type)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setEX(value, type);
+	}
+	return false;
+}
+bool ScreenFactory::setEN(const std::string& name, const int& value, TYPE direction)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setEN(value, direction);
+	}
+	return false;
+}
+bool ScreenFactory::setTGTPOS(const std::string& name, const double& value, TYPE direction)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(screenMap, full_name))
+	{
+		return screenMap.at(full_name).setTGTPOS(value, direction);
+	}
+	return false;
+}
+
+
