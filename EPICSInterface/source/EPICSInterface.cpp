@@ -736,21 +736,19 @@ std::vector<std::string> EPICSInterface::returnValueFromArgsAsStringVector(const
 
 bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const
 {
-	std::cout << "getArrayUserCount, count = " << count << std::endl;
-	std::cout << "ECA_NORMAL check  " << ECA_NORMAL << std::endl;
 		
 	if (ca_state(pvStruct.CHID) == cs_conn)
 	{
-		std::cout << "ca_state(pvStruct.CHID) == cs_conn " << std::endl;
+		messenger.printDebugMessage("ca_state(pvStruct.CHID) == cs_conn ");
 		int status = ca_array_get(pvStruct.CHTYPE, count, pvStruct.CHID, pointer_to_dbr_type);
-		std::cout << "ca_array_get complete status =  " << status << std::endl;
+		messenger.printDebugMessage("ca_array_get complete status =  ", status);
 		MY_SEVCHK(status);
 		if ( status == ECA_NORMAL)
 		{
-			std::cout << "status == ECA_NORMAL " << std::endl;
+			messenger.printDebugMessage("status == ECA_NORMAL ");
 			//int status2 = ca_pend_io(CA_PEND_IO_TIMEOUT);
 			int status2 = ca_flush_io();
-			std::cout << "ca_flush_io complete, status = " << status2 << std::endl;
+			messenger.printDebugMessage("ca_flush_io complete, status = ", status2);
 			MY_SEVCHK(status2);
 			if (status2 == ECA_NORMAL)
 			{
@@ -759,7 +757,7 @@ bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count,
 		}
 		else
 		{
-			std::cout << "ca_array_get did not return  ECA_NORMAL " << std::endl;
+			messenger.printDebugMessage("ca_array_get did not return  ECA_NORMAL ");
 		}
 
 	}
