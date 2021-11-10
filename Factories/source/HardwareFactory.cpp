@@ -861,6 +861,23 @@ bool HardwareFactory::isDebugOn()
 	return messenger.isDebugOn();
 }
 
+bool HardwareFactory::isSilent()
+{
+	return messenger.silent;
+}
+
+bool HardwareFactory::makeSilent()
+{
+	messenger.silent = true;
+	return messenger.silent;
+}
+
+bool HardwareFactory::makeVerbose()
+{
+	messenger.silent = false;
+	return messenger.silent;
+}
+
 
 
 bool HardwareFactory::operator==(const HardwareFactory& HardwareFactory) const

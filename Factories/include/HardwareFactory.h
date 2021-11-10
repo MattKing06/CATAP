@@ -127,6 +127,9 @@ public:
 	void messagesOff();
 	bool isMessagingOn();
 	bool isDebugOn();
+	bool isSilent();
+	bool makeSilent();
+	bool makeVerbose();
 	std::map<std::string, Hardware> hardwareMap;
 	MagnetFactory magnetFactory;
 	ChargeFactory chargeFactory;

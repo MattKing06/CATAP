@@ -69,9 +69,8 @@ BOOST_AUTO_TEST_CASE(hardware_factory_setup_virtual_magnets)
 BOOST_AUTO_TEST_CASE(hardware_factory_messenger_cascade)
 {
 	HardwareFactory hardwareFactory(STATE::VIRTUAL);
-	hardwareFactory.debugMessagesOff();
-	hardwareFactory.messagesOff();
-	hardwareFactory.setup("Magnet", "nominal");
+	hardwareFactory.makeSilent();
+	CameraFactory camFac = hardwareFactory.getCameraFactory();
 	hardwareFactory.debugMessagesOn();
 }
 

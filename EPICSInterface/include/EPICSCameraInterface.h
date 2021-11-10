@@ -22,11 +22,14 @@ public:
     EPICSCameraInterface(const EPICSCameraInterface& copyInterface);
     ~EPICSCameraInterface();
     // We need to a STATIC messenger so that the static call back functions can use it to print messages 
-    static LoggingSystem messenger;
+    static LoggingSystem s_messenger;
     void retrieveupdateFunctionForRecord(pvStruct& pvStruct) const;
     // EPICS calls these functiOns to update a variable
 
-
+	void debugMessagesOff();
+	void debugMessagesOn();
+	void messagesOff();
+	void messagesOn();
    
 static void update_HDFB_image_buffer_filepath_RBV(const struct event_handler_args args);
 static void update_HDFB_image_buffer_filename_RBV(const struct event_handler_args args);
@@ -108,10 +111,10 @@ static void update_OVERLAY_MASK(const struct event_handler_args args);
 
     static bool get_camera_array(std::vector<long>& data_vec, const pvStruct& pvs, size_t count)
     {
-        messenger.printDebugMessage("getArrayValue Function");
+        s_messenger.printDebugMessage("getArrayValue Function");
         if (ca_state(pvs.CHID) == cs_conn)
         {
-            messenger.printDebugMessage("ca_array_get ... ");
+            s_messenger.printDebugMessage("ca_array_get ... ");
             int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
             return sendToEPICSm2("this is from getArrayValue");
         }
