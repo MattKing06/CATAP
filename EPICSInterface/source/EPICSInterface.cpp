@@ -22,6 +22,8 @@
 //CURRENT_CA_CONTEXT = nullptr;
 
 
+LoggingSystem EPICSInterface::s_messenger = LoggingSystem(true, true);
+
 void EPICSInterface::initialiseContext()
 {
 	int status;
@@ -38,13 +40,13 @@ void EPICSInterface::initialiseContext()
 		switch (status)
 		{
 		case(ECA_NORMAL):
-			std::cout << "Success, created ca_context" << std::endl;
+			s_messenger.printMessage("Success, created ca_context");
 			break;
 		case(ECA_ALLOCMEM):
-			std::cout << "Failed to create ca_context, unable to allocate space in pool." << std::endl;
+			s_messenger.printMessage("Failed to create ca_context, unable to allocate space in pool.");
 			break;
 		case(ECA_NOTTHREADED):
-			std::cout << "Someone has disabled pre-emptive callbacks..." << std::endl;
+			s_messenger.printMessage("Someone has disabled pre-emptive callbacks...");
 			break;
 		}
 	}
@@ -54,13 +56,13 @@ void EPICSInterface::initialiseContext()
 		switch (status)
 		{
 		case(ECA_NORMAL):
-			std::cout << "Success, attached to ca_context" << std::endl;
+			s_messenger.printMessage("Success, attached to ca_context");
 			break;
 		case(ECA_ISATTACHED):
-			std::cout << "Already joined to this ca context." << std::endl;
+			s_messenger.printMessage("Already joined to this ca context.");
 			break;
 		case(ECA_NOTTHREADED):
-			std::cout << "Someone has disabled pre-emptive callbacks..." <<	std::endl;
+			s_messenger.printMessage("Someone has disabled pre-emptive callbacks...");
 			break;
 		}
 	}

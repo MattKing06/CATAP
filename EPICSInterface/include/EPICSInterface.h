@@ -75,6 +75,9 @@ public:
 	std::string ownerName;
 	// We also need to create a STATIC messenger in derived epicsinterface classes, 
 	LoggingSystem messenger;
+
+	static LoggingSystem s_messenger;
+
 	/*! turns debug messaging on for this EPICSInterface instance*/
 	void debugMessagesOn();
 	/*! turns debug messaging off for this EPICSInterface instance*/
