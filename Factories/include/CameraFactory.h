@@ -54,6 +54,11 @@ public:
 		@param[in] names, only setup magnets that match a (fullname) in names 
 		@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const std::vector<std::string>& names);
+	/*! setup function using list of camera names, Python version 
+		@param[in] version: (a placeholder for future extensions)
+		@param[in] names: only setup magnets that match a (fullname) in names
+		@param[out] bool: for success or failure */
+	bool setup_names_py(const std::string& version, const boost::python::list& names);
 	/*! get a reference to a camera object
 	@param[in] cam_name, name of camera object to return
 	@param[out] camera object*/

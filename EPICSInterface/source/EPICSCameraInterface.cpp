@@ -1,6 +1,7 @@
 #include "EPICSCameraInterface.h"
 #include "CameraPVRecords.h"
 // REMOVE THIS LATER.
+#include <algorithm>
 #include <iostream>
 #include <mutex>          // std::mutex
 std::mutex cam_interface_mtx;           // mutex for critical section
@@ -291,8 +292,41 @@ void EPICSCameraInterface::update_CAM_BlackLevel_RBV(const struct event_handler_
 }
 void EPICSCameraInterface::update_CAM2_ArrayData(const struct event_handler_args args)
 {
-	messenger.printMessage("UPDATE ARRAY DATA");
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
+	if (recastCamera->update_image_data)
+	{
+		
+		std::cout << "UPDATE ARRAY DATA, " << recastCamera->getHardwareName() << std::endl;
+	}
 }
+void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
+	//std::cout << "update_roi_data flag =  " << recastCamera->update_roi_data << std::endl;
+
+	if (recastCamera->update_roi_data)
+	{
+		const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
+		auto values = tv -> value;
+		
+		int num = 500000;
+		for (int i = 0; i < num; ++i)
+		{
+			(recastCamera->roi_data.second)[i] = *(&tv->value + i);
+		}
+		//int pc = (int)recastCamera->roi_pixel_count;
+		// std::copy(values, values + pc, recastCamera->roi_data.second.begin()); does n ocompile! 
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+		std::cout << (int)recastCamera->roi_pixel_count << " " << getEPICSTime(tv->stamp) << " update_ROI1_ImageData_RBV, " << recastCamera->getHardwareName() << " Time taken: " << duration.count() << " us" << std::endl;
+
+	}
+}
+
+
 void EPICSCameraInterface::update_CAM_Gain_RBV(const struct event_handler_args args)
 {
 	//std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
@@ -740,9 +774,10 @@ void EPICSCameraInterface::update_ROI1_MinY_RBV(const struct event_handler_args 
 {
 	//std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	std::pair<epicsTimeStamp, long> roi_min_y;
+	//std::pair<epicsTimeStamp, long> roi_min_y;
 	updateTimeStampLongPair(args, recastCamera->roi_min_y);
 	recastCamera->roi_max_y = recastCamera->roi_min_y.second + recastCamera->roi_size_y.second;
+
 	// messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max Y = ",
 		// recastCamera->roi_max_y);
 	// messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_MinY_RBV = ",
@@ -759,6 +794,7 @@ void EPICSCameraInterface::update_ROI1_SizeX_RBV(const struct event_handler_args
 	messenger.printDebugMessage(recastCamera->hardwareName, " roi_size_x = ",
 		recastCamera->roi_size_x.second);
 	recastCamera->roi_max_x = recastCamera->roi_min_x.second + recastCamera->roi_size_x.second;
+	recastCamera->roi_pixel_count = recastCamera->roi_size_x.second * recastCamera->roi_size_y.second;
 	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max X = ",
 		recastCamera->roi_max_x);
 }
@@ -770,16 +806,12 @@ void EPICSCameraInterface::update_ROI1_SizeY_RBV(const struct event_handler_args
 	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_SizeY_RBV = ",
 	//	recastCamera->roi_size_y.second);
 	recastCamera->roi_max_y = recastCamera->roi_min_y.second + recastCamera->roi_size_y.second;
+
+	
 	messenger.printDebugMessage(recastCamera->hardwareName, " ROI New Max Y = ",
 		recastCamera->roi_max_y);
 }
-void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
-{
-	//std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
-	Camera* recastCamera = static_cast<Camera*>(args.usr);
-	// TODO actually not doing it this way for now, only caget 
-	//messenger.printDebugMessage(recastCamera->hardwareName, " update_ROI1_ImageData_RBV");
-}
+
 void EPICSCameraInterface::update_ANA_UseFloor_RBV(const struct event_handler_args args)
 {
 	//std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();

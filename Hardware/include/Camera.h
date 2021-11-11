@@ -617,6 +617,8 @@ protected:
 	std::pair<epicsTimeStamp, double > active_camera_count;
 	/*! Acquire status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> acquire_state;
+
+
 private:
 	/*! Struct to hold data for the thread called by stopAcquiringAndWait */
 	CamStopWaiter cam_stop_acquiring_waiter_struct;
@@ -871,6 +873,7 @@ protected:
 	std::pair<epicsTimeStamp, long> roi_size_x;
 	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> roi_size_y;
+	long roi_pixel_count;
 public:
 	/*! Set the Region Of Interest minimum x pixel.
 	@param[in] long, new val
@@ -1311,12 +1314,24 @@ private:
 //	\__/ |    |__/ /~~\  |  |___    /~~\ | \| |__/    \__> |___  |     |  |  | /~~\ \__> |___    |__/ /~~\  |  /~~\    
 //	                                                                                                                   
 public:
+	/*! Start monitoring the image data.
+	@param[out] bool: value of update_image_data */
+	bool startImageDataMonitoring();
+	/*! Start monitoring the ROI image data.
+	@param[out] bool: value of update_roi_data */
+	bool startROIDataMonitoring();
+	/*! Start monitoring the image data.
+	@param[out] bool: value of update_image_data */
+	bool stopImageDataMonitoring();
+	/*! Stop monitoring the ROI image data.
+	@param[out] bool: value of update_roi_data */
+	bool stopROIDataMonitoring();
 	/*! Get the latest image data (decimated array for passing accross network, not full image).
 	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
 	bool updateImageData();
 	/*! Get the latest image data AND time stamp.
 	It is possible in the current implementation that the time stamp is not synchronized with the data.
-	(decimated array for passing accross network, not full image).
+	(for CLARA cameras this is decimated array for passing accross network, not full image).
 	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
 	bool updateImageDataWithTimeStamp();
 	/*! Get the latest ROI data (decimated array for passing accross network, not full image, !!ROI is new, not been tested!!). 
@@ -1339,6 +1354,8 @@ public:
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
 	boost::python::numpy::ndarray getImageData_NumPy()const;
+	boost::python::numpy::ndarray getImageData_NumPy2()const;
+	//boost::python::numpy::ndarray& getImageData_NumPy3();
 	/*! Get a copy of the current Region Of Interest data. Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
@@ -1397,6 +1414,11 @@ private:
 	/*! Flag set if the roi_data vector has had memory allocated for it.
 	To save application memory this ony happens when requesting image data accross the network */
 	bool roi_data_has_not_vector_resized;
+	/*! Flag set by startROIDataMonitoring that when set to true will enable monitoring of the image via EPICS */
+	bool update_roi_data;
+	/*! Flag set by startImageDataMonitoring that when set to true will enable monitoring of the image via EPICS */
+	bool update_image_data;
+
 //       ___  __   __        __   ___  __  
 // |\/| |__  /__` /__`  /\  / _` |__  /__` 
 // |  | |___ .__/ .__/ /~~\ \__> |___ .__/ 
@@ -1648,6 +1670,9 @@ private:
 		return false;
 	}
 
+
+	boost::python::object random_object;
+	//boost::python::numpy::ndarray test_numpy_array;
 
 };
 #endif //CAMERA_H_

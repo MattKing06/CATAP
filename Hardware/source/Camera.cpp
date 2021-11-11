@@ -40,6 +40,11 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	roi_size_x(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_size_y(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_min_x(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_min_y(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_pixel_count(GlobalConstants::long_min),
 	mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -139,6 +144,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	flip_ud(false),
 	flip_lr(false),
 	has_led(false),
+	update_roi_data(false),
+	update_image_data(false),
 	last_capture_and_save_success(false),
 	x_pix_rs(RunningStats() ),
 	y_pix_rs(RunningStats() ),
@@ -751,10 +758,19 @@ use_mask_rad_limits(copyCamera.use_mask_rad_limits),
 sensor_max_temperature(copyCamera.sensor_max_temperature),
 sensor_min_temperature(copyCamera.sensor_min_temperature),
 average_pixel_value_for_beam(copyCamera.average_pixel_value_for_beam),
+roi_size_x(copyCamera.roi_size_x),
+roi_size_y(copyCamera.roi_size_y),
+roi_min_x(copyCamera.roi_min_x),
+roi_min_y(copyCamera.roi_min_y),
+roi_pixel_count(copyCamera.roi_pixel_count),
 min_x_pixel_pos(copyCamera.min_x_pixel_pos),
 max_x_pixel_pos(copyCamera.max_x_pixel_pos),
 min_y_pixel_pos(copyCamera.min_y_pixel_pos),
 max_y_pixel_pos(copyCamera.max_y_pixel_pos),
+flip_ud(copyCamera.flip_ud),
+flip_lr(copyCamera.flip_lr),
+update_roi_data(copyCamera.update_roi_data),
+update_image_data(copyCamera.update_image_data),
 busy(copyCamera.busy),
 has_led(copyCamera.has_led),
 last_capture_and_save_success(copyCamera.last_capture_and_save_success),
@@ -2167,6 +2183,13 @@ bool Camera::updateImageData()
 	{
 		messenger.printDebugMessage("image_data_has_not_vector_resized = True");
 		vector_resize(image_data.second);
+
+		//test_numpy_array = boost::python::numpy::from_data(&image_data.second[0],
+		//	boost::python::numpy::dtype::get_builtin<long>(),
+		//	boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x),
+		//	boost::python::make_tuple(sizeof(long), sizeof(long)),
+		//	random_object);
+
 		if (image_data.second.size() == array_data_pixel_count)
 		{
 			image_data_has_not_vector_resized = false;
@@ -2186,7 +2209,7 @@ bool Camera::updateImageData()
 			, image_data.second.size());
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -2277,7 +2300,7 @@ bool Camera::updateROIDataWithTimeStamp()
 		auto start = std::chrono::high_resolution_clock::now();
 		bool got_stamp = getArrayTimeStamp(dbr_roi_data, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_data.first);
-		long roi_num_pixels = getROIMinY() * getROIMinX();
+		long roi_num_pixels = getROISizeX() * getROISizeY();
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_num_pixels);
 		auto stop = std::chrono::high_resolution_clock::now();
@@ -2315,6 +2338,7 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	if (ca_state(pvs.CHID) == cs_conn)
 	{
 		int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
+		//int status = ca_array_get(DBR_LONG, count, pvs.CHID, reinterpret_cast<long*>(test_numpy_array.get_data()) );
 		if (EPICSInterface::sendToEPICSm2("this is from getArrayValue"));
 		{
 			auto stop = std::chrono::high_resolution_clock::now();
@@ -2329,7 +2353,43 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 
 
 
+bool Camera::startImageDataMonitoring()
+{
+	if (image_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for image_data ");
+		image_data_has_not_vector_resized = !vector_resize(image_data.second);
+	}
+	update_image_data = true;
+	return update_image_data;
+}
+bool Camera::startROIDataMonitoring()
+{
+	if (roi_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for ROI ");
+		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+	}
+	update_roi_data = true;
+	return update_roi_data;
+}
+bool Camera::stopImageDataMonitoring()
+{
+	update_image_data = false;
+	return update_image_data;
+}
+bool Camera::stopROIDataMonitoring()
+{
+	update_roi_data = false;
+	return update_roi_data;
+}
 
+
+//only gte new data for an array, and sit in ahiwl eloop to gaurantte it sne ???? 
+//add last areay data as timestamp
+//and what is gong on wit hthe strides ???? 
+//and use teh ROIS to give max rep rate 
+//what gui update timer cshoudl we use? probably 50 ms, 
 
 
 
@@ -2384,6 +2444,31 @@ boost::python::numpy::ndarray Camera::getImageData_NumPy()const
 	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
 }
 
+//boost::python::numpy::ndarray& Camera::getImageData_NumPy3()
+//{
+//	return test_numpy_array;
+//}
+
+boost::python::numpy::ndarray Camera::getImageData_NumPy2()const
+{
+	//auto start = std::chrono::high_resolution_clock::now();
+	//random_object = boost::python::object();
+	//boost::python::numpy::initialize();
+	return boost::python::numpy::from_data(&image_data.second[0],
+			boost::python::numpy::dtype::get_builtin<long>(),
+			boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x),
+			boost::python::make_tuple(sizeof(long), sizeof(long)),
+			random_object);
+
+
+	//auto stop = std::chrono::high_resolution_clock::now();
+	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+
+	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
+	//return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
+	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
+}
 
 
 std::vector<long> Camera::getROIData()const

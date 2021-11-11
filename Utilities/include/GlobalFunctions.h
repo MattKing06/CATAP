@@ -28,8 +28,6 @@
 namespace GlobalFunctions {
 
 
-	// 	extern bool areEqualEpicsTimeStamps(const epicsTimeStamp& t1, const epicsTimeStamp& t2); TODO add when we can include epicstime.h
- 
 
     /*
             We often check if entries exist in maps,

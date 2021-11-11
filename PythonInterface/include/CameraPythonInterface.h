@@ -20,6 +20,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	}
 	void expose_camera_object() 
 	{
+		boost::python::numpy::initialize();
 		// function pointers for overloads we want to expose
 		bool(Camera::*setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
 		bool(Camera::*setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
@@ -281,10 +282,18 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("updateImageDataWithTimeStamp", &Camera::updateImageDataWithTimeStamp)
 		.def("updateROIData", &Camera::updateROIData)
 		.def("updateROIDataWithTimeStamp", &Camera::updateROIDataWithTimeStamp)
+		.def("startImageDataMonitoring", &Camera::startImageDataMonitoring)
+		.def("startROIDataMonitoring", &Camera::startROIDataMonitoring)
+		.def("stopImageDataMonitoring", &Camera::stopImageDataMonitoring)
+		.def("stopROIDataMonitoring", &Camera::stopROIDataMonitoring)
 		.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getImageData", &Camera::getImageData_Py)
 		.def("getImageDataNumPy", &Camera::getImageData_NumPy)
+		.def("getImageDataNumPy2", &Camera::getImageData_NumPy2)
+
+		//.def("getImageDataNumPy3", &Camera::getImageData_NumPy3, boost::python::return_value_policy<boost::python::reference_existing_object>())
+
 		.def("getROIData", &Camera::getROIData_Py)
 		.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
 		.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
@@ -386,6 +395,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	}
 	void expose_camera_factory_object() 
 	{
+		boost::python::numpy::initialize();
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<CameraFactory>())->to_python_target_type());
 		if (is_registered) return;
 
@@ -402,6 +412,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		STATE(CameraFactory:: * applySnaphot_withDict)(const boost::python::dict&, TYPE) = &CameraFactory::applySnaphot;
 		STATE(CameraFactory:: * applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &CameraFactory::applySnaphot;
 
+
+
+
+
 		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
@@ -409,8 +423,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		boost::python::class_<CameraFactory, boost::noncopyable>("CameraFactory", boost::python::no_init)
 			.def(boost::python::init<STATE, const std::string>())
 			.def(boost::python::init<STATE>())
+			.def("setup", &CameraFactory::setup_names_py)
 			.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>() )
-
 			//                   ___  __  
 			//  |\ |  /\   |\/| |__  /__` 
 			//  | \| /~~\  |  | |___ .__/ 
