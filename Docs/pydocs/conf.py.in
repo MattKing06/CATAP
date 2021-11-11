@@ -22,7 +22,7 @@ print(sys.path)
 from CATAP.GlobalStates import *
 from CATAP.GlobalTypes import *
 from CATAP.EPICSTools import *
-
+from CATAP.EPICSArchiver import *
 from CATAP.BPM import *
 from CATAP.Charge import *
 from CATAP.Camera import *

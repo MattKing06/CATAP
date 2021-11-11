@@ -13,6 +13,7 @@ Welcome to CATAP Python Library documentation!
    HardwareTypes.rst
    Factories.rst
    EPICSTools.rst
+   EPICSArchiver.rst
    State.rst
    Type.rst
    ExampleScripts.rst
