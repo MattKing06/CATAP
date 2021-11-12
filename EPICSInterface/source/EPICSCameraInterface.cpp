@@ -4,8 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <mutex>          // std::mutex
-std::mutex cam_roi_data_update_mtx;           // mutex for critical section
-std::mutex cam_image_data_update_mtx;           // mutex for critical section
+std::mutex cam_interface_mtx;           // mutex for critical section
 
 
 LoggingSystem EPICSCameraInterface::messenger;
@@ -293,43 +292,37 @@ void EPICSCameraInterface::update_CAM_BlackLevel_RBV(const struct event_handler_
 }
 void EPICSCameraInterface::update_CAM2_ArrayData(const struct event_handler_args args)
 {
-	auto start = std::chrono::high_resolution_clock::now();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
 	if (recastCamera->update_image_data)
 	{
-		const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
-		auto values = tv->value;
-		for (size_t i = 0; i < recastCamera->image_data.second.size(); ++i)
-		{
-			(recastCamera->image_data.second)[i] = *(&tv->value + i);
-		}
-		// int pc = (int)recastCamera->roi_pixel_count;
-		// std::copy(values, values + pc, recastCamera->roi_data.second.begin()); does n ocompile! 
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		std::cout << getEPICSTime(tv->stamp) << " update_CAM2_ArrayData, " << recastCamera->getHardwareName() << " Time taken: " << duration.count() << " us" << std::endl;
+		
+		std::cout << "UPDATE ARRAY DATA, " << recastCamera->getHardwareName() << std::endl;
 	}
 }
 void EPICSCameraInterface::update_ROI1_ImageData_RBV(const struct event_handler_args args)
 {
-	std::lock_guard<std::mutex> lg(cam_interface_mtx);  // This now locked your mutex mtx.lock();
 	auto start = std::chrono::high_resolution_clock::now();
 	Camera* recastCamera = static_cast<Camera*>(args.usr);
+
 	//std::cout << "update_roi_data flag =  " << recastCamera->update_roi_data << std::endl;
+
 	if (recastCamera->update_roi_data)
 	{
 		const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
 		auto values = tv -> value;
-		int roi_num_pixels = recastCamera->getROISizeX() * recastCamera->getROISizeY();
-		for (int i = 0; i < roi_num_pixels; ++i)
+		
+		int num = 500000;
+		for (int i = 0; i < num; ++i)
 		{
 			(recastCamera->roi_data.second)[i] = *(&tv->value + i);
 		}
-		// int pc = (int)recastCamera->roi_pixel_count;
+		//int pc = (int)recastCamera->roi_pixel_count;
 		// std::copy(values, values + pc, recastCamera->roi_data.second.begin()); does n ocompile! 
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		std::cout << (int)recastCamera->roi_pixel_count << " " << getEPICSTime(tv->stamp) << " update_ROI1_ImageData_RBV, " << recastCamera->getHardwareName() << " Time taken: " << duration.count() << " us" << std::endl;
+
 	}
 }
 
