@@ -2268,14 +2268,10 @@ bool Camera::updateROIData()
 		auto start = std::chrono::high_resolution_clock::now();
 		//bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 		//	, roi_data.second.size());
-
 		roi_total_pixel_count = roi_size_x.second * roi_size_y.second;
-
 		//messenger.printDebugMessage("roi_total_pixel_count = ", roi_total_pixel_count);
-
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_total_pixel_count);
-
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		//messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
@@ -2350,8 +2346,6 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	}
 	return false;
 }
-
-
 
 bool Camera::startImageDataMonitoring()
 {
@@ -2454,10 +2448,11 @@ boost::python::numpy::ndarray Camera::getImageData_NumPy2()const
 	//auto start = std::chrono::high_resolution_clock::now();
 	//random_object = boost::python::object();
 	//boost::python::numpy::initialize();
+	//https://numpy.org/doc/stable/reference/generated/numpy.ndarray.strides.html
 	return boost::python::numpy::from_data(&image_data.second[0],
 			boost::python::numpy::dtype::get_builtin<long>(),
 			boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x),
-			boost::python::make_tuple(sizeof(long), sizeof(long)),
+			boost::python::make_tuple(sizeof(long)* array_data_num_pix_y, sizeof(long)),
 			random_object);
 
 

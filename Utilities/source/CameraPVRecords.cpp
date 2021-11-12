@@ -181,9 +181,10 @@ namespace CameraRecords
 		//// ATM these ones don't come with an _RBV suffix for a read only PV 
 		LED_Sta,	      // 59
 		CAM_Active_Limit, // 59
-		CAM_Active_Count,  // 59
-		CAM2_ArrayData,
-		ROI1_ImageData_RBV
+		CAM_Active_Count  // 59
+		//,  
+		//CAM2_ArrayData,
+		//ROI1_ImageData_RBV
 	};
 
 }
