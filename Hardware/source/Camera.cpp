@@ -2452,17 +2452,8 @@ boost::python::numpy::ndarray Camera::getImageData_NumPy2()const
 	return boost::python::numpy::from_data(&image_data.second[0],
 			boost::python::numpy::dtype::get_builtin<long>(),
 			boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x),
-			boost::python::make_tuple(sizeof(long)* array_data_num_pix_y, sizeof(long)),
+			boost::python::make_tuple(sizeof(long)* array_data_num_pix_x, sizeof(long)),
 			random_object);
-
-
-	//auto stop = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	//messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
-
-	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
-	//return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
-	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
 }
 
 

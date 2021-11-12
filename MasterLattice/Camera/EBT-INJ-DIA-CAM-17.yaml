@@ -208,8 +208,6 @@ properties:
     IMAGE_ROTATION : 0 # could be 0, 90, 180, 270, rotation applied before flipiing! 
     IMAGE_FLIP_UD : true
     IMAGE_FLIP_LR : false     
-    
-    
     MIN_GAIN_LEVEL : -170
     MAX_GAIN_LEVEL : 700
     MIN_BLACK_LEVEL : -768
