@@ -1902,7 +1902,7 @@ double Camera::getSigY()const{ return sigma_y_mm.second;}
 double Camera::getSigXY()const{	return sigma_xy_mm.second;}
 double Camera::getXPix()const{ return x_pix.second;}
 size_t Camera::getXPixScaleFactor()const{ return x_pix_scale_factor;}
-double Camera::getYPix()const{	return y_pix.second;}
+double Camera::getYPix()const{ return y_pix.second;}
 size_t Camera::getYPixScaleFactor()const{ return y_pix_scale_factor;}
 double Camera::getSigXPix()const{ return sigma_x_pix.second;}
 double Camera::getSigYPix()const{ return sigma_y_pix.second; }
@@ -2054,7 +2054,7 @@ RunningStats& Camera::getSigmaYPixRunningStats(){ return sigma_y_pix_rs;}
 RunningStats& Camera::getSigmaXYPixRunningStats(){ return sigma_xy_pix_rs;}
 RunningStats& Camera::getXmmRunningStats(){	return x_mm_rs;}
 RunningStats& Camera::getYmmRunningStats(){	return y_mm_rs;}
-RunningStats& Camera::getSigmaXmmRunningStats(){	return sigma_x_mm_rs;}
+RunningStats& Camera::getSigmaXmmRunningStats(){ return sigma_x_mm_rs;}
 RunningStats& Camera::getSigmaYmmRunningStats(){ return sigma_y_mm_rs;	}
 RunningStats& Camera::getSigmaXYmmRunningStats(){ return sigma_xy_mm_rs;	}
 RunningStats& Camera::getAvgIntensityRunningStats(){ return avg_intensity_rs;}
