@@ -4,12 +4,12 @@
 namespace CameraRecords
 {
 	std::string const HDFB_image_buffer_trigger		    = "HDFB_image_buffer_trigger";
-	std::string const HDFB_image_buffer_filepath		    = "HDFB_image_buffer_filepath";
+	std::string const HDFB_image_buffer_filepath		    = "HDFB_image_buffer_filePath";
 	std::string const HDFB_image_buffer_filepath_RBV      = "HDFB_image_buffer_filepath_RBV";
-	std::string const HDFB_image_buffer_filename		    = "HDFB_image_buffer_filename";
-	std::string const HDFB_image_buffer_filename_RBV	    = "HDFB_image_buffer_filename_RBV";
-	std::string const HDFB_image_buffer_filenumber	    = "HDFB_image_buffer_filenumber";
-	std::string const HDFB_image_buffer_filenumber_RBV    = "HDFB_image_buffer_filenumber_RBV";
+	std::string const HDFB_image_buffer_filename		    = "HDFB_image_buffer_fileName";
+	std::string const HDFB_image_buffer_filename_RBV	    = "HDFB_image_buffer_fileName_RBV";
+	std::string const HDFB_image_buffer_filenumber	    = "HDFB_Buffer_FileNumber";
+	std::string const HDFB_image_buffer_filenumber_RBV    = "HDFB_Buffer_FileNumber_RBV";
 	std::string const ROI1_MinX_RBV				    = "ROI1_MinX_RBV"				;
 	std::string const ROI1_MinY_RBV				    = "ROI1_MinY_RBV"				;
 	std::string const ROI1_MinX					    = "ROI1_MinX"					;

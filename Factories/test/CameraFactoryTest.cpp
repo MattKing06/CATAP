@@ -30,4 +30,13 @@ BOOST_AUTO_TEST_CASE(toggle_noise_floor)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(save_image_buffer)
+{
+	CameraFactory fac = CameraFactory(STATE::PHYSICAL);
+	fac.setup("nominal");
+	std::string cam_name = "INJ-CAM-10";
+	Camera& inj_10 = fac.getCamera(cam_name);
+	inj_10.saveImageBuffer();
+}
+
 BOOST_AUTO_TEST_SUITE_END()
