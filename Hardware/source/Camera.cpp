@@ -1303,7 +1303,11 @@ bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
 	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
+		if (ca_state(pvStructs.at(CameraRecords::HDF_NumCapture).CHID) == cs_conn)
+		{
+			return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
+		}
+
 	}
 	return false;
 }
