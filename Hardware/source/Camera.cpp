@@ -2455,11 +2455,25 @@ boost::python::numpy::ndarray Camera::getImageData_NumPy2()const
 	//https://numpy.org/doc/stable/reference/generated/numpy.ndarray.strides.html
 	return boost::python::numpy::from_data(&image_data.second[0],
 			boost::python::numpy::dtype::get_builtin<long>(),
-			boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x),
-			boost::python::make_tuple(sizeof(long)* array_data_num_pix_x, sizeof(long)),
+		boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y), // swop x and y 
+		boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
+		// both these definitions are correct, one is related to row-major, the other col-major
+		//boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y),
+		//boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
 			random_object);
 }
 
+boost::python::numpy::ndarray Camera::getROIData_NumPy2()const
+{
+	return boost::python::numpy::from_data(&roi_data.second[0],
+		boost::python::numpy::dtype::get_builtin<long>(),
+		boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
+		boost::python::make_tuple(sizeof(long), roi_size_x.second * sizeof(long)),
+		// both these definitions are correct, one is related to row-major, the other col-major
+		//boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
+		//boost::python::make_tuple(sizeof(long), sizeof(long) * roi_size_x.second),
+		random_object);
+}
 
 std::vector<long> Camera::getROIData()const
 {

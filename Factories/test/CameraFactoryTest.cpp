@@ -54,5 +54,4 @@ BOOST_AUTO_TEST_CASE(save_multiple_images)
 	}
 }
 
-
 BOOST_AUTO_TEST_SUITE_END()

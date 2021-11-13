@@ -41,21 +41,17 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
-
 		//                   ___  __  
 		//  |\ |  /\   |\/| |__  /__` 
 		//  | \| /~~\  |  | |___ .__/ 
 		//
 		.def("getAliases", &Camera::getAliases_Py)
 		.def("getScreenNames", &Camera::getScreenNames_Py)
-
 		// image properties 
 		.def("getBitDepth", &Camera::getBitDepth)
 		.def("getImageRotation", &Camera::getImageRotation)
 		.def("getImageFlipUD", &Camera::getImageFlipUD)
 		.def("getImageFlipLR", &Camera::getImageFlipLR)
-		
-
 		//   __         ___         ___  __                 
 		//  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
 		//  |    | / \ |___ |___     |  \__/     |  |  |  | 
@@ -295,6 +291,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		//.def("getImageDataNumPy3", &Camera::getImageData_NumPy3, boost::python::return_value_policy<boost::python::reference_existing_object>())
 
 		.def("getROIData", &Camera::getROIData_Py)
+		
+		.def("getROIDataNumPy2", &Camera::getROIData_NumPy2)
+
 		.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
 		.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
 		.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)

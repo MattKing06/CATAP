@@ -1355,6 +1355,7 @@ public:
 	@param[out] list, latest data */
 	boost::python::numpy::ndarray getImageData_NumPy()const;
 	boost::python::numpy::ndarray getImageData_NumPy2()const;
+	boost::python::numpy::ndarray getROIData_NumPy2()const;
 	//boost::python::numpy::ndarray& getImageData_NumPy3();
 	/*! Get a copy of the current Region Of Interest data. Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
