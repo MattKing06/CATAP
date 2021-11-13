@@ -42,13 +42,13 @@ BOOST_AUTO_TEST_CASE(save_image_buffer)
 BOOST_AUTO_TEST_CASE(save_multiple_images)
 {
 	CameraFactory fac = CameraFactory(STATE::PHYSICAL);
-	std::vector<std::string> cam_names = { "C2V-CAM-01", "VIRTUAL_CATHODE"};
+	std::vector<std::string> cam_names = { "INJ-CAM-12", "VIRTUAL_CATHODE"};
 	fac.setup("nominal", cam_names);
 	Camera& inj_10 = fac.getCamera(cam_names[0]);
 	Camera& vca = fac.getCamera(cam_names[1]);
 	inj_10.captureAndSave(600);
 	vca.captureAndSave(600);
-	while (inj_10.isBusy() && vca.isBusy())
+	while(inj_10.isBusy() || vca.isBusy())
 	{
 		continue;
 	}
