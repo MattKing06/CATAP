@@ -776,7 +776,7 @@ has_led(copyCamera.has_led),
 last_capture_and_save_success(copyCamera.last_capture_and_save_success),
 bit_depth(copyCamera.bit_depth)
 {}
-Camera::~Camera(){}
+Camera::~Camera() {}
 void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)
@@ -1154,6 +1154,7 @@ bool Camera::captureAndSave(size_t num_shots)
 				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
 
 				image_capture.is_busy = true;
+				busy  = true;
 				image_capture.status = STATE::CAPTURING;
 				image_capture.num_shots = num_shots;
 				image_capture.cam = this;
@@ -1225,7 +1226,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 		if (capture())
 		{
 			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
-			//GlobalFunctions::pause_500();
+			GlobalFunctions::pause_500();
 			// add a time out here
 			time_t wait_time = num_shots * 10 + 5; // MAGIC numbers 
 			time_t time_start = GlobalFunctions::timeNow();
@@ -1278,6 +1279,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 							image_capture.status = STATE::WRITE_CHECK_ERROR;
 						}
 						image_capture.is_busy = false;
+						busy = false;
 					}
 					else
 					{
