@@ -2455,10 +2455,31 @@ boost::python::numpy::ndarray Camera::getImageData_NumPy2()const
 	//random_object = boost::python::object();
 	//boost::python::numpy::initialize();
 	//https://numpy.org/doc/stable/reference/generated/numpy.ndarray.strides.html
+
+
+	/*
+	* https://github.com/boostorg/python/blob/develop/example/numpy/ndarray.cpp
+// Now lets make an 3x2 ndarray from a multi-dimensional array using non-unit strides
+// First lets create a 3x4 array of 8-bit integers
+uint8_t mul_data[][4] = {{1,2,3,4},{5,6,7,8},{1,3,5,7}};
+// Now let's create an array of 3x2 elements, picking the first and third elements from each row
+// For that, the shape will be 3x2
+shape = p::make_tuple(3,2) ;
+// The strides will be 4x2 i.e. 4 bytes to go to the next desired row, and 2 bytes to go to the next desired column
+stride = p::make_tuple(4,2) ; 
+// Get the numpy dtype for the built-in 8-bit integer data type
+np::dtype dt1 = np::dtype::get_builtin<uint8_t>();
+// First lets create and print out the ndarray as is
+np::ndarray mul_data_ex = np::from_data(mul_data,dt1, p::make_tuple(3,4),p::make_tuple(4,1),p::object());
+	
+	*/
+
 	return boost::python::numpy::from_data(&image_data.second[0],
 			boost::python::numpy::dtype::get_builtin<long>(),
-		boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y), // swop x and y 
-		boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
+		boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x), // swop x and y 
+		boost::python::make_tuple(sizeof(long) * array_data_num_pix_x, sizeof(long)), 
+		//boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y), // swop x and y 
+		//boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
 		// both these definitions are correct, one is related to row-major, the other col-major
 		//boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y),
 		//boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
@@ -2469,8 +2490,10 @@ boost::python::numpy::ndarray Camera::getROIData_NumPy2()const
 {
 	return boost::python::numpy::from_data(&roi_data.second[0],
 		boost::python::numpy::dtype::get_builtin<long>(),
-		boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
-		boost::python::make_tuple(sizeof(long), roi_size_x.second * sizeof(long)),
+		boost::python::make_tuple(roi_size_y.second, roi_size_x.second), // swop x and y 
+		boost::python::make_tuple(sizeof(long) * roi_size_x.second, sizeof(long)),
+		//boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
+		//boost::python::make_tuple(sizeof(long), roi_size_x.second * sizeof(long)),
 		// both these definitions are correct, one is related to row-major, the other col-major
 		//boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
 		//boost::python::make_tuple(sizeof(long), sizeof(long) * roi_size_x.second),
