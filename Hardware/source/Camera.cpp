@@ -2280,7 +2280,7 @@ bool Camera::updateROIData()
 			, roi_total_pixel_count);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		//messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	return false;
