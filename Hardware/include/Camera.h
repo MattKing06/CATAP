@@ -1382,6 +1382,14 @@ public:
 	/*! Get the current number of data values being used by the Running Stats.
 * 	@param[out] size_t: number of data values.*/
 	size_t getRunningStatNumDataValues()const;
+	/*! Get the timestamp of the current frame.
+* 	@param[out] std::pair<int, int>: secPastEpoch, nsec, where the epoch is the EPICS one, 0000 Jan 1, 1990 .*/
+	std::pair<int, int> getFrameTimeStanmp();
+	/*! Get the timestamp of the current frame, Python version 
+* 	@param[out] list: [secPastEpoch, nsec] where the epoch is the EPICS one, 0000 Jan 1, 1990 .*/
+	boost::python::list getFrameTimeStanmp_Py();
+
+
 private:
 	/*! Get the latest time stamp for an image / ROI  array
 	@param[in] struct dbr_time_long*, pointer to DBR_TIME_LONG struct

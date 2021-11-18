@@ -383,8 +383,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 				
 		.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)
 
-
-
+			
+		.def("getFrameTimeStanmp", &Camera::getFrameTimeStanmp_Py)
+			
 		.def("debugMessagesOff", &Camera::debugMessagesOff)
 		.def("messagesOn", &Camera::messagesOn)
 		.def("messagesOff", &Camera::messagesOff)

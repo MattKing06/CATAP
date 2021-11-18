@@ -1572,18 +1572,12 @@ double Camera::getFlooredPtsPercent()const{	return floored_pts_percent.second;}
 //	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
 //	                                                                                                    
 bool Camera::epics_setUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-
 bool Camera::epics_setDoNotUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-
 bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val); }
-
 bool Camera::setUseNPointScaling(){	return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseNPointScaling, GlobalConstants::one_ushort); }
-
 bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::zero_ushort); }
-
 bool Camera::setNpointScalingStepSize(long v){return genericStopAcquiringApplySetting<long>(&Camera::epics_setNpointScalingStepSize, v);}
 bool Camera::toggleUseNPointScaling() {	return isUsingNPointScaling() ? setDoNotUseNPointScaling() : setUseNPointScaling(); }
-
 STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
 bool Camera::isUsingNPointScaling()const{ return use_npoint.second == STATE::USING_NPOINT;}
 bool Camera::isNotUsingNPointScaling()const{ return use_npoint.second == STATE::NOT_USING_NPOINT;}
@@ -1886,6 +1880,7 @@ boost::python::dict Camera::getAllRunningStats()const
 TYPE Camera::getCamType()const{	return cam_type;}
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
+	// TODDO this does not appear work!!! 
 	std::map<std::string, double> r;
 	std::string n;
 	double v;
@@ -1913,8 +1908,6 @@ size_t Camera::getYPixScaleFactor()const{ return y_pix_scale_factor;}
 double Camera::getSigXPix()const{ return sigma_x_pix.second;}
 double Camera::getSigYPix()const{ return sigma_y_pix.second; }
 double Camera::getSigXYPix()const{	return sigma_xy_pix.second;}
-
-
 double Camera::getSumIntensity()const{ return sum_intensity.second;}
 double Camera::getAvgIntensity()const{ return avg_intensity.second;}
 bool Camera::setX(double value)
@@ -2323,7 +2316,7 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 		EPICSInterface::sendToEPICSm("this is from getArrayTimeStamp");
 		MY_SEVCHK(status);
 		ts_to_update = dbr_struct->stamp;
-		//std::cout << epicsInterface->getEPICSTime(ts_to_update) << std::endl;
+		std::cout << ts_to_update.secPastEpoch << "  " << ts_to_update.nsec << std::endl;
 		auto stop  = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		//messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
@@ -2384,7 +2377,31 @@ bool Camera::stopROIDataMonitoring()
 	return update_roi_data;
 }
 
-
+std::pair<int, int> Camera::getFrameTimeStanmp()
+{
+	if (roi_data_has_not_malloced)
+	{
+		messenger.printDebugMessage("calling malloc_roidata");
+		malloc_roidata();
+	}
+	if (roi_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for roi_data ");
+		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+	}
+	if (!roi_data_has_not_vector_resized && !roi_data_has_not_malloced)
+	{
+		getArrayTimeStamp(dbr_roi_data, pvStructs.at(CameraRecords::ROI1_ImageData_RBV), roi_data.first);
+		std::pair<int, int> r{ roi_data.first.secPastEpoch, roi_data.first.nsec };
+		return r;
+	}
+	std::pair<int, int> r{ GlobalConstants::zero_int, GlobalConstants::zero_int};
+	return r;
+}
+boost::python::list Camera::getFrameTimeStanmp_Py()
+{
+	return to_py_list<int, int>(getFrameTimeStanmp());
+}
 //only gte new data for an array, and sit in ahiwl eloop to gaurantte it sne ???? 
 //add last areay data as timestamp
 //and what is gong on wit hthe strides ???? 
