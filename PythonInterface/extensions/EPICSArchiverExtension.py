@@ -22,6 +22,8 @@ class EPICSArchiver(object):
 
     def _printMessage(self, message):
         print(message)
+        
+    ### TIME IS FORMAT T08%3A00%3A00.000Z : T<HOURS>%3A<MINS>%3A<SECONDS>.000<ZONE>
 
     def _formURLStr(self, pv, dateFrom, timeFrom, dateTo, timeTo, chunking=DEFAULT_CHUNK_SIZE):
         pv = pv.replace(':', '%3A')
@@ -30,12 +32,14 @@ class EPICSArchiver(object):
                      "-" + str(dateFrom.month) + '-' +
                      str(dateFrom.day) + 'T' +
                      str(timeFrom.hour) + '%3A' +
-                     str(timeFrom.minute) + '%3A00.000Z' +
+                     str(timeFrom.minute) + '%3A'+
+                     str(timeFrom.second) +'.000Z' +
                      "&to=" + str(dateTo.year) + '-' +
                      str(dateTo.month) + '-' +
                      str(dateTo.day) + 'T' +
                      str(timeTo.hour) + '%3A' +
-                     str(timeTo.minute) + '%3A00.000Z')
+                     str(timeTo.minute) + '%3A' +
+                     str(timeTo.second) +'.000Z')
         return urlString
 
     def _makeDateFromStr(self, date_str):
