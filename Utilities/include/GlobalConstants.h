@@ -437,6 +437,10 @@ namespace GlobalConstants
 	const long zero_long = 0;
 	const long one_long = 1;
 	
+	const unsigned int zero_uint = 0;
+	const unsigned int one_uint = 1;
+	const unsigned int two_uint = 2;
+	const unsigned int three_uint = 3;
 
 	const unsigned short zero_us = 0;
 	const unsigned short one_us = 1;

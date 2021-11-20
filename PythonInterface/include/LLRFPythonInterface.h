@@ -264,6 +264,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getProbePwr",  &LLRF::getProbePwr_Py)
 
 			.def("getTraceValues", &LLRF::getTraceValues_Py)
+			.def("getTraceTimeStamp", &LLRF::getTraceTimeStamp_Py)
 
 			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
@@ -275,6 +276,19 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
 			.def("getProbePha",  &LLRF::getProbePha_Py)
 			.def("getProbePwr",  &LLRF::getProbePwr_Py)
+
+
+				.def("getCavRevPwrTS", &LLRF::getCavRevPwrTS_Py)
+				.def("getCavFwdPwrTS", &LLRF::getCavFwdPwrTS_Py)
+				.def("getKlyRevPwrTS", &LLRF::getKlyRevPwrTS_Py)
+				.def("getKlyFwdPwrTS", &LLRF::getKlyFwdPwrTS_Py)
+				.def("getCavRevPhaTS", &LLRF::getCavRevPhaTS_Py)
+				.def("getCavFwdPhaTS", &LLRF::getCavFwdPhaTS_Py)
+				.def("getKlyRevPhaTS", &LLRF::getKlyRevPhaTS_Py)
+				.def("getKlyFwdPhaTS", &LLRF::getKlyFwdPhaTS_Py)
+				.def("getProbePhaTS",&LLRF::getProbePhaTS_Py)
+				.def("getProbePwrTS",&LLRF::getProbePwrTS_Py)
+
 			.def("debugMessagesOn", &LLRF::debugMessagesOn)
 			.def("debugMessagesOff", &LLRF::debugMessagesOff)
 			.def("messagesOn", &LLRF::messagesOn)

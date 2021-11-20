@@ -942,6 +942,7 @@ void LLRF::splitOneTraceValues(const struct dbr_time_double* dbr)
 
 		td.trace_values_buffer.back().first = *pStamp;
 		td.trace_values = td.trace_values_buffer.back().second;
+		td.trace_timestamp = *pStamp;
 		if (td.trace_type == TYPE::POWER)
 		{
 			messenger.printDebugMessage(it_jump.second, " is a power trace ");
@@ -1001,6 +1002,7 @@ void LLRF::updateTraceMetaData()
 	/* by the time we get to here this MUST be false! */
 	new_outside_mask_event = false;
 }
+
 std::vector<double> LLRF::getTraceValues(const std::string& name)const
 {
 	const std::string n = fullLLRFTraceName(name);
@@ -1096,9 +1098,49 @@ boost::python::list LLRF::getKlyFwdPha_Py()const { return to_py_list(getKlyFwdPh
 boost::python::list LLRF::getProbePha_Py()const { return to_py_list(getProbePha()); }
 boost::python::list LLRF::getProbePwr_Py()const { return to_py_list(getProbePwr()); }
 
+std::pair<unsigned int, unsigned int> LLRF::getTraceTimeStamp(const std::string& name)const
+{
+	const std::string n = fullLLRFTraceName(name);
+	if (GlobalFunctions::entryExists(trace_data_map, n))
+	{
+		/*
+		typedef struct epicsTimeStamp {
+		epicsUInt32    secPastEpoch;    seconds since 0000 Jan 1, 1990 
+		epicsUInt32    nsec;            nanoseconds within second 
+		} epicsTimeStamp; 
+		*/
+		std::pair<unsigned int, unsigned int> r{ trace_data_map.at(n).trace_timestamp.secPastEpoch, trace_data_map.at(n).trace_timestamp.nsec };
+		return r;
+	}
+	messenger.printDebugMessage("LLRF::getTraceValues ERROR, trace ", n, " does not exist");
+	std::pair<unsigned int, unsigned int> r(GlobalConstants::zero_uint, GlobalConstants::zero_uint);
+	return r;
+}
+boost::python::list LLRF::getTraceTimeStamp_Py(const std::string& name)const
+{
+	return to_py_list<unsigned int, unsigned int>(getTraceTimeStamp(name));
+}
+std::pair<unsigned int, unsigned int> LLRF::getCavRevPwrTS()const { return getTraceTimeStamp(LLRFRecords::CAVITY_REVERSE_POWER); }
+std::pair<unsigned int, unsigned int> LLRF::getCavFwdPwrTS()const { return getTraceTimeStamp(LLRFRecords::CAVITY_FORWARD_POWER); }
+std::pair<unsigned int, unsigned int> LLRF::getKlyRevPwrTS()const { return getTraceTimeStamp(LLRFRecords::KLYSTRON_REVERSE_POWER); }
+std::pair<unsigned int, unsigned int> LLRF::getKlyFwdPwrTS()const { return getTraceTimeStamp(LLRFRecords::KLYSTRON_FORWARD_POWER); }
+std::pair<unsigned int, unsigned int> LLRF::getCavRevPhaTS()const { return getTraceTimeStamp(LLRFRecords::CAVITY_REVERSE_PHASE); }
+std::pair<unsigned int, unsigned int> LLRF::getCavFwdPhaTS()const { return getTraceTimeStamp(LLRFRecords::CAVITY_FORWARD_PHASE); }
+std::pair<unsigned int, unsigned int> LLRF::getKlyRevPhaTS()const { return getTraceTimeStamp(LLRFRecords::KLYSTRON_REVERSE_PHASE); }
+std::pair<unsigned int, unsigned int> LLRF::getKlyFwdPhaTS()const { return getTraceTimeStamp(LLRFRecords::KLYSTRON_FORWARD_PHASE); }
+std::pair<unsigned int, unsigned int> LLRF::getProbePwrTS()const { return getTraceTimeStamp(LLRFRecords::CAVITY_PROBE_POWER); }
+std::pair<unsigned int, unsigned int> LLRF::getProbePhaTS()const { return getTraceTimeStamp(LLRFRecords::CAVITY_PROBE_PHASE); }
 
-
-
+boost::python::list LLRF::getCavRevPwrTS_Py()const { return to_py_list(getCavRevPwrTS()); }
+boost::python::list LLRF::getCavFwdPwrTS_Py()const { return to_py_list(getCavFwdPwrTS()); }
+boost::python::list LLRF::getKlyRevPwrTS_Py()const { return to_py_list(getKlyRevPwrTS()); }
+boost::python::list LLRF::getKlyFwdPwrTS_Py()const { return to_py_list(getKlyFwdPwrTS()); }
+boost::python::list LLRF::getCavRevPhaTS_Py()const { return to_py_list(getCavRevPhaTS()); }
+boost::python::list LLRF::getCavFwdPhaTS_Py()const { return to_py_list(getCavFwdPhaTS()); }
+boost::python::list LLRF::getKlyRevPhaTS_Py()const { return to_py_list(getKlyRevPhaTS()); }
+boost::python::list LLRF::getKlyFwdPhaTS_Py()const { return to_py_list(getKlyFwdPhaTS()); }
+boost::python::list LLRF::getProbePhaTS_Py()const { return to_py_list(getProbePhaTS()); }
+boost::python::list LLRF::getProbePwrTS_Py()const { return to_py_list(getProbePwrTS()); }
 
 
 

@@ -48,6 +48,9 @@ class TraceData
 		std::string name;
 		/*! trace_values latest trace values  */
 		std::vector<double> trace_values;
+		/*! trace_values time stamp of the most recent trace*/
+		epicsTimeStamp trace_timestamp;
+
 		/*! how mamny elements in trace_values */
 		size_t trace_data_size;
 		/*! circular buffer of trace_values, latest values are at the end of the buffer  */
@@ -232,6 +235,17 @@ public:
 	bool stopTraceMonitoring();
 	/* Update the trace values "manaully" (i.e. without continuous monitoring).*/
 	void updateTraceValues();
+	/*! get a trace_timestamp for requested trace
+	@param[in] name: string, trace name to get data for
+	@param[out] pair<unsigned int, unsigned int>:> time stamp for the requested trace, 1st element is 'secPastEpoch' (seconds since 0000 Jan 1, 1990) 2nd element nanoseconds within second */ 
+	std::pair<unsigned int, unsigned int> getTraceTimeStamp(const std::string & name)const;
+	/*! get a trace_timestamp for requested trace, Python version
+	@param[in] name: string, trace name to get data for
+	@param[out] list: time stamp for the requested trace, 1st element is 'secPastEpoch' (seconds since 0000 Jan 1, 1990) 2nd element nanoseconds within second */
+	boost::python::list getTraceTimeStamp_Py(const std::string & name)const;
+	/*! get a pair of a trace_name : trace_values for 1 trace
+	@param[in] name: trace name to get data for
+	@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	/*! get a trace_values values for requested trace
 	@param[in] name: string, trace name to get data for
 	@param[out] vector<double> values for the requested trace */
@@ -319,6 +333,70 @@ public:
 	/*! Get the latest probe phase trace_values, Python version 
 	@param[out] vector<double>: values  */
 	boost::python::list getProbePha_Py()const;
+
+
+	/*! Get the latest cavity reverse power trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getCavRevPwrTS()const;
+	/*! Get the latest cavity forward power trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getCavFwdPwrTS()const;
+	/*! Get the latest klystron reverse power trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getKlyRevPwrTS()const;
+	/*! Get the latest klystron forward power trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getKlyFwdPwrTS()const;
+	/*! Get the latest cavity reverse phase trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getCavRevPhaTS()const;
+	/*! Get the latest cavity forward phase trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getCavFwdPhaTS()const;
+	/*! Get the latest klystron reverse phase trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getKlyRevPhaTS()const;
+	/*! Get the latest klystron forward phase trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getKlyFwdPhaTS()const;
+	/*! Get the latest probe power trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getProbePwrTS()const;
+	/*! Get the latest probe phase trace_timestamp
+	@param[out] vector<double>: values  */
+	std::pair<unsigned int, unsigned int> getProbePhaTS()const;
+	/*! Get the latest cavity reverse power trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getCavRevPwrTS_Py()const;
+	/*! Get the latest cavity forward power trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getCavFwdPwrTS_Py()const;
+	/*! Get the latest klystron reverse power trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getKlyRevPwrTS_Py()const;
+	/*! Get the latest klystron forward power trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getKlyFwdPwrTS_Py()const;
+	/*! Get the latest cavity reverse phase trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getCavRevPhaTS_Py()const;
+	/*! Get the latest cavity forward phase trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getCavFwdPhaTS_Py()const;
+	/*! Get the latest klystron reverse phase trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getKlyRevPhaTS_Py()const;
+	/*! Get the latest klystron forward phase trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getKlyFwdPhaTS_Py()const;
+	/*! Get the latest probe power trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getProbePwrTS_Py()const;
+	/*! Get the latest probe phase trace_timestamp, Python version
+	@param[out] vector<double>: values  */
+	boost::python::list getProbePhaTS_Py()const;
+
+
 private:
 	/* Flag set for if trace monitoring is enabled.*/
 	bool is_trace_monitoring;
@@ -531,18 +609,8 @@ public:
 		bool enableRFandLock();
 	private:
 
-
-
 		/*! Size of circular buffer used to store trace data */
 		size_t trace_data_buffer_size;
-
-
-
-		
-		
-		
-		
-		
 		
 		/*! pulse duration from the LLRF, !!warning!! BUT it is not accurate if the pulse shape applied is not a square wave */
 		std::pair<epicsTimeStamp, double > llrf_pulse_duration;
