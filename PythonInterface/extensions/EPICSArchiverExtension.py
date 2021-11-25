@@ -26,34 +26,52 @@ class EPICSArchiver(object):
     ### TIME IS FORMAT T08%3A00%3A00.000Z : T<HOURS>%3A<MINS>%3A<SECONDS>.000<ZONE>
 
     def _formURLStr(self, pv, dateFrom, timeFrom, dateTo, timeTo, chunking=DEFAULT_CHUNK_SIZE):
-        pv = pv.replace(':', '%3A')
-        urlString = ("getData.json?pv=mean_"+str(chunking) + "(" + str(pv) +')' +
-                     "&from=" + str(dateFrom.year) +
-                     "-" + str(dateFrom.month) + '-' +
-                     str(dateFrom.day) + 'T' +
-                     str(timeFrom.hour) + '%3A' +
-                     str(timeFrom.minute) + '%3A'+
-                     str(timeFrom.second) +'.000Z' +
-                     "&to=" + str(dateTo.year) + '-' +
-                     str(dateTo.month) + '-' +
-                     str(dateTo.day) + 'T' +
-                     str(timeTo.hour) + '%3A' +
-                     str(timeTo.minute) + '%3A' +
-                     str(timeTo.second) +'.000Z')
+        if chunking >= 1:
+            pv = pv.replace(':', '%3A')
+            urlString = ("getData.json?pv="+ "mean_"+str(chunking) + "(" + str(pv) +")" +
+                         "&from=" + str(dateFrom.year) +
+                         "-" + str(dateFrom.month) + '-' +
+                         str(dateFrom.day) + 'T' +
+                         str(timeFrom.hour) + '%3A' +
+                         str(timeFrom.minute) + '%3A'+
+                         str(timeFrom.second) + '.000Z' +
+                         "&to=" + str(dateTo.year) + '-' +
+                         str(dateTo.month) + '-' +
+                         str(dateTo.day) + 'T' +
+                         str(timeTo.hour) + '%3A' +
+                         str(timeTo.minute) + '%3A' +
+                         str(timeTo.second) + '.000Z')
+        else:
+            pv = pv.replace(':', '%3A')
+            fromMillis = round(timeFrom.microsecond/1000)
+            toMillis = round(timeTo.microsecond/1000)
+            urlString = ("getData.json?pv="+ str(pv) +
+                         "&from=" + str(dateFrom.year) +
+                         "-" + str(dateFrom.month) + '-' +
+                         str(dateFrom.day) + 'T' +
+                         str(timeFrom.hour) + '%3A' +
+                         str(timeFrom.minute) + '%3A'+
+                         str(timeFrom.second) +'.'+str(fromMillis) + 'Z' +
+                         "&to=" + str(dateTo.year) + '-' +
+                         str(dateTo.month) + '-' +
+                         str(dateTo.day) + 'T' +
+                         str(timeTo.hour) + '%3A' +
+                         str(timeTo.minute) + '%3A' +
+                         str(timeTo.second) +'.' + str(toMillis) + 'Z')
         return urlString
 
     def _makeDateFromStr(self, date_str):
         return datetime.strptime(date_str, "%d-%m-%Y")
 
     def _makeTimeFromStr(self, time_str):
-        return datetime.strptime(time_str, "%H:%M:%S").time()
+        return datetime.strptime(time_str, "%H:%M:%S.%f").time()
 
     def _makeDateTimeFromStr(self, date_str, time_str):
         return datetime.combine(self._makeDateFromStr(date_str), self._makeTimeFromStr(time_str))
 
     def _getDateTimeFromTimestamp(self, timestamp):
-        epochStamp = datetime.fromtimestamp(timestamp)
-        return epochStamp.strftime('%d-%m-%Y %H:%M:%S')
+        epochStamp = timestamp #datetime.fromtimestamp(timestamp)
+        return epochStamp.strftime('%d-%m-%Y %H:%M:%S.%f')
 
     def dumpDataToFile(self, pv, dateFrom, timeFrom, dateTo, timeTo, chunking=DEFAULT_CHUNK_SIZE, filename='archiver_data.json'):
         """
@@ -77,7 +95,7 @@ class EPICSArchiver(object):
         
         Default Chunking size (int) is 900secs (15 minutes) and the mean of the value in 15 mins is retrieved.
 
-        Time format is: %d-%m-%Y %H:%M:%S (DD-MM-YYYY HH:MM:SS)
+        Time format is: %d-%m-%Y %H:%M:%S.%f (DD-MM-YYYY HH:MM:SS.ffff)
         """
         data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo, chunking)
         formattedData = {}
@@ -86,7 +104,9 @@ class EPICSArchiver(object):
             formattedData[pv_key] = {}
             for values in archiver_data:
                 for raw_data in values["data"]:
-                    timeStr = self._getDateTimeFromTimestamp(raw_data["secs"])
+                    # ADD THE NANOS (as microseconds) TO RAW_DATA[SECS] TO GET THE TIME BETWEEN SECONDS.
+                    offset_time = datetime.fromtimestamp(raw_data["secs"]) + timedelta(microseconds=(raw_data["nanos"]/1000))
+                    timeStr = self._getDateTimeFromTimestamp(offset_time)
                     formattedData[pv_key][timeStr] = raw_data["val"]
         return formattedData
 
@@ -111,26 +131,26 @@ class EPICSArchiver(object):
                     formattedData[pv_key][timeStr] = raw_data["val"]
         return formattedData
 
-    def getEpochNanosFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo, chunking=DEFAULT_CHUNK_SIZE):
-        """
-        Returns the data from archiver request (pv, dates and times) as a dict with entries {<epoch-nanos> : <value>}
+    # def getEpochNanosFormattedData(self, pv, dateFrom, timeFrom, dateTo, timeTo, chunking=DEFAULT_CHUNK_SIZE):
+        # """
+        # Returns the data from archiver request (pv, dates and times) as a dict with entries {<epoch-nanos> : <value>}
         
-        Dates and times: dateFrom (datetime.date), timeFrom (datetime.time), dateTo (datetime.date), timeTo (datetime.time)
+        # Dates and times: dateFrom (datetime.date), timeFrom (datetime.time), dateTo (datetime.date), timeTo (datetime.time)
         
-        Default Chunking size (int) is 900 secs (15 minutes) and the mean of the value in 15 mins is retrieved.
+        # Default Chunking size (int) is 900 secs (15 minutes) and the mean of the value in 15 mins is retrieved.
 
-        Epoch in nanos
-        """
-        data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo, chunking)
-        formattedData = {}
-        for pv_key, archiver_data in data.items():
-            ## item contains 'meta' and 'data' keys
-            formattedData[pv_key] = {}
-            for values in archiver_data:
-                for raw_data in values["data"]:
-                    timeStr = raw_data["nanos"]
-                    formattedData[pv_key][timeStr] = raw_data["val"]
-        return formattedData
+        # Epoch in nanos
+        # """
+        # data = self.getData(pv, dateFrom, timeFrom, dateTo, timeTo, chunking)
+        # formattedData = {}
+        # for pv_key, archiver_data in data.items():
+            # ## item contains 'meta' and 'data' keys
+            # formattedData[pv_key] = {}
+            # for values in archiver_data:
+                # for raw_data in values["data"]:
+                    # timeStr = raw_data["nanos"]
+                    # formattedData[pv_key][timeStr] = raw_data["val"]
+        # return formattedData
 
     def getData(self, pv, dateFrom, timeFrom, dateTo, timeTo, chunking=DEFAULT_CHUNK_SIZE):
         """
