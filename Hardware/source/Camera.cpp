@@ -497,7 +497,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	//-------------------------------------------------------------------------------------------------
 	// This is really overworked, but does mean you can change names form the config file , if you want to, 
 	// TODO in the future I would like more of the analysis results to go into this analysis_data array, also the analyis settings, etc  
-	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
+	messenger.printDebugMessage(hardwareName, " find RESULTS_COUNT");
 	if (GlobalFunctions::entryExists(paramMap, "RESULTS_COUNT"))
 	{
 		analysis_data.second.resize( (size_t)std::stof(paramMap.at("RESULTS_COUNT")));
@@ -508,6 +508,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
 	}
 
+	messenger.printDebugMessage(hardwareName, " find X_POS");
 	if (GlobalFunctions::entryExists(paramMap, "X_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("X_POS"));
@@ -516,6 +517,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.find("X_NAME")->second);
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find Y_POS");
 	if (GlobalFunctions::entryExists(paramMap, "Y_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("Y_POS"));
@@ -524,6 +531,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.at("Y_NAME"));
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find X_SIGMA_POS");
 	if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("X_SIGMA_POS"));
@@ -532,6 +545,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.at("X_SIGMA_NAME"));
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_SIGMA_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find Y_SIGMA_POS");
 	if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("Y_SIGMA_POS"));
@@ -540,6 +559,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.at("Y_SIGMA_NAME"));
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_SIGMA_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find COV_POS");
 	if (GlobalFunctions::entryExists(paramMap, "COV_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("COV_POS"));
@@ -547,6 +572,10 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		{
 			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
 		}
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find COV_NAME");
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -1880,15 +1909,27 @@ boost::python::dict Camera::getAllRunningStats()const
 TYPE Camera::getCamType()const{	return cam_type;}
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
-	// TODDO this does not appear work!!! 
+	// TODO this does not appear work!!! 
 	std::map<std::string, double> r;
-	std::string n;
-	double v;
-	for (auto it : boost::combine(analysis_data_names, analysis_data.second)) {
-		;
-		boost::tie(n, v) = it;
-		r[n] = v;
-	}
+	//std::string n;
+
+	//std::cout << analysis_data_names[0] << "  " << (pixelResults.second)[0] << std::endl;
+	//std::cout << analysis_data_names[1] << "  " << (pixelResults.second)[1] << std::endl;
+	//std::cout << analysis_data_names[2] << "  " << (pixelResults.second)[2] << std::endl;
+	//std::cout << analysis_data_names[3] << "  " << (pixelResults.second)[3] << std::endl;
+	//std::cout << analysis_data_names[4] << "  " << (pixelResults.second)[4] << std::endl;
+
+	r[analysis_data_names[0]] = (pixelResults.second)[0];
+	r[analysis_data_names[1]] = (pixelResults.second)[1];
+	r[analysis_data_names[2]] = (pixelResults.second)[2];
+	r[analysis_data_names[3]] = (pixelResults.second)[3];
+	r[analysis_data_names[4]] = (pixelResults.second)[4];
+	//double v;
+	//for (auto it : boost::combine(analysis_data_names, analysis_data.second)) {
+	//	;
+	//	boost::tie(n, v) = it;
+	//	r[n] = v;
+	//}
 	return r;
 }
 boost::python::dict Camera::getAnalysisResultsPixels_Py()const
@@ -2208,7 +2249,7 @@ bool Camera::updateImageData()
 			, image_data.second.size());
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage(hardwareName, " updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -2273,7 +2314,7 @@ bool Camera::updateROIData()
 			, roi_total_pixel_count);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage(hardwareName," updateROIData took: ", duration.count(), " us");
 		return got_value;
 	}
 	return false;
@@ -2316,7 +2357,7 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 		EPICSInterface::sendToEPICSm("this is from getArrayTimeStamp");
 		MY_SEVCHK(status);
 		ts_to_update = dbr_struct->stamp;
-		std::cout << ts_to_update.secPastEpoch << "  " << ts_to_update.nsec << std::endl;
+		//std::cout << ts_to_update.secPastEpoch << "  " << ts_to_update.nsec << std::endl;
 		auto stop  = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		//messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
