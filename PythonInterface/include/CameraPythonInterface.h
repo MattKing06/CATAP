@@ -309,7 +309,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("setROIMinX", &Camera::setROIMinX)
 		.def("setROIMinY", &Camera::setROIMinY)
 		.def("setROISizeX", &Camera::setROISizeX)
-		.def("setROIsizeY", &Camera::setROISizeY)
+		.def("setROISizeY", &Camera::setROISizeY)
 		.def("setROI", setROI_4PARAM)
 		.def("setROI", &Camera::setROI_Py)
 
