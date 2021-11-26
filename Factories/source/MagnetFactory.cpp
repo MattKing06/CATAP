@@ -850,7 +850,7 @@ std::vector<std::string> MagnetFactory::getAllQuadNames()const
 	std::vector<std::string> return_names;
 	for (auto&& item : magnetMap)
 	{
-		if (isADip(item.first))
+		if (isAQuad(item.first))
 		{
 		return_names.push_back(item.first);
 		}
@@ -866,7 +866,7 @@ std::vector<std::string> MagnetFactory::getAllSolNames()const
 	std::vector<std::string> return_names;
 	for (auto&& item : magnetMap)
 	{
-		if (isADip(item.first))
+		if (isASol(item.first))
 		{
 			return_names.push_back(item.first);
 		}
