@@ -1,0 +1,36 @@
+controls_information:
+  PV: true
+  pv_record_map:
+    GETSETI: EBT-INJ-MAG-HCOR-12:GETSETI
+    READI: EBT-INJ-MAG-HCOR-12:READI
+    SETI: EBT-INJ-MAG-HCOR-12:SETI
+    RILK: EBT-INJ-MAG-HVCOR-01:RILK
+    RPOWER: EBT-INJ-MAG-HVCOR-01:RPOWER
+    SPOWER: EBT-INJ-MAG-HVCOR-01:SPOWER
+    ILK_RESET: EBT-INJ-MAG-HVCOR-01:Rst
+    K_DIP_P:    EBT-INJ-MAG-HCOR-12:K_DIP_P
+    INT_STR_MM: EBT-INJ-MAG-HCOR-12:INT_STR_MM
+    INT_STR:    EBT-INJ-MAG-HCOR-12:INT_STR
+    K_SET_P:    EBT-INJ-MAG-HCOR-12:K_SET_P
+    K_ANG:      EBT-INJ-MAG-HCOR-12:K_ANG
+    K_MRAD:     EBT-INJ-MAG-HCOR-12:K_MRAD
+    K_VAL:      EBT-INJ-MAG-HCOR-12:K_VAL
+  records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD, K_VAL  
+properties:
+  num_degauss_steps: 11
+  ri_tolerance: 0.01
+  degauss_tolerance: 0.5
+  degauss_values: "7.0,-7.0,5.0,-5.0,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  min_i: -6.7
+  max_i: 6.7
+  field_integral_coefficients: "0.00"
+  hardware_type: Magnet
+  machine_area: INJ
+  mag_set_max_wait_time: 45.0
+  mag_type: HORIZONTAL_CORRECTOR
+  magnetic_length: 182.2535211
+  manufacturer: Scanditronix
+  name: EBT-INJ-MAG-HCOR-12
+  name_alias: INJ-HCOR12,INJ-HCOR-12
+  position: -1.0
+  serial_number: 0000-00000-0000
