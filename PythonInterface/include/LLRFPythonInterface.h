@@ -251,7 +251,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)
 
 
-			//.def("getTraceData", &LLRF::getTraceData_Py)
+			.def("getTraceData", &LLRF::getTraceDataDict)
+			.def("getAllTraceData", &LLRF::getAllTraceDataDict)
 			.def("getCavRevPwr", &LLRF::getCavRevPwr_Py)
 			.def("getCavFwdPwr", &LLRF::getCavFwdPwr_Py)
 			.def("getKlyRevPwr", &LLRF::getKlyRevPwr_Py)
