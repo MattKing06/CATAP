@@ -1096,6 +1096,207 @@ boost::python::list LLRF::getCavFwdPha_Py()const { return to_py_list(getCavFwdPh
 boost::python::list LLRF::getKlyRevPha_Py()const { return to_py_list(getKlyRevPha()); }
 boost::python::list LLRF::getKlyFwdPha_Py()const { return to_py_list(getKlyFwdPha()); }
 boost::python::list LLRF::getProbePha_Py()const { return to_py_list(getProbePha()); }
+boost::python::numpy::ndarray LLRF::getCavRevPwr_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::CAVITY_REVERSE_POWER);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+			
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+
+}
+boost::python::numpy::ndarray LLRF::getCavFwdPwr_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::CAVITY_FORWARD_POWER);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getKlyRevPwr_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::KLYSTRON_REVERSE_POWER);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getKlyFwdPwr_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::KLYSTRON_FORWARD_POWER);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getCavRevPha_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::CAVITY_REVERSE_PHASE);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getCavFwdPha_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::CAVITY_FORWARD_PHASE);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getKlyRevPha_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::KLYSTRON_REVERSE_PHASE);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getKlyFwdPha_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::KLYSTRON_FORWARD_PHASE);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getProbePwr_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::CAVITY_PROBE_POWER);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
+boost::python::numpy::ndarray LLRF::getProbePha_NumPy() const
+{
+	std::string fullTraceName = fullLLRFTraceName(LLRFRecords::CAVITY_PROBE_PHASE);
+	if (GlobalFunctions::entryExists(trace_data_map, fullTraceName))
+	{
+		int trace_length = trace_data_map.at(fullTraceName).trace_values.size();
+		boost::python::tuple shape = boost::python::make_tuple(trace_length);
+		boost::python::tuple stride = boost::python::make_tuple(trace_length);
+		//data, type, shape, stride, owner
+		return boost::python::numpy::from_data(&trace_data_map.at(fullTraceName).trace_values[0],
+			boost::python::numpy::dtype::get_builtin<double>(), shape, stride, random_object);
+
+	}
+	else
+	{
+		messenger.printMessage("Could not find name ", fullTraceName, " in trace data map. ");
+		std::vector<double> deadVector = { GlobalConstants::double_min };
+		return to_numpy_array<double>(deadVector, 1, 1);
+	}
+}
 boost::python::list LLRF::getProbePwr_Py()const { return to_py_list(getProbePwr()); }
 
 std::pair<unsigned int, unsigned int> LLRF::getTraceTimeStamp(const std::string& name)const

@@ -224,7 +224,7 @@ void EPICSLLRFInterface::updateInterLockStatus(const std::string& ch, const std:
 		updateTimeStampBoolPair(args,recastLLRF->all_trace_interlocks.at(ch).status);
 		
 		// commented because it spams evry 1 second .. .??????? not sure why it gets update evven when starte does nto change, interlock thing ???? 
-		//messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
+	//messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
 		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
 		std::string trace;
 		if (recastLLRF->getTraceFromChannelData(CH, trace))

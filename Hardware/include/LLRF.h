@@ -11,6 +11,7 @@
 #include <boost/python/list.hpp>
 #include <boost/circular_buffer.hpp>
 #include <utility> 
+#include <boost/python/numpy/dtype.hpp>
 #include <boost/shared_ptr.hpp>
 #include <chrono> // for the high resolution clock DAQ freq estimate 
 
@@ -307,33 +308,66 @@ public:
 	@param[out] vector<double>: values  */
 	boost::python::list getCavRevPwr_Py()const;
 	/*! Get the latest cavity forward power trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getCavFwdPwr_Py()const;
 	/*! Get the latest klystron reverse power trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getKlyRevPwr_Py()const;
 	/*! Get the latest klystron forward power trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getKlyFwdPwr_Py()const;
 	/*! Get the latest cavity reverse phase trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getCavRevPha_Py()const;
 	/*! Get the latest cavity forward phase trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getCavFwdPha_Py()const;
 	/*! Get the latest klystron reverse phase trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getKlyRevPha_Py()const;
 	/*! Get the latest klystron forward phase trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getKlyFwdPha_Py()const;
 	/*! Get the latest probe power trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getProbePwr_Py()const;
 	/*! Get the latest probe phase trace_values, Python version 
-	@param[out] vector<double>: values  */
+	@param[out] list: values  */
 	boost::python::list getProbePha_Py()const;
 
+
+	/*! Get the latest cavity reverse power trace_values, Numpy version
+    @param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getCavRevPwr_NumPy()const;
+	/*! Get the latest cavity foward power trace_values, Numpy version
+    @param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getCavFwdPwr_NumPy()const;
+	/*! Get the latest klystron reverse power trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getKlyRevPwr_NumPy()const;
+	/*! Get the latest klystron forward power trace_values, Numpy version
+    @param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getKlyFwdPwr_NumPy()const;
+	/*! Get the latest cavity reverse phase trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getCavRevPha_NumPy()const;
+	/*! Get the latest cavity foward phase trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getCavFwdPha_NumPy()const;
+	/*! Get the latest klystron reverse phase trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getKlyRevPha_NumPy()const;
+	/*! Get the latest klystron foward phase trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getKlyFwdPha_NumPy()const;
+	/*! Get the latest probe power trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getProbePwr_NumPy()const;
+	/*! Get the latest probe phase trace_values, Numpy version
+	@param[out] numpy ndarray: values  */
+	boost::python::numpy::ndarray getProbePha_NumPy()const;
+
+	boost::python::object random_object;
 
 	/*! Get the latest cavity reverse power trace_timestamp
 	@param[out] vector<double>: values  */
