@@ -222,7 +222,7 @@ void EPICSLLRFInterface::updateInterLockStatus(const std::string& ch, const std:
 	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
 	{
 		updateTimeStampBoolPair(args,recastLLRF->all_trace_interlocks.at(ch).status);
-		messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
+		//messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
 		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
 		std::string trace;
 		if (recastLLRF->getTraceFromChannelData(CH, trace))

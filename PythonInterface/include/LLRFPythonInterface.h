@@ -62,6 +62,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 	void expose_llrf_object()
 	{
+		boost::python::numpy::initialize();
+
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRF>())->to_python_target_type());
 		if (is_registered) return;
 
@@ -263,6 +265,16 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getKlyFwdPha", &LLRF::getKlyFwdPha_Py)
 			.def("getProbePha",  &LLRF::getProbePha_Py)
 			.def("getProbePwr",  &LLRF::getProbePwr_Py)
+			.def("getCavRevPwrNumPy", &LLRF::getCavRevPwr_NumPy)
+			.def("getCavFwdPwrNumPy", &LLRF::getCavFwdPwr_NumPy)
+			.def("getKlyRevPwrNumPy", &LLRF::getKlyRevPwr_NumPy)
+			.def("getKlyFwdPwrNumPy", &LLRF::getKlyFwdPwr_NumPy)
+			.def("getCavRevPhaNumPy", &LLRF::getCavRevPha_NumPy)
+			.def("getCavFwdPhaNumPy", &LLRF::getCavFwdPha_NumPy)
+			.def("getKlyRevPhaNumPy", &LLRF::getKlyRevPha_NumPy)
+			.def("getKlyFwdPhaNumPy", &LLRF::getKlyFwdPha_NumPy)
+			.def("getProbePhaNumPy", &LLRF::getProbePha_NumPy)
+			.def("getProbePwrNumPy", &LLRF::getProbePwr_NumPy)
 
 			.def("getTraceValues", &LLRF::getTraceValues_Py)
 			.def("getTraceTimeStamp", &LLRF::getTraceTimeStamp_Py)
