@@ -374,6 +374,7 @@ extern std::string const CH8_PWR_LOC_ACQM;
 
 
 extern const std::map<STATE, unsigned short> state_to_llrf_SCAN_map;
+extern const std::map<STATE, unsigned short> state_to_llrf_ACQM_map;
 
 	extern const std::vector<std::string> all_scan_pvs;
 

@@ -2087,26 +2087,91 @@ boost::python::dict LLRF::getAllTraceSCAN_Py()const
 }
 
 
-void LLRF::setAllSCANToPassive()
+
+//-------------------------------------------------------------------------------------------------------
+////-------------------------------------------------------------------------------------------------------
+//int liberallrfInterface::getTORSCAN()const
+//{
+//	return llrf.all_traces.scan;
+//}
+//
+////-------------------------------------------------------------------------------------------------------
+//int liberallrfInterface::getTORACQM()const
+//{
+//	return (int)llrf.all_traces.acqm;
+//}
+//bool LLRF::resetTORSCANToIOIntr()
+//{
+//	message("resetTORSCANToIOIntr called");
+//	if (setTORSCANToPassive())
+//	{
+//		pause_500();
+//		return setTORSCANToIOIntr();
+//	}
+//	return false;
+//}
+
+bool LLRF::setAllSCANToPassive()
 {
+	bool r = true;
+	bool r2;
 	for (const auto& pv : LLRFRecords::all_scan_pvs)
 	{
 		if (GlobalFunctions::entryExists(pvStructs, pv))
 		{
-			epicsInterface ->putValue2(pvStructs.at(pv), LLRFRecords::state_to_llrf_SCAN_map.at(STATE::PASSIVE) );
+			r2 = epicsInterface ->putValue2(pvStructs.at(pv), LLRFRecords::state_to_llrf_SCAN_map.at(STATE::PASSIVE) );
 		}
+		if (!r2) r = false;
 	}
+	return r; 
 }
 
-void LLRF::setAllSCANToIoIntr()
+bool LLRF::setAllSCANToIoIntr()
 {
-
+	bool r = true;
+	bool r2;
+	for (const auto& pv : LLRFRecords::all_scan_pvs)
+	{
+		if (GlobalFunctions::entryExists(pvStructs, pv))
+		{
+			r2 = epicsInterface->putValue2(pvStructs.at(pv), LLRFRecords::state_to_llrf_SCAN_map.at(STATE::IO_INTR));
+		}
+		if (!r2) r = false;
+	}
+	return r;
 }
 
 
-void LLRF::setAllSCANTo(STATE new_state)
+bool LLRF::setAllSCANTo(STATE new_state)
 {
+	if (!GlobalFunctions::entryExists(LLRFRecords::state_to_llrf_SCAN_map, new_state))
+	{
+		return false;
+	}
+	bool r = true;
+	bool r2;
+	for (const auto& pv : LLRFRecords::all_scan_pvs)
+	{
+		if (GlobalFunctions::entryExists(pvStructs, pv))
+		{
+			r2 = epicsInterface->putValue2(pvStructs.at(pv), LLRFRecords::state_to_llrf_SCAN_map.at(new_state));
+		}
+		if (!r2) r = false;
+	}
+	return r;
+}
 
+bool LLRF::setTORACQMEvent()
+{
+	return epicsInterface->putValue2(pvStructs.at(LLRFRecords::LLRF_TRACES_ACQM), LLRFRecords::state_to_llrf_ACQM_map.at(STATE::EVENT));
+}
+STATE LLRF::getTORACQM()const
+{
+	return all_trace_acqm.at(LLRFRecords::ONE_TRACE_ACQM).second;
+}
+STATE LLRF::getTORSCAN()const
+{
+	return all_trace_scan.at(LLRFRecords::ONE_TRACE_SCAN).second;
 }
 
 
@@ -2251,7 +2316,7 @@ bool LLRF::lockAmpFF()
 {
 	if (isAmpFFNotLocked())
 	{
-		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_AMP_LOCK_STATE), GlobalConstants::one_us);
+		return epicsInterface->putValue2<unsigned short>(pvStructs.at(LLRFRecords::FF_AMP_LOCK_STATE), GlobalConstants::one_us);
 	}
 	return true;
 }
@@ -2259,7 +2324,7 @@ bool LLRF::lockPhaseFF()
 {
 	if (isPhaseFFNotLocked())
 	{
-		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_PHASE_LOCK_STATE), GlobalConstants::one_us);
+		return epicsInterface->putValue2<unsigned short>(pvStructs.at(LLRFRecords::FF_PHASE_LOCK_STATE), GlobalConstants::one_us);
 	}
 	return true;
 }
@@ -2267,7 +2332,7 @@ bool LLRF::unlockAmpFF()
 {
 	if (isAmpFFLocked())
 	{
-		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_AMP_LOCK_STATE), GlobalConstants::zero_us);
+		return epicsInterface->putValue2<unsigned short>(pvStructs.at(LLRFRecords::FF_AMP_LOCK_STATE), GlobalConstants::zero_us);
 	}
 	return true;
 }
@@ -2275,7 +2340,7 @@ bool LLRF::unlockPhaseFF()
 {
 	if (isPhaseFFLocked())
 	{
-		return epicsInterface->putValue2(pvStructs.at(LLRFRecords::FF_PHASE_LOCK_STATE), GlobalConstants::zero_us);
+		return epicsInterface->putValue2<unsigned short>(pvStructs.at(LLRFRecords::FF_PHASE_LOCK_STATE), GlobalConstants::zero_us);
 	}
 	return true;
 }
@@ -2283,26 +2348,11 @@ bool LLRF::unlockPhaseFF()
 //---------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------
 // RF Output
-bool LLRF::isRFOutput() const
-{
-	return rf_output.second == true;
-}
-bool LLRF::isNotRFOutput() const
-{
-	return !isRFOutput();
-}
-bool LLRF::RFOutput()const
-{
-	return rf_output.second;
-}
-bool LLRF::enableRFOutput()
-{
-	return setRFOutput(true);
-}
-bool LLRF::disableRFOutput()
-{
-	return setRFOutput(false);
-}
+bool LLRF::isRFOutput() const{	return rf_output.second == true;}
+bool LLRF::isNotRFOutput() const{	return !isRFOutput();}
+bool LLRF::RFOutput()const{	return rf_output.second;}
+bool LLRF::enableRFOutput(){	return setRFOutput(true);}
+bool LLRF::disableRFOutput(){	return setRFOutput(false);}
 bool LLRF::setRFOutput(const bool new_state)
 {
 	if (RFOutput() == new_state)
@@ -2311,24 +2361,14 @@ bool LLRF::setRFOutput(const bool new_state)
 	}
 	unsigned short v = new_state ? GlobalConstants::one_us : GlobalConstants::zero_us;
 	const pvStruct& pvs = pvStructs.at(LLRFRecords::RF_OUTPUT);
-	return epicsInterface->putValue2(pvs, v);
+	return epicsInterface->putValue2<unsigned short>(pvs, v);
 }
 //---------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------
 // Interlocks
-bool LLRF::setInterlockActive()
-{
-	return setInterlock(STATE::ACTIVE);
-}
-bool LLRF::setInterlockNonActive()
-{
-	return setInterlock(STATE::NOT_ACTIVE);
-}
-STATE LLRF::getInterlock()const
-{
-	return interlock_state.second;
-}
-
+bool LLRF::setInterlockActive(){	return setInterlock(STATE::ACTIVE);}
+bool LLRF::setInterlockNonActive(){	return setInterlock(STATE::NOT_ACTIVE);}
+STATE LLRF::getInterlock()const{	return interlock_state.second;}
 std::map<std::string, std::pair<std::string, std::string> > LLRF::getAllInterlocks() const
 {
 	std::map < std::string, std::pair<std::string, std::string>> ilockMap;
@@ -2342,7 +2382,6 @@ std::map<std::string, std::pair<std::string, std::string> > LLRF::getAllInterloc
 	}
 	return ilockMap;
 }
-
 boost::python::dict LLRF::getAllInterlocks_Py() const
 {
 	boost::python::dict r;
@@ -2360,10 +2399,10 @@ boost::python::dict LLRF::getAllInterlocks_Py() const
 
 bool LLRF::setInterlock(const STATE new_state)
 {
-	if (getInterlock() == new_state)
-	{
-		return true;
-	}
+	//if (getInterlock() == new_state)
+	//{
+	//	return true;
+	//}
 	unsigned short v;
 	const pvStruct& pvs = pvStructs.at(LLRFRecords::INTERLOCK);
 	switch (new_state)
@@ -2372,43 +2411,20 @@ bool LLRF::setInterlock(const STATE new_state)
 		case STATE::NOT_ACTIVE: v = GlobalConstants::one_us; break;
 		default: return false;
 	}
-	return epicsInterface->putValue2(pvs, v);
+	std::cout << "put " << v << std::endl;
+	return epicsInterface->putValue2<unsigned short>(pvs, v);
 }
-bool LLRF::isInterlockActive()const
-{
-	return interlock_state.second == STATE::ACTIVE;
-}
-bool LLRF::isInterlockNotActive()const
-{
-	return interlock_state.second == STATE::NOT_ACTIVE;
-}
+bool LLRF::isInterlockActive()const{	return interlock_state.second == STATE::ACTIVE;}
+bool LLRF::isInterlockNotActive()const{	return interlock_state.second == STATE::NOT_ACTIVE;}
 //---------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------
 // TRIGGERS
-bool LLRF::isTrigOff()const
-{
-	return trig_source.second == STATE::OFF;
-}
-bool LLRF::isTrigExternal()const
-{
-	return trig_source.second == STATE::EXTERNAL;
-}
-bool LLRF::isTrigInternal()const
-{
-	return trig_source.second == STATE::INTERNAL;
-}
-bool LLRF::trigOff()
-{
-	return setTrig(STATE::OFF);
-}
-bool LLRF::trigInt()
-{
-	return setTrig(STATE::INTERNAL);
-}
-bool LLRF::trigExt()
-{
-	return setTrig(STATE::EXTERNAL);
-}
+bool LLRF::isTrigOff()const{	return trig_source.second == STATE::OFF;}
+bool LLRF::isTrigExternal()const{	return trig_source.second == STATE::EXTERNAL;}
+bool LLRF::isTrigInternal()const{	return trig_source.second == STATE::INTERNAL;}
+bool LLRF::trigOff(){	return setTrig(STATE::OFF);}
+bool LLRF::trigInt(){	return setTrig(STATE::INTERNAL);}
+bool LLRF::trigExt(){	return setTrig(STATE::EXTERNAL);}
 bool LLRF::setTrig(const STATE new_state)
 {
 	if(getTrigSource() == new_state)
@@ -2424,18 +2440,13 @@ bool LLRF::setTrig(const STATE new_state)
 		case STATE::INTERNAL: v = GlobalConstants::two_us; break;
 		default: return false;
 	}
-	return epicsInterface->putValue2(pvs, v);
+	return epicsInterface->putValue2<unsigned short>(pvs, v);
 }
-STATE LLRF::getTrigSource()const
-{
-	return trig_source.second;
-}
+STATE LLRF::getTrigSource()const{	return trig_source.second;}
 //---------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------
 // functions to actually get and set paramters in the LLRF 
-bool LLRF::setAmpMW(double value)
-{
-	// atm we are going to fake power traces
+bool LLRF::setAmpMW(double value){	// atm we are going to fake power traces
 	amp_MW.second = value;
 	//scaleAllDummyTraces();
 	return true;
@@ -2475,11 +2486,7 @@ bool LLRF::setPhiDEG(double value)
 	operating_phase = phi_degrees.second - crest_phase;
 	return true;
 }
-bool LLRF::setCrestPhase(double value)
-{
-	crest_phase = value;
-	return true;
-}
+bool LLRF::setCrestPhase(double value){	crest_phase = value;	return true;}
 bool LLRF::setOperatingPhase(double value)
 {
 	operating_phase = value;
@@ -2487,22 +2494,10 @@ bool LLRF::setOperatingPhase(double value)
 	phi_sp.first = epicsTimeStamp();
 	return true;
 }
-double LLRF::getPhi()const
-{
-	return phi_sp.second;
-}
-double LLRF::getCrestPhase()const
-{
-	return crest_phase;
-}
-double LLRF::getOperatingPhase()const
-{
-	return operating_phase;
-}
-double LLRF::getPhiDEG()const
-{
-	return phi_degrees.second;
-}
+double LLRF::getPhi()const{	return phi_sp.second;}
+double LLRF::getCrestPhase()const{	return crest_phase;}
+double LLRF::getOperatingPhase()const{	return operating_phase;}
+double LLRF::getPhiDEG()const{	return phi_degrees.second;}
 //---------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------
 bool LLRF::enableRFandLock()

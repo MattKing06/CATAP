@@ -222,7 +222,9 @@ void EPICSLLRFInterface::updateInterLockStatus(const std::string& ch, const std:
 	if (GlobalFunctions::entryExists(recastLLRF->all_trace_interlocks, ch))
 	{
 		updateTimeStampBoolPair(args,recastLLRF->all_trace_interlocks.at(ch).status);
-		messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
+		
+		// commented because it spams evry 1 second .. .??????? not sure why it gets update evven when starte does nto change, interlock thing ???? 
+		//messenger.printDebugMessage("updateInterLock STATUS: ", ch, " :: = :: ", recastLLRF->all_trace_interlocks.at(ch).status.second);
 		//recastLLRF->all_trace_interlocks.at(ch).status = (bool)tv->value;
 		std::string trace;
 		if (recastLLRF->getTraceFromChannelData(CH, trace))
@@ -849,10 +851,10 @@ void EPICSLLRFInterface::update_trace_ACQM(const struct event_handler_args& args
 	acqm.first = pairToUpdate.first;
 	switch (pairToUpdate.second)
 	{
-	case GlobalConstants::zero_int: acqm.second = STATE::UNKNOWN_ACQM; break;
-	case GlobalConstants::one_int:  acqm.second = STATE::ACQM_NOW; break;
-	case GlobalConstants::two_int:  acqm.second = STATE::ACQM_EVENT; break;
-	default:acqm.second = STATE::UNKNOWN_ACQM;
+	case GlobalConstants::zero_int: acqm.second = STATE::UNKNOWN; break;
+	case GlobalConstants::one_int:  acqm.second = STATE::NOW; break;
+	case GlobalConstants::two_int:  acqm.second = STATE::EVENT; break;
+	default:acqm.second = STATE::UNKNOWN;
 	}
 }
 void EPICSLLRFInterface::updateChannnelACQM(const std::string& ch, const std::string& CH, const struct event_handler_args& args)

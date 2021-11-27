@@ -466,7 +466,11 @@ CH8_PWR_REM_ACQM, CH8_PHASE_REM_ACQM, CH8_AMP_DER_ACQM, CH8_PHASE_DER_ACQM, CH8_
 		{ STATE::ZERO_POINT_ONE, 9 },
 		{ STATE::ZERO_POINT_ZERO_FIVE, 10 },
 	};
-
+	const std::map<STATE, unsigned short> state_to_llrf_ACQM_map =
+	{
+		{ STATE::NOW, 1},
+		{ STATE::EVENT, 2 }
+	};
 
 }
 

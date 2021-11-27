@@ -96,6 +96,62 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getOperatingPhase", &LLRF::getOperatingPhase)
 			
 			
+			// TRIGGERS AND TRIGGER SOURCE
+			.def("trigOff", &LLRF::trigOff)
+			.def("trigInt", &LLRF::trigInt)
+			.def("trigExt", &LLRF::trigExt)
+			.def("getTrigSource", &LLRF::getTrigSource)
+			.def("isTrigExternal", &LLRF::isTrigExternal)
+			.def("isTrigInternal", &LLRF::isTrigInternal)
+
+
+			.def("isRFOutput", &LLRF::isRFOutput)
+			.def("isNotRFOutput", &LLRF::isNotRFOutput)
+			.def("RFOutput", &LLRF::RFOutput)
+			.def("enableRFOutput", &LLRF::enableRFOutput)
+			.def("disableRFOutput", &LLRF::disableRFOutput)
+
+
+
+			.def("isAmpFFconnected", &LLRF::isAmpFFconnected)
+			.def("lockAmpFF", &LLRF::lockAmpFF)
+			.def("RFOutput", &LLRF::RFOutput)
+			.def("lockPhaseFF", &LLRF::lockPhaseFF)
+			.def("unlockAmpFF", &LLRF::unlockAmpFF)
+			.def("unlockPhaseFF", &LLRF::unlockPhaseFF)
+			.def("isFFLocked", &LLRF::isFFLocked)
+			.def("isFFNotLocked", &LLRF::isFFNotLocked)
+			.def("isAmpFFLocked", &LLRF::isAmpFFLocked)
+			.def("isAmpFFNotLocked", &LLRF::isAmpFFNotLocked)
+			.def("isPhaseFFLocked", &LLRF::isPhaseFFLocked)
+			.def("isPhaseFFNotLocked", &LLRF::isPhaseFFNotLocked)
+
+			.def("enableRFandLock", &LLRF::enableRFandLock)
+
+
+			.def("setAllSCANTo", &LLRF::setAllSCANTo)
+
+			.def("setAllSCANToPassive", &LLRF::setAllSCANToPassive)
+			.def("setAllSCANToIoIntr", &LLRF::setAllSCANToIoIntr) // !!!!!!!!!!!!!!!
+
+			.def("getAllTraceSCAN", &LLRF::getAllTraceSCAN_Py)
+			.def("getAllTraceACQM", &LLRF::getAllTraceACQM_Py)
+			.def("setTORACQMEvent", &LLRF::setTORACQMEvent)
+			.def("getTORACQM", &LLRF::getTORACQM)
+			.def("getTORSCAN", &LLRF::getTORSCAN)
+
+
+			// TODO NEED TO CHECK WORGIN!!! 
+
+			.def("setInterlockActive", &LLRF::setInterlockActive)
+			.def("setInterlockNonActive", &LLRF::setInterlockNonActive)
+			.def("getInterlock", &LLRF::getInterlock)
+			.def("isInterlockActive", &LLRF::isInterlockActive)
+			.def("isInterlockNotActive", &LLRF::isInterlockNotActive)
+
+			.def("getAllInterlocks", &LLRF::getAllInterlocks_Py)
+
+
 					
 			.def("startTraceMonitoring", &LLRF::startTraceMonitoring)
 			.def("stopTraceMonitoring", &LLRF::stopTraceMonitoring)
@@ -128,47 +184,13 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getAllRollingAverageTraceBuffer", &LLRF::getAllRollingAverageTraceBuffer_Py)
 
 			
-			// TRIGGERS AND TRIGGER SOURCE
-			.def("trigOff", &LLRF::trigOff)
-			.def("trigInt", &LLRF::trigInt)
-			.def("trigExt", &LLRF::trigExt)
-			.def("getTrigSource", &LLRF::getTrigSource)
-			.def("isTrigExternal", &LLRF::isTrigExternal)
-			.def("isTrigInternal", &LLRF::isTrigInternal)
-
-
-			.def("getAllInterlocks", &LLRF::getAllInterlocks_Py)
-			.def("setInterlockActive", &LLRF::setInterlockActive)
-			.def("setInterlockNonActive", &LLRF::setInterlockNonActive)
-			.def("getInterlock", &LLRF::getInterlock)
-			.def("isInterlockActive", &LLRF::isInterlockActive)
-			.def("isInterlockNotActive", &LLRF::isInterlockNotActive)
-
-
-			.def("isRFOutput", &LLRF::isRFOutput)
-			.def("isNotRFOutput", &LLRF::isNotRFOutput)
-			.def("RFOutput", &LLRF::RFOutput)
-			.def("enableRFOutput", &LLRF::enableRFOutput)
-			.def("disableRFOutput", &LLRF::disableRFOutput)
 
 
 
-			.def("isAmpFFconnected", &LLRF::isAmpFFconnected)
-			.def("lockAmpFF", &LLRF::lockAmpFF)
-			.def("RFOutput", &LLRF::RFOutput)
-			.def("lockPhaseFF", &LLRF::lockPhaseFF)
-			.def("unlockAmpFF", &LLRF::unlockAmpFF)
-			.def("unlockPhaseFF", &LLRF::unlockPhaseFF)
-			.def("isFFLocked", &LLRF::isFFLocked)
-			.def("isFFNotLocked", &LLRF::isFFNotLocked)
-			.def("isAmpFFLocked", &LLRF::isAmpFFLocked)
-			.def("isAmpFFNotLocked", &LLRF::isAmpFFNotLocked)
-			.def("isPhaseFFLocked", &LLRF::isPhaseFFLocked)
-			.def("isPhaseFFNotLocked", &LLRF::isPhaseFFNotLocked)
 
 
 
-			.def("enableRFandLock", &LLRF::enableRFandLock)
+
 
 
 
@@ -201,13 +223,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("getPowerCutMean",  &LLRF::getPowerCutMean_Py)
 
 
-			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
-			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
 
 
-
-			.def("getAllTraceACQM",  &LLRF::getAllTraceACQM_Py)
-			.def("getAllTraceSCAN",  &LLRF::getAllTraceSCAN_Py)
 
 
 
@@ -242,10 +259,7 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 
 				
 				
-			.def("setAllSCANTo",  &LLRF::setAllSCANTo)
 
-			.def("setAllSCANToPassive",  &LLRF::setAllSCANToPassive)
-			.def("setAllSCANToIoIntr",  &LLRF::setAllSCANToIoIntr)
 			
 
 			//.def("setTraceDataBufferSize", &LLRF::setTraceDataBufferSize)

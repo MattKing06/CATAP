@@ -1051,10 +1051,20 @@ public:
 	boost::python::list getAllLLRFTraceNames_Py()const;
 
 
+	bool setAllSCANTo(STATE new_state);
+	bool setAllSCANToPassive();
+	bool setAllSCANToIoIntr();
+	//bool setPowerRemoteScanto10secs();
 
-	void setAllSCANTo(STATE new_state);
-	void setAllSCANToPassive();
-	void setAllSCANToIoIntr();
+
+
+	/*! TOR is trace-One_record !!!  */
+	//bool resetTORSCANToIOIntr();
+	//bool setTORSCANToPassive();
+	//bool setTORSCANToIOIntr();
+	bool setTORACQMEvent();
+	STATE getTORACQM()const;
+	STATE getTORSCAN()const;
 
 	std::map<std::string, STATE> getAllTraceSCAN()const;
 	boost::python::dict getAllTraceSCAN_Py()const;
