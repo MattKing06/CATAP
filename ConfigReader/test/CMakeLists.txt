@@ -1,6 +1,6 @@
 message( "Processing ConfigReader Unit Tests")
 enable_testing()
-#find_package(Boost 1.63 REQUIRED COMPONENTS unit_test_framework filesystem system)
+
 if ( Boost_FOUND )
 		#Extract filename without extension
 		get_filename_compOnent(testName ConfigReaderTest.cpp NAME_WE)
@@ -27,4 +27,11 @@ if ( Boost_FOUND )
 			 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/testBin
 			 COMMAND ${CMAKE_BINARY_DIR}/testBin/${testName}
 			 )
+		if(WIN32)
+			get_target_property(RELEASE_OUTPUT_DIRECTORY ${testName} RUNTIME_OUTPUT_DIRECTORY)
+			get_target_property(DEBUG_OUTPUT_DIRECTORY ${testName} RUNTIME_OUTPUT_DIRECTORY)
+			message("RELEASE BUILD")
+			add_custom_command(TARGET ${testName} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Debug $<1:${DEBUG_OUTPUT_DIRECTORY}/Debug>)
+			add_custom_command(TARGET ${testName} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/thirdparty/Windows/x64/Release $<1:${RELEASE_OUTPUT_DIRECTORY}/Release>)
+		endif(WIN32)
 endif()

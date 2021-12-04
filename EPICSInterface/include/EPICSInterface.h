@@ -48,7 +48,7 @@
 	*up connections and subscriptions for PVs as well as general functions that are needed by all child EPICS Interfaces, i.e. putValve.
 @{*/
 class PV;
-#define CA_PEND_IO_TIMEOUT 5.0
+#define CA_PEND_IO_TIMEOUT 10.0
 class EPICSInterface
 {
 
@@ -60,7 +60,7 @@ public:
 	/*! Default Destructor for EPICSInterface.*/
 	~EPICSInterface();
 	/*! Retrieves the macro for the time EPICS should wait until it timesout on a request.
-	* @param[out] CA_PEND_IO_TIMEOUT : 5.0*/
+	* @param[out] CA_PEND_IO_TIMEOUT : 10.0*/
 	double get_CA_PEND_IO_TIMEOUT() const;
 	/*! Defines which hardware owns this EPICSInterface, set to hardwareName in constructor of
 	* the associated hardware object.*/
@@ -103,6 +103,7 @@ public:
 			(void*)&returnObject,
 			&pvStruct.EVID);
 		MY_SEVCHK(status);
+		sendToEPICS();
 	}
 	/*! Removes the monitor for a given PV
 	* @param[in] pv : The PV we want to remove the monitor for.*/
@@ -236,6 +237,9 @@ public:
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<double> and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampDoubleVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<double>>& pairToUpdate, long size);
+	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<double> and sets the Hardware parameter to that pair.
+ * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
+	static void updateTimeStampShortVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<short>>& pairToUpdate, long size);
 	/*! Casts the value from EPICS (in args object) to a epicsTimeStamp, vector<int> and sets the Hardware parameter to that pair.
 	 * @param[in] args : The object returned by EPICS containing the new PV value and its associated timestamp*/
 	static void updateTimeStampIntegerVectorPair(const struct event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size);

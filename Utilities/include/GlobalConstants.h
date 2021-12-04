@@ -184,6 +184,9 @@ namespace GlobalConstants
 			
 		{"Screen", TYPE::SCREEN},
 		{ENUM_TO_STRING(TYPE::SCREEN), TYPE::SCREEN},
+
+		{"Stage", TYPE::STAGE},
+		{ENUM_TO_STRING(TYPE::STAGE), TYPE::STAGE},
 				
 		{ENUM_TO_STRING(TYPE::LLRF_TYPE), TYPE::LLRF_TYPE},
 		{"LLRF", TYPE::LLRF_TYPE},
@@ -192,6 +195,7 @@ namespace GlobalConstants
 		
 		{ "RFModulator", TYPE::RF_MODULATOR },
 		{ ENUM_TO_STRING(TYPE::RF_MODULATOR), TYPE::RF_MODULATOR },
+
 				
 		//{ENUM_TO_STRING(TYPE::HVCOR), TYPE::HVCOR},
 		{ENUM_TO_STRING(TYPE::VERTICAL_CORRECTOR), TYPE::VERTICAL_CORRECTOR},
@@ -321,7 +325,11 @@ namespace GlobalConstants
 			{ENUM_TO_STRING(STATE::SET_STANDBY), STATE::SET_STANDBY},
 			{ENUM_TO_STRING(STATE::SET_HV_ON), STATE::SET_HV_ON},
 			{ENUM_TO_STRING(STATE::SET_RF_ON), STATE::SET_RF_ON},
-			{ENUM_TO_STRING(STATE::UNKNOWN_SET_STATE), STATE::UNKNOWN_SET_STATE}
+			{ENUM_TO_STRING(STATE::UNKNOWN_SET_STATE), STATE::UNKNOWN_SET_STATE},
+			{ENUM_TO_STRING(STATE::HOLD_RF_ON), STATE::HOLD_RF_ON},
+			{ ENUM_TO_STRING(STATE::HOLD_RF_ON_CON), STATE::HOLD_RF_ON_CON},
+			{ ENUM_TO_STRING(STATE::MANUAL_OPERATION), STATE::MANUAL_OPERATION },
+			{ ENUM_TO_STRING(STATE::CLEAR_FAULT_LOG), STATE::CLEAR_FAULT_LOG}
 	};
 
 
@@ -373,7 +381,10 @@ namespace GlobalConstants
 	const unsigned short nine_ushort = 9;
 	/*! Unsigned short-type variable for 10 */
 	const unsigned short ten_ushort = 10;
-
+	/*! Unsigned short-type variable for 11 */
+	const unsigned short eleven_ushort = 11;
+	/*! Unsigned short-type variable for 12 */
+	const unsigned short twelve_ushort = 12;
 
 	//// epics versions 
 	///*! epicsUInt16 variable for 0 */

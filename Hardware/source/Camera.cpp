@@ -40,6 +40,11 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	led_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	acquire_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
 	analysis_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	roi_size_x(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_size_y(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_min_x(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_min_y(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
+	roi_pixel_count(GlobalConstants::long_min),
 	mask_x_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_y_center(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	mask_x_radius(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
@@ -88,6 +93,8 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	black_level(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	gain(std::make_pair(epicsTimeStamp(), GlobalConstants::long_min)),
 	set_new_background(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN)),
+	gain_range(std::make_pair(GlobalConstants::long_min, GlobalConstants::long_min)),
+	black_range(std::make_pair(GlobalConstants::long_min, GlobalConstants::long_min)),
 	cam_type(TYPE::UNKNOWN_TYPE),
 	roi_min_x_str("roi_min_x"),
 	roi_min_y_str("roi_min_y"),
@@ -132,7 +139,13 @@ Camera::Camera(const std::map<std::string, std::string>& paramMap, STATE mode) :
 	min_y_pixel_pos(GlobalConstants::double_min),
 	max_y_pixel_pos(GlobalConstants::double_min),
 	busy(false),
+	bit_depth(GlobalConstants::zero_sizet),
+	image_rotation(GlobalConstants::zero_sizet),
+	flip_ud(false),
+	flip_lr(false),
 	has_led(false),
+	update_roi_data(false),
+	update_image_data(false),
 	last_capture_and_save_success(false),
 	x_pix_rs(RunningStats() ),
 	y_pix_rs(RunningStats() ),
@@ -236,6 +249,8 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		}
 	}
 	else { messenger.printDebugMessage(hardwareName, " !!WARNING!!"); }
+
+
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_X");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_X"))
@@ -246,7 +261,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_X");
 	}
-
 	messenger.printDebugMessage(hardwareName, " find ARRAY_DATA_NUM_PIX_Y");
 	if (GlobalFunctions::entryExists(paramMap, "ARRAY_DATA_NUM_PIX_Y"))
 	{
@@ -257,7 +271,6 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find ARRAY_DATA_NUM_PIX_Y");
 	}
 	array_data_pixel_count = array_data_num_pix_y * array_data_num_pix_x;
-
 	messenger.printDebugMessage(hardwareName, " array_data_pixel_count = ", array_data_pixel_count);
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find BINARY_NUM_PIX_X");
@@ -484,7 +497,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	//-------------------------------------------------------------------------------------------------
 	// This is really overworked, but does mean you can change names form the config file , if you want to, 
 	// TODO in the future I would like more of the analysis results to go into this analysis_data array, also the analyis settings, etc  
-	messenger.printDebugMessage(hardwareName, " find Y_CENTER_DEF");
+	messenger.printDebugMessage(hardwareName, " find RESULTS_COUNT");
 	if (GlobalFunctions::entryExists(paramMap, "RESULTS_COUNT"))
 	{
 		analysis_data.second.resize( (size_t)std::stof(paramMap.at("RESULTS_COUNT")));
@@ -495,6 +508,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_CENTER_DEF");
 	}
 
+	messenger.printDebugMessage(hardwareName, " find X_POS");
 	if (GlobalFunctions::entryExists(paramMap, "X_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("X_POS"));
@@ -503,6 +517,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.find("X_NAME")->second);
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find Y_POS");
 	if (GlobalFunctions::entryExists(paramMap, "Y_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("Y_POS"));
@@ -511,6 +531,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.at("Y_NAME"));
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find X_SIGMA_POS");
 	if (GlobalFunctions::entryExists(paramMap, "X_SIGMA_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("X_SIGMA_POS"));
@@ -519,6 +545,12 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.at("X_SIGMA_NAME"));
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find X_SIGMA_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find Y_SIGMA_POS");
 	if (GlobalFunctions::entryExists(paramMap, "Y_SIGMA_POS"))
 	{
 		size_t pos = (size_t)std::stoi(paramMap.at("Y_SIGMA_POS"));
@@ -527,20 +559,30 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 			analysis_data_names[pos] = std::string(paramMap.at("Y_SIGMA_NAME"));
 		}
 	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find Y_SIGMA_POS");
+	}
+
+	messenger.printDebugMessage(hardwareName, " find COV_POS");
 	if (GlobalFunctions::entryExists(paramMap, "COV_POS"))
 	{
-		size_t pos = (size_t)std::stoi(paramMap.find("COV_POS")->second);
+		size_t pos = (size_t)std::stoi(paramMap.at("COV_POS"));
 		if (GlobalFunctions::entryExists(paramMap, "COV_NAME"))
 		{
 			analysis_data_names[pos] = std::string(paramMap.find("COV_NAME")->second);
 		}
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find COV_NAME");
 	}
 
 	//-------------------------------------------------------------------------------------------------
 	messenger.printDebugMessage(hardwareName, " find OPERATING_CENTER_X");
 	if (GlobalFunctions::entryExists(paramMap, "OPERATING_CENTER_X"))
 	{
-		operating_centre_x = std::stod(paramMap.find("OPERATING_CENTER_X")->second);
+		operating_centre_x = std::stod(paramMap.at("OPERATING_CENTER_X"));
 		messenger.printDebugMessage(hardwareName, " Found OPERATING_CENTER_X, value = ", operating_centre_x);
 	}
 	else
@@ -551,7 +593,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find OPERATING_CENTER_Y");
 	if (GlobalFunctions::entryExists(paramMap, "OPERATING_CENTER_Y"))
 	{
-		operating_centre_y = std::stod(paramMap.find("OPERATING_CENTER_Y")->second);
+		operating_centre_y = std::stod(paramMap.at("OPERATING_CENTER_Y"));
 		messenger.printDebugMessage(hardwareName, " Found OPERATING_CENTER_Y, value = ", operating_centre_y);
 	}
 	else
@@ -562,7 +604,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MECHANICAL_CENTER_X");
 	if (GlobalFunctions::entryExists(paramMap, "MECHANICAL_CENTER_X"))
 	{
-		mechanical_centre_x = std::stod(paramMap.find("MECHANICAL_CENTER_X")->second);
+		mechanical_centre_x = std::stod(paramMap.at("MECHANICAL_CENTER_X"));
 		messenger.printDebugMessage(hardwareName, " Found MECHANICAL_CENTER_X, value = ", mechanical_centre_x);
 
 	}
@@ -574,7 +616,7 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	messenger.printDebugMessage(hardwareName, " find MECHANICAL_CENTER_Y");
 	if (GlobalFunctions::entryExists(paramMap, "MECHANICAL_CENTER_Y"))
 	{
-		mechanical_centre_y = std::stod(paramMap.find("MECHANICAL_CENTER_Y")->second);
+		mechanical_centre_y = std::stod(paramMap.at("MECHANICAL_CENTER_Y"));
 		messenger.printDebugMessage(hardwareName, " Found MECHANICAL_CENTER_Y, value = ", mechanical_centre_y);
 
 	}
@@ -582,14 +624,109 @@ void Camera::getMasterLatticeData(const std::map<std::string, std::string>& para
 	{
 		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find RF_CENTER_Y");
 	}
-	//if (GlobalFunctions::entryExists(paramMap, "CAM1_ARRAY_DATA_NUM_PIX_X"))
-	//{
-	//	size_t pos = (size_t)std::stoi(paramMap.find("CAM1_ARRAY_DATA_NUM_PIX_X")->second);
-	//}
-	//else
-	//{
-	//	messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find CAM1_ARRAY_DATA_NUM_PIX_X");
-	//}
+	messenger.printDebugMessage(hardwareName, " find MAX_BIT_DEPTH");
+	if (GlobalFunctions::entryExists(paramMap, "MAX_BIT_DEPTH"))
+	{
+		bit_depth = (size_t)std::stoi(paramMap.at("MAX_BIT_DEPTH"));
+		messenger.printDebugMessage(hardwareName, " Found MAX_BIT_DEPTH, value = ", bit_depth);
+
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_BIT_DEPTH");
+	}
+	messenger.printDebugMessage(hardwareName, " find IMAGE_ROTATION");
+	if (GlobalFunctions::entryExists(paramMap, "IMAGE_ROTATION"))
+	{
+		image_rotation = (size_t)std::stoi(paramMap.at("IMAGE_ROTATION"));
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_ROTATION, value = ", image_rotation);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find IMAGE_ROTATION");
+	}
+	messenger.printDebugMessage(hardwareName, " find IMAGE_ROTATION");
+	if (GlobalFunctions::entryExists(paramMap, "IMAGE_FLIP_UD"))
+	{
+		if (GlobalFunctions::stringIsTrue(paramMap.at("IMAGE_FLIP_UD")))
+		{
+			flip_ud = true;
+		}
+		else
+		{
+			flip_ud = false;
+		}
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_FLIP_UD, value = ", flip_ud);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find IMAGE_FLIP_UD");
+	}
+
+	if (GlobalFunctions::entryExists(paramMap, "IMAGE_FLIP_LR"))
+	{
+		if (GlobalFunctions::stringIsTrue(paramMap.at("IMAGE_FLIP_LR")))
+		{
+			flip_lr = true;
+		}
+		else
+		{
+			flip_lr = false;
+		}
+		messenger.printDebugMessage(hardwareName, " Found IMAGE_FLIP_LR, value = ", flip_lr);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find IMAGE_FLIP_LR");
+	}
+
+
+	if (GlobalFunctions::entryExists(paramMap, "MIN_GAIN_LEVEL"))
+	{
+		
+		gain_range.first = (long)std::stoi(paramMap.at("MIN_GAIN_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MIN_GAIN_LEVEL, value = ", gain_range.first);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MIN_GAIN_LEVEL");
+	}
+	if (GlobalFunctions::entryExists(paramMap, "MAX_GAIN_LEVEL"))
+	{
+
+		gain_range.second = (long)std::stoi(paramMap.at("MAX_GAIN_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MAX_GAIN_LEVEL, value = ", gain_range.second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_GAIN_LEVEL");
+	}
+
+	if (GlobalFunctions::entryExists(paramMap, "MIN_BLACK_LEVEL"))
+	{
+
+		black_range.first = (long)std::stoi(paramMap.at("MIN_BLACK_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MIN_BLACK_LEVEL, value = ", black_range.first);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MIN_GAIN_LEVEL");
+	}
+	if (GlobalFunctions::entryExists(paramMap, "MAX_BLACK_LEVEL"))
+	{
+
+		black_range.second = (long)std::stoi(paramMap.at("MAX_BLACK_LEVEL"));
+
+		messenger.printDebugMessage(hardwareName, " Found MAX_BLACK_LEVEL, value = ", black_range.second);
+	}
+	else
+	{
+		messenger.printDebugMessage(hardwareName, " !!WARNING!! could not find MAX_BLACK_LEVEL");
+	}
+
 }
 
 Camera::Camera(const Camera& copyCamera):
@@ -650,15 +787,25 @@ use_mask_rad_limits(copyCamera.use_mask_rad_limits),
 sensor_max_temperature(copyCamera.sensor_max_temperature),
 sensor_min_temperature(copyCamera.sensor_min_temperature),
 average_pixel_value_for_beam(copyCamera.average_pixel_value_for_beam),
+roi_size_x(copyCamera.roi_size_x),
+roi_size_y(copyCamera.roi_size_y),
+roi_min_x(copyCamera.roi_min_x),
+roi_min_y(copyCamera.roi_min_y),
+roi_pixel_count(copyCamera.roi_pixel_count),
 min_x_pixel_pos(copyCamera.min_x_pixel_pos),
 max_x_pixel_pos(copyCamera.max_x_pixel_pos),
 min_y_pixel_pos(copyCamera.min_y_pixel_pos),
 max_y_pixel_pos(copyCamera.max_y_pixel_pos),
+flip_ud(copyCamera.flip_ud),
+flip_lr(copyCamera.flip_lr),
+update_roi_data(copyCamera.update_roi_data),
+update_image_data(copyCamera.update_image_data),
 busy(copyCamera.busy),
 has_led(copyCamera.has_led),
-last_capture_and_save_success(copyCamera.last_capture_and_save_success)
+last_capture_and_save_success(copyCamera.last_capture_and_save_success),
+bit_depth(copyCamera.bit_depth)
 {}
-Camera::~Camera(){}
+Camera::~Camera() {}
 void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)
@@ -681,17 +828,17 @@ void Camera::setPVStructs()
 			if (mode == STATE::VIRTUAL)
 			{
 				pvStructs[record].fullPVName = "VM-" + PV;
-				std::cout << "Virtual Camera PV " + pvStructs[record].fullPVName << std::endl;
+				messenger.printDebugMessage("Virtual Camera PV ", pvStructs[record].fullPVName);
 			}
 			else
 			{
 				pvStructs[record].fullPVName = PV;
-				std::cout << "Physical Camera PV " + pvStructs[record].fullPVName << std::endl;
+				messenger.printDebugMessage("Physical Camera PV ", pvStructs[record].fullPVName);
 			}
 		}
 		else
 		{
-			std::cout << "Can't find record = " << record << std::endl;
+			messenger.printDebugMessage("Can't find record = ", record);
 		}
 	}
 }
@@ -1036,6 +1183,7 @@ bool Camera::captureAndSave(size_t num_shots)
 				messenger.printDebugMessage("Requested number of shots ok, create new imageCollectStructs");
 
 				image_capture.is_busy = true;
+				busy  = true;
 				image_capture.status = STATE::CAPTURING;
 				image_capture.num_shots = num_shots;
 				image_capture.cam = this;
@@ -1107,7 +1255,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 		if (capture())
 		{
 			messenger.printDebugMessage("imageCollectAndSave is waiting for collection to finish");
-			//GlobalFunctions::pause_500();
+			GlobalFunctions::pause_500();
 			// add a time out here
 			time_t wait_time = num_shots * 10 + 5; // MAGIC numbers 
 			time_t time_start = GlobalFunctions::timeNow();
@@ -1160,6 +1308,7 @@ void Camera::imageCaptureAndSave(size_t num_shots)
 							image_capture.status = STATE::WRITE_CHECK_ERROR;
 						}
 						image_capture.is_busy = false;
+						busy = false;
 					}
 					else
 					{
@@ -1185,7 +1334,11 @@ bool Camera::setNumberOfShotsToCapture(size_t num)
 {
 	if (num <= max_shots_number)
 	{
-		return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
+		if (ca_state(pvStructs.at(CameraRecords::HDF_NumCapture).CHID) == cs_conn)
+		{
+			return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::HDF_NumCapture), (epicsInt32)num);
+		}
+
 	}
 	return false;
 }
@@ -1448,25 +1601,19 @@ double Camera::getFlooredPtsPercent()const{	return floored_pts_percent.second;}
 //	/~~\ | \| |___ /~~\  |  .__/ | .__/    | \| |    \__/ | | \|  |     .__/ \__, /~~\ |___ | | \| \__> 
 //	                                                                                                    
 bool Camera::epics_setUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-
 bool Camera::epics_setDoNotUseNPointScaling(epicsUInt16 v) { return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseNPoint), v);}
-
 bool Camera::epics_setNpointScalingStepSize(long val) { return epicsInterface->putValue2<epicsInt32>(pvStructs.at(CameraRecords::ANA_NPointStepSize), val); }
-
 bool Camera::setUseNPointScaling(){	return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setUseNPointScaling, GlobalConstants::one_ushort); }
-
 bool Camera::setDoNotUseNPointScaling(){ return genericStopAcquiringApplySetting<epicsUInt16>(&Camera::epics_setDoNotUseNPointScaling, GlobalConstants::zero_ushort); }
-
 bool Camera::setNpointScalingStepSize(long v){return genericStopAcquiringApplySetting<long>(&Camera::epics_setNpointScalingStepSize, v);}
 bool Camera::toggleUseNPointScaling() {	return isUsingNPointScaling() ? setDoNotUseNPointScaling() : setUseNPointScaling(); }
-
 STATE Camera::getNPointScalingState()const{	return use_npoint.second;}
 bool Camera::isUsingNPointScaling()const{ return use_npoint.second == STATE::USING_NPOINT;}
 bool Camera::isNotUsingNPointScaling()const{ return use_npoint.second == STATE::NOT_USING_NPOINT;}
 long Camera::getNpointScalingStepSize()const{ return step_size.second;}
-//                         __     __      __        __        __   __   __             __     
-// /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
-///~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
+//                          __     __      __        __        __   __   __             __     
+//  /\  |\ | |     /\  \ / /__` | /__`    |__)  /\  /  ` |__/ / _` |__) /  \ |  | |\ | |  \    
+// /~~\ | \| |___ /~~\  |  .__/ | .__/    |__) /~~\ \__, |  \ \__> |  \ \__/ \__/ | \| |__/    
 //                                                                                            
 bool Camera::setNewBackgroundImage(){return  epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_NewBkgrnd), GlobalConstants::one_ushort);}
 bool Camera::epics_setUseBackgroundImage(epicsUInt16 v){return epicsInterface->putValue2<epicsUInt16>(pvStructs.at(CameraRecords::ANA_UseBkgrnd), v);}
@@ -1719,6 +1866,24 @@ bool Camera::setGain(long value)
 	return false;
 }
 long Camera::getGain()const{ return gain.second;}
+
+std::pair<long,long> Camera::getGainRange()const { return gain_range; }
+boost::python::list Camera::getGainRange_Py()const { 
+	boost::python::list r;
+	r.append(gain_range.first);
+	r.append(gain_range.second);
+	return r; }
+
+std::pair<long, long> Camera::getBlackRange()const { return black_range; }
+boost::python::list Camera::getBlacklRange_Py()const {
+	boost::python::list r;
+	r.append(black_range.first);
+	r.append(black_range.second);
+	return r;
+}
+
+
+
 //	 __        __      
 //	|__) |  | /__` \ / 
 //	|__) \__/ .__/  |  
@@ -1744,14 +1909,27 @@ boost::python::dict Camera::getAllRunningStats()const
 TYPE Camera::getCamType()const{	return cam_type;}
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
+	// TODO this does not appear work!!! 
 	std::map<std::string, double> r;
-	std::string n;
-	double v;
-	for (auto it : boost::combine(analysis_data_names, analysis_data.second)) {
-		;
-		boost::tie(n, v) = it;
-		r[n] = v;
-	}
+	//std::string n;
+
+	//std::cout << analysis_data_names[0] << "  " << (pixelResults.second)[0] << std::endl;
+	//std::cout << analysis_data_names[1] << "  " << (pixelResults.second)[1] << std::endl;
+	//std::cout << analysis_data_names[2] << "  " << (pixelResults.second)[2] << std::endl;
+	//std::cout << analysis_data_names[3] << "  " << (pixelResults.second)[3] << std::endl;
+	//std::cout << analysis_data_names[4] << "  " << (pixelResults.second)[4] << std::endl;
+
+	r[analysis_data_names[0]] = (pixelResults.second)[0];
+	r[analysis_data_names[1]] = (pixelResults.second)[1];
+	r[analysis_data_names[2]] = (pixelResults.second)[2];
+	r[analysis_data_names[3]] = (pixelResults.second)[3];
+	r[analysis_data_names[4]] = (pixelResults.second)[4];
+	//double v;
+	//for (auto it : boost::combine(analysis_data_names, analysis_data.second)) {
+	//	;
+	//	boost::tie(n, v) = it;
+	//	r[n] = v;
+	//}
 	return r;
 }
 boost::python::dict Camera::getAnalysisResultsPixels_Py()const
@@ -1771,8 +1949,6 @@ size_t Camera::getYPixScaleFactor()const{ return y_pix_scale_factor;}
 double Camera::getSigXPix()const{ return sigma_x_pix.second;}
 double Camera::getSigYPix()const{ return sigma_y_pix.second; }
 double Camera::getSigXYPix()const{	return sigma_xy_pix.second;}
-
-
 double Camera::getSumIntensity()const{ return sum_intensity.second;}
 double Camera::getAvgIntensity()const{ return avg_intensity.second;}
 bool Camera::setX(double value)
@@ -2047,6 +2223,13 @@ bool Camera::updateImageData()
 	{
 		messenger.printDebugMessage("image_data_has_not_vector_resized = True");
 		vector_resize(image_data.second);
+
+		//test_numpy_array = boost::python::numpy::from_data(&image_data.second[0],
+		//	boost::python::numpy::dtype::get_builtin<long>(),
+		//	boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x),
+		//	boost::python::make_tuple(sizeof(long), sizeof(long)),
+		//	random_object);
+
 		if (image_data.second.size() == array_data_pixel_count)
 		{
 			image_data_has_not_vector_resized = false;
@@ -2066,7 +2249,7 @@ bool Camera::updateImageData()
 			, image_data.second.size());
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		messenger.printDebugMessage("updateImageData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage(hardwareName, " updateImageData Time taken: ", duration.count(), " us");
 		return got_value;
 	}
 	else {
@@ -2125,17 +2308,13 @@ bool Camera::updateROIData()
 		auto start = std::chrono::high_resolution_clock::now();
 		//bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 		//	, roi_data.second.size());
-
 		roi_total_pixel_count = roi_size_x.second * roi_size_y.second;
-
 		//messenger.printDebugMessage("roi_total_pixel_count = ", roi_total_pixel_count);
-
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_total_pixel_count);
-
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-		//messenger.printDebugMessage("updateROIData Time taken: ", duration.count(), " us");
+		messenger.printDebugMessage(hardwareName," updateROIData took: ", duration.count(), " us");
 		return got_value;
 	}
 	return false;
@@ -2157,7 +2336,7 @@ bool Camera::updateROIDataWithTimeStamp()
 		auto start = std::chrono::high_resolution_clock::now();
 		bool got_stamp = getArrayTimeStamp(dbr_roi_data, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_data.first);
-		long roi_num_pixels = getROIMinY() * getROIMinX();
+		long roi_num_pixels = getROISizeX() * getROISizeY();
 		bool got_value = getArrayValue(roi_data.second, pvStructs.at(CameraRecords::ROI1_ImageData_RBV)
 			, roi_num_pixels);
 		auto stop = std::chrono::high_resolution_clock::now();
@@ -2178,7 +2357,7 @@ bool Camera::getArrayTimeStamp(struct dbr_time_long* dbr_struct, const pvStruct&
 		EPICSInterface::sendToEPICSm("this is from getArrayTimeStamp");
 		MY_SEVCHK(status);
 		ts_to_update = dbr_struct->stamp;
-		//std::cout << epicsInterface->getEPICSTime(ts_to_update) << std::endl;
+		//std::cout << ts_to_update.secPastEpoch << "  " << ts_to_update.nsec << std::endl;
 		auto stop  = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 		//messenger.printDebugMessage("getArrayTimeStamp Time taken: ", duration.count(), " us");
@@ -2195,6 +2374,7 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	if (ca_state(pvs.CHID) == cs_conn)
 	{
 		int status = ca_array_get(DBR_LONG, count, pvs.CHID, &data_vec[0]);
+		//int status = ca_array_get(DBR_LONG, count, pvs.CHID, reinterpret_cast<long*>(test_numpy_array.get_data()) );
 		if (EPICSInterface::sendToEPICSm2("this is from getArrayValue"));
 		{
 			auto stop = std::chrono::high_resolution_clock::now();
@@ -2206,6 +2386,91 @@ bool Camera::getArrayValue(std::vector<long>& data_vec, const pvStruct & pvs,siz
 	}
 	return false;
 }
+
+bool Camera::startImageDataMonitoring()
+{
+	if (image_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for image_data ");
+		image_data_has_not_vector_resized = !vector_resize(image_data.second);
+	}
+	update_image_data = true;
+	return update_image_data;
+}
+bool Camera::startROIDataMonitoring()
+{
+	if (roi_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for ROI ");
+		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+	}
+	update_roi_data = true;
+	return update_roi_data;
+}
+bool Camera::stopImageDataMonitoring()
+{
+	update_image_data = false;
+	return update_image_data;
+}
+bool Camera::stopROIDataMonitoring()
+{
+	update_roi_data = false;
+	return update_roi_data;
+}
+
+std::pair<int, int> Camera::getFrameTimeStanmp()
+{
+	if (roi_data_has_not_malloced)
+	{
+		messenger.printDebugMessage("calling malloc_roidata");
+		malloc_roidata();
+	}
+	if (roi_data_has_not_vector_resized)
+	{
+		messenger.printDebugMessage("vector_resize for roi_data ");
+		roi_data_has_not_vector_resized = !vector_resize(roi_data.second);
+	}
+	if (!roi_data_has_not_vector_resized && !roi_data_has_not_malloced)
+	{
+		getArrayTimeStamp(dbr_roi_data, pvStructs.at(CameraRecords::ROI1_ImageData_RBV), roi_data.first);
+		std::pair<int, int> r{ roi_data.first.secPastEpoch, roi_data.first.nsec };
+		return r;
+	}
+	std::pair<int, int> r{ GlobalConstants::zero_int, GlobalConstants::zero_int};
+	return r;
+}
+boost::python::list Camera::getFrameTimeStanmp_Py()
+{
+	return to_py_list<int, int>(getFrameTimeStanmp());
+}
+//only gte new data for an array, and sit in ahiwl eloop to gaurantte it sne ???? 
+//add last areay data as timestamp
+//and what is gong on wit hthe strides ???? 
+//and use teh ROIS to give max rep rate 
+//what gui update timer cshoudl we use? probably 50 ms, 
+
+
+
+size_t Camera::getBitDepth()const
+{
+	return bit_depth;
+}
+size_t Camera::getImageRotation()const
+{
+	return image_rotation;
+}
+bool Camera::getImageFlipUD()const
+{
+	return flip_ud;
+}
+bool Camera::getImageFlipLR()const
+{
+	return flip_lr;
+}
+
+
+
+
 //std::vector<double>* Camera::getImagedataByPointer()
 //{
 //	//mValues.clear();
@@ -2233,12 +2498,65 @@ boost::python::list Camera::getImageData_Py()const
 boost::python::numpy::ndarray Camera::getImageData_NumPy()const
 {
 	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
-
 	return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
 	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
 }
 
+//boost::python::numpy::ndarray& Camera::getImageData_NumPy3()
+//{
+//	return test_numpy_array;
+//}
 
+boost::python::numpy::ndarray Camera::getImageData_NumPy2()const
+{
+	//auto start = std::chrono::high_resolution_clock::now();
+	//random_object = boost::python::object();
+	//boost::python::numpy::initialize();
+	//https://numpy.org/doc/stable/reference/generated/numpy.ndarray.strides.html
+
+
+	/*
+	* https://github.com/boostorg/python/blob/develop/example/numpy/ndarray.cpp
+// Now lets make an 3x2 ndarray from a multi-dimensional array using non-unit strides
+// First lets create a 3x4 array of 8-bit integers
+uint8_t mul_data[][4] = {{1,2,3,4},{5,6,7,8},{1,3,5,7}};
+// Now let's create an array of 3x2 elements, picking the first and third elements from each row
+// For that, the shape will be 3x2
+shape = p::make_tuple(3,2) ;
+// The strides will be 4x2 i.e. 4 bytes to go to the next desired row, and 2 bytes to go to the next desired column
+stride = p::make_tuple(4,2) ; 
+// Get the numpy dtype for the built-in 8-bit integer data type
+np::dtype dt1 = np::dtype::get_builtin<uint8_t>();
+// First lets create and print out the ndarray as is
+np::ndarray mul_data_ex = np::from_data(mul_data,dt1, p::make_tuple(3,4),p::make_tuple(4,1),p::object());
+	
+	*/
+
+	return boost::python::numpy::from_data(&image_data.second[0],
+			boost::python::numpy::dtype::get_builtin<long>(),
+		boost::python::make_tuple(array_data_num_pix_y, array_data_num_pix_x), // swop x and y 
+		boost::python::make_tuple(sizeof(long) * array_data_num_pix_x, sizeof(long)), 
+		//boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y), // swop x and y 
+		//boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
+		// both these definitions are correct, one is related to row-major, the other col-major
+		//boost::python::make_tuple(array_data_num_pix_x, array_data_num_pix_y),
+		//boost::python::make_tuple(sizeof(long), sizeof(long) * array_data_num_pix_x),
+			random_object);
+}
+
+boost::python::numpy::ndarray Camera::getROIData_NumPy2()const
+{
+	return boost::python::numpy::from_data(&roi_data.second[0],
+		boost::python::numpy::dtype::get_builtin<long>(),
+		boost::python::make_tuple(roi_size_y.second, roi_size_x.second), // swop x and y 
+		boost::python::make_tuple(sizeof(long) * roi_size_x.second, sizeof(long)),
+		//boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
+		//boost::python::make_tuple(sizeof(long), roi_size_x.second * sizeof(long)),
+		// both these definitions are correct, one is related to row-major, the other col-major
+		//boost::python::make_tuple(roi_size_x.second, roi_size_y.second),
+		//boost::python::make_tuple(sizeof(long), sizeof(long) * roi_size_x.second),
+		random_object);
+}
 
 std::vector<long> Camera::getROIData()const
 {

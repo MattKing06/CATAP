@@ -154,6 +154,10 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	hasBeenSetup = true;
 	return hasBeenSetup;
 }
+bool CameraFactory::setup_names_py(const std::string& version, const boost::python::list& names)
+{
+	return setup(version, to_std_vector<std::string>(names));
+}
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
 	messenger.printDebugMessage("setup Camera Factory with vector of camera names");
@@ -218,7 +222,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<std::str
 					std::to_string(ca_write_access(pv.second.CHID)), std::to_string(ca_state(pv.second.CHID)));
 				if (pv.second.monitor)
 				{
-					//messenger.printDebugMessage("createSubscription");
+					messenger.printDebugMessage("createSubscription");
 					item.second.epicsInterface->createSubscription(item.second, pv.second);
 				}
 				else
@@ -250,13 +254,13 @@ void CameraFactory::caputMasterLatticeParametersAfterSetup()
 		cam.second.setCentreYPixel(cam.second.master_lattice_centre_y);
 		messenger.printMessage(cam.first, " setPixelToMM to ", cam.second.master_lattice_pixel_to_mm);
 		cam.second.setPixelToMM(cam.second.master_lattice_pixel_to_mm);
-
 	}
 }
 void CameraFactory::setMonitorStatus(pvStruct& pvStruct)
 {
 	messenger.printMessage("setMonitorStatus checking ", pvStruct.pvRecord);
-	if (std::find(CameraRecords::cameraMonitorRecordsList.begin(), CameraRecords::cameraMonitorRecordsList.end(), pvStruct.pvRecord) != CameraRecords::cameraMonitorRecordsList.end())
+	//if (std::find(CameraRecords::cameraMonitorRecordsList.begin(), CameraRecords::cameraMonitorRecordsList.end(), pvStruct.pvRecord) != CameraRecords::cameraMonitorRecordsList.end())
+	if (GlobalFunctions::entryExists(CameraRecords::cameraMonitorRecordsList, pvStruct.pvRecord))
 	{
 		pvStruct.monitor = true;
 		messenger.printMessage("setMonitorStatus ", pvStruct.pvRecord, ", status = true");
@@ -467,6 +471,48 @@ double CameraFactory::setpix2mmY(const std::string& name, double value)
 	}
 	return GlobalConstants::double_min;
 }
+
+size_t CameraFactory::getBitDepth(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getBitDepth();
+	}
+	return GlobalConstants::size_zero;
+}
+size_t CameraFactory::getImageRotation(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getImageRotation();
+	}
+	return GlobalConstants::size_zero;
+}
+
+bool CameraFactory::getImageFlipUD(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getImageFlipUD();
+	}
+	return false;
+}
+
+bool CameraFactory::getImageFlipLR(const std::string& name)
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getImageFlipLR();
+	}
+	return false;
+}
+
+
+
 //    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 //   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 //   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
@@ -3612,7 +3658,7 @@ std::map<std::string, HardwareSnapshot> CameraFactory::yamlNodeToHardwareSnapsho
 	for (auto& it : input_node["CAMERA"])
 	{
 		std::string object_name = getFullName(it.first.as<std::string>());
-		std::cout << "(objectname) key = " << object_name << std::endl;
+		messenger.printDebugMessage("(objectname) key = ", object_name);
 		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
 
 		//return_map[object_name] = HardwareSnapshot();

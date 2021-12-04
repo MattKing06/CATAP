@@ -63,7 +63,7 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	messenger.printDebugMessage("Magnet Constructor");
 	for (auto&& item : paramsMap)
 	{
-		std::cout << item.first << " = " << item.second << std::endl;
+		messenger.printDebugMessage(item.first, " = ", item.second);
 	}
 
 	epicsInterface->ownerName = hardwareName;
@@ -98,7 +98,7 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 		}
 		else
 		{
-			std::cout << "!!ERROR!! " << paramsMap.at("mag_type") << " is na unrecognized magnet type" << std::endl;
+			std::cout << "!!ERROR!! " << paramsMap.at("mag_type") << " is an unrecognized magnet type" << std::endl;
 			mag_type = TYPE::UNKNOWN_TYPE;
 		}
 
@@ -144,7 +144,7 @@ void Magnet::setPVStructs()
 		if (GlobalFunctions::entryExists(specificHardwareParameters, record))
 		{
 			std::string PV = specificHardwareParameters.find(record)->second.data();
-			std::cout << "FOUND PV  = " + PV << std::endl;
+			messenger.printDebugMessage("FOUND PV  = ", PV);
 			pvStructs[record] = pvStruct();
 			pvStructs[record].pvRecord = record;
 			// TODO NO ERROR CHECKING! (we assum config file is good??? 
@@ -159,12 +159,12 @@ void Magnet::setPVStructs()
 			if (mode == STATE::VIRTUAL)
 			{
 				pvStructs[record].fullPVName = "VM-" + PV;
-				std::cout << "Virtual Magnet PV " + pvStructs[record].fullPVName << std::endl;
+				messenger.printDebugMessage("Virtual Magnet PV ", pvStructs[record].fullPVName);
 			}
 			else
 			{
 				pvStructs[record].fullPVName = PV;
-				std::cout << "Physical Magnet PV " + pvStructs[record].fullPVName << std::endl;
+				messenger.printDebugMessage("Physical Magnet PV ", pvStructs[record].fullPVName);
 			}
 			//pv.pvRecord = record;
 			//chid, count, mask, chtype are left undefined for now.

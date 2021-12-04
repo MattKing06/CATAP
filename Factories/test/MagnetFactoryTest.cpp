@@ -232,5 +232,62 @@ BOOST_AUTO_TEST_CASE(degauss_dips_and_quads_test)
 }
 
 
+BOOST_AUTO_TEST_CASE(check_magnet_counts)
+{
+	MagnetFactory magFac = MagnetFactory(STATE::VIRTUAL);
+	magFac.messagesOff();
+	magFac.debugMessagesOff();
+	bool status = magFac.setup("nominal");
+
+	std::vector<std::string> d_mags = magFac.getAllDipoleNames();
+	std::vector<std::string> q_mags = magFac.getAllQuadNames();
+	std::vector<std::string> s_mags = magFac.getAllSolNames();
+	std::vector<std::string> c_mags = magFac.getAllCorrectorNames();
+	std::vector<std::string> h_mags = magFac.getAllHCorrectorNames();
+	std::vector<std::string> v_mags = magFac.getAllVCorrectorNames();
+
+	std::cout << "DIPOLE NAMES" << std::endl;
+	for (auto& mag : d_mags)
+	{
+		std::cout << mag << std::endl;
+	}
+	std::cout << "SOLENOID NAMES" << std::endl;
+	for (auto& mag : s_mags)
+	{
+		std::cout << mag << std::endl;
+	}
+	std::cout << "QUADRUPOLE NAMES" << std::endl;
+	for (auto& mag : q_mags)
+	{
+		std::cout << mag << std::endl;
+	}
+	std::cout << "CORRECTOR NAMES" << std::endl;
+	for (auto& mag : c_mags)
+	{
+		std::cout << mag << std::endl;
+	}
+	std::cout << "HCORR NAMES" << std::endl;
+	for (auto& mag : h_mags)
+	{
+		std::cout << mag << std::endl;
+	}
+	std::cout << "VCORR NAMES" << std::endl;
+	for (auto& mag : v_mags)
+	{
+		std::cout << mag << std::endl;
+	}
+	std::cout << "d_mags " << d_mags.size() << std::endl;
+	std::cout << "q_mags " << q_mags.size() << std::endl;
+	std::cout << "s_mags " << s_mags.size() << std::endl;
+	std::cout << "c_mags " << c_mags.size() << std::endl;
+	std::cout << "h_mags " << h_mags.size() << std::endl;
+	std::cout << "v_mags " << v_mags.size() << std::endl;
+	BOOST_CHECK_EQUAL(d_mags.size(), 5);
+	BOOST_CHECK_EQUAL(q_mags.size(), 26);
+	BOOST_CHECK_EQUAL(s_mags.size(), 4);
+	BOOST_CHECK_EQUAL(c_mags.size(), 35);
+	BOOST_CHECK_EQUAL(h_mags.size(), 17);
+	BOOST_CHECK_EQUAL(v_mags.size(), 18);
+}
 
 BOOST_AUTO_TEST_SUITE_END();

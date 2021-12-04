@@ -1,93 +1,176 @@
-stages:
-- cmake
-- make
-- tests
-- doxygen
-- sphinx
-- wheel
-
-
-before_script:
-  - which gcc
-  - which g++
-  - which python3
-  - echo $PATH
-#  - echo EPICS_CA_ADDR_LIST $EPICS_CA_ADDR_LIST
-#  - echo EPICS_CA_AUTO_ADDR_LIST $EPICS_CA_AUTO_ADDR_LIST
-#  - echo EPICS_CA_SERVER_PORT $EPICS_CA_SERVER_PORT
-  - ls
-cmake:
-  stage: cmake
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - build/*
-  script:
-  - mkdir build
-  - cd build
-  - cmake ../.
-  - echo 'CMake Finished'
-  - ls
-
-make:
-  stage: make
-  cache:
-     key: ${CI_COMMIT_SHORT_SHA}
-     paths:
-       - build/*  
-  script:
-  - cd build/
-  - make clean
+stages: 
+  - cmake
   - make
-  - echo 'Make Finished'
+  - tests
+  - cleanup
+  - doxygen
+  - sphinx
+  - wheel
 
-tests:
-  stage: tests
-  cache:
+cmake_linux: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script: 
+    - "mkdir build"
+    - "cd build"
+    - "cmake ../."
+    - "echo 'CMake Finished'"
+    - ls
+  stage: cmake
+  tags: 
+    - linux
+
+cmake_windows: 
+  cache: 
     key: ${CI_COMMIT_SHORT_SHA}
     paths: 
       - build/*
-  script:
-#  - /bin/bash ~/start_vm.script
-  - cd build  
-  - cd testBin
-  - echo 'Running Tests..'
-  - ./ConfigReaderTest
-  - ./LoggingSystemTest
-  - ./HardwareTests
-  - ./FactoryTests
-  - ./EPICSInterfaceTests
-  - ./EPICSToolsTests
-doxygen: 
-  stage: doxygen
-  cache:
+  script: 
+    - "mkdir build"
+    - "cd build"
+    - "cmake.exe -DCATAP_PY_VERSION=\"3.8\" -DSPHINX_EXECUTABLE=\"C:\\Python38\\Scripts\\sphinx-build.exe\" -DDEPLOY_CATAP=\"false\" ..\ .\ "
+    - dir
+  stage: cmake
+  tags: 
+    - windows
+
+linux_make: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script: 
+    - cd build/
+    - make clean
+    - make
+    - echo 'Make Finished'
+  stage: make
+  tags: 
+    - linux
+
+ms_build: 
+  cache: 
     key: ${CI_COMMIT_SHORT_SHA}
-    paths:
+    paths: 
+      - build/*
+  script: 
+    - cd build
+    - "MSBuild.exe ALL_BUILD.vcxproj /m /property:Configuration=Release -t:rebuild"
+  stage: make
+  tags: 
+    - windows
+
+linux_tests: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script: 
+    - cd build
+    - cd testBin
+    - echo 'Running Tests..'
+    - ./ConfigReaderTest
+    - ./LoggingSystemTest
+    - ./HardwareTests
+    - ./FactoryTests
+    - ./EPICSInterfaceTests
+    - ./EPICSToolsTests
+  stage: tests
+  tags:
+    - linux
+
+windows_tests:
+  cache: 
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths: 
+      - build/*
+  script: 
+    - cd build
+    - cd testBin
+    - cd Release
+    - .\ConfigReaderTest.exe
+    - .\LoggingSystemTest.exe
+    - .\HardwareTests.exe
+    - .\EPICSInterfaceTests.exe
+    - .\EPICSToolsTests.exe
+  after_script:
+    - "taskkill /F /im caRepeater.exe"
+  stage: tests
+  tags:
+    - windows
+
+doxygen:
+  image: mattkingastec/catapenv:1.0 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
       - build/*
   script:
   - cd build
-  - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
+  - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
   - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
-
-sphinx:
-  stage: sphinx
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
+  stage: doxygen
+  tags:
+    - linux
+    
+doxygen_dev:
+  image: mattkingastec/catapenv:1.0 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
       - build/*
   script:
   - cd build
-  - scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy
+  - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
+  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp_Dev
   only:
-    - master
+    - MCR_DEVELOPMENT_BRANCH
+  stage: doxygen
+  tags:
+    - linux
 
-wheel:
-  stage: wheel
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
+sphinx: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
+    - master
+  script: 
+    - "cd build"
+    - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy"
+  stage: sphinx
+  tags:
+    - linux
+
+sphinx_dev: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
+    - MCR_DEVELOPMENT_BRANCH
+  script: 
+    - "cd build"
+    - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy_Dev"
+  stage: sphinx
+  tags:
+    - linux
+
+wheel: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
       - build/*
   script:
   - cd build
@@ -95,3 +178,6 @@ wheel:
   - ./build_wheel.sh
   only:
     - master
+  stage: wheel
+  tags:
+    - linux

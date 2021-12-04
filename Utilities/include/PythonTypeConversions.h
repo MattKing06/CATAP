@@ -28,7 +28,7 @@ template<class typeOfVectorToCOnvert>
 inline
 boost::python::list to_py_list(const std::vector<typeOfVectorToCOnvert>& vector)
 {
-	typename std::vector<typeOfVectorToCOnvert>::iterator iter;
+	//typename std::vector<typeOfVectorToCOnvert>::iterator iter;
 	boost::python::list newList;
 	//for (iter = vector.begin(); iter != vector.end(); ++iter)
 	for (const auto& item : vector)
@@ -88,6 +88,9 @@ boost::python::list to_py_list(const boost::circular_buffer<std::vector<typeOfVe
 	}
 	return newList;
 }
+
+
+
 
 template<class mapkey, class mapvalue>
 inline
@@ -255,7 +258,8 @@ inline
 boost::python::dict to_py_dict(const std::pair<std::string, std::vector<mapvalue>>& pair)
 {
 	boost::python::dict newDictiOnary;
-	newDictiOnary[pair.first] = to_py_list<mapvalue>(pair.second);
+	boost::python::list newList = to_py_list<mapvalue>(pair.second);
+	newDictiOnary[pair.first] = newList;
 	return newDictiOnary;
 }
 

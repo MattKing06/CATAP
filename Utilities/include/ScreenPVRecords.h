@@ -18,62 +18,62 @@
 namespace ScreenRecords
 {
 	/*Defined at std::string const so that the value of the variable cannot be changed.*/
-	/*! Used to search for "H:SDEV" key in pv_record_map */
-	extern std::string const HSDEV; // = "H:SDEV";
-	/*! Used to search for "H:TRIGGER" key in pv_record_map */
-	extern std::string const HTRIGGER; // = "H:TRIGGER";
-	/*! Used to search for "H:EX" key in pv_record_map */
-	extern std::string const HEX; // = "H:EX";
-	/*! Used to search for "H:TGTPOS" key in pv_record_map */
-	extern std::string const HTGTPOS; // = "H:TGTPOS";
-	/*! Used to search for "H:JOG" key in pv_record_map */
-	extern std::string const HJOG; // = "H:JOG";
-	/*! Used to search for "H:JDIFF" key in pv_record_map */
-	extern std::string const HJDIFF; // = "H:JDIFF";
-	/*! Used to search for "H:MOVING" key in pv_record_map */
-	extern std::string const HMOVING; // = "H:MOVING";
-	/*! Used to search for "H:READY" key in pv_record_map */
-	extern std::string const HREADY; // = "H:READY";
-	/*! Used to search for "H:GET_DEV" key in pv_record_map */
-	extern std::string const HGETDEV; // = "H:GET_DEV";
-	/*! Used to search for "H:DEV_STATE" key in pv_record_map */
-	extern std::string const HDEVSTATE; // = "H:DEV_STATE";
-	/*! Used to search for "H:MAX_POS" key in pv_record_map */
-	extern std::string const HMAXPOS; // = "H:MAX_POS";
-	/*! Used to search for "H:DEV_CENT" key in pv_record_map */
-	extern std::string const HDEVCENT; // = "H:DEV_CENT";
-	/*! Used to search for "H:ACTPOS" key in pv_record_map */
-	extern std::string const HACTPOS; // = "H:ACTPOS";
-	/*! Used to search for "H:EN" key in pv_record_map */
-	extern std::string const HEN; // = "H:EN";
-	/*! Used to search for "V:SDEV" key in pv_record_map */
-	extern std::string const VSDEV; // = "V:SDEV";
-	/*! Used to search for "V:TRIGGER" key in pv_record_map */
-	extern std::string const VTRIGGER; // = "V:TRIGGER";
-	/*! Used to search for "V:EX" key in pv_record_map */
-	extern std::string const VEX; // = "V:EX";
-	/*! Used to search for "V:TGTPOS" key in pv_record_map */
-	extern std::string const VTGTPOS; // = "V:TGTPOS";
-	/*! Used to search for "V:JOG" key in pv_record_map */
-	extern std::string const VJOG; // = "V:JOG";
-	/*! Used to search for "V:JDIFF" key in pv_record_map */
-	extern std::string const VJDIFF; // = "V:JDIFF";
-	/*! Used to search for "V:MOVING" key in pv_record_map */
-	extern std::string const VMOVING; // = "V:MOVING";
-	/*! Used to search for "V:READY" key in pv_record_map */
-	extern std::string const VREADY; // = "V:READY";
-	/*! Used to search for "V:GET_DEV" key in pv_record_map */
-	extern std::string const VGETDEV; // = "V:GET_DEV";
-	/*! Used to search for "V:DEV_STATE" key in pv_record_map */
-	extern std::string const VDEVSTATE; // = "V:DEV_STATE";
-	/*! Used to search for "V:MAX_POS" key in pv_record_map */
-	extern std::string const VMAXPOS; // = "V:MAX_POS";
-	/*! Used to search for "V:DEV_CENT" key in pv_record_map */
-	extern std::string const VDEVCENT; // = "V:DEV_CENT";
-	/*! Used to search for "V:ACTPOS" key in pv_record_map */
-	extern std::string const VACTPOS; // = "V:ACTPOS";
-	/*! Used to search for "V:EN" key in pv_record_map */
-	extern std::string const VEN; // = "V:EN";
+	/*! Used to search for "H_SDEV" key in pv_record_map */
+	extern std::string const H_SDEV; // = "H_SDEV";
+	/*! Used to search for "H_TRIGGER" key in pv_record_map */
+	extern std::string const H_TRIGGER; // = "H_TRIGGER";
+	/*! Used to search for "H_EX" key in pv_record_map */
+	extern std::string const H_EX; // = "H_EX";
+	/*! Used to search for "H_TGTPOS" key in pv_record_map */
+	extern std::string const H_TGTPOS; // = "H_TGTPOS";
+	/*! Used to search for "H_JOG" key in pv_record_map */
+	extern std::string const H_JOG; // = "H_JOG";
+	/*! Used to search for "H_JDIFF" key in pv_record_map */
+	extern std::string const H_JDIFF; // = "H_JDIFF";
+	/*! Used to search for "H_MOVING" key in pv_record_map */
+	extern std::string const H_MOVING; // = "H_MOVING";
+	/*! Used to search for "H_READY" key in pv_record_map */
+	extern std::string const H_READY; // = "H_READY";
+	/*! Used to search for "H_GET_DEV" key in pv_record_map */
+	extern std::string const H_GETDEV; // = "H_GET_DEV";
+	/*! Used to search for "H_DEV_STATE" key in pv_record_map */
+	extern std::string const H_DEVSTATE; // = "H_DEV_STATE";
+	/*! Used to search for "H_MAX_POS" key in pv_record_map */
+	extern std::string const H_MAXPOS; // = "H_MAX_POS";
+	/*! Used to search for "H_DEV_CENT" key in pv_record_map */
+	extern std::string const H_DEVCENT; // = "H_DEV_CENT";
+	/*! Used to search for "H_ACTPOS" key in pv_record_map */
+	extern std::string const H_ACTPOS; // = "H_ACTPOS";
+	/*! Used to search for "H_EN" key in pv_record_map */
+	extern std::string const H_EN; // = "H_EN";
+	/*! Used to search for "V_SDEV" key in pv_record_map */
+	extern std::string const V_SDEV; // = "V_SDEV";
+	/*! Used to search for "V_TRIGGER" key in pv_record_map */
+	extern std::string const V_TRIGGER; // = "V_TRIGGER";
+	/*! Used to search for "V_EX" key in pv_record_map */
+	extern std::string const V_EX; // = "V_EX";
+	/*! Used to search for "V_TGTPOS" key in pv_record_map */
+	extern std::string const V_TGTPOS; // = "V_TGTPOS";
+	/*! Used to search for "V_JOG" key in pv_record_map */
+	extern std::string const V_JOG; // = "V_JOG";
+	/*! Used to search for "V_JDIFF" key in pv_record_map */
+	extern std::string const V_JDIFF; // = "V_JDIFF";
+	/*! Used to search for "V_MOVING" key in pv_record_map */
+	extern std::string const V_MOVING; // = "V_MOVING";
+	/*! Used to search for "V_READY" key in pv_record_map */
+	extern std::string const V_READY; // = "V_READY";
+	/*! Used to search for "V_GET_DEV" key in pv_record_map */
+	extern std::string const V_GETDEV; // = "V_GET_DEV";
+	/*! Used to search for "V_DEV_STATE" key in pv_record_map */
+	extern std::string const V_DEVSTATE; // = "V_DEV_STATE";
+	/*! Used to search for "V_MAX_POS" key in pv_record_map */
+	extern std::string const V_MAXPOS; // = "V_MAX_POS";
+	/*! Used to search for "V_DEV_CENT" key in pv_record_map */
+	extern std::string const V_DEVCENT; // = "V_DEV_CENT";
+	/*! Used to search for "V_ACTPOS" key in pv_record_map */
+	extern std::string const V_ACTPOS; // = "V_ACTPOS";
+	/*! Used to search for "V_EN" key in pv_record_map */
+	extern std::string const V_EN; // = "V_EN";
 	/*! Used to search for "SDEV" key in pv_record_map */
 	extern std::string const SDEV; // = "SDEV";
 	/*! Used to search for "TRIGGER" key in pv_record_map */
@@ -103,8 +103,12 @@ namespace ScreenRecords
 	/*! Used to search for "EN" key in pv_record_map */
 	extern std::string const EN; // = "EN";
 
-	extern std::string const HPV;
-	extern std::string const VPV;
+	/*! Used to search for "PNEUMATIC_ON" key in pv_record_map */
+	extern std::string const PNEUMATIC_ON; // = "EN";
+	/*! Used to search for "PNEUMATIC_OFF" key in pv_record_map */
+	extern std::string const PNEUMATIC_OFF; // = "EN";
+	/*! Used to search for "PNEUMATIC_STA" key in pv_record_map */
+	extern std::string const PNEUMATIC_STA; // = "EN";
 
 	/*! Used to search for "H:RETRACTED" key in devices */
 	extern std::pair< int, STATE > const HRETRACTED; // = "HRETRACTED";
@@ -166,6 +170,27 @@ namespace ScreenRecords
 	extern std::map<int, STATE> screenVElementMap;
 	/*! A map of the integer values to send to epics for the corresponding pneumatic STATE enum */
 	extern std::map<int, STATE> screenPElementMap;
+
+	/*! A map of the STATE to integer values for the horizontal devices*/
+	extern const std::map<STATE, unsigned short> p_state_to_device_map;
+	/*! A map of the integer values to send to epics for the corresponding horizontal STATE enum */
+	extern const std::map<unsigned short, STATE> p_device_to_state_map;
+
+
+	/*! A map of the STATE to integer values for the horizontal devices*/
+	extern const std::map<STATE, unsigned short> h_state_to_device_map;
+	/*! A map of the integer values to send to epics for the corresponding horizontal STATE enum */
+	extern const std::map<unsigned short, STATE> h_device_to_state_map;
+
+	/*! A map of the STATE to integer values for the vertical devices*/
+	extern const std::map<STATE, unsigned short> v_state_to_device_map;
+	/*! A map of the integer values to send to epics for the corresponding vertical STATE enum */
+	extern const std::map<unsigned short, STATE> v_device_to_state_map;
+
+	extern const std::vector<STATE> screenPElements;
+	extern const std::vector<STATE> screenHElements;
+	extern const std::vector<STATE> screenVElements;
+
 }
 /*! @}*/
 

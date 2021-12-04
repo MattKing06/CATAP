@@ -16,7 +16,7 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<RFModulator, boost::python::bases<Hardware>, boost::noncopyable>("RFModulator", boost::python::no_init)
 
-			.def("getLowLevelNumercialData", &RFModulator::getLowLevelNumercialData_Py)
+			.def("getLowLevelNumericalData", &RFModulator::getLowLevelNumericalData_Py)
 			.def("getLowLevelStringData", &RFModulator::getLowLevelStringData_Py)
 			.def("getLowLevelData", &RFModulator::getLowLevelData)
 
@@ -25,6 +25,16 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 			.def("isInHVOn", &RFModulator::isInHVOn)
 			.def("isInStandby", &RFModulator::isInStandby)
 			.def("isInOff", &RFModulator::isInOff)
+
+			.def("getHoldRFOnState", &RFModulator::getHoldRFOnState)
+			.def("isInHoldRFOn", &RFModulator::isInHoldRFOn)
+			.def("isInHoldRFOnCon", &RFModulator::isInHoldRFOnCon)
+			.def("isInManualOperation", &RFModulator::isInManualOperation)
+
+			.def("setHoldRFOnState", &RFModulator::setHoldRFOnState)
+			.def("setHoldRFOnToManualOperation", &RFModulator::setHoldRFOnToManualOperation)
+			.def("setHoldRFOnToHoldRFOnCon", &RFModulator::setHoldRFOnToHoldRFOnCon)
+			.def("setHoldRFOnToHoldRFOn", &RFModulator::setHoldRFOnToHoldRFOn)
 
 			.def("getErrorState", &RFModulator::getErrorState)
 			.def("isErrorStateGood", &RFModulator::isErrorStateGood)
@@ -50,11 +60,15 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 	}
 	void expose_rf_modulator_factory_object() 
 	{
+		bool(RFModulatorFactory:: *setup_all)(const std::string&) = &RFModulatorFactory::setup;
+		bool(RFModulatorFactory:: * setup_by_area)(const std::string&, const std::vector<TYPE>& machine_areas) = &RFModulatorFactory::setup;
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFModulatorFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<RFModulatorFactory, boost::noncopyable>("RFModulatorFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
 			.def(boost::python::init<STATE, const std::string>())
+			.def("setup", setup_all)
+			.def("setup", setup_by_area)
 			.def("getModulator", &RFModulatorFactory::getModulator, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getFullName", &RFModulatorFactory::getFullName)
 			.def("getAllRFModulatorNames", &RFModulatorFactory::getAllRFModulatorNames_Py)
@@ -66,13 +80,23 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 			.def("isInStandby", &RFModulatorFactory::isInStandby)
 			.def("isInOff", &RFModulatorFactory::isInOff)
 
+			.def("getHoldRFOnState", &RFModulatorFactory::getHoldRFOnState)
+			.def("isInHoldRFOn", &RFModulatorFactory::isInHoldRFOn)
+			.def("isInHoldRFOnCon", &RFModulatorFactory::isInHoldRFOnCon)
+			.def("isInManualOperation", &RFModulatorFactory::isInManualOperation)
+
+			.def("setHoldRFOnState", &RFModulatorFactory::setHoldRFOnState)
+			.def("setHoldRFOnToManualOperation", &RFModulatorFactory::setHoldRFOnToManualOperation)
+			.def("setHoldRFOnToHoldRFOnCon", &RFModulatorFactory::setHoldRFOnToHoldRFOnCon)
+			.def("setHoldRFOnToHoldRFOn", &RFModulatorFactory::setHoldRFOnToHoldRFOn)
+
 			.def("getErrorState", &RFModulatorFactory::getErrorState)
 			.def("isErrorStateGood", &RFModulatorFactory::isErrorStateGood)
 			.def("getStateSetRead", &RFModulatorFactory::getStateSetRead)
 
 			.def("isWarm", &RFModulatorFactory::isWarm)
 			.def("isNotWarm", &RFModulatorFactory::isNotWarm)
-			.def("getLowLevelNumercialData", &RFModulatorFactory::getLowLevelNumercialData_Py)
+			.def("getLowLevelNumericalData", &RFModulatorFactory::getLowLevelNumericalData_Py)
 			.def("getLowLevelStringData", &RFModulatorFactory::getLowLevelStringData_Py)
 			.def("getLowLevelData", &RFModulatorFactory::getLowLevelData)
 

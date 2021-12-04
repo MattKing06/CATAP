@@ -48,7 +48,7 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.add_property("cameraFactory", &HardwareFactory::cameraFactory)
 			.def("getCameraFactory", &HardwareFactory::getCameraFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getCameraFactory", &HardwareFactory::getCameraFactory_Single, boost::python::arg("self"), boost::python::arg("machine_area"), boost::python::return_value_policy<boost::python::reference_existing_object>())
-			.def("getCameraFactory", &HardwareFactory::getCameraFactory_Mulitple_Py, boost::python::arg("self"), boost::python::arg("machine_areas"),boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getCameraFactory", &HardwareFactory::getCameraFactory_Mulitple_Py, boost::python::arg("self"), boost::python::arg("machine_areas"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 
 			.def("getCameraFactory", &HardwareFactory::getCameraFactory_ByName, boost::python::arg("self"), boost::python::arg("name"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getCameraFactory", &HardwareFactory::getCameraFactory_ByNames_Py, boost::python::arg("self"), boost::python::arg("names"), boost::python::return_value_policy<boost::python::reference_existing_object>())
@@ -61,8 +61,8 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getMagnetFactory", getMagnetFactory_noArea, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getMagnetFactory", getMagnetFactory_oneArea, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getMagnetFactory", getMagnetFactory_listOfAreas, boost::python::return_value_policy<boost::python::reference_existing_object>())
-			
-			
+
+
 			.add_property("linacPIDFactory", &HardwareFactory::linacPIDFactory)
 			.def("getLinacPIDFactory", &HardwareFactory::getLinacPIDFactory, boost::python::return_value_policy<boost::python::reference_existing_object>())
 
@@ -94,15 +94,16 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("getRFModulatorFactory", &HardwareFactory::getRFModulatorFactory_Py, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getRFModulatorFactory", getRFModulatorFactory_noarg, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getRFModulatorFactory", getRFModulatorFactory_listOfAreas, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
-			
-			
-			.def("getRFModulatorFactory", &HardwareFactory::getLightingFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 
 
-			
+			.def("getLightingFactory", &HardwareFactory::getLightingFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
+
+
+
 
 			.def("getRFProtectionFactory", &HardwareFactory::getRFProtectionFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.add_property("shutterFactory", &HardwareFactory::rfProtectionFactory)
+			.def("getStageFactory", &HardwareFactory::getStageFactory, boost::python::arg("self"), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("saveMachineSnapshot", saveSnapshotToLocation, boost::python::args("self"), boost::python::args("location"))
 			.def("saveMachineSnapshot", saveSnapshotDefaultLocation, boost::python::args("self"), "Saves a machine snapshot to a timestamped folder in the default location: \\\\claraserv3.dl.ac.uk\\claranet\\MachineSnapshots")
 			.def("loadMachineSnapshot", &HardwareFactory::loadMachineSnapshot)
@@ -110,7 +111,11 @@ namespace BOOST_PYTHON_HARDWARE_FACTORY_INCLUDE
 			.def("debugMessagesOn", &HardwareFactory::debugMessagesOn, boost::python::arg("self"))
 			.def("debugMessagesOff", &HardwareFactory::debugMessagesOff, boost::python::arg("self"))
 			.def("messagesOn", &HardwareFactory::messagesOn, boost::python::arg("self"))
-			.def("messagesOff", &HardwareFactory::messagesOff, boost::python::arg("self"));
+			.def("messagesOff", &HardwareFactory::messagesOff, boost::python::arg("self"))
+			.def("makeSilent", &HardwareFactory::makeSilent, "Turns off all messaging for everything.")
+			.def("makeVerbose", &HardwareFactory::makeVerbose, "Turns on all messaging for everything. ")
+			.def("isSilent", &HardwareFactory::isSilent, "Returns true if all messaging off, false otherwise.")
+			;
 
 	}
 }

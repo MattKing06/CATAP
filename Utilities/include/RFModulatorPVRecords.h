@@ -45,6 +45,7 @@ namespace RFModulatorRecords
 	// L01
 	extern std::string const ON;
 	extern std::string const SYSTEM_STATE_PUT;
+	extern std::string const L01_MOD_WARMUPT;
 	extern std::string const HVPS_VOLTAGE_SET;
 	extern std::string const HVPS_VOLTAGE_LOW_ALARM_SET;
 	extern std::string const HVPS_VOLTAGE_HI_ALARM_SET;

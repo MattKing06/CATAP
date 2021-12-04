@@ -16,9 +16,9 @@ public:
 	/*! messaneger to print messages to std.out THIS SHOULD BE PUBLIC */
 	LoggingSystem messenger;
 	/*! Set up all modulator objects for this  factory */
-	bool setup(std::string version);
+	bool setup(const std::string& version);
 	/*! Set up modulator objects for this factory based on passed machien areas */
-	bool setup(std::string version, const std::vector<TYPE>& machine_areas_in);
+	bool setup(const std::string& version, const std::vector<TYPE>& machine_areas_in);
 
 	/*! get the rf modulator object 
 		@param[in] string, name of modulator
@@ -84,14 +84,31 @@ public:
 		@param[in] string, name of modulator
 		@param[out] bool,  */
 	bool isNotWarm(const std::string& name)const;
+
+	bool isInHoldRFOn(const std::string& name) const;
+
+	bool isInManualOperation(const std::string& name) const;
+	
+	bool isInHoldRFOnCon(const std::string& name) const;
+	
+	STATE getHoldRFOnState(const std::string& name) const;
+
+	void setHoldRFOnState(const std::string& name, STATE holdRFOnState);
+
+	void setHoldRFOnToManualOperation(const std::string& name);
+
+	void setHoldRFOnToHoldRFOnCon(const std::string& name);
+
+	void setHoldRFOnToHoldRFOn(const std::string& name);
+
 	/*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) 
 	@param[in] string, name of modulator
 	@param[out] map<strign,double>, all low level numerical data in map   */
-	std::map<std::string, double> getLowLevelNumercialData(const std::string& name)const;
+	std::map<std::string, double> getLowLevelNumericalData(const std::string& name)const;
 	/*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) Python Version
 	@param[in] string, name of modulator
 	@param[out] dict, all low level numerical data in map   */
-	boost::python::dict getLowLevelNumercialData_Py(const std::string& name)const;
+	boost::python::dict getLowLevelNumericalData_Py(const std::string& name)const;
 	/*! get the low level string data for this modulator (error messages) 
 	@param[in] string, name of modulator
 	@param[out] dict, all low level numerical data in map   */
@@ -123,8 +140,6 @@ private:
 	STATE mode;
 	/*! ConfigReader to parse YAML config files and create associated LLRF objects*/
 	ConfigReader reader;
-	/*! sets PV struct fucntion pointer */
-	void retrieveUpdateFunctionForRecord();
 	/*! update the alias_name_map after reading the master lattice 
 		@param[in] RFModulator, modulator to get alias names from */
 	void updateAliasNameMap(const RFModulator& mod);

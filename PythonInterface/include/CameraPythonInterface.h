@@ -20,6 +20,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	}
 	void expose_camera_object() 
 	{
+		boost::python::numpy::initialize();
 		// function pointers for overloads we want to expose
 		bool(Camera::*setMaskandROI_4PARAM)(long, long, long, long) = &Camera::setMaskandROI;
 		bool(Camera::*setROI_4PARAM)(long, long, long, long) = &Camera::setROI;
@@ -40,13 +41,17 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
 		boost::python::class_<Camera, boost::python::bases<Hardware>, boost::noncopyable>("Camera", boost::python::no_init)
-
 		//                   ___  __  
 		//  |\ |  /\   |\/| |__  /__` 
 		//  | \| /~~\  |  | |___ .__/ 
 		//
 		.def("getAliases", &Camera::getAliases_Py)
 		.def("getScreenNames", &Camera::getScreenNames_Py)
+		// image properties 
+		.def("getBitDepth", &Camera::getBitDepth)
+		.def("getImageRotation", &Camera::getImageRotation)
+		.def("getImageFlipUD", &Camera::getImageFlipUD)
+		.def("getImageFlipLR", &Camera::getImageFlipLR)
 		//   __         ___         ___  __                 
 		//  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
 		//  |    | / \ |___ |___     |  \__/     |  |  |  | 
@@ -273,11 +278,22 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("updateImageDataWithTimeStamp", &Camera::updateImageDataWithTimeStamp)
 		.def("updateROIData", &Camera::updateROIData)
 		.def("updateROIDataWithTimeStamp", &Camera::updateROIDataWithTimeStamp)
+		.def("startImageDataMonitoring", &Camera::startImageDataMonitoring)
+		.def("startROIDataMonitoring", &Camera::startROIDataMonitoring)
+		.def("stopImageDataMonitoring", &Camera::stopImageDataMonitoring)
+		.def("stopROIDataMonitoring", &Camera::stopROIDataMonitoring)
 		.def("getImageDataConstRef", &Camera::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getROIDataConstRef", &Camera::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 		.def("getImageData", &Camera::getImageData_Py)
 		.def("getImageDataNumPy", &Camera::getImageData_NumPy)
+		.def("getImageDataNumPy2", &Camera::getImageData_NumPy2)
+
+		//.def("getImageDataNumPy3", &Camera::getImageData_NumPy3, boost::python::return_value_policy<boost::python::reference_existing_object>())
+
 		.def("getROIData", &Camera::getROIData_Py)
+		
+		.def("getROIDataNumPy2", &Camera::getROIData_NumPy2)
+
 		.def("setMaskAndROIxMax", &Camera::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
 		.def("setMaskAndROIyMax", &Camera::setMaskAndROIyMax)
 		.def("setMaskAndROIxSize", &Camera::setMaskAndROIxSize)
@@ -293,7 +309,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("setROIMinX", &Camera::setROIMinX)
 		.def("setROIMinY", &Camera::setROIMinY)
 		.def("setROISizeX", &Camera::setROISizeX)
-		.def("setROIsizeY", &Camera::setROISizeY)
+		.def("setROISizeY", &Camera::setROISizeY)
 		.def("setROI", setROI_4PARAM)
 		.def("setROI", &Camera::setROI_Py)
 
@@ -359,12 +375,17 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		.def("getGain", &Camera::getGain)
 		.def("setBlackLevel", &Camera::setBlackLevel)
 		.def("getBlackLevel", &Camera::getBlackLevel)
+
+
+		.def("getGainRange", &Camera::getGainRange_Py)
+		.def("getBlacklRange", &Camera::getBlacklRange_Py)
 			
 				
 		.def("getAnalysisResultsPixels", &Camera::getAnalysisResultsPixels_Py)
 
-
-
+			
+		.def("getFrameTimeStanmp", &Camera::getFrameTimeStanmp_Py)
+			
 		.def("debugMessagesOff", &Camera::debugMessagesOff)
 		.def("messagesOn", &Camera::messagesOn)
 		.def("messagesOff", &Camera::messagesOff)
@@ -374,6 +395,7 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	}
 	void expose_camera_factory_object() 
 	{
+		boost::python::numpy::initialize();
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<CameraFactory>())->to_python_target_type());
 		if (is_registered) return;
 
@@ -390,6 +412,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		STATE(CameraFactory:: * applySnaphot_withDict)(const boost::python::dict&, TYPE) = &CameraFactory::applySnaphot;
 		STATE(CameraFactory:: * applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &CameraFactory::applySnaphot;
 
+
+
+
+
 		boost::python::class_<std::vector<long>, boost::noncopyable>("std_vector_long", boost::python::no_init)
 			.def(boost::python::vector_indexing_suite<std::vector<long>>())
 			;
@@ -397,8 +423,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		boost::python::class_<CameraFactory, boost::noncopyable>("CameraFactory", boost::python::no_init)
 			.def(boost::python::init<STATE, const std::string>())
 			.def(boost::python::init<STATE>())
+			.def("setup", &CameraFactory::setup_names_py)
 			.def("getCamera", &CameraFactory::getCamera, boost::python::return_value_policy<boost::python::reference_existing_object>() )
-
 			//                   ___  __  
 			//  |\ |  /\   |\/| |__  /__` 
 			//  | \| /~~\  |  | |___ .__/ 
@@ -693,8 +719,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("updateImageDataWithTimeStamp", &CameraFactory::updateImageDataWithTimeStamp)
 	.def("updateROIData", &CameraFactory::updateROIData)
 	.def("updateROIDataWithTimeStamp", &CameraFactory::updateROIDataWithTimeStamp)
-	.def("getImageDataConstRef", &CameraFactory::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
-	.def("getROIDataConstRef", &CameraFactory::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+	//.def("getImageDataConstRef", &CameraFactory::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+	//.def("getROIDataConstRef", &CameraFactory::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 	.def("getImageData", &CameraFactory::getImageData_Py)
 	.def("getROIData", &CameraFactory::getROIData_Py)
 	.def("setMaskAndROIxMax", &CameraFactory::setMaskAndROIxMax) 			// use these for setting mask AND ROI 
@@ -717,6 +743,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("setROI", &CameraFactory::setROI_Py)
 
 			
+		.def("getBitDepth", &CameraFactory::getBitDepth)
+		.def("getImageRotation", &CameraFactory::getImageRotation)
+		.def("getImageFlipUD", &CameraFactory::getImageFlipUD)
+		.def("getImageFlipLR", &CameraFactory::getImageFlipLR)
+
+
 				
 		.def("getSumIntensity", &CameraFactory::getSumIntensity)
 		.def("getAvgIntensity", &CameraFactory::getAvgIntensity)

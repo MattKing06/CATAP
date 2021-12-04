@@ -69,6 +69,7 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("setup", &LaserEnergyMeterFactory::setup)
 			.add_property("laserEnergyMeterMap", &LaserEnergyMeterFactory::laserEnergyMeterMap)
 			.def("getLaserEnergyMeter", &LaserEnergyMeterFactory::getLaserEnergyMeter, boost::python::return_value_policy<boost::python::reference_existing_object>())
+			.def("getAllLaserEnergyMeterNames", &LaserEnergyMeterFactory::getAllLaserEnergyMeterNames_Py)
 			//.def("getLaserEnergyMeters", &LaserEnergyMeterFactory::getLaserEnergyMeters)
 			//.def("getAllLaserEnergyMeters", &LaserEnergyMeterFactory::getAllLaserEnergyMeters)
 			.def("setStart", &LaserEnergyMeterFactory::setStart)

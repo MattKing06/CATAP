@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
+
 
 namespace GlobalFunctions {
 
@@ -33,6 +35,15 @@ namespace GlobalFunctions {
 	//	return r;
 	//}
 
+	bool stringToBool(const std::string& string_in)
+	{
+		std::string upper_string_in = trimAllWhiteSpace(boost::to_upper_copy<std::string>(string_in));
+		if (upper_string_in == GlobalConstants::TRUE_STR)
+			return true;
+		return false;
+	}
+
+
 	STATE stringToSTATE(const std::string& state_str)
 	{
 		if (entryExists<STATE>(GlobalConstants::stringToStateMap, state_str))
@@ -42,7 +53,7 @@ namespace GlobalFunctions {
 		return STATE::UNKNOWN;
 	}
 
-	// /THESE LLRF SCAN are used in multiple places (LLRF, PID), TODO name is not so great 
+	// /THESE LLRF SCAN are used in multiple places (LLRF, PID), TODO name is not so great MOVE TO A DIFFERNT PLACE!!! 
 	unsigned short scanSTATEToNumber(const STATE state)
 	{
 		switch(state){
@@ -271,7 +282,6 @@ namespace GlobalFunctions {
 	{
 		// set our locator equal to the first appearance of any character in replace
 		size_t found = str.find_first_of(replace);
-
 		while (found != std::string::npos) // While our position in the sting is in range.
 		{
 			str[found] = ch; // Change the character at position.
@@ -352,5 +362,28 @@ namespace GlobalFunctions {
 		}
 		return str;
 	}
+
+
+	bool stringIsTrue(const std::string& str)
+	{
+		std::string str_upper = boost::to_upper_copy<std::string>(str);
+		if (GlobalConstants::TRUE_STR.compare(str_upper) == 0)
+		{
+			return true;
+		}
+		return false; 
+	}
+	bool stringIsFalse(const std::string& str)
+	{
+		std::string str_upper = boost::to_upper_copy<std::string>(str);
+		if (GlobalConstants::FALSE_STR.compare(str_upper)  == 0)
+		{
+			return true;
+		}
+		return false;
+	}
+
+
+
 
 }

@@ -49,6 +49,8 @@ public:
 	std::map<std::string, LaserEnergyMeter> getLaserEnergyMeters(std::vector<std::string> laserNames);
 	std::map<std::string, LaserEnergyMeter> getAllLaserEnergyMeters();
 	std::map<std::string, LaserEnergyMeter> laserEnergyMeterMap;
+	std::vector<std::string> getAllLaserEnergyMeterNames();
+	boost::python::list getAllLaserEnergyMeterNames_Py();
 	/*!gets all the full name of a certain laser energy meter.
 	@param[in] name: the name of the laser energy meter.
 	@param[out] name : the name of the laser energy meter. Not sure why this function is here.*/

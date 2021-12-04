@@ -54,6 +54,11 @@ public:
 		@param[in] names, only setup magnets that match a (fullname) in names 
 		@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const std::vector<std::string>& names);
+	/*! setup function using list of camera names, Python version 
+		@param[in] version: (a placeholder for future extensions)
+		@param[in] names: only setup magnets that match a (fullname) in names
+		@param[out] bool: for success or failure */
+	bool setup_names_py(const std::string& version, const boost::python::list& names);
 	/*! get a reference to a camera object
 	@param[in] cam_name, name of camera object to return
 	@param[out] camera object*/
@@ -149,6 +154,30 @@ public:
 	@param[in] std::string, name
 	@param[in] double, new value */
 	double setpix2mmY(const std::string& name, double value);
+
+
+
+
+	/*! Get the pixel bit depth for a cmaera,
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	size_t getBitDepth(const std::string& name);
+	/*! Get required rotations of raw image array to match installed orentation for image (0, 90, 180 or 270 degrees).
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	size_t getImageRotation(const std::string& name);
+	/*! Get should the image be flipped along the up/down axis (after rotation)  i.e. row order reversed)
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	bool getImageFlipUD(const std::string& name);
+	/*! Get should the image be flipped along the left/right axis (after rotation) i.e. column order reversed)
+	@param[in] std::string, name
+	@param[in] size_t, value */
+	bool getImageFlipLR(const std::string& name);
+
+
+
+
 	//    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 	//   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 	//   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 

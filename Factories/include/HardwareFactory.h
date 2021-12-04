@@ -16,6 +16,7 @@
 #include "RFModulatorFactory.h"
 #include <RFHeartbeatFactory.h>
 #include "LinacPIDFactory.h"
+#include <StageFactory.h>
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
 
@@ -104,6 +105,7 @@ public:
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 	RFHeartbeatFactory& getRFHeartbeatFactory();
 	
+	StageFactory& getStageFactory();
 	
 	LightingFactory& getLightingFactory();
 	LinacPIDFactory& getLinacPIDFactory();
@@ -125,6 +127,9 @@ public:
 	void messagesOff();
 	bool isMessagingOn();
 	bool isDebugOn();
+	bool isSilent();
+	bool makeSilent();
+	bool makeVerbose();
 	std::map<std::string, Hardware> hardwareMap;
 	MagnetFactory magnetFactory;
 	ChargeFactory chargeFactory;
@@ -142,6 +147,7 @@ public:
 	RFModulatorFactory rfmodulatorFactory;
 	RFHeartbeatFactory rfHeartbeatFactory;
 	LinacPIDFactory linacPIDFactory;
+	StageFactory stageFactory;
 
 	// virtual physical or offline
 	STATE mode;

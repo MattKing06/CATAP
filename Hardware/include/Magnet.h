@@ -361,6 +361,7 @@ class Magnet : public Hardware
 	/*! Actually do the degaussing, called from  staticEntryDeGauss
 		@param[in] degauss-struct contains data required for degaussing */
 		void DoDeGauss(const Degauss& ds);
+
 	/*! current values to set during degauss procedure, defined in the master lattice yaml file	and setable 	*/
 		std::vector<double> degaussValues;
 	/*! tolerance used during degausing to decide if readi == seti,		*/
@@ -397,8 +398,6 @@ class Magnet : public Hardware
 
 		//std::string magRevType;
 		double RI_tolerance;
-	
-
 
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
