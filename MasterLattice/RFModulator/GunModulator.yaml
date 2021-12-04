@@ -1,7 +1,7 @@
 controls_information:
   PV: true
   pv_record_map:
-    # HOLD_RF_ON : CLA-GUNS-RFHOLD:OpMode
+    HOLD_RF_ON : CLA-GUNS-RFHOLD:OpMode
     # GUN_MOD_RESET : CLA-GUNS-HRF-MOD-01:Sys:Reset
     # GUN_MOD_STATE_SET : CLA-GUNS-HRF-MOD-01:Sys:StateSet:W
     GUN_MOD_STATE_SET_READ  : CLA-GUNS-HRF-MOD-01:Sys:StateSet

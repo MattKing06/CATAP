@@ -186,6 +186,7 @@ properties:
     PIX_2_MM_RATIO_DEF : 0.05434781260869565 #; !!! from wiki  18.4 px / mm
     ARRAY_DATA_X_PIX_2_MM : 0.0543478260869565 #; 
     ARRAY_DATA_Y_PIX_2_MM :  0.05434782608695651 #;
+
     SENSOR_MAX_TEMP : 27.0 #;
     SENSOR_MIN_TEMP : 5.0 #;
     MIN_X_PIXEL_POS : 150.0 #; these are used to decide if the beam is close to the edge    float  as analysis results in pixels returns float  
@@ -198,8 +199,8 @@ properties:
     OPERATING_CENTER_Y : 1000
     MECHANICAL_CENTER_X : 1000
     MECHANICAL_CENTER_Y : 1000 
-    
     MAX_BIT_DEPTH : 16
+
     # meh, is this a good way to def orientation? 
     # ALSWAYS assume image is chuncked in the X direction Y times
     ARRAY_DATA_NUM_PIX_X : 1392 #; array data passed through EPICS
@@ -216,3 +217,4 @@ properties:
     MAX_GAIN_LEVEL : 700
     MIN_BLACK_LEVEL : -768
     MAX_BLACK_LEVEL : 767     
+

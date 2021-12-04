@@ -265,7 +265,6 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	*/
 	for (auto& magnet : magnetMap)
 	{
-		std::cout << std::endl;
 		messenger.printMessage(magnet.second.getHardwareName(), " Subscriptions");
 		/*
 			NOW CHANNELS HAVE BEEN SENT TO EPICS, SET UP EVERYTHING ELSE
@@ -406,7 +405,7 @@ bool MagnetFactory::isAType(const std::string& name, const TYPE type)const
 	{
 		return magnetMap.at(fullName).getMagnetType() == type;
 	}
-	std::cout << "!!ERROR!! MagnetFactory::getSETI cannot find magnet with name = " << name << std::endl;
+	messenger.printMessage("!!ERROR!! MagnetFactory::isAType cannot find magnet with name = ", name);
 	return GlobalConstants::double_min;
 }
 bool MagnetFactory::isAQuad(const std::string& name)const
@@ -851,7 +850,7 @@ std::vector<std::string> MagnetFactory::getAllQuadNames()const
 	std::vector<std::string> return_names;
 	for (auto&& item : magnetMap)
 	{
-		if (isADip(item.first))
+		if (isAQuad(item.first))
 		{
 		return_names.push_back(item.first);
 		}
@@ -867,7 +866,7 @@ std::vector<std::string> MagnetFactory::getAllSolNames()const
 	std::vector<std::string> return_names;
 	for (auto&& item : magnetMap)
 	{
-		if (isADip(item.first))
+		if (isASol(item.first))
 		{
 			return_names.push_back(item.first);
 		}
@@ -1915,7 +1914,7 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapsho
 	for (auto& it : input_node["MAGNET"])
 	{
 		std::string object_name = getFullName(it.first.as<std::string>());
-		std::cout << "(objectname) key = " << object_name << std::endl;
+		messenger.printDebugMessage("(objectname) key = ", object_name);
 		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
 		//return_map[object_name] = HardwareSnapshot();
 		for (auto&& map_it : value)
@@ -1976,7 +1975,7 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapsho
 			}
 			if (record == MagnetRecords::SETI)
 			{
-				std::cout << "record is MagnetRecords::SETI" << std::endl;
+				messenger.printDebugMessage("record is MagnetRecords::SETI");
 				double new_val = std::stod(map_it.second);
 				return_map[object_name].update<double>(record, new_val);
 			}
@@ -1990,7 +1989,7 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapsho
 	}
 	// loop over each node (map) in the YAML.NODE
 	messenger.printMessage("loop over Magnet snapshot data");
-	std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
+	messenger.printMessage("yamlNodeToHardwareSnapshotMap COMPLETE");
 	return return_map;
 }
 std::map<std::string, HardwareSnapshot> MagnetFactory::pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict)

@@ -719,8 +719,8 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 	.def("updateImageDataWithTimeStamp", &CameraFactory::updateImageDataWithTimeStamp)
 	.def("updateROIData", &CameraFactory::updateROIData)
 	.def("updateROIDataWithTimeStamp", &CameraFactory::updateROIDataWithTimeStamp)
-	.def("getImageDataConstRef", &CameraFactory::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
-	.def("getROIDataConstRef", &CameraFactory::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+	//.def("getImageDataConstRef", &CameraFactory::getImageDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
+	//.def("getROIDataConstRef", &CameraFactory::getROIDataConstRef, boost::python::return_value_policy<boost::python::reference_existing_object>())
 	.def("getImageData", &CameraFactory::getImageData_Py)
 	.def("getROIData", &CameraFactory::getROIData_Py)
 	.def("setMaskAndROIxMax", &CameraFactory::setMaskAndROIxMax) 			// use these for setting mask AND ROI 

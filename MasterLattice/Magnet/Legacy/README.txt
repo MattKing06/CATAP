@@ -1,1 +1,0 @@
-This folder has been set up to store legacy config files from VELA-CLARA-Controllers that are still useful.

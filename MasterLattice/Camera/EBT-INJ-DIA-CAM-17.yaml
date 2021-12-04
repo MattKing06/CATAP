@@ -198,6 +198,7 @@ properties:
     X_PIX_SCALE_FACTOR : 1 #; scaling from array_data num pixels to binary image data num pixels
     Y_PIX_SCALE_FACTOR : 1 #;
     MAX_BIT_DEPTH : 16
+
     # meh, is this a good way to def orientation? 
     # ALSWAYS assume image is chuncked in the X direction Y times
     ARRAY_DATA_NUM_PIX_X : 1392 #; array data passed through EPICS
@@ -212,3 +213,4 @@ properties:
     MAX_GAIN_LEVEL : 700
     MIN_BLACK_LEVEL : -768
     MAX_BLACK_LEVEL : 767     
+

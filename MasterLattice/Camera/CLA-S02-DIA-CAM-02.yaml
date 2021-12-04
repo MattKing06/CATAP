@@ -202,4 +202,5 @@ properties:
     # THEN we rotate the image and mirror it 
     IMAGE_ROTATION : 0 # could be 0, 90, 180, 270
     IMAGE_FLIP_UD : true
+
     IMAGE_FLIP_LR : false  

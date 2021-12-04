@@ -3658,7 +3658,7 @@ std::map<std::string, HardwareSnapshot> CameraFactory::yamlNodeToHardwareSnapsho
 	for (auto& it : input_node["CAMERA"])
 	{
 		std::string object_name = getFullName(it.first.as<std::string>());
-		std::cout << "(objectname) key = " << object_name << std::endl;
+		messenger.printDebugMessage("(objectname) key = ", object_name);
 		std::map<std::string, std::string >  value = it.second.as<std::map<std::string, std::string >>();
 
 		//return_map[object_name] = HardwareSnapshot();

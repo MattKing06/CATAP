@@ -183,6 +183,7 @@ properties:
     X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
     Y_CENTER_DEF      : 0 #;
     PIX_2_MM_RATIO_DEF : 0.032  #; !!! from wiki 1/15.9
+
     ARRAY_DATA_X_PIX_2_MM : 0.032 #; 
     ARRAY_DATA_Y_PIX_2_MM :  0.032 #;
     SENSOR_MAX_TEMP : 27.0 #;
@@ -213,3 +214,4 @@ properties:
     MAX_GAIN_LEVEL : 700
     MIN_BLACK_LEVEL : -768
     MAX_BLACK_LEVEL : 767      
+

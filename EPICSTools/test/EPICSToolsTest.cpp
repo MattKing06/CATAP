@@ -50,16 +50,20 @@ BOOST_AUTO_TEST_CASE(epics_tools_listener_buffer_test)
 	std::string monPV = "CLA-C2V-MAG-HCOR-01:READI";
 	std::string powerPV = "CLA-C2V-MAG-HCOR-01:SPOWER";
 	std::string setPV = "CLA-C2V-MAG-HCOR-01:SETI";
-	EPICSTools epicsTools = EPICSTools();
+	EPICSTools epicsTools = EPICSTools(STATE::VIRTUAL);
 	epicsTools.monitor(monPV);
 	epicsTools.put(setPV, 10.0);
 	epicsTools.put(powerPV, 1);
-	boost::this_thread::sleep_for(boost::chrono::milliseconds(5000));
 	Listener& monitor = epicsTools.getMonitor(monPV);
-	for (auto& item : monitor.currentBuffer)
+	if (monitor.isConnected())
 	{
-		BOOST_CHECK_NE(boost::get<double>(item), GlobalConstants::double_min);
+		for (auto& item : monitor.currentBuffer)
+		{
+			double val = boost::get<double>(item.second);
+			BOOST_CHECK_NE(val, GlobalConstants::double_min);
+		}
 	}
+
 }
 
 BOOST_AUTO_TEST_CASE(epics_tools_putter_test)
@@ -115,7 +119,7 @@ BOOST_AUTO_TEST_CASE(epics_tools_getter_test)
 BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 {
 	const std::string pv = "CLA-L01-LRF-CTRL-01:vm:phase:pid.SCAN";
-	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
 	ET.monitor(pv);
 	Listener pid_scan = ET.getMonitor(pv);
 	if (pid_scan.isConnected())
@@ -124,5 +128,49 @@ BOOST_AUTO_TEST_CASE(get_pid_scan_pv_test)
 		auto val = pid_scan.getValue<unsigned short>();
 	}
 }
+
+
+BOOST_AUTO_TEST_CASE(get_dc_array_with_buffer_test)
+{
+	const std::string pv = "CLA-C09-IOC-CS-04:FMC_1_ADC_0_READ";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener& mon = ET.getMonitor(pv);
+	if (mon.isConnected())
+	{
+		auto arrayVal = mon.getArrayBuffer<long>();
+		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
+	}
+
+}
+
+BOOST_AUTO_TEST_CASE(get_bam_array_with_buffer_test)
+{
+	const std::string pv = "BAM-TEST-DAQ:DATA2";
+	EPICSTools ET = EPICSTools(STATE::PHYSICAL);
+	ET.monitor(pv);
+	Listener& mon = ET.getMonitor(pv);
+	if (mon.isConnected())
+	{
+		auto arrayVal = mon.getArrayBuffer<short>();
+		BOOST_CHECK_EQUAL(arrayVal.capacity(), DEFAULT_BUFFER_SIZE);
+	}
+
+}
+
+BOOST_AUTO_TEST_CASE(get_timestamped_enum_value_test)
+{
+	const std::string pv = "CLA-C2V-MAG-HCOR-01:RPOWER";
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
+	std::pair<std::string, unsigned short> vl = ET.getTimestampedValue<unsigned short>(pv);
+}
+
+BOOST_AUTO_TEST_CASE(get_timestamped_double_vector_test)
+{
+	const std::string pv = "CLA-GUN-LRF-CTRL-01:app:time_vector";
+	EPICSTools ET = EPICSTools(STATE::VIRTUAL);
+	std::pair<epicsTimeStamp, std::vector<double>> vl = ET.getTimestampedArray<double>(pv);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

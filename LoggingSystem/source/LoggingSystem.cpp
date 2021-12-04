@@ -15,6 +15,7 @@
 #define TIME_DATE_BUFFER_SIZE 80
 #endif // TIME_DATE_BUFFER_SIZE
 std::ostringstream Caching::cache;
+bool LoggingSystem::silent;
 
 LoggingSystem::LoggingSystem(bool debugState, bool messageState){
     debugOn = debugState;
@@ -24,6 +25,7 @@ LoggingSystem::LoggingSystem(const LoggingSystem& messenger)
 {
 	debugOn = messenger.debugOn;
 	messageOn = messenger.messageOn;
+	silent = messenger.silent;
 }
 
 void LoggingSystem::dumpToFile(std::string filename)

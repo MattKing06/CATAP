@@ -5,8 +5,8 @@ controls_information:
     READI: EBT-BA1-MAG-HCOR-03:READI
     RILK: EBT-INJ-MAG-HVCOR-01:RILK
     RPOWER: EBT-INJ-MAG-HVCOR-01:RPOWER
-    SETI: EBT-BA1-MAG-HCOR-03:SETI
     SPOWER: EBT-INJ-MAG-HVCOR-01:SPOWER
+    SETI: EBT-BA1-MAG-HCOR-03:SETI
     ILK_RESET: EBT-INJ-MAG-HVCOR-01:Rst
     K_DIP_P:    EBT-BA1-MAG-HCOR-03:K_DIP_P
     INT_STR_MM: EBT-BA1-MAG-HCOR-03:INT_STR_MM
@@ -14,12 +14,12 @@ controls_information:
     K_SET_P:    EBT-BA1-MAG-HCOR-03:K_SET_P
     K_ANG:      EBT-BA1-MAG-HCOR-03:K_ANG
     K_MRAD:     EBT-BA1-MAG-HCOR-03:K_MRAD
-    #K_VAL:      EBT-BA1-MAG-HCOR-03:K_VAL
+    K_VAL:      EBT-BA1-MAG-HCOR-03:K_VAL
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER, K_DIP_P, INT_STR_MM, INT_STR, K_SET_P, K_ANG, K_MRAD
   #, K_VAL
 properties:
   degauss_tolerance: 0.1
-  degauss_values: "7.0,-7.0,4.5,-4.5,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  degauss_values: "3.0,-3.0,2.5,-2.5,2.0,-2.0,1.0,-1.0,0.5,-0.5,0.0"
   field_integral_coefficients: "0.0,0.0"
   hardware_type: Magnet
   machine_area: BA1

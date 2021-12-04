@@ -25,14 +25,15 @@ BPM Class
 .. automodule:: BPM
    :members: BPM
    :undoc-members:
-   
+
 
 ===========================
 Camera Class
 ===========================
 .. automodule:: Camera
    :members: Camera
-   :undoc-members:
+   :no-undoc-members:
+
    
 
 ===========================

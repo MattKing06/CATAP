@@ -828,17 +828,17 @@ void Camera::setPVStructs()
 			if (mode == STATE::VIRTUAL)
 			{
 				pvStructs[record].fullPVName = "VM-" + PV;
-				std::cout << "Virtual Camera PV " + pvStructs[record].fullPVName << std::endl;
+				messenger.printDebugMessage("Virtual Camera PV ", pvStructs[record].fullPVName);
 			}
 			else
 			{
 				pvStructs[record].fullPVName = PV;
-				std::cout << "Physical Camera PV " + pvStructs[record].fullPVName << std::endl;
+				messenger.printDebugMessage("Physical Camera PV ", pvStructs[record].fullPVName);
 			}
 		}
 		else
 		{
-			std::cout << "Can't find record = " << record << std::endl;
+			messenger.printDebugMessage("Can't find record = ", record);
 		}
 	}
 }

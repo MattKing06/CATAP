@@ -10,8 +10,8 @@ controls_information:
     SPOWER: EBT-BA1-MAG-DIP-01:SPOWER
   records: RILK, SETI, GETSETI, READI, SPOWER, RPOWER
 properties:
-  degauss_tolerance: 0.1
-  degauss_values: "0.0"
+  degauss_tolerance: 0.5
+  degauss_values: "60.0,-60.0,40.0,-40.0,25.0,-25.0,10.0,-10.0,5.0,-5.0"
   field_integral_coefficients: "0.000"
   hardware_type: Magnet
   machine_area: BA1
@@ -26,4 +26,4 @@ properties:
   ri_tolerance: 0.01
   serial_number: XXXXXX
   min_i : -100.0
-  max_i : 50.0
+  max_i : 65.0
