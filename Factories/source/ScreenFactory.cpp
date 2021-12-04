@@ -196,8 +196,6 @@ bool ScreenFactory::setup(const std::string& VERSION)
 			else
 			{
 				messenger.printMessage(screen.first, " CANNOT CONNECT TO EPICS");
-				hasBeenSetup = false;
-				return hasBeenSetup;
 			}
 		}
 	}

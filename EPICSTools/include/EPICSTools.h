@@ -70,11 +70,11 @@ public:
 	/*! Get the current buffer of single values from Listener as a python list 
 		@param[in] pv : The name of the Listener object
 		@param[out] buffer : The current value buffer from Listener*/
-	boost::python::list getBuffer_Py(const std::string& pv);
+	boost::python::dict getBuffer_Py(const std::string& pv);
 	/*! Get the current buffer of array values from Listener as a python list
 		@param[in] pv : The name of the Listener object
 		@param[out] buffer : The current array buffer from Listener*/
-	boost::python::list getArrayBuffer_Py(const std::string& pv);
+	boost::python::dict getArrayBuffer_Py(const std::string& pv);
 	/*! Get multiple value buffers from Listener objects as a python dict
 		@param[in] pvList : The names of the Listener objects
 		@param[out] buffer dict : key = PV name, value = buffer*/
@@ -95,12 +95,20 @@ public:
 		@param[in] pvList : list of Listener names
 		@param[out] averages dict : key = PV, value = mean averages for buffer */
 	boost::python::dict getBufferAverage_Py(boost::python::list pvList);
+	boost::python::dict getTimestampedValues_Py(const boost::python::list);
 	/*! Calls ca_get from Getter object in getterMap, if there is no entry for the pv in getterMap;
 		a Getter object is created and get is called from that object.
 		@param[in] pv : The name of the PV to ca_get
 		@param[out] value : The value returned from EPICS using ca_get*/
 	template <typename T>
 	T get(const std::string& pv);
+
+	boost::python::dict getTimestampedValue_Py(const std::string& pv);
+	template<typename T>
+	std::pair<std::string, T> getTimestampedValue(const std::string& pv);
+	template<typename T>
+	std::pair<epicsTimeStamp, std::vector<T> > getTimestampedArray(const std::string& pv);
+	boost::python::dict getTimestampedArray_Py(const std::string& pv);
 	/*! Calls ca_put from Putter object in putterMap, if there is no entry for the pv in putterMap;
 		a Putter object is created and put is called from that object.
 		@param[in] pv : The name of the PV to ca_put
@@ -174,8 +182,36 @@ inline T EPICSTools::get(const std::string& pv)
 	}
 	else
 	{
-		getterMap[pv] = Getter(pv);
+		getterMap[pv] = Getter(pv, mode);
 		return getterMap[pv].getValue<T>();
+	}
+}
+
+template<typename T>
+inline std::pair<std::string, T> EPICSTools::getTimestampedValue(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getTimestampedValue<T>();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv, mode);
+		return getterMap[pv].getTimestampedValue<T>();
+	}
+}
+
+template<typename T>
+inline std::pair<epicsTimeStamp, std::vector<T>> EPICSTools::getTimestampedArray(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getTimestampedArray<T>();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv, mode);
+		return getterMap[pv].getTimestampedArray<T>();
 	}
 }
 
@@ -188,7 +224,7 @@ inline void EPICSTools::put(const std::string& pv, T value)
 	}
 	else
 	{
-		putterMap[pv] = Putter(pv);
+		putterMap[pv] = Putter(pv, mode);
 		putterMap[pv].put<T>(value);
 	}
 }

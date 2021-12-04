@@ -6,6 +6,7 @@
 
 BOOST_PYTHON_MODULE(_Camera)
 {
+
 	boost::python::docstring_options CATAP_docstring_options;//(true, true, false);
 	CATAP_docstring_options.enable_all();
 	CATAP_docstring_options.disable_cpp_signatures();

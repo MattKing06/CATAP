@@ -19,7 +19,7 @@ controls_information:
   #, K_VAL
 properties:
   degauss_tolerance: 0.1
-  degauss_values: "7.0,-7.0,4.5,-4.5,3.0,-3.0,2.0,-2.0,1.0,-1.0,0.0"
+  degauss_values: "3.0,-3.0,2.5,-2.5,2.0,-2.0,1.0,-1.0,0.5,-0.5,0.0"
   field_integral_coefficients: "0.0,0.0"
   hardware_type: Magnet
   machine_area: BA1

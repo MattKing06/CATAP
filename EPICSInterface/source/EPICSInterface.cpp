@@ -168,7 +168,6 @@ void EPICSInterface::retrieveCHID(pvStruct &pvStruct) const // createChannel is 
 		messenger.printDebugMessage("ca_create_channel to  ", pv);
 		status = ca_create_channel(pv.c_str(), NULL, NULL, CA_PRIORITY_DEFAULT, &pvStruct.CHID);
 		messenger.printDebugMessage("ca_create_channel to  ", pv, " = ", status);
-		
 		//std::cout << "MY_SEVCHK " << std::endl;
 		
 		//SEVCHK(status, "ca_create_channel");
@@ -367,6 +366,20 @@ void EPICSInterface::updateTimeStampDoubleVectorPair(const struct event_handler_
 	pairToUpdate.second = vec;
 }
 
+void EPICSInterface::updateTimeStampShortVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<short>>& pairToUpdate, long size)
+{
+	const struct dbr_time_short* tv = (const struct dbr_time_short*)(args.dbr);
+	pairToUpdate.first = tv->stamp;
+	std::vector<short> vec(size);
+	int i = 0;
+	for (auto&& it : vec)
+	{
+		vec[i] = *(&tv->value + i);
+		i++;
+	}
+	pairToUpdate.second = vec;
+}
+
 void EPICSInterface::updateTimeStampIntegerVectorPair(const event_handler_args& args, std::pair<epicsTimeStamp, std::vector<int>>& pairToUpdate, long size)
 {
 	const struct dbr_time_long* tv = (const struct dbr_time_long*)(args.dbr);
@@ -547,8 +560,9 @@ std::pair < epicsTimeStamp, std::string > EPICSInterface::getTimeStampStringPair
 	std::pair < epicsTimeStamp, std::string > r;
 	const struct dbr_time_string* tv = (const struct dbr_time_string*)(args.dbr);
 	r.first = tv->stamp;
-	r.second = std::string((const char*)tv->value, 40); // MAGIC NUMBER ! 
+	r.second = std::string((const char*)tv->value, MAX_STRING_SIZE); // MAGIC NUMBER !
 	GlobalFunctions::rtrim(r.second);
+	r.second.erase(r.second.find('\0'));
 	return r;
 }
 std::pair < epicsTimeStamp, long > EPICSInterface::getTimeStampLongPair(const struct event_handler_args& args)
@@ -722,21 +736,19 @@ std::vector<std::string> EPICSInterface::returnValueFromArgsAsStringVector(const
 
 bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count, void* pointer_to_dbr_type) const
 {
-	std::cout << "getArrayUserCount, count = " << count << std::endl;
-	std::cout << "ECA_NORMAL check  " << ECA_NORMAL << std::endl;
 		
 	if (ca_state(pvStruct.CHID) == cs_conn)
 	{
-		std::cout << "ca_state(pvStruct.CHID) == cs_conn " << std::endl;
+		messenger.printDebugMessage("ca_state(pvStruct.CHID) == cs_conn ");
 		int status = ca_array_get(pvStruct.CHTYPE, count, pvStruct.CHID, pointer_to_dbr_type);
-		std::cout << "ca_array_get complete status =  " << status << std::endl;
+		messenger.printDebugMessage("ca_array_get complete status =  ", status);
 		MY_SEVCHK(status);
 		if ( status == ECA_NORMAL)
 		{
-			std::cout << "status == ECA_NORMAL " << std::endl;
+			messenger.printDebugMessage("status == ECA_NORMAL ");
 			//int status2 = ca_pend_io(CA_PEND_IO_TIMEOUT);
 			int status2 = ca_flush_io();
-			std::cout << "ca_flush_io complete, status = " << status2 << std::endl;
+			messenger.printDebugMessage("ca_flush_io complete, status = ", status2);
 			MY_SEVCHK(status2);
 			if (status2 == ECA_NORMAL)
 			{
@@ -745,7 +757,7 @@ bool EPICSInterface::getArrayUserCount(const pvStruct& pvStruct, unsigned count,
 		}
 		else
 		{
-			std::cout << "ca_array_get did not return  ECA_NORMAL " << std::endl;
+			messenger.printDebugMessage("ca_array_get did not return  ECA_NORMAL ");
 		}
 
 	}

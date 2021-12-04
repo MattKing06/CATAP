@@ -60,7 +60,7 @@ boost::python::list EPICSTools::getAllMonitorNames_Py()
 	return listenerNames;
 }
 
-boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
+boost::python::dict EPICSTools::getBuffer_Py(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(listenerMap, pv))
 	{
@@ -73,7 +73,7 @@ boost::python::list EPICSTools::getBuffer_Py(const std::string& pv)
 	}
 }
 
-boost::python::list EPICSTools::getArrayBuffer_Py(const std::string& pv)
+boost::python::dict EPICSTools::getArrayBuffer_Py(const std::string& pv)
 {
 	if (GlobalFunctions::entryExists(listenerMap, pv))
 	{
@@ -84,7 +84,7 @@ boost::python::list EPICSTools::getArrayBuffer_Py(const std::string& pv)
 boost::python::dict EPICSTools::getBuffer_Py(boost::python::list pvList)
 {
 	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
-	std::map<std::string, boost::python::list> pvBufferMap;
+	std::map<std::string, boost::python::dict> pvBufferMap;
 	for (auto& pv : namesVec)
 	{
 		pvBufferMap[pv] = getBuffer_Py(pv);
@@ -145,6 +145,52 @@ boost::python::dict EPICSTools::getBufferAverage_Py(boost::python::list pvList)
 		pvBufferAverageMap[pv] = getBufferAverage_Py(pv);
 	}
 	return to_py_dict(pvBufferAverageMap);
+}
+
+boost::python::dict EPICSTools::getTimestampedValues_Py(const boost::python::list pvList)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(pvList);
+	std::map<std::string, boost::python::dict> pvTimestampValueMap;
+	for (auto& pv : namesVec)
+	{
+		if (GlobalFunctions::entryExists(getterMap, pv))
+		{
+			pvTimestampValueMap[pv] = getTimestampedValue_Py(pv);
+		}
+		else
+		{
+			pvTimestampValueMap[pv] = getTimestampedValue_Py(pv);
+		}
+	}
+	return to_py_dict(pvTimestampValueMap);
+}
+
+boost::python::dict EPICSTools::getTimestampedValue_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getTimestampedValue_Py();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv, mode);
+		EPICSInterface::sendToEPICS();
+		return getterMap[pv].getTimestampedValue_Py();
+	}
+}
+
+boost::python::dict EPICSTools::getTimestampedArray_Py(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		return getterMap[pv].getTimestampedArray_Py();
+	}
+	else
+	{
+		getterMap[pv] = Getter(pv, mode);
+		EPICSInterface::sendToEPICS();
+		return getterMap[pv].getTimestampedArray_Py();
+	}
 }
 
 bool EPICSTools::monitor(const std::string& pv)
@@ -461,9 +507,7 @@ boost::python::list EPICSTools::getArray_Py(const std::string& pv)
 	}
 	else
 	{
-		std::cout << "creating getter for: " << pv << std::endl;
 		getterMap[pv] = Getter(pv, mode);
-		std::cout << "created getter" << std::endl;
 		return getterMap[pv].getArray_Py();
 	}
 }

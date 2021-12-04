@@ -21,10 +21,17 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getArray", &Listener::getArray_Py, boost::python::arg("self"), "get current array of the monitor")
 			.def("setBufferSize", &Listener::setBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the buffer (default size is 10)")
 			.def("setArrayBufferSize", &Listener::setArrayBufferSize, boost::python::arg("self"), boost::python::arg("size"), "set the size of the array buffer (default size is 10)")
+			.def("getArrayBufferCapacity", &Listener::getArrayBufferCapacity)
+			.def("getArrayBufferSize", &Listener::getArrayBufferSize)
+			.def("getBufferCapacity", &Listener::getBufferCapacity)
+			.def("getBufferSize", &Listener::getBufferSize)
 			.def("getBuffer", &Listener::getBuffer_Py, boost::python::arg("self"), "get the buffer of past values from EPICS")
 			.def("getBufferAverage", &Listener::getBufferAverage, boost::python::arg("self"), "get the mean of the values in buffer")
 			.def("getBufferStdDev", &Listener::getBufferStdDeviation, boost::python::args("self"), "get the standard deviation of the values in buffer")
 			.def("getArrayBuffer", &Listener::getArrayBuffer_Py, boost::python::arg("self"), "get the buffer of past arrays from EPICS")
+			.def("getArrayAverage", &Listener::getArrayAverage_Py, boost::python::arg("self"), " get the mean average of the values in current array")
+			.def("clearBuffer", &Listener::clearBuffer, boost::python::arg("self"), " clear the current buffer for single-valued PVs")
+			.def("clearArrayBuffer", &Listener::clearArrayBuffer, boost::python::arg("self"), " clears the current buffer for array-type PVs")
 			.def("getArrayBufferAverage", &Listener::getArrayBufferAverageArray_Py, boost::python::arg("self"), "get the mean array of arrays in buffer");
 
 	}
@@ -33,9 +40,11 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		bool(EPICSTools:: * monitor_single)(const std::string&) = &EPICSTools::monitor;
 		boost::python::object(EPICSTools:: * get_single)(const std::string&) = &EPICSTools::get_Py;
 		boost::python::dict(EPICSTools:: * get_multiple)(boost::python::list) = &EPICSTools::get_Py;
+		boost::python::dict(EPICSTools:: * get_timestamp_multiple)(boost::python::list) = &EPICSTools::getTimestampedValues_Py;
+		boost::python::dict(EPICSTools:: * get_timestamp_single)(const std::string&) = &EPICSTools::getTimestampedValue_Py;
 		void(EPICSTools:: * put_single)(const std::string&, boost::python::object) = &EPICSTools::put_Py;
 		void(EPICSTools:: * put_multiple)(boost::python::dict) = &EPICSTools::put_Py;
-		boost::python::list(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
+		boost::python::dict(EPICSTools:: * getBuffer_single)(const std::string&) = &EPICSTools::getBuffer_Py;
 		boost::python::dict(EPICSTools:: * getBuffer_multiple)(boost::python::list) = &EPICSTools::getBuffer_Py;
 		double(EPICSTools:: * getBufferAverage_single)(const std::string&) = &EPICSTools::getBufferAverage_Py;
 		boost::python::dict(EPICSTools:: * getBufferAverage_multiple)(boost::python::list) = &EPICSTools::getBufferAverage_Py;
@@ -54,6 +63,9 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 			.def("getAllMonitorNames", &EPICSTools::getAllMonitorNames_Py)
 			.def("get", get_single)
 			.def("get", get_multiple)
+			.def("getTimestamped", get_timestamp_single)
+			.def("getTimestamped", get_timestamp_multiple)
+			.def("getArrayTimestamped", &EPICSTools::getTimestampedArray_Py)
 			.def("getArray", &EPICSTools::getArray_Py)
 			.def("getArray", &EPICSTools::getArray_Py2)
 			.def("put", put_single)

@@ -43,7 +43,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in
                @ONLY)
 
 add_custom_target(CATAPPyDocs ALL
-${SPHINX_EXECUTABLE} -q -b html -c ${BINARY_BUILD_DIR} -d ${SPHINX_CACHE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SPHINX_HTML_DIR} COMMENT "Building HTML docs with Sphinx")
+${SPHINX_EXECUTABLE} -vvv -E -b html -c ${BINARY_BUILD_DIR} -d ${SPHINX_CACHE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SPHINX_HTML_DIR} COMMENT "Building HTML docs with Sphinx")
 message("LIB NAMES: ${LIBNAMES}")
 add_dependencies(CATAPPyDocs ${LIBNAMES})
 

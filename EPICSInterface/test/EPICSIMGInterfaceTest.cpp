@@ -44,6 +44,7 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	getPPV.pvRecord = "P";
 	getPPV.monitor = true;
 	epicsInterface.retrieveCHID(getPPV);
+	EPICSInterface::sendToEPICS();
 	epicsInterface.retrieveCHTYPE(getPPV);
 	epicsInterface.retrieveCOUNT(getPPV);
 
@@ -52,13 +53,14 @@ BOOST_AUTO_TEST_CASE(epics_img_interface_monitor_channel_type_test)
 	getStaPV.pvRecord = "STA";
 	getStaPV.monitor = true;
 	epicsInterface.retrieveCHID(getStaPV);
+	EPICSInterface::sendToEPICS();
 	epicsInterface.retrieveCHTYPE(getStaPV);
 	epicsInterface.retrieveCOUNT(getStaPV);
 
 	if (ca_state(getStaPV.CHID) == cs_conn && ca_state(getPPV.CHID) == cs_conn)
 	{
 		BOOST_CHECK_EQUAL(getPPV.monitorCHTYPE, DBR_TIME_DOUBLE);
-		BOOST_CHECK_EQUAL(getStaPV.monitorCHTYPE, DBR_TIME_DOUBLE);
+		BOOST_CHECK_EQUAL(getStaPV.monitorCHTYPE, DBR_TIME_ENUM);
 	}
 	else
 	{

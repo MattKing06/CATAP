@@ -38,6 +38,7 @@ public:
 	bool isDebugOn() const;
 	//static std::ostringstream cache;
 	static void dumpToFile(std::string filename);
+	static bool silent;
 	std::string getCurrentDateAndTimeString() const;
 
 	template<typename... Args>
@@ -46,11 +47,11 @@ public:
 		std::ostringstream oss;
 		generateStringStream(oss, args...);
 		std::ios::sync_with_stdio(true);
-		if (messageOn)
+		if (messageOn && !silent)
 		{
 			fprintf(stdout, "%s %s %s \n", getCurrentDateAndTimeString().c_str(), MESSAGE, oss.str().c_str());
 		}
-		Caching::cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
+		//Caching::cache << getCurrentDateAndTimeString().c_str() << MESSAGE << oss.str().c_str() << std::endl;
 	}
 
 	template<typename... Args>
@@ -59,11 +60,11 @@ public:
 		std::ostringstream oss;
 		generateStringStream(oss, args...);
 		std::ios::sync_with_stdio(true);
-		if (debugOn)
+		if (debugOn && !silent)
 		{
 			fprintf(stdout, "%s %s %s\n", getCurrentDateAndTimeString().c_str(), DEBUG, oss.str().c_str());
 		}
-		Caching::cache << getCurrentDateAndTimeString().c_str() << DEBUG << " " << oss.str().c_str() << std::endl;
+		//Caching::cache << getCurrentDateAndTimeString().c_str() << DEBUG << " " << oss.str().c_str() << std::endl;
 	}
 private:
 	template<typename T>

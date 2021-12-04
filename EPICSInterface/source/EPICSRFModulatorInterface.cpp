@@ -28,10 +28,48 @@ void EPICSRFModulatorInterface::retrieveUpdateFunctionForRecord(const pvStruct& 
 }
 
 
-void EPICSRFModulatorInterface::update_HOLD_RF_ON()
+void EPICSRFModulatorInterface::update_HOLD_RF_ON(const struct event_handler_args args)
 {
+	RFModulator* recastMod = getHardwareFromArgs<RFModulator>(args);
+	std::pair<epicsTimeStamp, unsigned short> r = getTimeStampEnumPair(args);
+	recastMod->holdRFOn.first = r.first;
+	switch (r.second)
+	{
+	case 0:
+		recastMod->holdRFOn.second = STATE::MANUAL_OPERATION;
+		break;
+	case 1:
+		recastMod->holdRFOn.second = STATE::HOLD_RF_ON;
+		break;
+	case 2:
+		recastMod->holdRFOn.second = STATE::HOLD_RF_ON_CON;
+		break;
+	default:
+		recastMod->holdRFOn.second = STATE::UNKNOWN;
+		break;
+	}
+}
+
+void EPICSRFModulatorInterface::setHoldRFOnState(pvStruct pv, STATE newState) const
+{
+	switch (newState)
+	{
+	case STATE::MANUAL_OPERATION:
+		putValue<unsigned short>(pv, 0);
+		break;
+	case STATE::HOLD_RF_ON:
+		putValue<unsigned short>(pv, 1);
+		break;
+	case STATE::HOLD_RF_ON_CON:
+		putValue<unsigned short>(pv, 2);
+		break;
+	default:
+		messenger.printMessage("Unidentified state: ", ENUM_TO_STRING(newState), " for HOLD_RF_ON. Not Setting.");
+		break;
+	}
 
 }
+
 // GUN void
 //void EPICSRFModulatorInterface::update_GUN_MOD_RESET(const struct event_handler_args args)
 //void EPICSRFModulatorInterface::update_GUN_MOD_STATE_SET(const struct event_handler_args args)
@@ -61,6 +99,34 @@ void EPICSRFModulatorInterface::update_GUN_MOD_STATE_SET_READ(const struct event
 	}
 	mod->main_state_set_read_string.second = ENUM_TO_STRING(mod->main_state_set_read.second);
 }
+
+void EPICSRFModulatorInterface::update_L01_MOD_STATE_SET_READ(const struct event_handler_args args)
+{
+	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
+	std::pair<epicsTimeStamp, unsigned short > r = getTimeStampEnumPair(args);
+	mod->main_state_set_read_string.first = r.first;
+	mod->main_state_set_read.first = r.first;
+	switch (r.second)
+	{
+	case 0:
+		mod->main_state_set_read.second = STATE::OFF;
+		break;
+	case 1:
+		mod->main_state_set_read.second = STATE::STANDBY;
+		break;
+	case 2:
+		mod->main_state_set_read.second = STATE::HV_ON;
+		break;
+	case 3:
+		mod->main_state_set_read.second = STATE::RF_ON;
+		break;
+	default:
+		mod->main_state_set_read.second = STATE::UNKNOWN;
+		break;
+	}
+	mod->main_state_set_read_string.second = ENUM_TO_STRING(mod->main_state_set_read.second);
+}
+
 void EPICSRFModulatorInterface::update_GUN_MOD_MAIN_STATE_READ(const struct event_handler_args args)
 {
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
@@ -175,9 +241,11 @@ void EPICSRFModulatorInterface::update_GUN_MOD_ILOCK5(const struct event_handler
 }
 void EPICSRFModulatorInterface::update_GUN_MOD_WARMUPT(const struct event_handler_args args)
 {
-	//messenger.printMessage("update_GUN_MOD_WARMUPT");
 	RFModulator* mod = getHardwareFromArgs<RFModulator>(args);
-	mod->updateRemainingWarmUpTime(getTimeStampLongPair(args));
+	// COMES BACK FROM EPICS AS A LONG, BUT L01 COMES BACK AS DOUBLE...
+	auto updatePair = getTimeStampLongPair(args);
+	mod->updateLowLevelDouble(RFModulatorRecords::GUN_MOD_WARMUPT, updatePair);
+	mod->updateRemainingWarmUpTime(updatePair);
 }
 void EPICSRFModulatorInterface::update_GUN_MOD_MAGPS1_CURR_READ(const struct event_handler_args args)
 {
@@ -339,6 +407,13 @@ void EPICSRFModulatorInterface::update_SYSTEM_STATE_READ(const struct event_hand
 	}
 	//messenger.printMessage(mod->getHardwareName(), " state changed to ", ENUM_TO_STRING(mod->main_state.second));
 }
+void EPICSRFModulatorInterface::update_L01_MOD_WARMUPT(const event_handler_args args)
+{
+	RFModulator* recastMod = getHardwareFromArgs<RFModulator>(args);
+	auto updatePair = getTimeStampDoublePair(args);
+	recastMod->updateRemainingWarmUpTime(updatePair);
+	recastMod->updateLowLevelDouble(RFModulatorRecords::L01_MOD_WARMUPT, updatePair);
+}
 void EPICSRFModulatorInterface::update_L01_FAULT(const struct event_handler_args args) 
 {
 	//messenger.printMessage("update_SYSTEM_STATE_READ");
@@ -350,12 +425,12 @@ void EPICSRFModulatorInterface::update_L01_FAULT(const struct event_handler_args
 	{
 	case 0:
 		mod ->error_state = STATE::GOOD;
-		//message("l01_fault = 0 = NO_FAULT");
+		messenger.printDebugMessage("l01_fault = 0 = NO_FAULT:::", mod->error_state);
 		break;
 	case 1:
 		//message("l01_fault = 1 = FAULT ");
 		mod->error_state = STATE::BAD;
-		//l01Mod.l01_fault = rfModStructs::L01_MOD_STATE::NO_FAULT;
+		messenger.printDebugMessage("l01_fault = 1 = FAULT:::", mod->error_state);
 		break;
 	case 2:
 		messenger.printMessage(mod->getHardwareName(), " l01_fault  = 2");

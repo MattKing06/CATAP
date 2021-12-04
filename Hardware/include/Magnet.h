@@ -371,8 +371,6 @@ class Magnet : public Hardware
 		double RI_tolerance;
 	
 
-
-
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;
 	/*! path to measurment data, defined in the master lattice yaml file  */

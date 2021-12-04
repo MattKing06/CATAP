@@ -119,6 +119,22 @@ doxygen:
   stage: doxygen
   tags:
     - linux
+    
+doxygen_dev:
+  image: mattkingastec/catapenv:1.0 
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  script:
+  - cd build
+  - ( cat ./Docs/cppdocs/Doxyfile.CATAPDocs ; echo "QUIET=YES" ) | doxygen -
+  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp_Dev
+  only:
+    - MCR_DEVELOPMENT_BRANCH
+  stage: doxygen
+  tags:
+    - linux
 
 sphinx: 
   image: mattkingastec/catapenv:1.0
@@ -131,6 +147,21 @@ sphinx:
   script: 
     - "cd build"
     - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy"
+  stage: sphinx
+  tags:
+    - linux
+
+sphinx_dev: 
+  image: mattkingastec/catapenv:1.0
+  cache: 
+    key: "${CI_COMMIT_SHORT_SHA}"
+    paths: 
+      - build/*
+  only: 
+    - MCR_DEVELOPMENT_BRANCH
+  script: 
+    - "cd build"
+    - "scp -r ./Docs/pydocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPpy_Dev"
   stage: sphinx
   tags:
     - linux

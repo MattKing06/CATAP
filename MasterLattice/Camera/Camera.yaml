@@ -235,3 +235,13 @@ properties:
     MAX_Y_PIXEL_POS : 2000.0 #; these are used to decide if the beam is close to the edge
     HAS_LED : FALSE # so far only the virtual cathode needs this flag 
 
+    
+    MAX_BIT_DEPTH : 12
+    # meh, is this a good way to def orientation? 
+    # ALSWAYS assume image is chuncked in the X direction Y times
+    ARRAY_DATA_NUM_PIX_X : 1392 #; array data passed through EPICS
+    ARRAY_DATA_NUM_PIX_Y : 1040 #; array data passed through EPICS
+    # THEN we rotate the image and mirror it 
+    IMAGE_ROTATION : 0 # could be 0, 90, 180, 270
+    IMAGE_FLIP_UD : false
+    IMAGE_FLIP_LR : false
