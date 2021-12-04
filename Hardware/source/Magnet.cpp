@@ -16,6 +16,17 @@
 //const std::map<std::string, TYPE> Magnet::magnet_string_to_type_map = Magnet::create_map();
 
 
+//std::string Magnet::getRPOWERpv()const
+//{
+//	return pvStructs.at(MagnetRecords::RPOWER).fullPVName;
+//}
+//std::string Magnet::getSETIpv()const
+//{
+//	return pvStructs.at(MagnetRecords::SETI).fullPVName;
+//}
+//
+
+
 Degauss::Degauss() :
 	magnet(nullptr),
 	degauss_thread(nullptr),
@@ -32,16 +43,16 @@ Magnet::Magnet(const std::map<std::string, std::string>& paramsMap, STATE mode) 
 	Hardware(paramsMap, mode),
 	epicsInterface(boost::make_shared<EPICSMagnetInterface>(EPICSMagnetInterface())), // calls copy constructor and destroys 
 	// Assumes all these find succeed ? 
-	manufacturer(paramsMap.find("manufacturer")->second),
-	serial_number(paramsMap.find("serial_number")->second.data()),
+	manufacturer(paramsMap.at("manufacturer")),
+	serial_number(paramsMap.at("serial_number")),
 	//mag_type(paramsMap.find("mag_type")->second),
-	RI_tolerance(std::stof(paramsMap.find("ri_tolerance")->second)),
-	numberOfDegaussSteps(std::stoi(paramsMap.find("num_degauss_steps")->second)),
-	degaussTolerance(std::stof(paramsMap.find("degauss_tolerance")->second)),
-	magnetic_length(std::stof(paramsMap.find("magnetic_length")->second)),
-	min_i(std::stof(paramsMap.find("min_i")->second)),
-	max_i(std::stof(paramsMap.find("max_i")->second)),
-	position(std::stof(paramsMap.find("position")->second)),
+	RI_tolerance(std::stof(paramsMap.at("ri_tolerance"))),
+	numberOfDegaussSteps(std::stoi(paramsMap.at("num_degauss_steps"))),
+	degaussTolerance(std::stof(paramsMap.at("degauss_tolerance"))),
+	magnetic_length(std::stof(paramsMap.at("magnetic_length"))),
+	min_i(std::stof(paramsMap.at("min_i"))),
+	max_i(std::stof(paramsMap.at("max_i"))),
+	position(std::stof(paramsMap.at("position"))),
 	GETSETI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	READI(std::make_pair(epicsTimeStamp(), GlobalConstants::double_min)),
 	psu_state(std::make_pair(epicsTimeStamp(), STATE::UNKNOWN_STATE)),
@@ -163,6 +174,22 @@ void Magnet::setPVStructs()
 }
 
 
+std::string Magnet::getSETIpv()const
+{
+	if(GlobalFunctions::entryExists(pvStructs, MagnetRecords::SETI))
+	{
+		return pvStructs.at(MagnetRecords::SETI).fullPVName;
+	}
+	return GlobalConstants::UNKNOWN;
+}
+std::string Magnet::getRPOWERpv()const
+{
+	if (GlobalFunctions::entryExists(pvStructs, MagnetRecords::RPOWER))
+	{
+		return pvStructs.at(MagnetRecords::RPOWER).fullPVName;
+	}
+	return GlobalConstants::UNKNOWN;
+}
 
 size_t Magnet::getNumberOfDegaussSteps() const
 {
@@ -224,29 +251,53 @@ bool Magnet::isDegaussing()const
 	return is_degaussing;
 }
 
-bool Magnet::degauss(double set_value_after_degauss)
-{
-	return 	degauss(degaussValues, set_value_after_degauss);
-}
 
-bool Magnet::degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss)
-{
-	return degauss(to_std_vector<double>(custum_degauss_values), set_value_after_degauss);
-}
+
+
+
+
+
 bool Magnet::degauss(const bool reset_to_zero)
 {
 	if (reset_to_zero)
 	{
-		return 	degauss(degaussValues, GlobalConstants::zero_double);
+		return degauss(degaussValues, GlobalConstants::zero_double, true);
 	}
 	else
 	{
-		return 	degauss(degaussValues, GETSETI.second);
+		return degauss(degaussValues, GETSETI.second, true);
 	}
+}
+bool Magnet::degauss(double set_value_after_degauss)
+{
+	return 	degauss(degaussValues, set_value_after_degauss, true);
+}
+bool Magnet::degauss(bool reset_to_zero, bool do_zero_step)
+{
+	if (reset_to_zero)
+	{
+		return degauss(degaussValues, GlobalConstants::zero_double, do_zero_step);
+	}
+	else
+	{
+		return degauss(degaussValues, GETSETI.second, do_zero_step);
+	}
+}
+
+
+bool Magnet::degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss)
+{
+	return degauss(to_std_vector<double>(custum_degauss_values), set_value_after_degauss, true);
 }
 
 bool Magnet::degauss(const std::vector<double>& degauss_values, double set_value_after_degauss)
 {
+	return degauss(degauss_values, set_value_after_degauss, true);
+}
+
+bool Magnet::degauss(const std::vector<double>& degauss_values, double set_value_after_degauss, bool do_zero_step)
+{
+
 	if (is_degaussing)
 	{
 
@@ -265,6 +316,7 @@ bool Magnet::degauss(const std::vector<double>& degauss_values, double set_value
 		is_degaussing = true;
 		degausser.degauss_values = degauss_values;
 		degausser.current_step = GlobalConstants::zero_sizet;
+		degausser.do_zero_step = do_zero_step;
 		//degausser.resetToZero = reset_to_zero;
 		degausser.set_value_after_degauss = set_value_after_degauss;
 		degausser.degaussTolerance = degaussTolerance;
@@ -277,104 +329,70 @@ bool Magnet::degauss(const std::vector<double>& degauss_values, double set_value
 	}
 	return false;
 }
+
+
 void Magnet::staticEntryDeGauss(const Degauss& ds)
 {
+	ds.magnet->messenger.printDebugMessage("staticEntryDeGauss running");
 	ds.magnet->epicsInterface->attachTo_thisCaContext();
-	// Degauss procedures:
-	// set zero, wait, set next value,
-	// if at any stage waitForMagnetToSettle returns false, we have failed and exit
+	ds.magnet->DoDeGauss(ds);
+	ds.magnet->epicsInterface->detachFrom_thisCaContext();
+	ds.magnet->messenger.printDebugMessage("staticEntryDeGauss complete");
+}
+void Magnet::DoDeGauss(const Degauss& ds)
+{
 	bool degauss_success = true;
 	bool seti_success;
 	// set last_degauss_success to false at start of routine  
-	ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " last_degauss_success = FALSE");
-	ds.magnet->last_degauss_success = false;
-	ds.magnet->current_degauss_step = GlobalConstants::zero_sizet;
-	for (auto&& next_value : ds.magnet->degaussValues)
-	{
-		seti_success = ds.magnet->SETIZero();
-		if (ds.magnet->waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
-		{
-			seti_success = ds.magnet->SETI(next_value); // expposed to PYTHON
-			if (ds.magnet->waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
-			{
-				ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " Degauss Step ", ds.magnet->current_degauss_step, " success");
-			}
-			else
-			{
-				ds.magnet->messenger.printDebugMessage(ds.magnet->hardwareName + " ERROR degaussing magnet did not settle");
-				degauss_success = false;
-				break;
-			}
-		}
-		ds.magnet->current_degauss_step += GlobalConstants::one_sizet;
-	}
-	ds.magnet->SETI(ds.set_value_after_degauss);
-	if (ds.magnet->waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
-	{
+	// messenger.printDebugMessage(ds.magnet->hardwareName + " last_degauss_success = FALSE");
+	messenger.printDebugMessage(hardwareName + " last_degauss_success = FALSE");
+	last_degauss_success = false;
+	current_degauss_step = GlobalConstants::zero_sizet;
 
+	std::vector<double> local_degauss_setI_values;
+
+	if (ds.do_zero_step)
+	{
+		local_degauss_setI_values.push_back(GlobalConstants::zero_double);
+		for (const auto& val : ds.degauss_values)
+		{
+			local_degauss_setI_values.push_back(val);
+			local_degauss_setI_values.push_back(GlobalConstants::zero_double);
+		}
+		local_degauss_setI_values.pop_back();
+	}
+	else
+	{
+		local_degauss_setI_values = ds.degauss_values;
+	}
+
+	for (auto&& next_value : local_degauss_setI_values)
+	{
+		seti_success = SETI(next_value); // expposed to PYTHON
+		if (waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
+		{
+			messenger.printDebugMessage(hardwareName + " Degauss Step ", current_degauss_step, " success");
+		}
+		else
+		{
+			messenger.printDebugMessage(hardwareName + " ERROR degaussing magnet did not settle");
+			degauss_success = false;
+			break;
+		}
+		current_degauss_step += GlobalConstants::one_sizet;
+	}
+	SETI(ds.set_value_after_degauss);
+	if (waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
+	{
 	}
 	else
 	{
 		degauss_success = false;
 	}
-	ds.magnet->last_degauss_success = degauss_success;
-	ds.magnet->is_degaussing = false;
+	last_degauss_success = degauss_success;
+	is_degaussing = false;
 }
 
-
-
-//void Magnet::staticEntryDeGauss(const Degauss& ds)
-//{
-//	ds.magnet->epicsInterface->attachTo_thisCaContext();
-//
-//	ds.magnet->messenger.printDebugMessage("staticEntryImageCollectAndSave running");
-//	ds.magnet->epicsInterface->attachTo_thisCaContext();
-//	ds.magnet->doTheDegauss(ds);
-//	ds.magnet->epicsInterface->detachFrom_thisCaContext();
-//	ds.magnet->messenger.printDebugMessage("staticEntryImageCollectAndSave complete");
-//}
-//void Magnet::doTheDegauss(const Degauss& ds)
-//{
-//	// Degauss procedures:
-//	// set zero, wait, set next value,
-//	// if at any stage waitForMagnetToSettle returns false, we have failed and exit
-//	bool degauss_success = true;
-//	bool seti_success;
-//	// set last_degauss_success to false at start of routine  
-//	messenger.printDebugMessage(hardwareName + " last_degauss_success = FALSE");
-//	last_degauss_success = false;
-//	current_degauss_step = GlobalConstants::zero_sizet;
-//	for (auto&& next_value : degaussValues)
-//	{
-//		seti_success = SETIZero();
-//		if (waitForMagnetToSettle(GlobalConstants::zero_double, ds.degaussTolerance, ds.wait_time))
-//		{
-//			seti_success = SETI(next_value); // expposed to PYTHON
-//			if (waitForMagnetToSettle(next_value, ds.degaussTolerance, ds.wait_time))
-//			{
-//				messenger.printDebugMessage(hardwareName + " Degauss Step ", current_degauss_step, " success");
-//			}
-//			else
-//			{
-//				messenger.printDebugMessage(hardwareName + " ERROR degaussing magnet did not settle");
-//				degauss_success = false;
-//				break;
-//			}
-//		}
-//		current_degauss_step += GlobalConstants::one_sizet;
-//	}
-//	SETI(ds.set_value_after_degauss);
-//	if (waitForMagnetToSettle(ds.set_value_after_degauss, ds.degaussTolerance, ds.wait_time))
-//	{
-//
-//	}
-//	else
-//	{
-//		degauss_success = false;
-//	}
-//	last_degauss_success = degauss_success;
-//	is_degaussing = false;
-//}
 bool Magnet::isREADIequalValue(const double value) const
 {
 	return GlobalFunctions::areSame(value, READI_tolerance);
@@ -395,8 +413,8 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		I've done the conditional flags very verbose
 		just to make sure i follow what I'm doing
 	*/
-	messenger.printDebugMessage("\n");
-	messenger.printDebugMessage(hardwareName, " waitForMagnetToSettle, value = ", value, " tolerance = ", tolerance, " waitTime = ", waitTime);
+	//messenger.printDebugMessage("\n");
+	//messenger.printDebugMessage(hardwareName, " waitForMagnetToSettle, value = ", value, " tolerance = ", tolerance, " waitTime = ", waitTime);
 	
 	bool timeOut = false;
 	double oldRIValue = GlobalConstants::double_min;
@@ -408,11 +426,16 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 	// we also need to monitor time, and timeout if things take too long
 	time_t timeStart = GlobalFunctions::timeNow();
 	bool timed_out = false;
+	double currentRIValue;
+	std::string local_hardwarename = hardwareName;
 	while (true)
 	{
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
 		// current READI value
-		double currentRIValue = READI.second;
+		epicsInterface->mag_mutex.lock();
+		currentRIValue = READI.second;
+		epicsInterface->mag_mutex.unlock();
+
 		// if the old value is the same as the current value, lets assume READI has settled
 		bool has_READI_settled = GlobalFunctions::areSame(oldRIValue, currentRIValue, tolerance);
 		// is the READI value zero?
@@ -424,7 +447,7 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 		if (isREADIequalValue(value, tolerance))
 		{
 			// Complete , we are where we want to be
-			messenger.printDebugMessage(hardwareName + " isREADIequalValue(", value, ", ", tolerance, ") = true, SETTLED");
+			messenger.printDebugMessage(local_hardwarename + " isREADIequalValue(", value, ", ", tolerance, ") = true, SETTLED");
 			shouldBreak = true;
 		}
 		else if (settingZero) // We are supposed to be setting zero....
@@ -455,22 +478,20 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 				//	" RI_new != 0.0&& RI_new == RI_old RI. SETTLED = True ",
 				//	currentRIValues[i], ", ", oldRIValues[i],
 				//	", ", tolerances[i]);
-				messenger.printDebugMessage(hardwareName + " Not setting zero and READI has settled NOT at zero. SETTLED.");
+				messenger.printDebugMessage(local_hardwarename + " Not setting zero and READI has settled NOT at zero. SETTLED.");
 				shouldBreak = true;
 			}
 		}
 		/* check if time ran out */
 		if (GlobalFunctions::timeNow() - timeStart > waitTime)
 		{
-			messenger.printDebugMessage("!!WARNING!! " + hardwareName + " has timed out waiting for READI to reach ",
-				value, " with tolerance =  ", tolerance, ", READI = ", READI.second);
+			messenger.printDebugMessage("!!WARNING!! " + local_hardwarename + " has timed out waiting for READI to reach ", value, " with tolerance =  ", tolerance, ", READI = ", currentRIValue);
 			timed_out = true;
 			break;
 		}
 		if (shouldBreak)
 		{
-			messenger.printDebugMessage(hardwareName + " setting READI = ", value, " with tolerance =  ",
-				tolerance, ", has probably settled, READI = ", READI.second);
+			messenger.printDebugMessage(local_hardwarename + " setting READI = ", value, " with tolerance =  ",tolerance, ", has probably settled, READI = ", currentRIValue);
 			break;
 		}
 		/* save current values to see check if settled */
@@ -481,13 +502,27 @@ bool Magnet::waitForMagnetToSettle(const double value, const double tolerance, c
 
 		// we're doing this because of peculiarities in some of the cheaper PSU / controls interfaces, maybe one day we will be able to get rid of this 
 
-		GlobalFunctions::pause_1000();
+		GlobalFunctions::pause_500();
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
 		GlobalFunctions::pause_1000();
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
-		GlobalFunctions::pause_1000();
+		GlobalFunctions::pause_2000();
 		epicsInterface->setNewCurrent(value, pvStructs.at(MagnetRecords::SETI));
-		GlobalFunctions::pause_1000();
+		GlobalFunctions::pause_500();
+
+		if (mag_type == TYPE::CORRECTOR)
+		{
+			epicsInterface->setNewPSUState(STATE::ON, pvStructs.at(MagnetRecords::SPOWER));
+		}
+		if (mag_type == TYPE::HORIZONTAL_CORRECTOR)
+		{
+			epicsInterface->setNewPSUState(STATE::ON, pvStructs.at(MagnetRecords::SPOWER));
+		}
+		if(mag_type == TYPE::VERTICAL_CORRECTOR)
+		{
+			epicsInterface->setNewPSUState(STATE::ON, pvStructs.at(MagnetRecords::SPOWER));
+		}
+
 	} /// while
 	return !timed_out;
 }
@@ -577,6 +612,11 @@ double Magnet::setREADITolerance(const double value)
 	READI_tolerance = value;
 	return READI_tolerance;
 }
+
+
+
+
+
 
 //
 //std::vector<double> Magnet::getFieldIntegralCoefficients() const

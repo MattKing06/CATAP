@@ -378,7 +378,10 @@ namespace GlobalConstants
 	const unsigned short nine_ushort = 9;
 	/*! Unsigned short-type variable for 10 */
 	const unsigned short ten_ushort = 10;
-
+	/*! Unsigned short-type variable for 11 */
+	const unsigned short eleven_ushort = 11;
+	/*! Unsigned short-type variable for 12 */
+	const unsigned short twelve_ushort = 12;
 
 	//// epics versions 
 	///*! epicsUInt16 variable for 0 */

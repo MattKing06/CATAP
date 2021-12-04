@@ -151,6 +151,10 @@ public:
 	/*! Get the pixel to mm conversion factor,
 	@param[out] double, value */
 	double getPix2mm()const;
+	/*! Get the pixel bit depth for this cmaera,
+	@param[out] size_t, value */
+	size_t getBitDepth()const;
+
 protected:
 	/*! conversion factor for pixels to mm. Value and epicstimestamp. From Epics. */
 	std::pair<epicsTimeStamp, double > pixel_to_mm;
@@ -158,6 +162,31 @@ protected:
 	double pix2mmX_ratio;
 	/*! conversion factor for pixels to mm in the y direction. From Main Lattice (not implemented in Physcial EPICS). */
 	double pix2mmY_ratio;
+	/*! How many bits each pixel has*/
+	size_t bit_depth;
+
+
+	// IMAGE ORIENTATION
+
+public:
+	/*! Get required rotations of raw image array to match installed orentation for image (0, 90, 180 or 270 degrees). 
+	* 	@param[out] size_t, value */
+	size_t getImageRotation()const;
+	/*! Get should the image be flipped along the up/down axis (after rotation)  i.e. row order reversed) 
+	* 	@param[out] bool, value */
+	bool getImageFlipUD()const;
+	/*! Get should the image be flipped along the left/right axis (after rotation) i.e. column order reversed) 
+	* 	@param[out] bool, value */
+	bool getImageFlipLR()const;
+
+protected:
+
+	size_t image_rotation;
+	bool flip_ud;
+	bool flip_lr;
+
+
+
 //    __   ___      ___  ___  __      __   __      __                      __      __   __      __   __   __  
 //   /  ` |__  |\ |  |  |__  |__)    /  \ |__)    /  \ |\ | __  /\  \_/ | /__`    /  ` /  \ __ /  \ |__) |  \	
 //   \__, |___ | \|  |  |___ |  \    \__/ |  \    \__/ | \|    /~~\ / \ | .__/    \__, \__/    \__/ |  \ |__/ 
@@ -588,6 +617,8 @@ protected:
 	std::pair<epicsTimeStamp, double > active_camera_count;
 	/*! Acquire status. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, STATE> acquire_state;
+
+
 private:
 	/*! Struct to hold data for the thread called by stopAcquiringAndWait */
 	CamStopWaiter cam_stop_acquiring_waiter_struct;
@@ -842,6 +873,7 @@ protected:
 	std::pair<epicsTimeStamp, long> roi_size_x;
 	/*! Rectangular ROI Y size, ROI used to extract masked data. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long> roi_size_y;
+	long roi_pixel_count;
 public:
 	/*! Set the Region Of Interest minimum x pixel.
 	@param[in] long, new val
@@ -994,6 +1026,9 @@ protected:
 	std::pair<epicsTimeStamp, long > gain;
 	/*! Camera black_level, for VELA_CAMERA type only. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, long > black_level;
+private:
+	std::pair<long, long > gain_range;
+	std::pair<long, long > black_range;
 public:
 	/*! Set the black level (for vela camera types only),
 	@param[in] long, values
@@ -1008,6 +1043,19 @@ public:
 	/*! Get the gain (for VELA camera types only),
 	@param[out] long, latest value */
 	long getGain()const;
+	/*! Get the gain range (defined in the main lattice file),
+	@param[out] pair<long, long> , max and minimum values*/
+	std::pair<long, long> getGainRange()const;
+	/*! Get the gain range (defined in the main lattice file), Python Version 
+	@param[out] list, max and minimum values*/
+	boost::python::list getGainRange_Py()const;
+	/*! Get the black level range (defined in the main lattice file),
+	@param[out] pair<long, long> , max and minimum values*/
+	std::pair<long, long> getBlackRange()const;
+	/*! Get the black level range (defined in the main lattice file), Python Version
+	@param[out] pair<long, long> , max and minimum values*/
+	boost::python::list getBlacklRange_Py()const;
+
 	//	 __             __   __        __  ___    
 	//	/__` |\ |  /\  |__) /__` |__| /  \  |     
 	//	.__/ | \| /~~\ |    .__/ |  | \__/  |     
@@ -1266,12 +1314,24 @@ private:
 //	\__/ |    |__/ /~~\  |  |___    /~~\ | \| |__/    \__> |___  |     |  |  | /~~\ \__> |___    |__/ /~~\  |  /~~\    
 //	                                                                                                                   
 public:
+	/*! Start monitoring the image data.
+	@param[out] bool: value of update_image_data */
+	bool startImageDataMonitoring();
+	/*! Start monitoring the ROI image data.
+	@param[out] bool: value of update_roi_data */
+	bool startROIDataMonitoring();
+	/*! Start monitoring the image data.
+	@param[out] bool: value of update_image_data */
+	bool stopImageDataMonitoring();
+	/*! Stop monitoring the ROI image data.
+	@param[out] bool: value of update_roi_data */
+	bool stopROIDataMonitoring();
 	/*! Get the latest image data (decimated array for passing accross network, not full image).
 	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
 	bool updateImageData();
 	/*! Get the latest image data AND time stamp.
 	It is possible in the current implementation that the time stamp is not synchronized with the data.
-	(decimated array for passing accross network, not full image).
+	(for CLARA cameras this is decimated array for passing accross network, not full image).
 	@param[out] bool, did commands get sent to EPICS (should also mean data was updated)*/
 	bool updateImageDataWithTimeStamp();
 	/*! Get the latest ROI data (decimated array for passing accross network, not full image, !!ROI is new, not been tested!!). 
@@ -1294,6 +1354,9 @@ public:
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] list, latest data */
 	boost::python::numpy::ndarray getImageData_NumPy()const;
+	boost::python::numpy::ndarray getImageData_NumPy2()const;
+	boost::python::numpy::ndarray getROIData_NumPy2()const;
+	//boost::python::numpy::ndarray& getImageData_NumPy3();
 	/*! Get a copy of the current Region Of Interest data. Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
@@ -1319,6 +1382,14 @@ public:
 	/*! Get the current number of data values being used by the Running Stats.
 * 	@param[out] size_t: number of data values.*/
 	size_t getRunningStatNumDataValues()const;
+	/*! Get the timestamp of the current frame.
+* 	@param[out] std::pair<int, int>: secPastEpoch, nsec, where the epoch is the EPICS one, 0000 Jan 1, 1990 .*/
+	std::pair<int, int> getFrameTimeStanmp();
+	/*! Get the timestamp of the current frame, Python version 
+* 	@param[out] list: [secPastEpoch, nsec] where the epoch is the EPICS one, 0000 Jan 1, 1990 .*/
+	boost::python::list getFrameTimeStanmp_Py();
+
+
 private:
 	/*! Get the latest time stamp for an image / ROI  array
 	@param[in] struct dbr_time_long*, pointer to DBR_TIME_LONG struct
@@ -1352,6 +1423,11 @@ private:
 	/*! Flag set if the roi_data vector has had memory allocated for it.
 	To save application memory this ony happens when requesting image data accross the network */
 	bool roi_data_has_not_vector_resized;
+	/*! Flag set by startROIDataMonitoring that when set to true will enable monitoring of the image via EPICS */
+	bool update_roi_data;
+	/*! Flag set by startImageDataMonitoring that when set to true will enable monitoring of the image via EPICS */
+	bool update_image_data;
+
 //       ___  __   __        __   ___  __  
 // |\/| |__  /__` /__`  /\  / _` |__  /__` 
 // |  | |___ .__/ .__/ /~~\ \__> |___ .__/ 
@@ -1603,6 +1679,9 @@ private:
 		return false;
 	}
 
+
+	boost::python::object random_object;
+	//boost::python::numpy::ndarray test_numpy_array;
 
 };
 #endif //CAMERA_H_

@@ -7,7 +7,6 @@ stages:
   - sphinx
   - wheel
 
-
 cmake_linux: 
   image: mattkingastec/catapenv:1.0
   cache: 

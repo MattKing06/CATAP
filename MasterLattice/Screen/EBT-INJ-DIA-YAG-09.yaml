@@ -1,15 +1,18 @@
 controls_information:
     PV: true
-    records: SDEV, TRIGGER, MOVING, READY, GET_DEV, DEV_STATE, MAX_POS, DEV_CENT
+    #records: SDEV, TRIGGER, MOVING, READY, GET_DEV, DEV_STATE, MAX_POS, DEV_CENT
     pv_record_map:
-        "SDEV": EBT-INJ-DIA-YAG-09:SDEV
-        "TRIGGER": EBT-INJ-DIA-YAG-09:TRIGGER
-        "MOVING": EBT-INJ-DIA-YAG-09:MOVING
-        "READY": EBT-INJ-DIA-YAG-09:READY
-        "GET_DEV": EBT-INJ-DIA-YAG-09:GET_DEV
-        "DEV_STATE": EBT-INJ-DIA-YAG-09:DEV_STATE
-        "MAX_POS": EBT-INJ-DIA-YAG-09:MAX_POS
-        "DEV_CENT": EBT-INJ-DIA-YAG-09:DEV_CENT
+        SDEV: EBT-INJ-DIA-YAG-09:SDEV
+        TRIGGER: EBT-INJ-DIA-YAG-09:TRIGGER
+        MOVING: EBT-INJ-DIA-YAG-09:MOVING
+        READY: EBT-INJ-DIA-YAG-09:READY
+        GET_DEV: EBT-INJ-DIA-YAG-09:GET_DEV
+        DEV_STATE: EBT-INJ-DIA-YAG-09:DEV_STATE
+        MAX_POS: EBT-INJ-DIA-YAG-09:MAX_POS
+        DEV_CENT: EBT-INJ-DIA-YAG-09:DEV_CENT
+        PNEUMATIC_ON : EBT-INJ-DIA-YAG-09:On
+        PNEUMATIC_OFF : EBT-INJ-DIA-YAG-09:Off 
+        PNEUMATIC_STA : EBT-INJ-DIA-YAG-09:Sta
 properties:
     name: EBT-INJ-DIA-YAG-09
     name_alias: INJ-YAG-09
@@ -17,5 +20,6 @@ properties:
     hardware_type: Screen
     screen_type: VELA_PNEUMATIC
     has_camera: true
+    camera_name: EBT-BA1-DIA-CAM-09
     position: 0.0
     devices: "RETRACTED,RF,YAG"

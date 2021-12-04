@@ -107,9 +107,7 @@ class TraceData
 		/*! the stopping index for this trace in the one-record trace data */
 		size_t one_record_stop_index;
 
-
 		bool check_mask;
-
 
 		// INTERLOCK STUFF (inl;y power traces
 

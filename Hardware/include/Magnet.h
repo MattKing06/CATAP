@@ -34,6 +34,7 @@ class Degauss
 		Magnet* magnet;
 		std::vector<double>  degauss_values;
 		size_t				 current_step;
+		bool				 do_zero_step;
 		//bool                 resetToZero;
 		double               set_value_after_degauss;
 		double degaussTolerance;
@@ -84,19 +85,34 @@ class Magnet : public Hardware
 	//	@param[out] bool, for if in same state or not							*/
 		//bool isInSETIandPSUState(const magnetState& ms)const;
 
+	/*! degauss a magnet, all degauss functions ultimately call this version of the function 
+		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const std::vector<double>& degauss_values, double set_value_after_degauss, bool do_zero_step);
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
-		bool degauss(const std::vector<double>& custum_degauss_values, double set_value_after_degauss);
+		bool degauss(const std::vector<double>& degauss_values, double set_value_after_degauss);
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss);
+
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(double set_value_after_degauss);
 	/*! degauss a magnet 
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const bool reset_to_zero);
-	/*! get the name alises for this magnet 
+
+		
+	/*! degauss a magnet
+		@param[in] do_zero_step, whether to set zero current in-between each degauss step,			
+		@param[in] reset_to_zero, whether to set zero current after degaussing */
+		bool degauss(bool reset_to_zero, bool do_zero_step);
+			
+		
+		/*! get the name alises for this magnet 
 		@param[out] names, vector contianing all the alias names */
 		std::vector<std::string> getAliases() const;
 	/*! get the name alises for this magnet (python version
@@ -255,6 +271,18 @@ class Magnet : public Hardware
 		@param[out] true or false, true if the magnet settled, false if it didn;t befor ea time out  */
 	bool waitForMagnetToSettle(const double value, const double tolerance, const time_t waitTime)const;
 
+	/*! Get the SETI PV 
+		@param[out] std::string, PV */
+	std::string getSETIpv()const;
+
+	/*! Get the RPOWER PV
+		@param[out] std::string, PV */
+	std::string getRPOWERpv()const;
+
+
+
+
+
 
 	/*! Reset the magnet PSU external interlocks 
 		@param[out] bool, true if commands got sent to EPICS */
@@ -275,6 +303,8 @@ class Magnet : public Hardware
 		friend class EPICSMagnetInterface;
 		friend class MagnetFactory;
 	protected:
+
+
 	// called from EPICS to update the GETSETI variable! 
 	/*! switch the magnet PSU on	*/
 	//	void updateGETSETI(const double& value);
@@ -308,7 +338,7 @@ class Magnet : public Hardware
 		EPICSMagnetInterface_sptr epicsInterface;
 	/*! sets the PV struct for the magnet parameters that are monitored through epics, INFO ABOUT PV STRUCTS?*/
 		void setPVStructs();
-	/*! switch the magnet PSU on to STATE value
+	/*! switch the magnet PSU on to STATE valuesetPVStructs
 		@param[in] value, can be ON or OFF (in OFFLINE mode can probably be an arbitrary value)*/
 		void offlineSETI(const double& value);
 	/*! switch the magnet PSU on to STATE value
@@ -328,10 +358,9 @@ class Magnet : public Hardware
 	/*! function run in new thread during degaussing 
 		@param[in] degauss-struct contains data required for degaussing */
 		static void staticEntryDeGauss(const Degauss& ds);
-
-	/*! Actually doe steh degaussing 
+	/*! Actually do the degaussing, called from  staticEntryDeGauss
 		@param[in] degauss-struct contains data required for degaussing */
-		//void doTheDegauss(const Degauss& ds);
+		void DoDeGauss(const Degauss& ds);
 
 	/*! current values to set during degauss procedure, defined in the master lattice yaml file	and setable 	*/
 		std::vector<double> degaussValues;
@@ -369,9 +398,6 @@ class Magnet : public Hardware
 
 		//std::string magRevType;
 		double RI_tolerance;
-	
-
-
 
 	/*! PSU epics PV, defined in the master lattice yaml file */
 		std::string fullPSUName;

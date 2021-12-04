@@ -198,9 +198,8 @@ properties:
     OPERATING_CENTER_Y : 1000
     MECHANICAL_CENTER_X : 1000
     MECHANICAL_CENTER_Y : 1000 
-    
-    
-    MAX_BIT_DEPTH : 12
+    MAX_BIT_DEPTH : 16
+
     # meh, is this a good way to def orientation? 
     # ALSWAYS assume image is chuncked in the X direction Y times
     # CAN'T be well checked as the screens are not operational ATM
@@ -212,3 +211,9 @@ properties:
     IMAGE_ROTATION : 0 # could be 0, 90, 180, 270
     IMAGE_FLIP_UD : false
     IMAGE_FLIP_LR : false  
+    
+    MIN_GAIN_LEVEL : -170
+    MAX_GAIN_LEVEL : 700
+    MIN_BLACK_LEVEL : -768
+    MAX_BLACK_LEVEL : 767     
+

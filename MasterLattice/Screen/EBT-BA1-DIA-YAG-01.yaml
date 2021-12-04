@@ -1,15 +1,18 @@
 controls_information:
     PV: true
-    records: SDEV, TRIGGER, MOVING, READY, GET_DEV, DEV_STATE, MAX_POS, DEV_CENT
+    #records: SDEV, TRIGGER, MOVING, READY, GET_DEV, DEV_STATE, MAX_POS, DEV_CENT
     pv_record_map:
-        "SDEV": EBT-BA1-DIA-YAG-01:SDEV
-        "TRIGGER": EBT-BA1-DIA-YAG-01:TRIGGER
-        "MOVING": EBT-BA1-DIA-YAG-01:MOVING
-        "READY": EBT-BA1-DIA-YAG-01:READY
-        "GET_DEV": EBT-BA1-DIA-YAG-01:GET_DEV
-        "DEV_STATE": EBT-BA1-DIA-YAG-01:DEV_STATE
-        "MAX_POS": EBT-BA1-DIA-YAG-01:MAX_POS
-        "DEV_CENT": EBT-BA1-DIA-YAG-01:DEV_CENT
+        SDEV      : EBT-BA1-DIA-YAG-01:SDEV
+        TRIGGER   : EBT-BA1-DIA-YAG-01:TRIGGER
+        MOVING    : EBT-BA1-DIA-YAG-01:MOVING
+        READY: EBT-BA1-DIA-YAG-01:READY
+        GET_DEV: EBT-BA1-DIA-YAG-01:GET_DEV
+        DEV_STATE: EBT-BA1-DIA-YAG-01:DEV_STATE
+        MAX_POS: EBT-BA1-DIA-YAG-01:MAX_POS
+        DEV_CENT: EBT-BA1-DIA-YAG-01:DEV_CENT
+        PNEUMATIC_ON : EBT-BA1-DIA-YAG-01:On
+        PNEUMATIC_OFF : EBT-BA1-DIA-YAG-01:Off 
+        PNEUMATIC_STA : EBT-BA1-DIA-YAG-01:Sta 
 properties:
     name: EBT-BA1-DIA-YAG-01
     name_alias: BA1-YAG-01
@@ -17,5 +20,6 @@ properties:
     hardware_type: Screen
     screen_type: VELA_PNEUMATIC
     has_camera: true
+    camera_name: EBT-BA1-DIA-CAM-01
     position: 0.0
     devices: "RETRACTED,RF,YAG"

@@ -180,7 +180,7 @@ properties:
     AVG_PIXEL_VALUE_FOR_BEAM : 97.2 #;  emprically determined value for when laser is present
     X_CENTER_DEF      : 0 #;    where is (0,0) ? TBD
     Y_CENTER_DEF      : 0 #;
-    PIX_2_MM_RATIO_DEF : 0.04739336492891 #; 1/21.2 !!! from wiki 
+    PIX_2_MM_RATIO_DEF : 0.04739336492891 #; !!! 1/21.2 from wiki 
     ARRAY_DATA_X_PIX_2_MM : 0.04739336492891 #; 
     ARRAY_DATA_Y_PIX_2_MM :  0.04739336492891 #;
     SENSOR_MAX_TEMP : 27.0 #;
@@ -196,11 +196,11 @@ properties:
     MECHANICAL_CENTER_X : 1000
     MECHANICAL_CENTER_Y : 1000 
     
-    
-    MAX_BIT_DEPTH : 12
+    MAX_BIT_DEPTH : 16
     # meh, is this a good way to def orientation? 
-    # ALSWAYS assume image is chuncked in the X direction Y times
-    # CAN'T be well checked as the screens are not operational ATM
+    # ALWAYS assume image is chuncked in the X direction Y times
+    # CAN'T be well checked as the screens are not operational ATM 
+
     ARRAY_DATA_NUM_PIX_X : 1392 #; array data passed through EPICS
     ARRAY_DATA_NUM_PIX_Y : 1040 #; array data passed through EPICS
     BINARY_NUM_PIX_X : 1392 #; the binary image is bigger than the array data passed through EPICS
@@ -209,3 +209,9 @@ properties:
     IMAGE_ROTATION : 0 # could be 0, 90, 180, 270
     IMAGE_FLIP_UD : false
     IMAGE_FLIP_LR : false  
+    
+    MIN_GAIN_LEVEL : -170
+    MAX_GAIN_LEVEL : 700
+    MIN_BLACK_LEVEL : -768
+    MAX_BLACK_LEVEL : 767     
+
