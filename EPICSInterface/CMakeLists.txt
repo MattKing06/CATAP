@@ -83,4 +83,7 @@ target_include_directories(EPICSInterface PRIVATE ${PROJECT_SOURCE_DIR}/Utilitie
 target_include_directories(EPICSInterface PUBLIC include)
 TARGET_LINK_LIBRARIES(EPICSInterface PRIVATE ${EPICS_COM_LIB} ${EPICS_CA_LIB} PV LoggingSystem Hardware Utilities)
 set_property(TARGET EPICSInterface PROPERTY FOLDER "EPICSInterface")
+set_target_properties(EPICSInterface PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)

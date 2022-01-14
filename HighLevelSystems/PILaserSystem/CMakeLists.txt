@@ -34,4 +34,7 @@ TARGET_LINK_LIBRARIES(PILaserSystem PUBLIC
 						ConfigReader
 						Utilities)
 set_property(TARGET PILaserSystem PROPERTY FOLDER "HighLevelSystems")
+set_target_properties(PILaserSystem PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)

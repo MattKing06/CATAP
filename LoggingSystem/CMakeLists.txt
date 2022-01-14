@@ -17,4 +17,7 @@ IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(LoggingSystem PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 set_property(TARGET LoggingSystem PROPERTY FOLDER "LoggingSystem")
+set_target_properties(LoggingSystem PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)

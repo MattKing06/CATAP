@@ -35,5 +35,8 @@ TARGET_LINK_LIBRARIES(ConfigReader PRIVATE LoggingSystem)
 TARGET_LINK_LIBRARIES(ConfigReader PRIVATE Hardware)
 TARGET_LINK_LIBRARIES(ConfigReader PUBLIC ${Boost_LIBRARIES})
 set_property(TARGET ConfigReader PROPERTY FOLDER "ConfigReader")
+set_target_properties(ConfigReader PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)
 

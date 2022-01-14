@@ -21,5 +21,8 @@ target_include_directories(PV PUBLIC ${EPICS_OS_INCLUDES})
 target_include_directories(PV PUBLIC include)
 TARGET_LINK_LIBRARIES(PV PUBLIC ${EPICS_COM_LIB} ${EPICS_CA_LIB})
 set_property(TARGET PV PROPERTY FOLDER "PV")
+set_target_properties(PV PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 include_directories(include)
 #add_subdirectory(test)

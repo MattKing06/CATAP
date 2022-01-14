@@ -94,4 +94,7 @@ TARGET_LINK_LIBRARIES(Hardware
 		    			EPICSInterface
 						LoggingSystem)
 set_property(TARGET Hardware PROPERTY FOLDER "Hardware")
+set_target_properties(Hardware PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)

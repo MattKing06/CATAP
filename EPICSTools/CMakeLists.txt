@@ -44,4 +44,7 @@ TARGET_LINK_LIBRARIES(EPICSTools
 		    			EPICSInterface
 						LoggingSystem)
 set_property(TARGET EPICSTools PROPERTY FOLDER "EPICSTools")
+set_target_properties(EPICSTools PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)

@@ -80,4 +80,7 @@ TARGET_LINK_LIBRARIES(Utilities
 					 ${Boost_LIBRARIES}
 					 ${Python3_LIBRARIES}
 					 )
+set_target_properties(Utilities PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 set_property(TARGET Utilities PROPERTY FOLDER "Utilities")

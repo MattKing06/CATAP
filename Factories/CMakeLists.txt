@@ -97,5 +97,7 @@ TARGET_LINK_LIBRARIES(Factories PUBLIC
 					 LoggingSystem
 					 Hardware)
 set_property(TARGET Factories PROPERTY FOLDER "Factories")
-
+set_target_properties(Factories PROPERTIES 
+                      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
+                      )
 add_subdirectory(test)
