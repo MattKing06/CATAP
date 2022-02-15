@@ -236,11 +236,6 @@ namespace GlobalFunctions {
 		struct tm buf;
 		auto val = gmtime_s(&buf, &epoch_seconds);
 		stream << std::put_time(&buf, "%F_%T");
-#endif
-#if defined(__unix__) ||  defined(_unix)
-		auto val = gmtime(&epoch_seconds);
-		stream << std::put_time(val, "%F_%T");
-#endif
 		// If we now convert back to a time_point we will get the time truncated
 		// to whole seconds 
 		//auto truncated = std::chrono::system_clock::from_time_t(epoch_seconds);
@@ -254,6 +249,26 @@ namespace GlobalFunctions {
 		//stream << "." << std::fixed << std::setw(2) << std::setfill('0') << delta_us;
 
 		return stream.str();
+#endif
+#if defined(__unix__) ||  defined(_unix)
+		std::stringstream stream;
+		auto val = gmtime(&epoch_seconds);
+		stream << std::put_time(val, "%F_%T");
+		// If we now convert back to a time_point we will get the time truncated
+		// to whole seconds 
+		//auto truncated = std::chrono::system_clock::from_time_t(epoch_seconds);
+
+		// Now we subtract this seconds count from the original time to
+		// get the number of extra microseconds..
+		//auto delta_us = std::chrono::duration_cast<std::chrono::microseconds>(t - truncated).count();
+
+		// And append this to the output stream as fractional seconds
+		// e.g. 2016-08-30T08:18:51.867479
+		//stream << "." << std::fixed << std::setw(2) << std::setfill('0') << delta_us;
+
+		return stream.str();
+#endif
+
 	}
 
 	extern std::string replaceStrChar(std::string str, const std::string& replace, char ch);
