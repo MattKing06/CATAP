@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #ifdef BUILD_PYTHON
-#include "PythonTypeConversions.h"
+#include <PythonTypeConversions.h>
 #endif // BUILD_PYTHON
 
 
