@@ -299,7 +299,7 @@ boost::circular_buffer< std::vector< double > > BPM::getDataBuffer() const
 {
 	return this->dataBuffer;
 }
-
+#ifdef BUILD_PYTHON
 boost::python::list BPM::getXPVBuffer_Py() const
 {
 	boost::circular_buffer< double > xbuf;
@@ -411,6 +411,10 @@ boost::python::list BPM::getData_Py() const
 	boost::python::list newPyList = to_py_list(data);
 	return newPyList;
 }
+
+#endif //BUILD_PYTHON
+
+
 
 long BPM::getSA1() const
 {

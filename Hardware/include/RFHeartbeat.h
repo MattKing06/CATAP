@@ -6,9 +6,10 @@
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
-
+#endif //BUILD_PYTHON
 class EPICSRFHeartbeatInterface;
 
 typedef boost::shared_ptr<EPICSRFHeartbeatInterface> EPICSRFHeartbeatInterface_sptr;

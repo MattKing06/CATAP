@@ -8,10 +8,13 @@
 #include <boost/make_shared.hpp>
 #include <RFModulatorPVRecords.h>
 #include <GlobalFunctions.h>
-#include "PythonTypeConversions.h"
 #include <boost/make_shared.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include "PythonTypeConversions.h"
+#endif //BUILD_PYTHON
+
 
 class EPICSRFModulatorInterface;
 
@@ -28,9 +31,6 @@ public:
 	/*! get the name alises for this object
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;
-	/*! get the name alises for this LLRF (python version)
-		@param[out] list, all the alias names */
-	boost::python::list getAliases_Py() const;
     /*! get the name alises for this LLRF (python version)
     @param[out] list, all the alias names */
     STATE getMainState()const;
@@ -64,18 +64,26 @@ public:
     /*! get the low level numerical data for this modulator (voltages, vacuumpressures etc)
     @param[out] map<strign,double>, all low level numerical data in map   */
     std::map<std::string, double> getLowLevelNumericalData()const;
-    /*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) Python Version
-    @param[out] dict, all low level numerical data in map   */
-    boost::python::dict getLowLevelNumericalData_Py()const;
+
     /*! get the low level string data for this modulator (error messages)
     @param[out] dict, all low level numerical data in map   */
     std::map<std::string, std::string> getLowLevelStringData()const;
+
+#ifdef BUILD_PYTHON
+    /*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) Python Version
+    @param[out] dict, all low level numerical data in map   */
+    boost::python::dict getLowLevelNumericalData_Py()const;
     /*! get the low level string data for this modulator (error messages) Python Version
     @param[out] dict, all low level string data */
     boost::python::dict getLowLevelStringData_Py()const;
+    /*! get the name alises for this LLRF (python version)
+    @param[out] list, all the alias names */
+    boost::python::list getAliases_Py() const;
     /*! get all the low level data for this modulator (string and numerical) Python Version
     @param[out] dict, all low level string and numerical data */
     boost::python::dict getLowLevelData()const;
+#endif //BUILD_PYTHON
+
 
     /*! Check if Hold RF On is on*/
     bool isInHoldRFOn() const;

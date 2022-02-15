@@ -19,6 +19,9 @@
 #include <StageFactory.h>
 #include "GlobalStateEnums.h"
 #include "GlobalTypeEnums.h"
+#ifdef BUILD_PYTHON
+#include "PythonTypeConversions.h"
+#endif //BUILD_PYTHON
 
 /** @defgroup factories Factories
 	@brief A collection of classes for configuring, storing, and performing operations on multiple hardwares.
@@ -49,11 +52,14 @@ public:
 	bool setup(const TYPE hardwareType, const std::string& VERSION);
 	bool setup(const std::vector<TYPE> hardwareTypes, const std::string& VERSION);
 	bool setup(const std::vector<std::string>& hardwareTypes, const std::string& VERSION);
+#ifdef BUILD_PYTHON
 	bool setup(const boost::python::list& hardwareTypes, const std::string& VERSION);
-
+#endif //BUILD_PYTHON
 	MagnetFactory& getMagnetFactory();
 	MagnetFactory& getMagnetFactory(TYPE machineArea);
+#ifdef BUILD_PYTHON
 	MagnetFactory& getMagnetFactory(const boost::python::list& machineAreas);
+#endif //BUILD_PYTHON
 	MagnetFactory& getMagnetFactory(const std::vector<TYPE>& machineAreas);
 
 	BPMFactory& getBPMFactory();
@@ -65,11 +71,15 @@ public:
 	CameraFactory& getCameraFactory();
 
 	CameraFactory& getCameraFactory_Single(const TYPE machineArea);
+#ifdef BUILD_PYTHON
 	CameraFactory& getCameraFactory_Mulitple_Py(const boost::python::list& machineAreas);
+#endif //BUILD_PYTHON
 	CameraFactory& getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas);
 
 	CameraFactory& getCameraFactory_ByName(std::string name);
+#ifdef BUILD_PYTHON
 	CameraFactory& getCameraFactory_ByNames_Py(const boost::python::list& names);
+#endif //BUILD_PYTHON
 	CameraFactory& getCameraFactory_ByNames(const std::vector<std::string>& names);
 
 
@@ -89,11 +99,12 @@ public:
 	@param[in] vector<TYPE>, machineArea
 	@param[out] LLRFFactory&, reference to LLRFFactory */
 	LLRFFactory& getLLRFFactory(const std::vector<TYPE>& machineAreas);
+#ifdef BUILD_PYTHON
 	/*! Generate a LLRF factor for multiple machineAreas (python version).
 	@param[in] list, machineArea
 	@param[out] LLRFFactory&, reference to LLRFFactory */
 	LLRFFactory& getLLRFFactory_Py(const boost::python::list& machineAreas);
-
+#endif //BUILD_PYTHON
 
 
 	ShutterFactory& getShutterFactory();
@@ -101,7 +112,9 @@ public:
 	RFProtectionFactory& getRFProtectionFactory();
 	RFModulatorFactory& getRFModulatorFactory();
 	RFModulatorFactory& getRFModulatorFactory_Single(TYPE machine_area);
+#ifdef BUILD_PYTHON
 	RFModulatorFactory& getRFModulatorFactory_Py(const boost::python::list& machine_areas);
+#endif //BUILD_PYTHON
 	RFModulatorFactory& getRFModulatorFactory(const std::vector<TYPE>& machine_areas);
 	RFHeartbeatFactory& getRFHeartbeatFactory();
 	
@@ -117,7 +130,9 @@ public:
 	bool applySnapshot(const std::string& filename);
 	bool applySnapshot(const std::map<std::string, std::string> settings);
 	bool applySnapshot(YAML::Node settings);
+#ifdef BUILD_PYTHON
 	bool applySnapshot(boost::python::dict settings);
+#endif //BUILD_PYTHON
 	std::string getDefaultSnapshotLocation() const;
 
 	bool operator ==(const HardwareFactory& HardwareFactory) const;

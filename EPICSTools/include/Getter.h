@@ -9,7 +9,12 @@
 #include <string>
 #include <vector>
 #include <boost/make_shared.hpp>
+
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
+
 #include <boost/variant.hpp>
 #include <boost/core/typeinfo.hpp>
 
@@ -88,18 +93,20 @@ public:
 	bool isStringArray();
 	/*! Returns true if currentArray is of type float */
 	bool isFloatArray();
+#ifdef BUILD_PYTHON
 	/*! returns the value stored in currentValue as a python object */
 	boost::python::object getValue_Py();
 
 	boost::python::dict getTimestampedValue_Py();
 
 	boost::python::dict getTimestampedArray_Py();
+	/*! returns the array stored in currentArray as a python list */
+	boost::python::list getArray_Py();
+#endif //BUILD_PYTHON
 
 	template<typename T>
 	std::pair<epicsTimeStamp, std::vector<T>> getTimestampedArray();
 
-	/*! returns the array stored in currentArray as a python list */
-	boost::python::list getArray_Py();
 	/*! stores the current value in the single-valued EPICS record associated with getter */
 	timeStampValue currentValue;
 	/*! stores the current array in the EPICS record associated with getter */

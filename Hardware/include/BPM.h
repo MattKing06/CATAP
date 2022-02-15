@@ -5,13 +5,16 @@
 #include "Hardware.h"
 #endif //HARDWARE_H_
 #include "EPICSBPMInterface.h"
-#include "PythonTypeConversions.h"
+
 #include "BPMPVRecords.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <PythonTypeConversions.h>
+#endif
 
 class EPICSBPMInterface;
 typedef boost::shared_ptr<EPICSBPMInterface> EPICSBPMInterface_sptr;
@@ -185,6 +188,7 @@ public:
 	/*! returns the charge buffer.
 	@param[out] qbuf: the charge buffer.*/
 	boost::circular_buffer< double > getQBuffer() const;
+#ifdef BUILD_PYTHON
 	/*! returns the raw data vector as a python list.
 	@param[out] data: the raw data vector.*/
 	boost::python::list getData_Py() const;
@@ -230,6 +234,8 @@ public:
 	/*! returns the status vector of the BPM (as a python list) based on raw data pickup values (after using monitorForNShots).
 	@param[out] states: the status vector.*/
 	boost::python::list getStatusVector_Py() const;
+#endif // BUILD_PYTHON
+
 	/*! returns the horizontal read attenuation.
 	@param[out] long: RA1.*/
 	long getRA1() const;

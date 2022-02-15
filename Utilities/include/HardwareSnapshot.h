@@ -7,19 +7,22 @@
 #include <GlobalConstants.h>
 #include <GlobalTypeEnums.h>
 #include <GlobalStateEnums.h>
-#include <PythonTypeConversions.h>
 #include <map>
 #include <string>
 #include <iostream>
 #include <boost/variant.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
+#include <PythonTypeConversions.h>
+#endif
 
-struct convert_to_py : public boost::static_visitor<boost::python::object>
-{
-	template<typename T>
-	boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
-};
-
+ #ifdef BUILD_PYTHON
+	struct convert_to_py : public boost::static_visitor<boost::python::object>
+	{
+		template<typename T>
+		boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
+	};
+ #endif
 class HardwareSnapshot
 {
 public:
@@ -29,6 +32,21 @@ public:
 	
 	std::map<std::string, boost::variant<STATE, TYPE, double, long, int, unsigned short, std::string, bool, size_t>> state;
 	
+	// TODO this could be renamed, maybe to convertHarwdraeSnapshotToPYDict or something more explanatory 
+    #ifdef BUILD_PYTHON
+	boost::python::dict getSnapshot_Py()const
+	{
+		std::map < std::string, boost::python::object> pyValueMap;
+		for (auto& item : state)
+		{
+			const std::string name = item.first;
+			boost::python::object pyValue = boost::apply_visitor(convert_to_py{}, state.at(name));
+			pyValueMap[name] = pyValue;
+		}
+		return to_py_dict(pyValueMap);
+	}
+    #endif //BUILD PYTHON
+
 
 	template<typename T>
 	T get(const std::string PV)const
@@ -97,18 +115,7 @@ public:
 		}
 		return return_node;
 	}
-	// TODO this could be renamed, maybe to convertHarwdraeSnapshotToPYDict or something more explanatory 
-	boost::python::dict getSnapshot_Py()const 
-	{
-		std::map < std::string, boost::python::object> pyValueMap;
-		for (auto& item : state)
-		{
-			const std::string name = item.first;
-			boost::python::object pyValue = boost::apply_visitor(convert_to_py{}, state.at(name));
-			pyValueMap[name] = pyValue;
-		}
-		return to_py_dict(pyValueMap);
-	}
+
 	template<typename T>
 	void update(const std::string& PV, T value)  
 	{

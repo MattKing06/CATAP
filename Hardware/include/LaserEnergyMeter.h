@@ -109,8 +109,10 @@ public:
 	/*! returns the status vector of the laser energy meter based on energy values (after using monitorForNShots).
 	@param[out] states: the status vector.*/
 	std::vector< STATE > getStatusVector() const;
+#ifdef BUILD_PYTHON
 	/*! Get the running stats back as a dict*/
 	boost::python::dict getRunningStats_Py();
+#endif //BUILD_PYTHON
 	/*! Get the running stats object back directly*/
 	RunningStats& getEnergyRunningStats();
 	/*! Set running stats max count .*/

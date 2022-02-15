@@ -9,7 +9,9 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 // CATAP includes
-#include "PythonTypeConversions.h"
+#ifdef BUILD_PYTHON
+ #include "PythonTypeConversions.h"
+#endif // BUILD_PYTHON
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 // map to convert yaml file strings to magnet TYPE enums
@@ -119,10 +121,34 @@ std::vector<std::string> Magnet::getAliases() const
 {
 	return this->aliases;
 }
-boost::python::list Magnet::getAliases_Py() const
-{
-	return to_py_list<std::string>(getAliases());
-}
+
+#ifdef BUILD_PYTHON
+	boost::python::list Magnet::getAliases_Py() const
+	{
+		return to_py_list<std::string>(getAliases());
+	}
+	boost::python::list Magnet::getDegaussValues_Py() const
+	{
+		return to_py_list<double>(getDegaussValues());
+	}
+	boost::python::list Magnet::setDegaussValues_Py(const boost::python::list& values)
+	{
+		return to_py_list(setDegaussValues(to_std_vector<double>(values)));
+	}
+	boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
+	{
+		return to_py_list(getFieldIntegralCoefficients());
+	}
+	bool Magnet::degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss)
+	{
+		return degauss(to_std_vector<double>(custum_degauss_values), set_value_after_degauss);
+	}
+	boost::python::dict Magnet::getSnapshot_Py()
+	{
+		getSnapshot();
+		return currentSnapshot.getSnapshot_Py();
+	}
+#endif
 
 
 void Magnet::setPVStructs()
@@ -172,20 +198,14 @@ std::vector<double> Magnet::getDegaussValues() const
 {
 	return degaussValues;
 }
-boost::python::list Magnet::getDegaussValues_Py() const
-{
-	return to_py_list<double>(getDegaussValues());
-}
+
 std::vector<double> Magnet::setDegaussValues(const std::vector<double>& values)
 {
 	degaussValues = values;
 	numberOfDegaussSteps = (int)degaussValues.size();
 	return degaussValues;
 }
-boost::python::list Magnet::setDegaussValues_Py(const boost::python::list& values)
-{
-	return to_py_list(setDegaussValues(to_std_vector<double>(values)));
-}
+
 double Magnet::getDegaussTolerance() const
 {
 	return degaussTolerance;
@@ -203,10 +223,7 @@ std::vector<double> Magnet::getFieldIntegralCoefficients() const
 {
 	return field_integral_coefficients;
 }
-boost::python::list Magnet::getFieldIntegralCoefficients_Py() const
-{
-	return to_py_list(getFieldIntegralCoefficients());
-}
+
 double Magnet::getMagneticLength() const
 {
 	return magnetic_length;
@@ -229,10 +246,7 @@ bool Magnet::degauss(double set_value_after_degauss)
 	return 	degauss(degaussValues, set_value_after_degauss);
 }
 
-bool Magnet::degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss)
-{
-	return degauss(to_std_vector<double>(custum_degauss_values), set_value_after_degauss);
-}
+
 bool Magnet::degauss(const bool reset_to_zero)
 {
 	if (reset_to_zero)
@@ -510,11 +524,7 @@ HardwareSnapshot Magnet::getSnapshot()
 	currentSnapshot.update(MagnetRecords::K_VAL, K_VAL.second);
 	return currentSnapshot;
 }
-boost::python::dict Magnet::getSnapshot_Py()
-{
-	getSnapshot();
-	return currentSnapshot.getSnapshot_Py();
-}
+
 
 
 bool Magnet::matchesSnapshot()const

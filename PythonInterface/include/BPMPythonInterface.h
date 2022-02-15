@@ -10,6 +10,7 @@
 //using namespace boost;
 namespace BOOST_PYTHON_BPM_INCLUDE
 {
+#ifdef BUILD_PYTHON
 	void expose_bpm_object() {
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<BPM>())->to_python_target_type());
 		if (is_registered) return;
@@ -190,6 +191,6 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 
 	}
 
-
+#endif //BUILD_PYTHON
 }
 #endif

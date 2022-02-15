@@ -77,10 +77,7 @@ std::vector<std::string> StageFactory::getAllStageNames()
 	}
 	return names;
 }
-boost::python::list StageFactory::getAllStageNames_Py()
-{
-	return to_py_list(getAllStageNames());
-}
+
 
 std::vector<std::string> StageFactory::getDevices(const std::string& name)
 {
@@ -95,10 +92,6 @@ std::vector<std::string> StageFactory::getDevices(const std::string& name)
 	}
 }
 
-boost::python::list StageFactory::getDevices_Py(const std::string& name)
-{
-	return to_py_list(getDevices(name));
-}
 
 std::map<std::string, std::vector<std::string> > StageFactory::getAllDevices()
 {
@@ -110,10 +103,6 @@ std::map<std::string, std::vector<std::string> > StageFactory::getAllDevices()
 	return nameAndDevices;
 }
 
-boost::python::dict StageFactory::getAllDevices_Py()
-{
-	return to_py_dict(getAllDevices());
-}
 
 double StageFactory::getDevicePosition(const std::string& name, const std::string& device)
 {
@@ -138,11 +127,6 @@ std::map<std::string, std::pair<std::string, double>> StageFactory::getDevicePos
 	return stageAndDevicePositions;
 }
 
-boost::python::dict StageFactory::getDevicePositions_Py(const std::string& name, boost::python::list devices)
-{
-	std::vector<std::string> devicesVec = to_std_vector<std::string>(devices);
-	return to_py_dict(getDevicePositions(name, devicesVec));
-}
 
 std::map<std::string, std::pair<std::string, double>> StageFactory::getDevicePositions(const std::string& name)
 {
@@ -150,10 +134,6 @@ std::map<std::string, std::pair<std::string, double>> StageFactory::getDevicePos
 	return getDevicePositions(name, devices);
 }
 
-boost::python::dict StageFactory::getDevicePositions_Py(const std::string& name)
-{
-	return to_py_dict(getDevicePositions(name));
-}
 
 int StageFactory::getStageNumber(const std::string& name)
 {
@@ -234,10 +214,6 @@ std::string StageFactory::getAlias(const std::string& name)
 }
 
 
-boost::python::dict StageFactory::clearAllForBeam_Py()
-{
-	return to_py_dict(clearAllForBeam());
-}
 
 bool StageFactory::moveStageToDevice(const std::string& stageName, const std::string& deviceName)
 {
@@ -369,7 +345,32 @@ std::map<std::string, double> StageFactory::getPositionSetpoints(const std::vect
 	}
 	return stagesAndSetpoints;
 }
-
+#ifdef BUILD_PYTHON
+boost::python::list StageFactory::getAllStageNames_Py()
+{
+	return to_py_list(getAllStageNames());
+}
+boost::python::list StageFactory::getDevices_Py(const std::string& name)
+{
+	return to_py_list(getDevices(name));
+}
+boost::python::dict StageFactory::getAllDevices_Py()
+{
+	return to_py_dict(getAllDevices());
+}
+boost::python::dict StageFactory::getDevicePositions_Py(const std::string& name, boost::python::list devices)
+{
+	std::vector<std::string> devicesVec = to_std_vector<std::string>(devices);
+	return to_py_dict(getDevicePositions(name, devicesVec));
+}
+boost::python::dict StageFactory::getDevicePositions_Py(const std::string& name)
+{
+	return to_py_dict(getDevicePositions(name));
+}
+boost::python::dict StageFactory::clearAllForBeam_Py()
+{
+	return to_py_dict(clearAllForBeam());
+}
 boost::python::dict StageFactory::getCurrentPositions_Py(boost::python::list names)
 {
 	std::vector<std::string> namesVec = to_std_vector<std::string>(names);
@@ -381,6 +382,26 @@ boost::python::dict StageFactory::getPositionSetpoints_Py(boost::python::list na
 	std::vector<std::string> namesVec = to_std_vector<std::string>(names);
 	return to_py_dict(getPositionSetpoints(namesVec));
 }
+boost::python::dict StageFactory::getCurrentPositionsTimestamped_Py(const std::vector<std::string>& names)
+{
+	return to_py_dict(getCurrentPositionsTimestamped(names));
+}
+boost::python::dict StageFactory::getPositionSetpointsTimestamped_Py(const std::vector<std::string>& names)
+{
+	return to_py_dict(getPositionSetpointsTimestamped(names));
+}
+
+boost::python::dict StageFactory::getCurrentPositions_Py()
+{
+	return to_py_dict(getCurrentPositions());
+}
+
+boost::python::dict StageFactory::getPositionSetpoints_Py()
+{
+	return to_py_dict(getPositionSetpoints());
+}
+
+#endif //BUILD_PYTHON
 
 std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurrentPositionsTimestamped(const std::vector<std::string>& names)
 {
@@ -392,10 +413,7 @@ std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurren
 	return stagesAndPositions;
 }
 
-boost::python::dict StageFactory::getCurrentPositionsTimestamped_Py(const std::vector<std::string>& names)
-{
-	return to_py_dict(getCurrentPositionsTimestamped(names));
-}
+
 
 std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getPositionSetpointsTimestamped(const std::vector<std::string>& names)
 {
@@ -407,30 +425,21 @@ std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getPositi
 	return stagesAndSetpoints;
 }
 
-boost::python::dict StageFactory::getPositionSetpointsTimestamped_Py(const std::vector<std::string>& names)
-{
-	return to_py_dict(getPositionSetpointsTimestamped(names));
-}
+
 
 std::map<std::string, double> StageFactory::getCurrentPositions()
 {
 	return getCurrentPositions(getAllStageNames());
 }
 
-boost::python::dict StageFactory::getCurrentPositions_Py()
-{
-	return to_py_dict(getCurrentPositions());
-}
+
 
 std::map<std::string, double> StageFactory::getPositionSetpoints()
 {
 	return getPositionSetpoints(getAllStageNames());
 }
 
-boost::python::dict StageFactory::getPositionSetpoints_Py()
-{
-	return to_py_dict(getPositionSetpoints());
-}
+
 
 std::map<std::string, std::pair<epicsTimeStamp, double>> StageFactory::getCurrentPositionsTimestamped()
 {

@@ -389,101 +389,6 @@ void Listener::startListening()
 	}
 }
 
-boost::python::dict Listener::getArray_Py()
-{
-	boost::python::dict r;
-	if (isDoubleArray())
-	{
-		std::vector<double> d_vec;
-		for (auto& item : currentArray.second)
-		{
-			d_vec.push_back(boost::get<double>(item));
-		}
-		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
-		r["value"] = to_py_list(d_vec);
-		return r;
-	}
-	else if (isShortArray())
-	{
-		std::vector<short> s_vec;
-		for (auto& item : currentArray.second)
-		{
-			s_vec.push_back(boost::get<short>(item));
-		}
-		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
-		r["value"] = to_py_list(s_vec);
-		return r;
-	}
-	else if (isEnumArray())
-	{
-		std::vector<unsigned short> us_vec;
-		for (auto& item : currentArray.second)
-		{
-			us_vec.push_back(boost::get<unsigned short>(item));
-		}
-		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
-		r["value"] = to_py_list(us_vec);
-		return r;
-	}
-	else if (isStringArray())
-	{
-		std::vector<std::string> str_vec;
-		for (auto& item : currentArray.second)
-		{
-			str_vec.push_back(boost::get<std::string>(item));
-		}
-		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
-		r["value"] = to_py_list(str_vec);
-		return r;
-	}
-	else if (isFloatArray())
-	{
-		std::vector<float> f_vec;
-		for (auto& item : currentArray.second)
-		{
-			f_vec.push_back(boost::get<float>(item));
-		}
-		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
-		r["value"] = to_py_list(f_vec);
-		return r;
-	}
-	else if (isLongArray())
-	{
-		std::vector<long> l_vec;
-		for (auto& item : currentArray.second)
-		{
-			l_vec.push_back(boost::get<long>(item));
-		}
-		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
-		r["value"] = to_py_list(l_vec);
-		return r;
-	}
-}
-
-boost::python::object Listener::getArrayAverage_Py()
-{
-	double mean = 0.0f;
-	if (isDoubleArray())
-	{
-		mean = getArrayAverage<double>();
-		return boost::python::object(mean);
-	}
-	else if (isShortArray())
-	{
-		mean = getArrayAverage<short>();
-		return boost::python::object(mean);
-	}
-	else if (isFloatArray())
-	{
-		mean = getArrayAverage<float>();
-		return boost::python::object(mean);
-	}
-	else if (isLongArray())
-	{
-		mean = getArrayAverage<long>();
-		return boost::python::object(mean);
-	}
-}
 
 void Listener::setBufferSize(int size)
 {
@@ -517,105 +422,7 @@ std::vector<double> Listener::getArrayBufferAverageArray()
 	}
 }
 
-boost::python::list Listener::getArrayBufferAverageArray_Py()
-{
-	std::vector<double> bufferAverageVector;
-	if (isDoubleArrayBuffer())
-	{
-		bufferAverageVector = getArrayBufferAverageArray<double>();
-	}
-	else if (isLongArrayBuffer())
-	{
-		bufferAverageVector = getArrayBufferAverageArray<long>();
-	}
-	else if (isShortArrayBuffer())
-	{
-		bufferAverageVector = getArrayBufferAverageArray<short>();
-	}
-	else if (isFloatArrayBuffer())
-	{
-		bufferAverageVector = getArrayBufferAverageArray<float>();
-	}
 
-	boost::python::list bufferAverageList = to_py_list(bufferAverageVector);
-	return bufferAverageList;
-}
-
-
-
-boost::python::dict Listener::getValue_Py()
-{
-	if (!currentValue.second.empty())
-	{
-		boost::python::dict r;
-		r["timestamp"] = epicsInterface->getEPICSTime(currentValue.first);
-		r["value"] = boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue.second);
-		return r;
-	}
-	else
-	{
-		std::cout << "waiting on connection, please try again.." << std::endl;
-	}
-}
-
-boost::python::dict Listener::getBuffer_Py()
-{
-	boost::python::dict r;
-	if (isDoubleBuffer())
-	{
-		//boost::circular_buffer<double> dblBuff(currentBuffer.capacity());
-		for (auto& item : currentBuffer)
-		{
-			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<double>(item.second));
-		}
-		return r;
-	}
-	else if (isShortBuffer())
-	{
-		boost::circular_buffer<short> shortBuff(currentBuffer.capacity());
-		for (auto& item : currentBuffer)
-		{
-			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<short>(item.second));
-		}
-		return r;
-	}
-	else if (isLongBuffer())
-	{
-		boost::circular_buffer<long> longBuff(currentBuffer.capacity());
-		for (auto& item : currentBuffer)
-		{
-			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<long>(item.second));
-		}
-		return r;
-	}
-	else if (isEnumBuffer())
-	{
-		boost::circular_buffer<unsigned short> usBuff(currentBuffer.capacity());
-		for (auto& item : currentBuffer)
-		{
-			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<unsigned short>(item.second));
-		}
-		return r;
-	}
-	else if (isStringBuffer())
-	{
-		boost::circular_buffer<std::string> strBuff(currentBuffer.capacity());
-		for (auto& item : currentBuffer)
-		{
-			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<std::string>(item.second));
-		}
-		return r;
-	}
-	else if (isFloatBuffer())
-	{
-		boost::circular_buffer<float> fltBuff(currentBuffer.capacity());
-		for (auto& item : currentBuffer)
-		{
-			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<float>(item.second));
-		}
-		return r;
-	}
-}
 
 void Listener::clearBuffer()
 {
@@ -626,106 +433,6 @@ void Listener::clearArrayBuffer()
 {
 	currentArrayBuffer.clear();
 }
-
-boost::python::dict Listener::getArrayBuffer_Py()
-{
-	boost::python::dict r;
-	if (isDoubleArrayBuffer())
-	{
-		std::cout << "constructing py list" << std::endl;
-		boost::circular_buffer<std::vector<double>> dblBuff(currentArrayBuffer.capacity());
-		for (auto& vector : currentArrayBuffer)
-		{
-			std::vector<double> bufferVec;
-			for (auto& item : vector.second)
-			{
-				bufferVec.push_back(boost::get<double>(item));
-			}
-			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
-			//dblBuff.push_back(bufferVec);
-		}
-		return r; //to_py_list(dblBuff);
-	}
-	else if (isShortArrayBuffer())
-	{
-		std::cout << "constructing py list" << std::endl;
-		boost::circular_buffer<std::vector<short>> shortBuff(currentArrayBuffer.capacity());
-		for (auto& vector : currentArrayBuffer)
-		{
-			std::vector<short> bufferVec;
-			for (auto& item : vector.second)
-			{
-				bufferVec.push_back(boost::get<short>(item));
-			}
-			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
-			//shortBuff.push_back(bufferVec);
-		}
-		return r;
-	}
-	else if (isLongArrayBuffer())
-	{
-		std::cout << "constructing py list" << std::endl;
-		boost::circular_buffer<std::vector<long>> longBuff(currentArrayBuffer.capacity());
-		for (auto& vector : currentArrayBuffer)
-		{
-			std::vector<long> bufferVec;
-			for (auto& item : vector.second)
-			{
-				bufferVec.push_back(boost::get<long>(item));
-			}
-			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//longBuff.push_back(bufferVec);
-		}
-		return r;// to_py_list(longBuff);
-	}
-	else if (isEnumArrayBuffer())
-	{
-		std::cout << "constructing py list" << std::endl;
-		boost::circular_buffer<std::vector<unsigned short>> usBuff(currentArrayBuffer.capacity());
-		for (auto& vector : currentArrayBuffer)
-		{
-			std::vector<unsigned short> bufferVec;
-			for (auto& item : vector.second)
-			{
-				bufferVec.push_back(boost::get<unsigned short>(item));
-			}
-			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
-			//usBuff.push_back(bufferVec);
-		}
-		return r;// to_py_list(usBuff);
-	}
-	else if (isStringArrayBuffer())
-	{
-		std::cout << "constructing py list" << std::endl;
-		boost::circular_buffer<std::vector<std::string>> strBuff(currentArrayBuffer.capacity());
-		for (auto& vector : currentArrayBuffer)
-		{
-			std::vector<std::string> bufferVec;
-			for (auto& item : vector.second)
-			{
-				bufferVec.push_back(boost::get<std::string>(item));
-			}
-			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//strBuff.push_back(bufferVec);
-		}
-		return r;// to_py_list(strBuff);
-	}
-	else if (isFloatArrayBuffer())
-	{
-		std::cout << "constructing py list" << std::endl;
-		boost::circular_buffer<std::vector<float>> floatBuff(currentArrayBuffer.capacity());
-		for (auto& vector : currentArrayBuffer)
-		{
-			std::vector<float> bufferVec;
-			for (auto& item : vector.second)
-			{
-				bufferVec.push_back(boost::get<float>(item));
-			}
-			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//floatBuff.push_back(bufferVec);
-		}
-		return r;//to_py_list(floatBuff);
-	}
-}
-
-
 
 double Listener::getBufferAverage()
 {
@@ -946,3 +653,302 @@ bool Listener::isStringArrayBuffer()
 		return(currentArrayBuffer.at(0).second.at(0).type() == typeid(std::string));
 	}
 }
+
+
+
+#ifdef BUILD_PYTHON
+boost::python::dict Listener::getArray_Py()
+{
+	boost::python::dict r;
+	if (isDoubleArray())
+	{
+		std::vector<double> d_vec;
+		for (auto& item : currentArray.second)
+		{
+			d_vec.push_back(boost::get<double>(item));
+		}
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(d_vec);
+		return r;
+	}
+	else if (isShortArray())
+	{
+		std::vector<short> s_vec;
+		for (auto& item : currentArray.second)
+		{
+			s_vec.push_back(boost::get<short>(item));
+		}
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(s_vec);
+		return r;
+	}
+	else if (isEnumArray())
+	{
+		std::vector<unsigned short> us_vec;
+		for (auto& item : currentArray.second)
+		{
+			us_vec.push_back(boost::get<unsigned short>(item));
+		}
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(us_vec);
+		return r;
+	}
+	else if (isStringArray())
+	{
+		std::vector<std::string> str_vec;
+		for (auto& item : currentArray.second)
+		{
+			str_vec.push_back(boost::get<std::string>(item));
+		}
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(str_vec);
+		return r;
+	}
+	else if (isFloatArray())
+	{
+		std::vector<float> f_vec;
+		for (auto& item : currentArray.second)
+		{
+			f_vec.push_back(boost::get<float>(item));
+		}
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(f_vec);
+		return r;
+	}
+	else if (isLongArray())
+	{
+		std::vector<long> l_vec;
+		for (auto& item : currentArray.second)
+		{
+			l_vec.push_back(boost::get<long>(item));
+		}
+		r["timestamp"] = epicsInterface->getEPICSTime(currentArray.first);
+		r["value"] = to_py_list(l_vec);
+		return r;
+	}
+}
+
+boost::python::object Listener::getArrayAverage_Py()
+{
+	double mean = 0.0f;
+	if (isDoubleArray())
+	{
+		mean = getArrayAverage<double>();
+		return boost::python::object(mean);
+	}
+	else if (isShortArray())
+	{
+		mean = getArrayAverage<short>();
+		return boost::python::object(mean);
+	}
+	else if (isFloatArray())
+	{
+		mean = getArrayAverage<float>();
+		return boost::python::object(mean);
+	}
+	else if (isLongArray())
+	{
+		mean = getArrayAverage<long>();
+		return boost::python::object(mean);
+	}
+}
+
+boost::python::list Listener::getArrayBufferAverageArray_Py()
+{
+	std::vector<double> bufferAverageVector;
+	if (isDoubleArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<double>();
+	}
+	else if (isLongArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<long>();
+	}
+	else if (isShortArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<short>();
+	}
+	else if (isFloatArrayBuffer())
+	{
+		bufferAverageVector = getArrayBufferAverageArray<float>();
+	}
+
+	boost::python::list bufferAverageList = to_py_list(bufferAverageVector);
+	return bufferAverageList;
+}
+
+
+
+boost::python::dict Listener::getValue_Py()
+{
+	if (!currentValue.second.empty())
+	{
+		boost::python::dict r;
+		r["timestamp"] = epicsInterface->getEPICSTime(currentValue.first);
+		r["value"] = boost::apply_visitor(ListenerToPy::convert_to_py{}, currentValue.second);
+		return r;
+	}
+	else
+	{
+		std::cout << "waiting on connection, please try again.." << std::endl;
+	}
+}
+
+boost::python::dict Listener::getBuffer_Py()
+{
+	boost::python::dict r;
+	if (isDoubleBuffer())
+	{
+		//boost::circular_buffer<double> dblBuff(currentBuffer.capacity());
+		for (auto& item : currentBuffer)
+		{
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<double>(item.second));
+		}
+		return r;
+	}
+	else if (isShortBuffer())
+	{
+		boost::circular_buffer<short> shortBuff(currentBuffer.capacity());
+		for (auto& item : currentBuffer)
+		{
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<short>(item.second));
+		}
+		return r;
+	}
+	else if (isLongBuffer())
+	{
+		boost::circular_buffer<long> longBuff(currentBuffer.capacity());
+		for (auto& item : currentBuffer)
+		{
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<long>(item.second));
+		}
+		return r;
+	}
+	else if (isEnumBuffer())
+	{
+		boost::circular_buffer<unsigned short> usBuff(currentBuffer.capacity());
+		for (auto& item : currentBuffer)
+		{
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<unsigned short>(item.second));
+		}
+		return r;
+	}
+	else if (isStringBuffer())
+	{
+		boost::circular_buffer<std::string> strBuff(currentBuffer.capacity());
+		for (auto& item : currentBuffer)
+		{
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<std::string>(item.second));
+		}
+		return r;
+	}
+	else if (isFloatBuffer())
+	{
+		boost::circular_buffer<float> fltBuff(currentBuffer.capacity());
+		for (auto& item : currentBuffer)
+		{
+			r[epicsInterface->getEPICSTime(item.first)] = (boost::get<float>(item.second));
+		}
+		return r;
+	}
+}
+
+boost::python::dict Listener::getArrayBuffer_Py()
+{
+	boost::python::dict r;
+	if (isDoubleArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<double>> dblBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<double> bufferVec;
+			for (auto& item : vector.second)
+			{
+				bufferVec.push_back(boost::get<double>(item));
+			}
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
+			//dblBuff.push_back(bufferVec);
+		}
+		return r; //to_py_list(dblBuff);
+	}
+	else if (isShortArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<short>> shortBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<short> bufferVec;
+			for (auto& item : vector.second)
+			{
+				bufferVec.push_back(boost::get<short>(item));
+			}
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
+			//shortBuff.push_back(bufferVec);
+		}
+		return r;
+	}
+	else if (isLongArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<long>> longBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<long> bufferVec;
+			for (auto& item : vector.second)
+			{
+				bufferVec.push_back(boost::get<long>(item));
+			}
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//longBuff.push_back(bufferVec);
+		}
+		return r;// to_py_list(longBuff);
+	}
+	else if (isEnumArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<unsigned short>> usBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<unsigned short> bufferVec;
+			for (auto& item : vector.second)
+			{
+				bufferVec.push_back(boost::get<unsigned short>(item));
+			}
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);
+			//usBuff.push_back(bufferVec);
+		}
+		return r;// to_py_list(usBuff);
+	}
+	else if (isStringArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<std::string>> strBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<std::string> bufferVec;
+			for (auto& item : vector.second)
+			{
+				bufferVec.push_back(boost::get<std::string>(item));
+			}
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//strBuff.push_back(bufferVec);
+		}
+		return r;// to_py_list(strBuff);
+	}
+	else if (isFloatArrayBuffer())
+	{
+		std::cout << "constructing py list" << std::endl;
+		boost::circular_buffer<std::vector<float>> floatBuff(currentArrayBuffer.capacity());
+		for (auto& vector : currentArrayBuffer)
+		{
+			std::vector<float> bufferVec;
+			for (auto& item : vector.second)
+			{
+				bufferVec.push_back(boost::get<float>(item));
+			}
+			r[epicsInterface->getEPICSTime(vector.first)] = to_py_list(bufferVec);//floatBuff.push_back(bufferVec);
+		}
+		return r;//to_py_list(floatBuff);
+	}
+}
+
+#endif //BUILD_PYTHON

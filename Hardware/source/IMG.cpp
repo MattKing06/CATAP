@@ -8,8 +8,6 @@
 #include <functional>
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
-
-#include "PythonTypeConversions.h"
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 

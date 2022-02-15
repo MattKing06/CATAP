@@ -7,7 +7,10 @@
 #include <vector>
 #include <map>
 #include <utility>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 #include <boost/circular_buffer.hpp>
 
 /** @addtogroup factories
@@ -160,10 +163,12 @@ public:
 	@param[in] name: the name of the screen.
 	@param[out] std::vector<STATE>: returns a vector of all available devices for that screen.*/
 	std::vector< STATE > getAvailableDevices(const std::string& name);
+#ifdef BUILD_PYTHON
 	/*!returns the available devices for a given screen, Python version 
 	@param[in] name: the name of the screen.
 	@param[out] list: returns a list of all available devices for that screen.*/
 	boost::python::list getAvailableDevices_Py(const std::string& name);
+#endif //BUILD_PYTHON
 	/*!returns true if the screen is in the given state.
 	@param[in] name: the name of the screen.
 	@param[in] STATE: the state (i.e. device position).
@@ -336,12 +341,11 @@ public:
 	@param[in] state: the desired screenState. Use getAvailableDevices to find out what states the screen can be in.
 	@param[out] bool: returns true if successful.*/
 	bool setScreenSetState(const std::string& name, STATE state);
-
 	std::vector<std::string> getAliases(const std::string& name);
+
+#ifdef BUILD_PYTHON
+
 	boost::python::list getAliases_Py(const std::string& name);
-
-
-
 	/*!gets a python list of the hardware names associated with all of the screens in screenMap
 	@param[out] list :a Python list containing all of the harwdare names for the screens in screenMap*/
 	boost::python::list getAllScreenNames_Py();
@@ -366,7 +370,7 @@ public:
 	@param[in] list: the names of the screens.
 	@param[out] dict: returns a dict of the specified screen objects, keyed by name.*/
 	boost::python::dict getScreens_Py(boost::python::list names);
-
+#endif //BUILD_PYTHON
 	/*!Add name aliases to alias_name_map a Python dict of the specified screen objects.
 	@param[in] list: the names of the screens.
 	@param[out] dict: returns a dict of the specified screen objects, keyed by name.*/

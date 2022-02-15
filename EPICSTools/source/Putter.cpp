@@ -1,5 +1,4 @@
 #include <Putter.h>
-#include <PythonTypeConversions.h>
 
 Putter::Putter()
 {
@@ -67,6 +66,7 @@ std::string Putter::getEPICSPVName(const std::string& pv)
 	}
 }
 
+#ifdef BUILD_PYTHON
 
 void Putter::putArray_Py(boost::python::list pyValue)
 {
@@ -153,3 +153,4 @@ void Putter::put_Py(boost::python::object pyValue)
 		}
 	}
 }
+#endif //BUILD_PYTHON

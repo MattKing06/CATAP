@@ -14,8 +14,6 @@
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <GlobalTypeEnums.h>
-#include <boost/python/dict.hpp>
-#include <boost/python/list.hpp>
 
 
 class EPICSIMGInterface;

@@ -20,4 +20,5 @@ set_property(TARGET LoggingSystem PROPERTY FOLDER "LoggingSystem")
 set_target_properties(LoggingSystem PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/LoggingSystem")
 add_subdirectory(test)

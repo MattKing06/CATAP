@@ -2,8 +2,10 @@
 #define _RUNNING_STATS_H_
 
 #include <iostream>
+#include <vector>
+#ifdef BUILD_PYTHON
 #include "PythonTypeConversions.h"
-
+#endif // BUILD_PYTHON
 
 
 
@@ -141,6 +143,7 @@ public:
 	{
 		return buffer;
 	}
+#ifdef BUILD_PYTHON
 	boost::python::list Buffer_Py()const
 	{
 		return to_py_list<double>(buffer);
@@ -160,6 +163,7 @@ public:
 		r["Buffer"] = Buffer_Py();
 		return r;
 	}
+#endif //BUILD_PYTHON
 
 	size_t setBufferSize(size_t s)
 	{

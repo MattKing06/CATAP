@@ -5,7 +5,6 @@
 #include <utility>
 #include "GlobalFunctions.h"
 #include "GlobalConstants.h"
-#include <PythonTypeConversions.h>
 #ifndef __CINT__
 #include <cadef.h>
 #endif

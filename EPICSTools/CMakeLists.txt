@@ -31,20 +31,23 @@ target_include_directories(EPICSTools PUBLIC ${PROJECT_SOURCE_DIR}/EPICSInterfac
 target_include_directories(EPICSTools PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
 target_include_directories(EPICSTools PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/include)
 target_include_directories(EPICSTools PRIVATE include)
-target_include_directories(EPICSTools PRIVATE ${Boost_INCLUDE_DIR})
 target_include_directories(EPICSTools PUBLIC ${Boost_INCLUDE_DIR})
-target_include_directories(EPICSTools PUBLIC ${Python3_INCLUDE_DIRS})
+
 TARGET_LINK_LIBRARIES(EPICSTools
 					  PUBLIC
 					    PV
 					  PRIVATE
 						Utilities
 			     	    ${Boost_LIBRARIES}
-						${Python3_LIBRARY}
 		    			EPICSInterface
 						LoggingSystem)
+if (BUILD_PYTHON)
+TARGET_LINK_LIBRARIES(EPICSTools PUBLIC ${Python3_LIBRARY})
+TARGET_INCLUDE_DIRECTORIES(EPICSTools PUBLIC ${Python3_INCLUDE_DIRS})
+endif(BUILD_PYTHON)
 set_property(TARGET EPICSTools PROPERTY FOLDER "EPICSTools")
 set_target_properties(EPICSTools PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/EPICSTools")
 add_subdirectory(test)

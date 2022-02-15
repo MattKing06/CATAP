@@ -163,11 +163,12 @@ std::vector<std::string> Screen::getAliases() const
 {
 	return this->aliases;
 }
-
+#ifdef BUILD_PYTHON
 boost::python::list Screen::getAliases_Py() const
 {
 	return to_py_list<std::string>(getAliases());
 }
+#endif //BUILD_PYTHON
 
 
 std::string Screen::getScreenName() const

@@ -45,7 +45,9 @@ public:
 	bool isMoving();
 	bool isAtDevice(const std::string& device);
 	std::vector<std::string> getDevices();
+#ifdef BUILD_PYTHON
 	boost::python::list getDevices_Py();
+#endif //BUILD_PYTHON
 	bool isReadPositionEqualToSetPosition();
 	double getMinPosition();
 	double getMaxPosition();

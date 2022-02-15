@@ -8,7 +8,10 @@
 #include <vector>
 #include <map>
 #include <utility>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 #include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
@@ -402,6 +405,7 @@ public:
 	@param[out] value: the value of RD2.*/
 	long getRD2(const std::string& name);
 	STATE getState(const std::string& name) const;
+#ifdef BUILD_PYTHON
 	/*!returns a Python list for the raw data vector of the specified BPM.
 	@param[in] name: the name of the BPM.
 	@param[out] list: the raw data list.*/
@@ -605,7 +609,7 @@ public:
 	@param[in] charge: the bunch charge.
 	@param[out] dict: true if it worked, keyed by name.*/
 	boost::python::dict reCalAllAttenuation_Py(const double& charge);
-
+#endif //BUILD_PYTHON
 	/*! turns debug messages on for BPMFactory and calls same function in all BPMs and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for BPMFactory and calls same function in all BPMs and configReader*/

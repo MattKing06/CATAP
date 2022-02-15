@@ -8,7 +8,10 @@
 #include <vector>
 #include <map>
 #include <utility>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 #include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
@@ -50,7 +53,17 @@ public:
 	std::map<std::string, LaserEnergyMeter> getAllLaserEnergyMeters();
 	std::map<std::string, LaserEnergyMeter> laserEnergyMeterMap;
 	std::vector<std::string> getAllLaserEnergyMeterNames();
+#ifdef BUILD_PYTHON
 	boost::python::list getAllLaserEnergyMeterNames_Py();
+	/*!returns a Python list of laser energy PV values from the vector for the specified laser energy meter (used w/ monitorForNShots).
+	@param[in] name: the laser energy meter name.
+	@param[out] list: the laser energy vector.*/
+	boost::python::list getEnergyVector_Py(const std::string& name);
+	/*!returns a Python list of laser energy PV values from the buffer for the specified laser energy meter.
+	@param[in] name: the laser energy meter name.
+	@param[out] list: the laser energy buffer.*/
+	boost::python::list getEnergyBuffer_Py(const std::string& name);
+#endif //BUILD_PYTHON
 	/*!gets all the full name of a certain laser energy meter.
 	@param[in] name: the name of the laser energy meter.
 	@param[out] name : the name of the laser energy meter. Not sure why this function is here.*/
@@ -148,14 +161,6 @@ public:
 	/*! remove all data from laser energy buffer.
 	@param[in] name: the laser energy meter name. */
 	void clearBuffers(const std::string& name);
-	/*!returns a Python list of laser energy PV values from the vector for the specified laser energy meter (used w/ monitorForNShots).
-	@param[in] name: the laser energy meter name.
-	@param[out] list: the laser energy vector.*/
-	boost::python::list getEnergyVector_Py(const std::string& name);
-	/*!returns a Python list of laser energy PV values from the buffer for the specified laser energy meter.
-	@param[in] name: the laser energy meter name.
-	@param[out] list: the laser energy buffer.*/
-	boost::python::list getEnergyBuffer_Py(const std::string& name);
 	/*! turns debug messages on for LaserEnergyMeterFactory and calls same function in all LaserEnergyMeters and configReader*/
 	void debugMessagesOn();
 	/*! turns debug messages off for LaserEnergyMeterFactory and calls same function in all LaserEnergyMeters and configReader*/

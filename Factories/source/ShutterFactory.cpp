@@ -1,8 +1,9 @@
 #include <ShutterFactory.h>
 #include <ShutterPVRecords.h>
 #include <GlobalFunctions.h>
+#ifdef BUILD_PYTHON
 #include <PythonTypeConversions.h>
-
+#endif //BUILD_PYTHON
 ShutterFactory::ShutterFactory()
 {
 }
@@ -180,17 +181,7 @@ std::map<std::string, STATE> ShutterFactory::getCMIBitMap(const  std::string& na
 	return dummy;
 }
 
-boost::python::dict ShutterFactory::getCMIBitMap_Py(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(shutterMap, full_name))
-	{
-		return shutterMap.at(full_name).getCMIBitMap_Py();
-	}
-	boost::python::dict dummy;
-	return dummy;
-}
-// GET MAGNET OBJECT  FUNCTIONS
+// GET SHUTTER OBJECT FUNCTIONS
 //
 Shutter& ShutterFactory::getShutter(const std::string& shutter_name)
 {
@@ -210,10 +201,7 @@ std::vector<std::string> ShutterFactory::getAllShutterNames() const
 	}
 	return r;
 }
-boost::python::list ShutterFactory::getAllShutterNames_Py() const
-{
-	return to_py_list<std::string>(getAllShutterNames());
-}
+
 
 ShutterState ShutterFactory::getShutterState(const std::string& shutter_name)const
 {
@@ -244,6 +232,22 @@ std::map<std::string, ShutterState> ShutterFactory::getShutterStates()const
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
+boost::python::dict ShutterFactory::getCMIBitMap_Py(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(shutterMap, full_name))
+	{
+		return shutterMap.at(full_name).getCMIBitMap_Py();
+	}
+	boost::python::dict dummy;
+	return dummy;
+}
+boost::python::list ShutterFactory::getAllShutterNames_Py() const
+{
+	return to_py_list<std::string>(getAllShutterNames());
+}
+
 
 boost::python::dict ShutterFactory::getShutterStates_Py()const
 {
@@ -270,7 +274,7 @@ boost::python::dict ShutterFactory::getShutterStateDictionaries()const
 	}
 	return r;
 }
-
+#endif //BUILD_PYTHON
 
 void ShutterFactory::updateAliasNameMap(const Shutter& shutter)
 {

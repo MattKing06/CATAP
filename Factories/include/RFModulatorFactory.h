@@ -32,18 +32,10 @@ public:
 	@param[in] string, name of modulator
 	@param[out] vector<string>, name */
 	std::vector<std::string> getAllRFModulatorNames();
-	/*! get the names of each modulator in the factory (Python version)
-	@param[in] string, name of modulator
-	@param[out] vector<string>, name */
-	boost::python::list getAllRFModulatorNames_Py();
 	/*! get the name aliases of modulator with the passed name
 	@param[in] string, name of modulator
 	@param[out] vector<string>, name aliases */
 	std::vector<std::string> getAliases(const std::string& name) const;
-	/*! get the name aliases of modulator with the passed name (Python version)
-	@param[in] string, name of modulator
-	@param[out] vector<string>, name aliases */
-	boost::python::list getAliases_Py(const std::string& name) const;
 	/*! get the main STATE of a modulator 
 		@param[in] string, name of modulator
 		@param[out] STATE,  current main state */
@@ -105,14 +97,24 @@ public:
 	@param[in] string, name of modulator
 	@param[out] map<strign,double>, all low level numerical data in map   */
 	std::map<std::string, double> getLowLevelNumericalData(const std::string& name)const;
-	/*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) Python Version
-	@param[in] string, name of modulator
-	@param[out] dict, all low level numerical data in map   */
-	boost::python::dict getLowLevelNumericalData_Py(const std::string& name)const;
+
 	/*! get the low level string data for this modulator (error messages) 
 	@param[in] string, name of modulator
 	@param[out] dict, all low level numerical data in map   */
 	std::map<std::string, std::string> getLowLevelStringData(const std::string& name)const;
+#ifdef BUILD_PYTHON
+	/*! get the names of each modulator in the factory (Python version)
+	@param[in] string, name of modulator
+	@param[out] vector<string>, name */
+	boost::python::list getAllRFModulatorNames_Py();
+	/*! get the name aliases of modulator with the passed name (Python version)
+	@param[in] string, name of modulator
+	@param[out] vector<string>, name aliases */
+	boost::python::list getAliases_Py(const std::string& name) const;
+	/*! get the low level numerical data for this modulator (voltages, vacuumpressures etc) Python Version
+	@param[in] string, name of modulator
+	@param[out] dict, all low level numerical data in map   */
+	boost::python::dict getLowLevelNumericalData_Py(const std::string& name)const;
 	/*! get the low level string data for this modulator (error messages) Python Version
 	@param[in] string, name of modulator
 	@param[out] dict, all low level string data */
@@ -121,7 +123,7 @@ public:
 	@param[in] string, name of modulator
 	@param[out] dict, all low level string and numerical data */
 	boost::python::dict getLowLevelData(const std::string& name)const;
-
+#endif //BUILD_PYTHON
 	void debugMessagesOn();
 	void debugMessagesOff();
 	void messagesOn();

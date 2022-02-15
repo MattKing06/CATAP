@@ -3,7 +3,9 @@
 #include "GlobalStateEnums.h"
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
+#ifdef BUILD_PYTHON
 #include "PythonTypeConversions.h"
+#endif //BUILD_PYTHON
 #include "SnapshotFileManager.h"
 #include <algorithm>
 #include <exception>
@@ -66,8 +68,10 @@ bool CameraFactory::setup(const std::string& version){ return setup(version, TYP
 bool CameraFactory::setup(TYPE machineArea){ return setup(GlobalConstants::nominal, machineArea);}
 bool CameraFactory::setup(const std::string& version, TYPE machineArea){ return setup(GlobalConstants::nominal, std::vector<TYPE>{machineArea});}
 bool CameraFactory::setup(const std::vector<TYPE>& machineAreas){ return setup(GlobalConstants::nominal, machineAreas);}
+#ifdef BUILD_PYTHON
 bool CameraFactory::setup(const boost::python::list& machineAreas){	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));}
 bool CameraFactory::setup(const std::string& version, const boost::python::list& machineAreas){	return setup(version, to_std_vector<TYPE>(machineAreas));}
+#endif //BUILD_PYTHON
 bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	messenger.printDebugMessage("setup Camera Factory with vector of machine areas");
@@ -148,7 +152,7 @@ bool CameraFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	}
 	catch(const std::out_of_range& error)
 	{
-		std::cout << "ERROR" << std::endl;
+		std::cout << "ERROR: " << error.what() << std::endl;
 	}
 		
 	hasBeenSetup = true;
@@ -309,6 +313,8 @@ std::vector<std::string> CameraFactory::getAliases(const std::string& name) cons
 	}
 	return std::vector<std::string>{name + " DOES NOT EXIST"};
 }
+
+#ifdef BUILD_PYTHON
 boost::python::list CameraFactory::getAliases_Py(const std::string& name) const
 {
 	std::string full_name = getFullName(name);
@@ -318,15 +324,7 @@ boost::python::list CameraFactory::getAliases_Py(const std::string& name) const
 	}
 	return to_py_list<std::string>(std::vector<std::string>{name + " DOES NOT EXIST"});
 }
-std::vector<std::string> CameraFactory::getScreenNames(const std::string& name) const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).getScreenNames();
-	}
-	return std::vector<std::string>{name + " DOES NOT EXIST"};
-}
+
 boost::python::list CameraFactory::getScreenNames_Py(const std::string& name) const
 {
 	std::string full_name = getFullName(name);
@@ -336,6 +334,18 @@ boost::python::list CameraFactory::getScreenNames_Py(const std::string& name) co
 	}
 	return to_py_list<std::string>(std::vector<std::string>{name + " DOES NOT EXIST"});
 }
+#endif //BUILD_PYTHON
+
+std::vector<std::string> CameraFactory::getScreenNames(const std::string& name) const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getScreenNames();
+	}
+	return std::vector<std::string>{name + " DOES NOT EXIST"};
+}
+
 std::string CameraFactory::getScreen(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1141,6 +1151,7 @@ bool CameraFactory::setROI(const std::string& name, std::map<std::string, long> 
 	}
 	return false;
 }
+#ifdef BUILD_PYTHON
 bool CameraFactory::setROI_Py(const std::string& name, boost::python::dict settings)
 {
 	std::string full_name = getFullName(name);
@@ -1150,6 +1161,9 @@ bool CameraFactory::setROI_Py(const std::string& name, boost::python::dict setti
 	}
 	return false;
 }
+
+#endif //BUILD_PYTHON
+
 long CameraFactory::getROIMinX(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1197,11 +1211,26 @@ std::map<std::string, double> CameraFactory::getAnalysisResultsPixels(const std:
 	r["ERROR"] = GlobalConstants::double_min; // MAGIC STRING
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict CameraFactory::getAnalysisResultsPixels_Py(const std::string& name)const
 {
 	return to_py_dict<std::string, double>(getAnalysisResultsPixels(name));
 }
-
+boost::python::dict CameraFactory::getROI_Py(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getROI_Py();
+	}
+	std::map<std::string, long> r;
+	r["x_pos"] = GlobalConstants::long_min; // MAGIC STRING
+	r["y_pos"] = GlobalConstants::long_min; // MAGIC STRING
+	r["x_size"] = GlobalConstants::long_min;// MAGIC STRING
+	r["y_size"] = GlobalConstants::long_min;// MAGIC STRING
+	return to_py_dict<std::string, long>(r);
+}
+#endif //BUILD_PYTHON
 std::map<std::string, long> CameraFactory::getROI(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1216,20 +1245,7 @@ std::map<std::string, long> CameraFactory::getROI(const std::string& name)const
 	r["y_size"] = GlobalConstants::long_min;// MAGIC STRING
 	return r;
 }
-boost::python::dict CameraFactory::getROI_Py(const std::string& name )const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).getROI_Py();
-	}
-	std::map<std::string, long> r;
-	r["x_pos"] = GlobalConstants::long_min; // MAGIC STRING
-	r["y_pos"] = GlobalConstants::long_min; // MAGIC STRING
-	r["x_size"] = GlobalConstants::long_min;// MAGIC STRING
-	r["y_size"] = GlobalConstants::long_min;// MAGIC STRING
-	return to_py_dict<std::string, long>(r);
-}
+
 bool CameraFactory::setUseFloor(const std::string& name )
 {
 	std::string full_name = getFullName(name);
@@ -1589,6 +1605,7 @@ bool CameraFactory::setMask(const std::string& name, std::map<std::string, long>
 	}
 	return GlobalConstants::double_min;
 }
+#ifdef BUILD_PYTHON
 bool CameraFactory::setMask_Py(const std::string& name, boost::python::dict settings)
 {
 	std::string full_name = getFullName(name);
@@ -1598,6 +1615,7 @@ bool CameraFactory::setMask_Py(const std::string& name, boost::python::dict sett
 	}
 	return GlobalConstants::double_min;
 }
+#endif //BUILD_PYTHON
 long CameraFactory::getMaskXCenter(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1648,6 +1666,7 @@ std::map<std::string, long> CameraFactory::getMask(const std::string& name)const
 	r["mask_rad_x"] = GlobalConstants::long_min;// MAGIC STRING
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict CameraFactory::getMask_Py(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1657,6 +1676,7 @@ boost::python::dict CameraFactory::getMask_Py(const std::string& name)const
 	}
 	return to_py_dict<std::string, long>(CameraFactory::getMask(name));
 }
+#endif //BUILD_PYTHON
 bool CameraFactory::setMaskAndROIxMax(const std::string& name, long val)
 {
 	std::string full_name = getFullName(name);
@@ -1747,6 +1767,7 @@ bool CameraFactory::setMaskandROI(const std::string& name, std::map<std::string,
 	}
 	return false;
 }
+#ifdef BUILD_PYTHON
 bool CameraFactory::setMaskandROI_Py(const std::string& name, boost::python::dict settings)
 {
 	std::string full_name = getFullName(name);
@@ -1756,6 +1777,16 @@ bool CameraFactory::setMaskandROI_Py(const std::string& name, boost::python::dic
 	}
 	return false;
 }
+boost::python::dict CameraFactory::getMaskandROI_Py(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getMaskandROI_Py();
+	}
+	return to_py_dict<std::string, long>(getMaskandROI(name));
+}
+#endif //BUILD_PYTHON
 std::map<std::string, long> CameraFactory::getMaskandROI(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -1770,15 +1801,7 @@ std::map<std::string, long> CameraFactory::getMaskandROI(const std::string& name
 	r["y_size"] = GlobalConstants::double_min;// MAGIC STRING
 	return r;
 }
-boost::python::dict CameraFactory::getMaskandROI_Py(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).getMaskandROI_Py();
-	}
-	return to_py_dict<std::string, long>(getMaskandROI(name));
-}
+
 
 
 double CameraFactory::getActiveCameraLimit(const std::string& name) const
@@ -1804,9 +1827,9 @@ bool CameraFactory::canStartCamera(const std::string& name)const
 	std::string full_name = getFullName(name);
 	if (GlobalFunctions::entryExists(camera_map, full_name))
 	{
-		return camera_map.at(full_name).getMaskandROI_Py();
+		return camera_map.at(full_name).canStartCamera();
 	}
-	return to_py_dict<std::string, long>(getMaskandROI(name));
+	return false;
 }
 bool CameraFactory::stopAllAcquiring()
 {
@@ -1850,10 +1873,12 @@ bool CameraFactory::stopAllAcquiringAndWait()
 	}
 	return stopAcquiringAndWait(cam_names);
 }
+#ifdef BUILD_PYTHON
 bool CameraFactory::stopAcquiringAndWait_Py(const boost::python::list& cam_names)
 {
 	return stopAcquiringAndWait(to_std_vector<std::string>(cam_names));
 }
+#endif //BUILD_PYTHON
 bool CameraFactory::stopAcquiringAndWait(const std::vector<std::string>& cam_names)
 {
 	for (auto&& name : cam_names)
@@ -2106,6 +2131,7 @@ std::vector<long> CameraFactory::getImageData(const std::string& name)const
 	}
 	return std::vector<long>{GlobalConstants::long_min};
 }
+#ifdef BUILD_PYTHON
 boost::python::list CameraFactory::getImageData_Py(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -2114,15 +2140,6 @@ boost::python::list CameraFactory::getImageData_Py(const std::string& name)const
 		return camera_map.at(full_name).getImageData_Py();
 	}
 	return to_py_list<long>(std::vector<long>{GlobalConstants::long_min});
-}
-std::vector<long> CameraFactory::getROIData(const std::string& name)const
-{
-	std::string full_name = getFullName(name);
-	if (GlobalFunctions::entryExists(camera_map, full_name))
-	{
-		return camera_map.at(full_name).getROIData();
-	}
-	return std::vector<long>{GlobalConstants::long_min};
 }
 boost::python::list CameraFactory::getROIData_Py(const std::string& name)const
 {
@@ -2133,6 +2150,17 @@ boost::python::list CameraFactory::getROIData_Py(const std::string& name)const
 	}
 	return to_py_list<long>(std::vector<long>{GlobalConstants::long_min});
 }
+#endif //BUILD_PYTHON
+std::vector<long> CameraFactory::getROIData(const std::string& name)const
+{
+	std::string full_name = getFullName(name);
+	if (GlobalFunctions::entryExists(camera_map, full_name))
+	{
+		return camera_map.at(full_name).getROIData();
+	}
+	return std::vector<long>{GlobalConstants::long_min};
+}
+
 std::vector<long>& CameraFactory::getImageDataConstRef(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -2194,7 +2222,7 @@ void CameraFactory::clearRunningStats(const std::string& name)
 }
 
 
-
+#ifdef BUILD_PYTHON
 boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -2204,6 +2232,7 @@ boost::python::dict CameraFactory::getAllRunningStats(const std::string& name)co
 	}
 	return boost::python::dict();
 }
+#endif //BUILD_PYTHON
 size_t CameraFactory::getRunningStatNumDataValues(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -2324,11 +2353,13 @@ std::map<std::string, STATE> CameraFactory::getAllOverlayStates()const
 	std::map<std::string, STATE> r;
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict CameraFactory::getAllOverlayStates_Py()const
 {
 	boost::python::dict r;
 	return r;
 }
+#endif BUILD_PYTHON
 
 
 
@@ -2976,11 +3007,18 @@ std::vector<std::string> CameraFactory::getCameraNames()
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::list CameraFactory::getCameraNames_Py()
 {
 	return to_py_list<std::string>(getCameraNames());
 }
-
+/*! get the name alises for this LLRF (python version)
+	@param[ou	return to_py_list<std::string>(getAliases(cam_name));t] names, python list containing all the alias names */
+boost::python::list CameraFactory::getNameAliases_Py(const std::string& cam_name) const
+{
+	return to_py_list<std::string>(getNameAliases(cam_name));
+}
+#endif //BUILD_PYTHON
 
 std::vector<std::string> CameraFactory::getNameAliases(const std::string& cam_name) const
 {
@@ -2991,12 +3029,7 @@ std::vector<std::string> CameraFactory::getNameAliases(const std::string& cam_na
 	}
 	return std::vector<std::string>{dummy_cam.getHardwareName()};
 }
-/*! get the name alises for this LLRF (python version)
-	@param[ou	return to_py_list<std::string>(getAliases(cam_name));t] names, python list containing all the alias names */
-boost::python::list CameraFactory::getNameAliases_Py(const std::string& cam_name) const
-{
-	return to_py_list<std::string>(getNameAliases(cam_name));
-}
+
 
 Camera& CameraFactory::getCamera(const std::string& cam_name)
 {
@@ -3236,6 +3269,7 @@ STATE CameraFactory::saveSnapshot(const std::string& filepath, const std::string
 	}
 	return STATE::FAIL;
 }
+#ifdef BUILD_PYTHON
 STATE CameraFactory::saveSnapshot_Pydict(const boost::python::dict& snapshot_dict, const std::string& comments)
 {
 	messenger.printDebugMessage("saveSnapshot_Pydict");
@@ -3257,38 +3291,18 @@ STATE CameraFactory::saveSnapshot_Pyfile(const std::string& filepath, const std:
 	}
 	return STATE::FAIL;
 }
-std::string CameraFactory::getLastSnapshotFilename()const{	return last_snapshot_save_filename;}
-std::string CameraFactory::getLastSnapshotDirectory()const{	return last_snapshot_save_directory;}
-STATE CameraFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
-{
-	messenger.printDebugMessage("loadSnapshot");
-	YAML::Node file_node = SnapshotFileManager::readSnapshotFile(filepath, filename);
-	messenger.printDebugMessage("loadSnapshot get a file_node with size() ", file_node.size());
-	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
-	return STATE::SUCCESS; // TODO do we need some error checking 
-}
 STATE CameraFactory::loadSnapshot_Py(const boost::python::dict& snapshot_dict) // put d into hardwareSnapshotMap
 {
 	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
 	return STATE::SUCCESS;
 }
-std::map<std::string, HardwareSnapshot> CameraFactory::getSnapshot() // c++ version 
-{
-	std::map<std::string, HardwareSnapshot> snapshot_map;
-	for (auto& item : camera_map)
-	{
-		messenger.printDebugMessage("getSnapshot, found ", item.first);
-		snapshot_map[item.first] = item.second.getSnapshot();
-	}
-	messenger.printDebugMessage("returning snapshot_map with size =  ", snapshot_map.size());
-	return snapshot_map;
-}
+
 boost::python::dict CameraFactory::getSnapshot_Py() // return current state as py dict 
 {
 	messenger.printDebugMessage("getSnapshot_Py, calling getSnapshot ");
 	// FIRST GET A snaphot that is current (i.e. live!)! 
 	std::map<std::string, HardwareSnapshot> current_snapshot = getSnapshot();
-	boost::python::dict r; 
+	boost::python::dict r;
 	messenger.printDebugMessage("loop over current_snapshot (.size() =", current_snapshot.size());
 	for (auto&& item : current_snapshot)
 	{
@@ -3323,6 +3337,31 @@ STATE CameraFactory::applySnaphot(const boost::python::dict& snapshot_dict, TYPE
 	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
 	return applyhardwareSnapshotMap(hardwareSnapshotMap, type);
 }
+#endif //BUILD_PYTHON
+
+std::string CameraFactory::getLastSnapshotFilename()const{	return last_snapshot_save_filename;}
+std::string CameraFactory::getLastSnapshotDirectory()const{	return last_snapshot_save_directory;}
+STATE CameraFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
+{
+	messenger.printDebugMessage("loadSnapshot");
+	YAML::Node file_node = SnapshotFileManager::readSnapshotFile(filepath, filename);
+	messenger.printDebugMessage("loadSnapshot get a file_node with size() ", file_node.size());
+	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
+	return STATE::SUCCESS; // TODO do we need some error checking 
+}
+
+std::map<std::string, HardwareSnapshot> CameraFactory::getSnapshot() // c++ version 
+{
+	std::map<std::string, HardwareSnapshot> snapshot_map;
+	for (auto& item : camera_map)
+	{
+		messenger.printDebugMessage("getSnapshot, found ", item.first);
+		snapshot_map[item.first] = item.second.getSnapshot();
+	}
+	messenger.printDebugMessage("returning snapshot_map with size =  ", snapshot_map.size());
+	return snapshot_map;
+}
+
 STATE CameraFactory::applySnaphot(const std::string& filepath, const std::string& filename, TYPE type)
 {
 	loadSnapshot(filepath, filename); // this sets the hardwareSnapshotMap member variables 
@@ -4012,6 +4051,7 @@ std::map<std::string, HardwareSnapshot> CameraFactory::yamlNodeToHardwareSnapsho
 	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
 	return return_map;
 }
+#ifdef BUILD_PYTHON
 std::map<std::string, HardwareSnapshot> CameraFactory::pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict)
 {
 	// This function returns a map of <OBJECT NAME: HardwareSnapshot > 
@@ -4458,6 +4498,7 @@ std::map<std::string, HardwareSnapshot> CameraFactory::pyDictToHardwareSnapshotM
 	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
 	return return_map;
 }
+#endif //BUILD_PYTHON
 YAML::Node CameraFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map)
 {
 	YAML::Node return_node;

@@ -4,8 +4,9 @@
 #include <vector>
 #include "GlobalFunctions.h"
 #include "GlobalTypeEnums.h"
+#ifdef BUILD_PYTHON
 #include <PythonTypeConversions.h>
-
+#endif //BUILD_PYTHON
 
 Hardware::Hardware() :
 	machine_area(TYPE::UNKNOWN_TYPE),
@@ -111,10 +112,7 @@ std::map<std::string, std::string> Hardware::getOnlineProperties() const
 	return onlineProperties;
 }
 
-boost::python::dict Hardware::getOnlineProperties_Py()
-{
-	return to_py_dict(onlineProperties);
-}
+
 
 
 void Hardware::setOnlineProperties(const std::map<std::string, std::string>& properties)
@@ -127,20 +125,13 @@ HardwareSnapshot Hardware::getSnapshot()
 	std::cout << "BASE CLASS CALLED" << std::endl;
 	return this->currentSnapshot;
 }
-boost::python::dict Hardware::getSnapshot_Py() 
-{
-	std::cout << "BASE CLASS CALLED" << std::endl;
-	return this->currentSnapshot.getSnapshot_Py();
-}
+
 std::map<std::string, std::string> Hardware::getOfflineProperties() const
 {
 	return offlineProperties;
 }
 
-boost::python::dict Hardware::getOfflineProperties_Py()
-{
-	return to_py_dict(offlineProperties);
-}
+
 
 void Hardware::setOfflineProperties(const std::map<std::string, std::string>& properties)
 {
@@ -167,6 +158,24 @@ bool Hardware::isOffline()const
 	return getMode() == STATE::OFFLINE;
 }
 
+#ifdef BUILD_PYTHON
+
+boost::python::dict Hardware::getOnlineProperties_Py()
+{
+	return to_py_dict(onlineProperties);
+}
+boost::python::dict Hardware::getOfflineProperties_Py()
+{
+	return to_py_dict(offlineProperties);
+}
+
+boost::python::dict Hardware::getSnapshot_Py()
+{
+	std::cout << "BASE CLASS CALLED" << std::endl;
+	return this->currentSnapshot.getSnapshot_Py();
+}
+
+#endif // BUILD_PYTHON
 
 
 bool Hardware::operator==(Hardware rhs)

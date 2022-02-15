@@ -5,7 +5,6 @@
 #include <utility>
 #include "GlobalFunctions.h"
 #include "GlobalConstants.h"
-#include <PythonTypeConversions.h>
 #ifndef __CINT__
 #include <cadef.h>
 #endif
@@ -201,10 +200,6 @@ std::vector<std::string> LaserEnergyMeterFactory::getAllLaserEnergyMeterNames()
 	return names;
 }
 
-boost::python::list LaserEnergyMeterFactory::getAllLaserEnergyMeterNames_Py()
-{
-	return to_py_list(getAllLaserEnergyMeterNames());
-}
 
 std::string LaserEnergyMeterFactory::getLaserEnergyMeterName(const std::string& name)
 {
@@ -297,21 +292,6 @@ boost::circular_buffer< double > LaserEnergyMeterFactory::getEnergyBuffer(const 
 	return vector2;
 }
 
-boost::python::list LaserEnergyMeterFactory::getEnergyVector_Py(const std::string& name)
-{
-	std::vector< double > vec;
-	vec = getEnergyVector(name);
-	boost::python::list newPyList = to_py_list(vec);
-	return newPyList;
-}
-
-boost::python::list LaserEnergyMeterFactory::getEnergyBuffer_Py(const std::string& name)
-{
-	boost::circular_buffer< double > buf;
-	buf = getEnergyBuffer(name);
-	boost::python::list newPyList = to_py_list(buf);
-	return newPyList;
-}
 
 void LaserEnergyMeterFactory::monitorForNShots(const std::string& name, const size_t& value)
 {
@@ -414,3 +394,24 @@ bool LaserEnergyMeterFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }
+#ifdef BUILD_PYTHON
+boost::python::list LaserEnergyMeterFactory::getAllLaserEnergyMeterNames_Py()
+{
+	return to_py_list(getAllLaserEnergyMeterNames());
+}
+boost::python::list LaserEnergyMeterFactory::getEnergyVector_Py(const std::string& name)
+{
+	std::vector< double > vec;
+	vec = getEnergyVector(name);
+	boost::python::list newPyList = to_py_list(vec);
+	return newPyList;
+}
+
+boost::python::list LaserEnergyMeterFactory::getEnergyBuffer_Py(const std::string& name)
+{
+	boost::circular_buffer< double > buf;
+	buf = getEnergyBuffer(name);
+	boost::python::list newPyList = to_py_list(buf);
+	return newPyList;
+}
+#endif //BUILD_PYTHON

@@ -8,8 +8,11 @@
 #include <GlobalStateEnums.h>
 #include <map>
 #include <vector>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <PythonTypeConversions.h>
+#endif
 /** @addtogroup factories
  @{*/
  /*! A class to store, setup, and perform operations on multiple IMG objects*/
@@ -91,8 +94,6 @@ public:
 	 *@param[out] IMGNames :a vector containing all of the hardware names for the IMGs in IMGMap*/
 	std::vector<std::string> getAllIMGNames() const;
 	
-	/*! gets all IMG names as python list*/
-	boost::python::list getAllIMGNames_Py()const;
 	
 	/*! gets the IMG state of a particular IMG
 	 * @param[in] name :The full-name or alias of the IMG
@@ -104,32 +105,33 @@ public:
 	* @param[out] pressure : a map of full IMGs names and their current pressures*/
 	std::map<std::string, double> getIMGPressures(const std::vector<std::string>& names) const;
 	
-	/*! gets all IMG Pressures for multiple IMGs as python dictionary*/
-	boost::python::dict getIMGPressures_Py(const boost::python::list& names) const;
-	
 	/*! gets the pressures of all IMGs
 	* @param[out] states : a map of all IMG names and their current pressures*/
 	std::map<std::string, double> getAllIMGPressure() const;
-	
-	/*! gets all IMG Pressures for all IMGs as python dictionary*/
-	boost::python::dict getAllIMGPressure_Py() const;
+
 	
 	/*! gets the IMG state (OK,ERR) of a particular IMG
 	 * @param[in] name :The full-name or alias of the IMG
 	 * @param[out] IMGState :The state the IMG is currently in (OK,ERR)*/
 	STATE getIMGState(const std::string& name) const;
-	
-	/*! gets all IMG states for multiple IMGs as python dictionary*/
-	boost::python::dict getIMGStates_Py(const boost::python::list& names) const;
-	
+
 	/*! gets IMG states (OK, ERR) for multiple IMGs
 	* @param[in] names : a vector of full-names/aliases for IMGs
 	* @param[out] states : a map of full IMG names and their current states*/
 	std::map<std::string, STATE> getIMGStates(const std::vector<std::string>& names) const;
-	
+#ifdef BUILD_PYTHON
 	/*! gets all IMG states for all the IMGs as python dictionary*/
 	boost::python::dict getAllIMGStates_Py() const;
-	
+	/*! gets all IMG states for multiple IMGs as python dictionary*/
+	boost::python::dict getIMGStates_Py(const boost::python::list& names) const;
+	/*! gets all IMG Pressures for all IMGs as python dictionary*/
+	boost::python::dict getAllIMGPressure_Py() const;
+	/*! gets all IMG names as python list*/
+	boost::python::list getAllIMGNames_Py()const;
+	/*! gets all IMG Pressures for multiple IMGs as python dictionary*/
+	boost::python::dict getIMGPressures_Py(const boost::python::list& names) const;
+#endif
+
 	/*! gets the states of all IMGs
 	* @param[out] states : a map of all IMG names and their current states*/
 	std::map<std::string, STATE> getAllIMGStates() const;	

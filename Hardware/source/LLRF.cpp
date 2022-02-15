@@ -2,7 +2,6 @@
 #include "boost/algorithm/string/split.hpp"
 #include "LLRFPVRecords.h"
 #include "GlobalFunctions.h"
-#include "PythonTypeConversions.h"
 #include <numeric>
 #include <mutex>
 
@@ -1326,6 +1325,7 @@ std::vector<double> LLRF::getRollingAverage(const std::string& name)const
 	std::vector<double> d(trace_data_size, GlobalConstants::double_min);
 	return d;
 }
+#ifdef BUILD_PYTHON
 boost::python::list LLRF::getRollingAverage_Py(const std::string& name)const
 {
 	return to_py_list<double>(getRollingAverage(name));
@@ -1339,6 +1339,7 @@ boost::python::dict LLRF::getRollingAverage_Py()const
 	}
 	return r;
 }
+#endif //BUILD_PYTHON
 size_t LLRF::getRollingAverageSize(const std::string& name)const
 {
 	std::lock_guard<std::mutex> lg(llrf_mtx);  // This now locked your mutex llrf_mtx.lock();
@@ -1391,18 +1392,10 @@ std::vector<std::vector<double>> LLRF::getRollingAverageTraceBuffer(const std::s
 	std::vector<std::vector<double>> r{};
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::list LLRF::getRollingAverageTraceBuffer_Py(const std::string& name)const
 {
 	return to_py_list_vector_of_vectors<double>(getRollingAverageTraceBuffer(name));
-}
-std::map<std::string, std::vector<std::vector<double>>> LLRF::getAllRollingAverageTraceBuffer()const
-{
-	std::map<std::string, std::vector<std::vector<double>>> r;
-	for (auto&& it : trace_data_map)
-	{	
-		r[it.first] = it.second.rolling_average_trace_buffer;
-	}
-	return r;
 }
 boost::python::dict LLRF::getAllRollingAverageTraceBuffer_Py()const
 {
@@ -1414,6 +1407,17 @@ boost::python::dict LLRF::getAllRollingAverageTraceBuffer_Py()const
 	}
 	return r;
 }
+#endif //BUILD_PYTHON
+std::map<std::string, std::vector<std::vector<double>>> LLRF::getAllRollingAverageTraceBuffer()const
+{
+	std::map<std::string, std::vector<std::vector<double>>> r;
+	for (auto&& it : trace_data_map)
+	{	
+		r[it.first] = it.second.rolling_average_trace_buffer;
+	}
+	return r;
+}
+
 
 
 
@@ -1797,11 +1801,18 @@ std::vector<double> LLRF::getTraceValues(const std::string& name)const
 	std::vector<double> r(trace_data_size, GlobalConstants::double_min);//MAGIC_NUMBER
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::list LLRF::getTraceValues_Py(const std::string& name)const
 {
 	return to_py_list<double>(getTraceValues(name));
 }
-
+boost::python::dict LLRF::getTraceNameValuesPair_Py(const std::string& name)
+{
+	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(name);
+	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
+	return to_py_dict<std::string, std::vector<double>>(r2);
+}
+#endif //BUILD_PYTHON
 
 std::pair<std::string, std::vector<double>> LLRF::getTraceNameValuesPair(const std::string& name)const
 {
@@ -1810,12 +1821,7 @@ std::pair<std::string, std::vector<double>> LLRF::getTraceNameValuesPair(const s
 	r.second = getTraceValues(r.first);
 	return r;
 }
-boost::python::dict LLRF::getTraceNameValuesPair_Py(const std::string& name)
-{
-	std::pair<std::string, std::vector<double>> r = getTraceNameValuesPair(name);
-	std::map<std::string, std::vector<double>> r2{ {r.first, r.second} };
-	return to_py_dict<std::string, std::vector<double>>(r2);
-}
+
 
 
 TraceData& LLRF::getTraceData(const std::string & trace_name ) 
@@ -1827,7 +1833,7 @@ TraceData& LLRF::getTraceData(const std::string & trace_name )
 	return dummy_trace_data;
 }
 
-
+#ifdef BUILD_PYTHON
 boost::python::dict LLRF::getTraceDataDict(const std::string& trace_name) const
 {
 	boost::python::dict r;
@@ -1873,7 +1879,7 @@ boost::python::dict LLRF::getAllTraceDataDict() const
 	return r;
 }
 
-
+#endif //BUILD_PYTHON
 
 
 std::vector<double> LLRF::getCavRevPwr()const
@@ -1930,7 +1936,7 @@ std::vector<double> LLRF::getProbePha()const
 {
 	return getTraceValues(LLRFRecords::CAVITY_PROBE_PHASE);
 }
-
+#ifdef BUILD_PYTHON
 boost::python::list LLRF::getCavRevPwr_Py()const
 {
 	return to_py_list(getCavRevPwr());
@@ -1974,16 +1980,16 @@ boost::python::list LLRF::getProbePwr_Py()const
 
 
 
-
+boost::python::list LLRF::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+#endif //BUILD_PYTHON
 
 // Name alies 
 std::vector<std::string> LLRF::getAliases() const
 {
 	return aliases;
-}
-boost::python::list LLRF::getAliases_Py() const
-{
-	return to_py_list<std::string>(getAliases());
 }
 
 /*
@@ -2030,6 +2036,7 @@ std::pair<double, double> LLRF::getMeanStartEndTime(const std::string& name) con
 	}
 	return std::pair<double, double>(GlobalConstants::double_min, GlobalConstants::double_min);
 }
+#ifdef BUILD_PYTHON
 boost::python::list LLRF::getMeanStartEndIndex_Py(const std::string& name) const
 {
 	return to_py_list<size_t, size_t>(getMeanStartEndIndex(name));
@@ -2038,6 +2045,7 @@ boost::python::list  LLRF::getMeanStartEndTime_Py(const std::string& name) const
 {
 	return to_py_list<double, double>(getMeanStartEndTime(name));
 }
+#endif //BUILD_PYTHON
 std::map<std::string, std::pair<size_t, size_t>> LLRF::getTraceMeanIndices()const
 {
 	std::map<std::string, std::pair<size_t, size_t>> r;
@@ -2056,6 +2064,7 @@ std::map<std::string, std::pair<double, double>> LLRF::getTraceMeanTimes()const
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict LLRF::getTraceMeanIndices_Py()const
 {
 	return to_py_dict<std::string, size_t, size_t>(getTraceMeanIndices());
@@ -2064,6 +2073,7 @@ boost::python::dict LLRF::getTraceMeanTimes_Py()const
 {
 	return to_py_dict<std::string, double, double>(getTraceMeanTimes());
 }
+#endif //BUILD_PYTHON
 void LLRF::setTraceMeanIndices(const std::map<std::string, std::pair<size_t, size_t>>& settings)
 {
 	for (auto&& it : settings)
@@ -2078,6 +2088,7 @@ void LLRF::setTraceMeanTimes(const std::map<std::string, std::pair<double, doubl
 		setMeanStartEndTime(it.second.first, it.second.second, it.first);
 	}
 }
+#ifdef BUILD_PYTHON
 void LLRF::setTraceMeanIndices_Py(const boost::python::dict& settings)
 {
 	setTraceMeanIndices(to_std_map_pair<std::string,size_t>(settings));
@@ -2086,6 +2097,7 @@ void LLRF::setTraceMeanTimes_Py(const boost::python::dict& settings)
 {
 	setTraceMeanTimes(to_std_map_pair<std::string, double>(settings));
 }
+#endif //BUILD_PYTHON
 //-------------------------------------------------------------------------------------------------------------------
 bool LLRF::setMeanStartIndex(const std::string& name, size_t  value)
 {
@@ -2179,14 +2191,18 @@ std::map<std::string, double> LLRF::getAllCutMean()const
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict LLRF::getAllCutMean_Py()const
 {
 	return to_py_dict<std::string, double>(getAllCutMean());
 }
 
 
-
-
+boost::python::dict LLRF::getPowerCutMean_Py()const
+{
+	return to_py_dict<std::string, double>(getPowerCutMean());
+}
+#endif //BUILD_PYTHON
 std::map<std::string, double> LLRF::getPowerCutMean()const
 {
 	std::map<std::string, double> r;
@@ -2196,10 +2212,7 @@ std::map<std::string, double> LLRF::getPowerCutMean()const
 	}
 	return r;
 }
-boost::python::dict LLRF::getPowerCutMean_Py()const
-{
-	return to_py_dict<std::string, double>(getPowerCutMean());
-}
+
 
 
 
@@ -2483,10 +2496,18 @@ std::map<std::string, STATE> LLRF::getAllTraceSCAN()const
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict LLRF::getAllTraceSCAN_Py()const
 {
 	return to_py_dict<std::string, STATE>(getAllTraceSCAN());
 }
+
+boost::python::dict LLRF::getAllTraceACQM_Py()const
+{
+	return to_py_dict<std::string, STATE>(getAllTraceACQM());
+}
+#endif //BUILD_PYTHON
+
 std::map<std::string, STATE> LLRF::getAllTraceACQM()const
 {
 	messenger.printDebugMessage("getAllTraceACQM");
@@ -2501,10 +2522,7 @@ std::map<std::string, STATE> LLRF::getAllTraceACQM()const
 	}	
 	return r;
 }
-boost::python::dict LLRF::getAllTraceACQM_Py()const
-{
-	return to_py_dict<std::string, STATE>(getAllTraceACQM());
-}
+
 
 
 
@@ -2577,10 +2595,16 @@ bool LLRF::setPulseShape(const std::vector<double>& values)
 {
 	return epicsInterface->putArrayValue(pvStructs.at(LLRFRecords::PULSE_SHAPE_APPLY), values);
 }
+#ifdef BUILD_PYTHON
 bool LLRF::setPulseShape_Py(const boost::python::list& values)
 {
 	return setPulseShape(to_std_vector<double>(values));
 }
+bool LLRF::setAndApplyPulseShape(const boost::python::list& values)
+{
+	return setAndApplyPulseShape(to_std_vector<double>(values));
+}
+#endif //BUILD_PYTHON
 bool LLRF::setAndApplyPulseShape(const std::vector<double>& values)
 {
 	if (setPulseShape(values))
@@ -2590,10 +2614,7 @@ bool LLRF::setAndApplyPulseShape(const std::vector<double>& values)
 	}
 	return false;
 }
-bool LLRF::setAndApplyPulseShape(const boost::python::list& values)
-{
-	return setAndApplyPulseShape(to_std_vector<double>(values));
-}
+
 
 
 

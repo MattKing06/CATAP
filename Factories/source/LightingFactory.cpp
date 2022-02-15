@@ -1,7 +1,9 @@
 #include <LightingFactory.h>
 #include <LightingPVRecords.h>
 #include <GlobalConstants.h>
-#include "PythonTypeConversions.h"
+#ifdef BUILD_PYTHON
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 
 
 LightingFactory::LightingFactory() {}
@@ -191,10 +193,7 @@ std::map<std::string, STATE> LightingFactory::getLEDState(const std::string& nam
 	r[name] = STATE::UNKNOWN_NAME;
 	return r;
 }
-boost::python::dict LightingFactory::getLEDState_Py(const std::string& name)const
-{
-	return to_py_dict<std::string, STATE>(getLEDState(name));
-}
+
 std::map<std::string, STATE> LightingFactory::getLightingState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -206,10 +205,7 @@ std::map<std::string, STATE> LightingFactory::getLightingState(const std::string
 	r[name] = STATE::UNKNOWN_NAME;
 	return r;
 }
-boost::python::dict LightingFactory::getLightingState_Py(const std::string& name)const
-{
-	return to_py_dict<std::string, STATE>(getLightingState(name));
-}
+
 bool LightingFactory::allLEDOn(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -496,3 +492,14 @@ bool LightingFactory::isMessagingOn()
 {
 	return messenger.isMessagingOn();
 }
+
+#ifdef BUILD_PYTHON
+boost::python::dict LightingFactory::getLEDState_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, STATE>(getLEDState(name));
+}
+boost::python::dict LightingFactory::getLightingState_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, STATE>(getLightingState(name));
+}
+#endif //BUILD_PYTHON

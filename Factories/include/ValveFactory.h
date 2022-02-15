@@ -7,9 +7,12 @@
 #include <Valve.h>
 #include <map>
 #include <vector>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
 #include <boost/python/numpy.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 #include <SnapshotFileManager.h>
 
 /** @addtogroup factories 
@@ -149,10 +152,11 @@ public:
 	bool isMessagingOn();
 
 	std::map<std::string, HardwareSnapshot> getSnapshot();
-	boost::python::dict getSnapshot_Py();
 	bool exportSnapshotToYAML(const std::string& location, const std::string& filename);
 	bool loadSnapshot(const std::string& location);
 	bool loadSnapshot(const YAML::Node& settings);
+#ifdef BUILD_PYTHON
+	boost::python::dict getSnapshot_Py();
 	bool loadSnapshot_Py(const boost::python::dict& settings);
 	/*! gets all valve names as python list*/
 	boost::python::list getAllValveNames_Py() const;
@@ -164,8 +168,8 @@ public:
 	void close_Py(const boost::python::list& names);
 	/*! opens multiple valves using python list of valve names*/
 	void open_Py(const boost::python::list& names);
-
 	boost::python::numpy::ndarray getFakeNumpyArray();
+#endif //BUILD_PYTHON
 
 private:
 	/*! function to update map of aliases to full-names of valves

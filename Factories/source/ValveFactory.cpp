@@ -1,6 +1,5 @@
 #include <ValveFactory.h>
 #include <GlobalFunctions.h>
-#include <PythonTypeConversions.h>
 #include <fstream>
 #include <boost/filesystem.hpp>
 ValveFactory::ValveFactory() :
@@ -190,10 +189,6 @@ std::vector<std::string> ValveFactory::getAllValveNames() const
 	return returnNames;
 }
 
-boost::python::list ValveFactory::getAllValveNames_Py() const
-{
-	return to_py_list(getAllValveNames());
-}
 
 STATE ValveFactory::getValveState(const std::string& name) const
 {
@@ -212,21 +207,12 @@ std::map<std::string, STATE> ValveFactory::getValveStates(const std::vector<std:
 	return stateMap;
 }
 
-boost::python::dict ValveFactory::getValveStates_Py(const boost::python::list& names) const
-{
-	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-	return to_py_dict(getValveStates(namesVector));
-}
 
 std::map<std::string, STATE> ValveFactory::getAllValveStates() const
 {
 	return getValveStates(getAllValveNames());
 }
 
-boost::python::dict ValveFactory::getAllValveStates_Py() const
-{
-	return to_py_dict(getAllValveStates());
-}
 
 void ValveFactory::setValveState(const std::string& name, const STATE& state)
 {
@@ -271,10 +257,6 @@ void ValveFactory::close(const std::vector<std::string>& names)
 	}
 }
 
-void ValveFactory::close_Py(const boost::python::list& names)
-{
-	close(to_std_vector<std::string>(names));
-}
 
 void ValveFactory::closeAllValves()
 {
@@ -302,6 +284,25 @@ void ValveFactory::open(const std::vector<std::string>& names)
 		}
 	}
 }
+#ifdef BUILD_PYTHON
+boost::python::list ValveFactory::getAllValveNames_Py() const
+{
+	return to_py_list(getAllValveNames());
+}
+
+boost::python::dict ValveFactory::getValveStates_Py(const boost::python::list& names) const
+{
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	return to_py_dict(getValveStates(namesVector));
+}
+boost::python::dict ValveFactory::getAllValveStates_Py() const
+{
+	return to_py_dict(getAllValveStates());
+}
+void ValveFactory::close_Py(const boost::python::list& names)
+{
+	close(to_std_vector<std::string>(names));
+}
 
 void ValveFactory::open_Py(const boost::python::list& names)
 {
@@ -318,6 +319,7 @@ boost::python::numpy::ndarray ValveFactory::getFakeNumpyArray()
 	}
 	return to_numpy_array<int>(vector, 2, 2);
 }
+#endif
 
 void ValveFactory::openAllValves()
 {
@@ -496,6 +498,7 @@ bool ValveFactory::loadSnapshot(const YAML::Node& settings)
 	return true;
 }
 
+#ifdef BUILD_PYTHON
 bool ValveFactory::loadSnapshot_Py(const boost::python::dict& settings)
 {
 	messenger.printMessage("IN LOAD_SNAPSHOT PY DICT");
@@ -530,3 +533,4 @@ boost::python::dict ValveFactory::getSnapshot_Py()
 	}
 	return to_py_dict(allValveStatesDict);
 }
+#endif //BUILD_PYTHON

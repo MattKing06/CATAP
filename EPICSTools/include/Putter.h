@@ -9,8 +9,10 @@
 #include <string>
 #include <vector>
 #include <boost/make_shared.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
-
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 /** @addtogroup epicsTools
  *@{*/
  /*! Putter
@@ -44,6 +46,7 @@ public:
 	//With PUT function, will have to check the EPICS CHTYPE 
 	//and use appropriate boost::python::Extract template to put value
 	//from a python object..
+#ifdef BUILD_PYTHON
 	/*! Converts the python object to the appropriate type for the CHTYPE associated with the pv in Putter
 		and calls ca_put using that value.
 		@param[in] pyValue : The value to be set in EPICS*/
@@ -52,6 +55,8 @@ public:
 		and calls ca_array_put using that array.
 		@param[in] pyValue : The array to be set in EPICS*/
 	void putArray_Py(boost::python::list pyValue);
+
+#endif //BUILD_PYTHON
 	/*! Uses ca_put to set the value for a pv record
 		@param[in] value : The value to set*/
 	template <typename T>

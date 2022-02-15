@@ -11,8 +11,9 @@
 #include <GlobalStateEnums.h>
 #include <GlobalConstants.h>
 #include <GlobalFunctions.h>
+#ifdef BUILD_PYTHON
 #include <PythonTypeConversions.h>
-
+#endif //BUILD_PYTHON
 class PILaserSystem
 {
 public:

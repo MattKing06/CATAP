@@ -2,7 +2,6 @@
 #include "GlobalStateEnums.h"
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
-#include "PythonTypeConversions.h"
 #include <algorithm>
 
 LLRFFactory::LLRFFactory() : 
@@ -60,6 +59,7 @@ bool LLRFFactory::setup(const std::vector<TYPE>& machineAreas)
 {
 	return setup(GlobalConstants::nominal, machineAreas);
 }
+#ifdef BUILD_PYTHON
 bool LLRFFactory::setup(const boost::python::list& machineAreas)
 {
 	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));
@@ -68,6 +68,7 @@ bool LLRFFactory::setup(const std::string& version, const boost::python::list& m
 {
 	return setup(version, to_std_vector<TYPE>(machineAreas));
 }
+#endif //BUILD_PYTHON
 bool LLRFFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas_IN)
 {
 	machineAreas = machineAreas_IN;
@@ -289,10 +290,12 @@ std::vector<std::string> LLRFFactory::getLLRFNames()
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::list LLRFFactory::getLLRFNames_Py()
 {
 	return to_py_list<std::string>(getLLRFNames());
 }
+#endif //BUILD_PYTHON
 LLRF& LLRFFactory::getLLRF(const std::string& llrf_name)
 {
 	std::string full_name = getFullName(llrf_name);
@@ -544,6 +547,7 @@ std::vector<double> LLRFFactory::getProbePha(const std::string& llrf_name)const
 //{
 //	return to_py_list<double>(getTraceValues(name));
 //}
+#ifdef BUILD_PYTHON
 boost::python::list LLRFFactory::getCavRevPwr_Py(const std::string& llrf_name)const
 {
 	return to_py_list<double>(getCavRevPwr(llrf_name));
@@ -584,7 +588,7 @@ boost::python::list LLRFFactory::getProbePwr_Py(const std::string& llrf_name)con
 {
 	return to_py_list<double>(getProbePwr(llrf_name));
 }
-
+#endif //BUILD_PYTHON
 
 size_t LLRFFactory::getIndex(const std::string& name, const double time) const
 {

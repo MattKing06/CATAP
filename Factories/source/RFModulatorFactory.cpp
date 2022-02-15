@@ -60,10 +60,7 @@ std::vector<std::string> RFModulatorFactory::getAllRFModulatorNames()
 	}
 	return rfModNames;
 }
-boost::python::list RFModulatorFactory::getAllRFModulatorNames_Py()
-{
-	return to_py_list<std::string>(getAllRFModulatorNames());
-}
+
 std::vector<std::string> RFModulatorFactory::getAliases(const std::string& name) const
 {
 	std::string full_name = getFullName(name);
@@ -73,10 +70,7 @@ std::vector<std::string> RFModulatorFactory::getAliases(const std::string& name)
 	}
 	return std::vector<std::string>();
 }
-boost::python::list RFModulatorFactory::getAliases_Py(const std::string& name) const
-{
-	return to_py_list<std::string>(getAliases(name));
-}
+
 STATE RFModulatorFactory::getMainState(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -250,10 +244,6 @@ std::map<std::string, double> RFModulatorFactory::getLowLevelNumericalData(const
 	}
 	return std::map<std::string, double>();
 }
-boost::python::dict RFModulatorFactory::getLowLevelNumericalData_Py(const std::string& name)const
-{
-	return to_py_dict< std::string, double >(getLowLevelNumericalData(name));
-}
 std::map<std::string, std::string> RFModulatorFactory::getLowLevelStringData(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -264,6 +254,22 @@ std::map<std::string, std::string> RFModulatorFactory::getLowLevelStringData(con
 	std::map<std::string, std::string> r;
 	return r;
 }
+
+
+#ifdef BUILD_PYTHON
+boost::python::list RFModulatorFactory::getAllRFModulatorNames_Py()
+{
+	return to_py_list<std::string>(getAllRFModulatorNames());
+}
+boost::python::list RFModulatorFactory::getAliases_Py(const std::string& name) const
+{
+	return to_py_list<std::string>(getAliases(name));
+}
+boost::python::dict RFModulatorFactory::getLowLevelNumericalData_Py(const std::string& name)const
+{
+	return to_py_dict< std::string, double >(getLowLevelNumericalData(name));
+}
+
 boost::python::dict RFModulatorFactory::getLowLevelStringData_Py(const std::string& name)const
 {
 	return to_py_dict< std::string, std::string >(getLowLevelStringData(name));
@@ -277,8 +283,7 @@ boost::python::dict RFModulatorFactory::getLowLevelData(const std::string& name)
 	}
 	return boost::python::dict();
 }
-
-
+#endif //BUILD_PYTHON
 
 void RFModulatorFactory::populateRFModulatorMap()
 {

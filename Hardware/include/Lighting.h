@@ -33,15 +33,18 @@ public:
 	/*! Get LED states.
 	@param[out] map<string, STATE>, value for each LED */
 	std::map<std::string, STATE> getLEDState()const;
+#ifdef BUILD_PYTHON
 	/*! Get LED states, Python version.
 	@param[out] dict, value for each LED */
 	boost::python::dict getLEDState_Py()const;
+	/*! Get Lighting state, python version
+	@param[out] dict, value for each Light */
+	boost::python::dict getLightingState_Py()const;
+#endif //BUILD_PYTHON
 	/*! Get Lighting state.
 	@param[out] map<string, STATE>, value for each Light */
 	std::map<std::string, STATE> getLightingState()const;
-	/*! Get Lighting state, python version 
-	@param[out] dict, value for each Light */
-	boost::python::dict getLightingState_Py()const;
+
 	/*! Turn on all LEDS.
 	@param[out] bool, if command got sent to EPICS (not if it was accepted)	*/
 	bool allLEDOn();

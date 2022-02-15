@@ -3,7 +3,6 @@
 #include <map>
 #include <iostream>
 #include <utility>
-#include <PythonTypeConversions.h>
 #ifndef __CINT__
 #include <cadef.h>
 #endif
@@ -167,23 +166,6 @@ std::map<std::string, Charge> ChargeFactory::getChargeDiagnostics(std::vector<st
 		selectedCharges[chargeName] = chargeMap.find(chargeName)->second;
 	}
 	return selectedCharges;
-}
-
-boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
-{
-	std::vector<std::string> names;
-	if (!hasBeenSetup)
-	{
-		this->setup("nominal");
-	}
-	else
-	{
-		for (auto& it : chargeMap)
-		{
-			names.push_back(it.first);
-		}
-	}
-	return to_py_list(names);
 }
 
 Charge& ChargeFactory::getChargeDiagnostic(const std::string& fullChargeName)
@@ -460,6 +442,108 @@ std::map<std::string, boost::circular_buffer< double > > ChargeFactory::getAllQB
 	return chargeAndQMap;
 }
 
+
+void ChargeFactory::setRunningStatSize(const std::string& name, const size_t& size)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		chargeMap.at(name).setRunningStatSize(size);
+	}
+}
+
+void ChargeFactory::clearRunningStats(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		chargeMap.at(name).clearRunningStats();
+	}
+}
+
+bool ChargeFactory::areAllRunningStatsFull(const std::string& name)
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		// TODO this is onky for the Qstat atm, and will need updating at a later date 
+		return chargeMap.at(name).isRunningStatFull();
+	}
+	return false;
+}
+size_t ChargeFactory::getRunningStatNumDataValues(const std::string& name)const
+{
+	if (GlobalFunctions::entryExists(chargeMap, name))
+	{
+		return chargeMap.at(name).getRunningStatNumDataValues();
+	}
+	return GlobalConstants::size_zero;
+}
+
+void ChargeFactory::debugMessagesOn()
+{
+	messenger.debugMessagesOn();
+	messenger.printDebugMessage("CHARGE-FAC - DEBUG On");
+	reader.debugMessagesOn();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.debugMessagesOn();
+	}
+}
+void ChargeFactory::debugMessagesOff()
+{
+	messenger.printDebugMessage("CHARGE-FAC - DEBUG OFF");
+	messenger.debugMessagesOff();
+	reader.debugMessagesOff();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.debugMessagesOff();
+	}
+}
+void ChargeFactory::messagesOn()
+{
+	messenger.messagesOn();
+	messenger.printMessage("CHARGE-FAC - MESSAGES On");
+	reader.messagesOn();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.messagesOn();
+	}
+}
+void ChargeFactory::messagesOff()
+{
+	messenger.printMessage("CHARGE-FAC - MESSAGES OFF");
+	messenger.messagesOff();
+	reader.messagesOff();
+	for (auto& charge : chargeMap)
+	{
+		charge.second.messagesOff();
+	}
+}
+bool ChargeFactory::isDebugOn()
+{
+	return messenger.isDebugOn();
+}
+bool ChargeFactory::isMessagingOn()
+{
+	return messenger.isMessagingOn();
+}
+
+#ifdef BUILD_PYTHON
+boost::python::list ChargeFactory::getAllChargeDiagnosticNames_Py()
+{
+	std::vector<std::string> names;
+	if (!hasBeenSetup)
+	{
+		this->setup("nominal");
+	}
+	else
+	{
+		for (auto& it : chargeMap)
+		{
+			names.push_back(it.first);
+		}
+	}
+	return to_py_list(names);
+}
+
 void ChargeFactory::monitorForNShots_Py(boost::python::list names, const size_t& value)
 {
 	std::vector<std::string> chargeNamesVector = to_std_vector<std::string>(names);
@@ -548,85 +632,5 @@ boost::python::dict ChargeFactory::getAllPosition_Py()
 	return newPyDict;
 }
 
-void ChargeFactory::setRunningStatSize(const std::string& name, const size_t& size)
-{
-	if (GlobalFunctions::entryExists(chargeMap, name))
-	{
-		chargeMap.at(name).setRunningStatSize(size);
-	}
-}
 
-void ChargeFactory::clearRunningStats(const std::string& name)
-{
-	if (GlobalFunctions::entryExists(chargeMap, name))
-	{
-		chargeMap.at(name).clearRunningStats();
-	}
-}
-
-bool ChargeFactory::areAllRunningStatsFull(const std::string& name)
-{
-	if (GlobalFunctions::entryExists(chargeMap, name))
-	{
-		// TODO this is onky for the Qstat atm, and will need updating at a later date 
-		return chargeMap.at(name).isRunningStatFull();
-	}
-	return false;
-}
-size_t ChargeFactory::getRunningStatNumDataValues(const std::string& name)const
-{
-	if (GlobalFunctions::entryExists(chargeMap, name))
-	{
-		return chargeMap.at(name).getRunningStatNumDataValues();
-	}
-	return GlobalConstants::size_zero;
-}
-
-void ChargeFactory::debugMessagesOn()
-{
-	messenger.debugMessagesOn();
-	messenger.printDebugMessage("CHARGE-FAC - DEBUG On");
-	reader.debugMessagesOn();
-	for (auto& charge : chargeMap)
-	{
-		charge.second.debugMessagesOn();
-	}
-}
-void ChargeFactory::debugMessagesOff()
-{
-	messenger.printDebugMessage("CHARGE-FAC - DEBUG OFF");
-	messenger.debugMessagesOff();
-	reader.debugMessagesOff();
-	for (auto& charge : chargeMap)
-	{
-		charge.second.debugMessagesOff();
-	}
-}
-void ChargeFactory::messagesOn()
-{
-	messenger.messagesOn();
-	messenger.printMessage("CHARGE-FAC - MESSAGES On");
-	reader.messagesOn();
-	for (auto& charge : chargeMap)
-	{
-		charge.second.messagesOn();
-	}
-}
-void ChargeFactory::messagesOff()
-{
-	messenger.printMessage("CHARGE-FAC - MESSAGES OFF");
-	messenger.messagesOff();
-	reader.messagesOff();
-	for (auto& charge : chargeMap)
-	{
-		charge.second.messagesOff();
-	}
-}
-bool ChargeFactory::isDebugOn()
-{
-	return messenger.isDebugOn();
-}
-bool ChargeFactory::isMessagingOn()
-{
-	return messenger.isMessagingOn();
-}
+#endif //BUILD_PYTHON

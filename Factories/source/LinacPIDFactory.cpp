@@ -1,6 +1,6 @@
 #include <LinacPIDFactory.h>
 #include <GlobalFunctions.h>
-#include <PythonTypeConversions.h>
+
 
 LinacPIDFactory::LinacPIDFactory() :
 	LinacPIDFactory(STATE::OFFLINE)
@@ -195,12 +195,6 @@ std::vector<std::string> LinacPIDFactory::getAllLinacPIDNames() const
 	return returnNames;
 }
 
-boost::python::list LinacPIDFactory::getAllLinacPIDNames_Py() const
-{
-	std::vector<std::string> returnNames = getAllLinacPIDNames();
-	return to_py_list(returnNames);
-}
-
 void LinacPIDFactory::updateAliasNameMap(const LinacPID& linacPID)
 {
 	// first add in the linacPID full name
@@ -258,22 +252,7 @@ bool LinacPIDFactory::setPhase(const std::map<std::string, double>& name_value_m
 	}
 	return r;
 }
-bool LinacPIDFactory::setPhase_Py(const boost::python::dict& name_value_map)
-{
-	// meh, its doing stuff like this, or use the map_indexing_suite, or re-design 
-	std::map<std::string, double> r;
-	boost::python::list keys = boost::python::list(name_value_map.keys());
-	boost::python::list values = boost::python::list(name_value_map.values());
-	for (int i = 0; i < len(keys); ++i)
-	{
-		boost::python::extract<std::string> k_extractor(keys[i]);
-		boost::python::extract<double> v_extractor(values[i]);
-		std::string k = k_extractor();
-		double v = v_extractor();
-		r[k] = v;
-	}
-	return setPhase(r);
-}
+
 //
 double LinacPIDFactory::getPhase(const std::string& name)const
 {
@@ -293,10 +272,7 @@ std::map<std::string, double> LinacPIDFactory::getPhase()const
 	}
 	return r;
 }
-boost::python::dict LinacPIDFactory::getPhase_Py()const
-{
-	return to_py_dict<std::string, double>(getPhase());
-}
+
 bool LinacPIDFactory::setForwardPhaseWeight(const std::string& name, double value)
 {
 	std::string full_name = getFullName(name);
@@ -324,10 +300,7 @@ std::map<std::string, double> LinacPIDFactory::getForwardPhaseWeight()const
 	}
 	return r;
 }
-boost::python::dict LinacPIDFactory::getForwardPhaseWeight_Py()const
-{
-	return to_py_dict<std::string, double>(getForwardPhaseWeight());
-}
+
 double LinacPIDFactory::getForwardPhaseWrapped(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -346,10 +319,7 @@ std::map<std::string, double> LinacPIDFactory::getForwardPhaseWrapped()const
 	}
 	return r;
 }
-boost::python::dict LinacPIDFactory::getForwardPhaseWrapped_Py()const
-{
-	return to_py_dict<std::string, double>(getProbePhaseWeight());
-}
+
 bool LinacPIDFactory::setProbePhaseWeight(const std::string& name, double value)
 {
 	std::string full_name = getFullName(name);
@@ -378,10 +348,7 @@ std::map<std::string, double> LinacPIDFactory::getProbePhaseWeight()const
 	}
 	return r;
 }
-boost::python::dict  LinacPIDFactory::getProbePhaseWeight_Py(const std::string& name)const
-{
-	return to_py_dict<std::string, double>(getProbePhaseWeight());
-}
+
 double LinacPIDFactory::getProbePhaseWrapped(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -400,10 +367,7 @@ std::map<std::string, double> LinacPIDFactory::getProbePhaseWrapped()const
 	}
 	return r;
 }
-boost::python::dict  LinacPIDFactory::getProbePhaseWrapped_Py()const
-{
-	return to_py_dict<std::string, double>(getProbePhaseWeight());
-}
+
 double LinacPIDFactory::getOVAL(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -423,10 +387,7 @@ std::map<std::string, double> LinacPIDFactory::getOVAL()const
 	}
 	return r;
 }
-boost::python::dict  LinacPIDFactory::getOVAL_Py()const
-{
-	return to_py_dict<std::string, double>(getProbePhaseWeight());
-}
+
 bool LinacPIDFactory::enable(const std::string& name)
 {
 	std::string full_name = getFullName(name);
@@ -509,10 +470,7 @@ std::map<std::string, STATE> LinacPIDFactory::getEnabledState()const
 	}
 	return r;
 }
-boost::python::dict  LinacPIDFactory::getEnabledState_Py()const
-{
-	return to_py_dict<std::string, STATE>(getEnabledState());
-}
+
 double LinacPIDFactory::getMaxPhase(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -549,17 +507,6 @@ double LinacPIDFactory::getMinPhaseWeight(const std::string& name)const
 	}
 	return GlobalConstants::double_min;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 void LinacPIDFactory::debugMessagesOn()
 {
@@ -611,3 +558,61 @@ bool LinacPIDFactory::isMessagingOn()
 }
 
 
+#ifdef BUILD_PYTHON
+
+boost::python::list LinacPIDFactory::getAllLinacPIDNames_Py() const
+{
+	std::vector<std::string> returnNames = getAllLinacPIDNames();
+	return to_py_list(returnNames);
+}
+
+
+bool LinacPIDFactory::setPhase_Py(const boost::python::dict& name_value_map)
+{
+	// meh, its doing stuff like this, or use the map_indexing_suite, or re-design 
+	std::map<std::string, double> r;
+	boost::python::list keys = boost::python::list(name_value_map.keys());
+	boost::python::list values = boost::python::list(name_value_map.values());
+	for (int i = 0; i < len(keys); ++i)
+	{
+		boost::python::extract<std::string> k_extractor(keys[i]);
+		boost::python::extract<double> v_extractor(values[i]);
+		std::string k = k_extractor();
+		double v = v_extractor();
+		r[k] = v;
+	}
+	return setPhase(r);
+}
+boost::python::dict LinacPIDFactory::getPhase_Py()const
+{
+	return to_py_dict<std::string, double>(getPhase());
+}
+
+boost::python::dict LinacPIDFactory::getForwardPhaseWeight_Py()const
+{
+	return to_py_dict<std::string, double>(getForwardPhaseWeight());
+}
+boost::python::dict LinacPIDFactory::getForwardPhaseWrapped_Py()const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
+
+boost::python::dict  LinacPIDFactory::getEnabledState_Py()const
+{
+	return to_py_dict<std::string, STATE>(getEnabledState());
+}
+boost::python::dict  LinacPIDFactory::getOVAL_Py()const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
+
+boost::python::dict  LinacPIDFactory::getProbePhaseWeight_Py(const std::string& name)const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
+
+boost::python::dict  LinacPIDFactory::getProbePhaseWrapped_Py()const
+{
+	return to_py_dict<std::string, double>(getProbePhaseWeight());
+}
+#endif //BUILD_PYTHON

@@ -7,15 +7,16 @@
 #endif //HARDWARE_H_
 #ifndef EPICS_CHARGE_INTERFACE_H_
 #include "EPICSChargeInterface.h"
-#include "PythonTypeConversions.h"
 #endif //EPICS_CHARGE_INTERFACE_H_
 #include "ChargePVRecords.h"
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <boost/circular_buffer.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
-
+#include <PythonTypeConversions.h>
+#endif BUILD_PYTHON
 
 class EPICSChargeInterface;
 typedef boost::shared_ptr<EPICSChargeInterface> EPICSChargeInterface_sptr;
@@ -93,12 +94,16 @@ public:
 	/*! get the buffer of charge values.
 	@param[out] values: charge buffer.*/
 	boost::circular_buffer< double > getQBuffer() const;
+#ifdef BUILD_PYTHON
 	/*! get the vector of charge values (after using monitorForNShots) as a python list
 	@param[out] values: charge vector.*/
 	boost::python::list getQVector_Py() const;
 	/*! get the buffer of charge values as a python list.
 	@param[out] values: charge buffer.*/
 	boost::python::list getQBuffer_Py() const;
+	/*! Get the running stats back as a dict*/
+	boost::python::dict getRunningStats_Py();
+#endif // BUILD_PYTHON
 	/*! set charge value (virtual only).
 	@param[in] double: charge value.
 	@param[out] bool: true if it worked.*/
@@ -146,8 +151,6 @@ public:
 	std::string name;
 	/*! Running statistics for charge diagnostic, access to easy statistics*/
 	RunningStats qStats;
-	/*! Get the running stats back as a dict*/
-	boost::python::dict getRunningStats_Py();
 	/*! Get the running stats object` back directly*/
 	RunningStats& getQRunningStats();
 	/*! Set running stats max count .*/

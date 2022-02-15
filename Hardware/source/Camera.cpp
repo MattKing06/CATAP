@@ -1,8 +1,9 @@
 #include "Camera.h"
-#include "Camera.h"
 #include "GlobalFunctions.h"
 #include "CameraPVRecords.h"
+#ifdef BUILD_PYTHON
 #include "PythonTypeConversions.h"
+#endif// BUILD_PYTHON
 #include "boost/algorithm/string/split.hpp"
 #include <algorithm>
 #include <chrono> 
@@ -700,7 +701,9 @@ void Camera::setPVStructs()
 //  | \| /~~\  |  | |___ .__/ 
 // 
 std::vector<std::string> Camera::getAliases()const { return aliases; }
-boost::python::list Camera::getAliases_Py()const { return to_py_list<std::string>(getAliases()); }
+
+
+
 std::string Camera::getScreen()const
 {
 	if (screen_names.size() > 0)
@@ -710,7 +713,7 @@ std::string Camera::getScreen()const
 	return ENUM_TO_STRING(STATE::UNKNOWN_NAME);
 }
 std::vector<std::string> Camera::getScreenNames()const { return screen_names; }
-boost::python::list Camera::getScreenNames_Py()const { return to_py_list<std::string>(getScreenNames()); }
+
 // 
 //  __         ___         ___  __                 
 // |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
@@ -1525,7 +1528,7 @@ bool Camera::setMask(std::map<std::string, long> settings)
 	messenger.printDebugMessage(s.str());
 	return false;
 }
-bool Camera::setMask_Py(boost::python::dict settings){	return setMask(to_std_map<std::string, long>(settings));}
+
 long Camera::getMaskXCenter()const{	return mask_x_center.second;}
 long Camera::getMaskYCenter()const{	return mask_y_center.second;}
 long Camera::getMaskXRadius()const{	return mask_x_radius.second;}
@@ -1537,7 +1540,7 @@ std::map<std::string, long> Camera::getMask()const
 	r[mask_x_str] = getMaskXCenter(); r[mask_rad_y_str] = getMaskYRadius();
 	return r;
 }
-boost::python::dict Camera::getMask_Py()const{ return to_py_dict<std::string, long>(getMask());}
+
 //	 __   __    
 //	|__) /  \ | 
 //	|  \ \__/ | 
@@ -1586,7 +1589,7 @@ bool Camera::setROI(std::map<std::string, long> settings)
 	messenger.printDebugMessage(s.str());
 	return false;
 }
-bool Camera::setROI_Py(boost::python::dict settings){ return setROI(to_std_map<std::string, long>(settings));}
+
 long Camera::getROIMinX()const{	return roi_min_x.second;}
 long Camera::getROIMinY()const{	return roi_min_y.second;}
 long Camera::getROISizeX()const{ return roi_size_x.second;}
@@ -1598,7 +1601,7 @@ std::map<std::string, long> Camera::getROI()const
 	r[roi_min_y_str] = getROIMinY(); r[roi_y_size_str] = getROISizeY();
 	return r;
 }
-boost::python::dict Camera::getROI_Py()const{ return to_py_dict<std::string, long>(getROI());}
+
 //	 __   __                  __                 __           __   __         __   __  
 //	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
 //	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
@@ -1651,7 +1654,6 @@ bool Camera::setMaskandROI(std::map<std::string, long> settings)
 	messenger.printDebugMessage(s.str());
 	return false;
 }
-bool Camera::setMaskandROI_Py(boost::python::dict settings){ return setMaskandROI(to_std_map<std::string, long>(settings));}
 std::map<std::string, long> Camera::getMaskandROI()const
 {
 	std::map<std::string, long> r;
@@ -1661,7 +1663,6 @@ std::map<std::string, long> Camera::getMaskandROI()const
 	r[mask_y_str] = getMaskYCenter(); r[mask_rad_y_str] = getMaskYRadius();
 	return r;
 }
-boost::python::dict Camera::getMaskandROI_Py()const{ return to_py_dict<std::string, long>(getMaskandROI());}
 //	       ___   __   
 //	|     |__   |  \  
 //	|___ .|___ .|__/ .
@@ -1726,21 +1727,7 @@ long Camera::getGain()const{ return gain.second;}
 bool Camera::isBusy()const{	return busy == true;}
 bool Camera::isNotBusy()const{ return busy == false;}
 
-boost::python::dict Camera::getAllRunningStats()const
-{	// TODO 
-	boost::python::dict r;
-	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
-	r["y_pix"] = y_pix_rs.getRunningStats();  				// MAGIC STRING
-	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();    // MAGIC STRING
-	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();    // MAGIC STRING
-	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();  // MAGIC STRING
-	r["x_mm"] = x_mm_rs.getRunningStats();				    // MAGIC STRING
-	r["y_mm"] = y_mm_rs.getRunningStats();				    // MAGIC STRING
-	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();	    // MAGIC STRING
-	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();	    // MAGIC STRING
-	r["sigma_xy_mm"] = sigma_xy_mm_rs.getRunningStats();    // MAGIC STRING
-	return r;
-}
+
 TYPE Camera::getCamType()const{	return cam_type;}
 std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 {
@@ -1754,10 +1741,7 @@ std::map<std::string, double> Camera::getAnalysisResultsPixels()const
 	}
 	return r;
 }
-boost::python::dict Camera::getAnalysisResultsPixels_Py()const
-{
-	return to_py_dict<std::string, double>(getAnalysisResultsPixels());
-}
+
 
 double Camera::getX()const{	return x_mm.second;}
 double Camera::getY()const{	return y_mm.second;}
@@ -1958,9 +1942,9 @@ size_t Camera::getRunningStatNumDataValues()const
 }
 
 std::vector<double> Camera::getPixelResults()const{	return pixelResults.second;}
-boost::python::list Camera::getPixelResults_Py(){ return to_py_list<double>(pixelResults.second);}
+
 std::vector<double> Camera::getMMResults() const{	return mmResults.second;}
-boost::python::list Camera::getMMResults_Py(){	return to_py_list<double>(pixelResults.second);}
+
 
 double Camera::getTemperature()const{	return temperature.second;}
 
@@ -2225,18 +2209,7 @@ std::vector<long> Camera::getImageData()const
 	//std::lock_guard<std::mutex> lg(mtx);  // This now locked your mutex mtx.lock();
 	return image_data.second;
 }
-boost::python::list Camera::getImageData_Py()const
-{
-	return to_py_list<long>(image_data.second);
-}
 
-boost::python::numpy::ndarray Camera::getImageData_NumPy()const
-{
-	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
-
-	return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
-	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
-}
 
 
 
@@ -2244,10 +2217,7 @@ std::vector<long> Camera::getROIData()const
 {
 	return roi_data.second;
 }
-boost::python::list Camera::getROIData_Py()const
-{
-	return to_py_list<long>(GlobalFunctions::slice(getROIData(),GlobalConstants::zero_int, roi_total_pixel_count-1));
-}
+
 std::vector<long>& Camera::getImageDataConstRef()
 {
 	return image_data.second;
@@ -2376,11 +2346,7 @@ HardwareSnapshot Camera::getSnapshot()
 
 	return currentSnapshot;
 }
-boost::python::dict Camera::getSnapshot_Py()
-{
-	getSnapshot();
-	return currentSnapshot.getSnapshot_Py();
-}
+
 
 std::map<std::string, double> Camera::getAnalayisData() const
 {
@@ -2409,6 +2375,69 @@ std::map<std::string, double> Camera::getAnalayisData() const
 
 	return r;
 }
+
+// _____   _______ _  _  ___  _  _   ___ _   _ _  _  ___ _____ ___ ___  _  _ ___ 
+// | _ \ \ / /_   _| || |/ _ \| \| | | __| | | | \| |/ __|_   _|_ _/ _ \| \| / __|
+// |  _/\ V /  | | | __ | (_) | .` | | _|| |_| | .` | (__  | |  | | (_) | .` \__ \
+// |_|   |_|   |_| |_||_|\___/|_|\_| |_|  \___/|_|\_|\___| |_| |___\___/|_|\_|___/
+                                                                                
+
+#ifdef BUILD_PYTHON
+boost::python::list Camera::getAliases_Py()const { return to_py_list<std::string>(getAliases()); }
+boost::python::list Camera::getScreenNames_Py()const { return to_py_list<std::string>(getScreenNames()); }
+bool Camera::setMask_Py(boost::python::dict settings) { return setMask(to_std_map<std::string, long>(settings)); }
+boost::python::dict Camera::getMask_Py()const { return to_py_dict<std::string, long>(getMask()); }
+bool Camera::setROI_Py(boost::python::dict settings) { return setROI(to_std_map<std::string, long>(settings)); }
+boost::python::dict Camera::getROI_Py()const { return to_py_dict<std::string, long>(getROI()); }
+bool Camera::setMaskandROI_Py(boost::python::dict settings) { return setMaskandROI(to_std_map<std::string, long>(settings)); }
+boost::python::dict Camera::getMaskandROI_Py()const { return to_py_dict<std::string, long>(getMaskandROI()); }
+boost::python::dict Camera::getAllRunningStats()const
+{	// TODO 
+	boost::python::dict r;
+	r["x_pix"] = x_pix_rs.getRunningStats();  				// MAGIC STRING
+	r["y_pix"] = y_pix_rs.getRunningStats();  				// MAGIC STRING
+	r["sigma_x_pix"] = sigma_x_pix_rs.getRunningStats();    // MAGIC STRING
+	r["sigma_y_pix"] = sigma_y_pix_rs.getRunningStats();    // MAGIC STRING
+	r["sigma_xy_pix"] = sigma_xy_pix_rs.getRunningStats();  // MAGIC STRING
+	r["x_mm"] = x_mm_rs.getRunningStats();				    // MAGIC STRING
+	r["y_mm"] = y_mm_rs.getRunningStats();				    // MAGIC STRING
+	r["sigma_x_mm"] = sigma_x_mm_rs.getRunningStats();	    // MAGIC STRING
+	r["sigma_y_mm"] = sigma_y_mm_rs.getRunningStats();	    // MAGIC STRING
+	r["sigma_xy_mm"] = sigma_xy_mm_rs.getRunningStats();    // MAGIC STRING
+	return r;
+}
+boost::python::dict Camera::getAnalysisResultsPixels_Py()const
+{
+	return to_py_dict<std::string, double>(getAnalysisResultsPixels());
+}
+
+boost::python::list Camera::getPixelResults_Py() { return to_py_list<double>(pixelResults.second); }
+boost::python::list Camera::getMMResults_Py() { return to_py_list<double>(pixelResults.second); }
+
+boost::python::list Camera::getImageData_Py()const
+{
+	return to_py_list<long>(image_data.second);
+}
+
+boost::python::numpy::ndarray Camera::getImageData_NumPy()const
+{
+	// long edge needs to be defined ... and or we use contorl s pvs  could be sipler 
+
+	return 	to_numpy_array<long>(image_data.second, array_data_num_pix_y, array_data_num_pix_x);
+	//return 	to_numpy_array<long>(image_data.second, epics_pixel_height.second, epics_pixel_width.second);
+}
+
+boost::python::list Camera::getROIData_Py()const
+{
+	return to_py_list<long>(GlobalFunctions::slice(getROIData(), GlobalConstants::zero_int, roi_total_pixel_count - 1));
+}
+
+boost::python::dict Camera::getSnapshot_Py()
+{
+	getSnapshot();
+	return currentSnapshot.getSnapshot_Py();
+}
+
 boost::python::dict Camera::getAnalayisData_Py() const
 {
 	//boost::python::dict r;
@@ -2436,3 +2465,4 @@ boost::python::dict Camera::getAnalayisData_Py() const
 
 	return to_py_dict<std::string, double>(getAnalayisData());
 }
+#endif //BUILD_PYTHON

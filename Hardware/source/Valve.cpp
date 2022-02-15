@@ -81,11 +81,13 @@ HardwareSnapshot Valve::getSnapshot()
 	currentSnapshot.update(ValveRecords::STA, valveState.second);
 	return currentSnapshot;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict Valve::getSnapshot_Py()
 {
 	currentSnapshot.update(ValveRecords::STA, valveState.second);
 	return currentSnapshot.getSnapshot_Py();
 }
+#endif //BUILD_PYTHON
 
 void Valve::setValveState(const STATE& state)
 {

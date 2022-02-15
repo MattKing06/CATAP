@@ -86,4 +86,5 @@ set_property(TARGET EPICSInterface PROPERTY FOLDER "EPICSInterface")
 set_target_properties(EPICSInterface PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/EPICSInterface")
 add_subdirectory(test)

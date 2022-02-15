@@ -1,6 +1,5 @@
 #include "HardwareFactory.h"
 #include <boost/filesystem/convenience.hpp>
-#include "PythonTypeConversions.h"
 #include "GlobalFunctions.h"
 #include <SnapshotFileManager.h>
 
@@ -172,13 +171,14 @@ bool HardwareFactory::setup(const std::vector<std::string>& hardwareTypes, const
 	}
 	return false;
 }
-
+#ifdef BUILD_PYTHON
 bool HardwareFactory::setup(const boost::python::list& hardwareTypes, const std::string& VERSION)
 {
 	std::vector<std::string> hardware = to_std_vector<std::string>(hardwareTypes);
 	setup(hardware, VERSION);
 	return false;
 }
+#endif //BUILD_PYTHON
 
 RFProtectionFactory& HardwareFactory::getRFProtectionFactory()
 {
@@ -236,10 +236,12 @@ RFModulatorFactory& HardwareFactory::getRFModulatorFactory_Single(TYPE machine_a
 {
 	return 	getRFModulatorFactory(std::vector<TYPE>{machine_areas});
 }
+#ifdef BUILD_PYTHON
 RFModulatorFactory& HardwareFactory::getRFModulatorFactory_Py(const boost::python::list& machine_areas)
 {
 	return getRFModulatorFactory(to_std_vector<TYPE>(machine_areas));
 }
+#endif //BUILD_PYTHON
 RFModulatorFactory& HardwareFactory::getRFModulatorFactory(const std::vector<TYPE>& machine_areas)
 {
 	messenger.printMessage("getRFProtectionFactory Called");
@@ -293,10 +295,12 @@ LLRFFactory& HardwareFactory::getLLRFFactory_Single(const TYPE machineArea)
 {
 	return getLLRFFactory(std::vector<TYPE>{machineArea});
 }
+#ifdef BUILD_PYTHON
 LLRFFactory& HardwareFactory::getLLRFFactory_Py(const boost::python::list& machineAreas)
 {
 	return getLLRFFactory(to_std_vector<TYPE>(machineAreas));
 }
+#endif //BUILD_PYTHON
 LLRFFactory& HardwareFactory::getLLRFFactory(const std::vector<TYPE>& machineAreas)
 {
 	messenger.printMessage("getLLRFFactory Called");
@@ -329,10 +333,12 @@ MagnetFactory& HardwareFactory::getMagnetFactory(TYPE machineArea)
 {
 	return getMagnetFactory(std::vector<TYPE>{machineArea});
 }
+#ifdef BUILD_PYTHON
 MagnetFactory& HardwareFactory::getMagnetFactory(const boost::python::list& machineAreas)
 {
 	return getMagnetFactory(to_std_vector<TYPE>(machineAreas));
 }
+#endif //BUILD_PYTHON
 MagnetFactory& HardwareFactory::getMagnetFactory(const std::vector<TYPE>& machineAreas )
 {
 	if (!magnetFactory.hasBeenSetup)
@@ -513,10 +519,12 @@ CameraFactory& HardwareFactory::getCameraFactory_Single(const TYPE machineArea)
 	const std::vector<TYPE> machineAreas{ machineArea };
 	return getCameraFactory_Mulitple(machineAreas);
 }
+#ifdef BUILD_PYTHON
 CameraFactory& HardwareFactory::getCameraFactory_Mulitple_Py(const boost::python::list& machineAreas)
 {
 	return getCameraFactory_Mulitple(to_std_vector<TYPE>(machineAreas));
 }
+#endif //BUILD_PYTHON
 CameraFactory& HardwareFactory::getCameraFactory_Mulitple(const std::vector<TYPE>& machineAreas)
 {
 	messenger.printDebugMessage("");
@@ -553,10 +561,12 @@ CameraFactory& HardwareFactory::getCameraFactory_ByName(std::string name)
 	const std::vector<std::string> names{ name };
 	return getCameraFactory_ByNames(names);
 }
+#ifdef BUILD_PYTHON
 CameraFactory& HardwareFactory::getCameraFactory_ByNames_Py(const boost::python::list& names)
 {
 	return getCameraFactory_ByNames(to_std_vector<std::string>(names));
 }
+#endif //BUILD_PYTHON
 CameraFactory& HardwareFactory::getCameraFactory_ByNames(const std::vector<std::string>& names)
 {
 	messenger.printDebugMessage("");

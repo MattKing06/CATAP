@@ -1,10 +1,7 @@
 #ifndef MAGNET_H_
 #define MAGNET_H_
 #include "LoggingSystem.h"
-#ifndef HARDWARE_H_
-#include "Hardware.h"
-#include "HardwareSnapshot.h"
-#endif //HARDWARE_H_
+
 #ifndef EPICS_MAGNET_INTERFACE_H_
 #include "EPICSMagnetInterface.h"
 #endif //EPICS_MAGNET_INTERFACE_H_
@@ -14,9 +11,14 @@
 #include "GlobalConstants.h"
 #include "GlobalTypeEnums.h"
 #include <boost/shared_ptr.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
-
+#endif //BUILD_PYTHON
+#ifndef HARDWARE_H_
+#include "Hardware.h"
+#include "HardwareSnapshot.h"
+#endif //HARDWARE_H_
 
 // forward declaration of EPICSMagnetInterface class
 // tells compiler that we will use this class.
@@ -65,8 +67,25 @@ class Magnet : public Hardware
 		/*! Get a magnet object HardwareSnapshot 
 			@param[out] magnetState structured data									*/
 		HardwareSnapshot getSnapshot()override;
+
+		#ifdef BUILD_PYTHON
 		boost::python::dict getSnapshot_Py()override;
-		
+		/*! degauss a magnet
+	    @param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
+		bool degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss);
+		/*! get the name alises for this magnet (python version
+		@param[out] names, python list contianing all the alias names */
+		boost::python::list getAliases_Py() const;
+		/*! get the actual values used during the degauss procedure, initially defined in the master lattice yaml file (Python version)
+	    @param[out] result  */
+		boost::python::list getDegaussValues_Py() const;
+		/*! Get the field integral coefficents, defined in the master lattice yaml file (Python version)
+		@param[out] result  */
+		boost::python::list getFieldIntegralCoefficients_Py() const;
+		/*! set the values used during degaussing (Python version)
+		@param[out] result  */
+		boost::python::list setDegaussValues_Py(const boost::python::list& values);
+		#endif
 	//	magnetState getMagnetState()const;
 	///*! set a magnetState (structured data with magnet name and latest, readi, seti, ilk_state and psustae
 	//	@param[in] magnetState structured data to set
@@ -87,9 +106,7 @@ class Magnet : public Hardware
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(const std::vector<double>& custum_degauss_values, double set_value_after_degauss);
-	/*! degauss a magnet
-		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
-		bool degauss(const boost::python::list& custum_degauss_values, double set_value_after_degauss);
+
 	/*! degauss a magnet
 		@param[in] reset_to_zero, whether to set zero current or can be true or false,			*/
 		bool degauss(double set_value_after_degauss);
@@ -99,9 +116,7 @@ class Magnet : public Hardware
 	/*! get the name alises for this magnet 
 		@param[out] names, vector contianing all the alias names */
 		std::vector<std::string> getAliases() const;
-	/*! get the name alises for this magnet (python version
-		@param[out] names, python list contianing all the alias names */
-		boost::python::list getAliases_Py() const;
+
 	/*! get the magnet manufacturer, defined in the master lattice yaml file
 		@param[out] result  */
 		std::string getManufacturer() const;
@@ -134,9 +149,7 @@ class Magnet : public Hardware
 	/*! get the actual values used during the degauss procedure, initially defined in the master lattice yaml file
 		@param[out] result  */
 		std::vector<double> getDegaussValues() const;
-	/*! get the actual values used during the degauss procedure, initially defined in the master lattice yaml file (Python version)
-		@param[out] result  */
-		boost::python::list getDegaussValues_Py() const;
+
 	/*! get the tolerance used to check if readi = seti when deguassing, initially defined in the master lattice yaml file
 		@param[out] result  */
 		double getDegaussTolerance() const;
@@ -154,15 +167,9 @@ class Magnet : public Hardware
 	/*! Get the field integral coefficents, defined in the master lattice yaml file
 		@param[out] result  */
 		std::vector<double> getFieldIntegralCoefficients() const;
-	/*! Get the field integral coefficents, defined in the master lattice yaml file (Python version)
-		@param[out] result  */
-		boost::python::list getFieldIntegralCoefficients_Py() const;
 	/*! set the values used during degaussing
 		@param[out] new value sthat will be used */
 		std::vector<double> setDegaussValues(const std::vector<double>& values);
-	/*! set the values used during degaussing (Python version)
-		@param[out] result  */
-		boost::python::list setDegaussValues_Py(const boost::python::list& values);
 	/*! set new degaussTolerance (for checking when READ == SETI during degaussing), initially defined in the master lattice yaml file
 		@param[in] new degaussTolerance
 		@param[out] degaussTolerance now being used */

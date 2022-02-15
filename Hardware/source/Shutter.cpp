@@ -5,8 +5,10 @@
 #include "boost/algorithm/string/split.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
-// CATAP includes
+// CATAP 
+#ifdef BUILD_PYTHON
 #include "PythonTypeConversions.h"
+#endif //BUILD_PYTHON
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 
@@ -74,7 +76,7 @@ ShutterState Shutter::getShutterState()const
 //}
 
 
-
+#ifdef BUILD_PYTHON
 boost::python::dict Shutter::getShutterStateDictionary()const
 {
 	boost::python::dict r;
@@ -99,6 +101,18 @@ boost::python::dict Shutter::getShutterStateDictionary()const
 	return r;
 }
 
+boost::python::list Shutter::getAliases_Py() const
+{
+	return to_py_list<std::string>(getAliases());
+}
+
+boost::python::dict  Shutter::getCMIBitMap_Py()const
+{
+	return to_py_dict<std::string, STATE>(cmi_bit_map);
+}
+
+#endif //BUILD_PYTHON
+
 
 
 bool Shutter::isClosed() const
@@ -119,10 +133,7 @@ std::vector<std::string> Shutter::getAliases() const
 {
 	return this->aliases;
 }
-boost::python::list Shutter::getAliases_Py() const
-{
-	return to_py_list<std::string>(getAliases());
-}
+
 
 
 
@@ -271,10 +282,7 @@ std::map<std::string, STATE> Shutter::getCMIBitMap()const
 {
 	return cmi_bit_map;
 }
-boost::python::dict  Shutter::getCMIBitMap_Py()const
-{
-	return to_py_dict<std::string, STATE>(cmi_bit_map);
-}
+
 
 
 void Shutter::setPVStructs()

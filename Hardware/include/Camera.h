@@ -16,8 +16,10 @@
 #include "HardwareSnapshot.h"
 #include "CameraPVRecords.h"
 #include <boost/make_shared.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#endif BUILD_PYTHON
 #include "RunningStats.h"
 #include <thread>
 #include "HardwareSnapshot.h"
@@ -83,18 +85,22 @@ public:
 	/*! Get all the name alises for this Camera, defined in the main lattice. 
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;
-	/*! Get all the name alises for this Camera (python version)
-	@param[out] names, python list containing all the alias names */
-	boost::python::list getAliases_Py() const;
+
 	/*! Get the screen names the camera is attached to.c
 	@param[out] names, vector containing  all the screen names (and their aliases) */
 	std::vector<std::string> getScreenNames() const;
-	/*! Get the screen names the camera is attached to (python version).
-	@param[out] names, python list containing all the screen names (and their aliases) */
-	boost::python::list getScreenNames_Py() const;
+
 	/*! Get the first screen name the camera is attached to, defined in the main lattice. 
 	@param[out] name, */
 	std::string getScreen()const;
+#ifdef BUILD_PYTHON
+	/*! Get all the name alises for this Camera (python version)
+	@param[out] names, python list containing all the alias names */
+	boost::python::list getAliases_Py() const;
+	/*! Get the screen names the camera is attached to (python version).
+	@param[out] names, python list containing all the screen names (and their aliases) */
+	boost::python::list getScreenNames_Py() const;
+#endif //BUILD_PYTHON
 //  
 //   __         ___         ___  __                 
 //  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
@@ -805,10 +811,6 @@ public:
 	@param[in] map<string, long>, values to set (keywords must be 'mask_keywords')
 	@param[out] long, value */
 	bool setMask(std::map<std::string, long> settings);
-	/*! Set the mask using python dict. Setting the Mask and ROI together is preferred using setMaskandROI_Py
-	@param[in] dict, values to set (keywords must be 'mask_keywords')
-	@param[out] long, value */
-	bool setMask_Py(boost::python::dict settings);
 	/*! Get the mask x center position.
 	@param[in] long, value */
 	long getMaskXCenter()const;
@@ -824,9 +826,16 @@ public:
 	/*! Get the mask settings.
 	@param[in] map<string, long>, value */
 	std::map<std::string, long> getMask()const;
+#ifdef BUILD_PYTHON
+	/*! Set the mask using python dict. Setting the Mask and ROI together is preferred using setMaskandROI_Py
+	@param[in] dict, values to set (keywords must be 'mask_keywords')
+	@param[out] long, value */
+	bool setMask_Py(boost::python::dict settings);
 	/*! Get the mask settings (python version).
 	@param[in] map<string, long>, value */
 	boost::python::dict getMask_Py()const;
+#endif //BUILD_PYTHON
+
 	//	 __   __    
 	//	|__) /  \ | 
 	//	|  \ \__/ | 
@@ -870,10 +879,6 @@ public:
 	@param[in] map<std::string, long>, with new values (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI(std::map<std::string, long> settings);
-	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
-	@param[in] long, dict with new values, (for keywords see roi_keywords)
-	@param[out] bool, true if value got sent to epics (not if it was received)*/
-	bool setROI_Py(boost::python::dict settings);
 	/*! Get the Region Of Interest minimum x pixel.
 	@param[out] long, value*/
 	long getROIMinX()const;
@@ -889,9 +894,16 @@ public:
 	/*! Get the Region Of Interest values.
 	@param[out] map<std::string, long>, with new values  */
 	std::map<std::string, long> getROI()const;
+
+#ifdef BUILD_PYTHON
 	/*! Get the Region Of Interest values.
 	@param[out] dict, with new values  */
 	boost::python::dict getROI_Py()const;
+	/*! Set the Region Of Interest parameters, !!WARNING!! This function does not move the analysis MASK and should only be used by experts
+	@param[in] long, dict with new values, (for keywords see roi_keywords)
+	@param[out] bool, true if value got sent to epics (not if it was received)*/
+	bool setROI_Py(boost::python::dict settings);
+#endif //BUILD_PYTHON
 	//	 __   __                  __                 __           __   __         __   __  
 	//	|__) /  \ |     /\  |\ | |  \     |\/|  /\  /__` |__/    /  ` /  \  |\/| |__) /  \ 
 	//	|  \ \__/ |    /~~\ | \| |__/     |  | /~~\ .__/ |  \    \__, \__/  |  | |__) \__/ 
@@ -945,16 +957,19 @@ public:
 	@param[in] map<string, long>, values to set (keywords must be 'mask_and_roi_keywords')
 	@param[out] long, value */
 	bool setMaskandROI(std::map<std::string, long> settings);
+	/*! Get the mask and ROI settings
+	@param[out] map<string, long>, values ) */
+	std::map<std::string, long> getMaskandROI()const;
+
+#ifdef BUILD_PYTHON
+	/*! Get the mask and ROI settings (Python version).
+	@param[out] dict, values ) */
+	boost::python::dict getMaskandROI_Py()const;	
 	/*! Set the mask using python dict. Setting the Mask and ROI together is preferred using setMaskAndROIxPos
 	@param[in] dict, values to set (keywords must be 'mask_and_roi_keywords')
 	@param[out] long, value */
 	bool setMaskandROI_Py(boost::python::dict settings);
-	/*! Get the mask and ROI settings
-	@param[out] map<string, long>, values ) */
-	std::map<std::string, long> getMaskandROI()const;
-	/*! Get the mask and ROI settings (Python version).
-	@param[out] dict, values ) */
-	boost::python::dict getMaskandROI_Py()const;
+#endif //BUILD_PYTHON
 //	       ___   __   
 //	|     |__   |  \  
 //	|___ .|___ .|__/ .
@@ -1014,7 +1029,10 @@ public:
 	//
 public:
 	HardwareSnapshot getSnapshot();
+#ifdef BUILD_PYTHON
 	boost::python::dict getSnapshot_Py();
+#endif //BUILD_PYTHON
+
 
 //	 __         ___          __   __            ___  __  
 //	|__) | \_/ |__  |       /  ` /  \ |  | |\ |  |  /__` 
@@ -1064,9 +1082,7 @@ public:
 	/*! Get relevant analysis data in a map
 	@param[out] std::map<std::string, double> */
 	std::map<std::string, double> getAnalayisData() const;
-	/*! Get relevant analysis data in a python dict
-	@param[out] dict of analysis data */
-	boost::python::dict getAnalayisData_Py() const;
+
 	/*! Set the x position in mm from the online analysis (only available VIRTUAL mode).
 	@param[in] double, value 
 	@param[out] bool, true if value set correctly, false could mean you are trying to set a value for PHYSICAL CLARA   */
@@ -1126,9 +1142,7 @@ public:
 	/*! get Anlaysis results in pixels
 	@param[out] map<string, double>, values, keyed by names in master lattice */
 	std::map<std::string, double> getAnalysisResultsPixels()const;
-	/*! get Anlaysis results in pixels, Python version
-	@param[out] map<string, double>, values, keyed by names in master lattice */
-	boost::python::dict getAnalysisResultsPixels_Py()const;
+
 	/*! Get the PixelResults from analysis. The values expected back are in the following order:
 		[0] - X_POSITION
 		[1] - Y_POSITION
@@ -1137,7 +1151,7 @@ public:
 		[4] - COVARIANCE POSITION
 		@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
 	std::vector<double> getPixelResults() const;
-	boost::python::list getPixelResults_Py();
+
 	/*! Get the mm Results from analysis. The values expected back are in the following order:
 	[0] - X_POSITION
 	[1] - Y_POSITION
@@ -1146,7 +1160,17 @@ public:
 	[4] - COVARIANCE
 	@param[out] vector<double> results : [x_pos, y_pos, x_sig, y_sig, cov]*/
 	std::vector<double> getMMResults() const;
+
+#ifdef BUILD_PYTHON
+	/*! get Anlaysis results in pixels, Python version
+	@param[out] map<string, double>, values, keyed by names in master lattice */
+	boost::python::dict getAnalysisResultsPixels_Py()const;
+	/*! Get relevant analysis data in a python dict
+	@param[out] dict of analysis data */
+	boost::python::dict getAnalayisData_Py() const;
 	boost::python::list getMMResults_Py();
+	boost::python::list getPixelResults_Py();
+#endif // BUILD_PYTHON
 protected:
 	/*! latest horizontal position (expected value) in pixels. Value and epicstimestamp.	*/
 	std::pair<epicsTimeStamp, double > x_pix;
@@ -1182,9 +1206,6 @@ protected:
 // /~~\ | \| /~~\ |___  |  .__/ | .__/    |  \ \__/ | \| | \| | | \| \__>    .__/  |  /~~\  |  .__/	*/
 // 
 public:
-	/*! Get the image analysis running stats data.
-	@param[out] dict, values */
-	boost::python::dict getAllRunningStats()const;
 	/*! Returns the running stats object for x_pix, not just the dict
 	@param[out] RunningStats, rs*/
 	RunningStats& getXPixRunningStats();
@@ -1228,6 +1249,11 @@ public:
 	/*! Check if all running stats in the camera are full.
 	* 	@param[out] bool, */
 	bool areAllRunningStatsFull()const;
+#ifdef BUILD_PYTHON
+	/*! Get the image analysis running stats data.
+	@param[out] dict, values */
+	boost::python::dict getAllRunningStats()const;
+#endif // BUILD_PYTHON
 protected:
 	/* Number of shots to buffer for the analysis results*/
 	size_t running_stats_buffer_size;
@@ -1286,22 +1312,10 @@ public:
 	to reduce network load Camera data ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
 	std::vector<long> getImageData()const;
-	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored. 
-	@param[out] list, latest data */
-	boost::python::list getImageData_Py()const;
-	/*! Get a copy of the current image data (Numpy Python Version). Until an updateImage functiton is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored.
-	@param[out] list, latest data */
-	boost::python::numpy::ndarray getImageData_NumPy()const;
 	/*! Get a copy of the current Region Of Interest data. Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[out] vector<long>, latest data */
 	std::vector<long> getROIData()const;
-	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored.
-	@param[out] list, latest data */
-	boost::python::list getROIData_Py()const;
 	/*! Get a reference to the current image data. Gives access to image data without copying 
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
 	std::vector<long>& getImageDataConstRef();
@@ -1319,6 +1333,20 @@ public:
 	/*! Get the current number of data values being used by the Running Stats.
 * 	@param[out] size_t: number of data values.*/
 	size_t getRunningStatNumDataValues()const;
+#ifdef BUILD_PYTHON
+	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored.
+	@param[out] list, latest data */
+	boost::python::list getImageData_Py()const;
+	/*! Get a copy of the current image data (Numpy Python Version). Until an updateImage functiton is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored.
+	@param[out] list, latest data */
+	boost::python::numpy::ndarray getImageData_NumPy()const;
+	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
+		to reduce network load Camera data arrays ARE NOT continuously monitored.
+		@param[out] list, latest data */
+	boost::python::list getROIData_Py()const;
+#endif //BUILD_PYTHON
 private:
 	/*! Get the latest time stamp for an image / ROI  array
 	@param[in] struct dbr_time_long*, pointer to DBR_TIME_LONG struct

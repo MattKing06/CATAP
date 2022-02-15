@@ -129,6 +129,8 @@ boost::circular_buffer< double > Charge::getQBuffer() const
 	return this->qBuffer;
 }
 
+#ifdef BUILD_PYTHON
+
 boost::python::list Charge::getQBuffer_Py() const
 {
 	boost::circular_buffer< double > qbuf;
@@ -144,6 +146,15 @@ boost::python::list Charge::getQVector_Py() const
 	boost::python::list newPyList = to_py_list(qvec);
 	return newPyList;
 }
+
+boost::python::dict Charge::getRunningStats_Py()
+{
+	boost::python::dict r;
+	r["q_rs"] = qStats.getRunningStats();
+	return r;
+}
+
+#endif //BUILD_PYTHON
 
 bool Charge::setQVirtual(const double& value)
 {
@@ -225,12 +236,7 @@ void Charge::clearBuffers()
 	qBuffer.clear();
 }
 
-boost::python::dict Charge::getRunningStats_Py()
-{
-	boost::python::dict r;
-	r["q_rs"] = qStats.getRunningStats();
-	return r;
-}
+
 
 RunningStats& Charge::getQRunningStats()
 {

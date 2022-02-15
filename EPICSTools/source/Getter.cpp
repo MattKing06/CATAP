@@ -1,5 +1,5 @@
 #include <Getter.h>
-#include <PythonTypeConversions.h>
+
 
 Getter::Getter()
 {
@@ -336,7 +336,7 @@ void Getter::setupChannels()
 	EPICSInterface::sendToEPICS();
 
 }
-
+#ifdef BUILD_PYTHON
 boost::python::object Getter::getValue_Py()
 {
 	setValueFromEPICS();
@@ -589,3 +589,4 @@ boost::python::list Getter::getArray_Py()
 		return boost::python::list();
 	}
 }
+#endif //BUILD_PYTHON

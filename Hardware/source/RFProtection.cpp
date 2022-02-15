@@ -2,7 +2,6 @@
 #include <RFProtectionPVRecords.h>
 #include "boost/algorithm/string/split.hpp"
 // CATAP includes
-#include "PythonTypeConversions.h"
 #include "GlobalConstants.h"
 #include "GlobalFunctions.h"
 
@@ -123,10 +122,13 @@ std::vector<std::string> RFProtection::getAliases() const
 {
 	return aliases;
 }
+
+#ifdef BUILD_PYTHON
 boost::python::list RFProtection::getAliases_Py() const
 {
 	return to_py_list<std::string>(getAliases());
 }
+#endif BUILD_PYTHON
 
 
 void RFProtection::setPVStructs()

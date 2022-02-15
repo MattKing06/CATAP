@@ -32,11 +32,13 @@ public:
 
 
 	std::vector<int> getKeyBits(const std::string& name_string)const;
-	boost::python::list getKeyBits_Py(const std::string& name_string)const;
+
 
 	std::vector<bool> getKeyBitValues(const std::string& name_string)const;
+#ifdef BUILD_PYTHON
+	boost::python::list getKeyBits_Py(const std::string& name_string)const;
 	boost::python::list getKeyBitValues_Py(const std::string& name_string)const;
-
+#endif //BUILD_PYTHON
 
 	std::string getFullName(const std::string& name_to_check) const;
 

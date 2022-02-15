@@ -2,8 +2,9 @@
 #include <RFProtectionPVRecords.h>
 #include <GlobalFunctions.h>
 #include <GlobalFunctions.h>
+#ifdef BUILD_PYTHON
 #include "PythonTypeConversions.h"
-
+#endif //BUILD_PYTHON
 RFProtectionFactory::RFProtectionFactory()
 {
 }
@@ -179,10 +180,7 @@ std::vector<int> RFProtectionFactory::getKeyBits(const std::string& name)const
 	}
 	return std::vector<int>{};
 }
-boost::python::list RFProtectionFactory::getKeyBits_Py(const std::string& name)const
-{
-	return to_py_list<int>(getKeyBits(name));
-}
+
 std::vector<bool> RFProtectionFactory::getKeyBitValues(const std::string& name)const
 {
 	std::string full_name = getFullName(name);
@@ -192,10 +190,16 @@ std::vector<bool> RFProtectionFactory::getKeyBitValues(const std::string& name)c
 	}
 	return std::vector<bool>{};
 }
+#ifdef BUILD_PYTHON
+boost::python::list RFProtectionFactory::getKeyBits_Py(const std::string& name)const
+{
+	return to_py_list<int>(getKeyBits(name));
+}
 boost::python::list RFProtectionFactory::getKeyBitValues_Py(const std::string& name)const
 {
 	return to_py_list<bool>(getKeyBitValues(name));
 }
+#endif //BUILD_PYTHON
 
 
 

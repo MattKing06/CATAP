@@ -1,7 +1,8 @@
 #include <RFHeartbeatFactory.h>
 #include <GlobalFunctions.h>
+#ifdef BUILD_PYTHON
 #include <PythonTypeConversions.h>
-
+#endif //BUILD_PYTHON
 RFHeartbeatFactory::RFHeartbeatFactory()
 {
 }
@@ -163,10 +164,12 @@ std::vector<std::string> RFHeartbeatFactory::getHeartbeatNames()const
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::list RFHeartbeatFactory::getHeartbeatNames_Py()const
 {
 	return to_py_list<std::string>(getHeartbeatNames());
 }
+#endif //BUILD_PYTHON
 std::string RFHeartbeatFactory::getFullName(const std::string& name_to_check) const
 {
 	//std::cout << "getFullName looking for " << name_to_check << std::endl;

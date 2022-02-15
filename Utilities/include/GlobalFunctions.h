@@ -232,7 +232,9 @@ namespace GlobalFunctions {
 		// Format this as date time to seconds resolution
 		// e.g. 2016-08-30-08:18:51
 		std::stringstream stream;
-		stream << std::put_time(gmtime(&epoch_seconds), "%F_%T");
+		struct tm buf;
+		auto val = gmtime_s(&buf, &epoch_seconds);
+		stream << std::put_time(&buf, "%F_%T");
 
 		// If we now convert back to a time_point we will get the time truncated
 		// to whole seconds 

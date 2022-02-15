@@ -6,8 +6,11 @@
 #include <LinacPID.h>
 #include <map>
 #include <vector>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 
 /** @addtogroup factories
  @{*/
@@ -32,8 +35,34 @@ public:
 	LinacPID& getLinacPID(const std::string& fullLinacPIDName);
 	std::string getFullName(const std::string& nameToCheck) const;
 	std::vector<std::string> getAllLinacPIDNames() const;
+#ifdef BUILD_PYTHON
 	boost::python::list getAllLinacPIDNames_Py() const;
-
+	/*! Set multiple Cavity phases, Python version
+	*	@param[in] dict, dictionary of names of cavities to set and the values to apply
+	*	@param[out] bool, true if all values got sent to epics (not if it was received) */
+	bool setPhase_Py(const boost::python::dict& name_value_map);
+	/*! Get the phase for each cavity in teh factory, Python version
+	*	@param[out] dict, dictionary of phase values, keyed by the cavity names */
+	boost::python::dict getPhase_Py()const;
+	/*! Get the Forward phase weights for each cavity, Python version
+	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
+	boost::python::dict getForwardPhaseWeight_Py()const;
+	/*! Get the Forward phase wrapped values for each cavity, Python version
+	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
+	boost::python::dict getForwardPhaseWrapped_Py()const;
+	/*! Get the Probe phase weight values for each cavity, Python version
+	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
+	boost::python::dict  getProbePhaseWeight_Py(const std::string& name)const;
+	/*! Get the Cavity Probe phase wrapped values for each cavity, Python version
+	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
+	boost::python::dict getProbePhaseWrapped_Py()const;
+	/*! Get the current OVAL for all cavities, Python version
+	* @param[out] double, value */
+	boost::python::dict  getOVAL_Py()const;
+	/*! Get the current state of the Phase control feedback for each cavity, Python version
+	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
+	boost::python::dict  getEnabledState_Py()const;
+#endif //BUILD_PYTHON
 
 
 
@@ -47,10 +76,7 @@ public:
 	*	@param[in] map<string, double>, map of names of cavities to set and the values to apply
 	*	@param[out] bool, true if all values got sent to epics (not if it was received) */
 	bool setPhase(const std::map<std::string, double>& name_value_map);
-	/*! Set multiple Cavity phases, Python version 
-	*	@param[in] dict, dictionary of names of cavities to set and the values to apply
-	*	@param[out] bool, true if all values got sent to epics (not if it was received) */
-	bool setPhase_Py(const boost::python::dict& name_value_map);
+
 	/*! Get the Cavity phase 
 	*	@param[in] string, name of cavity to get 
 	*	@param[out] double, value */
@@ -58,9 +84,7 @@ public:
 	/*! Get the phase for each cavity in teh factory
 	*	@param[out] map<string, double>, map of phase values, keyed by the cavity names */
 	std::map<std::string, double> getPhase()const;
-	/*! Get the phase for each cavity in teh factory, Python version 
-	*	@param[out] dict, dictionary of phase values, keyed by the cavity names */
-	boost::python::dict getPhase_Py()const;
+
 
 
 	/*! Set the Cavity Forward phase wrapped
@@ -75,9 +99,7 @@ public:
 	/*! Get the Forward phase weights for each cavity
 	* @param[out] map, map of forward phase weights, keyed by the cavity name */
 	std::map<std::string, double> getForwardPhaseWeight()const;
-	/*! Get the Forward phase weights for each cavity, Python version 
-	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict getForwardPhaseWeight_Py()const;
+
 
 
 	/*! Get the Cavity Forward Phase Wrapped
@@ -87,9 +109,7 @@ public:
 	/*! Get the Forward phase wrapped values for each cavity
 	* @param[out] map, map of forward phase weights, keyed by the cavity name */
 	std::map<std::string, double> getForwardPhaseWrapped()const;
-	/*! Get the Forward phase wrapped values for each cavity, Python version 
-	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict getForwardPhaseWrapped_Py()const;
+
 	
 	
 	
@@ -105,9 +125,7 @@ public:
 	/*! Get the Probe phase weight values for each cavity
 	* @param[out] map, map of forward phase weights, keyed by the cavity name */
 	std::map<std::string, double> getProbePhaseWeight()const;
-	/*! Get the Probe phase weight values for each cavity, Python version
-	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict  getProbePhaseWeight_Py(const std::string& name)const;
+
 	
 	/*! Set the Cavity Probe phase wrapped value 
 	* 	@param[in] string, name of cavity to get value for
@@ -116,9 +134,7 @@ public:
 	/*! Get the Cavity Probe phase wrapped values for each cavity
 	* @param[out] map, map of forward phase weights, keyed by the cavity name */
 	std::map<std::string, double> getProbePhaseWrapped()const;
-	/*! Get the Cavity Probe phase wrapped values for each cavity, Python version
-	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict  getProbePhaseWrapped_Py()const;
+
 
 	/*! Get the current OVAL
 	* 	@param[in] string, name of cavity to get value for
@@ -127,9 +143,7 @@ public:
 	/*! Get the current OVAL for all cavities
 	* @param[out] double, value */
 	std::map<std::string, double> getOVAL()const;
-	/*! Get the current OVAL for all cavities, Python version 
-	* @param[out] double, value */
-	boost::python::dict  getOVAL_Py()const;
+
 
 	/*! Enable the phase control feedback
 	* 	@param[in] string, name of cavity to enable
@@ -165,9 +179,7 @@ public:
 	/*! Get the current state of the Phase control feedback for each cavity
 	* @param[out] map, map of forward phase weights, keyed by the cavity name */
 	std::map<std::string, STATE> getEnabledState()const;
-	/*! Get the current state of the Phase control feedback for each cavity, Python version
-	* @param[out] dict, dictionary of forward phase weights, keyed by the cavity name */
-	boost::python::dict  getEnabledState_Py()const;
+
 
 
 	/*! Get the maximum phase that can be set (defined in the master lattice).

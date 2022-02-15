@@ -101,10 +101,39 @@ std::vector<std::string> RFModulator::getAliases() const
 {
 	return aliases;
 }
+
+#ifdef BUILD_PYTHON
+
 boost::python::list RFModulator::getAliases_Py() const
 {
 	return to_py_list<std::string>(getAliases());
 }
+
+boost::python::dict RFModulator::getLowLevelNumericalData_Py()const
+{
+    return to_py_dict<std::string, double>(getLowLevelNumericalData());
+}
+
+boost::python::dict RFModulator::getLowLevelStringData_Py()const
+{
+    return to_py_dict<std::string, std::string>(getLowLevelStringData());
+}
+boost::python::dict RFModulator::getLowLevelData()const
+{
+    //typename std::map<key, value>::iterator iter;
+    boost::python::dict newDictiOnary;
+    for (auto&& iter : getLowLevelNumericalData())
+    {
+        newDictiOnary[iter.first] = iter.second;
+    }
+    for (auto&& iter : getLowLevelStringData())
+    {
+        newDictiOnary[iter.first] = iter.second;
+    }
+    return newDictiOnary;
+}
+
+#endif //BUILD_PYTHON
 
 void RFModulator::updateLowLevelString(const std::string& key, const std::pair < epicsTimeStamp, std::string>& value)
 {
@@ -167,10 +196,7 @@ std::map<std::string, double> RFModulator::getLowLevelNumericalData()const
 	}
 	return low_level_values_r;
 }
-boost::python::dict RFModulator::getLowLevelNumericalData_Py()const
-{
-	return to_py_dict<std::string, double>(getLowLevelNumericalData());
-}
+
 std::map<std::string, std::string> RFModulator::getLowLevelStringData()const
 {
 	std::map < std::string, std::string> low_level_strings_r;
@@ -180,24 +206,7 @@ std::map<std::string, std::string> RFModulator::getLowLevelStringData()const
 	}
 	return low_level_strings_r;
 }
-boost::python::dict RFModulator::getLowLevelStringData_Py()const
-{
-	return to_py_dict<std::string, std::string>(getLowLevelStringData());
-}
-boost::python::dict RFModulator::getLowLevelData()const
-{
-	//typename std::map<key, value>::iterator iter;
-	boost::python::dict newDictiOnary;
-	for (auto&& iter: getLowLevelNumericalData())
-	{
-		newDictiOnary[iter.first] = iter.second;
-	}
-	for (auto&& iter : getLowLevelStringData())
-	{
-		newDictiOnary[iter.first] = iter.second;
-	}
-	return newDictiOnary;
-}
+
 
 bool RFModulator::isInHoldRFOn() const
 {

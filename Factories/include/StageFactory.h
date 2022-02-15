@@ -5,7 +5,9 @@
 #include <Stage.h>
 #include <GlobalStateEnums.h>
 #include <vector>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#endif //BUILD_PYTHON
 class StageFactory
 {
 public:
@@ -28,37 +30,39 @@ public:
 	std::pair<epicsTimeStamp, double> getPositionSetpointTimestamped(const std::string& name);
 	std::map<std::string, double> getCurrentPositions(const std::vector<std::string>& name);
 	std::map<std::string, double> getPositionSetpoints(const std::vector<std::string>& name);
-	boost::python::dict getCurrentPositions_Py(boost::python::list names);
-	boost::python::dict getPositionSetpoints_Py(boost::python::list names);
 	std::map<std::string, std::pair<epicsTimeStamp, double>> getCurrentPositionsTimestamped(const std::vector<std::string>& name);
-	boost::python::dict  getCurrentPositionsTimestamped_Py(const std::vector<std::string>& name);
 	std::map<std::string, std::pair<epicsTimeStamp, double>> getPositionSetpointsTimestamped(const std::vector<std::string>& name);
-	boost::python::dict  getPositionSetpointsTimestamped_Py(const std::vector<std::string>& name);
 	std::map<std::string, double> getCurrentPositions();
-	boost::python::dict getCurrentPositions_Py();
 	std::map<std::string, double> getPositionSetpoints();
-	boost::python::dict getPositionSetpoints_Py();
 	std::map<std::string, std::pair<epicsTimeStamp, double>> getCurrentPositionsTimestamped();
 	std::map<std::string, std::pair<epicsTimeStamp, double>> getPositionSetpointsTimestamped();
 	Stage& getStage(const std::string& name);
 	std::string getFullName(const std::string& alias);
 	bool moveStageToDevice(const std::string& stageName, const std::string& deviceName);
 	std::map<std::string, bool> clearAllForBeam();
-	boost::python::dict clearAllForBeam_Py();
 	void updateAliases();
 	std::vector<std::string> getAllStageNames();
-	boost::python::list getAllStageNames_Py();
 	std::vector<std::string> getDevices(const std::string& name);
-	boost::python::list getDevices_Py(const std::string& name);
 	std::map<std::string, std::vector<std::string>> getAllDevices();
 	bool isMoving(const std::string& name);
 	bool isAtDevice(const std::string& name, const std::string& device);
-	boost::python::dict getAllDevices_Py();
 	double getDevicePosition(const std::string& name, const std::string& device);
 	std::map < std::string, std::pair<std::string, double> > getDevicePositions(const std::string& name, const std::vector<std::string>& devices);
-	boost::python::dict getDevicePositions_Py(const std::string& name, boost::python::list devices);
 	std::map < std::string, std::pair<std::string, double> > getDevicePositions(const std::string& name);
+#ifdef BUILD_PYTHON
+	boost::python::dict getCurrentPositions_Py(boost::python::list names);
+	boost::python::dict getPositionSetpoints_Py(boost::python::list names);
+	boost::python::dict  getCurrentPositionsTimestamped_Py(const std::vector<std::string>& name);
+	boost::python::dict  getPositionSetpointsTimestamped_Py(const std::vector<std::string>& name);
+	boost::python::dict getCurrentPositions_Py();
+	boost::python::dict getPositionSetpoints_Py();
+	boost::python::dict clearAllForBeam_Py();
+	boost::python::list getAllStageNames_Py();
+	boost::python::list getDevices_Py(const std::string& name);
+	boost::python::dict getAllDevices_Py();
+	boost::python::dict getDevicePositions_Py(const std::string& name, boost::python::list devices);
 	boost::python::dict getDevicePositions_Py(const std::string& name);
+#endif //BUILD_PYTHON
 	int getStageNumber(const std::string& name);
 	double getPrecision(const std::string& name);
 	double getMinPosition(const std::string& name);

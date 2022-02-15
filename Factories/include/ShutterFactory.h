@@ -50,17 +50,12 @@ public:
 	@param[out] map<string, STATE>, interlock STATES keyed by theinterlock value, (defeind in master lattice yaml file */
 	std::map<std::string, STATE> getCMIBitMap(const std::string& name)const;
 	
-	/*! Get the interlock state map for each interlock in the shutter
-	@param[in] name, shutter to get interlock state
-	@param[out] dict, interlock STATES keyed by the interlock value, (defeind in master lattice yaml file */
-	boost::python::dict getCMIBitMap_Py(const std::string& name)const;
+
 		
 	/*!gets all of the names associated with all of the shutters in shutterMap
 	 *@param[out] vector<string>, a vector containing all of the shutter names*/
 	std::vector<std::string> getAllShutterNames() const;
-	/*!gets all of the names associated with all of the shutters in shutterMap
-	 *@param[out] vector<string>, a vector containing all of the shutter names*/
-	boost::python::list getAllShutterNames_Py() const;
+
 
 
 	/*! Get the full name for a Shutter object 
@@ -82,9 +77,7 @@ public:
 	/*! Get the ShutterState for each Shutter in the factory 
 	@param[out] map<string, ShutterState>, map of ShutterState objects, keyed by the Shutter name*/
 	std::map<std::string, ShutterState> getShutterStates()const;
-	/*! Get the ShutterState for each Shutter in the factory, Python version 
-	@param[out] dict, dict of ShutterState objects, keyed by the Shutter name*/
-	boost::python::dict getShutterStates_Py()const;
+
 
 	/*! Get the ShutterState
 	@param[in] string, name of shutter
@@ -95,7 +88,17 @@ public:
 	//@param[in] string, name of shutter
 	//@param[out] ShutterState, ShutterState structured data */
 	//ShutterState getShutterState_Py(const std::string& shutter_name)const;
-
+#ifdef BUILD_PYTHON
+	/*! Get the interlock state map for each interlock in the shutter
+	@param[in] name, shutter to get interlock state
+	@param[out] dict, interlock STATES keyed by the interlock value, (defeind in master lattice yaml file */
+	boost::python::dict getCMIBitMap_Py(const std::string& name)const;
+	/*!gets all of the names associated with all of the shutters in shutterMap
+	 *@param[out] vector<string>, a vector containing all of the shutter names*/
+	boost::python::list getAllShutterNames_Py() const;
+	/*! Get the ShutterState for each Shutter in the factory, Python version
+	@param[out] dict, dict of ShutterState objects, keyed by the Shutter name*/
+	boost::python::dict getShutterStates_Py()const;
 	/*! Get the ShutterState data in a python dictionary
 	@param[in] string, name of shutter 
 	@param[out] dict, dictionary of shutter state data, keyed by the name of each data type */
@@ -105,7 +108,7 @@ public:
 	@param[in] string, name of shutter
 	@param[out] dict, dictionary of shutter state dictionaries (!), keyed by the name of each shutter */
 	boost::python::dict getShutterStateDictionaries()const;
-
+#endif //BUILD_PYTHON
 
 	/*! Compare the energy interlock to STATE::GOOD (energy interlock name is hardcoded, and should match master lattice name.)
 		@param[in] string, name of shutter to compare

@@ -4,8 +4,10 @@
 #include <GlobalStateEnums.h>
 #include <GlobalConstants.h>
 #include <GlobalFunctions.h>
+#ifdef BUILD_PYTHON
 #include <PythonTypeConversions.h>
 #include <boost/python.hpp>
+#endif // BUILD_PYTHON
 #include <Listener.h>
 #include <Getter.h>
 #include <Putter.h>
@@ -41,8 +43,6 @@ public:
 		to begin monitoring. The Listener objects are then stored in the listenerMap with their pv as the key.
 		@param[in] pvList : vector of PVs to monitor*/
 	void monitor(std::vector<std::string> pvList);
-	/*! Used for EPICSTools python module, python list of PVs is converted to vector for use by monitor(std::vector)*/
-	void monitor_Py(boost::python::list pvList);
 	/*! Removes the subscription for the supplied pv but keeps the Listener object in listenerMap. 
 		If the pv cannot be found in the listenerMap, then nothing is done.
 		@param[in] pv : The PV to stop monitoring.*/
@@ -65,9 +65,21 @@ public:
 	std::map<std::string, Listener> getMonitors(std::vector<std::string> names);
 	/*! Get a vector of all the PV names currently being monitored from listenerMap*/
 	std::vector<std::string> getAllMonitorNames();
+
+	/*! Get the mean average of the values held in the buffer of a Listener from listenerMap.
+		@param[in] pv : name of Listener object
+		@param[out] average : the mean average of the values in buffer*/
+	double getBufferAverage_Py(const std::string& pv);
+	/*! Get the standard deviation of the values held in the buffer of a Listener from listenerMap.
+		@param[in] pv : name of Listener object
+		@param[out] average : the standard deviation of the values in buffer*/
+	double getBufferStdDeviation(const std::string& pv);
+#ifdef BUILD_PYTHON
+	/*! Used for EPICSTools python module, python list of PVs is converted to vector for use by monitor(std::vector)*/
+	void monitor_Py(boost::python::list pvList);
 	/*! Get a python list of all the PV names currently being monitored from listenerMap*/
 	boost::python::list getAllMonitorNames_Py();
-	/*! Get the current buffer of single values from Listener as a python list 
+	/*! Get the current buffer of single values from Listener as a python list
 		@param[in] pv : The name of the Listener object
 		@param[out] buffer : The current value buffer from Listener*/
 	boost::python::dict getBuffer_Py(const std::string& pv);
@@ -79,14 +91,6 @@ public:
 		@param[in] pvList : The names of the Listener objects
 		@param[out] buffer dict : key = PV name, value = buffer*/
 	boost::python::dict getBuffer_Py(boost::python::list pvList);
-	/*! Get the mean average of the values held in the buffer of a Listener from listenerMap.
-		@param[in] pv : name of Listener object
-		@param[out] average : the mean average of the values in buffer*/
-	double getBufferAverage_Py(const std::string& pv);
-	/*! Get the standard deviation of the values held in the buffer of a Listener from listenerMap.
-		@param[in] pv : name of Listener object
-		@param[out] average : the standard deviation of the values in buffer*/
-	double getBufferStdDeviation(const std::string& pv);
 	/*! Get the standard deviations of values held in buffers of Listener objects as a python dictionary
 		@param[in] pvList : list of Listener names
 		@param[out] standard deviations dict : key = PV, value = standard deviation for buffer */
@@ -96,25 +100,8 @@ public:
 		@param[out] averages dict : key = PV, value = mean averages for buffer */
 	boost::python::dict getBufferAverage_Py(boost::python::list pvList);
 	boost::python::dict getTimestampedValues_Py(const boost::python::list);
-	/*! Calls ca_get from Getter object in getterMap, if there is no entry for the pv in getterMap;
-		a Getter object is created and get is called from that object.
-		@param[in] pv : The name of the PV to ca_get
-		@param[out] value : The value returned from EPICS using ca_get*/
-	template <typename T>
-	T get(const std::string& pv);
-
-	boost::python::dict getTimestampedValue_Py(const std::string& pv);
-	template<typename T>
-	std::pair<std::string, T> getTimestampedValue(const std::string& pv);
-	template<typename T>
-	std::pair<epicsTimeStamp, std::vector<T> > getTimestampedArray(const std::string& pv);
 	boost::python::dict getTimestampedArray_Py(const std::string& pv);
-	/*! Calls ca_put from Putter object in putterMap, if there is no entry for the pv in putterMap;
-		a Putter object is created and put is called from that object.
-		@param[in] pv : The name of the PV to ca_put
-		@param[in] value : The value to put to that PV */
-	template <typename T>
-	void put(const std::string& pv, T value);
+	boost::python::dict getTimestampedValue_Py(const std::string& pv);
 	/*! Get the value of an EPICS PV as a python object
 		@param[in] pv : The name of the PV to get
 		@param[out] value : The current value of the PV in EPICS as a python object.*/
@@ -124,7 +111,7 @@ public:
 		@param[out] value : The current array of the PV in EPICS as a python object.*/
 	boost::python::list getArray_Py(const std::string& pv);
 
-	/*! Get the value of an EPICS array PV as a python object, with user specified array size. 
+	/*! Get the value of an EPICS array PV as a python object, with user specified array size.
 		(Useful when you know you don't need the full array data from EPICS)
 		@param[in] pv : The name of the PV to get
 		@param[out] value : The current array of the PV in EPICS as a python object.*/
@@ -141,10 +128,33 @@ public:
 	/*! Set the values of multiple EPICS PVs using names and values stored in a python dictionary
 		@param[in] pvAndValueDict : A python dictionary containing the PVs and corresponding values to set */
 	void put_Py(boost::python::dict pvAndValueDict);
+	/*! Retrieves the PV, COUNT, and TYPE associated with the PV record
+		@param[in] pv : The name of the PV
+		@param[out] info dictionary : PV, COUNT, TYPE and their corresponding values.*/
+	boost::python::dict getEPICSInfo(const std::string& pv);
 	/*! Set the value of an EPICS array PV using an array stored in a python list
-		@param[in] pv : The name of the PV to set
-		@param[in] value : The python list to set the array PV to*/
+	@param[in] pv : The name of the PV to set
+	@param[in] value : The python list to set the array PV to*/
 	void putArray_Py(const std::string& pv, boost::python::list py_Array);
+#endif // BUILD_PYTHON
+
+	/*! Calls ca_get from Getter object in getterMap, if there is no entry for the pv in getterMap;
+		a Getter object is created and get is called from that object.
+		@param[in] pv : The name of the PV to ca_get
+		@param[out] value : The value returned from EPICS using ca_get*/
+	template <typename T>
+	T get(const std::string& pv);
+	template<typename T>
+	std::pair<std::string, T> getTimestampedValue(const std::string& pv);
+	template<typename T>
+	std::pair<epicsTimeStamp, std::vector<T> > getTimestampedArray(const std::string& pv);
+
+	/*! Calls ca_put from Putter object in putterMap, if there is no entry for the pv in putterMap;
+		a Putter object is created and put is called from that object.
+		@param[in] pv : The name of the PV to ca_put
+		@param[in] value : The value to put to that PV */
+	template <typename T>
+	void put(const std::string& pv, T value);
 	/*! Retrieves the number of elements stored in a PV record
 		@param[in] pv : The name of the PV
 		@param[out] count : The number of elements stored in that PV record*/
@@ -157,10 +167,6 @@ public:
 		@param[in] pv : The name of the PV
 		@param[out] type : The monitor type of the PV record as a string*/
 	std::string getMonitorType(const std::string& pv);
-	/*! Retrieves the PV, COUNT, and TYPE associated with the PV record
-		@param[in] pv : The name of the PV 
-		@param[out] info dictionary : PV, COUNT, TYPE and their corresponding values.*/
-	boost::python::dict getEPICSInfo(const std::string& pv);
 	/*! Determines whether to use the PHYSICAL (VELA/CLARA) EPICS or the VIRTUAL EPICS implementation*/
 	STATE mode;
 	/*! Stores the Listener objects, keyed by PV*/

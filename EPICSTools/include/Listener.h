@@ -7,12 +7,14 @@
 #include <LoggingSystem.h>
 #include <PV.h>
 #include <UpdateFunctions.h>
-#include <PythonTypeConversions.h>
 #include <string>
 #include <vector>
 #include <boost/circular_buffer.hpp>
 #include <boost/variant.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -29,6 +31,7 @@ typedef boost::shared_ptr<EPICSInterface> EPICSInterface_sptr;
 typedef std::pair<epicsTimeStamp, std::vector<boost::variant<double, long, float, unsigned short, short, std::string>>> timeStampVector;
 typedef std::pair<epicsTimeStamp, boost::variant<double, long, float, unsigned short, short, std::string>> timeStampValue;
 
+#ifdef BUILD_PYTHON
 namespace ListenerToPy
 {
 	struct convert_to_py : public boost::static_visitor<boost::python::object>
@@ -37,6 +40,7 @@ namespace ListenerToPy
 		boost::python::object operator()(T value) const { return static_cast<boost::python::object>(value); }
 	};
 }
+#endif //BUILD_PYTHON
 
 class Listener
 {
@@ -95,20 +99,32 @@ public:
 		@param[out] array : Most recent array in EPICS*/
 	template<typename T>
 	std::vector<T> getArray();
+#ifdef BUILD_PYTHON
 	/*! Get the most recent value of PV record from EPICS as a python object
 		@param[out] value : Most recent value in EPICS as a python object*/
 	boost::python::dict getValue_Py();
 	/*! Get the most recent array of PV array record from EPICS as a python list
 		@param[out] array : Most recent array in EPICS as a python list*/
 	boost::python::dict getArray_Py();
+	/*! Get the mean average over the current array as python object
+	@param [out] average: Return the mean average of the current array as a boost::python::object*/
+	boost::python::object getArrayAverage_Py();
+	/*! Get an array of the mean averages of all arrays in the buffer as a python list
+		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer as a python list*/
+	boost::python::list getArrayBufferAverageArray_Py();
+	/*! Get the buffer of array-values (default size is 10 arrays) as a python list
+		@param[out] buffer : python list of buffered arrays from EPICS. */
+	boost::python::dict getArrayBuffer_Py();
+	/*! Get the buffer of single-values (default size is 10 elements) as python list
+		@param[out] buffer : python list of buffered values from EPICS. */
+	boost::python::dict getBuffer_Py();
+#endif //BUILD_PYTHON
 	/*! Get the average over the current array 
 		@param[out] average: Mean average of the current array values*/
 	template<typename T>
 	double getArrayAverage();
 
-	/*! Get the mean average over the current array as python object
-	@param [out] average: Return the mean average of the current array as a boost::python::object*/
-	boost::python::object getArrayAverage_Py();
+
 
 	/*! Resizes the single-value buffer from the default (10 entries) to supplied size
 		@param[in] size : new size of single-value buffer */
@@ -120,16 +136,12 @@ public:
 		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer*/
 	template <typename T>
 	std::vector<double> getArrayBufferAverageArray();
-	/*! Get an array of the mean averages of all arrays in the buffer as a python list
-		@param[out] averageArray : Array containing the mean average for all arrays in the arrayBuffer as a python list*/
-	boost::python::list getArrayBufferAverageArray_Py();
+
 	/*! Get the buffer of single-values (default size is 10 elements)
 		@param[out] buffer : circular_buffer of values from EPICS. */
 	template<typename T>
 	boost::circular_buffer<T> getBuffer();
-	/*! Get the buffer of single-values (default size is 10 elements) as python list
-		@param[out] buffer : python list of buffered values from EPICS. */
-	boost::python::dict getBuffer_Py();
+
 
 	void clearBuffer();
 
@@ -139,9 +151,7 @@ public:
 		@param[out] buffer : circular_buffer of arrays from EPICS. */
 	template<typename T>
 	boost::circular_buffer<std::vector<T>> getArrayBuffer();
-	/*! Get the buffer of array-values (default size is 10 arrays) as a python list
-		@param[out] buffer : python list of buffered arrays from EPICS. */
-	boost::python::dict getArrayBuffer_Py();
+
 	/*! Get the mean average of single-values stored in the single-value buffer 
 		@param[out] bufferAverage : mean average of values in buffer. */
 	double getBufferAverage();

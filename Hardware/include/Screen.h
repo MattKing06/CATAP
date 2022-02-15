@@ -43,10 +43,12 @@ public:
 	/*! A function to retrieve the aliases for a given Screen object
 		@param[out] vector of aliases that the Screen is also known by*/
 	std::vector<std::string> getAliases() const;
+
+#ifdef BUILD_PYTHON
 	/*! Retrieve the aliases for a given Screen object, Python version. 
 		@param[out] list: aliases that the Screen is also known by, set in config yaml */
 	boost::python::list getAliases_Py() const;
-
+#endif //BUILD_PYTHON
 	/*! A map for storing the parameters extracted from YAML config files and their values */
 	std::map<std::string, std::string> screenParametersAndValuesMap;
 	LoggingSystem messenger;

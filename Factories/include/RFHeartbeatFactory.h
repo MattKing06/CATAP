@@ -36,9 +36,11 @@ public:
 	/*! Get the (full) names  of the RFHeartbeat objects owned by this factory 
 	!@param[out] vector<string>, object names */
 	std::vector<std::string> getHeartbeatNames()const;
+#ifdef BUILD_PYTHON
 	/*! Get the (full) names  of the RFHeartbeat objects owned by this factory, Python version 
 	!@param[out] list, object names */
 	boost::python::list getHeartbeatNames_Py()const;
+#endif //BUILD_PYTHON
 	/*! Get the (full) names  of an RFHeartbeat objects 
 	!@param[out] list, object names */
 	std::string getFullName(const std::string& name_to_check) const;

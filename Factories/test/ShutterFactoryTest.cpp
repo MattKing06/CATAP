@@ -1,5 +1,7 @@
 #include <boost/test/unit_test.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
+#endif //BUILD_PYTHON
 #include <ShutterFactory.h>
 
 BOOST_AUTO_TEST_SUITE(ShutterFactoryTestSuite)

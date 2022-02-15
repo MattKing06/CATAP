@@ -3,6 +3,9 @@
 #include <ConfigReader.h>
 #include <LLRF.h>
 #include <GlobalStateEnums.h>
+#ifdef BUILD_PYTHON
+#include "PythonTypeConversions.h"
+#endif //BUILD_PYTHON
 #include <vector>
 
 class LLRFFactory
@@ -36,6 +39,7 @@ public:
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::vector<TYPE>& machineAreas);
+#ifdef BUILD_PYTHON
 	/*! setup function using python::list of machineAreas
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
@@ -45,6 +49,8 @@ public:
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const boost::python::list& machineAreas);
+	boost::python::list getLLRFNames_Py();
+#endif //BUILD_PYTHON
 	/*! setup function using std::vector of machineAreas
 	@param[in] version, (a placeholder for future extensions)
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
@@ -53,7 +59,7 @@ public:
 
 
 	std::vector<std::string> getLLRFNames();
-	boost::python::list getLLRFNames_Py();
+
 
 	// get a LLRF object (GUN, L01, etc... ) 
 	LLRF& getLLRF(const std::string& llrf_name);
@@ -94,6 +100,7 @@ public:
 	//boost::python::dict getAllTraceData_Py(const std::string& name);
 	//boost::python::dict getTraceData_Py(const std::string& llrf_name, const std::string& trace_name);
 	//boost::python::list getTraceValues_Py(const std::string& name)const;
+#ifdef BUILD_PYTHON
 	boost::python::list getCavRevPwr_Py(const std::string& llrf_name)const;
 	boost::python::list getCavFwdPwr_Py(const std::string& llrf_name)const;
 	boost::python::list getKlyRevPwr_Py(const std::string& llrf_name)const;
@@ -104,7 +111,7 @@ public:
 	boost::python::list getKlyFwdPha_Py(const std::string& llrf_name)const;
 	boost::python::list getProbePha_Py(const std::string& llrf_name)const;
 	boost::python::list getProbePwr_Py(const std::string& llrf_name)const;
-
+#endif //BUILD_PYTHON
 
 
 	size_t getIndex(const std::string& name, const double time) const;

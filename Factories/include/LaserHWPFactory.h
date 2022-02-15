@@ -8,7 +8,10 @@
 #include <vector>
 #include <map>
 #include <utility>
+#ifdef BUILD_PYTHON
 #include <boost/python.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 #include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);

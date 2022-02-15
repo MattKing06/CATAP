@@ -179,14 +179,14 @@ std::vector< STATE > LaserEnergyMeter::getStatusVector() const
 {
 	return statusVector;
 }
-
+#ifdef BUILD_PYTHON
 boost::python::dict LaserEnergyMeter::getRunningStats_Py()
 {
 	boost::python::dict r;
 	r["energy_rs"] = energyStats.getRunningStats();
 	return r;
 }
-
+#endif //BUILD_PYTHON
 RunningStats& LaserEnergyMeter::getEnergyRunningStats()
 {
 	return energyStats;

@@ -80,9 +80,11 @@ target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/EPICSInterface/
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/PV/include)
 target_include_directories(Hardware PUBLIC ${PROJECT_SOURCE_DIR}/Utilities/include)
 target_include_directories(Hardware PRIVATE include)
-target_include_directories(Hardware PRIVATE ${Boost_INCLUDE_DIR})
 target_include_directories(Hardware PUBLIC ${Boost_INCLUDE_DIR})
+if(BUILD_PYTHON)
 target_include_directories(Hardware PUBLIC ${Python3_INCLUDE_DIRS})
+target_link_libraries(Hardware PRIVATE ${Python3_LIBRARIES})
+endif(BUILD_PYTHON)
 TARGET_LINK_LIBRARIES(Hardware
 					  PUBLIC
 					    PV
@@ -90,11 +92,11 @@ TARGET_LINK_LIBRARIES(Hardware
 					  PRIVATE
 						Utilities
 			     	    ${Boost_LIBRARIES}
-						${Python3_LIBRARIES}
 		    			EPICSInterface
 						LoggingSystem)
 set_property(TARGET Hardware PROPERTY FOLDER "Hardware")
 set_target_properties(Hardware PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/Hardware")
 add_subdirectory(test)

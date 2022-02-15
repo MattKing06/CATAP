@@ -24,5 +24,6 @@ set_property(TARGET PV PROPERTY FOLDER "PV")
 set_target_properties(PV PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/PV")
 include_directories(include)
 #add_subdirectory(test)

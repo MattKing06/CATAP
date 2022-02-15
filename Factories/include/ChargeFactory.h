@@ -9,7 +9,10 @@
 #include <vector>
 #include <map>
 #include <utility>
+#ifdef BUILD_PYTHON
+#include <PythonTypeConversions.h>
 #include <boost/python.hpp>
+#endif //BUILD_PYTHON
 #include <boost/circular_buffer.hpp>
 
 typedef void(*updateFunctionPtr)(struct event_handler_args args);
@@ -81,11 +84,6 @@ public:
 	@param[in] name: the name of the charge object.
 	@param[out] name : the name of the charge object. Not sure why this function is here.*/
 	std::string getChargeDiagnosticName(const std::string& name);
-
-	/*! gets the names for all known charge diagnostics
-	@param[out] name list: The names of all charge objects*/
-	boost::python::list getAllChargeDiagnosticNames_Py();
-
 	/*!sets the buffer size of the given charge object.
 	@param[in] name: sets the size of charge buffers.
 	@param[in] value: sets the size of charge buffers.*/
@@ -161,9 +159,37 @@ public:
 	@param[in] name: the name of the Charge object.
 	@param[out] values: bunch charge buffer.*/
 	boost::circular_buffer< double > getQBuffer(const std::string& name);
+	/*! sets the RS size (m_max) for a given charge diagnostic*/
+	void setRunningStatSize(const std::string& name, const size_t& size);
+	/*! clears the RS object for a given charge diagnostic */
+	void clearRunningStats(const std::string& name);
+	
+	bool areAllRunningStatsFull(const std::string& name);
+	/*! Get the current number of data values being used by the Running Stats.
+	@param[in] name: the charge factory name.
+	@param[out] size_t: number of data values.*/
+	size_t getRunningStatNumDataValues(const std::string& name)const;
+
+	/*! turns debug messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
+	void debugMessagesOn();
+	/*! turns debug messages off for ChargeFactory and calls same function in all charge diagnostics and configReader*/
+	void debugMessagesOff();
+	/*! turns messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
+	void messagesOn();
+	/*! turns messages off for ChargeFactory and calls same function in all charge diagnostics and configReader*/
+	void messagesOff();
+	/*! returns true if messenger debug flag is true, false otherwise*/
+	bool isDebugOn();
+	/*! returns true if messenger messages flag is true, false otherwise*/
+	bool isMessagingOn();
+
+#ifdef BUILD_PYTHON
+	/*! gets the names for all known charge diagnostics
+	@param[out] name list: The names of all charge objects*/
+	boost::python::list getAllChargeDiagnosticNames_Py();
 	/*fills up vectors of charge values for the Charge objects specified in the python list
-	@param[in] names: python list of names of the Charge objects.
-	@param[in] value: number of shots to monitor.*/
+		@param[in] names: python list of names of the Charge objects.
+		@param[in] value: number of shots to monitor.*/
 	void monitorForNShots_Py(boost::python::list names, const size_t& value);
 	/*returns a Python dict of charge reading at multiple devices
 	@param[in] names: python list of names of the Charge objects.
@@ -200,29 +226,7 @@ public:
 	/*returns a Python dict of beamline positions of charge diagnostic devices
 	@param[out] dict: positions, keyed by name.*/
 	boost::python::dict getAllPosition_Py();
-	/*! sets the RS size (m_max) for a given charge diagnostic*/
-	void setRunningStatSize(const std::string& name, const size_t& size);
-	/*! clears the RS object for a given charge diagnostic */
-	void clearRunningStats(const std::string& name);
-	
-	bool areAllRunningStatsFull(const std::string& name);
-	/*! Get the current number of data values being used by the Running Stats.
-	@param[in] name: the charge factory name.
-	@param[out] size_t: number of data values.*/
-	size_t getRunningStatNumDataValues(const std::string& name)const;
-
-	/*! turns debug messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
-	void debugMessagesOn();
-	/*! turns debug messages off for ChargeFactory and calls same function in all charge diagnostics and configReader*/
-	void debugMessagesOff();
-	/*! turns messages on for ChargeFactory and calls same function in all charge diagnostics and configReader*/
-	void messagesOn();
-	/*! turns messages off for ChargeFactory and calls same function in all charge diagnostics and configReader*/
-	void messagesOff();
-	/*! returns true if messenger debug flag is true, false otherwise*/
-	bool isDebugOn();
-	/*! returns true if messenger messages flag is true, false otherwise*/
-	bool isMessagingOn();
+#endif //BUILD_PYTHON
 };
 /** @}*/
 #endif // CHARGE_FACTORY_H_

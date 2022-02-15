@@ -1,6 +1,5 @@
 #include <IMGFactory.h>
 #include <GlobalFunctions.h>
-#include <PythonTypeConversions.h>
 #include <boost/filesystem.hpp>
 
 IMGFactory::IMGFactory() : IMGFactory(STATE::OFFLINE)
@@ -224,11 +223,6 @@ std::vector<std::string> IMGFactory::getAllIMGNames() const
 	return returnNames;
 }
 
-boost::python::list IMGFactory::getAllIMGNames_Py() const
-{
-	return to_py_list(getAllIMGNames());
-}
-
 
 double IMGFactory::getIMGPressure(const std::string& name) const
 {
@@ -245,19 +239,8 @@ std::map<std::string, double> IMGFactory::getIMGPressures(const std::vector<std:
 	}
 	return return_map;
 }
-boost::python::dict IMGFactory::getIMGPressures_Py(const boost::python::list& names) const
-{
-	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
-	return to_py_dict(getIMGPressures(namesVector));
-}
-std::map<std::string, double> IMGFactory::getAllIMGPressure() const
-{
-	return getIMGPressures(getAllIMGNames());
-}
-boost::python::dict IMGFactory::getAllIMGPressure_Py() const
-{
-	return to_py_dict<std::string, double>(getAllIMGPressure());
-}
+
+
 
 STATE IMGFactory::getIMGState(const std::string& name) const
 {
@@ -275,6 +258,22 @@ std::map<std::string, STATE> IMGFactory::getIMGStates(const std::vector<std::str
 
 	return stateMap;
 }
+#ifdef BUILD_PYTHON
+boost::python::list IMGFactory::getAllIMGNames_Py() const
+{
+	return to_py_list(getAllIMGNames());
+}
+
+boost::python::dict IMGFactory::getIMGPressures_Py(const boost::python::list& names) const
+{
+	std::vector<std::string> namesVector = to_std_vector<std::string>(names);
+	return to_py_dict(getIMGPressures(namesVector));
+}
+
+boost::python::dict IMGFactory::getAllIMGPressure_Py() const
+{
+	return to_py_dict<std::string, double>(getAllIMGPressure());
+}
 
 boost::python::dict IMGFactory::getIMGStates_Py(const boost::python::list& names) const
 {
@@ -282,14 +281,21 @@ boost::python::dict IMGFactory::getIMGStates_Py(const boost::python::list& names
 	return to_py_dict(getIMGStates(namesVector));
 }
 
-std::map<std::string, STATE> IMGFactory::getAllIMGStates() const
-{
-	return getIMGStates(getAllIMGNames());
-}
 
 boost::python::dict IMGFactory::getAllIMGStates_Py() const
 {
 	return to_py_dict(getAllIMGStates());
+}
+#endif
+
+std::map<std::string, double> IMGFactory::getAllIMGPressure() const
+{
+	return getIMGPressures(getAllIMGNames());
+}
+
+std::map<std::string, STATE> IMGFactory::getAllIMGStates() const
+{
+	return getIMGStates(getAllIMGNames());
 }
 void IMGFactory::debugMessagesOn()
 {

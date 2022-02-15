@@ -7,8 +7,6 @@
 #include <fstream>
 //#include <filesystem> ?? not using  c++ 17 ???
 #include <cadef.h>
-
-#include <PythonTypeConversions.h>
 #include "yaml-cpp/emitter.h"
 
 
@@ -228,6 +226,7 @@ bool MagnetFactory::setup(const std::vector<TYPE>& machineAreas)
 {
 	return setup(GlobalConstants::nominal, machineAreas);
 }
+#ifdef BUILD_PYTHON
 bool MagnetFactory::setup(const boost::python::list& machineAreas)
 {
 	return setup(GlobalConstants::nominal, to_std_vector<TYPE>(machineAreas));
@@ -236,6 +235,7 @@ bool MagnetFactory::setup(const std::string& version, const boost::python::list&
 {
 	return setup(version, to_std_vector<TYPE>(machineAreas));
 }
+#endif //BUILD_PYTHON
 bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& machineAreas)
 {
 	MagnetFactory::machineAreas = machineAreas;
@@ -457,18 +457,21 @@ std::map<std::string, double> MagnetFactory::getMinIs(const std::vector<std::str
 	}
 	return return_map;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict MagnetFactory::getMinIs_Py(const boost::python::list& names) const
 {
 	return to_py_dict<std::string, double>(getMinIs(to_std_vector<std::string>(names)));
-}
-std::map<std::string, double> MagnetFactory::getAllMinI() const
-{
-	return getMinIs(getAllMagnetNames());
 }
 boost::python::dict MagnetFactory::getAllMinI_Py() const
 {
 	return to_py_dict<std::string, double>(getAllMinI());
 }
+#endif //BUILD_PYTHON
+std::map<std::string, double> MagnetFactory::getAllMinI() const
+{
+	return getMinIs(getAllMagnetNames());
+}
+
 // get max I 
 double MagnetFactory::getMaxI(const std::string& name)const
 {
@@ -489,18 +492,21 @@ std::map<std::string, double> MagnetFactory::getMaxIs(const std::vector<std::str
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getMaxIs_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getMaxIs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllMaxI() const
 {
 	return getMaxIs(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getMaxIs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMaxIs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllMaxI_Py() const
 {
 	return to_py_dict<std::string, double>(getAllMaxI());
 }
+#endif //BUILD_PYTHON
 
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -525,18 +531,21 @@ std::map<std::string, double> MagnetFactory::getKDipPs(const std::vector<std::st
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getKDipPs_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getKDipPs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllKDipP() const
 {
 	return getKDipPs(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getKDipPs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKDipPs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllKDipP_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKDipP());
 }
+#endif //BUILD_PYTHON
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -559,18 +568,21 @@ std::map<std::string, double> MagnetFactory::getIntStrs_mm(const std::vector<std
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getIntStrs_mm_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getIntStrs_mm(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllIntStr_mm() const
 {
 	return getIntStrs_mm(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getIntStrs_mm_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getIntStrs_mm(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllIntStr_mm_Py() const
 {
 	return to_py_dict<std::string, double>(getAllIntStr_mm());
 }
+#endif //BUILD_PYTHON
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -594,18 +606,21 @@ std::map<std::string, double> MagnetFactory::getIntStrs(const std::vector<std::s
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getIntStrs_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getIntStrs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllIntStr() const
 {
 	return getIntStrs(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getIntStrs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getIntStrs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllIntStr_Py() const
 {
 	return to_py_dict<std::string, double>(getAllIntStr());
 }
+#endif //BUILD_PYTHON
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -629,18 +644,21 @@ std::map<std::string, double> MagnetFactory::getKSetPs(const std::vector<std::st
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getKSetPs_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getKSetPs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllKSetP() const
 {
 	return getKSetPs(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getKSetPs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKSetPs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllKSetP_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKSetP());
 }
+#endif //BUILD_PYTHON
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -664,28 +682,34 @@ std::map<std::string, double> MagnetFactory::getKAngs(const std::vector<std::str
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getKAngs_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getKAngs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllKAng() const
 {
 	return getKAngs(getAllMagnetNames());
 }
+std::map<std::string, double> MagnetFactory::getAllDipoleKAng() const
+{
+	return getKAngs(getAllDipoleNames());
+}
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getKAngs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKAngs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllKAng_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKAng());
 }
 
-
-std::map<std::string, double> MagnetFactory::getAllDipoleKAng() const
-{
-	return getKAngs(getAllDipoleNames());
-}
 boost::python::dict MagnetFactory::getAllDipoleKAng_Py() const
 {
 	return to_py_dict<std::string, double>(getAllDipoleKAng());
 }
+#endif //BUILD_PYTHON
+
+
+
+
 
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -710,43 +734,48 @@ std::map<std::string, double> MagnetFactory::getKmrads(const std::vector<std::st
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getKmrad_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getKmrads(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllKmrad() const
 {
 	return getKmrads(getAllMagnetNames());
 }
-boost::python::dict MagnetFactory::getAllKmrad_Py() const
-{
-	return to_py_dict<std::string, double>(getAllKmrad());
-}
-
 std::map<std::string, double> MagnetFactory::getAllCorrectorKmrad() const
 {
 	return getKmrads(getAllCorrectorNames());
-}
-boost::python::dict MagnetFactory::getAllCorrectorKmrad_Py() const
-{
-	return to_py_dict<std::string, double>(getAllCorrectorKmrad());
 }
 std::map<std::string, double> MagnetFactory::getAllHCorrKmrad() const
 {
 	return getKmrads(getAllHCorrectorNames());
 }
-boost::python::dict MagnetFactory::getAllHCorrKmrad_Py() const
-{
-	return to_py_dict<std::string, double>(getAllHCorrKmrad());
-}
 std::map<std::string, double> MagnetFactory::getAllVCorrKmrad() const
 {
 	return getKmrads(getAllVCorrectorNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getKmrad_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKmrads(to_std_vector<std::string>(names)));
+}
+
+boost::python::dict MagnetFactory::getAllKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllKmrad());
+}
+
+boost::python::dict MagnetFactory::getAllCorrectorKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllCorrectorKmrad());
+}
+
+boost::python::dict MagnetFactory::getAllHCorrKmrad_Py() const
+{
+	return to_py_dict<std::string, double>(getAllHCorrKmrad());
+}
+
 boost::python::dict MagnetFactory::getAllVCorrKmrad_Py() const
 {
 	return to_py_dict<std::string, double>(getAllVCorrKmrad());
 }
+#endif //BUILD_PYTHON
 
 //--------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------
@@ -772,28 +801,30 @@ std::map<std::string, double> MagnetFactory::getKVals(const std::vector<std::str
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getKVals_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getKVals(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllKVal() const
 {
 	return getKVals(getAllMagnetNames());
 }
+std::map<std::string, double> MagnetFactory::getAllQuadKVals() const
+{
+	return getKVals(getAllQuadNames());
+}
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getKVals_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getKVals(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllKVal_Py() const
 {
 	return to_py_dict<std::string, double>(getAllKVal());
 }
 
-
-std::map<std::string, double> MagnetFactory::getAllQuadKVals() const
-{
-	return getKVals(getAllQuadNames());
-}
 boost::python::dict MagnetFactory::getAllQuadKVals_Py() const
 {
 	return to_py_dict<std::string, double>(getAllQuadKVals());
 }
+#endif //BUILD_PYTHON
 
 
 //--------------------------------------------------------------------------------------
@@ -822,11 +853,6 @@ std::vector<std::string> MagnetFactory::getAllMagnetNames()const
 	}
 	return return_names;
 }
-boost::python::list MagnetFactory::getAllMagnetNames_Py()const
-{
-	return to_py_list<std::string>(getAllMagnetNames());
-}
-
 
 std::vector<std::string> MagnetFactory::getAllDipoleNames()const
 {
@@ -840,10 +866,7 @@ std::vector<std::string> MagnetFactory::getAllDipoleNames()const
 	}
 	return return_names;
 }
-boost::python::list MagnetFactory::getAllDipoleNames_Py()const
-{
-	return to_py_list<std::string>(getAllDipoleNames());
-}
+
 
 std::vector<std::string> MagnetFactory::getAllQuadNames()const
 {
@@ -857,10 +880,7 @@ std::vector<std::string> MagnetFactory::getAllQuadNames()const
 	}
 	return return_names;
 }
-boost::python::list MagnetFactory::getAllQuadNames_Py()const
-{
-	return to_py_list<std::string>(getAllQuadNames());
-}
+
 std::vector<std::string> MagnetFactory::getAllSolNames()const
 {
 	std::vector<std::string> return_names;
@@ -873,10 +893,7 @@ std::vector<std::string> MagnetFactory::getAllSolNames()const
 	}
 	return return_names;
 }
-boost::python::list MagnetFactory::getAllSolNames_Py()const
-{
-	return to_py_list<std::string>(getAllSolNames());
-}
+
 std::vector<std::string> MagnetFactory::getAllCorrectorNames()const
 {
 	std::vector<std::string> return_names;
@@ -889,10 +906,7 @@ std::vector<std::string> MagnetFactory::getAllCorrectorNames()const
 	}
 	return return_names;
 }
-boost::python::list MagnetFactory::getAllCorrectorNames_Py()const
-{
-	return to_py_list<std::string>(getAllCorrectorNames());
-}
+
 std::vector<std::string> MagnetFactory::getAllHCorrectorNames()const
 {
 	std::vector<std::string> return_names;
@@ -905,10 +919,7 @@ std::vector<std::string> MagnetFactory::getAllHCorrectorNames()const
 	}
 	return return_names;
 }
-boost::python::list MagnetFactory::getAllHCorrectorNames_Py()const
-{
-	return to_py_list<std::string>(getAllHCorrectorNames());
-}
+
 std::vector<std::string> MagnetFactory::getAllVCorrectorNames()const
 {
 	std::vector<std::string> return_names;
@@ -921,10 +932,36 @@ std::vector<std::string> MagnetFactory::getAllVCorrectorNames()const
 	}
 	return return_names;
 }
+#ifdef BUILD_PYTHON
+boost::python::list MagnetFactory::getAllMagnetNames_Py()const
+{
+	return to_py_list<std::string>(getAllMagnetNames());
+}
+boost::python::list MagnetFactory::getAllDipoleNames_Py()const
+{
+	return to_py_list<std::string>(getAllDipoleNames());
+}
+boost::python::list MagnetFactory::getAllQuadNames_Py()const
+{
+	return to_py_list<std::string>(getAllQuadNames());
+}
+boost::python::list MagnetFactory::getAllSolNames_Py()const
+{
+	return to_py_list<std::string>(getAllSolNames());
+}
+boost::python::list MagnetFactory::getAllCorrectorNames_Py()const
+{
+	return to_py_list<std::string>(getAllCorrectorNames());
+}
+boost::python::list MagnetFactory::getAllHCorrectorNames_Py()const
+{
+	return to_py_list<std::string>(getAllHCorrectorNames());
+}
 boost::python::list MagnetFactory::getAllVCorrectorNames_Py()const
 {
 	return to_py_list<std::string>(getAllVCorrectorNames());
 }
+#endif //BUILD_PYTHON
 
 double MagnetFactory::getSETI(const std::string& name)  const
 {
@@ -945,19 +982,21 @@ std::map<std::string, double> MagnetFactory::getSETIs(const std::vector<std::str
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getSETIs_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getSETIs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllSETI() const
 {
 	return getSETIs(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getSETIs_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getSETIs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllSETI_Py() const
 {
 	return to_py_dict<std::string, double>(getAllSETI());
 }
-
+#endif //BUILD_PYTHON
 
 
 double MagnetFactory::getREADI(const std::string& name) const
@@ -979,18 +1018,21 @@ std::map<std::string, double> MagnetFactory::getREADIs(const std::vector<std::st
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getREADI_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getREADIs(to_std_vector<std::string>(names)));
-}
 std::map<std::string, double> MagnetFactory::getAllREADI() const
 {
 	return getREADIs(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getREADI_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getREADIs(to_std_vector<std::string>(names)));
+}
+
 boost::python::dict MagnetFactory::getAllREADI_Py() const
 {
 	return to_py_dict<std::string, double>(getAllREADI());
 }
+#endif //BUILD_PYTHON
 
 
 
@@ -1013,10 +1055,7 @@ std::map<std::string, STATE> MagnetFactory::getPSUStates(const std::vector<std::
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getPSUState_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, STATE>(getPSUStates(to_std_vector<std::string>(names)));
-}
+
 std::map<std::string, STATE> MagnetFactory::getAllPSUState() const
 {
 	std::map<std::string, STATE> return_map;
@@ -1026,29 +1065,36 @@ std::map<std::string, STATE> MagnetFactory::getAllPSUState() const
 	}
 	return return_map;
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getPSUState_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, STATE>(getPSUStates(to_std_vector<std::string>(names)));
+}
 boost::python::dict MagnetFactory::getAllPSUState_Py() const
 {
 	return to_py_dict<std::string, STATE>(getAllPSUState());
 }
+#endif //BUILD_PYTHON
 
 std::map<std::string, STATE> MagnetFactory::switchOffAll()
 {
 	return switchOff(getAllMagnetNames());
 }
-
-boost::python::dict MagnetFactory::switchOffAll_Py()
-{
-	return to_py_dict<std::string, STATE>(switchOffAll());
-}
 std::map<std::string, STATE> MagnetFactory::switchOnAll()
 {
 	return switchOn(getAllMagnetNames());
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::switchOffAll_Py()
+{
+	return to_py_dict<std::string, STATE>(switchOffAll());
+}
+
 boost::python::dict MagnetFactory::switchOnAll_Py()
 {
 	return to_py_dict<std::string, STATE>(switchOnAll());
 }
-
+#endif //BUILD_PYTHON
 
 bool MagnetFactory::degauss(const std::string& name, const bool reset_to_zero)
 {
@@ -1079,18 +1125,21 @@ std::map<std::string, bool> MagnetFactory::degauss(const std::vector<std::string
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::degauss_Py(const boost::python::list& names, const bool reset_to_zero)
-{
-	return to_py_dict<std::string, bool>(degauss(to_std_vector<std::string>(names), reset_to_zero));
-}
 std::map<std::string, bool> MagnetFactory::degaussALL(const bool reset_to_zero)
 {
 	return degauss(getAllMagnetNames(), reset_to_zero);
 }
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::degauss_Py(const boost::python::list& names, const bool reset_to_zero)
+{
+	return to_py_dict<std::string, bool>(degauss(to_std_vector<std::string>(names), reset_to_zero));
+}
+
 boost::python::dict MagnetFactory::degaussAll_Py(const bool reset_to_zero)
 {
 	return degauss_Py(to_py_list<std::string>(getAllMagnetNames()), reset_to_zero);
 }
+#endif //BUILD_PYTHON
 
 
 std::vector<std::string> MagnetFactory::getAliases(const std::string& name) const
@@ -1103,10 +1152,6 @@ std::vector<std::string> MagnetFactory::getAliases(const std::string& name) cons
 	std::vector<std::string> dummy;
 	return dummy;
 }
-boost::python::list MagnetFactory::getAliases_Py1(const std::string& name) const
-{
-	return to_py_list(getAliases(name));
-}
 std::map<std::string, std::vector<std::string>> MagnetFactory::getAliases(const std::vector<std::string>& names) const
 {
 	std::map<std::string, std::vector<std::string>> return_map;
@@ -1116,10 +1161,17 @@ std::map<std::string, std::vector<std::string>> MagnetFactory::getAliases(const 
 	}
 	return return_map;
 }
+#ifdef BUILD_PYTHON
+boost::python::list MagnetFactory::getAliases_Py1(const std::string& name) const
+{
+	return to_py_list(getAliases(name));
+}
+
 boost::python::dict MagnetFactory::getAliases_Py2(const boost::python::list& names) const
 {
 	return to_py_dict<std::string, std::vector<std::string>>(getAliases(to_std_vector<std::string>(names)));
 }
+#endif //BUILD_PYTHON
 
 
 
@@ -1141,10 +1193,12 @@ std::map<std::string, std::string> MagnetFactory::getManufacturer(const std::vec
 	}
 	return return_map;
 }
+#ifdef BUILD_PYTHON
 boost::python::dict MagnetFactory::getManufacturer_Py(const boost::python::list& names) const
 {
 	return to_py_dict<std::string, std::string>(getManufacturer(to_std_vector<std::string>(names)));
 }
+#endif //BUILD_PYTHON
 
 
 
@@ -1179,11 +1233,6 @@ std::map<std::string, TYPE> MagnetFactory::getMagnetType(const std::vector<std::
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getMagnetType_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, TYPE>(getMagnetType(to_std_vector<std::string>(names)));
-}
-
 
 std::string MagnetFactory::getMagnetRevType(const std::string& name) const
 {
@@ -1202,10 +1251,6 @@ std::map<std::string, std::string> MagnetFactory::getMagnetRevType(const std::ve
 		return_map[name] = getMagnetRevType(name);
 	}
 	return return_map;
-}
-boost::python::dict MagnetFactory::getMagnetRevType_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, std::string>(getMagnetRevType(to_std_vector<std::string>(names)));
 }
 
 
@@ -1227,10 +1272,7 @@ std::map<std::string, std::string> MagnetFactory::getFullPSUName(const std::vect
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getFullPSUName_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, std::string>(getFullPSUName(to_std_vector<std::string>(names)));
-}
+
 
 std::string MagnetFactory::getMeasurementDataLocation(const std::string& name) const
 {
@@ -1250,10 +1292,7 @@ std::map<std::string, std::string> MagnetFactory::getMeasurementDataLocation(con
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getMeasurementDataLocation_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, std::string>(getMeasurementDataLocation(to_std_vector<std::string>(names)));
-}
+
 
 size_t MagnetFactory::getNumberOfDegaussSteps(const std::string& name) const
 {
@@ -1273,12 +1312,6 @@ std::map<std::string, size_t> MagnetFactory::getNumberOfDegaussSteps(const std::
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getNumberOfDegaussSteps_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, size_t>(getNumberOfDegaussSteps(to_std_vector<std::string>(names)));
-}
-
-
 
 std::vector<double> MagnetFactory::getDegaussValues(const std::string& name) const
 {
@@ -1290,10 +1323,7 @@ std::vector<double> MagnetFactory::getDegaussValues(const std::string& name) con
 	std::vector<double> dummy;
 	return dummy;
 }
-boost::python::list MagnetFactory::getDegaussValuesSingle_Py(const std::string& name) const
-{
-	return to_py_list<double>(getDegaussValues(name));
-}
+
 std::map<std::string, std::vector<double>> MagnetFactory::getDegaussValues(const std::vector<std::string>& names) const
 {
 	std::map<std::string, std::vector<double>> return_map;
@@ -1303,10 +1333,7 @@ std::map<std::string, std::vector<double>> MagnetFactory::getDegaussValues(const
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getDegaussValuesMulti_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, std::vector<double>>(getDegaussValues(to_std_vector<std::string>(names)));
-}
+
 
 
 double MagnetFactory::getDegaussTolerance(const std::string& name) const
@@ -1327,10 +1354,7 @@ std::map<std::string, double> MagnetFactory::getDegaussTolerance(const std::vect
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getDegaussTolerance_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getDegaussTolerance(to_std_vector<std::string>(names)));
-}
+
 
 std::vector<double> MagnetFactory::setDegaussValues(const std::string& name, const std::vector<double>& values)
 {
@@ -1342,10 +1366,8 @@ std::vector<double> MagnetFactory::setDegaussValues(const std::string& name, con
 	std::vector<double> dummy;
 	return dummy;
 }
-boost::python::list MagnetFactory::setDegaussValuesSingle_Py(const std::string& name, const boost::python::list& values)
-{
-	return to_py_list(setDegaussValues(name, to_std_vector<double>(values)));
-}
+
+
 std::map<std::string, std::vector<double>> MagnetFactory::setDegaussValues(const std::vector < std::string>& names, const std::vector<double>& values)
 {
 	std::map<std::string, std::vector<double>> r;
@@ -1355,10 +1377,8 @@ std::map<std::string, std::vector<double>> MagnetFactory::setDegaussValues(const
 	}
 	return r;
 }
-boost::python::dict MagnetFactory::setDegaussValuesMulti_Py(const boost::python::list& names, const boost::python::list& values)
-{
-	return to_py_dict <std::string, std::vector<double>>(setDegaussValues(to_std_vector<std::string>(names), to_std_vector<double>(values)));
-}
+
+
 
 
 double MagnetFactory::setDegaussTolerance(const std::string& name, const double value)
@@ -1378,10 +1398,6 @@ std::map<std::string, double> MagnetFactory::setDegaussTolerance(const std::vect
 		r[name] = setDegaussTolerance(name, value);
 	}
 	return r;
-}
-boost::python::dict MagnetFactory::setDegaussTolerance_Py(const boost::python::list& names, const double value)
-{
-	return to_py_dict <std::string, double>(setDegaussTolerance(to_std_vector<std::string>(names), value));
 }
 
 
@@ -1403,10 +1419,7 @@ std::map<std::string, double> MagnetFactory::setREADITolerance(const std::vector
 	}
 	return r;
 }
-boost::python::dict MagnetFactory::setREADITolerance_Py(const boost::python::list& names, const double value)
-{
-	return to_py_dict <std::string, double>(setREADITolerance(to_std_vector<std::string>(names), value));
-}
+
 
 bool MagnetFactory::isREADIequalValue(const std::string& name, const double value) const
 {
@@ -1446,10 +1459,65 @@ std::map<std::string, double> MagnetFactory::getMagneticLength(const std::vector
 	}
 	return return_map;
 }
+
+
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getMagnetType_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, TYPE>(getMagnetType(to_std_vector<std::string>(names)));
+}
+boost::python::dict MagnetFactory::getMagnetRevType_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getMagnetRevType(to_std_vector<std::string>(names)));
+}
+boost::python::dict MagnetFactory::getFullPSUName_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getFullPSUName(to_std_vector<std::string>(names)));
+}
+boost::python::dict MagnetFactory::getMeasurementDataLocation_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::string>(getMeasurementDataLocation(to_std_vector<std::string>(names)));
+}
+boost::python::dict MagnetFactory::getNumberOfDegaussSteps_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, size_t>(getNumberOfDegaussSteps(to_std_vector<std::string>(names)));
+}
+boost::python::list MagnetFactory::getDegaussValuesSingle_Py(const std::string& name) const
+{
+	return to_py_list<double>(getDegaussValues(name));
+}
+boost::python::dict MagnetFactory::getDegaussValuesMulti_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, std::vector<double>>(getDegaussValues(to_std_vector<std::string>(names)));
+}
+boost::python::dict MagnetFactory::getDegaussTolerance_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getDegaussTolerance(to_std_vector<std::string>(names)));
+}
+boost::python::list MagnetFactory::setDegaussValuesSingle_Py(const std::string& name, const boost::python::list& values)
+{
+	return to_py_list(setDegaussValues(name, to_std_vector<double>(values)));
+}
+boost::python::dict MagnetFactory::setDegaussValuesMulti_Py(const boost::python::list& names, const boost::python::list& values)
+{
+	return to_py_dict <std::string, std::vector<double>>(setDegaussValues(to_std_vector<std::string>(names), to_std_vector<double>(values)));
+}
+boost::python::dict MagnetFactory::setDegaussTolerance_Py(const boost::python::list& names, const double value)
+{
+	return to_py_dict <std::string, double>(setDegaussTolerance(to_std_vector<std::string>(names), value));
+}
+boost::python::dict MagnetFactory::setREADITolerance_Py(const boost::python::list& names, const double value)
+{
+	return to_py_dict <std::string, double>(setREADITolerance(to_std_vector<std::string>(names), value));
+}
 boost::python::dict MagnetFactory::getMagneticLength_Py(const boost::python::list& names) const
 {
 	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
 }
+#endif //BUILD_PYTHON
+
+
+
 
 double MagnetFactory::getREADITolerance(const std::string& name) const
 {
@@ -1469,11 +1537,7 @@ std::map<std::string, double> MagnetFactory::getREADITolerance(const std::vector
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getREADITolerance_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
 
-}
 STATE MagnetFactory::getILKState(const std::string& name) const
 {
 	std::string fullName = getFullName(name);
@@ -1493,10 +1557,7 @@ std::map<std::string, STATE> MagnetFactory::getILKStates(const std::vector<std::
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getILKState_Py(const boost::python::list& names) const
-{
-	return to_py_dict<std::string, STATE>(getILKStates(to_std_vector<std::string>(names)));
-}
+
 std::map<std::string, STATE>  MagnetFactory::getAllILKState() const
 {
 	std::map<std::string, STATE> return_map;
@@ -1506,10 +1567,7 @@ std::map<std::string, STATE>  MagnetFactory::getAllILKState() const
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::getAllILKState_Py() const
-{
-	return to_py_dict<std::string, STATE>(getAllILKState());
-}
+
 STATE MagnetFactory::SETI(const std::string& name, const double& value)
 {
 	std::string  full_name = getFullName(name);
@@ -1532,10 +1590,7 @@ std::map<std::string, STATE> MagnetFactory::SETI(const std::map<std::string, dou
 	}
 	return r;
 }
-boost::python::dict MagnetFactory::SETI_Py(const boost::python::dict& namesAndCurrentsDict)
-{
-	return to_py_dict<std::string, STATE>(SETI(to_std_map<std::string, double>(namesAndCurrentsDict)));
-}
+
 std::map<std::string, STATE> MagnetFactory::SETIAllZero()
 {
 	std::map<std::string, double> s;
@@ -1545,10 +1600,7 @@ std::map<std::string, STATE> MagnetFactory::SETIAllZero()
 	}
 	return SETI(s);
 }
-boost::python::dict MagnetFactory::SETIAllZero_Py()
-{
-	return to_py_dict<std::string, STATE>(SETIAllZero());
-}
+
 STATE MagnetFactory::setKSetP(const std::string& name, const double value)
 {
 	if (GlobalFunctions::entryExists(magnetMap, name))
@@ -1570,26 +1622,17 @@ std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<std::stri
 	}
 	return r;
 }
-boost::python::dict  MagnetFactory::setKSetP_Py(const boost::python::list& names, const double value)
-{
-	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(names), value));
-}
+
 std::map<std::string, STATE> MagnetFactory::setKSetP(const TYPE area, const double value)
 {
 	return setKSetP(getNamesInArea(area), value);
 }
-boost::python::dict MagnetFactory::setKSetP_area_Py(TYPE area, const double value)
-{
-	return to_py_dict<std::string, STATE>(setKSetP(area, value));
-}
+
 std::map<std::string, STATE> MagnetFactory::setKSetP(const std::vector<TYPE>& areas, const double value)
 {
 	return setKSetP(getNamesInAreas(areas), value);
 }
-boost::python::dict  MagnetFactory::setKSetP_Areas_py(const boost::python::list& areas, const double value)
-{
-	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(areas), value));
-}
+
 STATE MagnetFactory::switchOn(const std::string& name)
 {
 	std::string  full_name = getFullName(name);
@@ -1612,11 +1655,7 @@ std::map<std::string, STATE> MagnetFactory::switchOn(const std::vector<std::stri
 	}
 	return return_map;
 }
-boost::python::dict MagnetFactory::switchOn_Py(const boost::python::list names)
-{
-	//messenger.printDebugMessage("TURNING ", name, " On");
-	return to_py_dict<std::string, STATE>(switchOn(to_std_vector<std::string>(names)));
-}
+
 STATE MagnetFactory::switchOff(const std::string& name)
 {
 	std::string  full_name = getFullName(name);
@@ -1638,11 +1677,52 @@ std::map<std::string, STATE> MagnetFactory::switchOff(const std::vector<std::str
 		return_map[name] = switchOff(name);
 	}
 	return return_map;
+
+}
+#ifdef BUILD_PYTHON
+boost::python::dict MagnetFactory::getREADITolerance_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, double>(getMagneticLength(to_std_vector<std::string>(names)));
+
+}
+boost::python::dict MagnetFactory::getAllILKState_Py() const
+{
+	return to_py_dict<std::string, STATE>(getAllILKState());
+}
+boost::python::dict MagnetFactory::getILKState_Py(const boost::python::list& names) const
+{
+	return to_py_dict<std::string, STATE>(getILKStates(to_std_vector<std::string>(names)));
+}
+boost::python::dict MagnetFactory::SETIAllZero_Py()
+{
+	return to_py_dict<std::string, STATE>(SETIAllZero());
+}
+boost::python::dict MagnetFactory::SETI_Py(const boost::python::dict& namesAndCurrentsDict)
+{
+	return to_py_dict<std::string, STATE>(SETI(to_std_map<std::string, double>(namesAndCurrentsDict)));
+}
+boost::python::dict  MagnetFactory::setKSetP_Py(const boost::python::list& names, const double value)
+{
+	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(names), value));
+}
+boost::python::dict MagnetFactory::setKSetP_area_Py(TYPE area, const double value)
+{
+	return to_py_dict<std::string, STATE>(setKSetP(area, value));
+}
+boost::python::dict  MagnetFactory::setKSetP_Areas_py(const boost::python::list& areas, const double value)
+{
+	return to_py_dict<std::string, STATE>(setKSetP(to_std_vector<std::string>(areas), value));
+}
+boost::python::dict MagnetFactory::switchOn_Py(const boost::python::list names)
+{
+	//messenger.printDebugMessage("TURNING ", name, " On");
+	return to_py_dict<std::string, STATE>(switchOn(to_std_vector<std::string>(names)));
 }
 boost::python::dict MagnetFactory::switchOff_Py(const boost::python::list& names)
 {
 	return to_py_dict<std::string, STATE>(switchOff(to_std_vector<std::string>(names)));
 }
+#endif //BUILD_PYTHON
 
 
 
@@ -1658,10 +1738,7 @@ std::vector<std::string> MagnetFactory::getNamesInArea(TYPE area) const
 	}
 	return r;
 }
-boost::python::list MagnetFactory::getNamesInArea_Py(TYPE area) const
-{
-	return to_py_list<std::string>(getNamesInArea(area));
-}
+
 std::vector<std::string> MagnetFactory::getNamesInAreas(const std::vector<TYPE>& areas)const 
 {
 	std::vector<std::string> r;
@@ -1673,10 +1750,16 @@ std::vector<std::string> MagnetFactory::getNamesInAreas(const std::vector<TYPE>&
 	}
 	return r;
 }
+#ifdef BUILD_PYTHON
 boost::python::list MagnetFactory::getNamesInAreas_Py(const boost::python::list& areas) const
 {
 	return to_py_list<std::string>(getNamesInAreas(to_std_vector<TYPE>(areas)));
 }
+boost::python::list MagnetFactory::getNamesInArea_Py(TYPE area) const
+{
+	return to_py_list<std::string>(getNamesInArea(area));
+}
+#endif //BUILD_PYTHON
 
 
 
@@ -1743,6 +1826,7 @@ STATE MagnetFactory::saveSnapshot(const std::string& filepath, const std::string
 	}
 	return STATE::FAIL;
 }
+#ifdef BUILD_PYTHON
 STATE MagnetFactory::saveSnapshot_Pydict(const boost::python::dict& snapshot_dict, const std::string& comments)
 {
 	messenger.printDebugMessage("saveSnapshot_Pydict");
@@ -1763,37 +1847,17 @@ STATE MagnetFactory::saveSnapshot_Pyfile(const std::string& filepath, const std:
 	return STATE::FAIL;
 }
 
-
-
-STATE MagnetFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
-{
-	messenger.printDebugMessage("loadSnapshot");
-	YAML::Node file_node = SnapshotFileManager::readSnapshotFile(filepath, filename);
-	messenger.printDebugMessage("loadSnapshot get a file_node with size() ", file_node.size());
-	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
-	return STATE::SUCCESS; // TODO do we need some error checking 
-}
 STATE MagnetFactory::loadSnapshot_Py(const boost::python::dict& snapshot_dict) // put d into hardwareSnapshotMap
 {
 	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
 	return STATE::SUCCESS;
 }
-std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot() // c++ version 
-{
-	std::map<std::string, HardwareSnapshot> snapshot_map;
-	for (auto& item : magnetMap)
-	{
-		messenger.printDebugMessage("getSnapshot, found ", item.first);
-		snapshot_map[item.first] = item.second.getSnapshot();
-	}
-	messenger.printDebugMessage("returning snapshot_map with size =  ", snapshot_map.size());
-	return snapshot_map;
-}
+
 boost::python::dict MagnetFactory::getSnapshot_Py() // return current state as py dict 
 {
 	messenger.printDebugMessage("getSnapshot_Py, calling getSnapshot ");
 	// FIRST GET A snaphot that is current (i.e. live!)! 
-	std::map<std::string, HardwareSnapshot> current_snapshot =  getSnapshot();
+	std::map<std::string, HardwareSnapshot> current_snapshot = getSnapshot();
 	boost::python::dict r; // TODO MAGIC STRING
 	messenger.printDebugMessage("loop over current_snapshot (.size() =", current_snapshot.size());
 	for (auto&& item : current_snapshot)
@@ -1803,9 +1867,10 @@ boost::python::dict MagnetFactory::getSnapshot_Py() // return current state as p
 		r[item.first] = item.second.getSnapshot_Py();
 	}
 	boost::python::dict r2;
-	r2[ ENUM_TO_STRING(TYPE::MAGNET) ] = r;
+	r2[ENUM_TO_STRING(TYPE::MAGNET)] = r;
 	return r2;
 }
+
 boost::python::dict MagnetFactory::getSnapshotFromFile_Py(const std::string& location, const std::string& filename) // return file contents as py dict 
 {
 	messenger.printDebugMessage("getSnapshotFromFile_Py loadSnapshot");
@@ -1822,13 +1887,39 @@ boost::python::dict MagnetFactory::getSnapshotFromFile_Py(const std::string& loc
 	r2[ENUM_TO_STRING(TYPE::MAGNET)] = r;
 	return r2;
 }
-
-
-STATE MagnetFactory::applySnaphot(const boost::python::dict& snapshot_dict, TYPE magnet_type )
+STATE MagnetFactory::applySnaphot(const boost::python::dict& snapshot_dict, TYPE magnet_type)
 {
 	hardwareSnapshotMap = pyDictToHardwareSnapshotMap(snapshot_dict);
 	return applyhardwareSnapshotMap(hardwareSnapshotMap, magnet_type);
 }
+#endif //BUILD_PYTHON
+
+
+STATE MagnetFactory::loadSnapshot(const std::string filepath, const std::string& filename) // read into hardwareSnapshotMap
+{
+	messenger.printDebugMessage("loadSnapshot");
+	YAML::Node file_node = SnapshotFileManager::readSnapshotFile(filepath, filename);
+	messenger.printDebugMessage("loadSnapshot get a file_node with size() ", file_node.size());
+	hardwareSnapshotMap = yamlNodeToHardwareSnapshotMap(file_node);
+	return STATE::SUCCESS; // TODO do we need some error checking 
+}
+
+std::map<std::string, HardwareSnapshot> MagnetFactory::getSnapshot() // c++ version 
+{
+	std::map<std::string, HardwareSnapshot> snapshot_map;
+	for (auto& item : magnetMap)
+	{
+		messenger.printDebugMessage("getSnapshot, found ", item.first);
+		snapshot_map[item.first] = item.second.getSnapshot();
+	}
+	messenger.printDebugMessage("returning snapshot_map with size =  ", snapshot_map.size());
+	return snapshot_map;
+}
+
+
+
+
+
 STATE MagnetFactory::applySnaphot(const std::string& filepath, const std::string& filename, TYPE magnet_type )
 {
 	loadSnapshot(filepath, filename); // this sets the hardwareSnapshotMap member variables 
@@ -1992,6 +2083,7 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::yamlNodeToHardwareSnapsho
 	messenger.printMessage("yamlNodeToHardwareSnapshotMap COMPLETE");
 	return return_map;
 }
+#ifdef BUILD_PYTHON
 std::map<std::string, HardwareSnapshot> MagnetFactory::pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict)
 {
 	// This function returns a map of <OBJECT NAME: HardwareSnapshot > 
@@ -2112,6 +2204,60 @@ std::map<std::string, HardwareSnapshot> MagnetFactory::pyDictToHardwareSnapshotM
 	//std::cout << "yamlNodeToHardwareSnapshotMap COMPLETE" << std::endl;
 	return return_map;
 }
+
+boost::python::dict  MagnetFactory::getSetWrongSETI_Py()const
+{
+	return to_py_dict_pair<std::string, double>(set_wrong_seti);
+}
+boost::python::dict  MagnetFactory::getSetWrongPSU_Py()const
+{
+	return to_py_dict_pair<std::string, STATE>(set_wrong_psu);
+}
+boost::python::list  MagnetFactory::getWrongName_Py()const
+{
+	return to_py_list<std::string>(set_wrong_name);
+}
+boost::python::dict MagnetFactory::checkLastAppliedSnapshotReturnResults_Py(TYPE mag_type_to_check)
+{
+	messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ");
+	boost::python::dict r;
+	if (checkLastAppliedSnapshot(mag_type_to_check) != STATE::SUCCESS)
+	{
+		boost::python::dict seti_err = getSetWrongSETI_Py();
+		if (len(seti_err) > 0)
+		{
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(seti_err), " seti errors ");
+			r[std::string("SETI_ERROR")] = seti_err;
+		}
+		else
+		{
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no seti errors ");
+		}
+		boost::python::dict psu_err = getSetWrongPSU_Py();
+		if (len(psu_err) > 0)
+		{
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(psu_err), " psu errors ");
+			r[std::string("PSU_ERROR")] = psu_err;
+		}
+		else
+		{
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no psu_err errors ");
+		}
+		boost::python::list name_err = getWrongName_Py();
+		if (len(name_err) > 0)
+		{
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(name_err), " name errors ");
+			r[std::string("NAME_ERROR")] = psu_err;
+		}
+		else
+		{
+			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no name_err errors ");
+		}
+
+	}
+	return r;
+}
+#endif //BUILD_PYTHON
 YAML::Node MagnetFactory::hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map)
 {
 	YAML::Node return_node;
@@ -2224,67 +2370,17 @@ std::map<std::string, std::pair<double, double>> MagnetFactory::getSetWrongSETI(
 {
 	return set_wrong_seti;
 }
-boost::python::dict  MagnetFactory::getSetWrongSETI_Py()const
-{
-	return to_py_dict_pair<std::string, double>(set_wrong_seti);
-}
+
 std::map<std::string, std::pair<STATE, STATE>> MagnetFactory::getSetWrongPSU()
 {
 	return set_wrong_psu;
 }
-boost::python::dict  MagnetFactory::getSetWrongPSU_Py()const
-{
-	return to_py_dict_pair<std::string, STATE>(set_wrong_psu);
-}
+
 std::vector<std::string> MagnetFactory::getWrongName()const
 {
 	return set_wrong_name;
 }
-boost::python::list  MagnetFactory::getWrongName_Py()const
-{
-	return to_py_list<std::string>(set_wrong_name);
-}
 
-boost::python::dict MagnetFactory::checkLastAppliedSnapshotReturnResults_Py( TYPE mag_type_to_check )
-{			
-	messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ");
-	boost::python::dict r;
-	if (checkLastAppliedSnapshot(mag_type_to_check) != STATE::SUCCESS)
-	{
-		boost::python::dict seti_err = getSetWrongSETI_Py();
-		if (len(seti_err) > 0)
-		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(seti_err)," seti errors ");
-			r[ std::string("SETI_ERROR") ] = seti_err;
-		}
-		else
-		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no seti errors ");
-		}
-		boost::python::dict psu_err = getSetWrongPSU_Py();
-		if (len(psu_err) > 0)
-		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(psu_err), " psu errors ");
-			r[std::string("PSU_ERROR") ] = psu_err;
-		}
-		else
-		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no psu_err errors ");
-		}
-		boost::python::list name_err = getWrongName_Py();
-		if (len(name_err) > 0)
-		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py adding ", len(name_err), " name errors ");
-			r[std::string("NAME_ERROR")  ] = psu_err;
-		}
-		else
-		{
-			messenger.printDebugMessage("checkLastAppliedSnapshotReturnResults_Py no name_err errors ");
-		}
-
-	}
-	return r;
-}
 std::string MagnetFactory::getDefaultMagnetSnapshotPath()const
 {
 	return SnapshotFileManager::defaultMachineSnapshotLocation;

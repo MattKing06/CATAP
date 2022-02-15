@@ -119,6 +119,8 @@ foreach(FILE ${SOURCE_FILES})
 	  SET_TARGET_PROPERTIES(${LIBNAME} PROPERTIES COMPILE_FLAGS "-fPIC")
 	ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 	#set_target_properties(PythonInterface PROPERTIES ENABLE_EXPORTS on)
+	add_compile_definitions(${LIBNAME} PRIVATE "BUILD_PYTHON")
+
 	target_include_directories(${LIBNAME} PUBLIC ${Boost_INCLUDE_DIR})
 	target_include_directories(${LIBNAME} PUBLIC ${Python3_INCLUDE_DIRS})
 	target_include_directories(${LIBNAME} PRIVATE include)

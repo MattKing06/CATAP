@@ -75,7 +75,10 @@ IF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
   SET_TARGET_PROPERTIES(Factories PROPERTIES COMPILE_FLAGS "-fPIC")
 ENDIF( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
 target_include_directories(Factories PRIVATE ${Boost_INCLUDE_DIR})
-target_include_directories(Factories PRIVATE ${Python3_INCLUDE_DIRS})
+if(BUILD_PYTHON)
+    target_include_directories(Factories PRIVATE ${Python3_INCLUDE_DIRS})
+    TARGET_LINK_LIBRARIES(Factories PUBLIC ${Python3_LIBRARIES})
+endif(BUILD_PYTHON)
 target_include_directories(Factories PRIVATE include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/ConfigReader/include)
 target_include_directories(Factories PUBLIC ${PROJECT_SOURCE_DIR}/LoggingSystem/include)
@@ -91,13 +94,14 @@ if(UNIX)
 endif(UNIX)
 TARGET_LINK_LIBRARIES(Factories PUBLIC
 					 ${Boost_LIBRARIES}
-					 ${Python3_LIBRARIES}
 					 PRIVATE
 					 ConfigReader
 					 LoggingSystem
 					 Hardware)
+
 set_property(TARGET Factories PROPERTY FOLDER "Factories")
 set_target_properties(Factories PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/Factories")
 add_subdirectory(test)

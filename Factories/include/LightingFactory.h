@@ -20,9 +20,11 @@ public:
 	Lighting& getLighting(const std::string& name);
 
 	std::map<std::string, STATE> getLEDState(const std::string& name)const;
-	boost::python::dict getLEDState_Py(const std::string& name)const;
 	std::map<std::string, STATE> getLightingState(const std::string& name)const;
+#ifdef BUILD_PYTHON
 	boost::python::dict getLightingState_Py(const std::string& name)const;
+	boost::python::dict getLEDState_Py(const std::string& name)const;
+#endif //BUILD_PYTHON
 	bool allLEDOn(const std::string& name);
 	bool allLEDOff(const std::string& name);
 	STATE getClaraLEDState(const std::string& name)const;

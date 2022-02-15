@@ -6,8 +6,11 @@
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#include <PythonTypeConversions.h>
+#endif //BUILD_PYTHON
 
 class EPICSRFProtectionInterface;
 
@@ -24,10 +27,11 @@ public:
 	/*! get the name alises for this RFProtection
 	@param[out] names, vector contianing all the alias names */
 	std::vector<std::string> getAliases() const;
+#ifdef BUILD_PYTHON
 	/*! get the name alises for this RFProtection (python version)
 		@param[out] names, python list contianing all the alias names */
 	boost::python::list getAliases_Py() const;
-
+#endif //BUILD_PYTHON
 	TYPE getProtectionType() const;
 	std::string getProtectionTypeAsStr() const;
 	EPICSRFProtectionInterface_sptr epicsInterface;

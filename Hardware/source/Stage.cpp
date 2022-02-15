@@ -212,11 +212,13 @@ std::vector<std::string> Stage::getDevices()
 	}
 	return deviceNames;
 }
-
+#ifdef BUILD_PYTHON
 boost::python::list Stage::getDevices_Py()
 {
 	return to_py_list(getDevices());
 }
+#endif //BUILD_PYTHON
+
 
 bool Stage::isReadPositionEqualToSetPosition()
 {

@@ -35,6 +35,7 @@ public:
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::vector<TYPE>& machineAreas);
+#ifdef BUILD_PYTHON
 	/*! setup function using python::list of machineAreas
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
@@ -44,6 +45,7 @@ public:
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
 	@param[out] bool, for success or failure	*/
 	bool setup(const std::string& version, const boost::python::list& machineAreas);
+#endif //BUILD_PYTHON
 	/*! setup function using std::vector of machineAreas
 	@param[in] version, (a placeholder for future extensions)
 	@param[in] machineAreas, only setup magnets that match an area in machineAreas
@@ -66,25 +68,28 @@ public:
 	/*! get the names of all the cameras in Factory 
 	@param[out] vector of strings, camera names*/
 	std::vector<std::string> getCameraNames();
-	/*! get the names of all the cameras in Factory, python version
-	@param[out] python list of strings, camera names*/
-	boost::python::list getCameraNames_Py();
 	/*! get the name alises for this Camera
 	@param[in] std::string, name
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases(const std::string& name) const;
+#ifdef BUILD_PYTHON
+	/*! get the names of all the cameras in Factory, python version
+	@param[out] python list of strings, camera names*/
+	boost::python::list getCameraNames_Py();
 	/*! get the name alises for this Camera (python version)
 	@param[in] std::string, name
 	@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py(const std::string& name) const;
-	/*! get the screen name (and aliases) the camera is attached to
-	@param[in] std::string, name
-	@param[out] names, vector containing  all the screen names (and their aliases) */
-	std::vector<std::string> getScreenNames(const std::string& name) const;
 	/*! get the screen name (and aliases) the camera is attached to (python version)
 	@param[in] std::string, name
 	@param[out] names, python list containing all the screen names (and their aliases) */
 	boost::python::list getScreenNames_Py(const std::string& name) const;
+#endif //BUILD_PYTHON
+	/*! get the screen name (and aliases) the camera is attached to
+	@param[in] std::string, name
+	@param[out] names, vector containing  all the screen names (and their aliases) */
+	std::vector<std::string> getScreenNames(const std::string& name) const;
+
 	/*! get the screen name the camera is attached to (defined in master lattice)
 	@param[in] std::string, name
 	@param[out] name, */
@@ -354,11 +359,12 @@ public:
 	@param[in] std::string, name
 	@param[out] map<string, double>, values, keyed by names in master lattice */
 	std::map<std::string, double> getAnalysisResultsPixels(const std::string& name)const;
+#ifdef BUILD_PYTHON
 	/*! get Anlaysis results in pixels, Python version
 	@param[in] std::string, name
 	@param[out] map<string, double>, values, keyed by names in master lattice */
 	boost::python::dict getAnalysisResultsPixels_Py(const std::string& name)const;
-
+#endif //BUILD_PYTHON
 	/*! Set the black level (for vela camera types only),
 	@param[in] std::string, name
 	@param[in] long, values
@@ -515,11 +521,17 @@ public:
 	@param[in] map<std::string, long>, with new values (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI(const std::string& name, std::map<std::string, long> settings);
+#ifdef BUILD_PYTHON
 	/*! Set the Region Of Interest parameters.
 	@param[in] std::string, name
 	@param[in] long, dict with new values, (for keywords see roi_keywords)
 	@param[out] bool, true if value got sent to epics (not if it was received)*/
 	bool setROI_Py(const std::string& name, boost::python::dict settings);
+	/*! Get the Region Of Interest values.
+	@param[in] std::string, name
+	@param[out] dict, with new values  */
+	boost::python::dict getROI_Py(const std::string& name)const;
+#endif //BUILD_PYTHON
 	/*! Get the Region Of Interest minimum x pixel.
 	@param[in] std::string, name
 	@param[out] long, value*/
@@ -540,10 +552,7 @@ public:
 	@param[in] std::string, name
 	@param[out] map<std::string, long>, with new values  */
 	std::map<std::string, long> getROI(const std::string& name)const;
-	/*! Get the Region Of Interest values.
-	@param[in] std::string, name
-	@param[out] dict, with new values  */
-	boost::python::dict getROI_Py(const std::string& name)const;
+
 	//	                         __     __           __     __   ___     ___       __   __   __  
 	//	 /\  |\ |  /\  |    \ / /__` | /__`    |\ | /  \ | /__` |__     |__  |    /  \ /  \ |__) 
 	//	/~~\ | \| /~~\ |___  |  .__/ | .__/    | \| \__/ | .__/ |___    |    |___ \__/ \__/ |  \ 
@@ -768,11 +777,16 @@ public:
 	@param[in] map<string, long>, values to set (keywords must be 'mask_keywords')
 	@param[out] long, value */
 	bool setMask(const std::string& name, std::map<std::string, long> settings);
+#ifdef BUILD_PYTHON
 	/*! Set the mask using python dict. Setting the Mask and ROI together is preferred using setMaskandROI_Py
 	@param[in] std::string, name
 	@param[in] dict, values to set (keywords must be 'mask_keywords')
 	@param[out] long, value */
 	bool setMask_Py(const std::string& name, boost::python::dict settings);
+	/*! Get the mask settings (python version).
+	@param[in] map<string, long>, value */
+	boost::python::dict getMask_Py(const std::string& name)const;
+#endif //BUILD_PYTHON
 	/*! Get the mask x center position.
 	@param[in] std::string, name
 	@param[in] long, value */
@@ -793,9 +807,7 @@ public:
 	@param[in] std::string, name
 	@param[in] map<string, long>, value */
 	std::map<std::string, long> getMask(const std::string& name)const;
-	/*! Get the mask settings (python version).
-	@param[in] map<string, long>, value */
-	boost::python::dict getMask_Py(const std::string& name)const;
+
 	/*! Set the mask and ROI x position,
 	@param[in] std::string, name
 	@param[in] long, value (lower left hand pixel of ROI)
@@ -845,19 +857,22 @@ public:
 	@param[in] map<string, long>, values to set (keywords must be 'mask_and_roi_keywords')
 	@param[out] long, value */
 	bool setMaskandROI(const std::string& name, std::map<std::string, long> settings);
+#ifdef BUILD_PYTHON
 	/*! Set the mask using python dict. Setting the Mask and ROI together is preferred using setMaskAndROIxPos
 	@param[in] std::string, name
 	@param[in] dict, values to set (keywords must be 'mask_and_roi_keywords')
 	@param[out] long, value */
 	bool setMaskandROI_Py(const std::string& name, boost::python::dict settings);
-	/*! Get the mask and ROI settings
-	@param[in] std::string, name
-	@param[out] map<string, long>, values ) */
-	std::map<std::string, long> getMaskandROI(const std::string& name)const;
 	/*! Get the mask and ROI settings (Python version).
 	@param[in] std::string, name
 	@param[out] dict, values ) */
 	boost::python::dict getMaskandROI_Py(const std::string& name)const;
+#endif //BUILD_PYTHON
+	/*! Get the mask and ROI settings
+	@param[in] std::string, name
+	@param[out] map<string, long>, values ) */
+	std::map<std::string, long> getMaskandROI(const std::string& name)const;
+
 
 	/*! Get IOC active camera limit. The maximum number of cameras that can be active for this IOC. Running at this limit does not imply that everything will run smoothly!)
 	@param[in] std::string, name
@@ -887,11 +902,12 @@ public:
 	/*! Stop All CLARA cameras acquiring, and wait for verification by the control system (or timeout after 10000 ms).
 	@param[out] bool, if all CLARA cameras have stopped acquiring before timeout */
 	bool stopAllCLARACamsAndWait();
+#ifdef BUILD_PYTHON
 	/*! Stop cameras acquiring, and wait for verification by the control system (or timeout) (Python Version).
 * 	@param[in] list, names of cmaeras to stop
 	@param[out] bool, true if all cameras successfull y stopped */
 	bool stopAcquiringAndWait_Py(const boost::python::list& cam_names);
-
+#endif //BUILD_PYTHON
 	/*! Stop cameras acquiring, and wait for verification by the control system (or timeout after 10000 ms).
 	* 	@param[in] vector<string>, names of cmaeras to stop
 	@param[out] bool, true if all cameras successfull y stopped */
@@ -995,21 +1011,24 @@ public:
 	@param[in] std::string, name
 	@param[out] vector<long>, latest data */
 	std::vector<long> getImageData(const std::string& name)const;
+#ifdef BUILD_PYTHON
 	/*! Get a copy of the current image data (Python Version). Until an updateImage functiton is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[in] std::string, name
 	@param[out] list, latest data */
 	boost::python::list getImageData_Py(const std::string& name)const;
-	/*! Get a copy of the current image data. Until an updateROI function is called this will be empty,
-	to reduce network load Camera data arrays ARE NOT continuously monitored.
-	@param[in] std::string, name
-	@param[out] vector<long>, latest data */
-	std::vector<long> getROIData(const std::string& name)const;
 	/*! Get a copy of the current image data (python version). Until an updateROI function is called this will be empty,
 	to reduce network load Camera data arrays ARE NOT continuously monitored.
 	@param[in] std::string, name
 	@param[out] list, latest data */
 	boost::python::list getROIData_Py(const std::string& name)const;
+#endif //BUILD_PYTHON
+	/*! Get a copy of the current image data. Until an updateROI function is called this will be empty,
+	to reduce network load Camera data arrays ARE NOT continuously monitored.
+	@param[in] std::string, name
+	@param[out] vector<long>, latest data */
+	std::vector<long> getROIData(const std::string& name)const;
+
 	/*! Get a reference to the current image data. Gives access to image data without copying
 	@param[in] std::string, name
 	@param[out] vector<long>&, reference to latest data, When exposed to python this function returns a std_vector_long  */
@@ -1087,6 +1106,7 @@ public:
 	/*! get the Overlay state for each camera object and overlay
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
 	std::map<std::string, STATE> getAllOverlayStates()const;
+#ifdef BUILD_PYTHON
 	/*! get the Overlay state for each camera object and overlay, Python version 
 	@param[out] bool, was command sent to EPICS, (not if it worked) */
 	boost::python::dict getAllOverlayStates_Py()const;
@@ -1095,7 +1115,7 @@ public:
 	@param[in] std::string, name
 	@param[out] dict, values */
 	boost::python::dict getAllRunningStats(const std::string& name)const;
-
+#endif //BUILD_PYTHON
 //
 // TODO implment snapshot functions 
 //----------------------------------------------------------------------------------------------------------------
@@ -1113,6 +1133,7 @@ public:
 	@param[in] string, comments	(optional input, default as empty)
 	@param[out] STATE, success, failure, etc.			*/
 	STATE saveSnapshot(const std::string& filepath, const std::string& filename, const std::string& comments = "");
+#ifdef BUILD_PYTHON
 	/*! Save snap_dict to the default filepath and filename
 	@param[in] dict, snap_dict
 	@param[in] string, comments	(optional input, default as empty)
@@ -1124,18 +1145,10 @@ public:
 	@param[in] dict, snap_dict
 	@param[out] STATE, success, failure, etc.			*/
 	STATE saveSnapshot_Pyfile(const std::string& filepath, const std::string& filename, const boost::python::dict& snapshot_dict, const std::string& comments = "");
-	/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
-	@param[in] string, filepath
-	@param[in] string, filename
-	@param[out] STATE, success, failure, etc.			*/
-	STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
 	/*! Load snapshot_dict by copying the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
 	@param[in] dict, snapshot_dict
 	@param[out] STATE, success, failure, etc.			*/
 	STATE loadSnapshot_Py(const boost::python::dict& snapshot_dict); // put d into hardwareSnapshotMap
-	/*! Get the latest snapshot data for this factory.
-	@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
-	std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
 	/*! Get the latest snapshot data for this factory. Python Version
 	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
 	boost::python::dict getSnapshot_Py(); // return current state as py dict 
@@ -1144,11 +1157,24 @@ public:
 	@param[in] string, filename
 	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name */
 	boost::python::dict getSnapshotFromFile_Py(const std::string& filepath, const std::string& filename); // return file contents as py dict 
+
 	/*! Apply a Python dict snapshot.
 	@param[out] dict, dict of HardwareSnapshot data for each object, keyed by the object name
 	@param[in] TYPE, apply only to magnets that match this type (if left empty, defaults to all magnet typpes)
 	@param[out] STATE, success, failure, etc.			*/
 	STATE applySnaphot(const boost::python::dict& snapshot_dict, TYPE type = TYPE::CAMERA_TYPE);
+
+#endif //BUILD_PYTHON
+	/*! Load the snapshot at filename, filepath and copy the data into the member variable hardwareSnapshotMap. NB this function does not apply the settings.
+	@param[in] string, filepath
+	@param[in] string, filename
+	@param[out] STATE, success, failure, etc.			*/
+	STATE loadSnapshot(const std::string filepath, const std::string& filename); // read into hardwareSnapshotMap
+
+	/*! Get the latest snapshot data for this factory.
+	@param[out] map<string, HardwareSnapshot>, Map of HardwareSnapshot data for each object, keyed by the object name */
+	std::map<std::string, HardwareSnapshot> getSnapshot(); // c++ version 
+
 	/*! Apply a snapshot data from filepath and filename.
 	@param[in] string, filepath
 	@param[in] string, filename
@@ -1176,12 +1202,13 @@ private:
 		@param[in] YAML::Node, input_node to convert
 		@param[out] map<string, HardwareSnapshot>, return map */
 	std::map<std::string, HardwareSnapshot> yamlNodeToHardwareSnapshotMap(const YAML::Node& input_node);
+#ifdef BUILD_PYTHON
 	/*! Each factory must know how to convert a ython Dictionary into a map of hardwareSnapshots.
 		It must be done in the factory so we know how to convert the type for each record
 		@param[in] dict, input_dict to convert
 		@param[out] map<string, HardwareSnapshot>, return map */
 	std::map<std::string, HardwareSnapshot> pyDictToHardwareSnapshotMap(const boost::python::dict& input_dict);
-
+#endif //BUILD_PYTHON
 	YAML::Node hardwareSnapshotMapToYAMLNode(const std::map<std::string, HardwareSnapshot>& hardwaresnapshot_map);
 	/*! This function actually tries applying a Map of harwwdare snapshots, it will only apply data that are well formatted and typed
 		@param[in] map, Map of camera HardwareSnapshot objects, keyed by the camera name, to apply
@@ -1199,10 +1226,11 @@ public:
 	/*! get the name alises for this 
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getNameAliases(const std::string& cam_name) const;
+#ifdef BUILD_PYTHON
 	/*! get the name alises for this LLRF (python version)
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getNameAliases_Py(const std::string& cam_name) const;
-	
+#endif //BUILD_PYTHON
 
 	/*! Enable debug messages*/
 	void debugMessagesOn();

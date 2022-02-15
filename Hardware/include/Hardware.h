@@ -11,7 +11,9 @@
 #include <GlobalTypeEnums.h>
 #include <GlobalFunctions.h>
 #include "GlobalConstants.h"
-#include <boost/python/dict.hpp>
+#ifdef BUILD_PYTHON
+ #include <boost/python/dict.hpp>
+#endif//BUILD_PYTHON
 #include <HardwareSnapshot.h>
 
 /** @defgroup hardware Hardware
@@ -52,14 +54,14 @@ public:
 
 	std::map<std::string, std::string> getSpecificHardwareParameters() const;
 	std::map<std::string, std::string> getOfflineProperties()const;
-	boost::python::dict getOfflineProperties_Py();
+
 	void setOfflineProperties(const std::map<std::string, std::string>& properties);
 	std::map<std::string, std::string> getOnlineProperties()const;
-	boost::python::dict getOnlineProperties_Py();
+
 	void setOnlineProperties(const std::map<std::string, std::string>& properties);
 
 	virtual HardwareSnapshot getSnapshot();
-	virtual boost::python::dict getSnapshot_Py();
+
 	std::map<std::string, std::string> offlineProperties;
 	std::map<std::string, std::string> onlineProperties;
 	// TODO: do we need this? can't an child of these class just access pvStructs,
@@ -72,8 +74,14 @@ public:
 	HardwareSnapshot currentSnapshot;
 
 	HardwareSnapshot getHardwareSnapshot();
-	boost::python::dict getHardwareSnapshot_Py();
 
+
+#ifdef BUILD_PYTHON
+	boost::python::dict getHardwareSnapshot_Py();
+	virtual boost::python::dict getSnapshot_Py();
+	boost::python::dict getOnlineProperties_Py();
+	boost::python::dict getOfflineProperties_Py();
+#endif//BUILD_PYTHON
 
 
 	/*PLAN TO MAKE THIS A VIRTUAL FUNCTION TO BE OVERRIDEN BY SPECIFIC HARDWARE CLASSES*/

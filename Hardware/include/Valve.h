@@ -53,8 +53,9 @@ public:
 
 	// THESE CAN'T BE const as theere is the call an "update" of the map which is necessarily non const 
 	HardwareSnapshot getSnapshot()  override;
+#ifdef BUILD_PYTHON
 	boost::python::dict getSnapshot_Py() override;
-
+#endif //BUILD_PYTHON
 	/*! directly sets the valveState variable.
 	This is mainly called by the EPICSValveInterface when updating the valveState from EPICS callback function
 	@param[in] state the state which we wish to set the valve to (OPEN,CLOSED,ERR)

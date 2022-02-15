@@ -11,9 +11,10 @@
 #include <GlobalStateEnums.h>
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
+#ifdef BUILD_PYTHON
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
-
+#endif //BUILD_PYTHON
 class Shutter;
 struct ShutterState;
 class EPICSShutterInterface;
@@ -66,11 +67,17 @@ class Shutter : public Hardware
 		///*! Get the ShutterState (structured data with shutter name and latest, state, Cmi, and interlock bitmap, Python Versoin
 		//@param[out] ShutterState structured data */
 		//ShutterState getShutterState_Py()const;
-		
+#ifdef BUILD_PYTHON
 		/*! Get the ShutterState data in a python dictionary
 		@param[out] dict, dictionary of shutter state date, keyed by the name of each data type */
 		boost::python::dict getShutterStateDictionary()const;
 
+		boost::python::dict getCMIBitMap_Py()const;
+
+		/*! get the name alises for this shutter, Python version
+		param[out] names, list contianing all the alias names */
+		boost::python::list getAliases_Py() const;
+#endif //BUILD_PYTHON
 		/*! checks whether the current shutter_state is STATE::CLOSED.
 		@param[out] bool true if shutter_state is STATE::CLOSED, false if shutter_state is not STATE::CLOSED */
 		bool isClosed() const;
@@ -96,13 +103,11 @@ class Shutter : public Hardware
 		/*! get a map of each cmi bit state, keyed by the interlock name (defiend in th emasterlattice yaml file. 
 		@param[out] bool, true if command got sent to EPICS, (does not indicate whether the shutter opened succesfully)*/
 		std::map<std::string, STATE>  getCMIBitMap()const;
-		boost::python::dict  getCMIBitMap_Py()const;
+
 		/*! get the name alises for this shutter
 			@param[out] names, vector contianing all the alias names */
 		std::vector<std::string> getAliases() const;
-		/*! get the name alises for this shutter, Python version
-			@param[out] names, list contianing all the alias names */
-		boost::python::list getAliases_Py() const;
+
 
 		/*! Get a reference to this shutter
 			@param[out] Shutter objet reference */

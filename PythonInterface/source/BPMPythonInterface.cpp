@@ -2,6 +2,7 @@
 #include <HardwarePythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
+
 BOOST_PYTHON_MODULE(_BPM)
 {
 	boost::python::docstring_options CATAP_docstring_options;//(true, true, false);

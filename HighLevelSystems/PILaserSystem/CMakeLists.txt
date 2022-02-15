@@ -37,4 +37,5 @@ set_property(TARGET PILaserSystem PROPERTY FOLDER "HighLevelSystems")
 set_target_properties(PILaserSystem PROPERTIES 
                       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/libs"
                       )
+INSTALL(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_BINARY_DIR}/include/HighLevelSystems")
 add_subdirectory(test)

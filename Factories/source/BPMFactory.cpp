@@ -5,7 +5,7 @@
 #include <utility>
 #include "GlobalFunctions.h"
 #include "GlobalConstants.h"
-#include <PythonTypeConversions.h>
+
 #ifndef __CINT__
 #include <cadef.h>
 #endif
@@ -1242,7 +1242,7 @@ std::map<std::string, std::pair<std::vector< double >, std::vector< double > > >
 	}
 	return bpmsAndPositiOnsMap;
 }
-
+#ifdef BUILD_PYTHON
 boost::python::list BPMFactory::getAllBPMNames_Py()
 {
 	std::vector< std::string > namevec;
@@ -1689,7 +1689,7 @@ boost::python::dict BPMFactory::reCalAllAttenuation_Py(const double& charge)
 	boost::python::dict newPyDict = to_py_dict(recalvals);
 	return newPyDict;
 }
-
+#endif //BUILD_PYTHON
 void BPMFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

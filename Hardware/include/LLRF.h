@@ -5,10 +5,12 @@
 #include <EPICSLLRFInterface.h>
 #include <GlobalConstants.h>
 #include <GlobalStateEnums.h>
-#include "PythonTypeConversions.h"
-#include <boost/make_shared.hpp>
+#ifdef BUILD_PYTHON
+#include <PythonTypeConversions.h>
 #include <boost/python/dict.hpp>
 #include <boost/python/list.hpp>
+#endif //BUILD_PYTHON
+#include <boost/make_shared.hpp>
 #include <boost/circular_buffer.hpp>
 #include <utility> 
 #include <boost/shared_ptr.hpp>
@@ -200,9 +202,81 @@ public:
 	/*! get the name alises for this LLRF
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;
+#ifdef BUILD_PYTHON
 	/*! get the name alises for this LLRF (python version)
 		@param[out] names, python list containing all the alias names */
 	boost::python::list getAliases_Py() const;
+	boost::python::dict getAllTraceSCAN_Py()const;
+	boost::python::dict getAllTraceACQM_Py()const;
+	/*! get trace_values for requested trace, Python version
+		@param[in] name, trace name to get data for
+		@param[out] list, trace_values  */
+	boost::python::list getTraceValues_Py(const std::string& name)const;
+	/*!  get a dict of a trace_name : trace_values for 1 trace, Python version
+	@param[in] name, trace name to get data for
+	@param[out] dict, "trace_name" (string) and "trace_data_values" (list) */
+	boost::python::dict getTraceNameValuesPair_Py(const std::string& name);
+
+
+	boost::python::dict getTraceDataDict(const std::string& trace_name) const;
+
+	boost::python::dict getAllTraceDataDict() const;
+	/*! get a dict of all the trace data, python version
+		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
+	boost::python::dict getAllTraceData_Py();
+
+	/*!
+	@param[in] name, trace name to get data for
+	@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+	boost::python::list getRollingAverage_Py(const std::string& name)const;
+	/*!
+	@param[in] name, trace name to get data for
+	@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
+	boost::python::dict getRollingAverage_Py()const;
+
+	/*! Get the individual traces used to calculate the trace rolling average, Python Version
+	@param[in] name, trace name to get data for
+	@param[out] list of trace_value lists */
+	boost::python::list getRollingAverageTraceBuffer_Py(const std::string& name)const;
+
+	/*! Get the individual traces used to calculate the trace rolling average for all TraceData, Python Version
+	@param[out] dict of RollingAverageTraceBuffer keyed by the trace name */
+	boost::python::dict getAllRollingAverageTraceBuffer_Py()const;
+
+	boost::python::list getCavRevPwr_Py()const;
+	boost::python::list getCavFwdPwr_Py()const;
+	boost::python::list getKlyRevPwr_Py()const;
+	boost::python::list getKlyFwdPwr_Py()const;
+	boost::python::list getCavRevPha_Py()const;
+	boost::python::list getCavFwdPha_Py()const;
+	boost::python::list getKlyRevPha_Py()const;
+	boost::python::list getKlyFwdPha_Py()const;
+	boost::python::list getProbePha_Py()const;
+	boost::python::list getProbePwr_Py()const;
+
+	boost::python::list getMeanStartEndIndex_Py(const std::string& name) const;
+	boost::python::list  getMeanStartEndTime_Py(const std::string& name) const;
+
+	boost::python::dict getTraceMeanIndices_Py()const;
+	boost::python::dict getTraceMeanTimes_Py()const;
+
+	void setTraceMeanIndices_Py(const boost::python::dict& settings);
+	void setTraceMeanTimes_Py(const boost::python::dict& settings);
+
+	boost::python::dict getPowerCutMean_Py()const;
+	boost::python::dict getAllCutMean_Py()const;
+
+	/*! Load the passed waveform as the pulse shape to be used (does not apply it), Python version
+	@param[in] list, waveform for new pulse shape
+	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
+	bool setPulseShape_Py(const boost::python::list& values);
+
+	/*! Load the passed waveform as the pulse shape to be used and apply it, Python version
+	@param[in] list, waveform for new pulse shape
+	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
+	bool setAndApplyPulseShape(const boost::python::list& values);
+
+#endif //BUILD_PYTHON
 
 	/*! get the index closest to for the passed time on a LLRF trace 
 		@param[in] time, time in ms to convert to an index 
@@ -262,10 +336,10 @@ public:
 
 
 	std::map<std::string, STATE> getAllTraceSCAN()const;
-	boost::python::dict getAllTraceSCAN_Py()const;
+
 
 	std::map<std::string, STATE> getAllTraceACQM()const;
-	boost::python::dict getAllTraceACQM_Py()const;
+
 
 
 
@@ -275,26 +349,17 @@ public:
 	@param[in] name, trace name to get data for
 	@param[out] "trace_data_values" (vector of doubles) */
 	std::vector<double> getTraceValues(const std::string& name)const;
-	/*! get trace_values for requested trace, Python version 
-		@param[in] name, trace name to get data for
-		@param[out] list, trace_values  */
-	boost::python::list getTraceValues_Py(const std::string& name)const;
+
 	/*! get a pair of a trace_name : trace_values for 1 trace
 	@param[in] name, trace name to get data for
 	@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	std::pair<std::string, std::vector<double>> getTraceNameValuesPair(const std::string& name)const;
-	/*!  get a dict of a trace_name : trace_values for 1 trace, Python version
-	@param[in] name, trace name to get data for
-	@param[out] dict, "trace_name" (string) and "trace_data_values" (list) */
-	boost::python::dict getTraceNameValuesPair_Py(const std::string& name);
+
 	///*! get a map of all the trace values 
 	//	@param[out] trace data, map of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 	//std::map<std::string, std::vector<double>> getAllTraceValues()const;
 	TraceData& getTraceData(const std::string& trace_name);
 
-	boost::python::dict getTraceDataDict(const std::string& trace_name) const;
-
-	boost::python::dict getAllTraceDataDict() const;
 
 
 
@@ -303,9 +368,7 @@ public:
 
 
 
-	/*! get a dict of all the trace data, python version
-		@param[out] trace data, dict of "trace_name" (string) and "trace_data_values" (list) */
-	boost::python::dict getAllTraceData_Py();
+
 
 
 	//---------------------------------------------------------------------------------------------------------
@@ -367,14 +430,7 @@ public:
 				@param[in] name, trace name to get data for
 				@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
 		std::vector<double> getRollingAverage(const std::string& name)const;
-		/*!
-		@param[in] name, trace name to get data for
-		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
-		boost::python::list getRollingAverage_Py(const std::string& name)const;
-		/*!
-		@param[in] name, trace name to get data for
-		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
-		boost::python::dict getRollingAverage_Py()const;
+
 		/*!
 		@param[in] name, trace name to get data for
 		@param[out] pair of "trace_name" (string) and "trace_data_values" (vector of doubles) */
@@ -399,16 +455,11 @@ public:
 		@param[in] name, trace name to get data for
 		@param[out] vector<vector<double>> vector of trace_value vectors  */
 		std::vector<std::vector<double>> getRollingAverageTraceBuffer(const std::string& name) const;
-		/*! Get the individual traces used to calculate the trace rolling average, Python Version
-		@param[in] name, trace name to get data for
-		@param[out] list of trace_value lists */
-		boost::python::list getRollingAverageTraceBuffer_Py(const std::string& name)const;
+
 		/*! Get the individual traces used to calculate the trace rolling average for all traces
 		@param[out] map<string, vector<vector<double>> >  map of RollingAverageTraceBuffer keyed by trace name */
 		std::map<std::string, std::vector<std::vector<double>>> getAllRollingAverageTraceBuffer() const;
-		/*! Get the individual traces used to calculate the trace rolling average for all TraceData, Python Version
-		@param[out] dict of RollingAverageTraceBuffer keyed by the trace name */
-		boost::python::dict getAllRollingAverageTraceBuffer_Py()const;
+
 
 
 
@@ -464,16 +515,7 @@ public:
 	std::vector<double> getProbePha()const;
 
 
-	boost::python::list getCavRevPwr_Py()const;
-	boost::python::list getCavFwdPwr_Py()const;
-	boost::python::list getKlyRevPwr_Py()const;
-	boost::python::list getKlyFwdPwr_Py()const;
-	boost::python::list getCavRevPha_Py()const;
-	boost::python::list getCavFwdPha_Py()const;
-	boost::python::list getKlyRevPha_Py()const;
-	boost::python::list getKlyFwdPha_Py()const;
-	boost::python::list getProbePha_Py()const;
-	boost::python::list getProbePwr_Py()const;
+
 
 //--------------------------------------------------------------------------------------------------
 	/*  ___  __        __   ___           ___            __
@@ -485,18 +527,15 @@ public:
 	
 	std::pair<size_t, size_t> getMeanStartEndIndex(const std::string& name) const;
 	std::pair<double, double> getMeanStartEndTime(const std::string& name) const;
-	boost::python::list getMeanStartEndIndex_Py(const std::string& name) const;
-	boost::python::list  getMeanStartEndTime_Py(const std::string& name) const;
+
 		
 	std::map<std::string, std::pair<size_t, size_t>> getTraceMeanIndices()const;
 	std::map<std::string, std::pair<double, double>> getTraceMeanTimes()const;
-	boost::python::dict getTraceMeanIndices_Py()const;
-	boost::python::dict getTraceMeanTimes_Py()const;
+
 	
 	void setTraceMeanIndices(const std::map<std::string, std::pair<size_t, size_t>>& settings);
 	void setTraceMeanTimes(const std::map<std::string, std::pair<double, double>>& settings);
-	void setTraceMeanIndices_Py(const boost::python::dict& settings);
-	void setTraceMeanTimes_Py(const boost::python::dict& settings);
+
 	
 	
 	bool setMeanStartIndex(const std::string& name, size_t  value);
@@ -506,10 +545,9 @@ public:
 	//double getMean(const std::string& name)const;
 	double getCutMean(const std::string& name)const;
 	std::map<std::string, double> getPowerCutMean()const;
-	boost::python::dict getPowerCutMean_Py()const;
 
 	std::map<std::string, double> getAllCutMean()const;
-	boost::python::dict getAllCutMean_Py()const;
+
 
 	// DAQ freq getters / settings 
 	void setNumTracesToEstimateRepRate(size_t value);
@@ -579,18 +617,12 @@ public:
 	@param[in] vector<double>, waveform for new pulse shape
 	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
 	bool setPulseShape(const std::vector<double>& values);
-	/*! Load the passed waveform as the pulse shape to be used (does not apply it), Python version
-	@param[in] list, waveform for new pulse shape
-	@param[out] bool, true if command got sent to epics, not a gaurantee the setting was accepted  */
-	bool setPulseShape_Py(const boost::python::list& values);
+
 	/*! Load the passed waveform as the pulse shape to be used and apply it 
 	@param[in]  vector<double>, waveform for new pulse shape
 	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
 	bool setAndApplyPulseShape(const std::vector<double>& values);
-	/*! Load the passed waveform as the pulse shape to be used and apply it, Python version 
-	@param[in] list, waveform for new pulse shape
-	@param[out] bool, true if commands got sent to epics, not a gaurantee the setting was accepted  */
-	bool setAndApplyPulseShape(const boost::python::list& values);
+
 
 
 
