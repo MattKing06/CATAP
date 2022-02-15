@@ -231,11 +231,16 @@ namespace GlobalFunctions {
 
 		// Format this as date time to seconds resolution
 		// e.g. 2016-08-30-08:18:51
+#if defined(_WIN32)
 		std::stringstream stream;
 		struct tm buf;
 		auto val = gmtime_s(&buf, &epoch_seconds);
 		stream << std::put_time(&buf, "%F_%T");
-
+#endif
+#if defined(__unix__) ||  defined(_unix)
+		auto val = gmtime(&epoch_seconds);
+		stream << std::put_time(val, "%F_%T");
+#endif
 		// If we now convert back to a time_point we will get the time truncated
 		// to whole seconds 
 		//auto truncated = std::chrono::system_clock::from_time_t(epoch_seconds);
