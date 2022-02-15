@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <utility>
+#include <cmath>
 #ifdef BUILD_PYTHON
 #include <PythonTypeConversions.h>
 #endif // BUILD_PYTHON
