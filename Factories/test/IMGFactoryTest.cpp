@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <thread>
+#include <cmath>
 
 //struct fixture {
 //	fixture()
@@ -41,7 +42,7 @@ BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
 			IMG test_IMG = imgFac.getIMG(testIMGName);
 			if (ca_state(test_IMG.pvStructs.at("P").CHID) == cs_conn)
 			{
-				BOOST_CHECK(isnan(imgFac.getIMGPressure(testIMGName)) != true);
+				BOOST_CHECK(std::isnan(imgFac.getIMGPressure(testIMGName)) != true);
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
 			else
@@ -64,7 +65,7 @@ BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
 			{
 				if (ca_state(imgFac.getIMG(item).pvStructs.at("P").CHID) == cs_conn)
 				{
-					BOOST_CHECK(isnan(imgFac.getIMGPressure(item)) != true);
+					BOOST_CHECK(std::isnan(imgFac.getIMGPressure(item)) != true);
 					std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
 				else
@@ -112,7 +113,7 @@ BOOST_AUTO_TEST_SUITE(IMGFactoryTestSuite)
 			if (ca_state(testIMG.pvStructs.at("P").CHID) == cs_conn)
 			{
 				std::map<std::string, double> allPressures = imgFac.getAllIMGPressure();
-				BOOST_CHECK(isnan(allPressures.at(testIMGName)) != true);
+				BOOST_CHECK(std::isnan(allPressures.at(testIMGName)) != true);
 
 			}
 			else

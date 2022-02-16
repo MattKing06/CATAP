@@ -5,8 +5,6 @@
 #include <iostream>
 #include <vector>
 #include <IMG.h>
-#include <boost/test/parameterized_test.hpp>
-#include <boost/bind.hpp>
 #include<boost/range.hpp>
 
 BOOST_AUTO_TEST_SUITE(IMGTestSuite)
@@ -29,7 +27,7 @@ BOOST_AUTO_TEST_CASE(getting_pressure_img_test)
 {	
 	BOOST_TEST_MESSAGE("------	IMG HW: GETTING THE PRESSURE OF IMG	------");
 	IMG img = IMG();
-	BOOST_CHECK(isnan(img.getIMGPressure()) != true);
+	BOOST_CHECK(std::isnan(img.getIMGPressure()) != true);
 }
 
 BOOST_AUTO_TEST_CASE(getting_setting_state_img_test)
