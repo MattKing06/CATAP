@@ -1,7 +1,7 @@
 #ifndef _RUNNING_STATS_H_
 #define _RUNNING_STATS_H_
 
-#include <iostream>
+#include <iosfwd>
 #include <vector>
 #include <utility>
 #include <cmath>

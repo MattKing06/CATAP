@@ -2,8 +2,7 @@
 #include <HardwarePythonInterface.h>
 #include <GlobalStatesPythonInterface.h>
 #include <GlobalTypesPythonInterface.h>
-#ifndef BUILD_PYTHON
-#define BUILD_PYTHON
+
 BOOST_PYTHON_MODULE(_IMG)
 {
 	boost::python::docstring_options CATAP_docstring_options;//(true, true, false);
@@ -15,4 +14,3 @@ BOOST_PYTHON_MODULE(_IMG)
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_object();
 	BOOST_PYTHON_IMG_INCLUDE::expose_img_factory_object();
 }
-#endif
