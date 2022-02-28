@@ -39,6 +39,11 @@ qStats(copyCharge.qStats)
 {
 }
 
+void Charge::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void Charge::setPVStructs()
 {
 	messenger.printDebugMessage("in setPVstructs");

@@ -13,6 +13,17 @@ public:
 	LightingFactory(STATE mode, const std::string& primeLatticeLocation);
 	LightingFactory(const LightingFactory& copyFactory);
 	~LightingFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given Lighting
+	@param[in] LightingName: Name of the Lighting to attach to CA Context*/
+	void attachContext(const std::string& LightingName);
+	/*! Attach to the initial CA context for multi-threaded applications for given Lightings
+	@param[in] LightingNames: Names of the Lightings to attach to CA Context*/
+	void attachContext(std::vector<std::string>& LightingNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given Lightings
+	@param[in] LightingNames: List of names of the Lightings to attach to CA Context*/
+	void attachContext_Py(boost::python::list LightingNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all Lightings*/
+	void attachContext();
 	bool setup(std::string version);
 	LoggingSystem messenger;
 	bool hasBeenSetup;

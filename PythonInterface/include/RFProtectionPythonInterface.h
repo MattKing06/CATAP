@@ -16,7 +16,7 @@ namespace BOOST_PYTHON_RF_PROTECTION_INCLUDE
 		if (is_registered) return;
 		boost::python::class_<RFProtection, boost::python::bases<Hardware>, boost::noncopyable>("RFProtection", boost::python::no_init)
 			
-			
+			.def("attachContext", &RFProtection::attachToInitialContext)
 			.def("getCmi", &RFProtection::getCmi)
 			.def("getStatus", &RFProtection::getStatus)
 			.def("isGood", &RFProtection::isGood)
@@ -42,10 +42,15 @@ namespace BOOST_PYTHON_RF_PROTECTION_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFProtectionFactory>())->to_python_target_type());
 		if (is_registered) return;
+		void(RFProtectionFactory:: * attachContext_single)(const std::string&) = &RFProtectionFactory::attachContext;
+		void(RFProtectionFactory:: * attachContext_all)(void) = &RFProtectionFactory::attachContext;
 		boost::python::class_<RFProtectionFactory, boost::noncopyable>("RFProtectionFactory", boost::python::no_init)
 			
 			.def(boost::python::init<STATE>())
 			.def(boost::python::init<STATE, const std::string>())
+			.def("attachContext", &RFProtectionFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
 			.def("resetGun", &RFProtectionFactory::resetGun)
 			.def("resetL01", &RFProtectionFactory::resetL01)
 			.def("enableGun", &RFProtectionFactory::enableGun)

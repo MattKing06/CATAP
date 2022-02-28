@@ -64,6 +64,11 @@ void IMG::setPVStructs() {
 
 }
 
+void IMG::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 std::vector<std::string> IMG::getAliases() const
 {
 	return aliases;

@@ -32,7 +32,17 @@ class MagnetFactory
 		~MagnetFactory();
 		/*NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
-
+		/*! Attach to the initial CA context for multi-threaded applications for a given magnet
+		@param[in] magnetName: Name of the magnet to attach to CA Context*/
+		void attachContext(const std::string& magnetName);
+		/*! Attach to the initial CA context for multi-threaded applications for given magnets
+		@param[in] magnetNames: Names of the magnets to attach to CA Context*/
+		void attachContext(std::vector<std::string>& magnetNames);
+		/*! Attach to the initial CA context for multi-threaded applications for given magnets
+		@param[in] magnetNames: List of names of the magnets to attach to CA Context*/
+		void attachContext_Py(boost::python::list magnetNames);
+		/*! Attach to the initial CA context for multi-threaded applications for all magnets*/
+		void attachContext();
 		/*! default setup function, uses default values to read files and connect to EPICS etc. 
 		@param[out] bool, for success or failure	*/
 		bool setup();

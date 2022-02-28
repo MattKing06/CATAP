@@ -53,6 +53,40 @@ LightingFactory::~LightingFactory()
 }
 
 
+void LightingFactory::attachContext(const std::string& LightingName)
+{
+	if (GlobalFunctions::entryExists(lightingMap, LightingName))
+	{
+		lightingMap.at(LightingName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LightingName, " in hardware map.");
+	}
+}
+
+void LightingFactory::attachContext(std::vector<std::string>& LightingNames)
+{
+	for (auto&& name : LightingNames)
+	{
+		attachContext(name);
+	}
+}
+
+void LightingFactory::attachContext_Py(boost::python::list LightingNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LightingNames);
+	attachContext(names);
+}
+
+void LightingFactory::attachContext()
+{
+	for (auto&& Lighting : lightingMap)
+	{
+		Lighting.second.attachToInitialContext();
+	}
+}
+
 bool LightingFactory::setup(std::string version)
 {
 	//LightingFactory::machineAreas = machineAreas;

@@ -19,6 +19,8 @@ public:
 	LaserMirror(const std::map<std::string, std::string>& paramMap, STATE mode);
 	LaserMirror(const LaserMirror& copyLaserMirror);
 	~LaserMirror();
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
 	void setPVStructs();
 
 

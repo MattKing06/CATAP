@@ -34,6 +34,8 @@ public:
 	BPM(const BPM& copyBPM);
 	/*! EPICSBPMInterface for BPM-specifc calls to EPICS*/
 	EPICSBPMInterface_sptr epicsInterface;
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
 	/*! Returns the name of the BPM.
 	@param[out] name: the name of the BPM.
 	*/

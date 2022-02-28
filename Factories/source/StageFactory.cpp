@@ -27,6 +27,40 @@ StageFactory::~StageFactory()
 {
 }
 
+void StageFactory::attachContext(const std::string& StageName)
+{
+	std::string fullName = getFullName(StageName);
+	if (GlobalFunctions::entryExists(stageMap, fullName))
+	{
+		stageMap.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", StageName, " in hardware map.");
+	}
+}
+
+void StageFactory::attachContext(std::vector<std::string>& StageNames)
+{
+	for (auto&& name : StageNames)
+	{
+		attachContext(name);
+	}
+}
+
+void StageFactory::attachContext_Py(boost::python::list StageNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(StageNames);
+	attachContext(names);
+}
+
+void StageFactory::attachContext()
+{
+	for (auto&& Stage : stageMap)
+	{
+		Stage.second.attachToInitialContext();
+	}
+}
 
 void StageFactory::populateStageMap()
 {

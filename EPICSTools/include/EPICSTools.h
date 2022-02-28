@@ -33,6 +33,10 @@ public:
 	EPICSTools(STATE mode);
 	/*! Copy Constructor: copies map entries over to new EPICSTools instance*/
 	EPICSTools(const EPICSTools& copyEPICSTools);
+	void attachContext(const std::string& pv);
+	void attachContext(const std::vector<std::string>& pvList);
+	void attachContext_Py(const boost::python::list& pvList);
+	void attachContext();
 	/*! Constructs a Listener object using the pv and then passes this to createSubscription in EPICSInterface
 		to begin monitoring. The Listener object is then stored in the listenerMap with pv as the key.
 		@param[in] pv : The PV to monitor*/

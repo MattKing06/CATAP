@@ -20,6 +20,40 @@ void LEDFactory::setup(std::string version)
 {
 }
 
+void LEDFactory::attachContext(const std::string& LEDName)
+{
+	if (GlobalFunctions::entryExists(LEDMap, LEDName))
+	{
+		LEDMap.at(LEDName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LEDName, " in hardware map.");
+	}
+}
+
+void LEDFactory::attachContext(std::vector<std::string>& LEDNames)
+{
+	for (auto&& name : LEDNames)
+	{
+		attachContext(name);
+	}
+}
+
+void LEDFactory::attachContext_Py(boost::python::list LEDNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LEDNames);
+	attachContext(names);
+}
+
+void LEDFactory::attachContext()
+{
+	for (auto&& LED : LEDMap)
+	{
+		LED.second.attachToInitialContext();
+	}
+}
+
 void LEDFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

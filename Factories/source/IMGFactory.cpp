@@ -146,6 +146,41 @@ bool IMGFactory::setup(const std::string& version)
 	std::cout << "hasBeenSetup = true " << std::endl;
 	return hasBeenSetup;
 }
+
+void IMGFactory::attachContext(const std::string& IMGName)
+{
+	if (GlobalFunctions::entryExists(IMGMap, IMGName))
+	{
+		IMGMap.at(IMGName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", IMGName, " in hardware map.");
+	}
+}
+
+void IMGFactory::attachContext(std::vector<std::string>& IMGNames)
+{
+	for (auto&& name : IMGNames)
+	{
+		attachContext(name);
+	}
+}
+
+void IMGFactory::attachContext_Py(boost::python::list IMGNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(IMGNames);
+	attachContext(names);
+}
+
+void IMGFactory::attachContext()
+{
+	for (auto&& IMG : IMGMap)
+	{
+		IMG.second.attachToInitialContext();
+	}
+}
+
 void IMGFactory::setupChannels()
 {
 	for (auto& img : IMGMap)

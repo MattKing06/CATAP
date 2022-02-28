@@ -17,6 +17,7 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 		boost::python::class_<Valve, boost::python::bases<Hardware>, boost::noncopyable>("Valve", boost::python::no_init)
 			.add_property("state", &Valve::getValveState, &Valve::setValveState)
 			.add_property("name", &Valve::getHardwareName)
+			.def("attachContext", &Valve::attachToInitialContext)
 			.def("open", &Valve::open, boost::python::arg("self"))
 			.def("close", &Valve::close, boost::python::arg("self"))
 			.def("isOpen", &Valve::isOpen, boost::python::arg("self"))
@@ -36,10 +37,15 @@ namespace BOOST_PYTHON_VALVE_INCLUDE
 		void(ValveFactory:: * openSingle)(const std::string&) = &ValveFactory::open;
 		void(ValveFactory:: * closeSingle)(const std::string&) = &ValveFactory::close;
 		bool(ValveFactory:: * loadSnapshotFile)(const std::string&) = &ValveFactory::loadSnapshot;
+		void(ValveFactory:: * attachContext_single)(const std::string&) = &ValveFactory::attachContext;
+		void(ValveFactory:: * attachContext_all)(void) = &ValveFactory::attachContext;
 		boost::python::class_<ValveFactory, boost::noncopyable>("ValveFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
 			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &ValveFactory::setup,(boost::python::arg("self"), boost::python::arg("version")))
+			.def("attachContext", &ValveFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
 			.def("getValve", &ValveFactory::getValve,(boost::python::arg("self"), boost::python::arg("name")), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllValveNames", &ValveFactory::getAllValveNames_Py,(boost::python::arg("self")))
 			.def("getValveState", &ValveFactory::getValveState, (boost::python::arg("self"), boost::python::arg("name")))

@@ -27,6 +27,11 @@ void LED::debugMessagesOff()
 	epicsInterface->debugMessagesOff();
 }
 
+void LED::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void LED::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

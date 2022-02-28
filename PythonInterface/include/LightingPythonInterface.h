@@ -18,6 +18,7 @@ namespace BOOST_PYTHON_LIGHTING_INCLUDE
 			
 			.def("allLEDOn", &Lighting::allLEDOn)
 			.def("allLEDOff", &Lighting::allLEDOff)
+			.def("attachContext", &Lighting::attachToInitialContext)
 			.def("getClaraLEDState", &Lighting::getClaraLEDState)
 			.def("setClaraLEDOn", &Lighting::setClaraLEDOn)
 			.def("setClaraLEDOff", &Lighting::setClaraLEDOff)
@@ -59,9 +60,14 @@ namespace BOOST_PYTHON_LIGHTING_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LightingFactory>())->to_python_target_type());
 		if (is_registered) return;
+		void(LightingFactory:: * attachContext_single)(const std::string&) = &LightingFactory::attachContext;
+		void(LightingFactory:: * attachContext_all)(void) = &LightingFactory::attachContext;
 		boost::python::class_<LightingFactory, boost::noncopyable>("LightingFactory", boost::python::no_init)
 			
 			.def("getFullName", &LightingFactory::getFullName)
+			.def("attachContext", &LightingFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
 			.def("getLighting", &LightingFactory::getLighting, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("allLEDOn", &LightingFactory::allLEDOn)
 			.def("allLEDOff", &LightingFactory::allLEDOff)

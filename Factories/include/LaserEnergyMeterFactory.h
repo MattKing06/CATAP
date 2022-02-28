@@ -41,6 +41,17 @@ public:
 	bool setup(const std::string& VERSION);
     LoggingSystem messenger;
 	ConfigReader reader;
+	/*! Attach to the initial CA context for multi-threaded applications for a given LaserEnergyMeter
+	@param[in] LaserEnergyMeterName: Name of the LaserEnergyMeter to attach to CA Context*/
+	void attachContext(const std::string& LaserEnergyMeterName);
+	/*! Attach to the initial CA context for multi-threaded applications for given LaserEnergyMeters
+	@param[in] LaserEnergyMeterNames: Names of the LaserEnergyMeters to attach to CA Context*/
+	void attachContext(std::vector<std::string>& LaserEnergyMeterNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given LaserEnergyMeters
+	@param[in] LaserEnergyMeterNames: List of names of the LaserEnergyMeters to attach to CA Context*/
+	void attachContext_Py(boost::python::list LaserEnergyMeterNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all LaserEnergyMeters*/
+	void attachContext();
 	/*! returns laser energy meter by name
 	@param name checks the name in the alias map if not full name.
 			and returns the laser energy meter hardware object stored in laserEnergyMeterMap at that full name

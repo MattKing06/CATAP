@@ -110,6 +110,40 @@ void LaserEnergyMeterFactory::setupChannels()
 	}
 }
 
+void LaserEnergyMeterFactory::attachContext(const std::string& LaserEnergyMeterName)
+{
+	if (GlobalFunctions::entryExists(laserEnergyMeterMap, LaserEnergyMeterName))
+	{
+		laserEnergyMeterMap.at(LaserEnergyMeterName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LaserEnergyMeterName, " in hardware map.");
+	}
+}
+
+void LaserEnergyMeterFactory::attachContext(std::vector<std::string>& LaserEnergyMeterNames)
+{
+	for (auto&& name : LaserEnergyMeterNames)
+	{
+		attachContext(name);
+	}
+}
+
+void LaserEnergyMeterFactory::attachContext_Py(boost::python::list LaserEnergyMeterNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LaserEnergyMeterNames);
+	attachContext(names);
+}
+
+void LaserEnergyMeterFactory::attachContext()
+{
+	for (auto&& LaserEnergyMeter : laserEnergyMeterMap)
+	{
+		LaserEnergyMeter.second.attachToInitialContext();
+	}
+}
+
 bool LaserEnergyMeterFactory::setup(const std::string& VERSION)
 {
 	if (hasBeenSetup)

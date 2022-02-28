@@ -14,7 +14,17 @@ public:
 	ShutterFactory(const ShutterFactory& copyFactory);
 	~ShutterFactory();
 	bool hasBeenSetup;
-
+	/*! Attach to the initial CA context for multi-threaded applications for a given shutter
+	@param[in] shutterName: Name of the shutter to attach to CA Context*/
+	void attachContext(const std::string& shutterName);
+	/*! Attach to the initial CA context for multi-threaded applications for given shutters
+	@param[in] shutterNames: Names of the shutters to attach to CA Context*/
+	void attachContext(std::vector<std::string>& shutterNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given shutters
+	@param[in] shutterNames: List of names of the shutters to attach to CA Context*/
+	void attachContext_Py(boost::python::list shutterNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all shutters*/
+	void attachContext();
 	/*! Try to open a shutter.
 	@param[in] string, name of shutter 
 	@param[out] bool, true if command got sent to EPICS, (!!does not indicate whether the shutter opened succesfully!!)*/

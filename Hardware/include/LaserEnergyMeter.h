@@ -26,6 +26,8 @@ public:
 	/*! Copy constructor call for laser energy meter object*/
 	LaserEnergyMeter(const LaserEnergyMeter& copyLaserEnergyMeter);
 	EPICSLaserEnergyMeterInterface_sptr epicsInterface;
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
 	/*! Returns the EPICS name of this laser energy meter instance */
 	std::string getLaserEnergyMeterName() const;
 	/*! Returns the calibration factor (laser energy meter reading -> actual laser pulse energy) */

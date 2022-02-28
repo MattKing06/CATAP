@@ -21,6 +21,17 @@ public:
 	LaserHWPFactory(STATE mode, const std::string& primeLatticeLocation);
 	LaserHWPFactory(const LaserHWPFactory& copyLaserHWPFactory);
 	~LaserHWPFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given hwp
+	@param[in] hwpName: Name of the hwp to attach to CA Context*/
+	void attachContext(const std::string& hwpName);
+	/*! Attach to the initial CA context for multi-threaded applications for given hwps
+	@param[in] hwpNames: Names of the hwps to attach to CA Context*/
+	void attachContext(std::vector<std::string>& hwpNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given hwps
+	@param[in] hwpNames: List of names of the hwps to attach to CA Context*/
+	void attachContext_Py(boost::python::list hwpNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all hwps*/
+	void attachContext();
 	/*NEED constRUCTOR THAT TAKES VERSION??*/
 	//LaserFactory(std::string VERSION);
 	bool setup(const std::string& VERSION);

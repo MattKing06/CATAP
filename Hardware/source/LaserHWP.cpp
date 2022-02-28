@@ -92,6 +92,11 @@ TYPE LaserHWP::getLaserHWPType() const
 	return this->laserType;
 }
 
+void LaserHWP::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 std::string LaserHWP::getLaserHWPName() const
 {
 	return this->name;

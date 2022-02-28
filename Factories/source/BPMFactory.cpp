@@ -175,6 +175,40 @@ bool BPMFactory::setup(const std::string& VERSION)
 	return hasBeenSetup;
 }
 
+void BPMFactory::attachContext(const std::string& bpmName)
+{
+	if (GlobalFunctions::entryExists(bpmMap, bpmName))
+	{
+		bpmMap.at(bpmName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", bpmName, " in hardware map.");
+	}
+}
+
+void BPMFactory::attachContext(std::vector<std::string>& bpmNames)
+{
+	for (auto&& name : bpmNames)
+	{
+		attachContext(name);
+	}
+}
+
+void BPMFactory::attachContext_Py(boost::python::list bpmNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(bpmNames);
+	attachContext(names);
+}
+
+void BPMFactory::attachContext()
+{
+	for (auto&& bpm : bpmMap)
+	{
+		bpm.second.attachToInitialContext();
+	}
+}
+
 std::map<std::string, BPM> BPMFactory::getBPMs(std::vector<std::string> bpmNames)
 {
 	std::map<std::string, BPM> selectedBPMs;

@@ -64,6 +64,40 @@ ChargeFactory::~ChargeFactory()
 	}
 }
 
+void ChargeFactory::attachContext(const std::string& chargeName)
+{
+	if (GlobalFunctions::entryExists(chargeMap, chargeName))
+	{
+		chargeMap.at(chargeName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", chargeName, " in hardware map.");
+	}
+}
+
+void ChargeFactory::attachContext(std::vector<std::string>& chargeNames)
+{
+	for (auto&& name : chargeNames)
+	{
+		attachContext(name);
+	}
+}
+
+void ChargeFactory::attachContext_Py(boost::python::list chargeNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(chargeNames);
+	attachContext(names);
+}
+
+void ChargeFactory::attachContext()
+{
+	for (auto&& charge : chargeMap)
+	{
+		charge.second.attachToInitialContext();
+	}
+}
+
 void ChargeFactory::populateChargeMap()
 {
 	messenger.printDebugMessage("ChargeFactory is populating the charge map");

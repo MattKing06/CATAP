@@ -32,6 +32,17 @@ public:
 	/*! ScreenFactory destructor.
 	Goes through all Screen objects in the screenMap and removes connections/subscriptions to EPICS if they exist.*/
 	~ScreenFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given screen
+	@param[in] screenName: Name of the screen to attach to CA Context*/
+	void attachContext(const std::string& screenName);
+	/*! Attach to the initial CA context for multi-threaded applications for given screens
+	@param[in] screenNames: Names of the screens to attach to CA Context*/
+	void attachContext(std::vector<std::string>& screenNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given screens
+	@param[in] screenNames: List of names of the screens to attach to CA Context*/
+	void attachContext_Py(boost::python::list screenNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all screens*/
+	void attachContext();
 	/*! The main function that sets up EPICS connections and subscriptions to all
 	screens in the Screen map. We set up all channels before sending them to EPICS
 	for efficiency. After channels, the remaining data for pvStructs are set as well

@@ -29,6 +29,41 @@ RFProtectionFactory::~RFProtectionFactory()
 {
 }
 
+void RFProtectionFactory::attachContext(const std::string& RFProtectionName)
+{
+	std::string fullName = getFullName(RFProtectionName);
+	if (GlobalFunctions::entryExists(RFProtectionMap, fullName))
+	{
+		RFProtectionMap.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", RFProtectionName, " in hardware map.");
+	}
+}
+
+void RFProtectionFactory::attachContext(std::vector<std::string>& RFProtectionNames)
+{
+	for (auto&& name : RFProtectionNames)
+	{
+		attachContext(name);
+	}
+}
+
+void RFProtectionFactory::attachContext_Py(boost::python::list RFProtectionNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(RFProtectionNames);
+	attachContext(names);
+}
+
+void RFProtectionFactory::attachContext()
+{
+	for (auto&& RFProtection : RFProtectionMap)
+	{
+		RFProtection.second.attachToInitialContext();
+	}
+}
+
 void RFProtectionFactory::populateRFProtectionMap()
 {
 	messenger.printDebugMessage("RF Protection Factory is populating the RFProtection map");

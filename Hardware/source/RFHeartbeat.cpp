@@ -21,6 +21,11 @@ RFHeartbeat::~RFHeartbeat()
 {
 }
 
+void RFHeartbeat::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void RFHeartbeat::setPVStructs()
 {
 	messenger.printDebugMessage("setPVStructs");

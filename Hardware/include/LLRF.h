@@ -141,6 +141,8 @@ public:
 	LLRF(const LLRF& copyLLRF);
 	LLRF& operator=(const LLRF&) = default;
 	~LLRF();
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
 //-----------------------------------------------------------------------------------------------------------------------
 /// 
 ///  __   ___ ___       __

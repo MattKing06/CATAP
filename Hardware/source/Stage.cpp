@@ -315,6 +315,11 @@ void Stage::debugMessagesOff()
 	epicsInterface->debugMessagesOff();
 }
 
+void Stage::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void Stage::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

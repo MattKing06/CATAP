@@ -55,6 +55,7 @@ public:
 	Listener(const Listener& listener);
 	
 	~Listener();
+	void attachToInitialContext();
 	/*! Used to set the appropriate callback function that updates the current value held by Listener*/
 	UpdateFunctionHolder updateFunctions;
 	/*! Creates a CHID for the PV associated with the Listener. 

@@ -14,6 +14,17 @@ public:
 	~LEDFactory();
 	LoggingSystem messenger;
 	void setup(std::string version);
+	/*! Attach to the initial CA context for multi-threaded applications for a given LED
+	@param[in] LEDName: Name of the LED to attach to CA Context*/
+	void attachContext(const std::string& LEDName);
+	/*! Attach to the initial CA context for multi-threaded applications for given LEDs
+	@param[in] LEDNames: Names of the LEDs to attach to CA Context*/
+	void attachContext(std::vector<std::string>& LEDNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given LEDs
+	@param[in] LEDNames: List of names of the LEDs to attach to CA Context*/
+	void attachContext_Py(boost::python::list LEDNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all LEDs*/
+	void attachContext();
 	bool hasBeenSetup;
 	std::map<std::string, LED> LEDMap;
 	void debugMessagesOn();

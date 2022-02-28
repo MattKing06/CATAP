@@ -61,6 +61,11 @@ void Lighting::setPVStructs()
 	}
 }
 
+void Lighting::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 
 std::map<std::string, STATE> Lighting::getLEDState()const
 {

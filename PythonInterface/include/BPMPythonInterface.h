@@ -49,6 +49,7 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 			.add_property("sd1", &BPM::getSD1, &BPM::setSD1)
 			.add_property("sd2", &BPM::getSD2, &BPM::setSD2)
 			.add_property("buffersize", &BPM::getBufferSize, &BPM::setBufferSize)
+			.def("attachContext", &BPM::attachToInitialContext)
 			.def("getXFromPV", &BPM::getXFromPV)
 			.def("getYFromPV", &BPM::getYFromPV)
 			.def("getData", &BPM::getData_Py)
@@ -99,7 +100,8 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 
 	
 	void expose_bpm_factory_object() {
-
+		void(BPMFactory:: * attachContext_single)(const std::string&) = &BPMFactory::attachContext;
+		void(BPMFactory:: * attachContext_all)(void) = &BPMFactory::attachContext;
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<BPMFactory>())->to_python_target_type());
 		if (is_registered) return;
 		//bpm Factory Exposure
@@ -108,6 +110,9 @@ namespace BOOST_PYTHON_BPM_INCLUDE
 			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &BPMFactory::setup)
 			.add_property("bpmMap", &BPMFactory::bpmMap)
+			.def("attachContext", &BPMFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
 			.def("getBPM", &BPMFactory::getBPM, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getBPMs", &BPMFactory::getBPMs)
 			.def("getAllBPMs", &BPMFactory::getAllBPMs)

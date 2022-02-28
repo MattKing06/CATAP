@@ -14,6 +14,17 @@ public:
 	RFProtectionFactory(const RFProtectionFactory& copyFactory);
 	~RFProtectionFactory();
 	LoggingSystem messenger;
+	/*! Attach to the initial CA context for multi-threaded applications for a given RFProtection
+	@param[in] RFProtectionName: Name of the RFProtection to attach to CA Context*/
+	void attachContext(const std::string& RFProtectionName);
+	/*! Attach to the initial CA context for multi-threaded applications for given RFProtections
+	@param[in] RFProtectionNames: Names of the RFProtections to attach to CA Context*/
+	void attachContext(std::vector<std::string>& RFProtectionNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given RFProtections
+	@param[in] RFProtectionNames: List of names of the RFProtections to attach to CA Context*/
+	void attachContext_Py(boost::python::list RFProtectionNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all RFProtections*/
+	void attachContext();
 	void setupChannels();
 	void setMonitorStatus(pvStruct& pv);
 	bool setup(const std::string& version);

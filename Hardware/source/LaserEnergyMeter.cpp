@@ -114,6 +114,11 @@ TYPE LaserEnergyMeter::getLaserEnergyMeterType() const
 	return this->laserEnergyMeterType;
 }
 
+void LaserEnergyMeter::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 std::string LaserEnergyMeter::getLaserEnergyMeterName() const
 {
 	return this->name;

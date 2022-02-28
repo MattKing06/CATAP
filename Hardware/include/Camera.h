@@ -56,6 +56,7 @@ public:
 	Camera(const std::map<std::string, std::string>& paramMap, STATE mode);
 	Camera(const Camera& copyCamera);
 	~Camera();
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
 	friend class EPICSCameraInterface;
 	friend class CameraFactory;

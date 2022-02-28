@@ -34,6 +34,11 @@ Putter::Putter(const Putter& copyPutter) :
 	setupChannels();
 }
 
+void Putter::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void Putter::setupChannels()
 {
 	pv = pvStruct();

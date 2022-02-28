@@ -32,7 +32,7 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			// TODO make these complete 
 			.add_property("SETI", &Magnet::getSETI, &Magnet::SETI)
 			.add_property("K_SET_P", &Magnet::getKSetP, &Magnet::setKSetP)
-
+			.def("attachContext", &Magnet::attachToInitialContext)
 			.def("K_DIP_P", &Magnet::getKDipP)
 			.def("INT_STR_MM", &Magnet::getIntStr_mm)
 			.def("INT_STR", &Magnet::getIntStr)
@@ -186,7 +186,8 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 
 		/*TODO NEED constRUCTOR THAT TAKES VERSION??*/
 		//MagnetFactory(std::string VERSION);
-
+		void(MagnetFactory:: * attachContext_single)(const std::string&) = &MagnetFactory::attachContext;
+		void(MagnetFactory:: * attachContext_all)(void) = &MagnetFactory::attachContext;
 
 		boost::python::class_<MagnetFactory, boost::noncopyable>("MagnetFactory", boost::python::no_init)
 			//.def(boost::python::init<STATE>())
@@ -200,6 +201,9 @@ namespace BOOST_PYTHON_MAGNET_INCLUDE
 			.def("setup", setup_VersionTypeArg)
 			.def("setup", setup_ListArg)
 			.def("setup", setup_VersionListArg)
+			.def("attachContext", &MagnetFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
 			//.add_property("magnetMap", &MagnetFactory::magnetMap)
 			.def("getMagnet", &MagnetFactory::getMagnet, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			// NO you can't do this is you can't create a map of Magnet references 

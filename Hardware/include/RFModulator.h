@@ -24,7 +24,8 @@ public:
 	RFModulator(const std::map<std::string, std::string>& paramMap, STATE mode);
 	RFModulator(const RFModulator& copyRFModulator);
 	~RFModulator();
-
+    /*! Attach to the initial CA Context for use in Multi-threaded applications*/
+    void attachToInitialContext();
 	/*! get the name alises for this object
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;

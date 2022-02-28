@@ -210,6 +210,11 @@ std::vector<std::string> LinacPID::getAliases() const
 	return aliases;
 }
 
+void LinacPID::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void LinacPID::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

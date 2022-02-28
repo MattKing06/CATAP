@@ -15,6 +15,7 @@ namespace BOOST_PYTHON_LASER_MIRROR_INCLUDE
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LaserMirror>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<LaserMirror, boost::python::bases<Hardware>, boost::noncopyable>("LaserMirror", boost::python::no_init)
+			.def("attachContext", &LaserMirror::attachToInitialContext)
 			.def("getHorizontalPosition", &LaserMirror::getCurrentHorizontalPosition)
 			.def("getVerticalPosition", &LaserMirror::getCurrentVerticalPosition)
 			.def("moveLeft", &LaserMirror::moveLeft)
@@ -38,10 +39,15 @@ namespace BOOST_PYTHON_LASER_MIRROR_INCLUDE
 	{
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LaserMirrorFactory>())->to_python_target_type());
 		if (is_registered) return;
+		void(LaserMirrorFactory:: * attachContext_single)(const std::string&) = &LaserMirrorFactory::attachContext;
+		void(LaserMirrorFactory:: * attachContext_all)(void) = &LaserMirrorFactory::attachContext;
 		boost::python::class_<LaserMirrorFactory, boost::noncopyable>("LaserMirrorFactory", boost::python::no_init)
 			.def(boost::python::init<STATE, const std::string>())
 			.def(boost::python::init<STATE>())
 			.def("setup", &LaserMirrorFactory::setup)
+			.def("attachContext", &LaserMirrorFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
 			.def("getLaserMirror", &LaserMirrorFactory::getLaserMirror, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("debugMessagesOn", &LaserMirrorFactory::debugMessagesOn)
 			.def("debugMessagesOff", &LaserMirrorFactory::debugMessagesOff)

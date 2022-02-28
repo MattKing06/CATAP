@@ -71,6 +71,11 @@ BPM::BPM(const BPM& copyBPM) :
 {
 }
 
+void BPM::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
 void BPM::setPVStructs(STATE mode)
 {
 	messenger.printDebugMessage("in setPVstructs");

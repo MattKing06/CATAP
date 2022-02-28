@@ -51,7 +51,17 @@ public:
 	
 	/*! Used to print messages both normal and debug, also sets the On/Off flags for debug and normal messages*/
 	LoggingSystem messenger;
-	
+	/*! Attach to the initial CA context for multi-threaded applications for a given IMG
+	@param[in] IMGName: Name of the IMG to attach to CA Context*/
+	void attachContext(const std::string& IMGName);
+	/*! Attach to the initial CA context for multi-threaded applications for given IMGs
+	@param[in] IMGNames: Names of the IMGs to attach to CA Context*/
+	void attachContext(std::vector<std::string>& IMGNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given IMGs
+	@param[in] IMGNames: List of names of the IMGs to attach to CA Context*/
+	void attachContext_Py(boost::python::list IMGNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all IMGs*/
+	void attachContext();
 	/*! The main function that sets up EPICS connections and subscriptions to all
 	IMGs in the IMG map. We set up all channels before sending them to EPICS
 	for efficiency. After channels, the remaining data for pvStructs are set as well
