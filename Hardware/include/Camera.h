@@ -56,7 +56,7 @@ public:
 	Camera(const std::map<std::string, std::string>& paramMap, STATE mode);
 	Camera(const Camera& copyCamera);
 	~Camera();
-
+	void attachToInitialContext();
 	friend class EPICSCameraInterface;
 	friend class CameraFactory;
 

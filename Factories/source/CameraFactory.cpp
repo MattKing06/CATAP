@@ -158,6 +158,37 @@ bool CameraFactory::setup_names_py(const std::string& version, const boost::pyth
 {
 	return setup(version, to_std_vector<std::string>(names));
 }
+void CameraFactory::attachContext(const std::string& cameraName)
+{
+	std::string fullName = getFullName(cameraName);
+	if (GlobalFunctions::entryExists(camera_map, fullName))
+	{
+		camera_map.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", cameraName, " in map.");
+	}
+}
+void CameraFactory::attachContext(std::vector<std::string>& cameraNames)
+{
+	for (auto& name : cameraNames)
+	{
+		attachContext(name);
+	}
+}
+void CameraFactory::attachContext_Py(boost::python::list cameraNames)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(cameraNames);
+	attachContext(namesVec);
+}
+void CameraFactory::attachContext()
+{
+	for (auto&& cam : camera_map)
+	{
+		cam.second.attachToInitialContext();
+	}
+}
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
 	messenger.printDebugMessage("setup Camera Factory with vector of camera names");

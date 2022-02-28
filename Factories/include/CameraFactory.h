@@ -59,6 +59,11 @@ public:
 		@param[in] names: only setup magnets that match a (fullname) in names
 		@param[out] bool: for success or failure */
 	bool setup_names_py(const std::string& version, const boost::python::list& names);
+
+	void attachContext(const std::string& cameraName);
+	void attachContext(std::vector<std::string>& cameraNames);
+	void attachContext_Py(boost::python::list cameraNames);
+	void attachContext();
 	/*! get a reference to a camera object
 	@param[in] cam_name, name of camera object to return
 	@param[out] camera object*/
