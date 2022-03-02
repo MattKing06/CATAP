@@ -33,6 +33,8 @@ public:
 	EPICSValveInterface_sptr epicsInterface;
 	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	/*! A map for storing the parameters extracted from YAML config files and their values */
 	std::map<std::string, std::string> valveParameterAndValuesMap;
 	/*! Goes through all PV records stored in ValveRecords namespace, creates pvStructs and sets up their record/fullPVName before

@@ -209,6 +209,40 @@ void BPMFactory::attachContext()
 	}
 }
 
+void BPMFactory::detachContext(const std::string& bpmName)
+{
+	if (GlobalFunctions::entryExists(bpmMap, bpmName))
+	{
+		bpmMap.at(bpmName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", bpmName, " in hardware map.");
+	}
+}
+
+void BPMFactory::detachContext(std::vector<std::string>& bpmNames)
+{
+	for (auto&& name : bpmNames)
+	{
+		detachContext(name);
+	}
+}
+
+void BPMFactory::detachContext_Py(boost::python::list bpmNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(bpmNames);
+	detachContext(names);
+}
+
+void BPMFactory::detachContext()
+{
+	for (auto&& bpm : bpmMap)
+	{
+		bpm.second.detachFromInitialContext();
+	}
+}
+
 std::map<std::string, BPM> BPMFactory::getBPMs(std::vector<std::string> bpmNames)
 {
 	std::map<std::string, BPM> selectedBPMs;

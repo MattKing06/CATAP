@@ -52,6 +52,17 @@ public:
 	void attachContext_Py(boost::python::list LaserEnergyMeterNames);
 	/*! Attach to the initial CA context for multi-threaded applications for all LaserEnergyMeters*/
 	void attachContext();
+	/*! Detach to the initial CA context for multi-threaded applications for a given LaserEnergyMeter
+	@param[in] LaserEnergyMeterName: Name of the LaserEnergyMeter to detach to CA Context*/
+	void detachContext(const std::string& LaserEnergyMeterName);
+	/*! detach to the initial CA context for multi-threaded applications for given LaserEnergyMeters
+	@param[in] LaserEnergyMeterNames: Names of the LaserEnergyMeters to detach to CA Context*/
+	void detachContext(std::vector<std::string>& LaserEnergyMeterNames);
+	/*! detach to the initial CA context for multi-threaded applications for given LaserEnergyMeters
+	@param[in] LaserEnergyMeterNames: List of names of the LaserEnergyMeters to detach to CA Context*/
+	void detachContext_Py(boost::python::list LaserEnergyMeterNames);
+	/*! detach to the initial CA context for multi-threaded applications for all LaserEnergyMeters*/
+	void detachContext();
 	/*! returns laser energy meter by name
 	@param name checks the name in the alias map if not full name.
 			and returns the laser energy meter hardware object stored in laserEnergyMeterMap at that full name

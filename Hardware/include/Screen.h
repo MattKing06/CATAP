@@ -50,6 +50,8 @@ public:
 	Screen(const Screen& copyScreen);
 	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 private:
 	/*! Goes through all PV records stored in ScreenRecords namespace, creates pvStructs and sets up their record/fullPVName before
 	inserting them into a vector of pvStructs which is later used by the ScreenFactory to setup connections to EPICS.

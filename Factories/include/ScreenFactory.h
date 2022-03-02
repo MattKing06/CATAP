@@ -43,6 +43,21 @@ public:
 	void attachContext_Py(boost::python::list screenNames);
 	/*! Attach to the initial CA context for multi-threaded applications for all screens*/
 	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given screen
+	@param[in] screenName: Name of the screen to detach to CA Context*/
+	void detachContext(const std::string& screenName);
+	/*! detach to the initial CA context for multi-threaded applications for given screens
+	@param[in] screenNames: Names of the screens to detach to CA Context*/
+	void detachContext(std::vector<std::string>& screenNames);
+	/*! detach to the initial CA context for multi-threaded applications for given screens
+	@param[in] screenNames: List of names of the screens to detach to CA Context*/
+	void detachContext_Py(boost::python::list screenNames);
+	/*! detach to the initial CA context for multi-threaded applications for all screens*/
+	void detachContext();
+
+
+
 	/*! The main function that sets up EPICS connections and subscriptions to all
 	screens in the Screen map. We set up all channels before sending them to EPICS
 	for efficiency. After channels, the remaining data for pvStructs are set as well

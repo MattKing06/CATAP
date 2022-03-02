@@ -29,6 +29,8 @@ public:
 	std::vector<std::string> getAliases() const;
 	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	/*! Set the Cavity Phase 
 	*	@param[in] double, value to be set
 	*	@param[out] bool, true if value got sent to epics (not if it was received) */

@@ -52,8 +52,19 @@ public:
 	/*! Attach to the initial CA context for multi-threaded applications for given bpms
 	@param[in] bpmNames: List of names of the bpms to attach to CA Context*/
 	void attachContext_Py(boost::python::list bpmNames);
-	/*! Attach to the initial CA context for multi-threaded applications for all bpms*/
+	/*! Atach to the initial CA context for multi-threaded applications for all bpms*/
 	void attachContext();
+	/*! Detach to the initial CA context for multi-threaded applications for a given bpm
+	@param[in] bpmName: Name of the bpm to attach to CA Context*/
+	void detachContext(const std::string& bpmName);
+	/*! Detach to the initial CA context for multi-threaded applications for given bpms
+	@param[in] bpmNames: Names of the bpms to attach to CA Context*/
+	void detachContext(std::vector<std::string>& bpmNames);
+	/*! Detach to the initial CA context for multi-threaded applications for given bpms
+	@param[in] bpmNames: List of names of the bpms to attach to CA Context*/
+	void detachContext_Py(boost::python::list bpmNames);
+	/*! Detach to the initial CA context for multi-threaded applications for all bpms*/
+	void detachContext();
 	/*! The kind of BPMFactory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
 	BPM hardware objects when they are created by ConfigReader*/
 	STATE mode;

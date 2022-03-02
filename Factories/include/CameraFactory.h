@@ -70,6 +70,17 @@ public:
 	void attachContext_Py(boost::python::list cameraNames);
 	/*! Attach to the initial CA context for multi-threaded applications for all cameras*/
 	void attachContext();
+	/*! Detach to the initial CA context for multi-threaded applications for a given camera
+	@param[in] cameraName: Name of the camera to attach to CA Context*/
+	void detachContext(const std::string& cameraName);
+	/*! Detach to the initial CA context for multi-threaded applications for given cameras
+	@param[in] cameraNames: Names of the cameras to attach to CA Context*/
+	void detachContext(std::vector<std::string>& cameraNames);
+	/*! Detach to the initial CA context for multi-threaded applications for given cameras
+	@param[in] cameraNames: List of names of the cameras to attach to CA Context*/
+	void detachContext_Py(boost::python::list cameraNames);
+	/*! Detach to the initial CA context for multi-threaded applications for all cameras*/
+	void detachContext();
 	/*! get a reference to a camera object
 	@param[in] cam_name, name of camera object to return
 	@param[out] camera object*/

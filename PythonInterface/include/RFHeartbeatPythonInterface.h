@@ -18,6 +18,7 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 			.def("debugMessagesOn", &RFHeartbeat::debugMessagesOn)
 			.def("debugMessagesOff", &RFHeartbeat::debugMessagesOff)
 			.def("attachContext", &RFHeartbeat::attachToInitialContext)
+			.def("detachContext", &RFHeartbeat::detachFromInitialContext)
 			.def("getValue", &RFHeartbeat::getValue)
 			.def("setValue", &RFHeartbeat::setValue)
 			.def("pulse", &RFHeartbeat::pulse)
@@ -33,6 +34,8 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 		if (is_registered) return;
 		void(RFHeartbeatFactory:: * attachContext_single)(const std::string&) = &RFHeartbeatFactory::attachContext;
 		void(RFHeartbeatFactory:: * attachContext_all)(void) = &RFHeartbeatFactory::attachContext;
+		void(RFHeartbeatFactory:: * detachContext_single)(const std::string&) = &RFHeartbeatFactory::detachContext;
+		void(RFHeartbeatFactory:: * detachContext_all)(void) = &RFHeartbeatFactory::detachContext;
 		boost::python::class_<RFHeartbeatFactory, boost::noncopyable>("RFHeartbeatFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
 			.def(boost::python::init<STATE, const std::string>())
@@ -40,6 +43,9 @@ namespace BOOST_PYTHON_RF_HEARTBEAT_INCLUDE
 			.def("attachContext", &RFHeartbeatFactory::attachContext_Py)
 			.def("attachContext", attachContext_single)
 			.def("attachContext", attachContext_all)
+			.def("detachContext", &RFHeartbeatFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("getValue", &RFHeartbeatFactory::getValue)
 			.def("setValue", &RFHeartbeatFactory::setValue)
 			.def("pulse", &RFHeartbeatFactory::pulse)

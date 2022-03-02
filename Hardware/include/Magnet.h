@@ -64,6 +64,8 @@ class Magnet : public Hardware
 		Magnet(const Magnet& copyMagnet);
 		/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 		void attachToInitialContext();
+		/*! Detach from initial CA Context for use in Multi-threaded applications*/
+		void detachFromInitialContext();
 		/*! Get a magnet object HardwareSnapshot 
 			@param[out] magnetState structured data									*/
 		HardwareSnapshot getSnapshot()override;

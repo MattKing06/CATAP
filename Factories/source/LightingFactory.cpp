@@ -87,6 +87,40 @@ void LightingFactory::attachContext()
 	}
 }
 
+void LightingFactory::detachContext(const std::string& LightingName)
+{
+	if (GlobalFunctions::entryExists(lightingMap, LightingName))
+	{
+		lightingMap.at(LightingName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LightingName, " in hardware map.");
+	}
+}
+
+void LightingFactory::detachContext(std::vector<std::string>& LightingNames)
+{
+	for (auto&& name : LightingNames)
+	{
+		detachContext(name);
+	}
+}
+
+void LightingFactory::detachContext_Py(boost::python::list LightingNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LightingNames);
+	detachContext(names);
+}
+
+void LightingFactory::detachContext()
+{
+	for (auto&& Lighting : lightingMap)
+	{
+		Lighting.second.detachFromInitialContext();
+	}
+}
+
 bool LightingFactory::setup(std::string version)
 {
 	//LightingFactory::machineAreas = machineAreas;

@@ -22,6 +22,7 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.add_property("position", &Charge::getPosition)
 			.add_property("buffersize", &Charge::getBufferSize, &Charge::setBufferSize)
 			.def("attachContext", &Charge::attachToInitialContext)
+			.def("detachContext", &Charge::detachFromInitialContext)
 			.def("getQ", &Charge::getQ)
 			.def("getQBuffer", &Charge::getQBuffer_Py)
 			.def("getQVector", &Charge::getQVector_Py)
@@ -59,6 +60,8 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 		if (is_registered) return;
 		void(ChargeFactory:: * attachContext_single)(const std::string&) = &ChargeFactory::attachContext;
 		void(ChargeFactory:: * attachContext_all)(void) = &ChargeFactory::attachContext;
+		void(ChargeFactory:: * detachContext_single)(const std::string&) = &ChargeFactory::detachContext;
+		void(ChargeFactory:: * detachContext_all)(void) = &ChargeFactory::detachContext;
 		//charge Factory Exposure
 		boost::python::class_<ChargeFactory>("ChargeFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
@@ -68,6 +71,9 @@ namespace BOOST_PYTHON_CHARGE_INCLUDE
 			.def("attachContext", &ChargeFactory::attachContext_Py)
 			.def("attachContext", attachContext_single)
 			.def("attachContext", attachContext_all)
+			.def("detachContext", &ChargeFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("getChargeDiagnostic", &ChargeFactory::getChargeDiagnostic, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getChargeDiagnostics", &ChargeFactory::getChargeDiagnostics)
 			.def("getAllChargeDiagnostics", &ChargeFactory::getAllChargeDiagnostics)

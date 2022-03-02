@@ -40,6 +40,7 @@ public:
 		@param[in] copyGetter : the getter object to copy from*/
 	Getter(const Getter& copyGetter);
 	void attachToInitialContext();
+	void detachFromInitialContext();
 	/*! Creates a CHID for the PV associated with the Getter. The CHID is then used to set the CHTYPE, COUNT, etc.*/
 	void setupChannels();
 	/*! Prepends VM- to the given pv

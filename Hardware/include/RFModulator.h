@@ -26,6 +26,8 @@ public:
 	~RFModulator();
     /*! Attach to the initial CA Context for use in Multi-threaded applications*/
     void attachToInitialContext();
+    /*! Detach from initial CA Context for use in Multi-threaded applications*/
+    void detachFromInitialContext();
 	/*! get the name alises for this object
 	@param[out] names, vector containing  all the alias names */
 	std::vector<std::string> getAliases() const;

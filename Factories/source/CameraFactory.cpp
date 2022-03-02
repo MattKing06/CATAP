@@ -189,6 +189,42 @@ void CameraFactory::attachContext()
 		cam.second.attachToInitialContext();
 	}
 }
+
+
+void CameraFactory::detachContext(const std::string& CameraName)
+{
+	if (GlobalFunctions::entryExists(camera_map, CameraName))
+	{
+		camera_map.at(CameraName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", CameraName, " in hardware map.");
+	}
+}
+
+void CameraFactory::detachContext(std::vector<std::string>& CameraNames)
+{
+	for (auto&& name : CameraNames)
+	{
+		detachContext(name);
+	}
+}
+
+void CameraFactory::detachContext_Py(boost::python::list CameraNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(CameraNames);
+	detachContext(names);
+}
+
+void CameraFactory::detachContext()
+{
+	for (auto&& Camera : camera_map)
+	{
+		Camera.second.detachFromInitialContext();
+	}
+}
+
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
 	messenger.printDebugMessage("setup Camera Factory with vector of camera names");

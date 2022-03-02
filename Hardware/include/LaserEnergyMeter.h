@@ -28,6 +28,8 @@ public:
 	EPICSLaserEnergyMeterInterface_sptr epicsInterface;
 	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	/*! Returns the EPICS name of this laser energy meter instance */
 	std::string getLaserEnergyMeterName() const;
 	/*! Returns the calibration factor (laser energy meter reading -> actual laser pulse energy) */

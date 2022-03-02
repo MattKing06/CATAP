@@ -119,6 +119,11 @@ void LaserEnergyMeter::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void LaserEnergyMeter::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 std::string LaserEnergyMeter::getLaserEnergyMeterName() const
 {
 	return this->name;

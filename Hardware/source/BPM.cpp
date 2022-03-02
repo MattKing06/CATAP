@@ -76,6 +76,11 @@ void BPM::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void BPM::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void BPM::setPVStructs(STATE mode)
 {
 	messenger.printDebugMessage("in setPVstructs");

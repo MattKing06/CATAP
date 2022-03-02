@@ -181,6 +181,45 @@ void IMGFactory::attachContext()
 	}
 }
 
+
+
+void IMGFactory::detachContext(const std::string& IMGName)
+{
+	if (GlobalFunctions::entryExists(IMGMap, IMGName))
+	{
+		IMGMap.at(IMGName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", IMGName, " in hardware map.");
+	}
+}
+
+void IMGFactory::detachContext(std::vector<std::string>& IMGNames)
+{
+	for (auto&& name : IMGNames)
+	{
+		detachContext(name);
+	}
+}
+
+void IMGFactory::detachContext_Py(boost::python::list IMGNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(IMGNames);
+	detachContext(names);
+}
+
+void IMGFactory::detachContext()
+{
+	for (auto&& IMG : IMGMap)
+	{
+		IMG.second.detachFromInitialContext();
+	}
+}
+
+
+
+
 void IMGFactory::setupChannels()
 {
 	for (auto& img : IMGMap)

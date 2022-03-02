@@ -215,6 +215,11 @@ void LinacPID::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void LinacPID::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void LinacPID::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

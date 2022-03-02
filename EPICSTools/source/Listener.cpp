@@ -64,6 +64,12 @@ void Listener::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void Listener::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
+
 void Listener::setupChannels()
 {
 	// create pvStruct

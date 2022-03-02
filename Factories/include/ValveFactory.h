@@ -46,6 +46,19 @@ public:
 	void attachContext_Py(boost::python::list valveNames);
 	/*! Attach to the initial CA context for multi-threaded applications for all valves*/
 	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given valve
+	@param[in] valveName: Name of the valve to detach to CA Context*/
+	void detachContext(const std::string& valveName);
+	/*! detach to the initial CA context for multi-threaded applications for given valves
+	@param[in] valveNames: Names of the valves to detach to CA Context*/
+	void detachContext(std::vector<std::string>& valveNames);
+	/*! detach to the initial CA context for multi-threaded applications for given valves
+	@param[in] valveNames: List of names of the valves to detach to CA Context*/
+	void detachContext_Py(boost::python::list valveNames);
+	/*! detach to the initial CA context for multi-threaded applications for all valves*/
+	void detachContext();
+
 	/*! The kind of ValveFactory that is created (PHYSICAL, VIRTUAL, OFFLINE), this variable is passed to the
 	Valve hardware objects when they are created by ConfigReader*/
 	STATE mode;

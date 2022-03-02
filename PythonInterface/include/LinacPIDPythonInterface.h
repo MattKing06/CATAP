@@ -15,7 +15,7 @@ namespace BOOST_PYTHON_LINAC_PID_INCLUDE
 		boost::python::class_<LinacPID, boost::python::bases<Hardware>, boost::noncopyable>("LinacPID", boost::python::no_init)
 			.add_property("name", &LinacPID::getHardwareName)
 			.def("attachContext", &LinacPID::attachToInitialContext)
-
+			.def("detachContext", &LinacPID::detachFromInitialContext)
 			.def("setPhase", &LinacPID::setPhase, boost::python::arg("self"))
 			.def("getPhase", &LinacPID::getPhase, boost::python::arg("self"))
 			.def("setCrestPhase", &LinacPID::setCrestPhase, boost::python::arg("self"))
@@ -63,6 +63,9 @@ namespace BOOST_PYTHON_LINAC_PID_INCLUDE
 
 		void(LinacPIDFactory:: * attachContext_single)(const std::string&) = &LinacPIDFactory::attachContext;
 		void(LinacPIDFactory:: * attachContext_all)(void) = &LinacPIDFactory::attachContext;
+
+		void(LinacPIDFactory:: * detachContext_single)(const std::string&) = &LinacPIDFactory::detachContext;
+		void(LinacPIDFactory:: * detachContext_all)(void) = &LinacPIDFactory::detachContext;
 		
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LinacPIDFactory>())->to_python_target_type());
 		if (is_registered) return;
@@ -74,6 +77,9 @@ namespace BOOST_PYTHON_LINAC_PID_INCLUDE
 			.def("attachContext", &LinacPIDFactory::attachContext_Py)
 			.def("attachContext", attachContext_single)
 			.def("attachContext", attachContext_all)
+			.def("detachContext", &LinacPIDFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("setForwardPhaseWeight", &LinacPIDFactory::setForwardPhaseWeight, (boost::python::arg("self"), boost::python::arg("name"), boost::python::arg("value")))
 			.def("getForwardPhaseWeight", getForwardPhaseWeight_single, (boost::python::arg("self"), boost::python::arg("name")))
 			.def("getForwardPhaseWeight_Py", &LinacPIDFactory::getForwardPhaseWeight_Py, (boost::python::arg("self")))

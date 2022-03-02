@@ -97,6 +97,11 @@ void LaserHWP::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void LaserHWP::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 std::string LaserHWP::getLaserHWPName() const
 {
 	return this->name;

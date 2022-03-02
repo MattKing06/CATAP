@@ -143,6 +143,8 @@ public:
 	~LLRF();
 	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 //-----------------------------------------------------------------------------------------------------------------------
 /// 
 ///  __   ___ ___       __

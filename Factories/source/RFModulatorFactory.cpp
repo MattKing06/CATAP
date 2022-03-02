@@ -63,6 +63,44 @@ void RFModulatorFactory::attachContext()
 	}
 }
 
+
+void RFModulatorFactory::detachContext(const std::string& RFModulatorName)
+{
+	std::string fullName = getFullName(RFModulatorName);
+	if (GlobalFunctions::entryExists(RFModulatorMap, fullName))
+	{
+		RFModulatorMap.at(fullName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", RFModulatorName, " in hardware map.");
+	}
+}
+
+void RFModulatorFactory::detachContext(std::vector<std::string>& RFModulatorNames)
+{
+	for (auto&& name : RFModulatorNames)
+	{
+		detachContext(name);
+	}
+}
+
+void RFModulatorFactory::detachContext_Py(boost::python::list RFModulatorNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(RFModulatorNames);
+	detachContext(names);
+}
+
+void RFModulatorFactory::detachContext()
+{
+	for (auto&& RFModulator : RFModulatorMap)
+	{
+		RFModulator.second.detachFromInitialContext();
+	}
+}
+
+
+
 // get a LLRF object (GUN, L01, etc... ) 
 RFModulator& RFModulatorFactory::getModulator(const std::string& name)
 {

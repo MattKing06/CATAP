@@ -32,6 +32,11 @@ void RFProtection::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void RFProtection::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 
 void RFProtection::setMasterLatticeData()
 {

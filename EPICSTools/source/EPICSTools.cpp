@@ -72,6 +72,59 @@ void EPICSTools::attachContext()
 	}
 }
 
+
+void EPICSTools::detachContext(const std::string& pv)
+{
+	if (GlobalFunctions::entryExists(listenerMap, pv))
+	{
+		listenerMap.at(pv).detachFromInitialContext();
+	}
+	else if (GlobalFunctions::entryExists(getterMap, pv))
+	{
+		getterMap.at(pv).detachFromInitialContext();
+	}
+	else if (GlobalFunctions::entryExists(putterMap, pv))
+	{
+		putterMap.at(pv).detachFromInitialContext();
+	}
+	else
+	{
+		std::cout << " Could not find " << pv << " in EPICSTools maps." << std::endl;
+	}
+}
+
+void EPICSTools::detachContext(const std::vector<std::string>& pvList)
+{
+	for (auto&& name : pvList)
+	{
+		detachContext(name);
+	}
+}
+
+void EPICSTools::detachContext_Py(const boost::python::list& pvList)
+{
+	std::vector<std::string> pvVec = to_std_vector<std::string>(pvList);
+	detachContext(pvVec);
+}
+
+void EPICSTools::detachContext()
+{
+	for (auto&& listener : listenerMap)
+	{
+		listener.second.detachFromInitialContext();
+	}
+	for (auto&& getter : getterMap)
+	{
+		getter.second.detachFromInitialContext();
+	}
+	for (auto&& putter : putterMap)
+	{
+		putter.second.detachFromInitialContext();
+	}
+}
+
+
+
 Listener& EPICSTools::getMonitor(std::string name)
 {
 	if (GlobalFunctions::entryExists(listenerMap, name))

@@ -37,6 +37,10 @@ public:
 	void attachContext(const std::vector<std::string>& pvList);
 	void attachContext_Py(const boost::python::list& pvList);
 	void attachContext();
+	void detachContext(const std::string& pv);
+	void detachContext(const std::vector<std::string>& pvList);
+	void detachContext_Py(const boost::python::list& pvList);
+	void detachContext();
 	/*! Constructs a Listener object using the pv and then passes this to createSubscription in EPICSInterface
 		to begin monitoring. The Listener object is then stored in the listenerMap with pv as the key.
 		@param[in] pv : The PV to monitor*/

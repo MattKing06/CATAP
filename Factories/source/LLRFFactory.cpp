@@ -77,6 +77,46 @@ void LLRFFactory::attachContext()
 	}
 }
 
+
+void LLRFFactory::detachContext(const std::string& LLRFName)
+{
+	std::string fullName = getFullName(LLRFName);
+	if (GlobalFunctions::entryExists(LLRFMap, fullName))
+	{
+		LLRFMap.at(fullName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LLRFName, " in hardware map.");
+	}
+}
+
+void LLRFFactory::detachContext(std::vector<std::string>& LLRFNames)
+{
+	for (auto&& name : LLRFNames)
+	{
+		detachContext(name);
+	}
+}
+
+void LLRFFactory::detachContext_Py(boost::python::list LLRFNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LLRFNames);
+	detachContext(names);
+}
+
+void LLRFFactory::detachContext()
+{
+	for (auto&& LLRF : LLRFMap)
+	{
+		LLRF.second.detachFromInitialContext();
+	}
+}
+
+
+
+
+
 /*        _
   ___ ___| |_ _  _ _ __ 
  (_-</ -_)  _| || | '_ \

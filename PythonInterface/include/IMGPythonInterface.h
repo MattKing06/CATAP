@@ -17,6 +17,7 @@ namespace BOOST_PYTHON_IMG_INCLUDE
 			.add_property("name", &IMG::getHardwareName, "IMG - IMG Name attribute")
 			.add_property("state", &IMG::getIMGState, &IMG::setIMGState, "IMG - IMG State attribute")
 			.def("attachContext", &IMG::attachToInitialContext)
+			.def("detachContext" , &IMG::detachFromInitialContext)
 			.def("getPressure", &IMG::getIMGPressure,"IMG - Get IMG Pressure", boost::python::arg("self"))
 			.def("debugMessagesOn", &IMG::debugMessagesOn, "IMG - Debug Messages On", boost::python::arg("self"))
 			.def("debugMessagesOff", &IMG::debugMessagesOff, "IMG - Debug Messages Off", boost::python::arg("self"))
@@ -31,12 +32,17 @@ namespace BOOST_PYTHON_IMG_INCLUDE
 		if (is_registered) return;
 		void(IMGFactory:: * attachContext_single)(const std::string&) = &IMGFactory::attachContext;
 		void(IMGFactory:: * attachContext_all)(void) = &IMGFactory::attachContext;
+		void(IMGFactory:: * detachContext_single)(const std::string&) = &IMGFactory::detachContext;
+		void(IMGFactory:: * detachContext_all)(void) = &IMGFactory::detachContext;
 		boost::python::class_<IMGFactory, boost::noncopyable>("IMGFactory","IMG Factory", boost::python::no_init)
 			.def(boost::python::init<STATE>(boost::python::arg("mode")))
 			.def(boost::python::init<STATE, const std::string>())
 			.def("attachContext", &IMGFactory::attachContext_Py)
 			.def("attachContext", attachContext_single)
 			.def("attachContext", attachContext_all)
+			.def("detachContext", &IMGFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("setup", &IMGFactory::setup,"IMG Factory- Setup", (boost::python::arg("self"), boost::python::arg("version")))
 			.def("getIMG", &IMGFactory::getIMG, "IMG Factory- Get IMG by name", (boost::python::arg("self"), boost::python::arg("name")), boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllNames", &IMGFactory::getAllIMGNames_Py, "IMG Factory- Get all IMG names of the Map", (boost::python::arg("self")))

@@ -25,6 +25,18 @@ public:
 	void attachContext_Py(boost::python::list RFProtectionNames);
 	/*! Attach to the initial CA context for multi-threaded applications for all RFProtections*/
 	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given RFProtection
+	@param[in] RFProtectionName: Name of the RFProtection to detach to CA Context*/
+	void detachContext(const std::string& RFProtectionName);
+	/*! detach to the initial CA context for multi-threaded applications for given RFProtections
+	@param[in] RFProtectionNames: Names of the RFProtections to detach to CA Context*/
+	void detachContext(std::vector<std::string>& RFProtectionNames);
+	/*! detach to the initial CA context for multi-threaded applications for given RFProtections
+	@param[in] RFProtectionNames: List of names of the RFProtections to detach to CA Context*/
+	void detachContext_Py(boost::python::list RFProtectionNames);
+	/*! detach to the initial CA context for multi-threaded applications for all RFProtections*/
+	void detachContext();
 	void setupChannels();
 	void setMonitorStatus(pvStruct& pv);
 	bool setup(const std::string& version);

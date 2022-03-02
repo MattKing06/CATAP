@@ -320,6 +320,11 @@ void Stage::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void Stage::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void Stage::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

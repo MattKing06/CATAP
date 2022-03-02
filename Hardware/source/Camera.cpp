@@ -810,6 +810,10 @@ void Camera::attachToInitialContext()
 {
 	epicsInterface->attachTo_thisCaContext();
 }
+void Camera::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
 void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)

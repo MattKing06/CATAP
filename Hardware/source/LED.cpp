@@ -32,6 +32,11 @@ void LED::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void LED::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void LED::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

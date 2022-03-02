@@ -28,6 +28,19 @@ public:
 	void attachContext();
 
 
+	/*! detach to the initial CA context for multi-threaded applications for a given LLRF
+	@param[in] LLRFName: Name of the LLRF to detach to CA Context*/
+	void detachContext(const std::string& LLRFName);
+	/*! detach to the initial CA context for multi-threaded applications for given LLRFs
+	@param[in] LLRFNames: Names of the LLRFs to detach to CA Context*/
+	void detachContext(std::vector<std::string>& LLRFNames);
+	/*! detach to the initial CA context for multi-threaded applications for given LLRFs
+	@param[in] LLRFNames: List of names of the LLRFs to detach to CA Context*/
+	void detachContext_Py(boost::python::list LLRFNames);
+	/*! detach to the initial CA context for multi-threaded applications for all LLRFs*/
+	void detachContext();
+
+
 	// There are a variety of 'setup' functions to give operational flexibily
 	/*! default setup function, uses default values to read files and connect to EPICS etc.
 	@param[out] bool, for success or failure	*/

@@ -17,6 +17,7 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 		boost::python::class_<RFModulator, boost::python::bases<Hardware>, boost::noncopyable>("RFModulator", boost::python::no_init)
 
 			.def("attachContext", &RFModulator::attachToInitialContext)
+			.def("detachContext", &RFModulator::detachFromInitialContext)
 			.def("getLowLevelNumericalData", &RFModulator::getLowLevelNumericalData_Py)
 			.def("getLowLevelStringData", &RFModulator::getLowLevelStringData_Py)
 			.def("getLowLevelData", &RFModulator::getLowLevelData)
@@ -65,6 +66,8 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 		bool(RFModulatorFactory:: * setup_by_area)(const std::string&, const std::vector<TYPE>& machine_areas) = &RFModulatorFactory::setup;
 		void(RFModulatorFactory:: * attachContext_single)(const std::string&) = &RFModulatorFactory::attachContext;
 		void(RFModulatorFactory:: * attachContext_all)(void) = &RFModulatorFactory::attachContext;
+		void(RFModulatorFactory:: * detachContext_single)(const std::string&) = &RFModulatorFactory::detachContext;
+		void(RFModulatorFactory:: * detachContext_all)(void) = &RFModulatorFactory::detachContext;
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<RFModulatorFactory>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<RFModulatorFactory, boost::noncopyable>("RFModulatorFactory", boost::python::no_init)
@@ -75,6 +78,9 @@ namespace BOOST_PYTHON_RF_MODULATOR_INCLUDE
 			.def("attachContext", &RFModulatorFactory::attachContext_Py)
 			.def("attachContext", attachContext_single)
 			.def("attachContext", attachContext_all)
+			.def("detachContext", &RFModulatorFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("getModulator", &RFModulatorFactory::getModulator, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getFullName", &RFModulatorFactory::getFullName)
 			.def("getAllRFModulatorNames", &RFModulatorFactory::getAllRFModulatorNames_Py)

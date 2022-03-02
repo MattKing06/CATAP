@@ -232,6 +232,11 @@ void LLRF::attachToInitialContext()
 	epicsInterface->attachTo_thisCaContext();
 }
 
+void LLRF::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 
 //--------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------

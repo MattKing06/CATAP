@@ -35,6 +35,11 @@ void RFModulator::attachToInitialContext()
     epicsInterface->attachTo_thisCaContext();
 }
 
+void RFModulator::detachFromInitialContext()
+{
+    epicsInterface->detachFrom_thisCaContext();
+}
+
 
 
 void RFModulator::setMasterLatticeData()

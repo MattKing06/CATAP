@@ -54,6 +54,43 @@ void LEDFactory::attachContext()
 	}
 }
 
+
+void LEDFactory::detachContext(const std::string& LEDName)
+{
+	if (GlobalFunctions::entryExists(LEDMap, LEDName))
+	{
+		LEDMap.at(LEDName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LEDName, " in hardware map.");
+	}
+}
+
+void LEDFactory::detachContext(std::vector<std::string>& LEDNames)
+{
+	for (auto&& name : LEDNames)
+	{
+		detachContext(name);
+	}
+}
+
+void LEDFactory::detachContext_Py(boost::python::list LEDNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LEDNames);
+	detachContext(names);
+}
+
+void LEDFactory::detachContext()
+{
+	for (auto&& LED : LEDMap)
+	{
+		LED.second.detachFromInitialContext();
+	}
+}
+
+
+
 void LEDFactory::debugMessagesOn()
 {
 	messenger.debugMessagesOn();

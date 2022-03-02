@@ -32,6 +32,18 @@ public:
 	void attachContext_Py(boost::python::list hwpNames);
 	/*! Attach to the initial CA context for multi-threaded applications for all hwps*/
 	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given hwp
+	@param[in] hwpName: Name of the hwp to detach to CA Context*/
+	void detachContext(const std::string& hwpName);
+	/*! detach to the initial CA context for multi-threaded applications for given hwps
+	@param[in] hwpNames: Names of the hwps to detach to CA Context*/
+	void detachContext(std::vector<std::string>& hwpNames);
+	/*! detach to the initial CA context for multi-threaded applications for given hwps
+	@param[in] hwpNames: List of names of the hwps to detach to CA Context*/
+	void detachContext_Py(boost::python::list hwpNames);
+	/*! detach to the initial CA context for multi-threaded applications for all hwps*/
+	void detachContext();
 	/*NEED constRUCTOR THAT TAKES VERSION??*/
 	//LaserFactory(std::string VERSION);
 	bool setup(const std::string& VERSION);

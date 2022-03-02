@@ -35,6 +35,7 @@ public:
 		@param[in] copyPutter : the putter object to copy from*/
 	Putter(const Putter& copyPutter);
 	void attachToInitialContext();
+	void detachFromInitialContext();
 	/*! Creates a CHID for the PV associated with the Putter. The CHID is then used to set the CHTYPE, COUNT, etc.*/
 	void setupChannels();
 	/*! Prepends VM- to the given pv if mode is VIRTUAL (if VM is already prepended by user, pv is not changed).

@@ -22,6 +22,8 @@ public:
 	EPICSLEDInterface_sptr epicsInterface;
 	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
 	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	std::map<std::string, std::string> LEDParamMap;
 	void debugMessagesOn();
 	void debugMessagesOff();

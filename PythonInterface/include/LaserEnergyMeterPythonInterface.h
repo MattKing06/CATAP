@@ -29,6 +29,7 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.add_property("statusvector", &LaserEnergyMeter::getStatusVector)
 			.add_property("calibrationfactor", &LaserEnergyMeter::getCalibrationFactor)
 			.def("attachContext", &LaserEnergyMeter::attachToInitialContext)
+			.def("detachContext", &LaserEnergyMeter::detachFromInitialContext)
 			.def("getOverRange", &LaserEnergyMeter::getOverRange)
 			.def("setStart", &LaserEnergyMeter::setStart)
 			.def("setStop", &LaserEnergyMeter::setStop)
@@ -66,6 +67,8 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 		if (is_registered) return;
 		void(LaserEnergyMeterFactory:: * attachContext_single)(const std::string&) = &LaserEnergyMeterFactory::attachContext;
 		void(LaserEnergyMeterFactory:: * attachContext_all)(void) = &LaserEnergyMeterFactory::attachContext;
+		void(LaserEnergyMeterFactory:: * detachContext_single)(const std::string&) = &LaserEnergyMeterFactory::detachContext;
+		void(LaserEnergyMeterFactory:: * detachContext_all)(void) = &LaserEnergyMeterFactory::detachContext;
 		boost::python::class_<LaserEnergyMeterFactory>("LaserEnergyMeterFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
 			.def(boost::python::init<STATE, const std::string>())
@@ -73,6 +76,9 @@ namespace BOOST_PYTHON_LASER_ENERGY_METER_INCLUDE
 			.def("attachContext", &LaserEnergyMeterFactory::attachContext_Py)
 			.def("attachContext", attachContext_single)
 			.def("attachContext", attachContext_all)
+			.def("detachContext", &LaserEnergyMeterFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.add_property("laserEnergyMeterMap", &LaserEnergyMeterFactory::laserEnergyMeterMap)
 			.def("getLaserEnergyMeter", &LaserEnergyMeterFactory::getLaserEnergyMeter, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getAllLaserEnergyMeterNames", &LaserEnergyMeterFactory::getAllLaserEnergyMeterNames_Py)

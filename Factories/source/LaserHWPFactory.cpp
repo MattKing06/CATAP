@@ -98,6 +98,43 @@ void LaserHWPFactory::attachContext()
 	}
 }
 
+
+
+void LaserHWPFactory::detachContext(const std::string& LaserHWPName)
+{
+	if (GlobalFunctions::entryExists(laserHWPMap, LaserHWPName))
+	{
+		laserHWPMap.at(LaserHWPName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LaserHWPName, " in hardware map.");
+	}
+}
+
+void LaserHWPFactory::detachContext(std::vector<std::string>& LaserHWPNames)
+{
+	for (auto&& name : LaserHWPNames)
+	{
+		detachContext(name);
+	}
+}
+
+void LaserHWPFactory::detachContext_Py(boost::python::list LaserHWPNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LaserHWPNames);
+	detachContext(names);
+}
+
+void LaserHWPFactory::detachContext()
+{
+	for (auto&& LaserHWP : laserHWPMap)
+	{
+		LaserHWP.second.detachFromInitialContext();
+	}
+}
+
+
 void LaserHWPFactory::populateLaserHWPMap()
 {
 	messenger.printDebugMessage("LaserHWPFactory is populating the laser HWP map");
