@@ -59,6 +59,79 @@ ValveFactory::~ValveFactory()
 	}
 }
 
+void ValveFactory::attachContext(const std::string& ValveName)
+{
+	std::string fullName = getFullName(ValveName);
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		valveMap.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ValveName, " in hardware map.");
+	}
+}
+
+void ValveFactory::attachContext(std::vector<std::string>& ValveNames)
+{
+	for (auto&& name : ValveNames)
+	{
+		attachContext(name);
+	}
+}
+
+void ValveFactory::attachContext_Py(boost::python::list ValveNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ValveNames);
+	attachContext(names);
+}
+
+void ValveFactory::attachContext()
+{
+	for (auto&& Valve : valveMap)
+	{
+		Valve.second.attachToInitialContext();
+	}
+}
+
+
+void ValveFactory::detachContext(const std::string& ValveName)
+{
+	std::string fullName = getFullName(ValveName);
+	if (GlobalFunctions::entryExists(valveMap, fullName))
+	{
+		valveMap.at(fullName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ValveName, " in hardware map.");
+	}
+}
+
+void ValveFactory::detachContext(std::vector<std::string>& ValveNames)
+{
+	for (auto&& name : ValveNames)
+	{
+		detachContext(name);
+	}
+}
+
+void ValveFactory::detachContext_Py(boost::python::list ValveNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ValveNames);
+	detachContext(names);
+}
+
+void ValveFactory::detachContext()
+{
+	for (auto&& Valve : valveMap)
+	{
+		Valve.second.detachFromInitialContext();
+	}
+}
+
+
+
 void ValveFactory::populateValveMap()
 {
 	messenger.printDebugMessage("ValveFactory is populating Valve Map");

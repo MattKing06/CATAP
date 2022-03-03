@@ -29,6 +29,77 @@ ShutterFactory::~ShutterFactory()
 
 }
 
+void ShutterFactory::attachContext(const std::string& ShutterName)
+{
+	std::string fullName = getFullName(ShutterName);
+	if (GlobalFunctions::entryExists(shutterMap, fullName))
+	{
+		shutterMap.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ShutterName, " in hardware map.");
+	}
+}
+
+void ShutterFactory::attachContext(std::vector<std::string>& ShutterNames)
+{
+	for (auto&& name : ShutterNames)
+	{
+		attachContext(name);
+	}
+}
+
+void ShutterFactory::attachContext_Py(boost::python::list ShutterNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ShutterNames);
+	attachContext(names);
+}
+
+void ShutterFactory::attachContext()
+{
+	for (auto&& Shutter : shutterMap)
+	{
+		Shutter.second.attachToInitialContext();
+	}
+}
+
+void ShutterFactory::detachContext(const std::string& ShutterName)
+{
+	std::string fullName = getFullName(ShutterName);
+	if (GlobalFunctions::entryExists(shutterMap, fullName))
+	{
+		shutterMap.at(fullName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ShutterName, " in hardware map.");
+	}
+}
+
+void ShutterFactory::detachContext(std::vector<std::string>& ShutterNames)
+{
+	for (auto&& name : ShutterNames)
+	{
+		detachContext(name);
+	}
+}
+
+void ShutterFactory::detachContext_Py(boost::python::list ShutterNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ShutterNames);
+	detachContext(names);
+}
+
+void ShutterFactory::detachContext()
+{
+	for (auto&& Shutter : shutterMap)
+	{
+		Shutter.second.detachFromInitialContext();
+	}
+}
+
+
 bool ShutterFactory::setup(const std::string version)
 {
 	messenger.printDebugMessage("called ShutterFactory setup ");

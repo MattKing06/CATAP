@@ -126,6 +126,14 @@ Magnet::Magnet(const Magnet& copyMagnet) :
 	epicsInterface(copyMagnet.epicsInterface)
 {
 }
+void Magnet::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+void Magnet::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
 std::vector<std::string> Magnet::getAliases() const
 {
 	return this->aliases;

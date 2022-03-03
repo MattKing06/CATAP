@@ -14,6 +14,29 @@ public:
 	LaserMirrorFactory(STATE mode, const std::string& primeLatticeLocation);
 	LaserMirrorFactory(const LaserMirrorFactory& copyFactory);
 	~LaserMirrorFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given laserMirror
+	@param[in] laserMirrorName: Name of the laserMirror to attach to CA Context*/
+	void attachContext(const std::string& laserMirrorName);
+	/*! Attach to the initial CA context for multi-threaded applications for given laserMirrors
+	@param[in] laserMirrorNames: Names of the laserMirrors to attach to CA Context*/
+	void attachContext(std::vector<std::string>& laserMirrorNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given laserMirrors
+	@param[in] laserMirrorNames: List of names of the laserMirrors to attach to CA Context*/
+	void attachContext_Py(boost::python::list laserMirrorNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all laserMirrors*/
+	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given laserMirror
+	@param[in] laserMirrorName: Name of the laserMirror to detach to CA Context*/
+	void detachContext(const std::string& laserMirrorName);
+	/*! detach to the initial CA context for multi-threaded applications for given laserMirrors
+	@param[in] laserMirrorNames: Names of the laserMirrors to detach to CA Context*/
+	void detachContext(std::vector<std::string>& laserMirrorNames);
+	/*! detach to the initial CA context for multi-threaded applications for given laserMirrors
+	@param[in] laserMirrorNames: List of names of the laserMirrors to detach to CA Context*/
+	void detachContext_Py(boost::python::list laserMirrorNames);
+	/*! detach to the initial CA context for multi-threaded applications for all laserMirrors*/
+	void detachContext();
 	bool setup(const std::string& version);
 	void populateLaserMirrorMap();
 	void retrieveMonitorStatus(pvStruct& pvStruct);

@@ -80,7 +80,8 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 		boost::python::class_<LLRF, boost::python::bases<Hardware>, boost::noncopyable>("LLRF", boost::python::no_init)
 			
 			//.def("printSetupData", &LLRF::printSetupData) // for debugging 
-		
+			.def("attachContext", &LLRF::attachToInitialContext)
+			.def("detachContext", &LLRF::detachFromInitialContext)
 			.def("setAmp", &LLRF::setAmp)
 			.def("setAmpMW", &LLRF::setAmpMW)
 			.def("getAmp", &LLRF::getAmp)
@@ -335,7 +336,10 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 		bool (LLRFFactory::* setup_ListArg)(const boost::python::list&) = &LLRFFactory::setup;
 		bool (LLRFFactory::* setup_VersionListArg)(const std::string&, const boost::python::list&) = &LLRFFactory::setup;
 
-
+		void(LLRFFactory:: * attachContext_single)(const std::string&) = &LLRFFactory::attachContext;
+		void(LLRFFactory:: * attachContext_all)(void) = &LLRFFactory::attachContext;
+		void(LLRFFactory:: * detachContext_single)(const std::string&) = &LLRFFactory::detachContext;
+		void(LLRFFactory:: * detachContext_all)(void) = &LLRFFactory::detachContext;
 
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<LLRFFactory>())->to_python_target_type());
 		if (is_registered) return;
@@ -348,7 +352,12 @@ namespace BOOST_PYTHON_LLRF_INCLUDE
 			.def("setup", setup_VersionTypeArg)
 			.def("setup", setup_ListArg)
 			.def("setup", setup_VersionListArg)
-
+			.def("attachContext", &LLRFFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
+			.def("detachContext", &LLRFFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("getLLRFNames", &LLRFFactory::getLLRFNames_Py)
 			.def("getLLRF", &LLRFFactory::getLLRF , boost::python::return_value_policy<boost::python::reference_existing_object>())
 

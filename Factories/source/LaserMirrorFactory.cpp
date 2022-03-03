@@ -50,6 +50,77 @@ LaserMirrorFactory::~LaserMirrorFactory()
 	}
 }
 
+void LaserMirrorFactory::attachContext(const std::string& LaserMirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, LaserMirrorName))
+	{
+		laserMirrorMap.at(LaserMirrorName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LaserMirrorName, " in hardware map.");
+	}
+}
+
+void LaserMirrorFactory::attachContext(std::vector<std::string>& LaserMirrorNames)
+{
+	for (auto&& name : LaserMirrorNames)
+	{
+		attachContext(name);
+	}
+}
+
+void LaserMirrorFactory::attachContext_Py(boost::python::list LaserMirrorNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LaserMirrorNames);
+	attachContext(names);
+}
+
+void LaserMirrorFactory::attachContext()
+{
+	for (auto&& LaserMirror : laserMirrorMap)
+	{
+		LaserMirror.second.attachToInitialContext();
+	}
+}
+
+
+void LaserMirrorFactory::detachContext(const std::string& LaserMirrorName)
+{
+	if (GlobalFunctions::entryExists(laserMirrorMap, LaserMirrorName))
+	{
+		laserMirrorMap.at(LaserMirrorName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LaserMirrorName, " in hardware map.");
+	}
+}
+
+void LaserMirrorFactory::detachContext(std::vector<std::string>& LaserMirrorNames)
+{
+	for (auto&& name : LaserMirrorNames)
+	{
+		detachContext(name);
+	}
+}
+
+void LaserMirrorFactory::detachContext_Py(boost::python::list LaserMirrorNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LaserMirrorNames);
+	detachContext(names);
+}
+
+void LaserMirrorFactory::detachContext()
+{
+	for (auto&& LaserMirror : laserMirrorMap)
+	{
+		LaserMirror.second.detachFromInitialContext();
+	}
+}
+
+
+
 void LaserMirrorFactory::populateLaserMirrorMap()
 {
 	if (!reader.hasMoreFilesToParse())

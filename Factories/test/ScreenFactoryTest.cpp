@@ -9,17 +9,9 @@
 BOOST_AUTO_TEST_SUITE(ScreenFactoryTestSuite)
 
 
-BOOST_AUTO_TEST_CASE(screen_factory_setup_test)
-{
-	ScreenFactory fac = ScreenFactory(STATE::PHYSICAL);
-	BOOST_CHECK_EQUAL(true, fac.setup("nominal"));	//
-}
-
-
-
 BOOST_AUTO_TEST_CASE(insertYAG_test)
 {
-	ScreenFactory fac = ScreenFactory(STATE::PHYSICAL);
+	ScreenFactory fac = ScreenFactory(STATE::VIRTUAL);
 	fac.setup("nominal");
 	fac.insertYAG("BA1-YAG-03");
 	
@@ -45,7 +37,7 @@ BOOST_AUTO_TEST_CASE(insertYAG_test)
 
 BOOST_AUTO_TEST_CASE(move_all_yag_in_then_out)
 {
-	ScreenFactory fac = ScreenFactory(STATE::PHYSICAL);
+	ScreenFactory fac = ScreenFactory(STATE::VIRTUAL);
 	fac.setup("nominal");
 	fac.messagesOff();
 	fac.debugMessagesOff();

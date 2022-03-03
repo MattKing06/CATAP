@@ -37,6 +37,15 @@ Getter::Getter(const Getter& copyGetter) :
 {
 }
 
+void Getter::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+void Getter::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 std::string Getter::getEPICSPVName(const std::string& pv)
 {
 	if (mode == STATE::VIRTUAL)

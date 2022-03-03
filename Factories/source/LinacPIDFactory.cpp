@@ -53,6 +53,77 @@ LinacPIDFactory::~LinacPIDFactory()
 	}
 }
 
+void LinacPIDFactory::attachContext(const std::string& LinacPIDName)
+{
+	if (GlobalFunctions::entryExists(linacPIDMap, LinacPIDName))
+	{
+		linacPIDMap.at(LinacPIDName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LinacPIDName, " in hardware map.");
+	}
+}
+
+void LinacPIDFactory::attachContext(std::vector<std::string>& LinacPIDNames)
+{
+	for (auto&& name : LinacPIDNames)
+	{
+		attachContext(name);
+	}
+}
+
+void LinacPIDFactory::attachContext_Py(boost::python::list LinacPIDNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LinacPIDNames);
+	attachContext(names);
+}
+
+void LinacPIDFactory::attachContext()
+{
+	for (auto&& LinacPID : linacPIDMap)
+	{
+		LinacPID.second.attachToInitialContext();
+	}
+}
+
+
+void LinacPIDFactory::detachContext(const std::string& LinacPIDName)
+{
+	if (GlobalFunctions::entryExists(linacPIDMap, LinacPIDName))
+	{
+		linacPIDMap.at(LinacPIDName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", LinacPIDName, " in hardware map.");
+	}
+}
+
+void LinacPIDFactory::detachContext(std::vector<std::string>& LinacPIDNames)
+{
+	for (auto&& name : LinacPIDNames)
+	{
+		detachContext(name);
+	}
+}
+
+void LinacPIDFactory::detachContext_Py(boost::python::list LinacPIDNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(LinacPIDNames);
+	detachContext(names);
+}
+
+void LinacPIDFactory::detachContext()
+{
+	for (auto&& LinacPID : linacPIDMap)
+	{
+		LinacPID.second.detachFromInitialContext();
+	}
+}
+
+
+
 void LinacPIDFactory::setupChannels()
 {
 	for (auto& linacPID : linacPIDMap)

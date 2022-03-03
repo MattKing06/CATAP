@@ -59,6 +59,80 @@ ScreenFactory::~ScreenFactory()
 		}
 	}
 }
+
+void ScreenFactory::attachContext(const std::string& ScreenName)
+{
+	std::string fullName = getFullName(ScreenName);
+	if (GlobalFunctions::entryExists(screenMap, fullName))
+	{
+		screenMap.at(ScreenName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ScreenName, " in hardware map.");
+	}
+}
+
+void ScreenFactory::attachContext(std::vector<std::string>& ScreenNames)
+{
+	for (auto&& name : ScreenNames)
+	{
+		attachContext(name);
+	}
+}
+
+void ScreenFactory::attachContext_Py(boost::python::list ScreenNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ScreenNames);
+	attachContext(names);
+}
+
+void ScreenFactory::attachContext()
+{
+	for (auto&& Screen : screenMap)
+	{
+		Screen.second.attachToInitialContext();
+	}
+}
+
+
+void ScreenFactory::detachContext(const std::string& ScreenName)
+{
+	std::string fullName = getFullName(ScreenName);
+	if (GlobalFunctions::entryExists(screenMap, fullName))
+	{
+		screenMap.at(ScreenName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ScreenName, " in hardware map.");
+	}
+}
+
+void ScreenFactory::detachContext(std::vector<std::string>& ScreenNames)
+{
+	for (auto&& name : ScreenNames)
+	{
+		detachContext(name);
+	}
+}
+
+void ScreenFactory::detachContext_Py(boost::python::list ScreenNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ScreenNames);
+	detachContext(names);
+}
+
+void ScreenFactory::detachContext()
+{
+	for (auto&& Screen : screenMap)
+	{
+		Screen.second.detachFromInitialContext();
+	}
+}
+
+
+
 void ScreenFactory::populateScreenMap()
 {
 	messenger.printDebugMessage("ScreenFactory is populating the screen map");

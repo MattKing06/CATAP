@@ -47,7 +47,9 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		//
 		.def("getAliases", &Camera::getAliases_Py)
 		.def("getScreenNames", &Camera::getScreenNames_Py)
-		// image properties 
+		.def("attachContext", &Camera::attachToInitialContext)
+		.def("detachContext", &Camera::detachFromInitialContext)
+			// image properties 
 		.def("getBitDepth", &Camera::getBitDepth)
 		.def("getImageRotation", &Camera::getImageRotation)
 		.def("getImageFlipUD", &Camera::getImageFlipUD)
@@ -411,7 +413,10 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 		STATE(CameraFactory::*saveSnapshot_withfile)(const std::string&, const std::string&, const std::string&) = &CameraFactory::saveSnapshot;
 		STATE(CameraFactory::*applySnaphot_withDict)(const boost::python::dict&, TYPE) = &CameraFactory::applySnaphot;
 		STATE(CameraFactory::*applySnaphot_withfile)(const std::string&, const std::string&, TYPE) = &CameraFactory::applySnaphot;
-
+		void(CameraFactory:: * attachContext_single)(const std::string&) = &CameraFactory::attachContext;
+		void(CameraFactory:: * attachContext_all)(void) = &CameraFactory::attachContext;
+		void(CameraFactory:: * detachContext_single)(const std::string&) = &CameraFactory::detachContext;
+		void(CameraFactory:: * detachContext_all)(void) = &CameraFactory::detachContext;
 
 
 
@@ -432,6 +437,12 @@ namespace BOOST_PYTHON_CAMERA_INCLUDE
 			.def("getCameraNames", &CameraFactory::getCameraNames_Py)
 			.def("getAliases", &CameraFactory::getAliases_Py)
 			.def("getScreenNames", &CameraFactory::getScreenNames_Py)
+			.def("attachContext", &CameraFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
+			.def("detachContext", &CameraFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			//   __         ___         ___  __                 
 			//  |__) | \_/ |__  |        |  /  \     |\/|  |\/| 
 			//  |    | / \ |___ |___     |  \__/     |  |  |  | 

@@ -158,6 +158,73 @@ bool CameraFactory::setup_names_py(const std::string& version, const boost::pyth
 {
 	return setup(version, to_std_vector<std::string>(names));
 }
+void CameraFactory::attachContext(const std::string& cameraName)
+{
+	std::string fullName = getFullName(cameraName);
+	if (GlobalFunctions::entryExists(camera_map, fullName))
+	{
+		camera_map.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find: ", cameraName, " in map.");
+	}
+}
+void CameraFactory::attachContext(std::vector<std::string>& cameraNames)
+{
+	for (auto& name : cameraNames)
+	{
+		attachContext(name);
+	}
+}
+void CameraFactory::attachContext_Py(boost::python::list cameraNames)
+{
+	std::vector<std::string> namesVec = to_std_vector<std::string>(cameraNames);
+	attachContext(namesVec);
+}
+void CameraFactory::attachContext()
+{
+	for (auto&& cam : camera_map)
+	{
+		cam.second.attachToInitialContext();
+	}
+}
+
+
+void CameraFactory::detachContext(const std::string& CameraName)
+{
+	if (GlobalFunctions::entryExists(camera_map, CameraName))
+	{
+		camera_map.at(CameraName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", CameraName, " in hardware map.");
+	}
+}
+
+void CameraFactory::detachContext(std::vector<std::string>& CameraNames)
+{
+	for (auto&& name : CameraNames)
+	{
+		detachContext(name);
+	}
+}
+
+void CameraFactory::detachContext_Py(boost::python::list CameraNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(CameraNames);
+	detachContext(names);
+}
+
+void CameraFactory::detachContext()
+{
+	for (auto&& Camera : camera_map)
+	{
+		Camera.second.detachFromInitialContext();
+	}
+}
+
 bool CameraFactory::setup(const std::string& version, const std::vector<std::string>& names)
 {
 	messenger.printDebugMessage("setup Camera Factory with vector of camera names");

@@ -51,7 +51,28 @@ public:
 	
 	/*! Used to print messages both normal and debug, also sets the On/Off flags for debug and normal messages*/
 	LoggingSystem messenger;
-	
+	/*! Attach to the initial CA context for multi-threaded applications for a given IMG
+	@param[in] IMGName: Name of the IMG to attach to CA Context*/
+	void attachContext(const std::string& IMGName);
+	/*! Attach to the initial CA context for multi-threaded applications for given IMGs
+	@param[in] IMGNames: Names of the IMGs to attach to CA Context*/
+	void attachContext(std::vector<std::string>& IMGNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given IMGs
+	@param[in] IMGNames: List of names of the IMGs to attach to CA Context*/
+	void attachContext_Py(boost::python::list IMGNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all IMGs*/
+	void attachContext();
+	/*! Detach to the initial CA context for multi-threaded applications for a given img
+	@param[in] imgName: Name of the img to attach to CA Context*/
+	void detachContext(const std::string& imgName);
+	/*! Detach to the initial CA context for multi-threaded applications for given imgs
+	@param[in] imgNames: Names of the imgs to attach to CA Context*/
+	void detachContext(std::vector<std::string>& imgNames);
+	/*! Detach to the initial CA context for multi-threaded applications for given imgs
+	@param[in] imgNames: List of names of the imgs to attach to CA Context*/
+	void detachContext_Py(boost::python::list imgNames);
+	/*! Detach to the initial CA context for multi-threaded applications for all imgs*/
+	void detachContext();
 	/*! The main function that sets up EPICS connections and subscriptions to all
 	IMGs in the IMG map. We set up all channels before sending them to EPICS
 	for efficiency. After channels, the remaining data for pvStructs are set as well

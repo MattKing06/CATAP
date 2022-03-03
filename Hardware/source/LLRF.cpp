@@ -48,6 +48,7 @@ rolling_average_size(copy_trace_data.rolling_average_size),
 rolling_average_count(copy_trace_data.rolling_average_count)
 {}
 TraceData::~TraceData(){}
+
 //------------------------------------------------------------------------------------------------
 LLRFInterlock::LLRFInterlock() :
 	name("UNKNOWN_NAME"),
@@ -225,6 +226,16 @@ LLRF::LLRF(const LLRF& copyLLRF) :
 	ioc_max_amplitude(copyLLRF.ioc_max_amplitude)
 {}
 LLRF::~LLRF(){}
+
+void LLRF::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
+void LLRF::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
 
 
 //--------------------------------------------------------------------------------------------------------------------------------

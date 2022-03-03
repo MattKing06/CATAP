@@ -15,7 +15,7 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 	void expose_screen_object() {
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<Screen>())->to_python_target_type());
 		if (is_registered) return;
-		// bpm exposure
+		// Screen exposure
 		boost::python::class_<Screen, boost::python::bases<Hardware>, boost::noncopyable>("Screen", boost::python::no_init)
 			.add_property("name", &Screen::getScreenName)
 			.add_property("screenStateH", &Screen::getStateH)
@@ -60,6 +60,8 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 			.add_property("getStateH", &Screen::getStateH)
 			.add_property("getStateV", &Screen::getStateV)
 			.add_property("getState", &Screen::getState)
+			.def("attachContext", &Screen::attachToInitialContext)
+			.def("detachContext", &Screen::detachFromInitialContext)
 			.def("isYAGIn", &Screen::isYAGIn)
 			.def("isYAGNotIn", &Screen::isYAGNotIn)
 			.def("isHOut", &Screen::isHOut)
@@ -159,11 +161,21 @@ namespace BOOST_PYTHON_SCREEN_INCLUDE
 	void expose_screen_factory_object() {
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id<ScreenFactory>())->to_python_target_type());
 		if (is_registered) return;
+		void(ScreenFactory:: * attachContext_single)(const std::string&) = &ScreenFactory::attachContext;
+		void(ScreenFactory:: * attachContext_all)(void) = &ScreenFactory::attachContext;
+		void(ScreenFactory:: * detachContext_single)(const std::string&) = &ScreenFactory::detachContext;
+		void(ScreenFactory:: * detachContext_all)(void) = &ScreenFactory::detachContext;
 		//screen Factory Exposure
 		boost::python::class_<ScreenFactory>("ScreenFactory", boost::python::no_init)
 			.def(boost::python::init<STATE>())
 			.def(boost::python::init<STATE, const std::string>())
 			.def("setup", &ScreenFactory::setup)
+			.def("attachContext", &ScreenFactory::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
+			.def("detachContext", &ScreenFactory::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			//.add_property("screenMap", &ScreenFactory::screenMap)
 			.def("getScreen", &ScreenFactory::getScreen, boost::python::return_value_policy<boost::python::reference_existing_object>())
 			.def("getCameraName", &ScreenFactory::getCameraName)

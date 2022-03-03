@@ -43,6 +43,16 @@ Shutter::Shutter(const Shutter& copyShutter):
 
 Shutter::~Shutter(){}
 
+void Shutter::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
+void Shutter::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 
 
 ShutterState Shutter::getShutterState()const
