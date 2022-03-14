@@ -13,6 +13,29 @@ public:
 	RFModulatorFactory(STATE mode, const std::string& primeLatticeLocation);
 	RFModulatorFactory(const RFModulatorFactory& copyFactory);
 	~RFModulatorFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given RFModulator
+	@param[in] RFModulatorName: Name of the RFModulator to attach to CA Context*/
+	void attachContext(const std::string& RFModulatorName);
+	/*! Attach to the initial CA context for multi-threaded applications for given RFModulators
+	@param[in] RFModulatorNames: Names of the RFModulators to attach to CA Context*/
+	void attachContext(std::vector<std::string>& RFModulatorNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given RFModulators
+	@param[in] RFModulatorNames: List of names of the RFModulators to attach to CA Context*/
+	void attachContext_Py(boost::python::list RFModulatorNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all RFModulators*/
+	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given RFModulator
+	@param[in] RFModulatorName: Name of the RFModulator to detach to CA Context*/
+	void detachContext(const std::string& RFModulatorName);
+	/*! detach to the initial CA context for multi-threaded applications for given RFModulators
+	@param[in] RFModulatorNames: Names of the RFModulators to detach to CA Context*/
+	void detachContext(std::vector<std::string>& RFModulatorNames);
+	/*! detach to the initial CA context for multi-threaded applications for given RFModulators
+	@param[in] RFModulatorNames: List of names of the RFModulators to detach to CA Context*/
+	void detachContext_Py(boost::python::list RFModulatorNames);
+	/*! detach to the initial CA context for multi-threaded applications for all RFModulators*/
+	void detachContext();
 	/*! messaneger to print messages to std.out THIS SHOULD BE PUBLIC */
 	LoggingSystem messenger;
 	/*! Set up all modulator objects for this  factory */

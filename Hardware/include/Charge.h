@@ -38,6 +38,10 @@ public:
 	Charge(const Charge& copyCharge);
 	/*! EPICSChargeInterface for Charge-specifc calls to EPICS*/
 	EPICSChargeInterface_sptr epicsInterface;
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	/*! Returns the name of the Charge object.
 	@param[out] name: the name of the charge diagnostic.
 	*/

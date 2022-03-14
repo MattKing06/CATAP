@@ -58,7 +58,10 @@ class Shutter : public Hardware
 		Shutter(const Shutter& copyShutter);
 		~Shutter();
 
-		
+		/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+		void attachToInitialContext();
+		/*! Detach from initial CA Context for use in Multi-threaded applications*/
+		void detachFromInitialContext();
 		/*! Get the ShutterState (structured data with shutter name and latest, state, Cmi, and interlock bitmap
 		@param[out] ShutterState structured data */
 		ShutterState getShutterState()const;

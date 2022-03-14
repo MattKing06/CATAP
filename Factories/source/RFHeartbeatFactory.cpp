@@ -27,6 +27,80 @@ RFHeartbeatFactory::~RFHeartbeatFactory()
 {
 }
 
+void RFHeartbeatFactory::attachContext(const std::string& RFHeartbeatName)
+{
+	std::string fullName = getFullName(RFHeartbeatName);
+	if (GlobalFunctions::entryExists(RFHeartbeatMap, fullName))
+	{
+		RFHeartbeatMap.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", RFHeartbeatName, " in hardware map.");
+	}
+}
+
+void RFHeartbeatFactory::attachContext(std::vector<std::string>& RFHeartbeatNames)
+{
+	for (auto&& name : RFHeartbeatNames)
+	{
+		attachContext(name);
+	}
+}
+
+void RFHeartbeatFactory::attachContext_Py(boost::python::list RFHeartbeatNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(RFHeartbeatNames);
+	attachContext(names);
+}
+
+void RFHeartbeatFactory::attachContext()
+{
+	for (auto&& RFHeartbeat : RFHeartbeatMap)
+	{
+		RFHeartbeat.second.attachToInitialContext();
+	}
+}
+
+
+
+void RFHeartbeatFactory::detachContext(const std::string& RFHeartbeatName)
+{
+	std::string fullName = getFullName(RFHeartbeatName);
+	if (GlobalFunctions::entryExists(RFHeartbeatMap, fullName))
+	{
+		RFHeartbeatMap.at(fullName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", RFHeartbeatName, " in hardware map.");
+	}
+}
+
+void RFHeartbeatFactory::detachContext(std::vector<std::string>& RFHeartbeatNames)
+{
+	for (auto&& name : RFHeartbeatNames)
+	{
+		detachContext(name);
+	}
+}
+
+void RFHeartbeatFactory::detachContext_Py(boost::python::list RFHeartbeatNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(RFHeartbeatNames);
+	detachContext(names);
+}
+
+void RFHeartbeatFactory::detachContext()
+{
+	for (auto&& RFHeartbeat : RFHeartbeatMap)
+	{
+		RFHeartbeat.second.detachFromInitialContext();
+	}
+}
+
+
+
 bool RFHeartbeatFactory::setup(std::string version)
 {
 	if (hasBeenSetup)

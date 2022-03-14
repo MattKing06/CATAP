@@ -17,6 +17,29 @@ public:
 	RFHeartbeatFactory(const RFHeartbeatFactory& copyFactory);
 	/*! Destructor */
 	~RFHeartbeatFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given RFHeartbeat
+		@param[in] RFHeartbeatName: Name of the RFHeartbeat to attach to CA Context*/
+	void attachContext(const std::string& RFHeartbeatName);
+	/*! Attach to the initial CA context for multi-threaded applications for given RFHeartbeats
+	@param[in] RFHeartbeatNames: Names of the RFHeartbeats to attach to CA Context*/
+	void attachContext(std::vector<std::string>& RFHeartbeatNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given RFHeartbeats
+	@param[in] RFHeartbeatNames: List of names of the RFHeartbeats to attach to CA Context*/
+	void attachContext_Py(boost::python::list RFHeartbeatNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all RFHeartbeats*/
+	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given RFHeartbeat
+		@param[in] RFHeartbeatName: Name of the RFHeartbeat to detach to CA Context*/
+	void detachContext(const std::string& RFHeartbeatName);
+	/*! detach to the initial CA context for multi-threaded applications for given RFHeartbeats
+	@param[in] RFHeartbeatNames: Names of the RFHeartbeats to detach to CA Context*/
+	void detachContext(std::vector<std::string>& RFHeartbeatNames);
+	/*! detach to the initial CA context for multi-threaded applications for given RFHeartbeats
+	@param[in] RFHeartbeatNames: List of names of the RFHeartbeats to detach to CA Context*/
+	void detachContext_Py(boost::python::list RFHeartbeatNames);
+	/*! detach to the initial CA context for multi-threaded applications for all RFHeartbeats*/
+	void detachContext();
 	/*! Set up all Heartbeat objects for this factory */
 	bool setup(std::string version);
 	/*! get a RFHeartbeatobject from the factory

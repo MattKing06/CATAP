@@ -48,6 +48,7 @@ namespace BOOST_PYTHON_STATES_INCLUDE
 			.value("OK", STATE::OK)
 			.value("OPEN", STATE::OPEN)
 			.value("CLOSED", STATE::CLOSED)
+			.value("MOVING", STATE::MOVING)
 			.value("NONLINEAR", STATE::NONLINEAR)
 			.value("UNKNOWN", STATE::UNKNOWN)
 			.value("ENABLED", STATE::ENABLED)

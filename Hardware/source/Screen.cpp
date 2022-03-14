@@ -197,6 +197,16 @@ maxposV(copyScreen.maxposV),
 maxpos(copyScreen.maxpos)
 {}
 
+void Screen::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
+void Screen::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void Screen::setPVStructs(std::vector<std::string> recordList)
 {
 	messenger.printDebugMessage("in setPVstructs");

@@ -17,6 +17,30 @@ public:
 	LoggingSystem messenger;
 	STATE mode;
 	ConfigReader reader;
+	/*! Attach to the initial CA context for multi-threaded applications for a given stage
+	@param[in] stageName: Name of the stage to attach to CA Context*/
+	void attachContext(const std::string& stageName);
+	/*! Attach to the initial CA context for multi-threaded applications for given stages
+	@param[in] stageNames: Names of the stages to attach to CA Context*/
+	void attachContext(std::vector<std::string>& stageNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given stages
+	@param[in] stageNames: List of names of the stages to attach to CA Context*/
+	void attachContext_Py(boost::python::list stageNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all stages*/
+	void attachContext();
+
+	/*! detach to the initial CA context for multi-threaded applications for a given stage
+	@param[in] stageName: Name of the stage to detach to CA Context*/
+	void detachContext(const std::string& stageName);
+	/*! detach to the initial CA context for multi-threaded applications for given stages
+	@param[in] stageNames: Names of the stages to detach to CA Context*/
+	void detachContext(std::vector<std::string>& stageNames);
+	/*! detach to the initial CA context for multi-threaded applications for given stages
+	@param[in] stageNames: List of names of the stages to detach to CA Context*/
+	void detachContext_Py(boost::python::list stageNames);
+	/*! detach to the initial CA context for multi-threaded applications for all stages*/
+	void detachContext();
+
 	bool setup(std::string version);
 	void populateStageMap();
 	void setupChannels();

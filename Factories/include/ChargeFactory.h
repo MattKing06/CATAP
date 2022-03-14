@@ -37,6 +37,28 @@ public:
 	/*! ChargeFactory destructor.
 	Goes through all Charge objects in the screenMap and removes connections/subscriptions to EPICS if they exist.*/
 	~ChargeFactory();
+	/*! Attach to the initial CA context for multi-threaded applications for a given charge
+		@param[in] chargeName: Name of the charge to attach to CA Context*/
+	void attachContext(const std::string& chargeName);
+	/*! Attach to the initial CA context for multi-threaded applications for given charges
+	@param[in] chargeNames: Names of the charges to attach to CA Context*/
+	void attachContext(std::vector<std::string>& chargeNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given charges
+	@param[in] chargeNames: List of names of the charges to attach to CA Context*/
+	void attachContext_Py(boost::python::list chargeNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all charges*/
+	void attachContext();
+	/*! Detach to the initial CA context for multi-threaded applications for a given charge
+	@param[in] chargeName: Name of the charge to attach to CA Context*/
+	void detachContext(const std::string& chargeName);
+	/*! Detach to the initial CA context for multi-threaded applications for given charges
+	@param[in] chargeNames: Names of the charges to attach to CA Context*/
+	void detachContext(std::vector<std::string>& chargeNames);
+	/*! Detach to the initial CA context for multi-threaded applications for given charges
+	@param[in] chargeNames: List of names of the charges to attach to CA Context*/
+	void detachContext_Py(boost::python::list chargeNames);
+	/*! Detach to the initial CA context for multi-threaded applications for all charges*/
+	void detachContext();
 	/*! The main function that sets up EPICS connections and subscriptions to all
 		screens in the Charge map. We set up all channels before sending them to EPICS
 		for efficiency. After channels, the remaining data for pvStructs are set as well

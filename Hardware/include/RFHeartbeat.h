@@ -26,6 +26,10 @@ public:
 	RFHeartbeat(const RFHeartbeat& copyRFHeartbeat);
 	/*! Destructor */
 	~RFHeartbeat();
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	/*! set up the map of pvStructs for this object  */
 	void setPVStructs();
 	/*! get the name alises for this object 

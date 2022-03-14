@@ -16,6 +16,8 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		boost::python::class_<Listener, boost::noncopyable>("Monitor", boost::python::no_init)
 			.add_property("PV", &Listener::pvToMonitor)
 			.add_property("connected", &Listener::isConnected, "connected status of PV")
+			.def("attachContext", &Listener::attachToInitialContext)
+			.def("detachContext", &Listener::detachFromInitialContext)
 			.def("isConnected", &Listener::isConnected, boost::python::args("self"), "get connected status (true/false)")
 			.def("getValue", &Listener::getValue_Py, (boost::python::arg("self")), "get current value of the monitor")
 			.def("getArray", &Listener::getArray_Py, boost::python::arg("self"), "get current array of the monitor")
@@ -50,11 +52,21 @@ namespace BOOST_PYTHON_EPICS_TOOLS_INCLUDE
 		boost::python::dict(EPICSTools:: * getBufferAverage_multiple)(boost::python::list) = &EPICSTools::getBufferAverage_Py;
 		double(EPICSTools:: * getBufferStdDeviation_single)(const std::string&) = &EPICSTools::getBufferStdDeviation;
 		boost::python::dict(EPICSTools:: * getBufferStdDeviation_multiple)(boost::python::list) = &EPICSTools::getBufferStdDeviation_Py;
+		void(EPICSTools:: * attachContext_single)(const std::string&) = &EPICSTools::attachContext;
+		void(EPICSTools:: * attachContext_all)(void) = &EPICSTools::attachContext;
+		void(EPICSTools:: * detachContext_single)(const std::string&) = &EPICSTools::detachContext;
+		void(EPICSTools:: * detachContext_all)(void) = &EPICSTools::detachContext;
 		bool is_registered = (0 != boost::python::converter::registry::query(boost::python::type_id <EPICSTools>())->to_python_target_type());
 		if (is_registered) return;
 		boost::python::class_<EPICSTools, boost::noncopyable>("EPICSTools", boost::python::no_init)
 			.def(boost::python::init<>(boost::python::arg("self"),"self"))
 			.def(boost::python::init<STATE>(boost::python::arg("self")))
+			.def("attachContext", &EPICSTools::attachContext_Py)
+			.def("attachContext", attachContext_single)
+			.def("attachContext", attachContext_all)
+			.def("detachContext", &EPICSTools::detachContext_Py)
+			.def("detachContext", detachContext_single)
+			.def("detachContext", detachContext_all)
 			.def("monitor", &EPICSTools::monitor_Py, "begin monitoring")
 			.def("monitor", monitor_single)
 			.def("stopMonitoring", &EPICSTools::stopMonitoring)

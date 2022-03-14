@@ -22,6 +22,10 @@ public:
 	LaserHWP(const std::map<std::string, std::string>& laserParametersAndValuesMap, STATE mode);
 	LaserHWP(const LaserHWP& copyLaser);
 	EPICSLaserHWPInterface_sptr epicsInterface;
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	std::string getLaserHWPName() const;
 	std::vector<std::string> getAliases() const;
 	TYPE getLaserHWPType() const;

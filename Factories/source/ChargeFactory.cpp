@@ -64,6 +64,76 @@ ChargeFactory::~ChargeFactory()
 	}
 }
 
+void ChargeFactory::attachContext(const std::string& chargeName)
+{
+	if (GlobalFunctions::entryExists(chargeMap, chargeName))
+	{
+		chargeMap.at(chargeName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", chargeName, " in hardware map.");
+	}
+}
+
+void ChargeFactory::attachContext(std::vector<std::string>& chargeNames)
+{
+	for (auto&& name : chargeNames)
+	{
+		attachContext(name);
+	}
+}
+
+void ChargeFactory::attachContext_Py(boost::python::list chargeNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(chargeNames);
+	attachContext(names);
+}
+
+void ChargeFactory::attachContext()
+{
+	for (auto&& charge : chargeMap)
+	{
+		charge.second.attachToInitialContext();
+	}
+}
+
+
+void ChargeFactory::detachContext(const std::string& ChargeName)
+{
+	if (GlobalFunctions::entryExists(chargeMap, ChargeName))
+	{
+		chargeMap.at(ChargeName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", ChargeName, " in hardware map.");
+	}
+}
+
+void ChargeFactory::detachContext(std::vector<std::string>& ChargeNames)
+{
+	for (auto&& name : ChargeNames)
+	{
+		detachContext(name);
+	}
+}
+
+void ChargeFactory::detachContext_Py(boost::python::list ChargeNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(ChargeNames);
+	detachContext(names);
+}
+
+void ChargeFactory::detachContext()
+{
+	for (auto&& Charge : chargeMap)
+	{
+		Charge.second.detachFromInitialContext();
+	}
+}
+
+
 void ChargeFactory::populateChargeMap()
 {
 	messenger.printDebugMessage("ChargeFactory is populating the charge map");
@@ -116,7 +186,7 @@ bool ChargeFactory::setup(const std::string& VERSION)
 		messenger.printDebugMessage("VIRTUAL SETUP: TRUE");
 	}
 	messenger.printDebugMessage("ChargeFactory setup populateChargeMap");
-	//// epics magnet interface has been initialized in BPM constructor
+	//// epics magnet interface has been initialized in Charge constructor
 	//// but we have a lot of PV informatiOn to retrieve from EPICS first
 	//// so we will cycle through the PV structs, and set up their values.
 	populateChargeMap();

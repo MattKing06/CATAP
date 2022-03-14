@@ -336,6 +336,79 @@ bool MagnetFactory::setup(const std::string& version, const std::vector<TYPE>& m
 	return hasBeenSetup;
 }
 
+void MagnetFactory::attachContext(const std::string& MagnetName)
+{
+	std::string fullName = getFullName(MagnetName);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		magnetMap.at(fullName).attachToInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", MagnetName, " in hardware map.");
+	}
+}
+
+void MagnetFactory::attachContext(std::vector<std::string>& MagnetNames)
+{
+	for (auto&& name : MagnetNames)
+	{
+		attachContext(name);
+	}
+}
+
+void MagnetFactory::attachContext_Py(boost::python::list MagnetNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(MagnetNames);
+	attachContext(names);
+}
+
+void MagnetFactory::attachContext()
+{
+	for (auto&& Magnet : magnetMap)
+	{
+		Magnet.second.attachToInitialContext();
+	}
+}
+
+
+void MagnetFactory::detachContext(const std::string& MagnetName)
+{
+	std::string fullName = getFullName(MagnetName);
+	if (GlobalFunctions::entryExists(magnetMap, fullName))
+	{
+		magnetMap.at(fullName).detachFromInitialContext();
+	}
+	else
+	{
+		messenger.printMessage("Could not find ", MagnetName, " in hardware map.");
+	}
+}
+
+void MagnetFactory::detachContext(std::vector<std::string>& MagnetNames)
+{
+	for (auto&& name : MagnetNames)
+	{
+		detachContext(name);
+	}
+}
+
+void MagnetFactory::detachContext_Py(boost::python::list MagnetNames)
+{
+	std::vector<std::string> names = to_std_vector<std::string>(MagnetNames);
+	detachContext(names);
+}
+
+void MagnetFactory::detachContext()
+{
+	for (auto&& Magnet : magnetMap)
+	{
+		Magnet.second.detachFromInitialContext();
+	}
+}
+
+
+
 //void MagnetFactory::convertConfigStringsToGlobalTypeEnums()
 //{/
 //

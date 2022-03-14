@@ -23,6 +23,16 @@ Valve::Valve(const Valve& copyValve) :
 
 }
 
+void Valve::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
+void Valve::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void Valve::setPVStructs() 
 {
 	for (auto&& record : ValveRecords::valveRecordList)

@@ -806,6 +806,14 @@ last_capture_and_save_success(copyCamera.last_capture_and_save_success),
 bit_depth(copyCamera.bit_depth)
 {}
 Camera::~Camera() {}
+void Camera::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+void Camera::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
 void Camera::setPVStructs()
 {
 	for (auto&& record : CameraRecords::cameraRecordList)

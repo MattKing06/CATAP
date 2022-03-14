@@ -15,7 +15,30 @@ public:
 	~LLRFFactory();
 	LoggingSystem messenger;
 
+	/*! Attach to the initial CA context for multi-threaded applications for a given LLRF
+	@param[in] LLRFName: Name of the LLRF to attach to CA Context*/
+	void attachContext(const std::string& LLRFName);
+	/*! Attach to the initial CA context for multi-threaded applications for given LLRFs
+	@param[in] LLRFNames: Names of the LLRFs to attach to CA Context*/
+	void attachContext(std::vector<std::string>& LLRFNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given LLRFs
+	@param[in] LLRFNames: List of names of the LLRFs to attach to CA Context*/
+	void attachContext_Py(boost::python::list LLRFNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all LLRFs*/
+	void attachContext();
 
+
+	/*! detach to the initial CA context for multi-threaded applications for a given LLRF
+	@param[in] LLRFName: Name of the LLRF to detach to CA Context*/
+	void detachContext(const std::string& LLRFName);
+	/*! detach to the initial CA context for multi-threaded applications for given LLRFs
+	@param[in] LLRFNames: Names of the LLRFs to detach to CA Context*/
+	void detachContext(std::vector<std::string>& LLRFNames);
+	/*! detach to the initial CA context for multi-threaded applications for given LLRFs
+	@param[in] LLRFNames: List of names of the LLRFs to detach to CA Context*/
+	void detachContext_Py(boost::python::list LLRFNames);
+	/*! detach to the initial CA context for multi-threaded applications for all LLRFs*/
+	void detachContext();
 
 
 	// There are a variety of 'setup' functions to give operational flexibily

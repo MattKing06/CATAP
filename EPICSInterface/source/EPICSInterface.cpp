@@ -161,7 +161,7 @@ void EPICSInterface::attachTo_thisCaContext()
 		switch (status)
 		{
 		case(ECA_NORMAL):
-			messenger.printMessage("Success, created ca_context");
+			messenger.printMessage("Success, attached to ca_context");
 			break;
 		case(ECA_ISATTACHED):
 			messenger.printMessage("Already joined to this ca context.");

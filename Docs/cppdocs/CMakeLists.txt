@@ -6,9 +6,10 @@ if (DOXYGEN_FOUND)
     set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     set(DOXYGEN_SHOW_NAMESPACES YES)
     set(HAS_DOT YES)
+    set(DOXYGEN_QUIET YES)
     set(DOXYGEN_GENERATE_TREEVIEW YES)
     doxygen_add_docs(CATAPDocs
-                     ${PROJECT_SOURCE_DIR} ALL)
+                     ${PROJECT_SOURCE_DIR})
     set_property(TARGET CATAPDocs PROPERTY FOLDER "Docs")
 endif(DOXYGEN_FOUND)
 

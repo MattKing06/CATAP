@@ -24,7 +24,29 @@ public:
 
 	// TODO move to private write setter/getter ??? 
 	bool hasBeenSetup;
+	/*! Attach to the initial CA context for multi-threaded applications for a given linacPID
+	@param[in] linacPIDName: Name of the linacPID to attach to CA Context*/
+	void attachContext(const std::string& linacPIDName);
+	/*! Attach to the initial CA context for multi-threaded applications for given linacPIDs
+	@param[in] linacPIDNames: Names of the linacPIDs to attach to CA Context*/
+	void attachContext(std::vector<std::string>& linacPIDNames);
+	/*! Attach to the initial CA context for multi-threaded applications for given linacPIDs
+	@param[in] linacPIDNames: List of names of the linacPIDs to attach to CA Context*/
+	void attachContext_Py(boost::python::list linacPIDNames);
+	/*! Attach to the initial CA context for multi-threaded applications for all linacPIDs*/
+	void attachContext();
 
+	/*! detach to the initial CA context for multi-threaded applications for a given linacPID
+	@param[in] linacPIDName: Name of the linacPID to detach to CA Context*/
+	void detachContext(const std::string& linacPIDName);
+	/*! detach to the initial CA context for multi-threaded applications for given linacPIDs
+	@param[in] linacPIDNames: Names of the linacPIDs to detach to CA Context*/
+	void detachContext(std::vector<std::string>& linacPIDNames);
+	/*! detach to the initial CA context for multi-threaded applications for given linacPIDs
+	@param[in] linacPIDNames: List of names of the linacPIDs to detach to CA Context*/
+	void detachContext_Py(boost::python::list linacPIDNames);
+	/*! detach to the initial CA context for multi-threaded applications for all linacPIDs*/
+	void detachContext();
 	bool setup(const std::string& version);
 	void populateLinacPIDMap();
 	void setupChannels();

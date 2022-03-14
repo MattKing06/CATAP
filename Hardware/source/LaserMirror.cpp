@@ -39,6 +39,16 @@ LaserMirror::~LaserMirror()
 {
 }
 
+void LaserMirror::attachToInitialContext()
+{
+	epicsInterface->attachTo_thisCaContext();
+}
+
+void LaserMirror::detachFromInitialContext()
+{
+	epicsInterface->detachFrom_thisCaContext();
+}
+
 void LaserMirror::setPVStructs()
 {
 	for (auto&& record : LaserMirrorRecords::laserMirrorRecordList)

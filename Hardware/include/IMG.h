@@ -48,7 +48,10 @@ public:
 	void setPVStructs();
 	/*! EPICSIMGInterface for IMG-specifc calls to EPICS, includes setting OK/ERR state and monitoring gauge pressures*/
 	EPICSIMGInterface_sptr epicsInterface;
-	
+	/*! Attach to the initial CA Context for use in Multi-threaded applications*/
+	void attachToInitialContext();
+	/*! Detach from initial CA Context for use in Multi-threaded applications*/
+	void detachFromInitialContext();
 	/*! A map for storing the parameters extracted from YAML config files and their values */
 	std::map<std::string, std::string> IMGParamMap;
 	
