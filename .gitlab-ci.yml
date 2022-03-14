@@ -111,8 +111,8 @@ doxygen:
       - build/*
   script:
   - cd build
-  - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
-  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
+  - sudo doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
+  - sudo scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp
   only:
     - master
   stage: doxygen
@@ -127,8 +127,8 @@ doxygen_dev:
       - build/*
   script:
   - cd build
-  - doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
-  - scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp_Dev
+  - sudo doxygen ./Docs/cppdocs/Doxyfile.CATAPDocs
+  - sudo scp -r ./Docs/cppdocs/html/* ujo48515@172.16.114.88:/var/www/html/CATAPcpp_Dev
   only:
     - MCR_DEVELOPMENT_BRANCH
   stage: doxygen
